@@ -974,7 +974,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 
 
 	////////////////////////////////////////////////////////////////
-	// UNDEADS
+	// UNDEAD
 	////////////////////////////////////////////////////////////////
 
 	XVW(CN_SKELETON, "skeleton", 's', xWHITE, CPT_IT, CRL_VERY_LOW, CR_UNDEAD);
@@ -1053,6 +1053,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("4d6", "3d5");
 	XM("8d5", "0d0", "3d5", "10d10");
 	XD("This foul creature of the night drinks of its victims for sustenance, slowly draining their victim of life until they also become a vampire.  They possess numerous abilities, and have much power in the undead realms.  They fear light and holy powers, but are immune to many non-magical weapons.");
+	XAT(R_PARALYSE, 20);
 	XL(SKT_BACKSTABBING, SKILL_MAX_LEVEL);
 	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
 	XL(SKT_CONCENTRATION, SKILL_MAX_LEVEL);
