@@ -185,7 +185,7 @@ REGISTER_CLASS(XAvanorCrown);
 XAvanorCrown::XAvanorCrown() : XCap(IT_CROWN)
 {
 	strcpy(name, "golden crown");
-	it = IT_SCEPTER;
+	it = IT_CROWN;
 	view = '[';
 	weight = 100;
 	value = 8000;

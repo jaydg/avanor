@@ -490,18 +490,28 @@ int XCreature::InflictDamage(DAMAGE_DATA * pData)
 				msgwin.Add(buf);
 			}
 		} else
-		{ // and kill HIM!!!
+		{ // and kill IT!!!
 			if (pData->target->isVisible() && !pData->target->isHero())
 			{
 				msgwin.Add("and");
-				if (pData->attacker_name)
-					msgwin.Add("kills");
+				if(pData->target->creature_class & CR_UNDEAD)
+				{
+					if (pData->attacker_name)
+						msgwin.Add("destroys");
+					else
+						msgwin.Add(pData->attacker->GetVerb("destroys"));
+				}
 				else
-					msgwin.Add(pData->attacker->GetVerb("kills"));
+				{
+					if (pData->attacker_name)
+						msgwin.Add("kills");
+					else
+						msgwin.Add(pData->attacker->GetVerb("kills"));
+				}
 				msgwin.AddLast(pData->target->GetNameEx(CRN_T3));
 			}
 			pData->target->Die(pData->attacker);
-			cr_kiled++; //temporare counter special for statistic
+			cr_kiled++; //temporary counter special for statistic
 			return 1;
 		}
 	}
@@ -664,11 +674,14 @@ int XCreature::onAttacked(XCreature * attacker, int dmg)
 
 		return 0;
 	} else
-	{ // and kill HIM!!!
+	{ // and kill IT!!!
 		if (l->map->GetVisible(x, y) && !isHero())
 		{
 			msgwin.Add("and");
-			msgwin.Add(attacker->GetVerb("kill"));
+			if(creature_class & CR_UNDEAD)
+				msgwin.Add(attacker->GetVerb("destroy"));
+			else
+				msgwin.Add(attacker->GetVerb("kill"));
 			msgwin.AddLast(GetNameEx(CRN_T3));
 		}
 		return 1;
@@ -708,11 +721,14 @@ int XCreature::onAttackedByMagic(XCreature * attacker, int dmg, RESISTANCE tr, c
 		}
 		return 0;
 	} else 
-	{ // and kill HIM!!!
+	{ // and kill IT!!!
 		if (l->map->GetVisible(x, y))
 		{
 			msgwin.Add("and");
-			msgwin.Add(attacker->GetVerb("kill"));
+			if(creature_class & CR_UNDEAD)
+				msgwin.Add(attacker->GetVerb("destroy"));
+			else
+				msgwin.Add(attacker->GetVerb("kill"));
 			msgwin.AddLast(GetNameEx(CRN_T3));
 		}
 		return 1;
