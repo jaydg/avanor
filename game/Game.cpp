@@ -441,7 +441,7 @@ void XGame::CreateHero()
 		cr->xai->companion = hero;
 		cr->xai->SetAIFlag(AIF_ALLOW_MOVE_OUT);
 		cr->xai->SetAIFlag(AIF_PEACEFUL);
-		cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_KOBOLD | CR_GOBLIN | CR_UNDEAD | CR_INSECT | CR_IT | CR_CANINE | CR_FELINE | CR_RAT | CR_REPTILE | CR_ORC));
+		cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_KOBOLD | CR_GOBLIN | CR_UNDEAD | CR_INSECT | CR_BLOB | CR_CANINE | CR_FELINE | CR_RAT | CR_REPTILE | CR_ORC));
 	}
 #else
 	XPoint pt;

@@ -307,7 +307,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	// OOZE, JELLY, etc.
 	////////////////////////////////////////////////////////////////
 	
-	XVW(CN_GRAY_OOZE, "gray ooze", 'j', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_IT);
+	XVW(CN_GRAY_OOZE, "gray ooze", 'j', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_BLOB);
 	XBA("1d10+40", "0d0+1000", "1d100+600", CS_VERY_SMALL, "1d10+10");
 	XBO("");
 	XA(AIF_INSECT);
@@ -319,6 +319,18 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XAT(R_POISON, 15);
 	COE(CET_MODIFY_R_POISON, 1);
 	COE(CET_POISON, 10);
+
+	XVW(CN_GELATINOUS_CUBE, "gelatinous cube", 'j', xWHITE, CPT_IT, CRL_AVG, CR_BLOB);
+	XBA("1d10+50", "0d0+1000", "1d100+200", CS_LARGE, "20d4");
+	XBO("");
+	XA(AIF_INSECT);
+	XS("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1");
+	XR("");
+	XC("2d4", "2d15");
+	XM("1d1", "1d10", "1d8", "0d0");
+	XD("As you watch this clear mass you realize that you can still see the remains of its last meal suspended inside.  The skull seems to laugh at you as ready your weapon to face this three foot oozing mass.  The skelatal hand still grips the remains of a sword, slowly being digested.");
+	XAT(R_PARALYSE, 100);
+	XAT(R_ACID, 100);
 
 	////////////////////////////////////////////////////////////////
 	// INSECTS
@@ -537,7 +549,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XAT(R_POISON, 1);
 
 	XVW(CN_GIANT_CRAWLER, "giant crawler", 'c', xLIGHTGRAY, CPT_IT, CRL_AVG, CR_INSECT);
-	XBA("1d10+50", "0d0+1000", "1d200+300", CS_VERY_SMALL, "10d4");
+	XBA("1d10+50", "0d0+1000", "1d200+300", CS_SMALL, "10d4");
 	XBO("");
 	XA(AIF_INSECT);
 	XS("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1");
@@ -549,19 +561,16 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XAT(R_POISON, 60);
 
 	XVW(CN_CARRION_CRAWLER, "carrion crawler", 'c', xDARKGRAY, CPT_IT, CRL_AVG, CR_INSECT);
-	XBA("1d10+50", "0d0+1000", "1d100+200", CS_VERY_SMALL, "20d4");
+	XBA("1d10+50", "0d0+1000", "1d100+200", CS_LARGE, "20d4");
 	XBO("");
 	XA(AIF_INSECT);
 	XS("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1");
 	XR("");
 	XC("2d4", "2d15");
 	XM("1d1", "1d10", "1d8", "0d0");
-	XD("As you watch this green blue mass you realize that you can still see the remains of its last meal suspended inside.  The skull seems to laugh at you as ready your weapon to face this three foot oozing mass.  The skelatal hand still grips the remains of a sword, slowly being digested.");
+	XD("This giant bug has numerous paralyzing tentacles just waiting for you to wander into range.  They live mostly in subterranean caverns and feed on dead or dying matter, but they will attack if hungry...");
 	XAT(R_PARALYSE, 100);
 	XAT(R_POISON, 100);
-
-
-
 
 	////////////////////////////////////////////////////////////////
 	// KOBOLDS
@@ -1104,7 +1113,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d8", "2d2");
 	XM("4d2", "1d3", "1d5+15", "1d5+5");
-	XD("As you enter this dwelling you keep a tight hold on your purse.  The shifty eyes and too quick smile of the owner makes you nervous.  Jorgush is the leader of his outlaw band.  They are known for stealing from the rich and keeping it for themselves.  He appears to evaluate you and the weapons you bear and then gestures to the cahir at the table.  Perhaps he has a proposition for you...");
+	XD("As you enter his dwelling you keep a tight hold on your purse.  The shifty eyes and too quick smile of the owner makes you nervous.  Jorgush is the leader of his outlaw band.  They are known for stealing from the rich and keeping it for themselves.  He appears to evaluate you and the weapons you bear and then gestures to the cahir at the table.  Perhaps he has a proposition for you...");
 	XL(SKT_STEALING, 15);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
 	EQ(IM_BODY, IT_CLOTHES, 100);
