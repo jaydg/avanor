@@ -119,7 +119,7 @@ POTION_REC potion_descr[] = {
 {PN_SEE_INVISIBLE,		"see invisible",		E_SEE_INVISIBLE,		30,		3,	30,	POTION_REC::SelectColor(),	0},
 {PN_WEAKNESS,			"weakness",				E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
 {PN_CLUMSYNESS,			"clumsiness",			E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
-{PN_LIFELESS,			"death",				E_NONE,					70,		2,	5,	POTION_REC::SelectColor(),	0},
+{PN_DEATH,				"death",				E_NONE,					1,		2,	5,	POTION_REC::SelectColor(),	0},
 {PN_SATIATION,			"satiation",			E_NONE,					50,		2,	15,	POTION_REC::SelectColor(),	0},
 {PN_STARVATION,			"starvation",			E_NONE,					40,		3,	15,	POTION_REC::SelectColor(),	0},
 {PN_BOOST_SPEED,		"boost speed",			E_NONE,					30,		3,	100,POTION_REC::SelectColor(),	0},
@@ -329,8 +329,58 @@ int XPotion::onDrink(XCreature * cr)
 				cr->GainAttr(S_DEX, -1);
 			break;
 
-			case PN_LIFELESS:
-				cr->GainAttr(S_DEX, -1);
+			case PN_DEATH:
+				// A potion of death should hurt really badly!
+				// As potion of lifelessness, it was just another
+				// clumsiness potion, but now it is a potion of death.
+				// Moral: Watch what you drink...  This will kill *anyone*.
+
+				// Note, this potion is going to be extremely rare as well.
+				if (cr->im & IM_HERO)
+				{
+					// Inform the hero of their fate.
+					msgwin.Add("You feel your life draining away very rapidly!");
+				}
+				else if (cr->isVisible())
+				{
+					if(cr->creature_name > CN_UNIQUE)
+					{
+						// Uniques are too smart to be fooled by such petty implements...
+						msgwin.Add(cr->name);
+						msgwin.Add("seems to change");
+						switch(cr->creature_person_type)
+						{
+							case CPT_NAMED_HE:
+							case CPT_HE:
+								msgwin.Add("his");
+							case CPT_NAMED_SHE:
+							case CPT_SHE:
+								msgwin.Add("her");
+							case CPT_NAMED_IT:
+							case CPT_IT:
+								msgwin.Add("its");
+						}
+						msgwin.Add("mind and throws the potion away!");
+						flag = 1;
+						break;
+					}
+					else
+					{
+						// Ha ha!  A stupid monster drank the potion of death!
+						msgwin.Add(cr->name);
+						msgwin.Add("seems to be dying!");
+					}
+				}
+				flag = 1;
+				cr->GainAttr(S_STR, -1); // Weakness
+				cr->GainAttr(S_DEX, -1); // Damage
+				cr->GainAttr(S_TOU, -1); // Fatigue
+				cr->GainAttr(S_LEN, -1); // Can't learn if you're dead
+				cr->GainAttr(S_WIL, -1); // Lost the will to live
+				cr->GainAttr(S_MAN, -1); // Out of touch with nature
+				cr->GainAttr(S_PER, -1); // Senses are useless when dead
+				cr->GainAttr(S_CHR, -1); // Rotting is ugly
+				cr->md->Add(MOD_WOUND,100,cr); // Ensure death
 			break;
 
 			case PN_SATIATION:
@@ -428,8 +478,9 @@ int XPotion::onDrink(XCreature * cr)
 		}
 		else
 		{
+			msgwin.Add("Nothing special happens to ");
 			msgwin.Add(cr->name);
-			msgwin.Add("feels nothing special.");
+			msgwin.Add(".");
 		}
 	}
 	else if (!isIdentifed() && cr->im & IM_HERO)

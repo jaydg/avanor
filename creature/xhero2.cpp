@@ -333,6 +333,10 @@ void XHero::PickRace()
 						potion->Identify(1);
 						ContainItem(potion);
 						
+						potion = new XPotion(PN_DEATH);
+						potion->Identify(1);
+						ContainItem(potion);
+
 						for (int t = 1; t < 3; t++)
 						{
 							if (vRand() % 2 == 1)
@@ -763,7 +767,7 @@ void XHero::PickRace()
 			break;
 		}
 	}
-	
+
 	XBodyPart * bp = GetBodyPart(BP_HAND, 0);
 	if (bp->Item() && (bp->Item()->im & IM_WEAPON))
 		wsk->SetLevel(bp->Item()->wt, 2);
