@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __GMSG_H
 #define __GMSG_H
 
-#define GMSG_ELDER_QUEST_0 "Good day, sir! All that we have are our mushrooms." 
+#define GMSG_ELDER_QUEST_0 "Good day, friend! All that we have are our mushrooms." 
 #define GMSG_ELDER_QUEST_1 "We collect them in the cave to the west of the village."
 #define GMSG_ELDER_QUEST_2 "But a short time ago, an evil monster occupied the cave."
 #define GMSG_ELDER_QUEST_3 "It looks like a demon and is very dangerous."
