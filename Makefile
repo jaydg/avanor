@@ -9,7 +9,11 @@
 # (Linux, FreeBSD, ...)                                                      #
 ##############################################################################
 
-AVANOR_SVNVERSION := ${shell svnversion .}
+ifdef ver
+	DISTNAME := avanor-$(ver)
+else
+	DISTNAME := avanor-r${shell svnversion .}
+endif
 
 ifndef dos
 	CC = g++
@@ -100,29 +104,33 @@ clean:
 source-zip: 
 # create zip archive with Avanor sources, requires subversion command line client
 # and 7-zip archiver
-	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
-	svn export . avanor-r$(AVANOR_SVNVERSION)-src
-	7z a -tzip -r -mx avanor-r$(AVANOR_SVNVERSION)-src.zip "avanor-r$(AVANOR_SVNVERSION)-src/*"
-	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
+	-$(RM) $(DISTNAME)-src.zip
+	svn export . $(DISTNAME)
+	7z a -tzip -r -mx $(DISTNAME)-src.zip "$(DISTNAME)/*"
+	svn delete --force $(DISTNAME)
 
 source-bz2: 
 # create tar.bz2 archive with Avanor sources (on *nix systems)
-	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
-	svn export . avanor-r$(AVANOR_SVNVERSION)-src
-	tar -cjf avanor-r$(AVANOR_SVNVERSION)-src.tar.bz2 avanor-r$(AVANOR_SVNVERSION)-src
-	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
+	-$(RM) $(DISTNAME)-src.zip
+	svn export . $(DISTNAME)
+	tar -cjf $(DISTNAME)-src.tar.bz2 $(DISTNAME)
+	svn delete --force $(DISTNAME)
 
 source-gz: 
 # create tar.gz archive with Avanor sources (on *nix systems)
-	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
-	svn export . avanor-r$(AVANOR_SVNVERSION)-src
-	tar -czf avanor-r$(AVANOR_SVNVERSION)-src.tar.gz avanor-r$(AVANOR_SVNVERSION)-src
-	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
+	-$(RM) $(DISTNAME)-src.zip
+	svn export . $(DISTNAME)
+	tar -czf $(DISTNAME)-src.tar.gz $(DISTNAME)
+	svn delete --force $(DISTNAME)
 
 binary-zip: all
-	7z a -tzip -mx avanor.zip "avanor*.exe" gpl.txt changes.txt "manual/*.html" "manual/*.css"
+	-$(RM) $(DISTNAME).zip
+	cp $(NAME) avanor.exe
+	upx --best avanor.exe
+	7z a -tzip -mx $(DISTNAME).zip "avanor.exe" gpl.txt changes.txt "manual/*.html" "manual/*.css"
 
 binary-gz: all
-	tar -czf avanor.tar.gz avanor gpl.txt changes.txt manual/*.html manual/*.css
+	-$(RM) $(DISTNAME).tar.gz
+	tar -czf $(DISTNAME).tar.gz avanor gpl.txt changes.txt manual/*.html manual/*.css
 
 -include $(DEPS)
