@@ -279,7 +279,7 @@ int XMap::XGetMovability(int x, int y)
 		if (stdmap[m->n].moveable < MO_UNWALKABLE 
 			&& !(spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0))
 			return 0;
-		else if (stdmap[m->n].moveable < MO_UNWALKABLE)
+		else
 			return 1;
 	} else return 1;
 }
