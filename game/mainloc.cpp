@@ -374,6 +374,15 @@ XKingsTreasureLocation::XKingsTreasureLocation(LOCATION tl) : XLocation(tl)
 XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
 {
 	BuildCave();
+
+	/* Random lava! */
+	for (int k = 0; k < 150; k++)
+	{
+		int	qx = vRand() % (80 - 7) + 1;
+		int qy = vRand() % (20 - 5) + 1;
+
+		map->SetXY(qx, qy, M_LAVA);
+	}
 	strcpy(brief_name, "Volcano");
 	strcpy(full_name, "Crater of an Extinct Volcano");
 	NewWay(L_MAIN, STW_UP);

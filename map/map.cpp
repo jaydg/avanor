@@ -39,6 +39,7 @@ xMAP stdmap[] = {
 {'#', xLIGHTGRAY, "stone wall", MO_WALL, VI_WALL},
 {'=', xLIGHTBLUE, "water", MO_WATER, VI_NORMAL},
 {'=', xBLUE, "deep water", MO_DEEPWATER, VI_NORMAL},
+{'=', xRED, "lava", MO_WATER, VI_NORMAL},
 {'^', xGREEN, "hill", MO_NORMAL, VI_NORMAL},
 {'^', xBROWN, "low mountains", MO_VHARD, VI_AHARD},
 {'^', xLIGHTGRAY, "mountains", MO_MOUNTAIN, VI_HARD},
