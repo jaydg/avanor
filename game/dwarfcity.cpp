@@ -90,7 +90,7 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 		XRect gr(78, 11, 79, 12);
 		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP))->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
-	new XThrone(78, 11, "the Dwarven Kingdom", this);
+	new XFurniture(78, 11, xYELLOW, '~', "the throne of the Dwarven Kingdom", this);
 
 	new XFurniture(77, 17, xLIGHTRED, '~', "royal bed", this);
 	new XFurniture(77, 6, xBROWN, '~', "round table", this);

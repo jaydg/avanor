@@ -138,6 +138,7 @@ public:
 	POTION_NAME result;
 
 	DECLARE_CREATOR(XAlchemyRec, XObject);
+	XAlchemyRec() { assert(0); }
 	XAlchemyRec(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
 		pn1(p1), pn2(p2), result(res) {}
 

@@ -210,7 +210,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 //Roderik palace
 		XRect roderick_area(182, 4, 183, 5);
 		NewCreature(CN_RODERIK, &roderick_area, GID_RODERICK_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
-		new XThrone(182, 4, "Avanor", this);
+		new XFurniture(182, 4, xYELLOW, '~', "the throne of Avanor", this);
 		new XFurniture(172, 9, xLIGHTRED, '~', "royal bed", this);
 		new XFurniture(189, 6, xBROWN, '~', "round table", this);
 		new XFurniture(191, 12, xBROWN, '~', "dinner table", this);

@@ -28,6 +28,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XFile;
 class XCreature;
 
+enum QUEST
+{
+	Q_UNKNOWN	= 0,
+	Q_KNOWN		= 1,
+	Q_COMPLETE	= 2,
+	Q_CLOSED	= 3,
+};
+
 class XQuest
 {
 public:

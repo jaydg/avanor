@@ -23,11 +23,83 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "location.h"
 #include "creature.h"
 
+extern "C"
+{
+	#include "./lua/include/lauxlib.h"
+}
+
+
 XAnyPlace::XAnyPlace(XRect * _area, XLocation * _loc) : area(_area), XObject()
 {
 	Setup(_loc);
 	im = IM_OTHER;
+	onEventLua = NULL;
 }
+
+XAnyPlace::XAnyPlace(XRect * _area, XLocation * _loc, char * _onEventLua) : area(_area), XObject()
+{
+	Setup(_loc);
+	im = IM_OTHER;
+	if (_onEventLua)
+	{
+		onEventLua = new char[strlen(_onEventLua) + 1];
+		strcpy(onEventLua, _onEventLua);
+	}
+}
+
+XAnyPlace::~XAnyPlace()
+{
+	delete[] onEventLua;
+}
+
+int XAnyPlace::onCreatureMove(XCreature * cr)
+{
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_MOVE);
+		lua_pushlightuserdata(XLocation::L, cr);
+		lua_call(XLocation::L, 2, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+		return res;
+	} else
+		return 0;
+}
+
+int XAnyPlace::onCreatureEnter(XCreature * cr)
+{
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_MOVE_IN);
+		lua_pushlightuserdata(XLocation::L, cr);
+		lua_call(XLocation::L, 2, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+		return res;
+	} else
+		return 0;
+}
+
+int XAnyPlace::onCreatureLeave(XCreature * cr)
+{
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_MOVE_OUT);
+		lua_pushlightuserdata(XLocation::L, cr);
+		lua_call(XLocation::L, 2, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+		return res;
+	} else
+		return 0;
+}
+
 
 void XAnyPlace::Invalidate()
 {
@@ -49,6 +121,7 @@ void XAnyPlace::Setup(XLocation * _loc)
 			location->map->SetPlace(i, j, this);
 }
 
+
 void XAnyPlace::Store(XFile * f)
 {
 	XObject::Store(f);
@@ -56,6 +129,22 @@ void XAnyPlace::Store(XFile * f)
 	location.Store(f);
 	owner.Store(f);
 	area.Store(f);
+	int sz = 0;
+	if (onEventLua)
+		sz = strlen(onEventLua) + 1;
+	f->Write(&sz);
+	if (sz > 0)
+		f->Write(onEventLua, sz);
+
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_SAVE);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+	}
 }
 
 void XAnyPlace::Restore(XFile * f)
@@ -64,6 +153,25 @@ void XAnyPlace::Restore(XFile * f)
 
 	location.Restore(f);
 	owner.Restore(f);
-
 	area.Restore(f);
+	int sz = 0;
+	f->Read(&sz);
+	if (sz > 0)
+	{
+		onEventLua = new char [sz];
+		f->Read(onEventLua, sz);
+	} else
+		onEventLua = NULL;
+
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_LOAD);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+	}
+
 }
+

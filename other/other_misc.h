@@ -66,6 +66,7 @@ class XTrap: public XMapObject
 public:
 	int activation_count;
 	DECLARE_CREATOR(XTrap, XMapObject);
+	XTrap() { assert(0); }
 	XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature * _owner = NULL, XItem * items = NULL);
 //	XTrap(int _x, int _y, XLocation * _l, TRAP_TYPE tt = TT_RANDOM) {}
 	virtual int MoveIn(XCreature * cr);
@@ -179,6 +180,7 @@ protected:
 	XGrave() {im = IM_MISC;}
 };
 
+/*
 //////////////////////////////////////////////////////////////////////
 //XGrave
 //////////////////////////////////////////////////////////////////////
@@ -190,6 +192,7 @@ public:
 protected:
 	XThrone() {im = IM_MISC;}
 };
+*/
 
 //////////////////////////////////////////////////////////////////////
 //XFurniture
@@ -202,5 +205,25 @@ public:
 protected:
 	XFurniture() {im = IM_MISC;}
 };
+
+
+//////////////////////////////////////////////////////////////////////
+//XOuterObject
+//////////////////////////////////////////////////////////////////////
+class XOuterObject: public XMapObject
+{
+	char * onEventLua;
+public:
+	DECLARE_CREATOR(XOuterObject, XMapObject);
+	XOuterObject(int _x, int _y, int _c, char _v, char * subscr, XLocation * _l, const char * event);
+	~XOuterObject();
+	int onOuterUse(XCreature * cr);
+	void Store(XFile * f);
+	void Restore(XFile * f);
+protected:
+	XOuterObject() {im = IM_MISC;}
+};
+
+
 
 #endif

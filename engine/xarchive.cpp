@@ -30,6 +30,7 @@ const unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 int XArchive::StoreGame()
 {
 	XFile file;
+	XLocation::svg_file = &file;
 	if (!file.Open(vMakePath(HOME_DIR, "avanor.svg"), "wb"))
 		return 0;
 	if (!file.Write((void *)&SAVE_GAME_VERSION, sizeof(unsigned int)))
@@ -66,6 +67,8 @@ int XArchive::RestoreGame()
 // assert(post_restore_quae.len == 0);
 //	assert(post_restore_quae.size() == 0);
 	XFile file;
+	XLocation::svg_file = &file;
+
 	if (!file.Open(vMakePath(HOME_DIR, "avanor.svg"), "rb"))
 	{
 //		printf("Can't open save game file!");

@@ -87,6 +87,7 @@ class XChest : public XItem
 public:
 	XItemList contain;
 	DECLARE_CREATOR(XChest, XItem);
+	XChest() { assert(0); }
 	XChest(int item_count, ITEM_MASK imask, int low_v, int high_v);
 	XChest(XChest * copy) {assert(0);}
 	int Compare(XObject * o) {return -1;}

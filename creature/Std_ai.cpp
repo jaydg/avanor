@@ -264,7 +264,7 @@ void XStandardAI::Move()
 		{
 			ai_owner->nx = ai_owner->x;
 			ai_owner->ny = ai_owner->y;
-		} else if (!ai_owner->isCreatureVisible(tgt))
+		} else if (!ai_owner->isCreatureVisible(tgt) && ai_owner.get() != tgt)
 		{
 			invisible_x = tgt->x;
 			invisible_y = tgt->y;
@@ -1019,7 +1019,7 @@ void XStandardAI::onSteal(XCreature * rogue)
 void XStandardAI::AddPersonalEnemy(XCreature * cr)
 {
 	int i;
-
+	sleep_well = 0;
 	for (i = 0; i < ENEMY_LIST_SIZE; i++)
 	{
 		if (!personal_enemy[i])

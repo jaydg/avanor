@@ -96,7 +96,7 @@ class XModWound : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModWound, XBasicModifer);
 	XModWound(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_WOUND, _val, _cr) {}
-	
+	XModWound() {assert(0);}
 	virtual const char * GetDisplayName(int xval)
 	{
 		if (xval > 0)
@@ -151,6 +151,7 @@ class XModPoison : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModPoison, XBasicModifer);
 	XModPoison(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_POISON, _val * 10, _cr) {}
+	XModPoison() {assert(0);}
 	const char * GetDisplayName(int xval) { return MSG_GREEN "poisoned"; }
 	const char * SetMsg() { return "You are poisoned!"; }
 	const char * RemoveMsg() { return "You feel relieved."; }
@@ -166,6 +167,7 @@ class XModConfuse : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModConfuse, XBasicModifer);
 	XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_CONFUSE, _val, _cr) {}
+	XModConfuse() {assert(0);}
 	
 	const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "confused"; }
 	const char * SetMsg() { return "You are confused."; }
@@ -182,7 +184,7 @@ class XModStun : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModStun, XBasicModifer);
 	XModStun(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_STUN, _val, _cr) {}
-	
+	XModStun() {assert(0);}
 	const char * GetDisplayName(int xval)	{ return  xval < 10 ? MSG_LIGHTGRAY "stunned " : MSG_YELLOW "heavily stunned ";	}
 	const char * SetMsg() { return "You are stunned."; }
 	const char * RemoveMsg() { return "You feel steady again."; }
@@ -198,7 +200,7 @@ class XModHeroism : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModHeroism, XBasicModifer);
 	XModHeroism(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_HEROISM, _val, _cr) {}
-	
+	XModHeroism() {assert(0);}
 	virtual const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "hero"; }
 	const char * SetMsg() { return "You feel like a hero."; }
 	const char * RemoveMsg() { return "Your courage fades."; }
@@ -214,7 +216,7 @@ class XModDisease : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModDisease, XBasicModifer);
 	XModDisease(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_DISEASE, _val, _cr) {}
-	
+	XModDisease() {assert(0);}
 	const char * GetDisplayName(int xval) { return MSG_GREEN "disease"; }
 	const char * SetMsg() { return "You feel ill."; }
 	const char * RemoveMsg() { return "Your health returns."; }
@@ -232,7 +234,7 @@ class XModWeak : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModWeak, XBasicModifer);
 	XModWeak(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_WEAK, _val, _cr) {}
-	
+	XModWeak(){assert(0);}
 	const char * GetDisplayName(int xval) { return MSG_CYAN "weakness"; }
 	const char * SetMsg() { return "You feel very weak."; }
 	const char * RemoveMsg() { return "Your strength returns."; }
@@ -250,7 +252,7 @@ class XModParalyse : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModParalyse, XBasicModifer);
 	XModParalyse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_PARALYSE, _val, _cr) {}
-	
+	XModParalyse() {assert(0);}
 	virtual const char * GetDisplayName(int xval) { return MSG_WHITE "paralyzed!"; }
 	const char * SetMsg() { return "You've been paralyzed!"; }
 	const char * RemoveMsg() { return "You can move again."; }
@@ -270,6 +272,7 @@ public:
          XCreature * _cr = NULL) : XBasicModifer(MOD_DELAYED, delay, _cr),
          set_mt(_mt), set_val(value)
 	{}
+	XModDelayed() {assert(0);}
 	virtual MODIFER_RESULT Run(XCreature * owner);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
@@ -300,7 +303,7 @@ class XModSeeInvisible : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModSeeInvisible, XBasicModifer);
 	XModSeeInvisible(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_SEE_INVISIBLE, _val, _cr) {}
-	
+	XModSeeInvisible() {assert(0);}
 	const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "perceptive"; }
 	const char * SetMsg() { return "You feel more perceptive."; }
 	const char * RemoveMsg() { return "You feel less perceptive."; }
@@ -316,7 +319,7 @@ class XModBoostSpeed : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModBoostSpeed, XBasicModifer);
 	XModBoostSpeed(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_BOOST_SPEED, _val, _cr) {}
-	
+	XModBoostSpeed() {assert(0);}
 	const char * GetDisplayName(int xval){ return ""; }
 	const char * SetMsg() { return "You feel very quick."; }
 	const char * RemoveMsg() { return "You slow down to normal."; }
@@ -333,7 +336,7 @@ class XModSlowness : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModSlowness, XBasicModifer);
 	XModSlowness(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_SLOWNESS, _val, _cr) {}
-	
+	XModSlowness() {assert(0);}
 	const char * GetDisplayName(int xval){ return ""; }
 	const char * SetMsg() { return "You feel very slow."; }
 	const char * RemoveMsg() { return "You feel your speed return."; }
@@ -350,7 +353,7 @@ class XModAcidResistance : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModAcidResistance, XBasicModifer);
 	XModAcidResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_ACID_RESISTANCE, _val, _cr) {}
-	
+	XModAcidResistance() {assert(0);}
 	virtual const char * GetDisplayName(int xval){ return ""; }
 	const char * SetMsg() { return "You feel safer."; }
 	const char * RemoveMsg() { return "You feel less safe."; }
@@ -366,7 +369,7 @@ class XModFireResistance : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModFireResistance, XBasicModifer);
 	XModFireResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_FIRE_RESISTANCE, _val, _cr) {}
-	
+	XModFireResistance() {assert(0);}
 	virtual const char * GetDisplayName(int xval){ return ""; }
 	const char * SetMsg() { return "You feel safer."; }
 	const char * RemoveMsg() { return "You feel less safe."; }
@@ -383,7 +386,7 @@ class XModColdResistance : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModColdResistance, XBasicModifer);
 	XModColdResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_COLD_RESISTANCE, _val, _cr) {}
-	
+	XModColdResistance() {assert(0);}
 	virtual const char * GetDisplayName(int xval){ return ""; }
 	const char * SetMsg() { return "You feel safer."; }
 	const char * RemoveMsg() { return "You feel less safe."; }
@@ -400,7 +403,7 @@ class XModPoisonResistance : public XBasicModifer
 public:
 	DECLARE_CREATOR(XModPoisonResistance, XBasicModifer);
 	XModPoisonResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_POISON_RESISTANCE, _val, _cr) {}
-	
+	XModPoisonResistance(){assert(0);}
 	virtual const char * GetDisplayName(int xval){ return ""; }
 	const char * SetMsg() { return "You feel safer."; }
 	const char * RemoveMsg() { return "You feel less safe."; }

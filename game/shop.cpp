@@ -30,44 +30,57 @@ XShop::XShop(XRect * _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 {
 	shop_mask = _im;
 
-	int dx = 0;
-	int dy = 0;
-
-	switch (sd)
+	if (sd != SHOP_BUILD_IN)
 	{
-		case SHOP_DOOR_DOWN : 
-			dx = (area.left + area.right) / 2;
-			dy = area.bottom - 1;
-			break;
+		int dx = 0;
+		int dy = 0;
 
-		case SHOP_DOOR_UP : 
-			dx = (area.left + area.right) / 2;
-			dy = area.top;
-			break;
-
-		case SHOP_DOOR_LEFT:
-			dx = area.left;
-			dy = (area.top + area.bottom) / 2;
-			break;
-
-		case SHOP_DOOR_RIGHT:
-			dx = area.right - 1;
-			dy = (area.top + area.bottom) / 2;
-			break;
-
-		default: assert(0);
-
-	}
-
-	location->map->CreateRoom(area.left, area.top, area.Width(), area.Hight(), 
-		dx, dy, M_STONEFLOOR, M_STONEWALL);
-	
-	for (int i = area.left + 1; i < area.right - 1; i++)
-		for (int j = area.top + 1; j < area.bottom - 1; j++)
+		switch (sd)
 		{
-			XItem * item = ICREATEA(shop_mask);
-			item->Drop(location.get(), i, j);
+			case SHOP_DOOR_DOWN : 
+				dx = (area.left + area.right) / 2;
+				dy = area.bottom - 1;
+				break;
+
+			case SHOP_DOOR_UP : 
+				dx = (area.left + area.right) / 2;
+				dy = area.top;
+				break;
+
+			case SHOP_DOOR_LEFT:
+				dx = area.left;
+				dy = (area.top + area.bottom) / 2;
+				break;
+
+			case SHOP_DOOR_RIGHT:
+				dx = area.right - 1;
+				dy = (area.top + area.bottom) / 2;
+				break;
+
+			default: assert(0);
+
 		}
+
+		location->map->CreateRoom(area.left, area.top, area.Width(), area.Hight(), 
+			dx, dy, M_STONEFLOOR, M_STONEWALL);
+
+		for (int i = area.left + 1; i < area.right - 1; i++)
+			for (int j = area.top + 1; j < area.bottom - 1; j++)
+			{
+				XItem * item = ICREATEA(shop_mask);
+				item->Drop(location.get(), i, j);
+			}
+
+	} else
+	{
+		for (int i = area.left; i < area.right; i++)
+			for (int j = area.top; j < area.bottom; j++)
+			{
+				XItem * item = ICREATEA(shop_mask);
+				item->Drop(location.get(), i, j);
+			}
+	}
+	
 
 	hero_in = 0;
 }

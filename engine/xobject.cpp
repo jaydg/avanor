@@ -52,15 +52,15 @@ XGUID guid = 1;
 XClassInfo * XClassFactory::first_class = NULL;
 int XClassFactory::counter = 0;
 
-XClassFactory::XClassFactory(char * name, CLASS_CREATOR pClassCreator)
+XClassFactory::XClassFactory(char * name, CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
 {
 	if (!first_class)
-		XClassFactory::first_class = new XClassInfo(name, pClassCreator);
+		XClassFactory::first_class = new XClassInfo(name, pClassCreator, pClassNew);
 	else
 	{
 		XClassInfo * tmp = XClassFactory::first_class;
 		while(tmp->next) tmp = tmp->next;
-		tmp->next = new XClassInfo(name, pClassCreator);
+		tmp->next = new XClassInfo(name, pClassCreator, pClassNew);
 	}
 	XClassFactory::counter++;
 }
@@ -90,6 +90,18 @@ XObject * XClassFactory::Create(char * name)
 	}
 	return NULL;
 }
+
+XObject * XClassFactory::CreateNew(char * name)
+{
+	XClassInfo * tmp = XClassFactory::first_class;
+	while(tmp)
+	{
+		if (strcmp(tmp->name, name)==0) return tmp->pClassNew();
+		tmp = tmp->next;
+	}
+	return NULL;
+}
+
 
 void XObject::Store(XFile * f)
 {

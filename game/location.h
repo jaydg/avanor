@@ -31,7 +31,8 @@ enum SHOP_DOOR
 	SHOP_DOOR_UP,
 	SHOP_DOOR_LEFT,
 	SHOP_DOOR_DOWN,
-	SHOP_DOOR_RIGHT
+	SHOP_DOOR_RIGHT,
+	SHOP_BUILD_IN,
 };
 
 enum LOCATION {
@@ -88,6 +89,16 @@ L_EOF = 200,
 };
 
 
+enum LUA_EVENT
+{
+	LE_MOVE				= 1,
+	LE_MOVE_IN			= 2,
+	LE_MOVE_OUT			= 3,
+	LE_OUTER_USE		= 4,
+	LE_SAVE				= 98,
+	LE_LOAD				= 99
+};
+
 enum PALETTE 
 {
 	PAL_UNKNOWN			= 0x0000,
@@ -112,19 +123,20 @@ struct PALETTE_MAP
 {
 	char this_view;
 	STDMAP	real_view;
+	char lua_str[512];
 };
 
+struct LOCATION_PATTERN
+{
+	const char * pattern;
+	int w;
+	int h;
+};
 
 #define MAX_PLACES 8
 
 class XMap;
 class XStairWay;
-
-struct CONSTANT_REGISTER
-{
-	char constant[64];
-	int val;
-};
 
 
 struct lua_State;
@@ -141,6 +153,7 @@ public:
 	DECLARE_CREATOR(XLocation, XObject);
 	XLocation(LOCATION location);
 	XLocation(XLocation * copy) {assert(0);}
+	XLocation() {assert(0);}
 
 	XMap * map;
 	void GetFreeXY(XPoint * pt, XRect * area = NULL);
@@ -172,18 +185,52 @@ public:
 	static const char * GetNumber(const char * line, int * num);
 	static const char * GetString(const char * line, char * buf);
 
-	static void CreateFromFile(char * file_name);
-	static bool ParseLine(const char * line);
+	static void CreateNewGame();
+	static void Restoration();
+	static void CommonLuaInitialization();
 	static XLocation * current_location;
 	static XCreature * last_creature;
-	static int current_script_line;
-	static XQList<CONSTANT_REGISTER> constants;
-	static void ConstantRegister(char * const, int val);
+	static lua_State * L;
+	static LOCATION_PATTERN current_pattern;
+	static XQList<PALETTE_MAP> pattern_translation;
 
 	static int CreateLocation(lua_State * L);
 	static int Settle(lua_State * L);
+	
 	static int Creature(lua_State * L);
+	static int Guardian(lua_State * L);
+
 	static int Way(lua_State * L);
+	static int CreateObject(lua_State * L);
+	static int DropItem(lua_State * L);
+	static int SetPattern(lua_State * L);
+	static int AddTranslation(lua_State * L);
+	static int DrawPattern(lua_State * L);
+	static int BuildShop(lua_State * L);
+	static int Furniture(lua_State * L);
+	static int OuterObject(lua_State * L);
+	static int Altar(lua_State * L);
+	static int Treasure(lua_State * L);
+	static int Chest(lua_State * L);
+	static int Trap(lua_State * L);
+	static int EventPlace(lua_State * L);
+	static int InflictDamage(lua_State * L);
+	static int ChangeStats(lua_State * L);
+	static int Rand(lua_State * L);
+
+
+	static int isHero(lua_State * L);
+	static int isEnemy(lua_State * L);
+	static int SetItEnemyFor(lua_State * L);
+	static int FindCreature(lua_State * L);
+	static int AddMessage(lua_State * L);
+
+	static XFile * svg_file;
+	static int StoreInt(lua_State * L);
+	static int RestoreInt(lua_State * L);
+
+	
+	
 	
 protected:
 	char brief_name[10];
@@ -191,6 +238,7 @@ protected:
 	XPtr<XAnyPlace> places[MAX_PLACES];
 
 	void PutPalette(int x, int y, PALETTE pal, XLocation * l);
+	void PutPalette(int x, int y);
 	char ** Resolve(PALETTE pal, int * size, PALETTE_MAP ** pm, int * pm_size);
 
 	void BuildCave();
@@ -231,6 +279,7 @@ class XMushroomsCaveLocation : public XLocation
 public:
 	DECLARE_CREATOR(XMushroomsCaveLocation, XLocation);
 	XMushroomsCaveLocation(LOCATION loc);
+	XMushroomsCaveLocation() {assert(0);}
 	int Run();
 };
 

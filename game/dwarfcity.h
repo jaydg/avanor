@@ -47,6 +47,7 @@ class XDwarvenTresurePlace : public XAnyPlace
 public:
 	DECLARE_CREATOR(XDwarvenTresurePlace, XAnyPlace);
 	XDwarvenTresurePlace(XRect * _area, XLocation * _loc) : XAnyPlace(_area, _loc) {}
+	XDwarvenTresurePlace() {assert(0);}
 	virtual int onCreatureMove(XCreature * cr);
 	virtual int onCreatureEnter(XCreature * cr);
 	virtual void Store(XFile * f);
@@ -80,6 +81,7 @@ class XGasPlace : public XAnyPlace
 {
 public:
 	DECLARE_CREATOR(XGasPlace, XAnyPlace);
+	XGasPlace() {assert(0);}
 	XGasPlace(XRect * _area, XLocation * _loc) : XAnyPlace(_area, _loc) {}
 	virtual int onCreatureMove(XCreature * cr);
 };

@@ -85,7 +85,7 @@ void XGame::Create(char type_of_start)
         	vGotoXY((size_x - strlen("Restoring game objects, please wait...")) / 2, size_y / 2);
         	vPutS(MSG_LIGHTGRAY "Restoring game objects, please wait...");
         	vRefresh();
-
+			XLocation::Restoration();
 			if (XArchive::RestoreGame())
 				break;
 			vGotoXY(0, 20);
@@ -340,7 +340,7 @@ void XGame::CreateLocations()
 {
 //	Create locations
 #ifndef __DEBUG_L
-	XLocation::CreateFromFile("location.txt");
+	XLocation::CreateNewGame();
 	(new XMainLocation(L_MAIN))->NewWay(32, 3, (LOCATION)55, STW_DOWN);
 	
 
@@ -349,18 +349,18 @@ void XGame::CreateLocations()
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE3);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE4);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE5);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE1);
+/*	new XDwarfCityCaveLocation(L_DWARFCITYCAVE1);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE2);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE3);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE4);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE5);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE6);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE7);
-	new XDwarfCityLocation(L_DWARFCITY);
-	new XDwarfTreasureLocation(L_DWARFTREASURE);
-	new XGasMineLocation(L_GASMINE1);
-	new XGasMineLocation(L_GASMINE2);
-	new XGasMineLocation(L_GASMINE3);
+	new XDwarfCityCaveLocation(L_DWARFCITYCAVE7);*/
+//	new XDwarfCityLocation(L_DWARFCITY);
+//	new XDwarfTreasureLocation(L_DWARFTREASURE);
+//	new XGasMineLocation(L_GASMINE1);
+//	new XGasMineLocation(L_GASMINE2);
+//	new XGasMineLocation(L_GASMINE3);
 	new XKingsTreasureLocation(L_KINGS_TREASURE);
 	new XExtinctVolcanoLocation(L_EXTINCT_VOLCANO);
 	new XRatCellarLocation(L_RATCELLAR);
@@ -421,17 +421,17 @@ void XGame::CreateHero()
 	XHero * hero = new XHero(1);
 //	hero_point.x = 40;
 //	hero_point.y = 65;
-	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
+//	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
 
-/*	hero_point.x = 30;
-	hero_point.y = 10;
+	hero_point.x = 77;
+	hero_point.y = 4;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_DWARFCITY]);
 	locations[L_DWARFCITY]->map->Center(hero->x, hero->y);
 	locations[L_DWARFCITY]->visited_by_hero = 1;
-*/
+/*
 	locations[L_MAIN]->map->Center(hero->x, hero->y);
 	locations[L_MAIN]->visited_by_hero = 1;
-
+*/
 	//if hero is a bard, than create a dog for him...
 	if (strstr(hero->GetRaceStr(), "bard"))
 	{
@@ -449,7 +449,11 @@ void XGame::CreateHero()
 	XHero * hero = new XHero(1);
 	Game.NewCreature(hero, pt.x, pt.y, locations[L_DEBUG1]);
 	locations[L_DEBUG1]->map->Center(hero->x, hero->y);
-	new XTrap(pt.x, pt.y, locations[L_DEBUG1], TL_RANDOM, TT_ARROW);
+
+	XRect gr(pt.x + 2, pt.y + 2, pt.x + 3, pt.y + 3);
+	locations[L_DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->AddPersonalEnemy(hero);
+
+//	new XTrap(pt.x, pt.y, locations[L_DEBUG1], TL_RANDOM, TT_ARROW);
 //	XItem *it = new XBlackClub();
 //	it->Drop(Game.locations[L_DEBUG1], hero->x, hero->y);
 

@@ -29,6 +29,7 @@ class XMagicMCPlace : public XAnyPlace
 public:
 	DECLARE_CREATOR(XMagicMCPlace, XAnyPlace);
 	XMagicMCPlace(XRect * _area, XLocation * _loc) : XAnyPlace(_area, _loc) {}
+	XMagicMCPlace() { assert(0); }
 	int onCreatureMove(XCreature * cr)
 	{
 		if (cr->isHero() && vRand(15) == 0)

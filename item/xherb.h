@@ -56,6 +56,7 @@ public:
 	DECLARE_CREATOR(XHerb, XAnyFood);
 	XHerb(int _herb_index);
 	XHerb(XHerb * copy) : herb_index(copy->herb_index), XAnyFood((XAnyFood *)copy) { }
+	XHerb() { assert(0); }
 	virtual XObject * MakeCopy() { return new XHerb(this); }
 	virtual RESULT onEat(XCreature * eater);
 	virtual char * postEat(XCreature * eater);

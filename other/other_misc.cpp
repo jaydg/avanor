@@ -25,6 +25,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map.h"
 #include "game.h"
 
+extern "C"
+{
+	#include "./lua/include/lauxlib.h"
+}
+
 
 REGISTER_CLASS(XTrap);
 
@@ -637,7 +642,7 @@ void XGrave::Restore(XFile * f)
 }
 
 
-
+/*
 REGISTER_CLASS(XThrone);
 
 XThrone::XThrone(int _x, int _y, char * subscr, XLocation * _l)
@@ -652,6 +657,7 @@ XThrone::XThrone(int _x, int _y, char * subscr, XLocation * _l)
 	l->map->SetSpecial(x, y, this);
 	sprintf(name, "the throne of %s", subscr);
 }
+*/
 
 REGISTER_CLASS(XFurniture);
 
@@ -665,13 +671,102 @@ XFurniture::XFurniture(int _x, int _y, int _c, char _v, char * subscr, XLocation
 	view = _v;
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
-	if(subscr[0] == 'a' || subscr[0] == 'A' ||
+	strcpy(name, subscr);
+/*	if(subscr[0] == 'a' || subscr[0] == 'A' ||
 		subscr[0] == 'e' || subscr[0] == 'E' ||
 		subscr[0] == 'i' || subscr[0] == 'I' ||
 		subscr[0] == 'o' || subscr[0] == 'O') //Cover the definite article for vowels
 		sprintf(name, "an %s", subscr);
 	else
-		sprintf(name, "a %s", subscr);
+		sprintf(name, "a %s", subscr);*/
 }
 
+
+
+REGISTER_CLASS(XOuterObject);
+XOuterObject::XOuterObject(int _x, int _y, int _c, char _v, char * subscr, XLocation * _l, const char * event)
+{
+	SetLocation(_l);
+	im = IM_MISC;
+	x = _x;
+	y = _y;
+	color = _c;
+	view = _v;
+	assert(l->map->GetSpecial(x, y) == NULL);
+	l->map->SetSpecial(x, y, this);
+	strcpy(name, subscr);
+
+	if (event)
+	{
+		onEventLua = new char[strlen(event) + 1];
+		strcpy(onEventLua, event);
+	} else
+		onEventLua = NULL;
+}
+
+XOuterObject::~XOuterObject()
+{
+	if (onEventLua)
+		delete[] onEventLua;
+}
+
+int XOuterObject::onOuterUse(XCreature * cr)
+{
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_OUTER_USE);
+		lua_pushlightuserdata(XLocation::L, cr);
+		lua_call(XLocation::L, 2, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+		return res;
+	} else
+		return XMapObject::onOuterUse(cr);
+}
+
+void XOuterObject::Store(XFile * f)
+{
+	int sz = 0;
+	if (onEventLua)
+		sz = strlen(onEventLua) + 1;
+	f->Write(&sz);
+	if (sz > 0)
+		f->Write(onEventLua, sz);
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_SAVE);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+	}
+	XMapObject::Store(f);
+}
+
+void XOuterObject::Restore(XFile * f)
+{
+	int sz = 0;
+	f->Read(&sz);
+	if (sz > 0)
+	{
+		onEventLua = new char [sz];
+		f->Read(onEventLua, sz);
+	} else
+		onEventLua = NULL;
+
+	if (onEventLua)
+	{
+		lua_pushstring(XLocation::L, onEventLua);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_LOAD);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+	}
+
+	XMapObject::Restore(f);
+}
 

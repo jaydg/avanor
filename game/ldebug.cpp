@@ -39,7 +39,11 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 
 	map->CreateRoom(0, 0, 80, 20, 0, 0, M_GREENGRAS, M_MAGMA);
 
-	NewCreature(CN_GIANA, 14, 11)->xai->companion = NewCreature(CN_ROTMOTH, 14, 10);
+	{
+	}
+
+
+//	NewCreature(CN_GIANA, 14, 11)->xai->companion = NewCreature(CN_ROTMOTH, 14, 10);
 //	CreateShop(IM_ALL, &XRect(10, 10, 20, 15), "xxx");
 //	NewCreature(CN_SHAMAN_KOBOLD, 15, 5);
 //	NewCreature(CN_KING_COBRA, 14, 10);

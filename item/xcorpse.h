@@ -85,6 +85,7 @@ public:
 	DECLARE_CREATOR(XCorpse, XAnyFood);
 	XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLAG cf = CF_RAW);
 	XCorpse(XCorpse * copy);
+	XCorpse() { assert(0); }
 	virtual XObject * MakeCopy() {return new XCorpse(this);}
 	virtual RESULT onEat(XCreature * eater);
 	int Run();

@@ -655,3 +655,121 @@ void XLocation::PutPalette(int x, int y, PALETTE pal, XLocation * l)
 }
 
 
+//Location Script Support
+extern "C"
+{
+	#include "./lua/include/lauxlib.h"
+}
+
+
+void XLocation::PutPalette(int x, int y)
+{
+	XQList<XPoint> points_to_resolve;
+
+	for (int i = 0; i < current_pattern.h; i++)
+	{
+		for (int j = 0; j < current_pattern.w; j++)
+		{
+			bool found_it = false;
+			for (XQList<PALETTE_MAP>::iterator it = pattern_translation.begin(); it != pattern_translation.end(); it++)
+			{
+				if ((*it).this_view == current_pattern.pattern[i * current_pattern.w + j])
+				{
+					if ((*it).lua_str[0])
+					{
+						map->SetXY(x + j, y + i, M_CAVEFLOOR);
+						char buf[1024];
+						sprintf(buf, "local x, y = %d, %d\n %s", x + j, y + i, (*it).lua_str);
+						lua_dostring(L, buf);
+						points_to_resolve.push_back(XPoint(x + j, y + i));
+					} else
+					{
+						map->SetXY(x + j, y + i, (*it).real_view);
+					}
+					found_it = true;
+					break;
+				}
+			}
+
+			if (!found_it)
+			{
+				switch (current_pattern.pattern[i * current_pattern.w + j])
+				{
+				case '+':
+					new XDoor(x + j, y + i, 0, this);
+					points_to_resolve.push_back(XPoint(x + j, y + i));
+					break;
+
+				case '/':
+					new XDoor(x + j, y + i, 1, this);
+					points_to_resolve.push_back(XPoint(x + j, y + i));
+					break;
+
+				case '^':
+					new XTrap(x + j, y + i, this);
+					points_to_resolve.push_back(XPoint(x + j, y + i));
+					break;
+
+				case '.':
+					map->SetXY(x + j, y + i, M_GREENGRAS);
+					break;
+				
+				case ',':
+					map->SetXY(x + j, y + i, M_CAVEFLOOR);
+					break;
+				
+				case ';':
+					map->SetXY(x + j, y + i, M_STONEFLOOR);
+					break;
+
+				case '#':
+					map->SetXY(x + j, y + i, M_STONEWALL);
+					break;
+
+				case '=':
+					map->SetXY(x + j, y + i, M_WATER);
+					break;
+
+				case '&':
+					map->SetXY(x + j, y + i, M_GREENTREE);
+					break;
+
+				case 'X':
+					map->SetXY(x + j, y + i, M_FENCE);
+					break;
+
+				case ' ':
+					break;
+
+				default:
+					points_to_resolve.push_back(XPoint(x + j, y + i));
+					break;
+				}
+
+			}
+		}
+	}
+
+	for (XQList<XPoint>::iterator it = points_to_resolve.begin(); it != points_to_resolve.end(); it++)
+	{
+		XPoint pt = *it;
+		int best_fit_index = 0;
+		for (int q = -1; q <= 1; q++)
+		{
+			for (int w = -1; w <= 1; w++)
+			{
+				if (q != 0 || w != 0)
+				{
+					STDMAP tm = map->GetXY(pt.x + q, pt.y + w);
+					for (int i = 0; i < ARRAY_SIZE(best_fit_terrain_table); i++)
+					{
+						if (best_fit_terrain_table[i] == tm && best_fit_index < i)
+							best_fit_index = i;
+					}
+				}
+			}
+		}
+		map->SetXY(pt.x, pt.y, best_fit_terrain_table[best_fit_index]);
+	}
+}
+

@@ -37,11 +37,13 @@ protected:
 public:
 	DECLARE_CREATOR(XAnyPlace, XObject);
 	XAnyPlace(XRect * _area, XLocation * _loc);
+	XAnyPlace(XRect * _area, XLocation * _loc, char * _onEventLua);
+	~XAnyPlace();
 	virtual void Invalidate();
 
-	virtual int onCreatureMove(XCreature * cr) {return 0;}
-	virtual int onCreatureEnter(XCreature * cr) {return 0;}
-	virtual int onCreatureLeave(XCreature * cr) {return 0;}
+	virtual int onCreatureMove(XCreature * cr);
+	virtual int onCreatureEnter(XCreature * cr);
+	virtual int onCreatureLeave(XCreature * cr);
 	virtual int onCreaturePickItem(XCreature * cr, XItem * item) {return 1;}
 	virtual int onCreatureDropItem(XCreature * cr, XItem * item) {return 1;}
 	virtual void onShowItem(XItem * item, char * buf);
@@ -56,6 +58,7 @@ public:
 protected:
 	XRect           area;
 	XPtr<XCreature> owner;
+	char * onEventLua;
 };
 
 #endif

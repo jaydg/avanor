@@ -82,6 +82,7 @@ public:
 		l           = loc;
 		turns_count = 0;
 	}
+	XMainLocationGen() { assert(0); }
 	int Run();
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);

@@ -81,6 +81,7 @@ class XSkill : public XObject
 	int UseCreate(XCreature * user);
 public:
 	DECLARE_CREATOR(XSkill, XObject);
+	XSkill() {assert(0);}
 	XSkill(SKILL_TYPE _skt, int _level = 1);
 	SKILL_TYPE GetSkill() {return skt;}
 	char * GetName();

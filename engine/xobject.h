@@ -82,7 +82,7 @@ class XObject;
 typedef XObject * (*CLASS_CREATOR)();
 
 #define REGISTER_CLASS(__xClass) \
-	XClassFactory reg##__xClass(#__xClass, (CLASS_CREATOR)__xClass::Creator)
+	XClassFactory reg##__xClass(#__xClass, (CLASS_CREATOR)__xClass::Creator, (CLASS_CREATOR)__xClass::MakeNew)
 
 struct DUMMY_STRUCT
 {
@@ -91,7 +91,9 @@ struct DUMMY_STRUCT
 #define DECLARE_CREATOR(__xClass, __xBaseClass) \
 	__xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
 	static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
+	static __xClass * MakeNew() { return new __xClass(); }	\
 	virtual const char * GetClassName() {return #__xClass;} 
+	
 //	void InvalidateLeave() {__xBaseClass::Invalidate();}
 
 //#define INVALIDATE_ENTER() static int inside = 0; assert(!inside); if (!isValid()) return; inside = 1;
@@ -102,9 +104,10 @@ struct DUMMY_STRUCT
 class XClassInfo
 {
 public:
-	XClassInfo(char * _name, CLASS_CREATOR p) {name = _name; pClassCreator = p; next = NULL;}
+	XClassInfo(char * _name, CLASS_CREATOR p, CLASS_CREATOR n) {name = _name; pClassCreator = p; pClassNew = n; next = NULL;}
 	char * name;
 	CLASS_CREATOR pClassCreator;
+	CLASS_CREATOR pClassNew;
 	XClassInfo * next;
 };
 
@@ -113,9 +116,10 @@ class XClassFactory
 public:
 	static XClassInfo * first_class;
 	static int counter;
-	XClassFactory(char * name, CLASS_CREATOR pClass);
+	XClassFactory(char * name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
 	~XClassFactory();
 	static XObject * Create(char * name);
+	static XObject * CreateNew(char * name);
 };
 
 #define DYNCREATE(x) XClassFactory::Create(x)
@@ -241,6 +245,7 @@ public:
 	}
 	
    virtual const char * GetClassName() { return "XObject"; }
+   virtual XObject * MakeNew() { assert(0); return NULL; }
    
    virtual void Dump(XFile * f);
    static void DumpAll();
