@@ -36,13 +36,23 @@ enum RANDOM_CAVE_TYPE
 {
 	RCT_SIMPLE1 = 0,
 	RCT_SIMPLE2,
+	RCT_SIMPLE3,
+	RCT_SIMPLE4,
 	RCT_USUAL, //just a simple random XY cave	
+};
+
+enum CAVE_FLAGS
+{
+	CREATE_RANDOM_TRAP_ON_CHEST		= 0x00000001,
+	CREATE_TRAP_ON_CHEST			= 0x00000002,
 };
 
 struct CAVE_DATA
 {
 	int width;
 	int height;
+	CAVE_FLAGS cf;
+	int freq;
 	char * cave;
 
 	bool isExit(int x, int y);
@@ -52,13 +62,15 @@ struct CAVE_DATA
 class XCave
 {
 	RANDOM_CAVE_TYPE rct;
+	int map_len;
+	int map_hgt;
 public:
 	XRect r;
 	XQList<XPoint> exits;
-	XCave(XRect * _r);
-	XCave(int len, int hgt);
+//	XCave(XRect * _r);
+	XCave(int len, int hgt, bool isAllowSpecialRooms);
 	int Intersect(XCave * xc, int dist);
-	void Draw(XMap * m);
+	void Draw(XLocation * l);
 	~XCave() { }
 	bool GetFreeExit(XPoint * pt);
     int Compare(XObject * o);

@@ -22,17 +22,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __CBUILDER_H
 
 #include "cave.h"
-#include "map.h"
 
 class XMap;
+class XLocation;
 
 class XCaveBuilder
 {
+	bool isCreateDoorTrapChest;
 public:
 	XMap * m;
-	XCaveBuilder(XMap * _m){ m = _m;}
+	XLocation * location;
+	XCaveBuilder(XLocation * _l, int create_door_trap_chest = 1);
 	void Build();
 	bool Link(XPoint * p1, XPoint * p2);
+	void CreateDoors();
 };
 
 #endif

@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "rect.h"
+#include <stdlib.h>
 
 int XRect::Intersect(XRect * r)
 {
@@ -26,7 +27,25 @@ int XRect::Intersect(XRect * r)
 		PointIn(r->right, r->top) ||
 		PointIn(r->right, r->bottom) ||
 		PointIn(r->left, r->bottom)) return 1;
-	else return 0;
+
+	//check for situation as shown on picture
+	//
+	//      +--+
+	//      |  |
+	//    +-+--+-+
+	//    + +--+-+
+	//      |  |
+    //      +--+
+
+	int min_x = right - left + r->right - r->left;
+	int min_y = bottom - top + r->bottom - r->top;
+	int px = abs((right + left) / 2 - (r->right + r->left) / 2);
+	int py = abs((top + bottom) / 2 - (r->top + r->bottom) / 2);
+
+	if (px < min_x && py < min_y)
+		return 1;
+	else
+		return 0;
 }
 
 int XRect::PointIn(XPoint * pt)

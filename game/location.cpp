@@ -142,46 +142,17 @@ void XLocation::BuildCave()
 
 void XLocation::BuildLabirint(int create_trap_door_chest)
 {
-     XCaveBuilder * xcb = new XCaveBuilder(map);
+     XCaveBuilder * xcb = new XCaveBuilder(this, create_trap_door_chest);
      xcb->Build();
      delete xcb;
-	 if (create_trap_door_chest)
-	 {
-		CreateDoors();
-		CreateTraps();
-		CreateChests();
-	 }
+//	 if (create_trap_door_chest)
+//	 {
+//		CreateDoors();
+//		CreateTraps();
+//		CreateChests();
+//	 }
 }
 
-void XLocation::CreateDoors()
-{
-	for (int i = 1; i < map->hgt - 1; i++)
-		for (int j = 1; j < map->len - 1; j++)
-		{
-			if (map->XGetMovability(j, i) == 0)
-			{
-				int a11 = (map->XGetMovability(j - 1, i - 1) == 0);
-				int a12 = (map->XGetMovability(j, i - 1) == 0);
-				int a13 = (map->XGetMovability(j + 1, i - 1) == 0);
-				int a21 = (map->XGetMovability(j - 1, i) == 0);
-				int a23 = (map->XGetMovability(j + 1, i) == 0);
-				int a31 = (map->XGetMovability(j - 1, i + 1) == 0);
-				int a32 = (map->XGetMovability(j , i + 1) == 0);
-				int a33 = (map->XGetMovability(j + 1 , i + 1) == 0);
-
-				if (( ((a11 && a13) || (a31 && a33)) && a32 && a12 && !a21 && !a23)
-					|| ( ((a11 && a31) || (a13 && a33)) && a21 && a23 && !a12 && !a32))
-				{
-					if (vRand(3) == 0)
-						new XDoor(j, i, 0, this);
-					else
-						new XDoor(j, i, 1, this);
-				}
-
-
-			}
-		}
-}
 
 void XLocation::CreateTraps()
 {

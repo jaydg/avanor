@@ -165,7 +165,6 @@ protected:
 
 	void BuildCave();
 	void BuildLabirint(int create_trap_door_chest = 1);
-	void CreateDoors();
 	void CreateTraps();
 	void CreateChests();
 

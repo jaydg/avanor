@@ -88,12 +88,15 @@ struct MAP
 	XPtr<XCreature> pMonster; //if null then no monster here
 	XSortedList<XItem *> item_list; //list of item in this cell of map. Automatic construct/destruct
 	XPtr<XMapObject> pSpecialObject; //door, way, trap door.
-//  unsigned char spec; //if something special (such as door or trap here)
-//  MFLAG mflag; //this flag for a monster AI (
 	bool visible; // visisble for HERO!!!
 	char known; //for hero memory
 	char color; //for hero memory
 	XPtr<XAnyPlace> place; //pointer to an object which describe this place... it can be NULL, Shop, special room etc.
+	//it will be usefull to mark all rooms in cave (to create good links between rooms or to create unique rooms description)
+	//0 - no room
+	//1, 2, ... - room id
+	//at this time used to indicate "special" rooms, which should be not corssed by passages
+	int room_id; 
 };
 
 class XMap
@@ -115,6 +118,8 @@ public:
 	int GetVisibility(int x, int y);
 	void SetXY(int x, int y, STDMAP stdm);
 	STDMAP GetXY(int x, int y);
+	void SetRoom(int x, int y, int room_id);
+	int GetRoom(int x, int y);
 
 	void SetVisible(int x, int y);
 	void ResVisible(int x, int y);

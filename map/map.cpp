@@ -65,6 +65,7 @@ MAP::MAP()
 	color = 0;
 //	spec = SC_NONE;
 	place = NULL; //by default
+	room_id = 0;
 };
 
 MAP::~MAP()
@@ -424,6 +425,22 @@ STDMAP XMap::GetXY(int x, int y)
 
 	return map[x + y * len].n;
 }
+
+
+void XMap::SetRoom(int x, int y, int room_id)
+{
+	assert(x >= 0 && x < len);
+	assert(y >= 0 && y < hgt);
+	map[x + y * len].room_id = room_id;
+}
+
+int XMap::GetRoom(int x, int y)
+{
+	assert(x >= 0 && x < len);
+	assert(y >= 0 && y < hgt);
+	return map[x + y * len].room_id;
+}
+
 
 void XMap::CreateRoom(int x, int y, int l, int h, int px, int py, STDMAP m1, STDMAP m2)
 {
