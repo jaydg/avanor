@@ -869,6 +869,84 @@ void XMagnush::Die(XCreature * killer)
 	XAnyCreature::Die(killer);
 }
 
+
+REGISTER_CLASS(XHighPriest);
+XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr) 
+{ 
+	XPotion * pt = new XPotion(PN_HEALING);
+	ContainItem(pt);
+
+	pt = new XPotion(PN_HEALING);
+	ContainItem(pt);
+
+	pt = new XPotion(PN_HEALING);
+	ContainItem(pt);
+
+	pt = new XPotion(PN_HEALING);
+	ContainItem(pt);
+}
+
+int XHighPriest::Chat(XCreature * chater, char * msg)
+{
+	if (xai->isEnemy(chater))
+	{
+		msgwin.Add("Defiler, you must be punished!");	
+	} else 
+	{
+		msgwin.Add("Blessings on you.");
+	}
+	return 1;
+}
+
+
+void XHighPriest::Die(XCreature * killer)
+{
+	char buf[80];
+	if(killer->isHero())
+	{
+		sprintf(buf, "%s will not be pleased about this...", religion.GetDeityName(D_LIFE));
+		msgwin.Add(buf);
+	}
+	else
+	{
+		sprintf(buf, "%s seems to be trying to anger %s...", killer->name, religion.GetDeityName(D_LIFE));
+		msgwin.Add(buf);
+	}
+	killer->religion.life_act -= 50;
+	XAnyCreature::Die(killer);
+}
+
+
+int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
+{
+	int val = giver->sk->GetLevel(SKT_RELIGION);
+	char buf[120];
+
+	msgwin.Add("Thank you for your charitable donation!");
+	sprintf(buf, "%s prays to %s.", name, religion.GetDeityName(D_LIFE));
+	msgwin.Add(buf);
+	if (1 /*TODO if hero can see...*/)
+	{
+		item->toString(buf);
+		msgwin.Add(buf);
+		msgwin.Add("disappears in a bright light.");
+	}
+
+	int sacrifice_value;
+	if (item->im & IM_MONEY)
+		sacrifice_value = (int)(sqrt(item->quantity) + 1) * (val / 4 + 1);
+	else
+		sacrifice_value = (int)((sqrt(item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
+
+	giver->sk->UseSkill(SKT_RELIGION, 3);
+
+	giver->religion.life_act += 2 * sacrifice_value;
+
+	item->UnCarry();
+	item->Invalidate();
+	return 1;
+}
+
 ///////////////////////////////////////////////////////////////////////
 // BANDIT
 ///////////////////////////////////////////////////////////////////////

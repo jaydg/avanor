@@ -190,7 +190,17 @@ class XRandomMonster : public XAnyCreature
 
 };
 
-
+class XHighPriest : public XAnyCreature
+{
+protected:
+	XHighPriest() {}
+public:
+	DECLARE_CREATOR(XHighPriest, XAnyCreature);
+	XHighPriest(_CREATURE * cr);
+	virtual int Chat(XCreature * chater, char * msg);
+	virtual void Die(XCreature * killer);
+	virtual int onGiveItem(XCreature * giver, XItem * item);
+};
 
 class XBandit : public XAnyCreature
 {

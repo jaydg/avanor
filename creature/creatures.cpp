@@ -1104,6 +1104,19 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("The sheep dog is the mascot for the royal guardians.  It must represent strength, intelligence and unswerving loyalty.  Gekta is the current favorite.  She bounds towards you and knocks you flat, covering you with slobbery dog kisses.");
 	XL(SKT_HEALING, 15);
 
+	XVW(CN_HIGHPRIEST, "Aphilius, the high priest of Avanor", 'p', xWHITE, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMANOID);
+	XBA("1d10+100", "0d0+800", "0d0+800", CS_NORMAL, "1d200+1200");
+	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
+	XS("St 1d8+35 Dx 1d8+20 To 1d8+30 Le 1d5+25 Wi 1d5+25 Ma 1d5+25 Pe 5d6 Ch 4d5");
+	XR("see_invisible:0d0+100");
+	XC("1d3", "1d2");
+	XM("1d4", "1d2", "1d5+30", "1d5+10");
+	XD("This compassionate soul gives his time and devotion to maintaining the temple.  He is dressed in the vestments of his position and bears the mitre of the priesthood...");
+	XL(SKT_HEALING, SKILL_MAX_LEVEL);
+	XL(SKT_RELIGION, SKILL_MAX_LEVEL);
+	XL(SPELL_HEAL);
+
 	XVW(CN_OZORIK, "Ozorick, the royal guard captain", 'p', xLIGHTBLUE, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);

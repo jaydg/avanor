@@ -253,6 +253,10 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		new XTeleport(154, 13, this, L_MAIN, 23, 20);
 
 		new XAltar(154, 4, D_LIFE, this);
+		{
+			XRect gr(153, 4, 156, 7);
+			NewCreature(CN_HIGHPRIEST, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+		}
 		new XFurniture(152,5,xBROWN,'~',"pew",this);
 		new XFurniture(152,6,xBROWN,'~',"pew",this);
 		new XFurniture(153,5,xBROWN,'~',"pew",this);
