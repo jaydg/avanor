@@ -215,10 +215,7 @@ RESULT XEyeOfRaa::onUse(USE_ITEM_STATE uis, XCreature * cr)
 {
 	if (cr->im & IM_HERO)
 	{
-/*		XBasicSpell * spell = XSpellFactory::Get(SPELL_LIGHTNING_BOLT);
-		spell->onCast(cr, 100);
-		*/
-		assert(0);
+		RESULT res = XEffect::Make(cr, E_LIGHTNING_BOLT, 30);		
 	}
 	return SUCCESS;
 }
