@@ -227,7 +227,7 @@ int XVillageElder::Chat(XCreature * chater, char * msg)
 	msgwin.Add("Have a nice day,");
 	if(XCreature::main_creature->GetGender() == GEN_MALE)
 		msgwin.Add("sir!");
-	else if(XCreature::main_creature->GetGender() == GEN_MALE)
+	else if(XCreature::main_creature->GetGender() == GEN_FEMALE)
 		msgwin.Add("ma'am!");
 	return 1;
 }
