@@ -27,28 +27,28 @@ _MAIN_ITEM_STRUCT weapon_db[] =
 {
 {IT_CLUB,		"club",			'/',		"",	"",	"",		"1d3",  "",		"", 	ISET_WOODSTONE,		1,		10,	0,	""},
 {IT_WARHAMMER,	"war hammer",	'/',		"",	"",	"1d2-4","1d7",  "1d4",	"", 	ISET_HARDMETAL,		12,		10,	0,	""},
-{IT_SCEPTER,	"scepter",		'/',		"",	"",	"",		"1d7",  "1d2",	"", 	ISET_HARDMETAL,		10,		10,	0,	""},
+{IT_SCEPTER,	"scepter",		'/',		"",	"",	"",		"1d7",  "1d2",	"", 	ISET_OBSIMETAL,		10,		10,	0,	""},
 
 {IT_DAGGER,		"dagger",		'/',		"",	"",	"",		"1d4",  "",		"", 	ISET_WEAPON,		2,		3,	0,	""},
 {IT_KNIFE,		"knife",		'/',		"",	"",	"1d2-2","1d3",  "",		"", 	ISET_SIMPLEWEAPON,	1,		2,	0,	""},
 {IT_ORCISHDAGGER,"orcish dagger",'/',		"",	"",	"1d2",	"1d3",  "1d2",	"", 	ISET_STEEL,			3,		3,	0,	""},
 {IT_LONGDAGGER,	"long dagger",	'/',		"",	"",	"1d3-1","1d4",  "1d2-1","", 	ISET_STEEL,			4,		3,	0,	""},
 
-{IT_SHORTSWORD,	"short sword",	'/',		"",	"",	"",		"1d5",  "",		"", 	ISET_HARDMETAL,		6,		5,	0,	""},
-{IT_LONGSWORD,	"long sword",	'|',		"",	"",	"",		"2d4",  "",		"", 	ISET_HARDMETAL,		18,		10,	0,	""},
-{IT_BROADSWORD,	"broad sword",	'|',		"",	"",	"",		"2d5",  "",		"", 	ISET_HARDMETAL,		20,		12,	0,	""},
+{IT_SHORTSWORD,	"short sword",	'/',		"",	"",	"",		"1d5",  "",		"", 	ISET_OBSIMETAL,		6,		5,	0,	""},
+{IT_LONGSWORD,	"long sword",	'|',		"",	"",	"",		"2d4",  "",		"", 	ISET_OBSIMETAL,		18,		10,	0,	""},
+{IT_BROADSWORD,	"broad sword",	'|',		"",	"",	"",		"2d5",  "",		"", 	ISET_OBSIMETAL,		20,		12,	0,	""},
 {IT_RAPIER,		"rapier",		'|',		"",	"",	"1d3-1","1d6",  "",		"", 	ISET_HARDMETAL,		7,		5,	0,	""},
 {IT_SCIMITAR,	"scimitar",		'|',		"",	"",	"1",	"1d6",  "1d3-1","", 	ISET_HARDMETAL,		7,		6,	0,	""},
 {IT_KATANA,		"katana",		'|',		"",	"",	"1",	"3d6",  "1d3-1","", 	ISET_HARDMETAL,		50,		1,	0,	""},
 {IT_WAKIZASHI,	"wakizashi",	'|',		"",	"",	"1",	"2d6",  "1d3-1","", 	ISET_HARDMETAL,		45,		1,	0,	""},
 
-{IT_SMALLAXE,	"small axe",	'\\',		"",	"",	"",		"1d6",  "",		"", 	ISET_HARDMETAL,		10,		6,	0,	""},
-{IT_WARAXE,		"war axe",		'\\',		"",	"",	"1d3-1","2d3",  "",		"", 	ISET_HARDMETAL,		15,		7,	0,	""},
+{IT_SMALLAXE,	"small axe",	'\\',		"",	"",	"",		"1d6",  "",		"", 	ISET_OBSIMETAL,		10,		6,	0,	""},
+{IT_WARAXE,		"war axe",		'\\',		"",	"",	"1d3-1","2d3",  "",		"", 	ISET_OBSIMETAL,		15,		7,	0,	""},
 {IT_BATTLEAXE,	"battle axe",	'\\',		"",	"",	"1d3-2","2d5",  "1d3-1","", 	ISET_HARDMETAL,		25,		12,	0,	""},
 {IT_GREATAXE,	"great axe",	'\\',		"",	"",	"",		"3d4",  "",		"",		ISET_HARDMETAL,		30,		20,	0,	""},
-{IT_ORCISHAXE,	"orcish axe",	'\\',		"",	"",	"1d3-1","2d4",  "",		"", 	ISET_HARDMETAL,		10,		10,	0,	""},
+{IT_ORCISHAXE,	"orcish axe",	'\\',		"",	"",	"1d3-1","2d4",  "",		"", 	ISET_OBSIMETAL,		10,		10,	0,	""},
 
-{IT_MACE,		"mace",			'\\',		"",	"",	"",		"1d6",  "",		"", 	ISET_HARDMETAL,		10,		7,	0,	""},
+{IT_MACE,		"mace",			'\\',		"",	"",	"",		"1d6",  "",		"", 	ISET_OBSIMETAL,		10,		7,	0,	""},
 {IT_FLAIL,		"flail",		'\\',		"",	"",	"",		"1d7",  "",		"", 	ISET_HARDMETAL,		15,		7,	0,	""},
 
 {IT_SHORTSPEAR,	"short spear",	'/',		"",	"",	"",		"1d5",  "",		"", 	ISET_WOODSTONE,		3,		4,	0,	""},
