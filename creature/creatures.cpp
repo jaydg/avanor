@@ -97,7 +97,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:5d5-50 see_invisible:1d10+10");
 	XC("0d0", "1d2");
 	XM("1d4", "0d0", "1d2", "0d0");
-	XD("Flapping wings and squeeks in the darkness are a common sound to all who enter the caves of Avanor.  Usually they leave travlers alone but sickness and magic sometimes cause them to attack.");
+	XD("Flapping wings and squeaks in the darkness are a common sound to all who enter the caves of Avanor.  Usually bats leave travlers alone, but sickness and magic sometimes cause them to attack.");
 
 	XVW(CN_HUGE_BAT, "huge bat", 'b', xLIGHTGRAY, CPT_IT, CRL_VERY_LOW, CR_RAT);
 	XBA("1d30+150", "0d0+1000", "1d200+700", CS_VERY_SMALL, "10d4");
@@ -132,7 +132,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("cold:1d10-50");
 	XC("2d5", "1d3");
 	XM("1d3", "0d0", "1d3", "0d0");
-	XD("A long serpent slithers towards you, its grey-black scales making it hard to see against the stone of the cavern floor.  The pale green eyes glimmer with hunger.  Its pink tounge tastes the air as it contemplates this lastest meal... YOU!");
+	XD("A long serpent slithers towards you, its grey-black scales making it hard to see against the stone of the cavern floor.  The pale green eyes glimmer with hunger.  Its pink tounge tastes the air as it contemplates this, its lastest meal... YOU!");
 
 	XVW(CN_BROWN_SNAKE, "brown snake", 'R', xBROWN, CPT_IT, CRL_VERY_LOW, CR_REPTILE);
 	XBA("1d10+80", "0d0+1000", "1d200+900", CS_VERY_SMALL, "5d4");
@@ -142,7 +142,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("cold:1d10-30");
 	XC("2d5", "1d4");
 	XM("1d3", "0d0", "1d5", "0d0");
-	XD("This snake will normally keep to the forests and caves of Avanor.  The naturally mottled brown coat allows it to blend in with the area around it.  Though not a great danger, travelers are urged to leave them alone since others may be near at hand.");
+	XD("This snake will normally keep to the forests and caves of Avanor.  The naturally mottled brown coat allows it to blend in with the area around it.  Though not a great danger, travelers are urged to leave them alone since others may be nearby.");
 
 	XVW(CN_SALAMANDER, "salamander", 'R', xRED, CPT_IT, CRL_LOW, CR_REPTILE);
 	XBA("1d10+80", "0d0+1000", "1d200+900", CS_VERY_SMALL, "5d4");
@@ -164,7 +164,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("cold:1d10-40");
 	XC("6d5", "1d5");
 	XM("1d4", "1d1", "2d3", "0d0");
-	XD("This serpent seems to have been lost from some sort of travelling show.  Its emerald green scales show up clearly against the stone and dirt.  Idly you wonder how it has survived for so long seeing as travelling shows just don't reach the valley anymore.  Then you realize that the snake is already closing the distance to your position and you suddenly know exactly how it survived.");
+	XD("This serpent seems to have been lost from some sort of travelling show.  Its emerald green scales show up clearly against the stone and dirt.  Idly you wonder how it has survived for so long seeing as travelling shows just don't reach the valley anymore.  Then you realize that the snake is already closing the distance between its position and yours and suddenly you know exactly how it survived.");
 	XAT(R_POISON, 10);
 	COE(CET_MODIFY_R_POISON, 1);
 
@@ -200,7 +200,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("cold:1d10-30");
 	XC("10d5", "1d12");
 	XM("1d5", "1d2", "5d3", "0d0");
-	XD("An ominous rattle sounds from ahead of you as a coiled rattlesnake prepares to defend its territory.  Poison drips from its fangs and the cold glint in its eyes seem to assume your certain death if you don't retreat now.  It may even be too late...");
+	XD("An ominous rattle sounds from ahead of you as a coiled rattlesnake prepares to defend its territory.  Poison drips from its fangs and the cold glint in its eyes seem to foreshadow your certain death if you don't retreat now.  It may even be too late...");
 	XAT(R_POISON, 80);
 	COE(CET_MODIFY_R_POISON, 10);
 
@@ -243,7 +243,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:5d5-40 cold:5d10");
 	XC("1d2", "2d3");
 	XM("1d4", "1d2", "2d3", "0d0");
-	XD("Dogs were brought to the valley of Avanor to serve the residents of the kingdom but some of them escaped and became feral and wild, breeding in the caves below the surface.  Mongrels in every sense, these animals now prey upon other creatures for food, including silly adventurers.");
+	XD("Dogs were brought to the valley of Avanor to serve the residents of the kingdom, but some of them escaped and became feral and breeding in the caves below the surface.  Mongrels in every sense, these animals now prey upon other creatures for food, including silly adventurers.");
 
 	XVW(CN_LARGE_DOG, "large dog", 'C', xBROWN, CPT_IT, CRL_VERY_LOW, CR_CANINE);
 	XBA("1d10+100", "0d0+1000", "1d100+900", CS_SMALL, "1d200+300");
@@ -253,7 +253,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:5d5-30 cold:6d10");
 	XC("1d4", "2d4");
 	XM("1d4", "1d3", "2d4", "0d0");
-	XD("Obviously the leader of his pack, this dog is larger than the others, maybe the offspring of a dog and a wolf.  His muzzle and body are scarred from numerous fights and he limps slightly.  The deference the other dogs show him indicates that he is still a dangerous foe.");
+	XD("Obviously the leader of his pack, this dog is larger than the others and may be the offspring of a dog and a wolf.  Its muzzle and body are scarred from numerous fights and it limps slightly.  The deference the other dogs show it indicates that it is still a dangerous foe.");
 
 	XVW(CN_RABID_DOG, "rabid dog", 'C', xBROWN, CPT_IT, CRL_LOW, CR_CANINE);
 	XBA("1d10+120", "0d0+1000", "1d100+700", CS_SMALL, "1d100+200");
@@ -265,6 +265,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XM("1d2", "1d1", "2d3", "0d0");
 	XD("White foam drips from the jaws of this dog.  The wild look in its eyes indicate that something is not quite right, and it snaps at everything and everyone around it with the strength born of its diseased madness.");
 	XAT(R_DISEASE, 50);
+	COE(CET_DISEASE, 50);
 
 	XVW(CN_WOLF, "wolf", 'C', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_CANINE);
 	XBA("1d10+130", "0d0+1000", "1d100+700", CS_SMALL, "1d300+500");
@@ -274,7 +275,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:5d5-20 cold:7d10");
 	XC("3d4", "2d6");
 	XM("2d4", "2d3", "3d4", "0d0");
-	XD("One glance at this wolf tells you why it has come down from the mountains to look for food.  The shaggy pelt and thin body are proof of hard times since the eruption of Power.");
+	XD("One glance at this wolf tells you why it has come down from the mountains... to look for food.  The shaggy pelt and thin body are proof of hard times since the eruption of Power.");
 
 	XVW(CN_LARGE_WOLF, "large wolf", 'C', xLIGHTGRAY, CPT_IT, CRL_AVG, CR_CANINE);
 	XBA("1d10+130", "0d0+1000", "1d100+700", CS_NORMAL, "1d300+700");
@@ -331,7 +332,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:1d30-50 cold:1d20-40");
 	XC("2d5", "1d2");
 	XM("1d1", "0d0", "1d2", "0d0");
-	XD("A foot wide and covered with grayish brown hair, this spider contemplates you with its eight eyes.  Spiders like this one have filled the corners of the caves of avanor with webs.  Usually just a nuisance, some of them are equipped with deadly venom.");
+	XD("A foot wide and covered with grayish brown hair, this spider contemplates you with its eight eyes.  Spiders like this one have filled the corners of the caves of Avanor with webs.  Usually just a nuisance, some of them are equipped with deadly venom.");
 
 	XVW(CN_GIANT_SPIDER, "giant spider", 'S', xLIGHTGRAY, CPT_IT, CRL_VERY_LOW, CR_INSECT);
 	XBA("1d10+80", "0d0+1000", "1d100+600", CS_VERY_SMALL, "1d10+10");
@@ -341,7 +342,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:1d30-50 cold:1d20-40");
 	XC("3d5", "1d3");
 	XM("1d2", "0d0", "1d3", "0d0");
-	XD("These eight legged monstrosities escaped from a long dead wizard's laboratory and made homes in the deep caves of the mountains surrounding the valley.  Their webs are capable of ensnaring an unwary adventurer and their venom can be deadly.");
+	XD("These eight legged monstrosities escaped from a long dead wizard's laboratory and made homes in the deep caves of the mountains surrounding the valley.  Their webs are capable of ensnaring an unwary adventurer and their venom can be quite deadly.");
 	XAT(R_POISON, 15);
 	COE(CET_MODIFY_R_POISON, 1);
 	COE(CET_POISON, 10);
@@ -354,7 +355,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:1d30-50 cold:1d20-60");
 	XC("3d5", "1d6");
 	XM("1d1", "0d0", "1d3", "0d0");
-	XD("These spiders live in nooks and holes in the rock and can pop into view when least expected.  Unable to spin webs, they rely on brute strength and venom to overcome a victim.  Creatures may be paralyzed by their venom only to be hauled back to a hole to be eaten alive by the tarantula's young.");
+	XD("These spiders live in nooks and crannies in the rock and can pop into view when least expected.  Unable to spin webs, they rely on brute strength and venom to overcome a victim.  Creatures may be paralyzed by their venom only to be hauled back to a hole and eaten alive by the tarantula's young.");
 	XAT(R_POISON, 40);
 	XAT(R_PARALYSE, 10);
 	COE(CET_MODIFY_R_POISON, 2);
@@ -368,7 +369,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:1d30-50 cold:1d20-60");
 	XC("5d5", "1d6");
 	XM("1d1", "0d0", "1d5", "0d0");
-	XD("A foot long and colored a dusty brown with a tail arching high over it's back.  Scorpions use the poison in their stinging tail as well as formidable pinchers.  They also have a strong exoskeleton which protects them from many attacks.");
+	XD("This creature is a foot long and colored a dusty brown with a tail arching high over it's back.  Scorpions use the poison in their stinging tail as well as formidable pincers as a powerful attack.  They also have a strong exoskeleton which protects them from many attacks.");
 	XAT(R_POISON, 60);
 	XAT(R_PARALYSE, 20);
 	COE(CET_MODIFY_R_POISON, 3);
@@ -383,7 +384,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:1d30-50 cold:1d20-60");
 	XC("10d5", "1d10");
 	XM("1d1", "0d0", "1d7", "0d0");
-	XD("Black scorpions hide in the shadows of caves and will often flee from a light source.  When cornered, they fight with both pinchers and tail with great agility.  Though not as strong as their dusty cousins, they do move quite a bit faster.");
+	XD("Black scorpions hide in the shadows of caves and will often flee from a light source.  When cornered, they fight with both pincers and their tail with great agility.  Though not as strong as their dusty cousins, they do move quite a bit faster.");
 	XAT(R_POISON, 80);
 	XAT(R_PARALYSE, 30);
 	COE(CET_MODIFY_R_POISON, 5);
@@ -430,7 +431,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("fire:1d20-80 cold:1d80");
 	XC("1d5", "1d10");
 	XM("1d1", "4d4", "1d5", "0d0");
-	XD("Frost beetles are characterized by a white shell and faintly blue markings.  They usually live high in the mountains upon snow capped peaks.  With the release of power in the mountain chain many of them fled to the caverns below to seek shelter.  They are immune to cold attacks and their thick exo-skeleton protects them from many physical attacks.");
+	XD("Frost beetles are characterized by a white shell and faint blue markings.  They usually live high in the mountains upon snow capped peaks.  With the release of power in the mountain chain, many of them fled to the caverns below to seek shelter.  They are immune to cold attacks and their thick exo-skeleton protects them from many physical attacks.");
 	XAT(R_COLD, 100);
 	COE(CET_MODIFY_R_COLD, 2);
 	COE(CET_MODIFY_R_FIRE, -1);
@@ -444,7 +445,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("acid:1d80");
 	XC("1d5", "1d12");
 	XM("1d1", "5d4", "1d8", "0d0");
-	XD("Green beetls are often seen in packs.  Their exo-skeleton is not as tough as the frost or fire beetle but they are able to shoot streams of acid at a target with great accuracy.");
+	XD("Green beetles are often seen in packs.  Their exo-skeleton is not as tough as the frost or fire beetle, but they are able to shoot streams of acid at their target with great accuracy.");
 	XAT(R_ACID, 100);
 	COE(CET_MODIFY_R_ACID, 2);
 	COE(CET_MODIFY_STOMACH, 1);
@@ -458,7 +459,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("acid:1d80 cold:1d80 fire:1d80");
 	XC("1d10", "2d15");
 	XM("1d1", "6d5", "1d8", "0d0");
-	XD("This beetle scuttles around with great energy, moving half again as fast as any other beetle you have seen.  Its shell seems thin but the formiddable jaws leave no doubt of the damage it can inflict.  Its large antennae make it able to detect creatures around it, visible or not.");
+	XD("This beetle scuttles around with great energy, moving half and again as fast as any other beetle you have seen.  Its shell seems thin but the formidable jaws leave no doubt of the damage it can inflict.  Its large antennae make it able to detect creatures around it, visible or not.");
 	XAT(R_POISON, 30);
 	XAT(R_PARALYSE, 70);
 	COE(CET_MODIFY_R_PARALYSE, 10);
@@ -488,7 +489,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d5", "1d30");
 	XM("5d5", "1d1", "1d2", "0d0");
-	XD("The buzz in the air reminds you more of a hailstorm on a tin roof than an insect but as the gian tbee rounds the corner ahead you can see why.  Three feet lond and armed with a six inch stinger, this is a far cry from a normal bee.  It doesn't look like it is happy to see you in its territory either.");
+	XD("The buzz in the air reminds you more of a hailstorm on a tin roof than an insect but as the giant bee rounds the corner ahead you can see why.  Three feet long and armed with a six inch stinger, this is a far cry from a normal bee.  It doesn't look like it is happy to see you in its territory either.");
 	XAT(R_POISON, 100);
 
 	XVW(CN_GIANT_WASP, "giant wasp", 'b', xBROWN, CPT_IT, CRL_AVG, CR_INSECT);
@@ -543,7 +544,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("2d4", "1d3");
 	XM("1d1", "1d8", "1d4", "0d0");
-	XD("This appears to be a mound of flesh approximately a foot high.  Only as it moves towards you do you realize that it still ives and sees you as viable prey.  The greyish green surface undulates hypnotically as you watch it ooze its way across the floor.");
+	XD("This appears to be a mound of flesh approximately a foot high.  Only as it moves towards you do you realize that it still lives and sees you as viable prey.  The greyish green surface undulates hypnotically as you watch it ooze its way across the floor.");
 	XAT(R_PARALYSE, 40);
 	XAT(R_POISON, 60);
 
@@ -555,7 +556,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("2d4", "2d15");
 	XM("1d1", "1d10", "1d8", "0d0");
-	XD("As you watch this green blue mass you realize that you can still se the remains of its last meal suspended inside.  The skull seems to laugh at you as ready your weapon to face this three foot oozing mass.  The skelatal hand still grips the remains of a sword, slowly being digested.");
+	XD("As you watch this green blue mass you realize that you can still see the remains of its last meal suspended inside.  The skull seems to laugh at you as ready your weapon to face this three foot oozing mass.  The skelatal hand still grips the remains of a sword, slowly being digested.");
 	XAT(R_PARALYSE, 100);
 	XAT(R_POISON, 100);
 
@@ -647,7 +648,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d3", "1d4");
 	XM("1d4", "1d2", "2d5+15", "2d5");
-	XD("A gnoll is to a kobold what a giant is to a man.  This towering cross between man and dog is known for its cunning and strength.  Carrying an axe it will plow right through most opponents, leaving them dazed, if they are lucky.");
+	XD("A gnoll is to a kobold what a giant is to a man.  This towering cross between man and dog is known for its cunning and strength.  Carrying an axe it will plow right through most opponents leaving them dazed... if they are lucky.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 2, 5);
@@ -682,7 +683,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d3", "1d3");
 	XM("1d3", "1d1", "1d5+6", "1d5");
-	XD("These scruffy looking humanoid glances at you with fear in its face.  The stench he carries indicates it has probably never been clean in its life.  Goblins normally perfer secrecy and stealing to open confrontation but have been known to attack travellers.");
+	XD("This scruffy looking humanoid glances at you with fear in its face.  The stench it carries indicates that it has probably never been clean in its life.  Goblins normally perfer secrecy and stealing to open confrontation but have been known to attack travellers.");
 	XL(SKT_HEALING, 4);
 	XL(SKT_FINDWEAKNESS, 4);
 	EQ(IM_SCROLL | IM_POTION, 1, 5);
@@ -696,7 +697,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d4", "1d3");
 	XM("1d4", "1d1", "1d5+10", "1d5");
-	XD("This goblin carries a nasty looking knife, almost a sword for one as short as he is.  His posture and multiple scars indicate that he is more than a novice at handling it as well.");
+	XD("This goblin carries a nasty looking knife, almost a sword for one as short as he is.  His posture and multiple scars indicate that he is more than a novice at handling them as well.");
 	XL(SKT_HEALING, 5);
 	XL(SKT_FINDWEAKNESS, 5);
 	EQ(IM_SCROLL | IM_POTION, 2, 5);
@@ -724,7 +725,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d8", "2d4");
 	XM("1d10", "2d2", "2d5+25", "2d5");
-	XD("Stronger and smarter than the other goblins.  This goblin has become the chief and now commands all the troops.  His shock of white hair is the only part of him that shows his age, his muscular body toned from battles past.");
+	XD("Stronger and smarter than the other goblins.  This goblin has become the chief and now commands all the troops.  His shock of white hair is the only part of him that shows his age and his muscular body is toned from battles past.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_SCROLL | IM_POTION, 4, 5);
@@ -743,7 +744,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d4");
 	XM("2d3", "1d2", "2d5+25", "2d5");
-	XD("Orcs are roughly dwarf sized with a light green pallor to their skin.  Not extremely intelligent, they shun sunlight whenever possible.  It has been speculated that they were once humans elves and dwarves but something drove them deep underground to live and they became the race they are today.");
+	XD("Orcs are roughly dwarf sized with a light green pallor to their skin.  Not extremely intelligent, they avoid sunlight whenever possible.  It has been speculated that they were once humans elves or dwarves but something drove them deep underground and they became the hardy race they are today.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
@@ -772,7 +773,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d4");
 	XM("2d3", "1d2", "2d5+25", "2d5");
-	XD("Hill orcs are descendants of orcs that left their caves to live back under the sky.  They still prefer to sleep during the day bu tmove around enough during the day to acquire a healthy tan.  Perhaps their return to sunlight is the reason they are stronger than their cousins.");
+	XD("Hill orcs are descendants of orcs that left their caves to live back under the sky.  They still prefer to sleep during the day but move around enough during the day to acquire a healthy tan.  Perhaps their return to sunlight is the reason they are stronger than their cousins.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
@@ -802,7 +803,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d4");
 	XM("2d3", "1d2", "2d5+25", "2d5");
-	XD("\"Git yur sorry corpses movin'!\"  Orc sergeants act as the first string of leadership for any orcish raid.  Known to be exceptionally mean spirited, they have been seen to kill their own troops in order to \"inspire\" the rest to better results.");
+	XD("\"Git yur sorry corpses movin'!\"  Orc sergeants act as the first tier of leadership for any orcish raid.  Known to be exceptionally mean spirited, they have been seen to kill their own troops in order to \"inspire\" the rest to better results.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
@@ -817,7 +818,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d4");
 	XM("2d3", "1d2", "2d5+25", "2d5");
-	XD("Captain is a precarious position for any orc.  Displeased chiefs might have their captains killed for any failure, success or even on a whim.  The orcs under him are ready to mutiny and kill him for his position.  Thus the Orc captain is always on edge and ready to strike down anything that might pose a danger.  His large frame and hefty axe are usually more than adequate to take care of any and all threats.");
+	XD("Captain is a precarious position for any orc.  Displeased chiefs might have their captains killed for any failure, success or even on a whim.  The orcs under him are ready to mutiny and kill him for his position.  Thus the orc captain is always on edge and ready to strike down anything that might pose a danger.  His large frame and hefty axe are usually more than adequate to take care of any and all threats.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
@@ -914,7 +915,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d2");
 	XM("3d2", "1d2", "1d5+10", "1d3+5");
-	XD("The elite guard of Avanor was organized by King Rodrick to protect citizens from the depradations of bandits and the monstors that live in the valley.  Every child dreams of someday serving in the guard.  Royal Guardians are well equipped to protect the people and themselves.");
+	XD("The elite guard of Avanor was organized by King Rodrick to protect citizens from the depradations of bandits and the monsters that live in the valley.  Every child dreams of someday serving in the King's guard.  Royal Guardians are well equipped to protect the people and themselves.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_WEAPON, IT_LONGSWORD, 100);
@@ -928,7 +929,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d2");
 	XM("3d2", "1d2", "1d5+10", "1d3+5");
-	XD("The elite guard of Ahk-Ulan the sorcerer.  Derived of all human emotion the have become finely toned killing machines who worship death.  The reek of blood surrounds them and their soulless gaze makes your flesh crawl.");
+	XD("The elite guard of Ahk-Ulan the sorcerer.  Deprived of all human emotion, they have become finely tuned killing machines who worship only death.  The stench of blood surrounds them and their soulless gaze makes your flesh crawl.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_WEAPON, IT_LONGSWORD, 100);
@@ -942,7 +943,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d6", "2d2");
 	XM("3d2", "1d2", "1d5+10", "1d3+5");
-	XD("It takes a special breed to set up shop in this remote valley.  Shopkeepers must be able to defend their wares as well as chat amiably with customers.  Behind the cheery exterior is a sharp intelligence and well toned muscles.  Only the desperate would try to steal from one of them.");
+	XD("It takes a special breed to set up shop in this remote valley.  Shopkeepers must be able to defend their wares as well as chat amiably with customers.  Behind the cheery exterior is a sharp intelligence and well toned muscles.  Only the desperate or the foolish would try to steal from one of them.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 
@@ -954,7 +955,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d2", "1d2");
 	XM("1d1", "0d0", "2d3+1", "2d2");
-	XD("Standing only about 4 feet high, dwarves are known to be master diggers and metal workers.  With a beard starting right below the merrily twinkling eyes, the dwarf whistles a lively tune as he goes about his buisness.  The axe stuck in his belt and his easy balance indicate that he can be a formidable warrior at need.");
+	XD("Standing only about 4 feet high, dwarves are known to be master diggers and metal workers.  With a beard starting right below the merrily twinkling eyes, the dwarf whistles a lively tune as he goes about his business.  The axe stuck in his belt and his easy balance indicate that he can be a formidable warrior in times of danger.");
 
 	XVW(CN_DWARF_GUARD, "dwarven guardian", 'h', xLIGHTBLUE, CPT_HE, CRL_VERY_LOW, CR_HUMANOID);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
@@ -964,7 +965,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d2", "1d2");
 	XM("1d1", "0d0", "2d3+1", "2d2");
-	XD("Guardians of the underground dwarven city, these dwarves are well armed and prepared for any breach of security physical or even magical.  Only a fool would attempt to accost one as he goes about his duties.  The cold glare and cold steel they carry are usually more than enough to keep trouble makers in line.");
+	XD("Guardians of the underground dwarven city, these dwarves are well armed and prepared for any breach of security both physical and magical.  Only a fool would attempt to accost one as he goes about his duties.  The cold glare and cold steel they carry is usually more than enough to keep trouble makers in line.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
@@ -1005,7 +1006,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d3", "2d3");
 	XM("1d2", "1d4", "3d9", "1d3");
-	XD("The pasty white flesh of the ghoul is the result of alchemical and magical experiments.  The preserved flesh makes it strong and tough but not much else.  Ghouls are not smart and have been observed attacking walls that stand in their way.");
+	XD("The pasty white flesh of the ghoul is the result of numerous alchemical and magical experiments.  The preserved flesh makes it strong and tough but not much else.  Ghouls are not smart and have been observed attacking walls that stand in their way.");
 	XAT(R_PARALYSE, 10);
 
 	XVW(CN_GHOST, "ghost", 'G', xLIGHTGRAY, CPT_IT, CRL_ABOVE_LOW, CR_UNDEAD);
@@ -1016,7 +1017,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("invisible:2d5 see_invisible:2d5+10");
 	XC("4d4", "2d4");
 	XM("6d4", "0d0", "1d9", "1d3");
-	XD("A chill breeze passing by is all most ever fell of this spirit set to wander upon the earth.  Those with good eyesight may spot ghosts in the dark corridors of the earth.  However they do not take kindly to people who invade their domain.");
+	XD("A chill breeze passing by is all most ever felt of this spirit set to wander upon the earth.  Those with good eyesight may spot ghosts in the dark corridors of the earth, but they do not take kindly to people who invade their domain.");
 
 	XVW(CN_SPECTRE, "spectre", 'G', xMAGENTA, CPT_IT, CRL_AVG, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
@@ -1026,7 +1027,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("invisible:2d5+5 see_invisible:2d5+15");
 	XC("4d4", "4d4");
 	XM("6d4", "0d0", "2d9", "1d3");
-	XD("It is said tha spectres were once the evil people of this earth.  Forbidden entry into the next world, their spirits seek to destroy those of this world.  They are almost never seen before their chill hands take hold upon the heart of their victim.");
+	XD("It is said the spectres were once the evil people of this earth.  Forbidden entry into the next world, their spirits seek to destroy those of this world.  They are almost never seen before their chill hands take hold upon the heart of their victim.");
 	XL(SPELL_DRAIN_LIFE);
 	XL(SKT_CONCENTRATION, 10);
 
@@ -1051,7 +1052,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("invisible:2d5+30 see_invisible:2d5+40");
 	XC("2d5", "1d4");
 	XM("8d5", "0d0", "3d5", "10d10");
-	XD("\"Once a sorcerer, always a sorcerer.\" Lichs were powerful magic wielders in life and they continue to wield that power after their death.  They are able to summon great magics down upon the living and absorb living energies to sustain their own existence.");
+	XD("\"Once a sorcerer, always a sorcerer.\" Liches were powerful magic wielders in life and they continue to wield that power after their death.  They are able to summon great magics down upon the living and absorb living energies to sustain their own existence.");
 	XL(SKT_HEALING, SKILL_MAX_LEVEL);
 	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
 	XL(SKT_CONCENTRATION, SKILL_MAX_LEVEL);
@@ -1073,7 +1074,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d1", "1d1");
 	XM("1d1", "0d0", "1d5+5", "1d5+5");
-	XD("This kind looking old man leans on a cane as he gazes towards you.  As leader of this small farming community, he is responsible for their well being.  Now he gazes at you for help for a problem out of his depth has arisen and he must ask you for help.");
+	XD("This kind looking old man leans on a cane as he gazes towards you.  As leader of this small farming community, he is responsible for their well being.  He gazes at you and asks for help to a serious problem that has recently arisen and is out of his power to control.");
 	XL(SKT_HEALING, 6);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
 	EQ(IM_BODY, IT_CLOTHES, 100);
@@ -1087,7 +1088,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("");
 	XC("1d8", "2d2");
 	XM("4d2", "1d3", "1d5+15", "1d5+5");
-	XD("As you enter this dwelling you keep a tight hold on your purse.  The shifty eyes and too quick smile of the owner makes you nervous.  Jorgush is the leader of his outlaw band.  They are known for stealing from the rich and keeping for themselves.  He appears to evaluate you and the weapons you bear and then gestures to the cahir at the table.  Perhaps he has a proposition for you...");
+	XD("As you enter this dwelling you keep a tight hold on your purse.  The shifty eyes and too quick smile of the owner makes you nervous.  Jorgush is the leader of his outlaw band.  They are known for stealing from the rich and keeping it for themselves.  He appears to evaluate you and the weapons you bear and then gestures to the cahir at the table.  Perhaps he has a proposition for you...");
 	XL(SKT_STEALING, 15);
 	EQ(IM_SCROLL | IM_POTION, 3, 30);
 	EQ(IM_BODY, IT_CLOTHES, 100);
@@ -1100,7 +1101,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("see_invisible:0d0+30");
 	XC("5d5", "2d6");
 	XM("4d5", "2d1", "1d5+10", "1d1+1");
-	XD("The sheep dog is the mascot for the royal guardians.  It represents strength, intelligence and unswerving loyalty.  Gekta is the current favorite.  She bounds towards you and knocks you flat, covering you with slobbery dog kisses.");
+	XD("The sheep dog is the mascot for the royal guardians.  It must represent strength, intelligence and unswerving loyalty.  Gekta is the current favorite.  She bounds towards you and knocks you flat, covering you with slobbery dog kisses.");
 	XL(SKT_HEALING, 15);
 
 	XVW(CN_OZORIK, "Ozorick, the royal guard captain", 'p', xLIGHTBLUE, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
@@ -1136,7 +1137,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("see_invisible:0d0+100");
 	XC("1d3", "1d2");
 	XM("1d4", "1d1", "1d5+10", "5d5+50");
-	XD("As master of the eternal flame of Avanor, Gefeon advises the king in all matters arcane.  Clad only in robes and wearing rings of power, he sits and meditates on the state of the universe.  As you watch a furrow creases his brow as if he is greatly worried by something.");
+	XD("As master of the eternal flame of Avanor, Gefeon advises the king in all matters arcane.  Clad only in robes and wearing rings of power, he sits and meditates on the state of the universe.  As you watch a furrow creases on his brow as if he is greatly worried by something.");
 	XL(SKT_HEALING, SKILL_MAX_LEVEL);
 	XL(SPELL_FIRE_BOLT);
 	XL(SPELL_HEAL);
@@ -1149,7 +1150,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("see_invisible:0d0+100");
 	XC("1d6", "1d5");
 	XM("1d8", "1d3", "1d5+70", "1d5+30");
-	XD("The mystical crown of Avanor rests upont the head of this noble looking man.  Curls of red hair stick out from under it but don't detract from his noble bearing.  The sceptre of his rule lies in his hand looking like an ornament but it has been said it is a formiddable weapon indeed wrought with wizardry in days of yore.  Rodrick's face is happy but you can see a darkness or weight in his eyes.  The responsabilty for this nation must truly weigh on him.");
+	XD("The mystical crown of Avanor rests upon the head of this noble looking man.  Curls of red hair stick out from under it but don't detract from his noble bearing.  The sceptre of his rule lies in his hand looking like an ornament but it has been said it is a formidable weapon wrought with great magic in days of yore.  Rodrick's face is happy but you can see great concern in his eyes.  The responsibilty for this nation must truly weigh on him.");
 	XL(SKT_HEALING, SKILL_MAX_LEVEL);
 	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
 

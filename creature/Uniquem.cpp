@@ -50,14 +50,14 @@ int XAhkUlan::Chat(XCreature * chater, char * msg)
 	if (XQuest::quest.ahk_ulan_quest == 0)
 	{
 		msgwin.Add("Hello, brave hero.");
-		msgwin.Add("Some years ago, evil wizards destroyed my tower.  Now I wait here gaining strength and planning my revenge. I am searching for 3 parts to an ancient machine. Bring them to me and I will reward you.");
+		msgwin.Add("Some years ago, some evil wizards destroyed my tower.  Now I wait here gaining strength and planning my revenge. I am searching for 3 parts to an ancient machine. Bring them to me and I will reward you well.");
 		XQuest::quest.ahk_ulan_quest = 1;
 		return 1;
 	}
 
 	if (XQuest::quest.ahk_ulan_quest < 4 || (XQuest::quest.roderick_ordered && !XQuest::quest.roderick_killed))
 	{
-		msgwin.Add("Don't disturb me, punny mortal, before complete my quest.");
+		msgwin.Add("Don't disturb me before completing my quest, puny mortal!");
 		return 1;
 	}
 
@@ -86,17 +86,17 @@ int XAhkUlan::onGiveItem(XCreature * giver, XItem * item)
 		XQuest::quest.ahk_ulan_quest += item->quantity;
 		if (XQuest::quest.ahk_ulan_quest >= 4)
 		{
-			msgwin.Add("Very nice, servant!");
-			msgwin.Add("And now, my last request: kill Roderick. He is only one who can stop me.");
+			msgwin.Add("Very nice job, servant!");
+			msgwin.Add("And now, my last request: kill Roderick, for he is only one who can stop me now.");
 			XQuest::quest.roderick_ordered = 1;
 		} else
 		{
-			msgwin.Add("You are loyal servant!");
+			msgwin.Add("You are a loyal servant!");
 		}
 		return 1;
 	} else
 	{
-		msgwin.Add("Are you jeer at me?");
+		msgwin.Add("Are you jeering at me?");
 		Sacrifice(item);
 		return 1;
 	}
@@ -239,21 +239,21 @@ int XGefeon::Chat(XCreature * chater, char * msg)
 {
 	if (XQuest::quest.ahk_ulan_ordered == 0 && XQuest::quest.ahk_ulan_killed == 0)
 	{
-		msgwin.Add("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and should be eliminated.");
+		msgwin.Add("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.");
 		XQuest::quest.ahk_ulan_ordered = 1;
 		return 1;
 	}
 	
 	if (XQuest::quest.ahk_ulan_ordered == 1 && XQuest::quest.ahk_ulan_killed == 0)
 	{
-		msgwin.Add("And how is Ahk-Ulan ? Still alive? Very bad.");
+		msgwin.Add("And how is Ahk-Ulan? Still alive? That is very bad.");
 		return 1;
 	}
 
 	
 	if (XQuest::quest.ahk_ulan_killed == 1)
 	{
-		msgwin.Add("You did a great thing! You are the best!");
+		msgwin.Add("You did a great thing! You truly are the best!");
 		XQuest::quest.hero_win = 1;
 
 		XHero::EndGame("***WINNER***");
@@ -296,7 +296,7 @@ int XGekta::onGiveItem(XCreature * giver, XItem * item)
 		item->Invalidate();
 		if (vRand(1) == 0)
 		{
-			msgwin.Add("Gekta look at you faithfully!");
+			msgwin.Add("Gekta looks at you faithfully!");
 			xai->companion = giver;
 			xai->companion_command = CC_FOLLOW;
 		}
@@ -656,9 +656,9 @@ int XRoderick::Chat(XCreature * chater, char * msg)
 	} else if ((it1 && it1->xguid == XAvanorDefender::avanordefender_guid) || (it2 && it2->xguid == XAvanorDefender::avanordefender_guid))
 	{
 		msgwin.Add(
-			"I recognize the sword in your hand. "
-			"You have looted the tomb of my ancestor! "
-			"Guards! Seize him!");
+			"I recognize that sword in your hand. "
+			"You have looted the tomb of my ancestors! "
+			"Guards! Seize the traitor!");
 		xai->AddPersonalEnemy(chater);
 		xai->SetGroupEnemy(chater);
 	} else 
@@ -681,15 +681,15 @@ int XRoderick::Chat(XCreature * chater, char * msg)
 				chater->MoneyOp(1000);
 			} else
 			{
-				msgwin.Add("You still have not cleansed my crypt.");
+				msgwin.Add("You still have not cleansed my ancestor's crypt.");
 			}
 		} else if (XQuest::quest.roderick_quest == 0)
 		{
-			msgwin.Add("Some years ago one of my favorite servant stealed powerfull artifact 'Eye of Raa' from me. He tryed to hide it in one of caves, far south from here, but people says that unsuccessful. Could you return this artifact to me?");
+			msgwin.Add("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tryed to hide it from me in one of the caves far south from here, but people say that he was unsuccessful.  Could you return this artifact to me?");
 			XQuest::quest.roderick_quest = 1;
 		} else if (XQuest::quest.roderick_quest == 1)
 		{
-			msgwin.Add("Please, help to return 'Eye of Raa' to me.");
+			msgwin.Add("Please, return the 'Eye of Raa' to me.");
 		}
 	}
 	return 1;
@@ -707,7 +707,7 @@ int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 {
 	if (item->it == IT_EYEOFRAA)
 	{
-		msgwin.Add("Thank you for your great help. Citizens of Avanor never forgot you exploit!");
+		msgwin.Add("Thank you for your great help. The citizens of Avanor never forget your exploits!");
 		XQuest::quest.roderick_quest = 2;
 		ContainItem(item);
 		return 1;
@@ -752,7 +752,7 @@ int XTorin::Chat(XCreature * chater, char * msg)
 			msgwin.Add("You haven't complete my previous request? Hmm... GET OUT OF HERE!");
 		} else if (XQuest::quest.torin_quest == 0)
 		{
-			msgwin.Add("Hello, brave hero. As you know, we, dwarves, mining our treasures deep from the ground. Some time ago, one of our mine was filled by the mysterious gas, which slowly kills all living. It is oozing from the rocks. We have gas pump there, but no one who can switch this pump on. I hope you can solve this problem.");
+			msgwin.Add("Hello, brave hero. As you know, we dwarves mine our treasures deep from the ground. Some time ago, one of our mine was filled by a mysterious gas, which slowly kills all living things. It is oozing from the rocks. We have gas pump there, but there is no one who can switch this pump on. Please solve this problem.");
 			XQuest::quest.torin_quest = 1;
 		} else if (XQuest::quest.torin_quest == 2)
 		{
@@ -933,7 +933,7 @@ char * XShopkeeper::StdAnswer()
 	}
 	if (ai->debt.debtor_sum > 0)
 	{
-		sprintf(static_buffer, "Remember that you owe me money. Don't touch anything before you pay me %d gp!", (int)ai->debt.debtor_sum);
+		sprintf(static_buffer, "Remember that you owe me money. Don't touch anything else before you pay me %d gp!", (int)ai->debt.debtor_sum);
 		return static_buffer;
 	}
 	else
@@ -944,7 +944,7 @@ char * XShopkeeper::StdAnswer()
 			case 1 : return "I'm sure you will find everything you need here in my shop.";
 			case 2 : return "You'd better look at the goods instead of talking.";
 			case 3 : return "Don't even try to steal anything.";
-			default: return "Buy an item, sir!";
+			default: return "Please buy an item!";
 		}
     }
 }

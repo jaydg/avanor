@@ -121,7 +121,7 @@ int XEffect::Cure(XCreature * caster, int X, int Y, int Z)
 		{
 			msgwin.Add(caster->GetNameEx(CRN_T1));
 			if (caster->md->Get(MOD_WOUND))
-				msgwin.Add("curred.");
+				msgwin.Add("cured.");
 			else
 				msgwin.Add("relieved.");
 		}
@@ -373,7 +373,7 @@ int XEffect::Make(EFFECT_DATA * pData)
 						if (pData->caller->isVisible())
 						{
 							msgwin.Add(pData->caller->name);
-							msgwin.Add("learns nothing new about his items.");
+							msgwin.Add("learns nothing new about their items.");
 						}
 					} else
 					{
@@ -448,14 +448,14 @@ int XEffect::Make(EFFECT_DATA * pData)
 				if (pData->caller->isVisible())
 				{
 					msgwin.Add(pData->caller->name);
-					msgwin.Add("suddenly has disappered.");
+					msgwin.Add("has suddenly disappered.");
 				}
 				pData->caller->LastStep();
 				pData->caller->FirstStep(pt.x, pt.y, pData->l);
 				if (pData->caller->isVisible())
 				{
 					msgwin.Add(pData->caller->name);
-					msgwin.Add("suddenly has appeared.");
+					msgwin.Add("has suddenly appeared.");
 				}
 				return 1;
 			};
@@ -467,14 +467,14 @@ int XEffect::Make(EFFECT_DATA * pData)
 				if (pData->target->isVisible())
 				{
 					msgwin.Add(pData->target->name);
-					msgwin.Add("suddenly has disappered.");
+					msgwin.Add("has suddenly disappered.");
 				}
 				pData->target->LastStep();
 				pData->target->FirstStep(pt.x, pt.y, pData->l);
 				if (pData->target->isVisible())
 				{
 					msgwin.Add(pData->target->name);
-					msgwin.Add("suddenly has appeared.");
+					msgwin.Add("has suddenly appeared.");
 				}
 				return 1;
 			};

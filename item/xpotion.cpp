@@ -98,7 +98,7 @@ POTION_REC potion_descr[] = {
 {PN_WATER, 				"water",				E_NONE,					100,	1,	1,	POTION_REC::SelectColor(PNC_CLEAR),	0},
 {PN_APPLEJUCE, 			"apple juice",			E_NONE,					95,		1,	2,	POTION_REC::SelectColor(PNC_YELLOW),	0},
 {PN_ORANGEJUCE,			"orange juice",			E_NONE,					95,		1,	3,	POTION_REC::SelectColor(PNC_ORANGE),	0},
-{PN_HEAL,				"heal",					E_HEAL,					10,		4,	200,POTION_REC::SelectColor(PNC_WHITE),	0},
+{PN_HEAL,				"healing",				E_HEAL,					10,		4,	200,POTION_REC::SelectColor(PNC_WHITE),	0},
 {PN_CURE_LIGHT_WOUNDS,	"cure light wounds",	E_CURE_LIGHT_WOUNDS,	80,		2,	15,	POTION_REC::SelectColor(),	0},
 {PN_CURE_SERIOUS_WOUNDS,"cure serious wounds",	E_CURE_SERIOUS_WOUNDS,	70,		2,	40,	POTION_REC::SelectColor(),	0},
 {PN_CURE_CRITICAL_WOUNDS,"cure critical wounds",E_CURE_CRITICAL_WOUNDS,	40,		3,	60,	POTION_REC::SelectColor(),	0},
@@ -118,8 +118,8 @@ POTION_REC potion_descr[] = {
 {PN_HEROISM,			"heroism",				E_HEROISM,				75,		2,	20, POTION_REC::SelectColor(),	0},
 {PN_SEE_INVISIBLE,		"see invisible",		E_SEE_INVISIBLE,		30,		3,	30,	POTION_REC::SelectColor(),	0},
 {PN_WEAKNESS,			"weakness",				E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
-{PN_CLUMSYNESS,			"clumsyness",			E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
-{PN_LIFELESS,			"lifeless",				E_NONE,					70,		2,	5,	POTION_REC::SelectColor(),	0},
+{PN_CLUMSYNESS,			"clumsiness",			E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
+{PN_LIFELESS,			"death",				E_NONE,					70,		2,	5,	POTION_REC::SelectColor(),	0},
 {PN_SATIATION,			"satiation",			E_NONE,					50,		2,	15,	POTION_REC::SelectColor(),	0},
 {PN_STARVATION,			"starvation",			E_NONE,					40,		3,	15,	POTION_REC::SelectColor(),	0},
 {PN_BOOST_SPEED,		"boost speed",			E_NONE,					30,		3,	100,POTION_REC::SelectColor(),	0},
@@ -259,7 +259,15 @@ void XPotion::Identify(int level)
 
 int XPotion::onDrink(XCreature * cr)
 {
-	if (cr->isVisible())
+	if (cr->im & IM_HERO)
+	{
+		msgwin.Add("You drink a ");
+		char buf[256];
+		toString(buf);
+		strcat(buf, ".");
+		msgwin.Add(buf);
+	}
+	else if (cr->isVisible())
 	{
 		msgwin.Add(cr->name);
 		msgwin.Add("drinks a ");
@@ -281,10 +289,14 @@ int XPotion::onDrink(XCreature * cr)
 			case PN_WATER:
 			case PN_APPLEJUCE:
 			case PN_ORANGEJUCE:
-				if (cr->isVisible())
+				if (cr->im & IM_HERO)
+				{
+					msgwin.Add("You feel less thirsty.");
+				}
+				else if (cr->isVisible())
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels less thirsty.");
+					msgwin.Add("looks less thirsty.");
 				}
 				flag = 1;
 			break;
@@ -323,40 +335,47 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_SATIATION:
 				cr->nutrio += cr->base_nutrio * 7;
-				if (cr->isVisible())
+				if (cr->im & IM_HERO)
+				{
+					msgwin.Add("You feel much fuller!");
+				}
+				else if (cr->isVisible())
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels full!");
+					msgwin.Add("looks full!");
 				}
 				flag = 1;
 			break;
 
 			case PN_STARVATION:
 				cr->nutrio = cr->base_nutrio * 3;
-				if (cr->isVisible())
+				if (cr->im & IM_HERO)
+				{
+					msgwin.Add("You feel hungrier!");
+				}
+				else if (cr->isVisible())
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels very hungry!");
+					msgwin.Add("looks very hungry!");
 				}
 				flag = 1;
 			break;
 
 			case PN_BOOST_SPEED:
 				cr->md->Add(MOD_BOOST_SPEED, 100, cr);
-				if (cr->isVisible())
+				if (cr->isVisible() && !(cr->im & IM_HERO))
 				{
-					msgwin.Add(cr->name);
-					msgwin.Add("feels quick!");
+					msgwin.Add("moves more quickly!");
 				}
 				flag = 1;
 			break;
 
 			case PN_SLOWNESS:
 				cr->md->Add(MOD_SLOWNESS, 100, cr);
-				if (cr->isVisible())
+				if (cr->isVisible() && !(cr->im & IM_HERO))
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels slow!");
+					msgwin.Add("moves slowly!");
 				}
 				flag = 1;
 			break;
@@ -364,30 +383,34 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_BLEEDNESS:
 				cr->md->Add(MOD_WOUND, 30, cr);
-				if (cr->isVisible())
+				if (cr->im & IM_HERO)
+				{
+					msgwin.Add("You begin to bleed.");
+				}
+				else if (cr->isVisible())
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels bad.");
+					msgwin.Add("starts to bleed.");
 				}
 				flag = 1;
 			break;
 
 			case PN_DISEASE:
 				cr->md->Add(MOD_DISEASE, 100, cr);
-				if (cr->isVisible())
+				if (cr->isVisible() && !(cr->im & IM_HERO))
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels very bad.");
+					msgwin.Add("looks ill.");
 				}
 				flag = 1;
 			break;
 
 			case PN_POISON:
 				cr->md->Add(MOD_POISON, 10, cr);
-				if (cr->isVisible())
+				if (cr->isVisible() && !(cr->im & IM_HERO))
 				{
 					msgwin.Add(cr->name);
-					msgwin.Add("feels poisoned.");
+					msgwin.Add("is poisoned.");
 				}
 				flag = 1;
 			break;
@@ -399,19 +422,24 @@ int XPotion::onDrink(XCreature * cr)
 	
 	if (flag == 0 && cr->isVisible())
 	{
-		msgwin.Add(cr->name);
-		msgwin.Add("feels nothing special.");
-	} else
-	{
-		if (!isIdentifed() && cr->im & IM_HERO)
+		if (cr->im & IM_HERO)
 		{
-			char buf[256];
-			Identify(1);
-			msgwin.Add("It was");
-			toString(buf);
-			strcat(buf, ".");
-			msgwin.Add(buf);
+			msgwin.Add("You feel nothing special!");
 		}
+		else
+		{
+			msgwin.Add(cr->name);
+			msgwin.Add("feels nothing special.");
+		}
+	}
+	else if (!isIdentifed() && cr->im & IM_HERO)
+	{
+		char buf[256];
+		Identify(1);
+		msgwin.Add("It was");
+		toString(buf);
+		strcat(buf, ".");
+		msgwin.Add(buf);
 	}
 	return 0; 
 }

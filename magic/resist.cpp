@@ -106,8 +106,8 @@ void XResistance::Restore(XFile * f)
 
 char * resist_name[] = 
 { "White magic", "Black magic", "Fire magic", "Water magic", "Air magic", "Earth magic", 
-"Acid", "Cold", "Poison", "Disease", "Paralyse",
-"Stun", "Confuse", "Blind",
+"Acid", "Cold", "Poison", "Disease", "Paralyzation",
+"Stun", "Confusion", "Blindness",
 "Light", "Darkness", "Invisible", "See Invisible"
 };
 

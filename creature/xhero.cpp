@@ -478,7 +478,7 @@ int XHero::PossibleWayCount(int px, int py)
 void XHero::Die(XCreature * killer)
 {
         _exit_flag = 1;
-        msgwin.Add("You die!!!");
+        msgwin.Add("You died!!!");
         PutStatus();
         l->map->Put(this);
         vRefresh();
@@ -1092,7 +1092,7 @@ void XHero::Eat()
 {
 	if (nutrio > base_nutrio * 16)
 	{
-		msgwin.Add("You won't eat any more!");
+		msgwin.Add("You can't eat any more!");
 	} else
 	{
 		first_item = 0;

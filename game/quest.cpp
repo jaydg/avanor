@@ -74,8 +74,8 @@ void XQuest::ShowQuests()
 	if (beelzvile_ordered && !beelzvile_killed)
 	{
 		list.AddItem(new XGuiItem_Text(
-			"Village Elder asked you to kill the demon who oppresses villagers "
-			"and has occupied the caves to the west from the village.\n\n"));
+			"The Village Elder asked you to kill the demon who atttacks villagers "
+			"and has occupied the caves to the west of the village.\n\n"));
 		flag = 0;
 	}
 

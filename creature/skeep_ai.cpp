@@ -253,7 +253,7 @@ void XShopKeeperAI::onCreatureEnterShop(XCreature * customer)
 	{
 		if (isEnemy(customer))
 		{
-			msgwin.Add("'Prepare to die!'");
+			msgwin.Add("Prepare to die!");
 		} else
 		{
 			char buf[256];
@@ -281,7 +281,7 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
 	
 	if (isEnemy(customer))
 	{
-		msgwin.Add("'You will dead soon!'");
+		msgwin.Add("You will be dead soon!");
 	} else
 	{
 		char buf[256];

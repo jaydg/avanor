@@ -26,7 +26,7 @@ REGISTER_CLASS(XScroll);
 int SCROLL_REC::total_value = 0;
 
 SCROLL_REC scroll_descr[] = {
-	SCROLL_REC("heal",			E_HEAL,					SCROLL_HEAL,				200,	10),
+	SCROLL_REC("healing",		E_HEAL,					SCROLL_HEAL,				200,	10),
 	SCROLL_REC("burning hands",	E_BURNING_HANDS,		SCROLL_BURNING_HANDS,		20,		100),
 	SCROLL_REC("ice touch",		E_ICE_TOUCH,			SCROLL_ICE_TOUCH,			20,		100),
 	SCROLL_REC("heroism",		E_HEROISM,				SCROLL_HEROISM,				25,		100),
@@ -205,14 +205,18 @@ int XScroll::onRead(XCreature * cr)
 
 	if (flag == 0)
 	{
-		if (cr->isVisible())
+		if (cr->im & IM_HERO)
+		{
+			msgwin.Add("You feel nothing special.");
+		}
+		else if (cr->isVisible())
 		{
 			msgwin.Add(cr->name);
 			msgwin.Add("feels nothing special.");
 		}
 	} else
 	{
-		if (!isIdentifed() && cr->isVisible())
+		if (!isIdentifed() && cr->im & IM_HERO)
 		{
 			Identify(1);
 			msgwin.Add("It was");

@@ -165,7 +165,6 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		PutPalette(45, 25, PAL_WIZARD_TOWER, this);
 		XRect wizard_tower_area(45, 25, 60, 35);
 		NewCreature(CN_YOHJISHIRO, &wizard_tower_area, GID_NONE, AIF_GUARD_ARIAL);
-		
 
 //Large City		
 		XRect city_area(103, 9, 130, 33);

@@ -193,11 +193,11 @@ void XHero::EndGame(char * end_msg)
 	{
 		if (XQuest::quest.ahk_ulan_killed)
 		{
-			list.AddItem(new XGuiItem_Text("He killed evil Ahk-Ulan and saved Kingdom of Avanor from Ahk-Ulans deadly plans."));
+			list.AddItem(new XGuiItem_Text("You killed evil Ahk-Ulan and saved Kingdom of Avanor from Ahk-Ulans deadly plans."));
 			score += 10000;
 		} else
 		{
-			list.AddItem(new XGuiItem_Text("He killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor."));
+			list.AddItem(new XGuiItem_Text("You killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor."));
 			score += 20000;
 		}
 	} else
@@ -215,7 +215,7 @@ void XHero::EndGame(char * end_msg)
 	}
 
 	score += place_count * 200;
-	sprintf(tbuf, "He has visited %d places.", place_count);
+	sprintf(tbuf, "You visited %d places.", place_count);
 	list.AddItem(new XGuiItem_Text(tbuf));
 	
 	DEITY_RELATION dr1 = ((XHero *)main_creature)->religion.GetRelation(D_LIFE);
@@ -223,47 +223,47 @@ void XHero::EndGame(char * end_msg)
 	int flag = 1;
 	if (dr1 >= DR_ADEPT)
 	{
-		sprintf(tbuf, "He was %s of %s", XReligion::GetRelationName(dr1), XReligion::GetDeityName(D_LIFE));
+		sprintf(tbuf, "You were a %s of %s", XReligion::GetRelationName(dr1), XReligion::GetDeityName(D_LIFE));
 		list.AddItem(new XGuiItem_Text(tbuf));
 		flag = 0;
 		score += dr1 * 300;
 	}
 	if (dr2 >= DR_ADEPT)
 	{
-		sprintf(tbuf, "He was %s of %s", XReligion::GetRelationName(dr2), XReligion::GetDeityName(D_DEATH));
+		sprintf(tbuf, "You were a %s of %s", XReligion::GetRelationName(dr2), XReligion::GetDeityName(D_DEATH));
 		list.AddItem(new XGuiItem_Text(tbuf));
 		score += dr2 * 300;
 		flag = 0;
 	}
 	if (flag)
 	{
-		list.AddItem(new XGuiItem_Text("He was not very religious."));
+		list.AddItem(new XGuiItem_Text("You were not very religious."));
 	}
 
 	if (XQuest::quest.beelzvile_killed)
 	{
-		list.AddItem(new XGuiItem_Text("He killed ancient demon."));
+		list.AddItem(new XGuiItem_Text("You killed an ancient demon."));
 	}
 
 	if (XQuest::quest.torin_quest == 2)
 	{
-		list.AddItem(new XGuiItem_Text("He helped to pump out gas from dwarvens golden mine."));
+		list.AddItem(new XGuiItem_Text("You helped to pump out gas from the dwarven golden mine."));
 		score += 5000;
 	}
 
 	if (XQuest::quest.gurads_get_orc_slay)
 	{
-		list.AddItem(new XGuiItem_Text("He brings useful thing to Ozorik."));
+		list.AddItem(new XGuiItem_Text("You brought a useful thing to Ozorik."));
 	}
 
 	if (XQuest::quest.roderick_quest == 2)
 	{
-		list.AddItem(new XGuiItem_Text("He returns 'Eye of Raa' to Roderick."));
+		list.AddItem(new XGuiItem_Text("You returned 'Eye of Raa' to Roderick."));
 		score += 10000;
 	}
 	if (XQuest::quest.roderick_quest2 == 2)
 	{
-		list.AddItem(new XGuiItem_Text("He cleansed the tomb of Roderick's ancestors."));
+		list.AddItem(new XGuiItem_Text("You cleansed the tomb of Roderick's ancestors."));
 		score += 5000;
 	}
 
@@ -271,15 +271,15 @@ void XHero::EndGame(char * end_msg)
 
 	if (XQuest::quest.orcs_killed > 0 && XQuest::quest.total_orcs_killed == 30)
 	{
-		list.AddItem(new XGuiItem_Text("He helped to repulse an attack of orcs."));
+		list.AddItem(new XGuiItem_Text("You helped to repulse an attack of orcs."));
 	} else if (XQuest::quest.orcs_killed > 0)
 	{
-		list.AddItem(new XGuiItem_Text("He tryed to help to repulse an attack of orcs."));
+		list.AddItem(new XGuiItem_Text("You tryed to help to repulse an attack of orcs."));
 	}
 	
 	sprintf(tbuf, "He scored %d.", score);
 	list.AddItem(new XGuiItem_Text(tbuf));
-	list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Achievement " MSG_BROWN "###");
+	list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Achievements " MSG_BROWN "###");
 	list.Run();
 	
 	vGotoXY(0, 0);
@@ -424,7 +424,7 @@ void XHero::MixPotions()
 				contain.Add(pot);
 			} else
 			{
-				msgwin.Add("You failed to mix new potion.");
+				msgwin.Add("You failed to mix a new potion.");
 			}
 			pot1->Invalidate();
 			pot2->Invalidate();
