@@ -191,7 +191,17 @@ void XHero::EndGame(char * end_msg)
 	
 	if (XQuest::quest.hero_win)
 	{
-		if (XQuest::quest.ahk_ulan_killed)
+		if (XQuest::quest.ahk_ulan_killed && XQuest::quest.roderick_killed)
+		{
+			if(main_creature->GetGender() == GEN_MALE)
+			{
+				list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new King of Avanor."));
+			} else if(main_creature->GetGender() == GEN_FEMALE)
+			{
+				list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new Queen of Avanor."));
+			}
+			score += 30000;
+		} else if(XQuest::quest.ahk_ulan_killed)
 		{
 			list.AddItem(new XGuiItem_Text("You killed evil Ahk-Ulan and saved Kingdom of Avanor from Ahk-Ulans deadly plans."));
 			score += 10000;
@@ -274,7 +284,7 @@ void XHero::EndGame(char * end_msg)
 		list.AddItem(new XGuiItem_Text("You helped to repulse an attack of orcs."));
 	} else if (XQuest::quest.orcs_killed > 0)
 	{
-		list.AddItem(new XGuiItem_Text("You tryed to help to repulse an attack of orcs."));
+		list.AddItem(new XGuiItem_Text("You tried to help to repulse an attack of orcs."));
 	}
 	
 	sprintf(tbuf, "You scored %d.", score);

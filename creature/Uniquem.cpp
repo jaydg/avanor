@@ -257,7 +257,10 @@ int XGefeon::Chat(XCreature * chater, char * msg)
 	
 	if (XQuest::quest.ahk_ulan_killed == 1)
 	{
-		msgwin.Add("You did a great thing! You truly are the best!");
+		if(XQuest::quest.roderick_killed == 1)  // Kill all the competition and become king/queen.
+			msgwin.Add("Well, you killed the pretender and the King, I guess that makes you the new ruler!");
+		else
+			msgwin.Add("You did a great thing! You truly are the best!");
 		XQuest::quest.hero_win = 1;
 
 		XHero::EndGame("***WINNER***");
@@ -698,7 +701,7 @@ int XRoderick::Chat(XCreature * chater, char * msg)
 			}
 		} else if (XQuest::quest.roderick_quest == 0)
 		{
-			msgwin.Add("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tryed to hide it from me in one of the caves far south from here, but people say that he was unsuccessful.  Could you return this artifact to me?");
+			msgwin.Add("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tried to hide it from me in one of the caves far south from here, but people say that he was killed while hiding it.  Could you return this artifact to me?");
 			XQuest::quest.roderick_quest = 1;
 		} else if (XQuest::quest.roderick_quest == 1)
 		{
