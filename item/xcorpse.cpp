@@ -141,7 +141,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 				case CET_VOMIT:
 					if (eater->isHero())
 					{
-						msgwin.Add("You are vomit!");
+						msgwin.Add("You vomit!");
 						if (eater->nutrio > 1000)
 							eater->nutrio = 1000;
 					}
@@ -156,8 +156,9 @@ RESULT XCorpse::onEat(XCreature * eater)
 							eater->nutrio_speed++;
 						} else
 						{
-							msgwin.Add("You stomach rumble peacefull!");
-							eater->nutrio_speed++;
+							msgwin.Add("You stomach rumbles peacefully!");
+							if(nutrio_speed > 0)
+								eater->nutrio_speed--;
 						}
 					}
 					break;
