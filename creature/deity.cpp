@@ -300,7 +300,7 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
 			death_act -= pray->help_cost;
 		}
 		prayer->sk->UseSkill(SKT_RELIGION, 3);
-	} else
+	} if (res != ABORT)
 	{
 		msgwin.Add("Your prayer was unheard.");
 	}

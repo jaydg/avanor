@@ -278,7 +278,8 @@ RESULT XMagic::Cast(XSpell * spell, XCreature * caster)
 			msgwin.AddLast(spell->GetName());
 		}
 		int res = XEffect::Make(caster, spell->GetEffect(), power);
-		caster->_PP -= spell->GetManaCost();
+		if (res != ABORT)
+			caster->_PP -= spell->GetManaCost();
 		if (res == SUCCESS)
 		{
 			spell->Cast(); //increase effectivity of spell

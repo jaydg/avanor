@@ -71,7 +71,8 @@ enum RESULT
 {
 	FAIL		= 0,
 	SUCCESS		= 1,
-	CONTINUE	= 2, //or cancel
+	CONTINUE	= 2,
+	ABORT		= 3, 
 };
 
 

@@ -229,21 +229,21 @@ RESULT XEffect::Make(XCreature * caster, EFFECT effect, int power)
 	if (GetReq(effect) == ER_DIRECTION)
 	{
 		XPoint pt;
-		if (caster->GetTarget(TR_ATTACK_DIRECTION, &pt))
+		if (caster->GetTarget(TR_ATTACK_DIRECTION, &pt) == SUCCESS)
 		{
 			ed.target_x = pt.x + caster->x;
 			ed.target_y = pt.y + caster->y;
 		} else
-			return CONTINUE;
+			return ABORT;
 	} else if (GetReq(effect) == ER_TARGET)
 	{
 		XPoint pt;
-		if (caster->GetTarget(TR_ATTACK_TARGET, &pt, GetRange(ed.effect, ed.power)))
+		if (caster->GetTarget(TR_ATTACK_TARGET, &pt, GetRange(ed.effect, ed.power)) == SUCCESS)
 		{
 			ed.target_x = pt.x;
 			ed.target_y = pt.y;
 		} else
-			return CONTINUE;
+			return ABORT;
 	}
 	if (Make(&ed))
 		return SUCCESS;

@@ -1569,7 +1569,7 @@ int XHero::XShoot()
         GetRangeAttackInfo(&range, &hit, &dmg);
 
 
-        if (Targeting(range, &pt))
+        if (Targeting(range, &pt) != ABORT)
         {
                 Shoot(pt.x, pt.y);
                 if (l->map->GetMonster(pt.x, pt.y) && !(pt.x == x && pt.y == y))
@@ -1680,7 +1680,7 @@ int XHero::Targeting(int range, XPoint * pt)
 		}
 
 		if (ch == KEY_ESC)
-			return 0;
+			return ABORT;
 
 		int dx = 0;
 		int dy = 0;
