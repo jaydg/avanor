@@ -66,7 +66,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 		"'Sorry, but I'm really busy now. " \
 		"The orc war-party will be here soon!'"
 #define GMSG_OZORIK_QUEST_COMPLETE0 \
-	"'Wow, you've probably saved our souls!" \
+	"'Wow, you've probably saved our lives!" \
 	"Please, take this weapon to one " \
 	"of my guardians, than return to me!"
 #define GMSG_OZORIK_REJECT_ITEM "'We are not looking for this.'"
