@@ -405,7 +405,7 @@ int XOzorik::Chat(XCreature * chatter, char * msg)
 		}
 
 		if (!it)
-			it = (XItem *)contain.Find(deathhack_guid);
+			it = contain.Find(deathhack_guid);
 
 		if (it)
 		{

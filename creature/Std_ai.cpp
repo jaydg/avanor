@@ -189,7 +189,7 @@ void XStandardAI::Move()
 	} else if (ai_flag & AIF_EXECUTE_SCRIPT) //execute script when nothing to do
 	{
 		RunScript();
-	} else if (ai_flag & AIF_ALLOW_PICK_UP && !(ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y))->empty())
+	} else if (ai_flag & AIF_ALLOW_PICK_UP && !(ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y))->empty() && !ai_owner->l->map->GetPlace(ai_owner->x, ai_owner->y))
 	{
 		if (PickUpItems())
 			return;

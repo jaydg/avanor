@@ -81,18 +81,18 @@ public:
 		bool operator!=(const iterator& x) { return !(position == x.position); }
 		T operator*() 
 		{ 
-			assert(position->o && position->o->isValid()); 
+//			assert(position->o && position->o->isValid()); 
 			return (T)position->o; 
 		}
 		T operator->() 
 		{
-			assert(position->o && position->o->isValid()); 
+//			assert(position->o && position->o->isValid()); 
 			return (T)position->o; 
 		}
 
 		operator T()
 		{
-			assert(position->o && position->o->isValid()); 
+//			assert(position->o && position->o->isValid()); 
 			return (T)position->o; 
 		}
 
