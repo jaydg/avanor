@@ -56,7 +56,6 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 
 	XRect trect(22, 10, 30, 15);
 	NewCreature(CN_TODIN, &trect, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
-	new XThrone(123, 28, "the Dwarven Kingdom", this);
 	{
 		XRect gr(61, 15, 62, 16);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
@@ -90,6 +89,7 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 	{
 		XRect gr(62, 17, 63, 18);
 		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	}
+		new XThrone(62, 17, "the Dwarven Kingdom", this);
 
 	new XAltar(45, 11, D_LIFE, this);
 
