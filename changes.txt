@@ -92,4 +92,19 @@ v.0.5.5
 17) Implemented rfe #77
 18) Implemented rfe #146 (indicate Exit key on the start up screen)
 
- 
+
+v.0.5.6
+--------
+1) Added player gender.
+2) Added throne object in the throne room.
+3) Added new items: Dress, Katana and Wakizashi.
+4) Added new creatures: Dwarves in Dwarftown, Female citizens, Goodwives.
+5) Modified Yohjishiro's Tower.
+6) Some grammar fixes.
+7) Added new endig of the game.
+8) Now it is possible to target creatures over a water.
+9) Canceling of targeting now do not use mana nor ammo.
+10) Fixed crash when identifed some items.
+11) Fixed bugs (#187, #87) with invenory.
+12) Added new key '0' - force screen centering
+13) Fixed gains attributes calculation.
