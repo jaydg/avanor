@@ -647,7 +647,7 @@ void XHero::InfoList()
         vPutS(tbuf);
         vGotoXY(40, 5);
         vPutS(MSG_BROWN "Date:");
-        vGotoXY(50, 6);
+        vGotoXY(50, 5);
         sprintf(tbuf,  MSG_YELLOW "%s" MSG_BROWN ", " MSG_YELLOW "%d" MSG_BROWN ", "
                 MSG_YELLOW "%d", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear());
         vPutS(tbuf);
