@@ -202,6 +202,40 @@ public:
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
 
+
+class XRotmoth : public XAnyCreature
+{
+protected:
+	XRotmoth() {}
+public:
+	DECLARE_CREATOR(XRotmoth, XAnyCreature);
+	XRotmoth(_CREATURE * cr);
+	virtual int Chat(XCreature * chatter, char * msg);
+};
+
+class XRotmothAI : public XStandardAI
+{
+protected:
+	XRotmothAI() {}
+public:
+	DECLARE_CREATOR(XRotmothAI, XStandardAI);
+	XRotmothAI(XCreature * cr) : XStandardAI(cr) {}
+	void onWasAttacked(XCreature * attacker);
+};
+
+
+
+class XGiana : public XAnyCreature
+{
+protected:
+	XGiana() {}
+public:
+	DECLARE_CREATOR(XGiana, XAnyCreature);
+	XGiana(_CREATURE * cr);
+	virtual int Chat(XCreature * chatter, char * msg);
+};
+
+
 class XBandit : public XAnyCreature
 {
 protected:

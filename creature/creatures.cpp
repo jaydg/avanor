@@ -1276,6 +1276,32 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	COE(CET_DISEASE, 30);
 	XL(SPELL_CURE_SERIOUS_WOUNDS);
 
+	XVW(CN_ROTMOTH, "Rotmoth", 'p', xDARKGRAY, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
+	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
+	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50, GFS_SUPRESS_INVIS);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
+	XS("St 1d4+10 Dx 1d4+10 To 1d4+10 Le 1d5+10 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 1d5");
+	XR("");
+	XC("1d2", "0d0");
+	XM("1d2", "1d1", "1d5+5", "1d5+5");
+	XD("");
+	XL(SKT_FINDWEAKNESS, 5);
+	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_BODY, IT_CLOTHES, 100);
+	EQ(IM_WEAPON, IT_LONGDAGGER, 100);
+
+	XVW(CN_GIANA, "Giana", 'p', xLIGHTRED, CPT_NAMED_SHE, CRL_UNIQUE, CR_HUMAN);
+	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
+	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
+	XS("St 1d2+4 Dx 1d2+6 To 1d2+2 Le 1d5+5 Wi 1d4+5 Ma 1d2+2 Pe 2d4 Ch 1d5+20");
+	XR("");
+	XC("1d2", "0d0");
+	XM("1d2", "0d0", "1d5+3", "1d5+3");
+	XD("");
+	XL(SKT_FINDWEAKNESS, 5);
+	EQ(IM_BODY, IT_DRESS, 100);
+
 	/////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
 	// Fill out creature sets for quick random generation

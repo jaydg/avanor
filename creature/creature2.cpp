@@ -532,7 +532,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
 			if (_HP > 0)
 			{
-				if (isVisible() && !isHero())
+				if ((vis1 || vis2) && !isHero())
 				{
 					msgwin.Add("and");
 					msgwin.Add(GetWoundMsg(1));
@@ -542,7 +542,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 			} else
 			{ 
 				// and kill IT!!!
-				if (isVisible() && !isHero())
+				if ((vis1 || vis2) && !isHero())
 				{
 					msgwin.Add("and");
 					if(creature_class & CR_UNDEAD)

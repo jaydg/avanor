@@ -426,6 +426,8 @@ XCreature *  XCreatureStorage::Create(CREATURE_NAME cn)
 			case CN_XSHEE_VOO: tcr = new XXSheeVoo(cr); break;
 			case CN_MAGNUSH: tcr = new XMagnush(cr); break;
 			case CN_HIGHPRIEST: tcr = new XHighPriest(cr); break;
+			case CN_ROTMOTH: tcr = new XRotmoth(cr); break;
+			case CN_GIANA: tcr = new XGiana(cr); break;
 		}
 
 	}

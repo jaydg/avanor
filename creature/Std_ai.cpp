@@ -37,6 +37,7 @@ XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
 	invisible_hunting_mode = 0;
 	invisible_x = -1;
 	invisible_y = -1;
+	sleep_well = 0;
 //	last_enemy_x = -1;
 //	last_enemy_y = -1;
 }
@@ -107,15 +108,25 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
 
 void XStandardAI::Move()
 {
-	if (last_enemy.get())
+/*	if (last_enemy.get())
 	{
 		if (!last_enemy->isValid() || !ai_owner->isCreatureVisible(last_enemy))
+		{
 			last_enemy = NULL;
-	}
+			enemy         = NULL;
+			enemy_dist    = 10000;
+		} else
+		{
+			enemy = last_enemy;
+			enemy_dist = 1;
+		}
+	} else
+	{*/
+		enemy         = NULL;
+		enemy_dist    = 10000;
+//	}
 
 // initializing variables
-	enemy         = NULL;
-	enemy_dist    = 10000;
 	item_dist     = 10000;
 	item_x        = 0;
 	item_y        = 0;
@@ -125,6 +136,7 @@ void XStandardAI::Move()
 
 	//if no last enemy to attack only than process grids...
 //	if (!last_enemy.get())
+	if (sleep_well == 0)
 	{
 		friends_count = 1;
 		friend_avg_x  = ai_owner->x;
@@ -136,6 +148,9 @@ void XStandardAI::Move()
 		//calculate avg coordinats for AIF_ALLOW_PACK
 		friend_avg_x = vRound((float)friend_avg_x / (float)friends_count);
 		friend_avg_y = vRound((float)friend_avg_y / (float)friends_count);
+
+		if (enemy_dist > 100)
+			sleep_well = 3;
 	}
 
 // trying to wear some item
@@ -164,6 +179,8 @@ void XStandardAI::Move()
 		}
 	} 
 
+	assert(ai_owner->isValid());
+	assert(enemy != ai_owner.get());
 	if (enemy)//second try to attack enemy
 	{
 		was_attack = AttackEnemy(enemy->x, enemy->y);
@@ -809,8 +826,8 @@ int XStandardAI::CastSpell()
 	{
 		int r_enemy = (int)sqrt((enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
 			(enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
-		
-		
+
+		assert(r_enemy > 0);
 		XList<XSpell *>::iterator spell = ai_owner->m->spells.begin();
 		for (; spell != ai_owner->m->spells.end(); spell++)
 		{
@@ -956,6 +973,7 @@ void XStandardAI::SetArea(XRect * area, LOCATION ln)
 
 void XStandardAI::onWasAttacked(XCreature * attacker)
 {
+	assert(attacker != ai_owner.get());
 	AddPersonalEnemy(attacker);
 	if (ai_owner->group_id != GID_NONE)
 		SetGroupEnemy(attacker);

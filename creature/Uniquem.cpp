@@ -882,6 +882,10 @@ void XMagnush::Die(XCreature * killer)
 }
 
 
+///////////////////////////////////////////////////////////////////////
+// HIGHT PRIEST
+///////////////////////////////////////////////////////////////////////
+
 REGISTER_CLASS(XHighPriest);
 XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr) 
 { 
@@ -961,6 +965,103 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 	item->Invalidate();
 	return 1;
 }
+
+
+///////////////////////////////////////////////////////////////////////
+// ROTMOTH
+///////////////////////////////////////////////////////////////////////
+
+REGISTER_CLASS(XRotmoth);
+REGISTER_CLASS(XRotmothAI);
+XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr) 
+{
+	xai->Invalidate();
+	xai = new XRotmothAI(this);
+	xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+	xai->SetAIFlag(AIF_RANDOM_MOVE);
+
+}
+
+int XRotmoth::Chat(XCreature * chatter, char * msg)
+{
+	if (xai->isEnemy(chatter))
+	{
+		msgwin.Add("You will be rewarded for your stupidness!");
+	} else 
+	{
+		if (XQuest::quest.rotmoth_status == 0)
+		{
+			if (XQuest::quest.kidnapped_girl.get() && isCreatureVisible(XQuest::quest.kidnapped_girl))
+			{
+				msgwin.Add("I hope you've brings 100 gold coins, otherwise this girl will die.");
+				if (chatter->MoneyOp(0) >= 100)
+				{
+					msgwin.Add("Pay him?");
+					if (chatter->GetTarget(TR_YES_NO))
+					{
+						chatter->MoneyOp(-100);
+						MoneyOp(100);
+						if (chatter->creature_person_type & CPT_HE)
+							msgwin.Add("Thank you, boy!");
+						else
+							msgwin.Add("Thank you, girl!");
+
+						XQuest::quest.kidnapped_girl->xai->companion = chatter;
+						XQuest::quest.rotmoth_status = 1;
+					}
+				}
+			} else
+			{
+				msgwin.Add("I dont know what you are asking about.");
+			}
+		}
+		else
+			msgwin.Add("Run away quickly before I changed my mind!");
+	}
+	return 1;
+}
+
+
+
+void XRotmothAI::onWasAttacked(XCreature * attacker)
+{
+	if (attacker->isHero())
+	{
+		if (XQuest::quest.kidnapped_girl)
+		{
+			XStandardAI::onWasAttacked(XQuest::quest.kidnapped_girl);
+			AddPersonalEnemy(attacker);
+			return;
+		}
+	}
+	XStandardAI::onWasAttacked(attacker);
+}
+
+
+///////////////////////////////////////////////////////////////////////
+// GIANA
+///////////////////////////////////////////////////////////////////////
+
+REGISTER_CLASS(XGiana);
+XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr) 
+{ 
+	XQuest::quest.kidnapped_girl = this;
+}
+
+int XGiana::Chat(XCreature * chatter, char * msg)
+{
+	if (xai->isEnemy(chatter))
+	{
+		msgwin.Add("Don't touch me!");	
+	} else 
+	{
+		if (XQuest::quest.rotmoth_status < 2)
+			msgwin.Add("Please, save me.");
+	}
+	return 1;
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////
 // BANDIT

@@ -152,6 +152,8 @@ public:
 	XList<XMapObject *> known_traps;
 	void LearnTraps();
 	bool isKnowThisTrap(XMapObject * trap);
+
+	int sleep_well;
 protected:
 	XPtr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
 
