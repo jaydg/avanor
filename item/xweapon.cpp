@@ -39,6 +39,8 @@ _MAIN_ITEM_STRUCT weapon_db[] =
 {IT_BROADSWORD,	"broad sword",	'|',		"",	"",	"",		"2d5",  "",		"", 	ISET_HARDMETAL,		20,		12,	0,	""},
 {IT_RAPIER,		"rapier",		'|',		"",	"",	"1d3-1","1d6",  "",		"", 	ISET_HARDMETAL,		7,		5,	0,	""},
 {IT_SCIMITAR,	"scimitar",		'|',		"",	"",	"1",	"1d6",  "1d3-1","", 	ISET_HARDMETAL,		7,		6,	0,	""},
+{IT_KATANA,		"katana",		'|',		"",	"",	"1",	"3d6",  "1d3-1","", 	ISET_HARDMETAL,		50,		1,	0,	""},
+{IT_WAKIZASHI,	"wakizashi",	'|',		"",	"",	"1",	"2d6",  "1d3-1","", 	ISET_HARDMETAL,		45,		1,	0,	""},
 
 {IT_SMALLAXE,	"small axe",	'\\',		"",	"",	"",		"1d6",  "",		"", 	ISET_HARDMETAL,		10,		6,	0,	""},
 {IT_WARAXE,		"war axe",		'\\',		"",	"",	"1d3-1","2d3",  "",		"", 	ISET_HARDMETAL,		15,		7,	0,	""},
@@ -55,7 +57,7 @@ _MAIN_ITEM_STRUCT weapon_db[] =
 
 {IT_STAFF,		"staff",		'/',		"",	"",	"1d2-2","1d10",  "1d2",		"", 	ISET_WOOD,		8,		3,	0,	""},
 };
-const int weapon_db_size = 23;
+const int weapon_db_size = 25;
 
 _WEAPON_BIND wbind[weapon_db_size] = {
 {IT_CLUB,			WSK_CLUB},
@@ -72,6 +74,8 @@ _WEAPON_BIND wbind[weapon_db_size] = {
 {IT_BROADSWORD,		WSK_SWORD},
 {IT_RAPIER,			WSK_SWORD},
 {IT_SCIMITAR,		WSK_SWORD},
+{IT_KATANA,			WSK_SWORD},
+{IT_WAKIZASHI,		WSK_SWORD},
 
 {IT_SMALLAXE,		WSK_AXE},
 {IT_WARAXE,			WSK_AXE},
