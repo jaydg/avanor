@@ -1,0 +1,80 @@
+;AVANOR LOCATION DESCRIPTION FILE
+;
+; ';' means comment
+;
+; COMMANDS:
+; syntax: CMD "string" XX ["string"]
+; CMD - command
+; "string" - any string
+; XX - any number
+; [] - unnecessary argument
+; XXX | YYY - may be one of XXX or YYY
+; [...] - any paramentrs
+;
+; SET INDENTIFER XX - INDENTIFER NOW is XX
+; BEGIN XX - begin of location description with number XX.
+; END - end of location description
+; DESCR "Short" "Long" - brief and full location description
+; BUILD CAVE | DUNGEON [LEN] [HGT] - build cave or dungeon of specific size. Default 80x20
+; WAY UP | DOWN LOCATION [X] [Y]
+; SETTLE CR_LEVEL CR_CLASS CR_CLASS [...] - Set Auto-Generate creatures for this level
+;
+; CREATURE CN [X] [Y]
+;
+
+SET L_SMALL_CAVE1 55
+SET L_SMALL_CAVE2 56 
+
+BEGIN L_SMALL_CAVE1
+	DESCR "SmCv:1" "Small Cave Level 1"
+	BUILD CAVE
+	WAY UP L_MAIN
+	WAY DOWN L_SMALL_CAVE2
+	SETTLE CRL_VERY_LOW CR_RAT CR_FELINE CR_INSECT
+END
+
+
+BEGIN L_SMALL_CAVE2
+	DESCR "SmCv:2" "Small Cave Level 2"
+	BUILD CAVE
+	WAY UP L_SMALL_CAVE1
+	SETTLE CRL_VERY_LOW CR_RAT CR_FELINE CR_INSECT
+;	CREATURE CN_ROTMOTH
+;	CREATURE CN_GIANA
+END
+
+
+
+BEGIN L_MUSHROOMS_CAVE1
+	DESCR "MC:1" "Mushroom Caves Level 1"
+	BUILD CAVE
+	WAY UP L_MAIN
+	WAY DOWN L_MUSHROOMS_CAVE2
+END
+
+BEGIN L_MUSHROOMS_CAVE2
+	DESCR "MC:2" "Mushroom Caves Level 2"
+	BUILD CAVE
+	WAY UP L_MUSHROOMS_CAVE2
+	WAY DOWN L_MUSHROOMS_CAVE3
+	WAY DOWN L_MUSHROOMS_CAVE5
+	CREATURE CN_BEELZEVILE
+END
+
+BEGIN L_MUSHROOMS_CAVE3
+	DESCR "KC:1" "Kobold Cavern Level 1"
+	BUILD CAVE
+	WAY UP L_MUSHROOMS_CAVE2
+	WAY DOWN L_MUSHROOMS_CAVE4
+	SETTLE CRL_VL CR_KOBOLD
+END
+
+BEGIN L_MUSHROOMS_CAVE4
+	DESCR "KC:2" "Kobold Cavern Level 2"
+	BUILD CAVE
+	WAY UP L_MUSHROOMS_CAVE3
+	SETTLE CRL_VL CR_KOBOLD
+	CREATURE CN_MAGNUSH
+END
+
+
