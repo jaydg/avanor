@@ -157,7 +157,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 						} else
 						{
 							msgwin.Add("You stomach rumbles peacefully!");
-							if(nutrio_speed > 0)
+							if(eater->nutrio_speed > 0)
 								eater->nutrio_speed--;
 						}
 					}
