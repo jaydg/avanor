@@ -163,7 +163,7 @@ int XMsgWin::GetWord(const char * str, int n, char * buf)
    return 1;
 }
 
-void XMsgWin::ShowHystory()
+void XMsgWin::ShowHistory()
 {
 	history_list->Run();
 }

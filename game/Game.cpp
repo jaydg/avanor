@@ -150,7 +150,7 @@ void XGame::RunDemo()
 			}
 			if (ch == 'M')
 			{
-				msgwin.ShowHystory();
+				msgwin.ShowHistory();
 			}
 
 		}

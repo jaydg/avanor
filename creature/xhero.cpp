@@ -349,7 +349,7 @@ void XHero::NewMove()
 						case 'U' : moved = UseOuterObject();break;
 						case 'P' : QuickPay(); break;
 						case 'p' : Pray(); break;
-                        case 'M' : msgwin.ShowHystory(); moved = 0; break;
+                        case 'M' : msgwin.ShowHistory(); moved = 0; break;
 						case KEY_CTRL_T: ActivateTrap(); break;
 						case KEY_CTRL_O: moved = OrderCompanion(); break;
 						default : moved = 0; break;

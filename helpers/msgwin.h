@@ -43,7 +43,7 @@ public:
 	void AddLast(const char * str); //and set dot.
 	void Put();
 	void ClrMsg(int flag = 0);
-	void ShowHystory();
+	void ShowHistory();
 	int index_x;
 	int index_y;
 	int GetWord(const char * str, int n, char * buf); //return 0 if no such word;
