@@ -39,9 +39,9 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 
 	PutPalette(0, 0, PAL_DWARF_CITY, this);
 	NewWay(4, 17, L_DWARFCITYCAVE6, STW_UP);
-	NewWay(75, 16, L_DWARFTREASURE, STW_DOWN);	
+	NewWay(72, 1, L_DWARFTREASURE, STW_DOWN);	
 	
-	NewWay(74, 10, L_GASMINE1, STW_DOWN);	
+	NewWay(45, 1, L_GASMINE1, STW_DOWN);	
 
 	XRect guard_area(1, 16, 10, 19);
 	XPoint pt;
@@ -57,39 +57,44 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 	XRect trect(22, 10, 30, 15);
 	NewCreature(CN_TODIN, &trect, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
 	{
-		XRect gr(61, 15, 62, 16);
+		XRect gr(78, 1, 79, 2);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 	}
 
 	{
-		XRect gr(63, 15, 64, 16);
+		XRect gr(78, 2, 79, 3);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
-		XRect gr(66, 15, 67, 16);
+		XRect gr(75, 10, 76, 11);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
-		XRect gr(66, 17, 67, 18);
+		XRect gr(76, 10, 77, 11);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
-		XRect gr(68, 15, 69, 16);
+		XRect gr(75, 12, 76, 13);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
-		XRect gr(68, 17, 69, 18);
+		XRect gr(76, 12, 77, 13);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
-		XRect gr(62, 17, 63, 18);
-		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP))->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	}
-		new XThrone(62, 17, "the Dwarven Kingdom", this);
+		XRect gr(78, 11, 79, 12);
+		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP))->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+	}
+	new XThrone(78, 11, "the Dwarven Kingdom", this);
+
+	new XFurniture(77, 17, xLIGHTRED, '~', "royal bed", this);
+	new XFurniture(77, 6, xBROWN, '~', "round table", this);
+	new XFurniture(68, 6, xBROWN, '~', "dinner table", this);
 
 	new XAltar(45, 11, D_LIFE, this);
 
@@ -97,7 +102,7 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 	for(i = 0; i < 10; i++)
 		NewCreature(CN_DWARF, &plaza_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 
-	XRect t_area(67, 15, 78, 18);
+	XRect t_area(70, 1, 79, 3);
 	XAnyPlace * place = new XDwarvenTresurePlace(&t_area, this);
 	AddPlace(place);
 }
@@ -166,8 +171,8 @@ int XDwarvenTresurePlace::onCreatureEnter(XCreature * cr)
 	if (cr->isHero())
 	{
 		int flag = 1;
-		for (int i = 59; i < 69 && flag; i++)
-			for (int j = 15; j < 18 && flag; j++)
+		for (int i = 74; i < 80 && flag; i++)
+			for (int j = 1; j < 3 && flag; j++)
 			{
 				XCreature * grd = location->map->GetMonster(i, j);
 				if (grd && grd->group_id == GID_DWARVEN_GUARDIAN
@@ -190,8 +195,8 @@ int XDwarvenTresurePlace::onCreatureMove(XCreature * cr)
 		move_count++;
 		if (move_count > 3)
 		{
-			for (int i = 59; i < 78 && flg; i++)
-				for (int j = 15; j < 18 && flg; j++)
+			for (int i = 70; i < 80 && flg; i++)
+				for (int j = 1; j < 3 && flg; j++)
 				{
 					XCreature * grd = location->map->GetMonster(i, j);
 					if (grd && grd->group_id == GID_DWARVEN_GUARDIAN)
@@ -202,8 +207,8 @@ int XDwarvenTresurePlace::onCreatureMove(XCreature * cr)
 				}
 		} else
 		{
-			for (int i = 59; i < 78 && flg; i++)
-				for (int j = 15; j < 18 && flg; j++)
+			for (int i = 70; i < 80 && flg; i++)
+				for (int j = 1; j < 3 && flg; j++)
 				{
 					XCreature * grd = location->map->GetMonster(i, j);
 					if (grd && grd->group_id == GID_DWARVEN_GUARDIAN && !grd->xai->isEnemy(cr))

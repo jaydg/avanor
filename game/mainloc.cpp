@@ -123,7 +123,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		CreateShop(IM_FOOD, &shop_rect1, "Nobel, the human shopkeeper");
 	
 
-//way to darven caves		
+//way to dwarven caves
 		NewWay(5, 29, L_DWARFCITYCAVE1, STW_DOWN);
 
 
