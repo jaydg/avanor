@@ -57,7 +57,7 @@ protected:
 public:
 	DECLARE_CREATOR(XHero, XCreature);
 	XHero(int flag);
-	void PickRace();
+	void PlayerSetup();
 	void NewMove();
 	void Move();
 	XItem * Inventory(XItemList * quae, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE, int ret_item_cout = 0, ITEM_FILTR * ifiltr = NULL, FILE * f = NULL);

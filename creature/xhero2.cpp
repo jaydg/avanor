@@ -134,7 +134,7 @@ CUSTOM_GEND cust_gender[] = {
 
 };
 
-void XHero::PickRace()
+void XHero::PlayerSetup()
 {
 	XStats * stmp;
 

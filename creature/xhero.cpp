@@ -77,7 +77,7 @@ XHero::XHero(int flag)
 
 		XBodyPart::Create(this, "head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile");
 
-        PickRace();
+        PlayerSetup();
 
         MAX_HP = s->Get(S_TOU) / 2 + 3 + (XGame::isGodMode ? 1000 : 0);
         _HP = GetMaxHP();
