@@ -218,7 +218,7 @@ public:
 	const char * GetDisplayName(int xval) { return MSG_GREEN "disease"; }
 	const char * SetMsg() { return "You feel ill."; }
 	const char * RemoveMsg() { return "Your health returns."; }
-	const char * ChangeMsg(int val) { return val > 0 ? "You start to feel better." : "You become more diseased."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "You become more diseased." : "You start to feel better."; }
 	const char * ApplyMsg() { return ""; }
 
 	virtual int onSet(XCreature * owner);

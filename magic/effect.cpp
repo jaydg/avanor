@@ -298,14 +298,14 @@ int XEffect::Make(EFFECT_DATA * pData)
 		case E_CURE_POISON:
 			{
 				XDice d(1, pData->power, 5);
-				pData->caller->md->Add(MOD_HEROISM, d.S, pData->caller);
+				pData->caller->md->Add(MOD_POISON, -d.S, pData->caller);
 			}
 			break;
 
 		case E_CURE_DISEASE:
 			{
 				XDice d(1, pData->power, 3);
-				pData->caller->md->Add(MOD_DISEASE, d.S, pData->caller);
+				pData->caller->md->Add(MOD_DISEASE, -d.S, pData->caller);
 			}
 			break;
 
