@@ -194,8 +194,8 @@ void LineOfSight(
 		//  Check radius and bits
 			if ((bits0 & (p->bits0)) && (p->d <= radius))
 			{
-				char dx = p->grid_delta[o].dx, dy = p->grid_delta[o].dy;
-				char grid_transparant;
+				signed char dx = p->grid_delta[o].dx, dy = p->grid_delta[o].dy;
+				signed char grid_transparant;
 
 				char *pcache = cache + dx * CACHE_SIZE + dy + sizeof(cache) / 2;
 #ifdef DEBUG_LOS // ensure that the cache size is large enough and there are no buffer overruns
