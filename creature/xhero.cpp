@@ -852,7 +852,6 @@ char * output_items_name[] = {
 "Weapon", "Necklaces", "Rings", "Missile weapon", "Missiles", "Potions",
 "Scrolls", "Books", "Wands", "Food", "Herbs", "Light sources", "Tools", "Money"};
 
-const int output_items_size = 19;
 
 //first_item must be 0 if need to start from first item
 static int first_item = 0;
@@ -887,7 +886,7 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 					list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "There are no such items."), 0);
 			else
 			{
-				for (int oi = 0; oi < output_items_size; oi++)
+				for (int oi = 0; oi < ARRAY_SIZE(output_items_name); oi++)
 				{
 					if (output_items_mask[oi] & mask)
 					{
@@ -914,7 +913,7 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 							list.AddItem(new XGuiItem_Text(""), 0);
 
 						last_mask = it->im;
-						for (int oi = 0; oi < output_items_size; oi++)
+						for (int oi = 0; oi < ARRAY_SIZE(output_items_name); oi++)
 						{
 							if (output_items_mask[oi] & last_mask)
 							{
