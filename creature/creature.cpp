@@ -1540,7 +1540,7 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject *
 	return 0;
 }
 
-int XCreature::Chat(XCreature * chater, char * msg)
+int XCreature::Chat(XCreature * chatter, char * msg)
 {
 	return 0;
 }

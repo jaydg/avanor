@@ -264,6 +264,32 @@ void XTorinShield::toString(char * buf)
 	GetArtifactName(buf, "Shield of Torin");
 }
 
+REGISTER_CLASS(XDwarfCrown);
+XDwarfCrown::XDwarfCrown() : XCap(IT_CROWN)
+{
+	strcpy(name, "small golden crown");
+	it = IT_CROWN;
+	view = '[';
+	weight = 100;
+	value = 8000;
+	_DV = 2;
+	_PV = 2;
+	_HIT = 0;
+	dice.Setup(0, 0, 0);
+	RNG = 0;
+	if (r)
+		delete r;
+	if (s)
+		delete s;
+	r = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
+	s = new XStats("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
+	special_property = SPP_NONE;
+}
+
+void XDwarfCrown::toString(char * buf)
+{
+	GetArtifactName(buf, "dwarven crown");
+}
 
 
 

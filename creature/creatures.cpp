@@ -980,7 +980,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_SKELETON, "skeleton", 's', xWHITE, CPT_IT, CRL_VERY_LOW, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body hand hand", 2);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM);
 	XS("St 4d3 Dx 2d2 To 2d3 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1");
 	XR("");
 	XC("1d3", "2d3");
@@ -990,7 +990,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_ZOMBIE, "zombie", 'z', xBROWN, CPT_IT, CRL_LOW, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body hand hand boots", 5);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM);
 	XS("St 8d3 Dx 2d2 To 5d5 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1");
 	XR("");
 	XC("1d3", "2d3");
@@ -1001,7 +1001,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_GHOUL, "ghoul", 'z', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body hand hand boots", 10);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM);
 	XS("St 10d3 Dx 2d3 To 7d5 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1");
 	XR("");
 	XC("1d3", "2d3");
@@ -1012,7 +1012,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_GHOST, "ghost", 'G', xLIGHTGRAY, CPT_IT, CRL_ABOVE_LOW, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("", 0);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM);
 	XS("St 6d5 Dx 4d5 To 2d5 Le 5d5 Wi 5d5 Ma 5d5 Pe 1d2 Ch 1d1");
 	XR("invisible:2d5 see_invisible:2d5+10");
 	XC("4d4", "2d4");
@@ -1022,7 +1022,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_SPECTRE, "spectre", 'G', xMAGENTA, CPT_IT, CRL_AVG, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("", 0);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM);
 	XS("St 6d5 Dx 4d5 To 2d5 Le 5d5 Wi 5d5 Ma 5d5 Pe 1d2 Ch 1d1");
 	XR("invisible:2d5+5 see_invisible:2d5+15");
 	XC("4d4", "4d4");
@@ -1034,7 +1034,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_DREAD, "dread", 'G', xBROWN, CPT_IT, CRL_HI, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("", 0);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM);
 	XS("St 6d10 Dx 5d5 To 3d5 Le 8d5 Wi 8d5 Ma 8d5 Pe 1d2 Ch 1d1");
 	XR("invisible:2d5+10 see_invisible:2d5+20");
 	XC("6d6", "5d5");
@@ -1044,11 +1044,25 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XL(SKT_CONCENTRATION, 10);
 	XL(SPELL_DRAIN_LIFE);
 
+	XVW(CN_VAMPIRE, "vampire", 'V', xBLUE, CPT_HE, CRL_HI, CR_UNDEAD);
+	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
+	XBO("head neck body cloak hand hand ring ring gloves boots", 100);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
+	XS("St 4d6 Dx 5d5 To 3d5 Le 8d5 Wi 8d5 Ma 8d8 Pe 1d2 Ch 1d1");
+	XR("invisible:2d5+30 see_invisible:2d5+30");
+	XC("4d6", "3d5");
+	XM("8d5", "0d0", "3d5", "10d10");
+	XD("This foul creature of the night drinks of its victims for sustenance, slowly draining their victim of life until they also become a vampire.  They possess numerous abilities, and have much power in the undead realms.  They fear light and holy powers, but are immune to many non-magical weapons.");
+	XL(SKT_BACKSTABBING, SKILL_MAX_LEVEL);
+	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
+	XL(SKT_CONCENTRATION, SKILL_MAX_LEVEL);
+	XL(SPELL_DRAIN_LIFE);
+	
 	XVW(CN_LICH, "lich", 'L', xLIGHTGRAY, CPT_HE, CRL_HI, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots", 100);
 	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD);
-	XS("St 3d8 Dx 5d5 To 3d5 Le 8d5 Wi 8d5 Ma 8d8 Pe 1d2 Ch 1d1");
+	XS("St 3d8 Dx 5d5 To 3d5 Le 8d5 Wi 10d5 Ma 10d8 Pe 1d2 Ch 1d1");
 	XR("invisible:2d5+30 see_invisible:2d5+40");
 	XC("2d5", "1d4");
 	XM("8d5", "0d0", "3d5", "10d10");
@@ -1057,6 +1071,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
 	XL(SKT_CONCENTRATION, SKILL_MAX_LEVEL);
 	XL(SPELL_DRAIN_LIFE);
+	XL(SPELL_MAGIC_ARROW); // They are a wizard after all...
 	XL(SPELL_HEAL);
 
 

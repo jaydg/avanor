@@ -107,7 +107,7 @@ public:
 	void ActivateTrap();
 	void GiveItem();
 	void ChatWithMonster();
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 
 	void FirstStep(int _x, int _y, XLocation * _l);
 	void LastStep();

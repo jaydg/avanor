@@ -43,7 +43,7 @@ protected:
 public:
 	DECLARE_CREATOR(XVillageElder, XAnyCreature);
 	XVillageElder(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 };
 
 class XOzorik : public XAnyCreature
@@ -55,7 +55,7 @@ public:
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
 	XOzorik(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 protected:
 	XGUID deathhack_guid;
@@ -69,7 +69,7 @@ protected:
 public:
 	DECLARE_CREATOR(XYohjishiro, XAnyCreature);
 	XYohjishiro(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
 
@@ -80,7 +80,7 @@ protected:
 public:
 	DECLARE_CREATOR(XGefeon, XAnyCreature);
 	XGefeon(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 };
 
 
@@ -91,7 +91,7 @@ protected:
 public:
 	DECLARE_CREATOR(XAhkUlan, XAnyCreature);
 	XAhkUlan(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual void Die(XCreature * killer);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
@@ -117,7 +117,7 @@ protected:
 public:
 	DECLARE_CREATOR(XTodin, XAnyCreature);
 	XTodin(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
 
@@ -131,7 +131,7 @@ protected:
 public:
 	DECLARE_CREATOR(XJorgus, XAnyCreature);
 	XJorgus(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 };
 
 
@@ -142,7 +142,7 @@ protected:
 public:
 	DECLARE_CREATOR(XRoderick, XAnyCreature);
 	XRoderick(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual void Die(XCreature * killer);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
@@ -150,13 +150,13 @@ public:
 
 class XTorin : public XAnyCreature
 {
-	XGUID showel_guid;
+	XGUID shovel_guid;
 protected:
 	XTorin() {}
 public:
 	DECLARE_CREATOR(XTorin, XAnyCreature);
 	XTorin(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
@@ -169,7 +169,7 @@ protected:
 public:
 	DECLARE_CREATOR(XXSheeVoo, XAnyCreature);
 	XXSheeVoo(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual void Die(XCreature * killer);
 };
 
@@ -197,7 +197,7 @@ protected:
 public:
 	DECLARE_CREATOR(XHighPriest, XAnyCreature);
 	XHighPriest(_CREATURE * cr);
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 	virtual void Die(XCreature * killer);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };

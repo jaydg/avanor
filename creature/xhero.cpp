@@ -2353,7 +2353,7 @@ void XHero::ChatWithMonster()
                 }
 }
 
-int XHero::Chat(XCreature * chater, char * msg)
+int XHero::Chat(XCreature * chatter, char * msg)
 {
         msgwin.Add("You don't like to speak youself");
         return 1;

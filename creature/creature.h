@@ -321,7 +321,7 @@ public:
 	GROUP_ID group_id; //orcs warparty has id 1, bandits - id 2, etc
 
 	virtual char * StdAnswer() {return "You receive no answer.";}
-	virtual int Chat(XCreature * chater, char * msg);
+	virtual int Chat(XCreature * chatter, char * msg);
 
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 

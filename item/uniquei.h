@@ -106,6 +106,14 @@ public:
 	virtual void toString(char * buf);
 };
 
+class XDwarfCrown : public XCap
+{
+public:
+	XDwarfCrown();
+	DECLARE_CREATOR(XDwarfCrown, XCap);
+	virtual int Compare(XObject * o) {return -1;}
+	virtual void toString(char * buf);
+};
 
 class XBlackClub : public XWeapon
 {

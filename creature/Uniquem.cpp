@@ -39,9 +39,9 @@ REGISTER_CLASS(XAhkUlan);
 
 XAhkUlan::XAhkUlan(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XAhkUlan::Chat(XCreature * chater, char * msg)
+int XAhkUlan::Chat(XCreature * chatter, char * msg)
 {
-	if (xai->isEnemy(chater))
+	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("It is time to die!");
 		return 1;
@@ -159,7 +159,7 @@ REGISTER_CLASS(XVillageElder);
 
 XVillageElder::XVillageElder(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XVillageElder::Chat(XCreature * chater, char * msg)
+int XVillageElder::Chat(XCreature * chatter, char * msg)
 {
 	if (XQuest::quest.beelzvile_ordered == 0)
 	{
@@ -225,9 +225,9 @@ int XVillageElder::Chat(XCreature * chater, char * msg)
 	}
 
 	msgwin.Add("Have a nice day,");
-	if(XCreature::main_creature->GetGender() == GEN_MALE)
+	if(chatter->GetGender() == GEN_MALE)
 		msgwin.Add("sir!");
-	else if(XCreature::main_creature->GetGender() == GEN_FEMALE)
+	else if(chatter->GetGender() == GEN_FEMALE)
 		msgwin.Add("ma'am!");
 	return 1;
 }
@@ -239,7 +239,7 @@ int XVillageElder::Chat(XCreature * chater, char * msg)
 REGISTER_CLASS(XGefeon);
 XGefeon::XGefeon(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XGefeon::Chat(XCreature * chater, char * msg)
+int XGefeon::Chat(XCreature * chatter, char * msg)
 {
 	if (XQuest::quest.ahk_ulan_ordered == 0 && XQuest::quest.ahk_ulan_killed == 0)
 	{
@@ -328,21 +328,21 @@ XJorgus::XJorgus(_CREATURE * cr) : XAnyCreature(cr)
 	cloak->Wear(new XForestBrotherCloak());
 }
 
-int XJorgus::Chat(XCreature * chater, char * msg)
+int XJorgus::Chat(XCreature * chatter, char * msg)
 {
-	int steal_level = chater->sk->GetLevel(SKT_STEALING);
+	int steal_level = chatter->sk->GetLevel(SKT_STEALING);
 	char buf[256];
 
 	if (steal_level == 0)
 	{
 		msgwin.Add(GMSG_JORGUS_SUGGEST);
-		int res = chater->GetTarget(TR_YES_NO);
+		int res = chatter->GetTarget(TR_YES_NO);
 		if (res)
 		{
-			if (chater->MoneyOp(0) >= 1000)
+			if (chatter->MoneyOp(0) >= 1000)
 			{
-				chater->MoneyOp(-1000);
-				chater->sk->Learn(SKT_STEALING, 1);
+				chatter->MoneyOp(-1000);
+				chatter->sk->Learn(SKT_STEALING, 1);
 				if(main_creature->GetGender() == GEN_MALE)
 					sprintf(buf, GMSG_JORGUS_WELCOME, "brother");
 				else if(main_creature->GetGender() == GEN_FEMALE)
@@ -383,7 +383,7 @@ XOzorik::XOzorik(_CREATURE * cr) : XAnyCreature(cr)
 	deathhack_guid = item->xguid;
 }
 
-int XOzorik::Chat(XCreature * chater, char * msg)
+int XOzorik::Chat(XCreature * chatter, char * msg)
 {
 	int flag = 0;
 	if ((XQuest::quest.orcs_killed > 0 && Game.locations[L_MAIN]->GetCreatureCount(CR_ORC) == 0)
@@ -412,8 +412,8 @@ int XOzorik::Chat(XCreature * chater, char * msg)
 			contain.Remove(it->xguid);
 			msgwin.Add(GMSG_OZORIK_QUEST_COMPLETE2);
 			UnCarryItem(it);
-			if (chater->CarryItem(it))
-				chater->contain.Add(it);
+			if (chatter->CarryItem(it))
+				chatter->contain.Add(it);
 			else
 				DropItem(it);
 		}
@@ -462,7 +462,7 @@ void XOzorik::Restore(XFile * f)
 REGISTER_CLASS(XTodin);
 XTodin::XTodin(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XTodin::Chat(XCreature * chater, char * msg)
+int XTodin::Chat(XCreature * chatter, char * msg)
 {
 	msgwin.Add(GMSG_TODIN_STD_ANSWER);
 	return 1;
@@ -537,9 +537,9 @@ REGISTER_CLASS(XYohjishiro);
 
 XYohjishiro::XYohjishiro(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XYohjishiro::Chat(XCreature * chater, char * msg)
+int XYohjishiro::Chat(XCreature * chatter, char * msg)
 {
-	XSkill * skill = chater->sk->GetSkill(SKT_LITERACY);
+	XSkill * skill = chatter->sk->GetSkill(SKT_LITERACY);
 	
 	msgwin.Add(GMSG_YOHJISHIRO_ASK0);
 	char askbuf[10] = "q";
@@ -565,11 +565,11 @@ int XYohjishiro::Chat(XCreature * chater, char * msg)
 		if (ch == 'l')
 		{
 			msgwin.Add(GMSG_YOHJISHIRO_ASK1);
-			if (chater->GetTarget(TR_YES_NO))
+			if (chatter->GetTarget(TR_YES_NO))
 			{
-				if (chater->MoneyOp(-500) >= 0)
+				if (chatter->MoneyOp(-500) >= 0)
 				{
-					chater->sk->Learn(SKT_LITERACY);
+					chatter->sk->Learn(SKT_LITERACY);
 				} else
 				{
 					msgwin.Add(GMSG_YOHJISHIRO_NO_ENOUGH_MONEY);
@@ -661,12 +661,12 @@ XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr)
 	ContainItem(it);
 }
 
-int XRoderick::Chat(XCreature * chater, char * msg)
+int XRoderick::Chat(XCreature * chatter, char * msg)
 {
-	XItem * it1 = chater->GetBodyPart(BP_HAND, 0)->Item();
-	XItem * it2 = chater->GetBodyPart(BP_HAND, 1)->Item();
+	XItem * it1 = chatter->GetBodyPart(BP_HAND, 0)->Item();
+	XItem * it2 = chatter->GetBodyPart(BP_HAND, 1)->Item();
 
-	if (xai->isEnemy(chater))
+	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("No mercy!");	
 	} else if ((it1 && it1->xguid == XAvanorDefender::avanordefender_guid) || (it2 && it2->xguid == XAvanorDefender::avanordefender_guid))
@@ -675,8 +675,8 @@ int XRoderick::Chat(XCreature * chater, char * msg)
 			"I recognize that sword in your hand. "
 			"You have looted the tomb of my ancestors! "
 			"Guards! Seize the traitor!");
-		xai->AddPersonalEnemy(chater);
-		xai->SetGroupEnemy(chater);
+		xai->AddPersonalEnemy(chatter);
+		xai->SetGroupEnemy(chatter);
 	} else 
 	{
 		msgwin.Add("Hello, brave hero.");
@@ -694,7 +694,7 @@ int XRoderick::Chat(XCreature * chater, char * msg)
 					"Thank you for destroying the evil in our crypt. "
 					"Please accept these coins and my gratitude for a job well done.");
 				XQuest::quest.roderick_quest2 = 2;
-				chater->MoneyOp(1000);
+				chatter->MoneyOp(1000);
 			} else
 			{
 				msgwin.Add("You still have not cleansed my ancestor's crypt.");
@@ -743,21 +743,24 @@ REGISTER_CLASS(XTorin);
 
 XTorin::XTorin(_CREATURE * cr) : XAnyCreature(cr) 
 { 
-	XItem * it = new XTorinShield();
+	XItem * it = new XDwarfCrown();
+	ContainItem(it);
+	
+	it = new XTorinShield();
 	ContainItem(it);
 
 	it = new XTorinAxe();
 	ContainItem(it);
 
 	it = new XPickAxe();
-	showel_guid = it->xguid;
+	shovel_guid = it->xguid;
 	ContainItem(it);
 }
 
 
-int XTorin::Chat(XCreature * chater, char * msg)
+int XTorin::Chat(XCreature * chatter, char * msg)
 {
-	if (xai->isEnemy(chater))
+	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("It is time to die!");
 		return 1;
@@ -765,7 +768,7 @@ int XTorin::Chat(XCreature * chater, char * msg)
 	{
 		if (XQuest::quest.torin_quest == 1)
 		{
-			msgwin.Add("You haven't complete my previous request? Hmm... GET OUT OF HERE!");
+			msgwin.Add("You haven't completed my previous request? Hmm... GET OUT OF HERE!");
 		} else if (XQuest::quest.torin_quest == 0)
 		{
 			msgwin.Add("Hello, brave hero. As you know, we dwarves mine our treasures deep from the ground. Some time ago, one of our mine was filled by a mysterious gas, which slowly kills all living things. It is oozing from the rocks. We have gas pump there, but there is no one who can switch this pump on. Please solve this problem.");
@@ -776,19 +779,19 @@ int XTorin::Chat(XCreature * chater, char * msg)
 
 			XItem * it = NULL;
 			XBodyPart * tool = GetBodyPart(BP_TOOL, 0);
-			if (tool->Item() && tool->Item()->xguid == showel_guid)
+			if (tool->Item() && tool->Item()->xguid == shovel_guid)
 			{
 				it = tool->UnWear();
 			}
 			if (!it)
-				it = (XItem *)contain.Find(showel_guid);
+				it = (XItem *)contain.Find(shovel_guid);
 			if (it)
 			{
 				contain.Remove(it->xguid);
 				msgwin.Add("Take this tool as a reward.");
 				UnCarryItem(it);
-				if (chater->CarryItem(it))
-					chater->contain.Add(it);
+				if (chatter->CarryItem(it))
+					chatter->contain.Add(it);
 				else
 					DropItem(it);
 			}
@@ -813,13 +816,13 @@ int XTorin::onGiveItem(XCreature * giver, XItem * item)
 void XTorin::Store(XFile * f)
 {
 	XAnyCreature::Store(f);
-	f->Write(&showel_guid, sizeof(XGUID));	
+	f->Write(&shovel_guid, sizeof(XGUID));	
 }
 
 void XTorin::Restore(XFile * f)
 {
 	XAnyCreature::Restore(f);
-	f->Read(&showel_guid, sizeof(XGUID));	
+	f->Read(&shovel_guid, sizeof(XGUID));	
 }
 
 
@@ -834,9 +837,9 @@ XXSheeVoo::XXSheeVoo(_CREATURE * cr) : XAnyCreature(cr)
 	ContainItem(it);
 }
 
-int XXSheeVoo::Chat(XCreature * chater, char * msg)
+int XXSheeVoo::Chat(XCreature * chatter, char * msg)
 {
-	if (xai->isEnemy(chater))
+	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("It is time to die!");
 		return 1;
@@ -886,9 +889,9 @@ XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr)
 	ContainItem(pt);
 }
 
-int XHighPriest::Chat(XCreature * chater, char * msg)
+int XHighPriest::Chat(XCreature * chatter, char * msg)
 {
-	if (xai->isEnemy(chater))
+	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("Defiler, you must be punished!");	
 	} else 

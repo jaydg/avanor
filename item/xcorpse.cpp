@@ -157,7 +157,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 						} else
 						{
 							msgwin.Add("You stomach rumbles peacefully!");
-							if(eater->nutrio_speed > 0)
+							if(eater->nutrio_speed > 1) // 1 is the minimum rate of food processing
 								eater->nutrio_speed--;
 						}
 					}
