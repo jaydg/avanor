@@ -433,7 +433,7 @@ void XGame::CreateHero()
 	locations[L_MAIN]->visited_by_hero = 1;
 
 	//if hero is a bard, than create a dog for him...
-	if (strstr(hero->race_profession, "bard"))
+	if (strstr(hero->GetRaceStr(), "bard"))
 	{
 		XRect tr(hero_point.x - 1, hero_point.y - 1, hero_point.x + 1, hero_point.y + 1);
 		locations[L_MAIN]->GetFreeXY(&hero_point, &tr);

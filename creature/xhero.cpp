@@ -637,30 +637,38 @@ void XHero::InfoList()
         vGotoXY(50, 1);
         vPutS(name);
 		vGotoXY(40, 2);
+		vPutS(MSG_BROWN "Gender:" MSG_YELLOW);
+		vGotoXY(50, 2);
+        vPutS(GetGenderStr());
+		vGotoXY(40, 3);
         vPutS(MSG_BROWN "Race:" MSG_YELLOW);
-        vGotoXY(50, 2);
-        vPutS(race_profession);
-        vGotoXY(40, 3);
+        vGotoXY(50, 3);
+        vPutS(GetRaceStr());
+		vGotoXY(40, 4);
+		vPutS(MSG_BROWN "Class:" MSG_YELLOW);
+		vGotoXY(50, 4);
+        vPutS(GetProfessionStr());
+        vGotoXY(40, 5);
         vPutS(MSG_BROWN "Gold:");
         char tbuf[256];
         sprintf(tbuf, MSG_YELLOW "%d" MSG_BROWN " gp", MoneyOp(0));
-        vGotoXY(50, 3);
+        vGotoXY(50, 5);
         vPutS(tbuf);
-        vGotoXY(40, 4);
+        vGotoXY(40, 6);
         vPutS(MSG_BROWN "Time:");
-        vGotoXY(50, 4);
+        vGotoXY(50, 6);
         sprintf(tbuf,  MSG_YELLOW "%d" MSG_BROWN " : " MSG_YELLOW "%d" MSG_BROWN " : "
                 MSG_YELLOW "%d", XTime::GetHour(), XTime::GetMin(), XTime::GetSec());
         vPutS(tbuf);
-        vGotoXY(40, 5);
+        vGotoXY(40, 7);
         vPutS(MSG_BROWN "Date:");
-        vGotoXY(50, 5);
+        vGotoXY(50, 7);
         sprintf(tbuf,  MSG_YELLOW "%s" MSG_BROWN ", " MSG_YELLOW "%d" MSG_BROWN ", "
                 MSG_YELLOW "%d", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear());
         vPutS(tbuf);
-        vGotoXY(40, 6);
+        vGotoXY(40, 8);
         vPutS(MSG_BROWN "Day/Week");
-        vGotoXY(50, 6);
+        vGotoXY(50, 8);
         sprintf(tbuf,  MSG_YELLOW "%s" MSG_BROWN "/" MSG_YELLOW "%s",
                 XTime::GetDayName(), XTime::GetWeekName());
         vPutS(tbuf);
@@ -2233,7 +2241,7 @@ void XHero::LookAt()
 		if(xcr->isHero())
 		{
 			sprintf(capt, 
-				MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s, the %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->name, XHero::race_profession);
+				MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s, the %s %s %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->name, GetGenderStr(), GetRaceStr(), GetProfessionStr());
 		}
 		else
 		{
@@ -2536,7 +2544,9 @@ void XHero::SaveGame()
 void XHero::Store(XFile * f)
 {
     XCreature::Store(f);
-    f->Write(race_profession, sizeof(char), 64);
+    f->Write(&race, sizeof(int), 1);
+	f->Write(&gender, sizeof(int), 1);
+	f->Write(&profession, sizeof(int), 1);
 	f->Write(&turn_count);
 	reception_list.StoreList(f);
 }
@@ -2544,7 +2554,9 @@ void XHero::Store(XFile * f)
 void XHero::Restore(XFile * f)
 {
         XCreature::Restore(f);
-        f->Read(race_profession, sizeof(char), 64);
+        f->Read(&race, sizeof(int), 1);
+		f->Read(&gender, sizeof(int), 1);
+		f->Read(&profession, sizeof(int), 1);
 		f->Read(&turn_count);
 		reception_list.RestoreList(f);
         isDisturb = 0;

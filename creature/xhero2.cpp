@@ -97,7 +97,6 @@ FF_NORMAL
 
 };
 
-
 CUSTOM_PROF cust_profession[] = {
 {"warrior",
 "St:0d0+4 Dx:0d0+4 To:0d0+4 Le:0d0-3 Wi:0d0-3 Ma:0d0-6 Pe:0d0+0 Ch:0d0+0"},
@@ -126,14 +125,12 @@ CUSTOM_PROF cust_profession[] = {
 
 };
 
-
 CUSTOM_GEND cust_gender[] = {
 {"male",
 "St:0d0+1 Dx:0d0+0 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
 
 {"female",
 "St:0d0+0 Dx:0d0+0 To:0d0+1 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
-
 
 };
 
@@ -178,8 +175,8 @@ void XHero::PickRace()
 			s = new XStats(cust_race[ch - 97].stats);
 			max_stats.Set(cust_race[ch - 97].max_stats);
 			food_feeling = cust_race[ch - 97].ff;
-
-			// Race name compiled at gender
+			
+			race = ch - 97;
 			vClrScr();
 			break;
 		}
@@ -241,12 +238,8 @@ void XHero::PickRace()
 			stmp = new XStats(cust_gender[ch - 97].stats);
 			s->Add(stmp);
 			delete stmp;
-			
-			// The female half-elf ...
-			strcpy(race_profession, cust_gender[ch - 97].name);
-			strcat(race_profession, " ");
-			strcat(race_profession, cust_race[race_choice - 97].name);
-			strcat(race_profession, " ");
+
+			gender = ch - 97;
 
 			if (ch == 'a')
 				creature_person_type = CPT_MALE_YOU;
@@ -290,6 +283,9 @@ void XHero::PickRace()
 					s->SetStat((STATS)ii, 1);
 			}
 			vClrScr();
+
+			profession = ch - 97;
+
 			XBodyPart * pbp;
 			XPotion * potion;
 			XBook * book;
@@ -381,7 +377,6 @@ void XHero::PickRace()
 					sk->Learn(SKT_TACTICS);
 					sk->Learn(SKT_ATHLETICS);
 		
-					strcat(race_profession, "warrior");
 					break;
 
 //************** wizard
@@ -421,7 +416,6 @@ void XHero::PickRace()
 						sk->Learn(SKT_CONCENTRATION);
 						sk->Learn(SKT_HERBALISM);
 
-						strcat(race_profession, "wizard");
 					}
 					break;
 
@@ -538,7 +532,6 @@ void XHero::PickRace()
 					sk->Learn(SKT_ARCHERY);
 					sk->Learn(SKT_ATHLETICS);
 
-					strcat(race_profession, "archer");
 					break;
 
 
@@ -663,7 +656,6 @@ void XHero::PickRace()
 					sk->Learn(SKT_COOKING);
 					sk->Learn(SKT_ATHLETICS);
 
-					strcat(race_profession, "ranger");
 					break;
 
 
@@ -692,7 +684,6 @@ void XHero::PickRace()
 					sk->Learn(SKT_HERBALISM);
 					sk->Learn(SKT_RELIGION);
 
-					strcat(race_profession, "cleric");
 					switch (race_choice)
 					{
 						case 'a':
@@ -735,7 +726,6 @@ void XHero::PickRace()
 					sk->Learn(SKT_RELIGION);
 					sk->Learn(SKT_ATHLETICS);
 
-					strcat(race_profession, "paladin");
 					switch (race_choice)
 					{
 						case 'a':
@@ -797,7 +787,6 @@ void XHero::PickRace()
 					sk->Learn(SKT_HERBALISM);
 					sk->Learn(SKT_ALCHEMY);
 
-					strcat(race_profession, "alchemist");
 					break;
 
 //*************** bard
@@ -816,7 +805,6 @@ void XHero::PickRace()
 						sk->Learn(SKT_ALCHEMY);
 
 					}
-					strcat(race_profession, "bard");
 					break;
 
 
@@ -851,4 +839,19 @@ void XHero::PickRace()
 
 
 
+}
+
+char * XHero::GetGenderStr()
+{
+	return cust_gender[gender].name;
+}
+
+char * XHero::GetRaceStr()
+{
+	return cust_race[race].name;
+}
+
+char * XHero::GetProfessionStr()
+{
+	return cust_profession[profession].name;
 }

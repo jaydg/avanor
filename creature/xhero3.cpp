@@ -183,7 +183,7 @@ void XHero::EndGame(char * end_msg)
 
 	char buf2[256];
 	char tbuf[256];
-	sprintf(buf2, "%s, %s (L%d).", ((XHero *)main_creature)->name, ((XHero *)main_creature)->race_profession, ((XHero *)main_creature)->level);
+	sprintf(buf2, "%s, %s %s %s (L%d).", ((XHero *)main_creature)->name, ((XHero *)main_creature)->GetGenderStr(), ((XHero *)main_creature)->GetRaceStr(), ((XHero *)main_creature)->GetProfessionStr(), ((XHero *)main_creature)->level);
 	list.AddItem(new XGuiItem_Text(buf2));
 	
 	sprintf(tbuf, "You survived %d turns.", ((XHero *)main_creature)->turn_count);
