@@ -629,27 +629,31 @@ void XHero::InfoList()
         vPutS(MSG_BROWN "Name:" MSG_YELLOW);
         vGotoXY(50, 1);
         vPutS(name);
-        vGotoXY(40, 2);
+		vGotoXY(40, 2);
+        vPutS(MSG_BROWN "Race:" MSG_YELLOW);
+        vGotoXY(50, 2);
+        vPutS(race_profession);
+        vGotoXY(40, 3);
         vPutS(MSG_BROWN "Gold:");
         char tbuf[256];
         sprintf(tbuf, MSG_YELLOW "%d" MSG_BROWN " gp", MoneyOp(0));
-        vGotoXY(50, 2);
-        vPutS(tbuf);
-        vGotoXY(40, 3);
-        vPutS(MSG_BROWN "Time:");
         vGotoXY(50, 3);
+        vPutS(tbuf);
+        vGotoXY(40, 4);
+        vPutS(MSG_BROWN "Time:");
+        vGotoXY(50, 4);
         sprintf(tbuf,  MSG_YELLOW "%d" MSG_BROWN " : " MSG_YELLOW "%d" MSG_BROWN " : "
                 MSG_YELLOW "%d", XTime::GetHour(), XTime::GetMin(), XTime::GetSec());
         vPutS(tbuf);
-        vGotoXY(40, 4);
+        vGotoXY(40, 5);
         vPutS(MSG_BROWN "Date:");
-        vGotoXY(50, 4);
+        vGotoXY(50, 6);
         sprintf(tbuf,  MSG_YELLOW "%s" MSG_BROWN ", " MSG_YELLOW "%d" MSG_BROWN ", "
                 MSG_YELLOW "%d", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear());
         vPutS(tbuf);
-        vGotoXY(40, 5);
+        vGotoXY(40, 6);
         vPutS(MSG_BROWN "Day/Week");
-        vGotoXY(50, 5);
+        vGotoXY(50, 6);
         sprintf(tbuf,  MSG_YELLOW "%s" MSG_BROWN "/" MSG_YELLOW "%s",
                 XTime::GetDayName(), XTime::GetWeekName());
         vPutS(tbuf);
