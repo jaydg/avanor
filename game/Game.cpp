@@ -183,7 +183,7 @@ void XGame::RunWithoutHero()
 
 			if (ch == 'L')
 			{
-				FILE * f = fopen("location.txt", "w");
+				FILE * f = fopen(vMakePath(HOME_DIR, "location.txt"), "w");
 				for (int i = 0; i < L_EOF; i++) 
 					if (locations[i]) 
 						locations[i]->DumpLocation(f);
@@ -228,7 +228,7 @@ void XGame::RunWithoutHero()
 					}
 				}
 				//dump it
-				FILE * f = fopen("items.txt", "wt");
+				FILE * f = fopen(vMakePath(HOME_DIR, "items.txt"), "wt");
 				for (int k = 0; k < count; k++)
 				{
 					if (ia[k].pI->im & (IM_VALUEDICE | IM_ARMOUR))

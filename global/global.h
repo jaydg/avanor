@@ -32,6 +32,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 //#define XDOS
 
+// Directory for common data files (game manual, hiscore, ...)
+#ifndef DATA_DIR
+#  define DATA_DIR "./"
+#endif
+
+// Directory for private data files (user settings, saved games, ...)
+#ifndef HOME_DIR
+#  ifdef XLINUX
+#    define HOME_DIR "~/.avanor/"
+#  else
+#    define HOME_DIR "./"
+#  endif
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -180,5 +194,7 @@ void vHideCursor();
 void vRandSeed(unsigned long seed);
 long vRand();
 long vRand(unsigned long n);
+
+char *vMakePath(char *prefix, char *filename);
 
 #endif

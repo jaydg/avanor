@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <stdlib.h>
 #include "global.h"
 #include "string.h"
 
@@ -59,6 +62,8 @@ int current_attr = 7;
 
 void vInit()
 {
+	mkdir(vMakePath(HOME_DIR, ""), 0755);
+
 #ifdef XDOS
 	text_info ti;
 	gettextinfo(&ti);
@@ -114,7 +119,7 @@ void vInit()
 	
 	size_x = COLS;
 	size_y = LINES;
-
+	
 #endif //XLINUX
 
 #ifndef XWIN32
@@ -521,3 +526,19 @@ void vRestore(V_BUFFER * buf)
 #endif
 }
 
+static char path_buffer[1024];
+
+char *vMakePath(char *prefix, char *filename)
+{
+#ifdef XLINUX
+	if (prefix[0] == '~')
+	{
+		sprintf(path_buffer, "%s%s%s", getenv("HOME"), prefix + 1, filename);
+	}
+	else
+#endif	
+	{
+		sprintf(path_buffer, "%s%s", prefix, filename);
+	}
+	return path_buffer;
+}
