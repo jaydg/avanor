@@ -130,7 +130,7 @@ CUSTOM_GEND cust_gender[] = {
 "St:0d0+1 Dx:0d0+0 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
 
 {"female",
-"St:0d0+0 Dx:0d0+0 To:0d0+1 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
+"St:0d0+0 Dx:0d0+1 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
 
 };
 
