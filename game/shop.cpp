@@ -45,6 +45,16 @@ XShop::XShop(XRect * _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 			dy = area.top;
 			break;
 
+		case SHOP_DOOR_LEFT:
+			dx = area.left;
+			dy = (area.top + area.bottom) / 2;
+			break;
+
+		case SHOP_DOOR_RIGHT:
+			dx = area.right - 1;
+			dy = (area.top + area.bottom) / 2;
+			break;
+
 		default: assert(0);
 
 	}

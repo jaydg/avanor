@@ -320,6 +320,9 @@ void XTeleport::Restore(XFile * f)
 
 int XTeleport::MoveIn(XCreature * cr)
 {
+	if (!cr->isHero())
+		return 1; // Citizens shouldn't want to go visit the village...
+
 	if (Game.locations[ln]->map->XGetMovability(nx, ny) == 0)
 	{
 		cr->LastStep();

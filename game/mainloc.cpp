@@ -166,54 +166,54 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		NewWay(55, 31, L_WIZTOWER_TOP, STW_UP);
 
 //Large City		
-		XRect city_area(103, 9, 130, 33);
-		PutPalette(100, 7, PAL_CITY, this);
+		XRect city_area(139, 2, 157, 26);
+		PutPalette(130, 2, PAL_CITY, this);
 
-		XRect shop_rect3(118, 15, 127, 20);
-		CreateShop(IM_BOOK | IM_SCROLL | IM_POTION, &shop_rect3, "Toberik, the human shopkeeper");
+		XRect shop_rect3(147, 18, 153, 24);
+		CreateShop(IM_BOOK | IM_SCROLL | IM_POTION, &shop_rect3, "Toberik, the human shopkeeper", SHOP_DOOR_RIGHT);
 
 
-		XRect magic_guild_area(145, 28, 149, 30);
+		XRect magic_guild_area(163, 12, 166, 15);
 		NewCreature(CN_GEFEON, &magic_guild_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 
 
 //Roderik palace
-		XRect roderick_area(123, 29, 124, 30);
+		XRect roderick_area(182, 4, 183, 5);
 		NewCreature(CN_RODERIK, &roderick_area, GID_RODERICK_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
-		new XThrone(123, 29, "Avanor", this);
+		new XThrone(182, 4, "Avanor", this);
 		{
-			XRect gr(125, 27, 126, 28);
+			XRect gr(180, 7, 181, 8);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
-			XRect gr(124, 27, 125, 28);
+			XRect gr(180, 6, 181, 7);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);		
 		}
 
 		{
-			XRect gr(121, 27, 122, 28);
+			XRect gr(184, 7, 185, 8);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
-			XRect gr(122, 27, 123, 28);
+			XRect gr(184, 6, 185, 7);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
 			//treasure guardian
-			XRect gr(112, 27, 113, 28);
+			XRect gr(175, 15, 176, 16);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA | AIF_NO_SWAP); 
-			NewWay(112, 27, L_KINGS_TREASURE, STW_DOWN);
+			NewWay(175, 15, L_KINGS_TREASURE, STW_DOWN);
 		}
 
 		{
-			XRect gr(115, 28, 116, 29);
+			XRect gr(172, 14, 173, 15);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 		{
-			XRect gr(116, 28, 117, 29);
+			XRect gr(172, 15, 173, 16);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
@@ -229,10 +229,10 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		NewWay(165, 49, L_WIZARD_DUNGEON1, STW_DOWN);
 
 // teleports from small village to town and back
-		new XTeleport(23, 20, this, L_MAIN, 134, 22);
-		new XTeleport(134, 22, this, L_MAIN, 23, 20);
+		new XTeleport(23, 20, this, L_MAIN, 154, 13);
+		new XTeleport(154, 13, this, L_MAIN, 23, 20);
 
-		new XAltar(154, 17, D_LIFE, this);
+		new XAltar(154, 4, D_LIFE, this);
 
 //tomb
 		PutPalette(100, 50, PAL_UNDEAD_TOMB0, this);
