@@ -82,7 +82,12 @@ RESULT XAnyFood::onEat(XCreature * eater)
 	eater->nutrio += eated_peace * 10;
 	consumed_food += eated_peace;
 	
-	if (eater->isVisible())
+	if (eater->isHero())
+	{
+		msgwin.Add("You eat the");
+		msgwin.AddLast(name);
+	}
+	else if (eater->isVisible())
 	{
 		msgwin.Add(eater->GetNameEx(CRN_T1));
 		msgwin.Add(eater->GetVerb("eat"));
@@ -91,7 +96,14 @@ RESULT XAnyFood::onEat(XCreature * eater)
 
 	if (consumed_food >= food_nutrio)
 	{
-		if (eater->isVisible())
+		if (eater->isHero())
+		{
+			msgwin.Add("You find that the");
+			msgwin.Add(name);
+			msgwin.Add("is");
+			msgwin.AddLast(postEat(eater));
+		}
+		else if (eater->isVisible())
 		{
 			msgwin.Add(eater->GetNameEx(CRN_T1));
 			msgwin.Add(eater->GetVerb("find"));
