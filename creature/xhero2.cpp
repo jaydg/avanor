@@ -219,7 +219,7 @@ void XHero::PickRace()
 	for (i = 0; i < 2; i++)
 	{
 		vGotoXY(7, 6 + i);
-		sprintf(buf, MSG_LIGHTGRAY "[" MSG_YELLOW "%c" MSG_LIGHTGRAY "] %s ", i + 97,  cust_race[i].name);
+		sprintf(buf, MSG_LIGHTGRAY "[" MSG_YELLOW "%c" MSG_LIGHTGRAY "] %s ", i + 97,  cust_gender[i].name);
 		vPutS(buf);
 	}
 	vRefresh();
@@ -236,7 +236,7 @@ void XHero::PickRace()
 #endif
 		gend_choice = ch;
 
-		if (ch >= 97 && ch < 97 + 1)
+		if (ch >= 97 && ch < 97 + 2)
 		{
 			stmp = new XStats(cust_gender[ch - 97].stats);
 			s->Add(stmp);
@@ -247,13 +247,14 @@ void XHero::PickRace()
 			strcat(race_profession, " ");
 			strcat(race_profession, cust_race[race_choice - 97].name);
 			strcat(race_profession, " ");
+
+			if (ch == 'a')
+				creature_person_type = CPT_MALE_YOU;
+			else if (ch == 'b')
+				creature_person_type = CPT_FEMALE_YOU;
 			vClrScr();
 			break;
 		}
-		if (ch == 'a')
-			creature_person_type = CPT_MALE_YOU;
-		else if (ch == 'b')
-			creature_person_type = CPT_FEMALE_YOU;
 	}
 
 

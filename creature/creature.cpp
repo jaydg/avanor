@@ -1673,6 +1673,8 @@ char * XCreature::GetNameEx(CR_NAME_TYPE crn)
 		switch (creature_person_type)
 		{
 			case CPT_YOU:
+			case CPT_MALE_YOU:
+			case CPT_FEMALE_YOU:
 				switch (crn)
 				{
 					case CRN_T1: return "you";
