@@ -98,14 +98,12 @@ clean:
 	$(RM) $(OBJDIR)/*.d
 	$(RM) $(NAME)
 
-ifdef win
 source-zip:
 # create zip archive with Avanor sources, requires subversion command line client
 # and 7-zip archiver
 	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
 	svn export . avanor-r$(AVANOR_SVNVERSION)-src
-	7z a -tzip -r -mx avanor-r$(AVANOR_SVNVERSION)-src.zip avanor-r$(AVANOR_SVNVERSION)-src/*
+	7z a -tzip -r -mx avanor-r$(AVANOR_SVNVERSION)-src.zip "avanor-r$(AVANOR_SVNVERSION)-src/*"
 	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
-endif
 
 -include $(DEPS)
