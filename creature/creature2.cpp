@@ -51,215 +51,6 @@ void XCreature::Attack()
 	}
 }
 
-/*
-int XCreature::AttackCreature(ATTACK_DATA * pData)
-{
-	XCreature * target = pData->target;
-	XCreature * attacker = pData->attacker;
-
-	//check for visibility both of target and attacker
-	int vis1 = 0;
-	if (attaker)
-		vis1 = isVisible();
-	int vis2 = target->isVisible();
-
-	//check if was an enemy for backstab
-	int wasEnemy = 0;
-	if (attaker)
-		target->xai->isEnemy(this);
-
-	//check for basic of DV, HIT
-	int todv = target->GetDV();
-	int tohit = pData->toHIT;
-
-	if (tohit < 0)
-	{
-		todv -= tohit; // a - (-b) == a + b;
-		tohit = 0;
-	}
-
-	int p = (tohit * 150 + 1) / (tohit + todv + 1) - todv;
-	int v = vRand(100);
-
-	if (v < p || pData->isAbsHit) //if was successful hit (or always hit)
-	{
-		int sb = target->GetShieldDVBonus();
-		if (sb > 0 && vRand(todv) < sb && !pData->isAbsHit) //test for block
-		{
-			if (vis1 || vis2) //The attack was blocked
-			{
-				if (pData->attacker_name)
-				{
-					msgwin.Add(target->GetNameEx(CRN_T1));
-					msgwin.Add(target->GetVerb("deflect"));
-					msgwin.Add(attacker_name);
-					msgwin.Add("with");
-					msgwin.Add(target->GetNameEx(CRN_T4));
-					msgwin.Add("shield.");
-				} else
-				{
-					msgwin.Add(GetNameEx(CRN_T1));
-					msgwin.Add(GetVerb("attack"));
-					msgwin.AddLast(target->GetNameEx(CRN_T1));
-					msgwin.Add(target->GetNameEx(CRN_T1));
-					msgwin.Add(target->GetVerb("block"));
-					msgwin.Add(GetNameEx(CRN_T1));
-					msgwin.Add("with");
-					msgwin.Add(target->GetNameEx(CRN_T4));
-					msgwin.Add("shield.");
-				}
-			}
-			target->wsk->UseSkill(WSK_SHIELD);
-		} else
-		{
-			//get random part of body
-			XBodyPart * txbp = target->GetRNDBodyPart();
-			
-			//get initial damage
-			int tdam = pData->baseDAM;
-
-			//get initial pv of armour
-			int xpv = 0;
-			if (txbp && txbp->Item())
-				xpv = txbp->Item()->_PV;
-
-			if (txbp && txbp->bp_uin == BP_CLOAK)
-			{
-				XItem * xtmp = GetItem(BP_BODY);
-				if (xtmp)
-					xpv += xtmp->_PV;
-			}
-
-			//critical hit
-			int crtical_flag = 0;
-			if (attacker)
-			{
-				if (vRand(100) < (2 + sk->GetLevel(SKT_FINDWEAKNESS)))
-				{
-					sk->UseSkill(SKT_FINDWEAKNESS);
-					crtical_flag = 1;
-					tdam *= 3;
-				}
-			} else
-			{
-				if (vRand(100) < 2)
-				{
-					crtical_flag = 1;
-					tdam *= 3;
-				}
-			}
-
-			//backstab
-			int backstab = 0;
-			if (pData->weapon && (!target->isCreatureVisible(this) || !wasEnemy))
-			{
-				if (attacker)
-				{
-					if (vRand(100) < sk->GetLevel(SKT_BACKSTABBING) * 5 + 5)
-					{
-						backstab = 1;
-						tdam *= 3;
-						sk->UseSkill(SKT_BACKSTABBING, 3);
-					}
-				} else
-				{
-					if (vRand(100) < 5)
-					{
-						backstab = 1;
-						tdam *= 3;
-					}
-				}
-			}
-
-			int dam = tdam;
-			int p_flag = 0;
-			
-			//ignore armour
-			if (attacker)
-			{
-				if (vRand(100) > (2 + sk->GetLevel(SKT_FINDWEAKNESS)) || xpv == 0)
-					dam = tdam - xpv;
-				else
-				{
-					sk->UseSkill(SKT_FINDWEAKNESS);
-					p_flag = 1;
-				}
-			} else
-			{
-				if (vRand(100) > 2 || xpv == 0)
-					dam = tdam - xpv;
-				else
-					p_flag = 1;
-			}
-
-			if (vis1 || vis2)
-			{
-				if (attacker)
-					msgwin.Add(attacker->GetNameEx(CRN_T1));
-				else
-					msgwin.Add(pData->attacker_name);
-
-				if (weapon)
-				{
-					if (crtical_flag)
-						msgwin.Add("exactly");
-					
-					if(backstab)
-						msgwin.Add(GetVerb("stab"));
-					else
-						msgwin.Add(GetVerb("hit"));
-				} else
-				{
-					if (crtical_flag)
-						msgwin.Add("exactly");
-					msgwin.Add(GetVerb(GetMeleeAttackMsg()));
-				}
-
-				if (p_flag)
-				{
-					msgwin.Add(target->GetNameEx(CRN_T1));
-					if (target->isHero()) //last message for hero.
-						msgwin.Add("penetrating a piece of armour.");
-					else
-						msgwin.Add("penetrating a piece of armour");
-				} else
-					if (target->isHero()) //last message for hero
-						msgwin.AddLast(target->GetNameEx(CRN_T1));
-					else
-						msgwin.Add(target->GetNameEx(CRN_T1));
-			}
-
-			
-			if (!weapon)
-			{
-				int dmg = dam;
-				for (XQList<MELEE_ATTACK>::iterator tit = melee_attack->begin(); tit != melee_attack->end(); tit++)
-				{
-					if (vRand(100) < (*tit).prob)
-					{
-						dam += target->CauseEffect(this, dmg, (*tit).r_attack);
-					}
-				}
-				AttackCreature(target, dam);
-			} else
-			{
-				dam = target->CauseEffect(dam, weapon->brt);
-				AttackCreature(target, dam);
-			}
-		}
-	} else
-	{
-		if (vis1 || vis2)
-		{
-			msgwin.Add(GetNameEx(CRN_T1));
-			msgwin.Add(GetVerb("attack"));
-			char xxbuf[256];
-			sprintf(xxbuf, "%s, but %s.", target->GetNameEx(CRN_T1), GetVerb("miss"));
-			msgwin.Add(xxbuf);
-		}
-	}
-}
-*/
 
 int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 {
@@ -268,101 +59,55 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 	//need for backstub.
 	int wasEnemy = target->xai->isEnemy(this);
 
-	//~~~check this in future
-	target->xai->onWasAttacked(this);
-	target->stopAction();
-	//~~~~~
-
 	bool vis1 = isVisible();
 	bool vis2 = target->isVisible();
 
 	int res = 0;
 	int tohit;
+	int tdam;
+	unsigned int brt;
 	if (weapon)
 	{
 		res += (wsk->GetUseTime(weapon->wt) * GetSpeed()) / 1000;
 		tohit = GetHIT() + wsk->GetHIT(weapon->wt) + GetHITFHBonus(weapon);
-
+		tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetDMGFHBonus(weapon) + GetDMG();
+		brt = weapon->brt;
 	} else
 	{
 		res += (wsk->GetUseTime(WSK_UNARMED) * GetSpeed()) / 1000;
 		tohit = GetHIT() + wsk->GetHIT(WSK_UNARMED);
+		tdam = dice.Throw() + GetDMG() + wsk->GetDMG(WSK_UNARMED);
+		brt = BR_NONE;
+
+		for (XQList<MELEE_ATTACK>::iterator tit = melee_attack->begin(); tit != melee_attack->end(); tit++)
+		{
+			if (vRand(100) < (*tit).prob)
+			{
+				brt = brt | (*tit).br_attack;
+			}
+		}
+
 	}
 
-	int todv = target->GetDV();
-
-	if (tohit < 0)
+	DAMAGE_DATA_EX dd;
+	dd.damage		= tdam;
+	dd.attacker		= this;
+	dd.attack_name	= NULL;
+	dd.attack_HIT	= tohit;
+	dd.attack_brand	= (BRAND_TYPE)brt;
+	dd.flags		= DF_MAGIC_BOLT;
+	dd.weapon		= weapon;
+	
+	if(target->InflictDamage(&dd))
 	{
-		todv -= tohit; // a - (-b) == a + b;
-		tohit = 0;
+		if (weapon)
+			wsk->UseSkill(weapon->wt);
+		else
+			wsk->UseSkill(WSK_UNARMED);
+
 	}
 
-	int p =  (int)(1000 * ((float)(tohit + 1) / (tohit + todv + 1)));
-	int v = vRand() % 1000;
-
-	if (v < p)
-	{
-		//test for block
-		int sb = target->GetShieldDVBonus();
-		if (sb > 0 && vRand(todv) < sb)
-		{
-			if (vis1 || vis2)
-			{
-				msgwin.Add(GetNameEx(CRN_T1));
-				msgwin.Add(GetVerb("attack"));
-				msgwin.AddLast(target->GetNameEx(CRN_T1));
-				msgwin.Add(target->GetNameEx(CRN_T1));
-				msgwin.Add(target->GetVerb("block"));
-				msgwin.Add(GetNameEx(CRN_T1));
-				msgwin.Add("with");
-				msgwin.Add(target->GetNameEx(CRN_T4));
-				msgwin.Add("shield.");
-			}
-			target->wsk->UseSkill(WSK_SHIELD);
-		} else
-		{
-			//get random part of body
-			XBodyPart * txbp = target->GetRNDBodyPart();
-			
-			//get initial damage
-			int tdam;
-			if (weapon)
-			{
-				tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetDMGFHBonus(weapon) + GetDMG();
-				wsk->UseSkill(weapon->wt);
-			}
-			else
-			{
-				tdam = dice.Throw() + GetDMG() + wsk->GetDMG(WSK_UNARMED);
-				wsk->UseSkill(WSK_UNARMED);
-			}
-
-			//get initial pv of armour
-			int xpv = 0;
-			if (txbp && txbp->Item())
-				xpv = txbp->Item()->_PV;
-
-			if (txbp && txbp->bp_uin == BP_CLOAK)
-			{
-				XItem * xtmp = GetItem(BP_BODY);
-				if (xtmp)
-					xpv += xtmp->_PV;
-			}
-
-			//write hiter name
-			if (vis1 || vis2)
-				msgwin.Add(GetNameEx(CRN_T1));
-			
-			//critical hit
-			int crtical_flag = 0;
-			if ((vRand() % 100) < (2 + sk->GetLevel(SKT_FINDWEAKNESS)))
-			{
-				sk->UseSkill(SKT_FINDWEAKNESS);
-				crtical_flag = 1;
-				tdam *= 3;
-			}
-
-			//backstab
+/*			//backstab
 			int backstab = 0;
 			if (weapon && (!target->isCreatureVisible(this) || !wasEnemy))
 			{
@@ -373,178 +118,10 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 					sk->UseSkill(SKT_BACKSTABBING, 3);
 				}
 			}
-
-			int dam = tdam;
-			int p_flag = 0;
-			if ((vRand() % 100) > (2 + sk->GetLevel(SKT_FINDWEAKNESS)) || xpv == 0)
-				dam = tdam - xpv;
-			else
-			{
-				sk->UseSkill(SKT_FINDWEAKNESS);
-				p_flag = 1;
-			}
-
-			if (vis1 || vis2)
-			{
-				if (weapon)
-				{
-					if (crtical_flag)
-						msgwin.Add("exactly");
-					
-					if(backstab)
-						msgwin.Add(GetVerb("stab"));
-					else
-						msgwin.Add(GetVerb("hit"));
-				} else
-				{
-					if (crtical_flag)
-						msgwin.Add("exactly");
-					msgwin.Add(GetVerb(GetMeleeAttackMsg()));
-				}
-
-				if (p_flag)
-				{
-					msgwin.Add(target->GetNameEx(CRN_T1));
-					if (target->isHero())
-						msgwin.Add("penetrating a piece of armour.");
-					else
-						msgwin.Add("penetrating a piece of armour");
-				} else
-					if (target->isHero())
-						msgwin.AddLast(target->GetNameEx(CRN_T1));
-					else
-						msgwin.Add(target->GetNameEx(CRN_T1));
-			}
-
-			
-			if (!weapon)
-			{
-				int dmg = dam;
-				for (XQList<MELEE_ATTACK>::iterator tit = melee_attack->begin(); tit != melee_attack->end(); tit++)
-				{
-					if (vRand(100) < (*tit).prob)
-					{
-						if ((*tit).r_attack > 0)
-							dam += target->CauseEffect(this, dmg, (*tit).r_attack);
-						else
-							;
-					}
-				}
-				AttackCreature(target, dam);
-			} else
-			{
-				dam = target->CauseEffect(dam, weapon->brt);
-				AttackCreature(target, dam);
-			}
-		}
-	} else
-	{
-		if (vis1 || vis2)
-		{
-			msgwin.Add(GetNameEx(CRN_T1));
-			msgwin.Add(GetVerb("attack"));
-			char xxbuf[256];
-			sprintf(xxbuf, "%s, but %s.", target->GetNameEx(CRN_T1), GetVerb("miss"));
-			msgwin.Add(xxbuf);
-		}
-	}
-
+*/
 	return res;
 }
 
-
-int XCreature::InflictDamage(DAMAGE_DATA * pData)
-{
-	assert(pData->target->isValid());
-	if (pData->attacker)
-		pData->target->xai->onWasAttacked(pData->attacker);
-	pData->target->stopAction();
-
-	int damage = pData->damage;
-	damage -= pData->target->_PV; // always - monster PV
-
-	if (damage <= 0)
-	{
-		if (pData->target->isHero())
-		{
-			if (pData->attacker_name)
-				msgwin.Add(pData->attacker_name);
-			else
-				msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
-			msgwin.Add("does not manage to harm you.");
-		} else if (pData->target->isVisible())
-		{
-			msgwin.Add("but does not manage to harm");
-			msgwin.AddLast(pData->target->GetNameEx(CRN_T3));
-		}
-	} else
-	{
-		pData->target->_HP -= damage;
-
-		if (pData->target->_HP > 0)
-		{
-			if (pData->target->isVisible() && !pData->target->isHero())
-			{
-				char buf[256];
-				sprintf(buf, "and %s %s.",  pData->target->GetWoundMsg(1), pData->target->GetNameEx(CRN_T3));
-				msgwin.Add(buf);
-			}
-		} else
-		{ // and kill IT!!!
-			if (pData->target->isVisible() && !pData->target->isHero())
-			{
-				msgwin.Add("and");
-				if(pData->target->creature_class & CR_UNDEAD)
-				{
-					if (pData->attacker_name)
-						msgwin.Add("destroys");
-					else
-						msgwin.Add(pData->attacker->GetVerb("destroys"));
-				}
-				else
-				{
-					if (pData->attacker_name)
-						msgwin.Add("kills");
-					else
-						msgwin.Add(pData->attacker->GetVerb("kills"));
-				}
-				msgwin.AddLast(pData->target->GetNameEx(CRN_T3));
-			}
-			pData->target->Die(pData->attacker);
-			cr_kiled++; //temporary counter special for statistic
-			return 1;
-		}
-	}
-	return 0;
-}
-
-int XCreature::AttackCreature(XCreature * target, int dmg)
-{
-	assert(isValid());
-	target->xai->onWasAttacked(this);
-	target->stopAction();
-	if (target->onAttacked(this, dmg))
-	{
-		target->Die(this);
-		cr_kiled++; //temporare counter special for statistic
-		return 1;
-	}
-	return 0;
-}
-
-int XCreature::AttackCreature(XCreature * target, int dmg, RESISTANCE tr, const char * magic_name)
-{
-	assert(isValid());
-	target->xai->onWasAttacked(this);
-	target->stopAction();
-	if (target->onAttackedByMagic(this, dmg, tr, magic_name))
-	{
-		target->Die(this);
-		cr_kiled++; //temporare counter special for statistic
-		return 1;
-	}
-	return 0;
-}
 
 
 int XCreature::onMagicDamage(int dmg, RESISTANCE tr)
@@ -554,186 +131,72 @@ int XCreature::onMagicDamage(int dmg, RESISTANCE tr)
 	return damage < 0 ? 0 : damage;
 }
 
-int XCreature::CauseEffect(int dmg, BRAND_TYPE brt)
+int XCreature::CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker)
 {
-	int damage = dmg;
-	
+	int damage = 0;
 	if (brt > BR_NONE)
 	{
 		if (brt & BR_FIRE)
-		{
 			damage += onMagicDamage(dmg, R_FIRE);
-		}
-		if (brt & BR_COLD)
-		{
-			damage += onMagicDamage(dmg, R_COLD);
-		}
-		if (brt & BR_DEMONSLAYER && creature_class & CR_DEMON)
-		{
-			damage += dmg * 3;
-		}
-		if (brt & BR_ORCSLAYER && creature_class & CR_ORC)
-		{
-			damage += dmg * 3;
-		}
-	}
-	return damage;
-}
-
-int XCreature::CauseEffect(XCreature * attacker, int dmg, RESISTANCE tr)
-{
-	int damage = dmg - (dmg * GetResistance(tr)) / 100;
-	damage = damage < 0 ? 0 : damage;
-	
-	if (damage > 0)
-	{
-		switch (tr)
-		{
-			case R_WHITE:
-			case R_BLACK:
-			case R_FIRE:
-			case R_WATER:
-			case R_AIR:
-			case R_EARTH:
-			case R_ACID:
-			case R_COLD:
-				break;
-			case R_POISON: 
-				md->Add(MOD_POISON, damage, this, attacker);
-				break;
-			case R_DISEASE: 
-				md->Add(MOD_DISEASE, damage, this, attacker);
-				break;
-			case R_PARALYSE: 
-				md->Add(MOD_PARALYSE, damage, this, attacker);
-				break;
-			case R_STUN: 
-				md->Add(MOD_STUN, damage, this, attacker);
-				break;
-			case R_CONFUSE: 
-				md->Add(MOD_CONFUSE, damage, this, attacker);
-				break;
-			case R_BLIND: 
-//				md->Add(MOD_BLIND, damage, this, attacker);
-				break;
-			default:
-				return 0;
-		}
-	}
-	return damage;
-}
-
-int XCreature::onAttacked(XCreature * attacker, int dmg)
-{
-	assert(isValid());
-	int damage = dmg;
-	damage -= _PV; // always - monster PV
-
-	if (damage > 0)
-		_HP -= damage;
-
-	if (_HP > 0)
-	{
-		if (l->map->GetVisible(x, y))
-		{
-			char buf[256];
-			if (damage <= 0)
-			{
-				if (isHero())
-				{
-					msgwin.Add(attacker->GetNameEx(CRN_T1));
-					msgwin.Add("does not manage to harm");
-					msgwin.AddLast(GetNameEx(CRN_T3));
-				} else
-				{
-					msgwin.Add("but does not manage to harm");
-					msgwin.AddLast(GetNameEx(CRN_T3));
-				}
-			} else if (!isHero())
-			{
-				sprintf(buf, "and %s %s.",  GetWoundMsg(1), GetNameEx(CRN_T3));
-				msgwin.Add(buf);
-			}
-		}
-
-		if (vRand() % 1000 < 300)
-		{
-			md->Add(MOD_WOUND, damage / 4, this, attacker);
-		}
 		
-		if (vRand() % 1000 < 250)
-		{
-			md->Add(MOD_STUN, damage / 4, this, attacker);
-		}
+		if (brt & BR_COLD)
+			damage += onMagicDamage(dmg, R_COLD);
+		
+		if (brt & BR_ACID)
+			damage += onMagicDamage(dmg, R_ACID);
+		
+		if (brt & BR_EARTH)
+			damage += onMagicDamage(dmg, R_EARTH);
+		
+		if (brt & BR_LIGHTNING)
+			damage += onMagicDamage(dmg, R_AIR);
+		
+		if (brt & BR_DEMONSLAYER && creature_class & CR_DEMON)
+			damage += dmg * 3;
+		
+		if (brt & BR_ORCSLAYER && creature_class & CR_ORC)
+			damage += dmg * 3;
 
-		if (vRand() % 1000 < 150)
-		{
-			md->Add(MOD_CONFUSE, damage / 4, this, attacker);
-		}
-
-
-		return 0;
+		if (damage == 0)
+			return dmg;
+		else
+			return damage;
 	} else
-	{ // and kill IT!!!
-		if (l->map->GetVisible(x, y) && !isHero())
-		{
-			msgwin.Add("and");
-			if(creature_class & CR_UNDEAD)
-				msgwin.Add(attacker->GetVerb("destroy"));
-			else
-				msgwin.Add(attacker->GetVerb("kill"));
-			msgwin.AddLast(GetNameEx(CRN_T3));
-		}
-		return 1;
-	}
+		return dmg;
 }
 
 
-int XCreature::onAttackedByMagic(XCreature * attacker, int dmg, RESISTANCE tr, const char * magic_name)
+void XCreature::CausePostEffect(int dmg, BRAND_TYPE brt, XCreature * attacker)
 {
-	char buf[256];
-	int  damage = onMagicDamage(dmg, tr) - _PV;
-
-	if (damage > 0)
-		_HP -= damage;
-
-	if (_HP > 0)
+	if (brt > BR_NONE)
 	{
-		if (l->map->GetVisible(x, y))
-		{
-			if (damage <= 0)
-			{
-				if (isHero())
-				{
-					msgwin.Add(magic_name);
-					msgwin.Add("does not manage to harm");
-					msgwin.AddLast(GetNameEx(CRN_T3));
-				} else
-				{
-					msgwin.Add("but does not manage to harm");
-					msgwin.AddLast(GetNameEx(CRN_T3));
-				}
-			} else if (!isHero())
-			{
-				sprintf(buf, "and %s %s.",  attacker->GetWoundMsg(1), GetNameEx(CRN_T3));
-				msgwin.Add(buf);
-			}
-		}
-		return 0;
-	} else 
-	{ // and kill IT!!!
-		if (l->map->GetVisible(x, y))
-		{
-			msgwin.Add("and");
-			if(creature_class & CR_UNDEAD)
-				msgwin.Add(attacker->GetVerb("destroy"));
-			else
-				msgwin.Add(attacker->GetVerb("kill"));
-			msgwin.AddLast(GetNameEx(CRN_T3));
-		}
-		return 1;
+		if (brt & BR_POISON)
+			md->Add(MOD_POISON, dmg, this, attacker);
+		
+		if (brt & BR_DISEASE)
+			md->Add(MOD_DISEASE, dmg, this, attacker);
+		
+		if (brt & BR_PARALYSE)
+			md->Add(MOD_PARALYSE, dmg, this, attacker);
+		
+		if (brt & BR_STUN)
+			md->Add(MOD_STUN, dmg, this, attacker);
+		
+		if (brt & BR_CONFUSE)
+			md->Add(MOD_CONFUSE, dmg, this, attacker);
 	}
+
+	//this should be rewrited once.
+	if (vRand(1000) < 200)
+		md->Add(MOD_WOUND, dmg / 4, this, attacker);
+	
+	if (vRand(1000) < 150)
+		md->Add(MOD_STUN, dmg / 4, this, attacker);
+
+	if (vRand(1000) < 50)
+		md->Add(MOD_CONFUSE, dmg / 4, this, attacker);
 }
+
 
 
 MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
@@ -760,7 +223,7 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
 	if (fdx == fdy && fdy == 0.0)
 		self_flag = true;
 
-	while ((range > 0 && (fabs(mfd->ex - mx) >= 0.5f || fabs(mfd->ey - my) >= 0.5f)) || self_flag)
+	while ((range > 0 /*&& (fabs(mfd->ex - mx) >= 0.5f || fabs(mfd->ey - my) >= 0.5f)*/) || self_flag)
 	{
 		self_flag = false;
 		range--;
@@ -803,30 +266,27 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
 		mx = nmx;
 		my = nmy;
 
-		XCreature * tgt = tmap->GetMonster(epx, epy);
-		if (tgt)
+		
+		//if (fabs(mfd->ex - mx) < 0.5f && fabs(mfd->ey - my) < 0.5f)
+		if (epx == mfd->ex && epy == mfd->ey)
 		{
-			int tdv = tgt->GetDV() + fl_range * tgt->GetDV() / 4;
-			int tht = mfd->to_hit > 0 ? mfd->to_hit : 1;
-			if (tdv < 0)
+			XCreature * tgt = tmap->GetMonster(epx, epy);
+			if (tgt)
 			{
-				tht -= tdv;
-				tdv = 0;
-			}
-			int p =  (100 * tht + 1) / (tht + tdv + 1) - tdv;
-			if (vRand(100) <= p)
-			{
-				mfd->pt.x = epx;
-				mfd->pt.y = epy;
-				//check for shield
-				int sb = tgt->GetShieldDVBonus();
-				sb += fl_range * sb / 4;
-				if (sb > 0 && vRand(tdv) < sb)
+				int tdv = tgt->GetDV() + fl_range * tgt->GetDV() / 6;
+				int tht = mfd->to_hit > 0 ? mfd->to_hit : 1;
+				if (tdv < 0)
 				{
-					tgt->wsk->UseSkill(WSK_SHIELD);
-					return MF_BLOCK;
+					tht -= tdv;
+					tdv = 0;
 				}
-				return MF_HIT;
+				int p =  (100 * tht + 1) / (tht + tdv + 1);
+				if (vRand(100) <= p)
+				{
+					mfd->pt.x = epx;
+					mfd->pt.y = epy;
+					return MF_HIT;
+				}
 			}
 		}
 	}
@@ -871,10 +331,6 @@ int XCreature::UseItem(XItem * item)
 	return 1;
 }
 
-int XCreature::TargetOp(TARGET_REASON tr, XTREQUEST * rq, XTRESPONSE * rp)
-{
-	return 0;
-}
 
 void XCreature::Sacrifice(XItem * item)
 {
@@ -905,4 +361,272 @@ bool XCreature::isVisible()
 	} else
 		return false;
 }
+
+
+
+char * XCreature::GetMeleeAttackMsg(XItem * weapon)
+{
+	if (weapon)
+	{
+		//very temporary solution
+		//if we accept this feature we should add verb to the weapon table
+		if (weapon->it == IT_SMALLAXE || 
+			weapon->it == IT_WARAXE	|| 
+			weapon->it == IT_BATTLEAXE || 
+			weapon->it == IT_GREATAXE || 
+			weapon->it == IT_ORCISHAXE)
+			return "hack";
+		else
+			return "hit";
+	} else
+		return "attack";
+}
+
+
+
+
+
+
+int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
+{
+	//make creature hostle
+	if (pData->attacker)
+		xai->onWasAttacked(pData->attacker);
+	//stop current action
+	stopAction();
+
+	bool vis1 = isVisible();
+	bool vis2 = pData->attacker ? pData->attacker->isVisible() : true;
+
+	//this attack can be avoided
+	
+	int v = 0; //v by default less then p (there will 100% hit)
+	int p = 1;
+	int todv = 1;
+	if (pData->flags & DF_AFFECT_HIT)
+	{
+		//get creature overall DV
+		todv = GetDV();
+		int tohit = pData->attack_HIT;
+
+		if (tohit < 0)
+		{
+			todv -= tohit; // a - (-b) == a + b;
+			tohit = 0;
+		}
+
+		p = ((tohit + 1) * 20) / (tohit + todv + 1);
+		v = vRand(20); /*0..19*/
+	}
+	
+
+	if (v <= p)
+	{
+		//oh yeah. hited!
+		
+		//get random part of body
+		XBodyPart * txbp = GetRNDBodyPart();
+
+		//requested base damage...
+		int dmg = pData->damage;
+
+		//critical hit (hit into vital spot)
+		bool critical_hit = false;
+		bool ignore_armour = false;
+		if (pData->attacker && vRand(100) < (2 + pData->attacker->sk->GetLevel(SKT_FINDWEAKNESS)))
+		{
+			pData->attacker->sk->UseSkill(SKT_FINDWEAKNESS);
+			critical_hit = true;
+			dmg *= 3;
+		}
+
+		
+		//calculates suposed damage counting creature type and resistance
+		//also Adds modifers such 'Poison'
+		if (pData->attack_name) //this is poor magic
+			dmg = CauseEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
+		else //this is hit with weapon or unarmed hit(snakes beat for example)
+			dmg += CauseEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
+
+		//always count intrinsic PV
+		dmg -= _PV;
+		
+
+		if (pData->flags & DF_AFFECT_PV)
+		{
+			//get initial pv of armour
+			int xpv = 0;
+			if (txbp && txbp->Item())
+				xpv = txbp->Item()->_PV;
+
+			if (!pData->attacker || vRand(100) >= (2 + pData->attacker->sk->GetLevel(SKT_FINDWEAKNESS)) || xpv == 0)
+			{
+
+				//if it is a body, then we should count PV of a cloak.
+				if (txbp && txbp->bp_uin == BP_BODY)
+				{
+					XItem * xtmp = GetItem(BP_CLOAK);
+					if (xtmp)
+						xpv += xtmp->_PV;
+				}
+				//some dmg absorbed by armour
+				dmg -= xpv;
+			} else 
+			{
+				pData->attacker->sk->UseSkill(SKT_FINDWEAKNESS);
+				ignore_armour = true;
+			}
+
+		}
+
+		if (vis1 || vis2)
+		{
+			if (pData->attack_name)
+			{
+				msgwin.Add(pData->attack_name);
+				if (critical_hit)
+					msgwin.Add("exactly");
+				msgwin.Add("hits");
+			} else
+			{
+				msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
+				if (critical_hit)
+					msgwin.Add("exactly");
+				msgwin.Add(pData->attacker->GetVerb(GetMeleeAttackMsg(pData->weapon)));
+			}
+
+			if (ignore_armour)
+			{
+				msgwin.Add(GetNameEx(CRN_T1));
+				if (isHero())
+					msgwin.Add("penetrating a piece of armour.");
+				else
+					msgwin.Add("penetrating a piece of armour");
+			} else
+			{
+				if (isHero())
+					msgwin.AddLast(GetNameEx(CRN_T1));
+				else
+					msgwin.Add(GetNameEx(CRN_T1));
+			}
+
+		}
+
+		if (dmg <= 0)
+		{
+			if (isHero())
+			{
+				if (pData->attack_name)
+					msgwin.Add(pData->attack_name);
+				else
+					msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
+				msgwin.Add("does not manage to harm you.");
+			} else if (isVisible())
+			{
+				msgwin.Add("but does not manage to harm");
+				msgwin.AddLast(GetNameEx(CRN_T3));
+			}
+		} else
+		{
+			_HP -= dmg;
+
+			if (_HP > 0)
+			{
+				if (isVisible() && !isHero())
+				{
+					msgwin.Add("and");
+					msgwin.Add(GetWoundMsg(1));
+					msgwin.AddLast(GetNameEx(CRN_T3));
+				}
+				CausePostEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
+			} else
+			{ 
+				// and kill IT!!!
+				if (isVisible() && !isHero())
+				{
+					msgwin.Add("and");
+					if(creature_class & CR_UNDEAD)
+					{
+						if (pData->attack_name)
+							msgwin.Add("destroys");
+						else
+							msgwin.Add(pData->attacker->GetVerb("destroy"));
+					}
+					else
+					{
+						if (pData->attack_name)
+							msgwin.Add("kills");
+						else
+							msgwin.Add(pData->attacker->GetVerb("kill"));
+					}
+					msgwin.AddLast(GetNameEx(CRN_T3));
+				}
+				Die(pData->attacker);
+				cr_kiled++; //temporary counter special for statistic
+			}
+		}
+		return 1;
+	} else // avoided!!!
+	{
+		//first of all check if save was caused by shield
+		int sb = GetShieldDVBonus();
+		if (sb > 0 && vRand(todv) < sb)
+		{
+			if (vis1 || vis2)
+			{
+				if (pData->attack_name)
+				{
+					//Kobold shaman cast firbolt.
+					//You deflect small ball of fire with your shield
+					msgwin.Add(GetNameEx(CRN_T1));
+					msgwin.Add(GetVerb("deflect"));
+					msgwin.Add(pData->attack_name);
+					msgwin.Add("with");
+					msgwin.Add(GetNameEx(CRN_T4));
+					msgwin.Add("shield.");
+				} else
+				{
+					//Kobold attacks you.
+					//You blok kobold with your shiled
+					msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
+					msgwin.Add(pData->attacker->GetVerb("attack"));
+					msgwin.AddLast(GetNameEx(CRN_T1));
+					msgwin.Add(GetNameEx(CRN_T1));
+					msgwin.Add(GetVerb("block"));
+					msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
+					msgwin.Add("with");
+					msgwin.Add(GetNameEx(CRN_T4));
+					msgwin.Add("shield.");
+				}
+			}
+			wsk->UseSkill(WSK_SHIELD);
+		} else //it was not shield (miss or avoid)
+		{
+			if (vis1 || vis2)
+			{
+				if (pData->attack_name)
+				{
+					msgwin.Add(GetNameEx(CRN_T1));
+					msgwin.Add(GetVerb("avoid"));
+					msgwin.AddLast(pData->attack_name);
+				} else
+				{
+					msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
+					msgwin.Add(pData->attacker->GetVerb("attack"));
+					char xxbuf[256];
+					sprintf(xxbuf, "%s, but %s.", GetNameEx(CRN_T1), pData->attacker->GetVerb("miss"));
+					msgwin.Add(xxbuf);
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+
+/***** uncompleted ********/
+// 1) Backstab
+// 3) Correct using proper ammo type
+// 4) Drain life
+
 

@@ -32,7 +32,8 @@ public:
 	XMissile(ITEM_TYPE it = IT_RANDOM);
 	virtual void toString(char * buf);
 	XMissile(XMissile * copy) : XItem((XItem *)copy) {}
-	virtual XObject * MakeCopy() {return new XMissile(this);}	
+	virtual XObject * MakeCopy() {return new XMissile(this);}
+	static bool isProperWeapon(XItem * missile, XItem * weapon);
 };
 
 #endif

@@ -63,23 +63,127 @@ XMissile::XMissile(ITEM_TYPE _it)
 	}
 	r->Sub(r);
 	s->Sub(s);
-	quantity = vRand() % 20 + 3;
-	weight = weight / 5 + 1;
+
+	int rcount = 20;
+	if (vRand(20) == 0 && (it == IT_ARROW || it == IT_QUARREL || it == IT_SLINGBULLET)) //something special...
+	{
+		rcount = 10;
+		int tr = vRand(4);
+		switch (tr)
+		{
+			case 0: brt = BR_POISON; break; //poisoned
+			case 1: brt = BR_FIRE; break; //hell arrows
+			case 2: brt = BR_UNDEADSLAYER; break; //
+			case 3: brt = BR_ORCSLAYER; break; //
+		}
+		
+	}
+	if (vRand(20) == 0)
+	{
+		rcount = rcount / 2;
+		int xr = vRand(3);
+		if (xr == 0)
+		{
+			if (it == IT_ARROW)
+			{
+				dice.Add(2, 2, 0);
+				RNG += 1;
+				strcpy(name, "seeker arrow");
+			}
+			if (it == IT_QUARREL)
+			{
+				dice.Add(2, 2, 0);
+				RNG += 1;
+				strcpy(name, "seeker quarrel");
+			}
+		} else if (xr == 1)
+		{
+			if (it == IT_ARROW)
+			{
+				_HIT += 10;
+				RNG += 2;
+				strcpy(name, "hunter arrow");
+			}
+			if (it == IT_QUARREL)
+			{
+				_HIT += 10;
+				RNG += 2;
+				strcpy(name, "hunter quarrel");
+			}
+		} else if (xr == 2)
+		{
+			if (it == IT_ARROW)
+			{
+				dice.Add(1, 1, 10);
+				RNG += 2;
+				strcpy(name, "sharp arrow");
+			}
+			if (it == IT_QUARREL)
+			{
+				dice.Add(1, 1, 10);
+				RNG += 2;
+				strcpy(name, "sharp quarrel");
+			}
+		}
+	}
+
+
+	quantity = vRand() % rcount + 3;
+	weight = (weight / 5 + 1);
 }
 
 void XMissile::toString(char * buf)
 {
+	if (quantity == 1)
+		sprintf(buf, "%s%s%s <%+d>(%+d, %dd%d%+d)%s",
+			brt & BR_POISON ? "poisoned " : "",
+			brt & BR_UNDEADSLAYER ? "holy " : "",
+			name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+			brt & BR_FIRE ? " of fire" : ""
+			);
+	else
+	{
+		sprintf(buf, "heap of (%d) %s%s%ss <%+d>(%+d, %dd%d%+d)%s",
+			quantity,
+			brt & BR_POISON ? "poisoned " : "",
+			brt & BR_UNDEADSLAYER ? "holy " : "",
+			name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+			brt & BR_FIRE ? " of fire" : ""
+			);
+	}
 
-	GetFullName(buf);
-
-    char tbuf[256];
-
-	sprintf(tbuf, "<%+d>", RNG);
-	strcat(buf, tbuf);
-
-	sprintf(tbuf, "(%+d, %dd%d%+d)", _HIT, dice.X, dice.Y, dice.Z);
-	strcat(buf, tbuf);
-
-    StatsToString(tbuf);
-    strcat(buf, tbuf);
 }
+
+bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
+{
+	if (weapon)
+	{
+		switch (weapon->wt)
+		{
+			case WSK_BOW: 
+				if (missile->it == IT_ARROW)
+					return true;
+				else
+					return false;
+				break;
+			case WSK_CROSSBOW: 
+				if (missile->it == IT_QUARREL)
+					return true;
+				else
+					return false;
+				break;
+			case WSK_SLING: 
+				if (missile->it == IT_ROCK || missile->it == IT_SLINGBULLET)
+					return true;
+				else
+					return false;
+				break;
+			default: return false;
+		}
+
+	} else
+	{
+		return true; //all can be throwed without weapon
+	}
+}
+

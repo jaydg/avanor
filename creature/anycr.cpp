@@ -315,11 +315,11 @@ void XCreatureStorage::Combat(const char * hit, const char * dice)
 	creature_storage[last_name].dice = dice;
 }
 
-void XCreatureStorage::Melee(RESISTANCE r, int prob)
+void XCreatureStorage::Melee(BRAND_TYPE br, int prob)
 {
 	MELEE_ATTACK ma;
 	ma.e_attack = EA_NONE;
-	ma.r_attack = r;
+	ma.br_attack = br;
 	ma.prob = prob;
 	creature_storage[last_name].melee_attack.push_back(ma);
 }
@@ -328,7 +328,7 @@ void XCreatureStorage::Melee(EXTENDED_ATTACK ea, int prob)
 {
 	MELEE_ATTACK ma;
 	ma.e_attack = ea;
-	ma.r_attack = R_NONE;
+	ma.br_attack = BR_NONE;
 	ma.prob = prob;
 	creature_storage[last_name].melee_attack.push_back(ma);
 }

@@ -69,7 +69,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d4", "1d6");
 	XM("2d3", "1d2", "3d3", "0d0");
 	XD("A foot long and covered in jet black fur, this rat appears rather harmless (as far as rats go).  Then you notice the wildness in its eyes and slight froth dripping from its jaw.  Surely this is the type of rat blamed for the spread of many diseases.  Suddenly you become much more wary about letting it nip at you, even a scratch could cause the dreaded black plague.");
-	XAT(R_DISEASE, 30);
+	XAT(BR_DISEASE, 30);
 	COE(CET_VOMIT, 0);
 
 	XVW(CN_HUGE_RAT, "huge rat", 'r', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_RAT);
@@ -81,8 +81,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "2d3");
 	XM("2d3", "2d2", "5d3", "0d0");
 	XD("Come closer my child and you will hear of the giant rats that come to take bad children away...  Deep in the caves of Avanor they nest, big as a wolf and meaner too.  They come at night to take bad little children and feed them to their young.  Oh!  I see it is bedtime, you better hurry and get in bad or they might think you are one of the bad ones...");
-	XAT(R_DISEASE, 30);
-	XAT(R_POISON, 20);
+	XAT(BR_DISEASE, 30);
+	XAT(BR_POISON, 20);
 	COE(CET_VOMIT, 0);
 
 	////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "1d4");
 	XM("1d9", "1d3", "1d3", "0d0");
 	XD("Salamanders prefer living in dark, damp caves and eating the bugs that fly around.  The release of Power mutated the salamanders in the valley of Avanor until they were 4 feet long and had a taste for warm blooded flesh.  They can't see well but they have a powerful bite.");
-	XAT(R_FIRE, 100);
+	XAT(BR_FIRE, 100);
 	COE(CET_MODIFY_R_FIRE, 1);
 
 	XVW(CN_LARGE_SNAKE, "large snake", 'R', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_REPTILE);
@@ -165,7 +165,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("6d5", "1d5");
 	XM("1d4", "1d1", "2d3", "0d0");
 	XD("This serpent seems to have been lost from some sort of travelling show.  Its emerald green scales show up clearly against the stone and dirt.  Idly you wonder how it has survived for so long seeing as travelling shows just don't reach the valley anymore.  Then you realize that the snake is already closing the distance between its position and yours and suddenly you know exactly how it survived.");
-	XAT(R_POISON, 10);
+	XAT(BR_POISON, 10);
 	COE(CET_MODIFY_R_POISON, 1);
 
 	XVW(CN_COBRA, "cobra", 'R', xGREEN, CPT_IT, CRL_LOW, CR_REPTILE);
@@ -177,7 +177,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("7d5", "1d7");
 	XM("1d8", "1d1", "3d3", "0d0");
 	XD("The cobra looks much like a normal snake until it lifts its head and spreads its hood.  Then the markings clearly indicate the danger you face.  A cobra's poison is more deadly than other snakes and the cobra is much more aggressive.");
-	XAT(R_POISON, 40);
+	XAT(BR_POISON, 40);
 	COE(CET_MODIFY_R_POISON, 2);
 
 	XVW(CN_KING_COBRA, "king cobra", 'R', xLIGHTRED, CPT_IT, CRL_AVG, CR_REPTILE);
@@ -189,7 +189,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("8d5", "1d12");
 	XM("2d5", "2d2", "4d3", "0d0");
 	XD("The distinct crown shaped mark on the back of this snake's head gave the title it now carries.  However, if you are close enough to see the crown than you should have been able to distinguish it by its size alone.  Bigger, faster and stronger than its smaller cousin, the king cobra is best left alone by anyone without several anti-venom potions.");
-	XAT(R_POISON, 60);
+	XAT(BR_POISON, 60);
 	COE(CET_MODIFY_R_POISON, 5);
 
 	XVW(CN_RATTLESNAKE, "rattlesnake", 'R', xRED, CPT_IT, CRL_AVG, CR_REPTILE);
@@ -201,7 +201,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("10d5", "1d12");
 	XM("1d5", "1d2", "5d3", "0d0");
 	XD("An ominous rattle sounds from ahead of you as a coiled rattlesnake prepares to defend its territory.  Poison drips from its fangs and the cold glint in its eyes seem to foreshadow your certain death if you don't retreat now.  It may even be too late...");
-	XAT(R_POISON, 80);
+	XAT(BR_POISON, 80);
 	COE(CET_MODIFY_R_POISON, 10);
 
 
@@ -264,7 +264,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "2d3");
 	XM("1d2", "1d1", "2d3", "0d0");
 	XD("White foam drips from the jaws of this dog.  The wild look in its eyes indicate that something is not quite right, and it snaps at everything and everyone around it with the strength born of its diseased madness.");
-	XAT(R_DISEASE, 50);
+	XAT(BR_DISEASE, 50);
 	COE(CET_DISEASE, 50);
 
 	XVW(CN_WOLF, "wolf", 'C', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_CANINE);
@@ -296,8 +296,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("6d5", "4d6");
 	XM("2d8", "3d4", "7d4", "7d4");
 	XD("As you gaze on this creature its features shift from wolf to man and back again.  Product of a dreadful experiment in magic, the werewolf hunts in the caves of Avanor for food.  It is said that silver weapons are the only true way to defeat a werewolf.");
-	XAT(R_DISEASE, 100);
-	XAT(R_PARALYSE, 20);
+	XAT(BR_DISEASE, 100);
+	XAT(BR_PARALYSE, 20);
 	COE(CET_PARALYSE, 50);
 	COE(CET_MODIFY_R_PARALYSE, 5);
 	COE(CET_DISEASE, 50);
@@ -316,7 +316,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("3d5", "1d3");
 	XM("1d2", "0d0", "1d3", "0d0");
 	XD("This quivering gelatinous mass slowly oozes across the floor towards you.  It appears almost that two separate intelligences control the creature, straining to separate from each other.  It is said that the gray ooze steals life energy from those it attacks in order to reproduce.  It also is rumored to have a deadly poison.");
-	XAT(R_POISON, 15);
+	XAT(BR_POISON, 15);
 	COE(CET_MODIFY_R_POISON, 1);
 	COE(CET_POISON, 10);
 
@@ -329,8 +329,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "2d15");
 	XM("1d1", "1d10", "1d8", "0d0");
 	XD("As you watch this clear mass you realize that you can still see the remains of its last meal suspended inside.  The skull seems to laugh at you as ready your weapon to face this three foot oozing mass.  The skelatal hand still grips the remains of a sword, slowly being digested.");
-	XAT(R_PARALYSE, 100);
-	XAT(R_ACID, 100);
+	XAT(BR_PARALYSE, 100);
+	XAT(BR_ACID, 100);
 
 	////////////////////////////////////////////////////////////////
 	// INSECTS
@@ -355,7 +355,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("3d5", "1d3");
 	XM("1d2", "0d0", "1d3", "0d0");
 	XD("These eight legged monstrosities escaped from a long dead wizard's laboratory and made homes in the deep caves of the mountains surrounding the valley.  Their webs are capable of ensnaring an unwary adventurer and their venom can be quite deadly.");
-	XAT(R_POISON, 15);
+	XAT(BR_POISON, 15);
 	COE(CET_MODIFY_R_POISON, 1);
 	COE(CET_POISON, 10);
 
@@ -368,8 +368,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("3d5", "1d6");
 	XM("1d1", "0d0", "1d3", "0d0");
 	XD("These spiders live in nooks and crannies in the rock and can pop into view when least expected.  Unable to spin webs, they rely on brute strength and venom to overcome a victim.  Creatures may be paralyzed by their venom only to be hauled back to a hole and eaten alive by the tarantula's young.");
-	XAT(R_POISON, 40);
-	XAT(R_PARALYSE, 10);
+	XAT(BR_POISON, 40);
+	XAT(BR_PARALYSE, 10);
 	COE(CET_MODIFY_R_POISON, 2);
 	COE(CET_POISON, 15);
 
@@ -382,8 +382,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("5d5", "1d6");
 	XM("1d1", "0d0", "1d5", "0d0");
 	XD("This creature is a foot long and colored a dusty brown with a tail arching high over it's back.  Scorpions use the poison in their stinging tail as well as formidable pincers as a powerful attack.  They also have a strong exoskeleton which protects them from many attacks.");
-	XAT(R_POISON, 60);
-	XAT(R_PARALYSE, 20);
+	XAT(BR_POISON, 60);
+	XAT(BR_PARALYSE, 20);
 	COE(CET_MODIFY_R_POISON, 3);
 	COE(CET_POISON, 20);
 	COE(CET_PARALYSE, 20);
@@ -397,8 +397,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("10d5", "1d10");
 	XM("1d1", "0d0", "1d7", "0d0");
 	XD("Black scorpions hide in the shadows of caves and will often flee from a light source.  When cornered, they fight with both pincers and their tail with great agility.  Though not as strong as their dusty cousins, they do move quite a bit faster.");
-	XAT(R_POISON, 80);
-	XAT(R_PARALYSE, 30);
+	XAT(BR_POISON, 80);
+	XAT(BR_PARALYSE, 30);
 	COE(CET_MODIFY_R_POISON, 5);
 	COE(CET_POISON, 30);
 	COE(CET_PARALYSE, 30);
@@ -412,10 +412,10 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("20d5", "1d20");
 	XM("1d1", "0d0", "1d9", "0d0");
 	XD("This scorpion originally evolved with this coloring in order to hide among plant flowers and surprise prey.  These scorpions are extremely aggressive and dangerous.  Sometimes they still carry exotic pollen from the flowers on the tip of their tails.");
-	XAT(R_POISON, 100);
-	XAT(R_PARALYSE, 40);
-	XAT(R_STUN, 40);
-	XAT(R_CONFUSE, 40);
+	XAT(BR_POISON, 100);
+	XAT(BR_PARALYSE, 40);
+	XAT(BR_STUN, 40);
+	XAT(BR_CONFUSE, 40);
 	COE(CET_MODIFY_R_POISON, 10);
 	COE(CET_POISON, 50);
 	COE(CET_PARALYSE, 50);
@@ -430,7 +430,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d3", "1d3");
 	XM("1d1", "1d8", "1d3", "0d0");
 	XD("Usually living only in depths of the earth, fire beetles were drawn to the surface by the intense energies used to raise the mountains surrounding Avanor.  Their normal habitat has made them immune to great heat and their thick exo-skeleton protects them from many physical attacks.");
-	XAT(R_FIRE, 100);
+	XAT(BR_FIRE, 100);
 	COE(CET_MODIFY_R_FIRE, 2);
 	COE(CET_MODIFY_R_COLD, -1);
 
@@ -444,7 +444,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d5", "1d10");
 	XM("1d1", "4d4", "1d5", "0d0");
 	XD("Frost beetles are characterized by a white shell and faint blue markings.  They usually live high in the mountains upon snow capped peaks.  With the release of power in the mountain chain, many of them fled to the caverns below to seek shelter.  They are immune to cold attacks and their thick exo-skeleton protects them from many physical attacks.");
-	XAT(R_COLD, 100);
+	XAT(BR_COLD, 100);
 	COE(CET_MODIFY_R_COLD, 2);
 	COE(CET_MODIFY_R_FIRE, -1);
 
@@ -458,7 +458,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d5", "1d12");
 	XM("1d1", "5d4", "1d8", "0d0");
 	XD("Green beetles are often seen in packs.  Their exo-skeleton is not as tough as the frost or fire beetle, but they are able to shoot streams of acid at their target with great accuracy.");
-	XAT(R_ACID, 100);
+	XAT(BR_ACID, 100);
 	COE(CET_MODIFY_R_ACID, 2);
 	COE(CET_MODIFY_STOMACH, 1);
 
@@ -472,8 +472,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d10", "2d15");
 	XM("1d1", "6d5", "1d8", "0d0");
 	XD("This beetle scuttles around with great energy, moving half and again as fast as any other beetle you have seen.  Its shell seems thin but the formidable jaws leave no doubt of the damage it can inflict.  Its large antennae make it able to detect creatures around it, visible or not.");
-	XAT(R_POISON, 30);
-	XAT(R_PARALYSE, 70);
+	XAT(BR_POISON, 30);
+	XAT(BR_PARALYSE, 70);
 	COE(CET_MODIFY_R_PARALYSE, 10);
 	COE(CET_MODIFY_STOMACH, 5);
 
@@ -487,8 +487,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d10", "3d15");
 	XM("1d1", "6d7", "1d10", "0d0");
 	XD("Extremely heavily armored, the death beetle is a dark blue color bordering on black.  The white markings on it's shell resemble bleached skulls.  Although slow moving, the death beetles venom is extremely potent and unless treated immeadiately can kill an individual within minutes.");
-	XAT(R_POISON, 50);
-	XAT(R_PARALYSE, 100);
+	XAT(BR_POISON, 50);
+	XAT(BR_PARALYSE, 100);
 	COE(CET_MODIFY_R_PARALYSE, 15);
 	COE(CET_MODIFY_STOMACH, 10);
 
@@ -502,7 +502,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d5", "1d30");
 	XM("5d5", "1d1", "1d2", "0d0");
 	XD("The buzz in the air reminds you more of a hailstorm on a tin roof than an insect but as the giant bee rounds the corner ahead you can see why.  Three feet long and armed with a six inch stinger, this is a far cry from a normal bee.  It doesn't look like it is happy to see you in its territory either.");
-	XAT(R_POISON, 100);
+	XAT(BR_POISON, 100);
 
 	XVW(CN_GIANT_WASP, "giant wasp", 'b', xBROWN, CPT_IT, CRL_AVG, CR_INSECT);
 	XBA("1d100+200", "0d0+1000", "1d300+600", CS_VERY_SMALL, "5d4");
@@ -513,7 +513,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d8", "1d10");
 	XM("7d5", "1d1", "1d2", "0d0");
 	XD("Wasps tend to build nests in areas inaccessible to larger creatures and many wasps can sometimes be found clustered around the opening.  The wasp is stronger than the bee and generally more irritable.  The thin waist of the wasp is a weak point and can be severed with a carefully aimed blow.");
-	XAT(R_POISON, 100);
+	XAT(BR_POISON, 100);
 
 	XVW(CN_CENTIPEDE, "centipede", 'S', xLIGHTGRAY, CPT_IT, CRL_VERY_LOW, CR_INSECT);
 	XBA("1d30+80", "0d0+1000", "1d100+950", CS_VERY_SMALL, "3d4");
@@ -524,7 +524,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d3", "1d3");
 	XM("1d4", "1d1", "1d2", "0d0");
 	XD("Marching forward the centipede comes into view.  Low to the ground and a dark red color, it clearly advertises the fact that it carries poison.  The multiple legs make it easy for the centipede to capture its prey.");
-	XAT(R_PARALYSE, 3);
+	XAT(BR_PARALYSE, 3);
 
 	XVW(CN_STEGOCENTIPEDE, "stegocentipede", 'S', xDARKGRAY, CPT_IT, CRL_LOW, CR_INSECT);
 	XBA("1d30+80", "0d0+1000", "1d100+950", CS_VERY_SMALL, "3d4");
@@ -535,7 +535,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d3", "2d3");
 	XM("1d8", "1d2", "1d4", "0d0");
 	XD("Slower than their smaller cousins, the stegocentipede is also that much more heavily armored.  It uses its spiked tail to its advantage to knock prey down before attempting to poison it.");
-	XAT(R_PARALYSE, 7);
+	XAT(BR_PARALYSE, 7);
 
 	XVW(CN_DUNGEON_CRAWLER, "dungeon crawler", 'c', xWHITE, CPT_IT, CRL_VERY_LOW, CR_INSECT);
 	XBA("1d10+50", "0d0+1000", "1d200+300", CS_VERY_SMALL, "10d2");
@@ -546,7 +546,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "1d3");
 	XM("1d1", "1d4", "1d2", "0d0");
 	XD("This filthy little insect wanders the floor.  Evolving in the caves, it almost completely forsook the use of eyes, relying on other senses to help it through the darkness.  Usually more of a nuisance than anything else, many adventurers simply crush them with a boot as they walk past.");
-	XAT(R_POISON, 1);
+	XAT(BR_POISON, 1);
 
 	XVW(CN_GIANT_CRAWLER, "giant crawler", 'c', xLIGHTGRAY, CPT_IT, CRL_AVG, CR_INSECT);
 	XBA("1d10+50", "0d0+1000", "1d200+300", CS_SMALL, "10d4");
@@ -557,8 +557,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "1d3");
 	XM("1d1", "1d8", "1d4", "0d0");
 	XD("This appears to be a mound of flesh approximately a foot high.  Only as it moves towards you do you realize that it still lives and sees you as viable prey.  The greyish green surface undulates hypnotically as you watch it ooze its way across the floor.");
-	XAT(R_PARALYSE, 40);
-	XAT(R_POISON, 60);
+	XAT(BR_PARALYSE, 40);
+	XAT(BR_POISON, 60);
 
 	XVW(CN_CARRION_CRAWLER, "carrion crawler", 'c', xDARKGRAY, CPT_IT, CRL_AVG, CR_INSECT);
 	XBA("1d10+50", "0d0+1000", "1d100+200", CS_LARGE, "20d4");
@@ -569,8 +569,8 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("2d4", "2d15");
 	XM("1d1", "1d10", "1d8", "0d0");
 	XD("This giant bug has numerous paralyzing tentacles just waiting for you to wander into range.  They live mostly in subterranean caverns and feed on dead or dying matter, but they will attack if hungry...");
-	XAT(R_PARALYSE, 100);
-	XAT(R_POISON, 100);
+	XAT(BR_PARALYSE, 100);
+	XAT(BR_POISON, 100);
 
 	////////////////////////////////////////////////////////////////
 	// KOBOLDS
@@ -1005,7 +1005,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d3", "2d3");
 	XM("1d3", "1d2", "2d9", "1d3");
 	XD("The zombie stumbles across the floor, leaving a trail of decaying flesh behind it.  Though muscles makes the zombie stronger, the magics that animate it can do nothing to preserve the diseased hulk.  The stench is almost unbearable.");
-	XAT(R_PARALYSE, 2);
+	XAT(BR_PARALYSE, 2);
 
 	XVW(CN_GHOUL, "ghoul", 'z', xLIGHTGRAY, CPT_IT, CRL_LOW, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
@@ -1016,7 +1016,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("1d3", "2d3");
 	XM("1d2", "1d4", "3d9", "1d3");
 	XD("The pasty white flesh of the ghoul is the result of numerous alchemical and magical experiments.  The preserved flesh makes it strong and tough but not much else.  Ghouls are not smart and have been observed attacking walls that stand in their way.");
-	XAT(R_PARALYSE, 10);
+	XAT(BR_PARALYSE, 10);
 
 	XVW(CN_GHOST, "ghost", 'G', xLIGHTGRAY, CPT_IT, CRL_ABOVE_LOW, CR_UNDEAD);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
@@ -1062,7 +1062,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("4d6", "3d5");
 	XM("8d5", "0d0", "3d5", "10d10");
 	XD("This foul creature of the night drinks of its victims for sustenance, slowly draining their victim of life until they also become a vampire.  They possess numerous abilities, and have much power in the undead realms.  They fear light and holy powers, but are immune to many non-magical weapons.");
-	XAT(R_PARALYSE, 20);
+	XAT(BR_PARALYSE, 20);
 	XL(SKT_BACKSTABBING, SKILL_MAX_LEVEL);
 	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
 	XL(SKT_CONCENTRATION, SKILL_MAX_LEVEL);
@@ -1241,9 +1241,9 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XC("0d0+10", "3d15");
 	XM("0d0-10", "0d0+15", "5d5+100", "5d5+100");
 	XD("How he got to the mushroom caves is anyones guess but it is commonly believed that some kobold shaman got a little carried away with his magic and summoned Beelzevile from the netherworld.  Standing 10 feet high and carrying a reek of sulphur about him, he strides around the cavern, furious at being trapped in this cold place.  His massive claws can shred flesh and steel alike.  You catch a glimpse of a magnificent ring on one of his hands as he noisely chews on the haunch of a kobold who wandered a little too close.");
-	XAT(R_POISON, 80);
-	XAT(R_FIRE, 100);
-	XAT(R_COLD, 100);
+	XAT(BR_POISON, 80);
+	XAT(BR_FIRE, 100);
+	XAT(BR_COLD, 100);
 
 	XVW(CN_XSHEE_VOO, "Xshee-Voo, the Cyclope", 'H', xLIGHTMAGENTA, CPT_NAMED_HE, CRL_UNIQUE, CR_GIANT);
 	XBA("1d30+120", "0d0+900", "0d0+900", CS_LARGE, "1d400+3000");

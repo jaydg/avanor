@@ -85,7 +85,7 @@ enum EXTENDED_ATTACK
 struct MELEE_ATTACK
 {
 	EXTENDED_ATTACK e_attack;
-	RESISTANCE r_attack;
+	BRAND_TYPE br_attack;
 	int prob; //0..100
 };
 
@@ -112,18 +112,6 @@ struct ACTION_DATA
 
 
 typedef int (ITEM_FILTR)(XItem *);
-
-struct XTREQUEST
-{
-	int max_rng;
-	ITEM_FILTR * item_filtr;
-};
-
-struct XTRESPONSE
-{
-	XPoint pt;
-	XObject * o;
-};
 
 enum MISSILE_FL_TYPE
 {
@@ -160,6 +148,31 @@ struct DAMAGE_DATA //struct for inflict damage to creature
 	const char * attacker_name; //if specified this name, than write it instead attacker name
 	int damage;
 };
+
+
+//*******************************************************************************//
+// We have to create one unificated function to damage any creature
+
+enum DAMAGE_FLAGS
+{
+	DF_BLOCKABLE	= 0x0001, //this attack can be blocked by shield
+	DF_AFFECT_HIT	= 0x0002, //this attack can be avoided also it can be exact.
+	DF_AFFECT_PV	= 0x0004, //this attack can be stopped by armour
+
+	DF_MAGIC_BOLT	= DF_BLOCKABLE | DF_AFFECT_HIT | DF_AFFECT_PV,
+};
+
+struct DAMAGE_DATA_EX
+{
+	XCreature * attacker; //who is inflicting damage (to increase exp). can be NULL
+	const char * attack_name; //Attacking Item (e.g. Arrow, Bolt of Fire)
+	int damage; //suposed damage
+	int attack_HIT; //the target can avoid attack.
+	unsigned int attack_brand; //such a cold, demon slaying,
+	unsigned int flags; //see DAMAGE_FLAGS
+	XItem * weapon; //used only in melee combat (can be undefined if defined attack_name)
+};
+
 
 struct _CREATURE;
 
@@ -252,7 +265,6 @@ public:
 
 	virtual int GetTarget(TARGET_REASON tr, XPoint * pt = NULL, int max_range = 0, XObject ** back = NULL);//Get target for a spell
 	virtual XItem * onIdentifyItem() {return NULL;}
-	virtual int TargetOp(TARGET_REASON tr, XTREQUEST * rq, XTRESPONSE * rp);
 	virtual XItem * SelectItem(ITEM_FILTR * filtr) {return NULL;}
 
 	int Shoot(int tx, int ty);
@@ -298,17 +310,13 @@ public:
 	int GetMaxPP();
 	int GetExp();
 	int GetCreatureStrength();
-//	static int AttackCreature(ATTACK_DATA * pData);
-	static int InflictDamage(DAMAGE_DATA * pData);
-	int AttackCreature(XCreature * target, int dmg); //hit tgt for dmg damage!
-	int AttackCreature(XCreature * target, int dmg, RESISTANCE tr, const char * magic_name); //hit tgt for dmg damage!
-	int onMagicDamage(int dmg, RESISTANCE tr);
-	int CauseEffect(XCreature * attacker, int dmg, RESISTANCE tr);
-	int CauseEffect(int dmg, BRAND_TYPE brt);
-	int onAttacked(XCreature * attacker, int dmg);
-	int onAttackedByMagic(XCreature * attacker, int dmg, RESISTANCE tr, const char * magic_name);
 
-	virtual char * GetMeleeAttackMsg() {return "attack";}
+	int InflictDamage(DAMAGE_DATA_EX * pData);
+	int onMagicDamage(int dmg, RESISTANCE tr);
+	int CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker);
+	void CausePostEffect(int dmg, BRAND_TYPE brt, XCreature * attacker);
+
+	virtual char * GetMeleeAttackMsg(XItem * weapon);
 
 	virtual void FirstStep(int _x, int _y, XLocation * _l);
 	virtual void LastStep();

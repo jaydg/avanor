@@ -40,6 +40,7 @@ public:
 	void Setup(const char * str);
 	void Setup(XDice * d) { Setup(d->X, d->Y, d->Z); }
 	void Add(XDice * d) {X += d->X; Y = (Y + d->Y) / 2; Z += d->Z;}
+	void Add(int _X, int _Y, int _Z) {X += _X; Y += _Y; Z += _Z;}
 	int Throw();
 	int S; //generated result by throw
 	int X;

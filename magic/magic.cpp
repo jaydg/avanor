@@ -345,6 +345,13 @@ void XMagic::Learn(SPELL_NAME spell)
 		spells.Add(new XSpell(spell));
 }
 
+XSpell * XMagic::GetSpell(SPELL_NAME spell)
+{
+	for (XList<XSpell *>::iterator tsp = spells.begin(); tsp != spells.end(); tsp++)
+		if (tsp->GetSpellName() == spell)
+			return tsp;
+	return NULL;
+}
 
 
 char * mg_name_str[] = {

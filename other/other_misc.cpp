@@ -63,7 +63,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 			isMagic = true;
 			break;
 
-/*		case TT_ARROW:
+		case TT_ARROW:
 			color = xBROWN;
 			if (trap_item == NULL)
 			{
@@ -76,7 +76,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 			color = xLIGHTGRAY;
 			if (trap_item == NULL)
 			{
-				trap_item = ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000);
+				trap_item = ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000);
 				trap_item->quantity = vRand(5) + 5;
 			}
 			break;
@@ -85,7 +85,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 			color = xLIGHTGREEN;
 			isMagic = true;
 			break;
-			*/
+			
 		default:
 			color = xBROWN;
 			isMagic = true;
@@ -94,7 +94,10 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 	}
 
 	view = '^';
-	isVisibleForHero = 0;
+	if (owner && owner->isHero())
+		isVisibleForHero = 1;
+	else
+		isVisibleForHero = 0;
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
 	strcpy(name, "trap");
@@ -180,33 +183,40 @@ int XTrap::Activate(XCreature * cr)
 		switch (trap_type)
 		{
 			case TT_ARROW:
-				drop_item = (XItem *)trap_item->MakeCopy();
-				drop_item->quantity = 1;
-				if (trap_item->quantity-- == 0)
-					isTrapShouldDestroyed = true;
-				dmg = drop_item->dice.Throw();
-				if (XMapObject::isVisible())
-				{
-					msgwin.Add("An arrow hits");
-					msgwin.AddLast(cr->GetNameEx(CRN_T3));
-				}
-				break;
-
 			case TT_SPEAR:
 				drop_item = (XItem *)trap_item->MakeCopy();
 				drop_item->quantity = 1;
 				if (trap_item->quantity-- == 0)
 					isTrapShouldDestroyed = true;
-				dmg = drop_item->dice.Throw();
-				if (XMapObject::isVisible())
+				
+				DAMAGE_DATA_EX dd;
+				dd.damage		= drop_item->dice.Throw();
+				dd.attacker		= owner;
+				//temporary soulution, should be replaced in future on general solution
+				//which returns name of item with or without 'a' 
+				switch (drop_item->it)
 				{
-					msgwin.Add("A spear hits");
-					msgwin.AddLast(cr->GetNameEx(CRN_T3));
+					case IT_ARROW: dd.attack_name = "the arrow"; break;
+					case IT_QUARREL: dd.attack_name = "the quarell"; break;
+					case IT_SHORTSPEAR: dd.attack_name = "the spear"; break;
+					case IT_LONGSPEAR: dd.attack_name = "the spear"; break;
 				}
+				dd.attack_HIT	= 30;
+				dd.attack_brand	= drop_item->brt;
+				dd.flags		= DF_MAGIC_BOLT;
+				cr->InflictDamage(&dd);
+				break;
+
+
+				drop_item = (XItem *)trap_item->MakeCopy();
+				drop_item->quantity = 1;
+				if (trap_item->quantity-- == 0)
+					isTrapShouldDestroyed = true;
+				dmg = drop_item->dice.Throw();
 				break;
 		}
-		if (trap_item)
-			trap_item->Drop(l, x, y);
+		if (drop_item)
+			drop_item->Drop(l, x, y);
 		
 		if (isTrapShouldDestroyed)
 		{

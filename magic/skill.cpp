@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "skill.h"
 #include "creature.h"
 #include "other_misc.h"
+#include "xgui.h"
 
 REGISTER_CLASS(XSkill);
 
@@ -261,8 +262,65 @@ int XSkill::UseDisarm(XCreature * user)
 	return 1;
 }
 
+
+struct TRAP_CREATE_REC
+{
+	char * name;
+	int level;
+	unsigned int var;
+} trap_create_rec[] = {
+	{"Arrow trap", 0, IT_ARROW},
+	{"Spear trap", 2, IT_SHORTSPEAR},
+	{"Magic Arrow trap", 4, SPELL_MAGIC_ARROW},
+	{"Fire Bolt trap", 6, SPELL_FIRE_BOLT},
+	{"Acid Bolt trap", 8, SPELL_ACID_BOLT},
+	{NULL, 1000, 0}
+};
+
+
 int XSkill::UseCreate(XCreature * user)
 {
+	XGuiList list;
+	int i = 0;
+	while (trap_create_rec[i].name && trap_create_rec[i].level < level)
+	{
+		list.AddItem(new XGuiItem_SimpleSelect(trap_create_rec[i].name), 0);
+		i++;
+	}
+	int ch = list.Run();
+	if (ch == 0 || ch == 1)
+	{
+
+	} else if (ch == 2 || ch == 3 || ch == 4)
+	{
+		XSpell * sp = user->m->GetSpell((SPELL_NAME)trap_create_rec[ch].var);
+		if (sp)
+		{
+			if (sp->GetManaCost() * 5 > user->_PP)
+			{
+				msgwin.Add("You have no enoght mana!");
+			} else
+			{
+				switch (trap_create_rec[ch].var)
+				{
+					case SPELL_MAGIC_ARROW:
+						new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_MAGICARROW, user);
+						break;
+					case SPELL_FIRE_BOLT:
+						new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_FIREBOLT, user);
+						break;
+					case SPELL_ACID_BOLT:
+						new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ACIDBOLT, user);
+						break;
+				}
+				msgwin.Add("You have successfuly create a trap!");
+			}
+		} else
+		{
+			msgwin.Add("You have to learn spell first!");
+		}
+	}
+
 	return 1;
 }
 

@@ -147,7 +147,7 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
 }
 
 
-int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, RESISTANCE r, char * msg)
+int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg)
 {
 	XCreature * target = pData->l->map->GetMonster(pData->target_x, pData->target_y);
 	if (pData->l->map->GetVisible(pData->target_x, pData->target_y) && __animation_flag)
@@ -162,22 +162,21 @@ int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, RESISTA
 	{
 		XDice d(X, Y, Z); 
 
-		msgwin.Add(pData->caller->GetNameEx(CRN_T1));
-		msgwin.Add(msg);
-		if (target->isHero())
-			msgwin.AddLast(target->GetNameEx(CRN_T1));
-		else
-			msgwin.Add(target->GetNameEx(CRN_T1));
-
-		pData->caller->AttackCreature(target, d.S, r, pData->caller->GetNameEx(CRN_T1));
-		pData->caller->onHeal(d.S);
+		DAMAGE_DATA_EX dd;
+		dd.damage		= d.S;
+		dd.attacker		= pData->caller;
+		dd.attack_name	= msg;
+		dd.attack_HIT	= 1000;
+		dd.attack_brand	= brt;
+		dd.flags		= DF_MAGIC_BOLT;
+		target->InflictDamage(&dd);
 		return 1;
 	} else
 		return 0;
 }
 
 
-int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, RESISTANCE r, char * msg)
+int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg)
 {
 	MF_DATA mfd;
 	mfd.arrow_type = MFT_BALL;
@@ -194,24 +193,15 @@ int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, RESISTAN
 	XCreature * target;
 	if (target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y))
 	{
-		if (target->isVisibleArea(pData->call_x, pData->call_y) || target->isVisibleArea(pData->target_x, pData->target_y))
-		{
-			msgwin.Add(msg);
-			msgwin.Add("hits");
-			if (target->isHero())
-				msgwin.AddLast(target->GetNameEx(CRN_T1));
-			else
-				msgwin.Add(target->GetNameEx(CRN_T1));
-		}
-			
 		XDice d(X, Y, Z);
-		int dmg = target->CauseEffect(pData->caller, d.S, r);
-		DAMAGE_DATA dd;
-		dd.attacker = pData->caller;
-		dd.attacker_name = msg;
-		dd.damage = dmg;
-		dd.target = target;
-		XCreature::InflictDamage(&dd);
+		DAMAGE_DATA_EX dd;
+		dd.damage		= d.S;
+		dd.attacker		= pData->caller;
+		dd.attack_name	= msg;
+		dd.attack_HIT	= 1000;
+		dd.attack_brand	= brt;
+		dd.flags		= DF_MAGIC_BOLT;
+		target->InflictDamage(&dd);
 		return 1;
 	}
 	return 0;
@@ -254,6 +244,7 @@ RESULT XEffect::Make(XCreature * caster, EFFECT effect, int power)
 int XEffect::Make(EFFECT_DATA * pData)
 {
 	int flag = 0;
+	char buf[256];
 	
 	switch (pData->effect)
 	{
@@ -313,40 +304,40 @@ int XEffect::Make(EFFECT_DATA * pData)
 
 		//combat - touch			
 		case E_BURNING_HANDS:
-			return Touch(pData, 1, pData->power, 5, xRED, R_FIRE, pData->caller->GetVerb("touch"));
+			return Touch(pData, 1, pData->power, 5, xRED, BR_FIRE, "the ball of fire");
 			break;
 
 		case E_ICE_TOUCH:
-			return Touch(pData, 1, pData->power, 7, xWHITE, R_COLD, pData->caller->GetVerb("touch"));
+			return Touch(pData, 1, pData->power, 7, xWHITE, BR_COLD, "the cone of ice");
 			break;
 
 		case E_DRAIN_LIFE:
 			{
-				char buf[256];
-				sprintf(buf, "%s life from", pData->caller->GetVerb("drain"));
-				return Touch(pData, 1, pData->power, 9, xDARKGRAY, R_BLACK, buf);
+				//char buf[256];
+				//sprintf(buf, "%s life from", pData->caller->GetVerb("drain"));
+				return Touch(pData, 1, pData->power, 9, xDARKGRAY, BR_DRAIN_LIFE, "the black sphere");
 			}
 			break;
 
 		//combat - bolts
 		case E_MAGIC_ARROW:
-			return Bolt(pData, 1, pData->power / 2, 0, xBROWN, R_EARTH, "the small arrow");
+			return Bolt(pData, 1, pData->power / 2, 0, xBROWN, BR_EARTH, "the small arrow");
 			break;
 
 		case E_FIRE_BOLT:
-			return Bolt(pData, 1, pData->power, 3, xRED, R_FIRE, "the small ball of fire");
+			return Bolt(pData, 1, pData->power, 3, xRED, BR_FIRE, "the small ball of fire");
 			break;
 
 		case E_ICE_BOLT:
-			return Bolt(pData, 1, pData->power, 5, xWHITE, R_COLD, "the small cone of ice");
+			return Bolt(pData, 1, pData->power, 5, xWHITE, BR_COLD, "the small cone of ice");
 			break;
 
 		case E_LIGHTNING_BOLT:
-			return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, R_AIR, "the bright spark");
+			return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, BR_LIGHTNING, "the bright spark");
 			break;
 
 		case E_ACID_BOLT:
-			return Bolt(pData, 3, pData->power, 15, xGREEN, R_ACID, "the small ball of viscous liquid");
+			return Bolt(pData, 3, pData->power, 15, xGREEN, BR_ACID, "the small ball of viscous liquid");
 			break;
 
 // Misc	modifers

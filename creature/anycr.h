@@ -124,7 +124,7 @@ public:
 	static void S(const char * stats);
 	static void R(const char * resists);
 	static void Combat(const char * hit, const char * dice);
-	static void Melee(RESISTANCE r, int prob);
+	static void Melee(BRAND_TYPE br, int prob);
 	static void Melee(EXTENDED_ATTACK ea, int prob);
 	static void Main(const char * dv, const char * pv, const char * hp, const char * pp);
 	static void D(const char * descr);

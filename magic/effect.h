@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "resist.h"
 #include "mod_defs.h"
 #include "defs.h"
+#include "itemdef.h"
 
 enum EFFECT_REQ
 {
@@ -94,8 +95,8 @@ class XEffect
 	static int Heal(XCreature * caster, int X, int Y, int Z);
 	static int Cure(XCreature * caster, int X, int Y, int Z);
 	static int Mana(XCreature * caster, int X, int Y, int Z);
-	static int Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, RESISTANCE r, char * msg);
-	static int Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, RESISTANCE r, char * msg);
+	static int Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg);
+	static int Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg);
 public:
 	static int Make(EFFECT_DATA * pData);
 	static RESULT Make(XCreature * caster, EFFECT effect, int power);

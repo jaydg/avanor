@@ -1551,68 +1551,77 @@ int XHero::WhichDirection(XPoint * pt, int flag)
 
 int XHero::XShoot()
 {
-        XItem * missile = GetItem(BP_MISSILE);
-        if (!missile) //if no missile, try to load them
+    XItem * missile = GetItem(BP_MISSILE);
+	XMissileWeapon * missilew = (XMissileWeapon *)GetItem(BP_MISSILEWEAPON);
+    if (!missile) //if no missile, try to load them
+	{
+		for (XItemList::iterator it = contain.begin(); it != contain.end(); it++)
 		{
-			for (XItemList::iterator it = contain.begin(); it != contain.end(); it++)
+			if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missilew))
 			{
-				if (it->im & IM_MISSILE)
+				msgwin.ClrMsg();
+				msgwin.Add("Load");
+				char buf[256];
+				it->toString(buf);
+				msgwin.Add(buf);
+				msgwin.Add("[" MSG_CYAN "Y" MSG_LIGHTGRAY ", " MSG_CYAN "N" MSG_LIGHTGRAY ", " MSG_CYAN "Esc" MSG_LIGHTGRAY "]?");
+				vRefresh();
+				int ch = vGetch();
+				if (ch == 'y' || ch == 'Y' || ch == ' ' || ch == KEY_ENTER)
 				{
 					msgwin.ClrMsg();
-					msgwin.Add("Load");
-					char buf[256];
-					it->toString(buf);
-					msgwin.Add(buf);
-					msgwin.Add("[" MSG_CYAN "Y" MSG_LIGHTGRAY ", " MSG_CYAN "N" MSG_LIGHTGRAY ", " MSG_CYAN "Esc" MSG_LIGHTGRAY "]?");
 					vRefresh();
-					int ch = vGetch();
-					if (ch == 'y' || ch == 'Y' || ch == ' ' || ch == KEY_ENTER)
-					{
-						msgwin.ClrMsg();
-						vRefresh();
-						XBodyPart * bp = GetBodyPart(BP_MISSILE);
-						if (bp->Item())
-							return 0;
-						else
-						{
-							XItem * tmp = it;
-							contain.erase(it);
-							bp->Wear(tmp);
-							break;
-						}
-					} else if (ch == KEY_ESC)
-					{
-						msgwin.ClrMsg();
-						vRefresh();
+					XBodyPart * bp = GetBodyPart(BP_MISSILE);
+					if (bp->Item())
 						return 0;
+					else
+					{
+						XItem * tmp = it;
+						contain.erase(it);
+						bp->Wear(tmp);
+						break;
 					}
+				} else if (ch == KEY_ESC)
+				{
+					msgwin.ClrMsg();
+					vRefresh();
+					return 0;
 				}
 			}
-			msgwin.ClrMsg();
-			vRefresh();
 		}
+		msgwin.ClrMsg();
+		vRefresh();
+	}
 
-		missile = GetItem(BP_MISSILE);
-		if (!missile)
-			return 0;
+	missile = GetItem(BP_MISSILE);
+	if (!missile || !XMissile::isProperWeapon(missile, missilew))
+	{
+		if (missilew)
+		{
+			msgwin.Add("You need a proper ammo to shoot from");
+			msgwin.AddLast(missilew->name);
+		} else
+			msgwin.Add("You need something to throw.");
+		return 0;
+	}
 
-        XPoint pt;
-        int hit = 0;
-        int range = 0;
-        XDice dmg;
-        GetRangeAttackInfo(&range, &hit, &dmg);
+    XPoint pt;
+    int hit = 0;
+    int range = 0;
+    XDice dmg;
+    GetRangeAttackInfo(&range, &hit, &dmg);
 
 
-        if (Targeting(range, &pt) != ABORT)
-        {
-                Shoot(pt.x, pt.y);
-                if (l->map->GetMonster(pt.x, pt.y) && !(pt.x == x && pt.y == y))
-                        target = l->map->GetMonster(pt.x, pt.y);
-                else
-                        target = NULL;
-                return 1;
-        } else
-                return 0;
+    if (Targeting(range, &pt) != ABORT)
+    {
+        Shoot(pt.x, pt.y);
+        if (l->map->GetMonster(pt.x, pt.y) && !(pt.x == x && pt.y == y))
+            target = l->map->GetMonster(pt.x, pt.y);
+        else
+            target = NULL;
+        return 1;
+    } else
+	    return 0;
 }
 
 int XHero::Targeting(int range, XPoint * pt)

@@ -1072,7 +1072,8 @@ void XCreature::MoveStairWay()
 void XCreature::GetRangeAttackInfo(int * range, int * hit, XDice * dmg)
 {
 	XItem * missile = GetItem(BP_MISSILE);
-	if (!missile)
+	XItem * bow = GetItem(BP_MISSILEWEAPON);
+	if (!missile || !XMissile::isProperWeapon(missile, bow))
 	{
 		*range = 0;
 		*hit = 0;
@@ -1080,14 +1081,13 @@ void XCreature::GetRangeAttackInfo(int * range, int * hit, XDice * dmg)
 		return;
 	}
 
-	XItem * bow =  GetItem(BP_MISSILEWEAPON);
 	XSkill * skill = sk->GetSkill(SKT_ARCHERY);
 	
 	int str = s->Get(S_STR);
 	int dex = s->Get(S_DEX);
 
 	*range = missile->RNG;
-	*hit = dex / 3;
+	*hit = dex / 2 + missile->_HIT;
 	dmg->Setup(&(missile->dice));
 
 	if (bow)
@@ -1147,6 +1147,17 @@ int XCreature::Shoot(int tx, int ty)
 		}
 	}
 
+	// split missile
+	XItem * msl = (XItem *)missile->MakeCopy();
+	msl->quantity = 1;
+
+	if (--missile->quantity <= 0)
+	{
+		XBodyPart * xbp = GetBodyPart(BP_MISSILE);
+		xbp->UnWear()->Invalidate();
+	}
+
+	// fly away
 	MF_DATA mfd;
 	mfd.arrow_type = MFT_ARROW;
 	mfd.arrow_color = xBROWN;
@@ -1158,96 +1169,37 @@ int XCreature::Shoot(int tx, int ty)
 	mfd.to_hit = hit;
 	mfd.max_range = range;
 	MF_RESULT res = MissileFlight(&mfd);
-	if (res == MF_BLOCK && (vis1 || vis2))
+
+	if (res == MF_HIT)
 	{
-		XCreature * tgt = l->map->GetMonster(mfd.pt.x, mfd.pt.y);
-		msgwin.Add(tgt->GetNameEx(CRN_T1));
-		msgwin.Add(tgt->GetVerb("deflect"));
-		msgwin.Add(missile->name);
-		msgwin.Add("with");
-		msgwin.Add(tgt->GetNameEx(CRN_T4));
-		msgwin.Add("shield.");
-	} else if (res == MF_HIT)
-	{
-		XCreature * tgt = l->map->GetMonster(mfd.pt.x, mfd.pt.y);
-		
-		int tdam = dmg.Throw();
-		
-		bool exact = false;
-		if (vRand(100) <= 2 + sk->GetLevel(SKT_FINDWEAKNESS))
+		XCreature * target = l->map->GetMonster(mfd.pt.x, mfd.pt.y);
+		DAMAGE_DATA_EX dd;
+		dd.damage		= dmg.Throw();
+		dd.attacker		= this;
+		//temporary soulution, should be replaced in future on general solution
+		//which returns name of item with or without 'a' 
+		switch (msl->it)
 		{
-			exact = true;
-			tdam *= 3;
-			sk->UseSkill(SKT_FINDWEAKNESS);
+			case IT_ARROW: dd.attack_name = "the arrow"; break;
+			case IT_QUARREL: dd.attack_name = "the quarell"; break;
+			case IT_SLINGBULLET: dd.attack_name = "the sling bullet"; break;
+			case IT_ROCK: dd.attack_name = "the rock"; break;
+			default: dd.attack_name = missile->name; break;
 		}
+		dd.attack_HIT	= hit;
+		dd.attack_brand	= msl->brt;
+		dd.flags		= DF_MAGIC_BOLT;
+		target->InflictDamage(&dd);
 
-		int dam = tdam;
-
-		//get initial pv of armour
-		XBodyPart * txbp = tgt->GetRNDBodyPart();
-		int xpv = 0;
-		if (txbp && txbp->Item())
-			xpv = txbp->Item()->_PV;
-
-		if (txbp && txbp->bp_uin == BP_CLOAK)
-		{
-			XItem * xtmp = GetItem(BP_BODY);
-			if (xtmp)
-				xpv += xtmp->_PV;
-		}
-
-		bool ignore_pv = false;
-		if (vRand(100) <= 2 + sk->GetLevel(SKT_FINDWEAKNESS))
-		{
-			ignore_pv = true;
-			sk->UseSkill(SKT_FINDWEAKNESS);
-		} else
-			dam = dam - xpv;
-
-		if (vis1 || vis2)
-		{
-			msgwin.Add(missile->name);
-			if (exact)
-				msgwin.Add(GetVerb("exactly"));
-			msgwin.Add(tgt->GetVerb("hit"));
-			if (ignore_pv)
-			{
-				msgwin.Add(tgt->GetNameEx(CRN_T1));
-				if (dam > 0 && tgt->im & IM_HERO)
-					msgwin.AddLast(GetVerb("through a piece of armour"));
-				else
-					msgwin.Add(GetVerb("through a piece of armour"));
-			} else
-			{
-				if (tgt->im & IM_HERO)
-					msgwin.AddLast(tgt->GetNameEx(CRN_T1));
-				else
-					msgwin.Add(tgt->GetNameEx(CRN_T1));
-			}
-		}
-
+		//if successfull increase bow level
 		if (bow)
 			wsk->UseSkill(bow->wt);
 		else
 			wsk->UseSkill(WSK_THROW);
 
-		if (dam > 0)
-		{
-			AttackCreature(tgt, dam);
-			if (skill)
-				skill->UseSkill();
-		} else
-		{
-			if (vis1 || vis2)
-			{
-				msgwin.Add("but does not manage to harm");
-				msgwin.AddLast(tgt->GetNameEx(CRN_T2));
-			}
-		}
-
 	} else
 	{
-		XCreature * tgt = l->map->GetMonster(mfd.pt.x, mfd.pt.y);
+		XCreature * tgt = l->map->GetMonster(tx, ty);
 		if (tgt && tgt->isVisible())
 		{
 			msgwin.Add(tgt->GetNameEx(CRN_T1));
@@ -1256,21 +1208,7 @@ int XCreature::Shoot(int tx, int ty)
 		}
 	}
 
-
-	XItem * msl = (XItem *)missile->MakeCopy();
-
-	msl->quantity = 1;
-	// split missile
-	if (--missile->quantity <= 0)
-	{
-		XBodyPart * xbp = GetBodyPart(BP_MISSILE);
-		xbp->UnWear()->Invalidate();
-	}
-
-	if (vRand(3))
-		msl->Drop(l.get(), mfd.pt.x, mfd.pt.y);
-	else
-		msl->Invalidate();
+	msl->Drop(l.get(), mfd.pt.x, mfd.pt.y);
 	return 1;
 }
 

@@ -64,6 +64,7 @@ public:
 	int GainLevel(MAGIC_SCHOOL school, int n = 1);
 	int LevelToString(MAGIC_SCHOOL school, char * buf);
 	void Learn(SPELL_NAME spell);
+	XSpell * GetSpell(SPELL_NAME spell);
 	int GetLevel(MAGIC_SCHOOL ms) { return magic_level[ms]; }
 	
 	XList<XSpell *> spells;

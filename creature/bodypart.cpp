@@ -107,7 +107,7 @@ int XBodyPart::GetPartSize()
 	{
 		case BP_HEAD   : return 10; break;
 		case BP_BODY   : return 100; break;
-		case BP_CLOAK  : return 30; break;
+//		case BP_CLOAK  : return 30; break; //the body and the cloak is the same!!!
 		case BP_GLOVES : return 20; break;
 		case BP_BOOTS  : return 20; break;
 		default        : return 0; break;
