@@ -340,7 +340,10 @@ void XGame::CreateLocations()
 {
 //	Create locations
 #ifndef __DEBUG_L
-	new XMainLocation(L_MAIN);
+	XLocation::CreateFromFile("location.txt");
+	(new XMainLocation(L_MAIN))->NewWay(32, 3, (LOCATION)55, STW_DOWN);
+	
+
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE1);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE2);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE3);

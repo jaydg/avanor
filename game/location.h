@@ -36,53 +36,53 @@ enum SHOP_DOOR
 
 enum LOCATION {
 L_UNKNOWN = 0,
-L_MAIN,
-L_DWARFCITYCAVE1,
-L_DWARFCITYCAVE2,
-L_DWARFCITYCAVE3,
-L_DWARFCITYCAVE4,
-L_DWARFCITYCAVE5,
-L_DWARFCITYCAVE6,
-L_DWARFCITYCAVE7,
-L_DWARFCITY,
-L_DWARFTREASURE,
+L_MAIN				= 1,
+L_DWARFCITYCAVE1	= 2,
+L_DWARFCITYCAVE2	= 3,
+L_DWARFCITYCAVE3	= 4,
+L_DWARFCITYCAVE4	= 5,
+L_DWARFCITYCAVE5	= 6,
+L_DWARFCITYCAVE6	= 7,
+L_DWARFCITYCAVE7	= 8,
+L_DWARFCITY			= 9,
+L_DWARFTREASURE		= 10,
 
-L_GASMINE1,
-L_GASMINE2,
-L_GASMINE3,
+L_GASMINE1			= 15,
+L_GASMINE2			= 16,
+L_GASMINE3			= 17,
 
-L_SMALLCAVE, 
-L_RATCELLAR, 
+L_SMALLCAVE			= 18, 
+L_RATCELLAR			= 19, 
 
-L_MUSHROOMS_CAVE1, //first
-L_MUSHROOMS_CAVE2, //demon
-L_MUSHROOMS_CAVE3, //misc
-L_MUSHROOMS_CAVE4, //kobolds
-L_MUSHROOMS_CAVE5, //mushrooms
+L_MUSHROOMS_CAVE1	= 20, //first
+L_MUSHROOMS_CAVE2	= 21, //demon
+L_MUSHROOMS_CAVE3	= 22, //misc
+L_MUSHROOMS_CAVE4	= 23, //kobolds
+L_MUSHROOMS_CAVE5	= 24, //mushrooms
 
-L_WIZARD_DUNGEON1,
-L_WIZARD_DUNGEON2,
-L_WIZARD_DUNGEON3,
-L_WIZARD_DUNGEON4,
-L_WIZARD_DUNGEON5,
-L_AHKULAN_CASTLE,
+L_WIZARD_DUNGEON1	= 30,
+L_WIZARD_DUNGEON2	= 31,
+L_WIZARD_DUNGEON3	= 32,
+L_WIZARD_DUNGEON4	= 33,
+L_WIZARD_DUNGEON5	= 34,
+L_AHKULAN_CASTLE	= 35,
 
-L_UNDEADS_TOMB1,
-L_UNDEADS_TOMB2,
-L_UNDEADS_TOMB3,
-L_UNDEADS_TOMB4,
-L_UNDEADS_TOMB5,
+L_UNDEADS_TOMB1		= 40,
+L_UNDEADS_TOMB2		= 41,
+L_UNDEADS_TOMB3		= 42,
+L_UNDEADS_TOMB4		= 43,
+L_UNDEADS_TOMB5		= 44,
 
-L_EXTINCT_VOLCANO,
+L_EXTINCT_VOLCANO	= 45,
 
-L_KINGS_TREASURE,
+L_KINGS_TREASURE	= 46,
 
-L_WIZTOWER_TOP,
-L_SMALL_CAVE_1,
-L_SMALL_CAVE_2,
+L_WIZTOWER_TOP		= 50,
+L_SMALL_CAVE_1		= 55,
+L_SMALL_CAVE_2		= 56,
 
-L_DEBUG1,
-L_DEBUG2,
+L_DEBUG1			= 90,
+L_DEBUG2			= 91,
 L_RANDOM = 100,
 L_EOF = 200,
 };
@@ -119,6 +119,15 @@ struct PALETTE_MAP
 
 class XMap;
 class XStairWay;
+
+struct CONSTANT_REGISTER
+{
+	char constant[64];
+	int val;
+};
+
+
+struct lua_State;
 
 class XLocation : public XObject
 {
@@ -157,6 +166,25 @@ public:
 	XStairWay * NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area = NULL); //creates way at random place
 	XStairWay * NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type);
 
+	
+	//Location Script Language
+	static const char * GetToken(const char * line, const char ** token, int * token_len);
+	static const char * GetNumber(const char * line, int * num);
+	static const char * GetString(const char * line, char * buf);
+
+	static void CreateFromFile(char * file_name);
+	static bool ParseLine(const char * line);
+	static XLocation * current_location;
+	static XCreature * last_creature;
+	static int current_script_line;
+	static XQList<CONSTANT_REGISTER> constants;
+	static void ConstantRegister(char * const, int val);
+
+	static int CreateLocation(lua_State * L);
+	static int Settle(lua_State * L);
+	static int Creature(lua_State * L);
+	static int Way(lua_State * L);
+	
 protected:
 	char brief_name[10];
 	char full_name[80];
@@ -183,6 +211,7 @@ public:
 
 
 ////////////// ALL OTHER LOCATIONS /////////////////////
+
 class XUndeadTombLocation : public XLocation
 {
 public:
