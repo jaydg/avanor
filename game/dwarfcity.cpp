@@ -163,7 +163,7 @@ void XDwarfTreasureLocation::Init()
 REGISTER_CLASS(XDwarvenTresurePlace);
 int XDwarvenTresurePlace::onCreatureEnter(XCreature * cr)
 {
-	if (cr->im & IM_HERO)
+	if (cr->isHero())
 	{
 		int flag = 1;
 		for (int i = 59; i < 69 && flag; i++)
@@ -185,7 +185,7 @@ int XDwarvenTresurePlace::onCreatureEnter(XCreature * cr)
 int XDwarvenTresurePlace::onCreatureMove(XCreature * cr)
 {
 	int flg = 1;
-	if (cr->im & IM_HERO)
+	if (cr->isHero())
 	{
 		move_count++;
 		if (move_count > 3)

@@ -84,7 +84,7 @@ int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
 
 int XShop::onCreatureEnter(XCreature * cr)
 {
-	if (cr->im & IM_HERO)
+	if (cr->isHero())
 	{
 		for (int i = area.left + 1; i < area.right - 1; i++)
 			for (int j = area.top + 1; j < area.bottom - 1; j++)

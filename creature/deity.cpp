@@ -181,19 +181,13 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
 		death_act += sacrifice_value;
 	}
 
-	if (cr->im & IM_HERO)
+	if (!cr->isHero() && vRand(5) == 0)
 	{
-
-	} else
-	{
-		if (vRand(5) == 0)
+		cr->s->Modify(XStats::Random(), 1);
+		if (cr->isVisible())
 		{
-			cr->s->Modify(XStats::Random(), 1);
-			if (cr->isVisible())
-			{
-				msgwin.Add(cr->name);
-				msgwin.Add("looks more powerful!");
-			}
+			msgwin.Add(cr->name);
+			msgwin.Add("looks more powerful!");
 		}
 	}
 	

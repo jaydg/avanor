@@ -196,7 +196,7 @@ int XScroll::onRead(XCreature * cr)
 		switch (scroll_descr[descr].scroll_name)
 		{
 			case SCROLL_RECIPIE:
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					int val = vRand(XAlchemy::GetReceptionCount());
 					XAlchemyRec * pRec = XAlchemy::GetReception(val);
@@ -211,7 +211,7 @@ int XScroll::onRead(XCreature * cr)
 
 	if (flag == 0)
 	{
-		if (cr->im & IM_HERO)
+		if (cr->isHero())
 		{
 			msgwin.Add("You feel nothing special.");
 		}
@@ -222,7 +222,7 @@ int XScroll::onRead(XCreature * cr)
 		}
 	} else
 	{
-		if (!isIdentifed() && cr->im & IM_HERO)
+		if (!isIdentifed() && cr->isHero())
 		{
 			Identify(1);
 			msgwin.Add("It was");

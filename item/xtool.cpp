@@ -47,7 +47,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
 	switch (uis)
 	{
 		case UIS_BEGIN:
-			if (cr->im & IM_HERO)
+			if (cr->isHero())
 			{
 				XItem * corpse = cr->SelectItem(CorpseFiltr);
 				if (corpse == NULL)
@@ -148,7 +148,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
 	switch (uis)
 	{
 		case UIS_BEGIN:
-			if (cr->im & IM_HERO)
+			if (cr->isHero())
 			{
 				XPoint pt;
                 if (cr->GetTarget(TR_ATTACK_DIRECTION, &pt))
@@ -174,7 +174,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
 			rock_resist -= (dice.Throw() + cr->sk->GetLevel(SKT_MINING) * 5 + cr->GetStats(S_STR) / 2);
 			if (rock_resist < 0)
 			{
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					msgwin.Add(cr->GetNameEx(CRN_T1));
 					msgwin.Add(cr->GetVerb("smash"));
@@ -213,7 +213,7 @@ REGISTER_CLASS(XEyeOfRaa);
 
 RESULT XEyeOfRaa::onUse(USE_ITEM_STATE uis, XCreature * cr)
 {
-	if (cr->im & IM_HERO)
+	if (cr->isHero())
 	{
 		RESULT res = XEffect::Make(cr, E_LIGHTNING_BOLT, 30);		
 	}

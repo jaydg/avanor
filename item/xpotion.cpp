@@ -259,7 +259,7 @@ void XPotion::Identify(int level)
 
 int XPotion::onDrink(XCreature * cr)
 {
-	if (cr->im & IM_HERO)
+	if (cr->isHero())
 	{
 		msgwin.Add("You drink a ");
 		char buf[256];
@@ -289,7 +289,7 @@ int XPotion::onDrink(XCreature * cr)
 			case PN_WATER:
 			case PN_APPLEJUCE:
 			case PN_ORANGEJUCE:
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					msgwin.Add("You feel less thirsty.");
 				}
@@ -336,7 +336,7 @@ int XPotion::onDrink(XCreature * cr)
 				// Moral: Watch what you drink...  This will kill *anyone*.
 
 				// Note, this potion is going to be extremely rare as well.
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					// Inform the hero of their fate.
 					msgwin.Add("You feel your life draining away very rapidly!");
@@ -385,7 +385,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_SATIATION:
 				cr->nutrio += cr->base_nutrio * 7;
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					msgwin.Add("You feel much fuller!");
 				}
@@ -399,7 +399,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_STARVATION:
 				cr->nutrio = cr->base_nutrio * 3;
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					msgwin.Add("You feel hungrier!");
 				}
@@ -413,7 +413,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_BOOST_SPEED:
 				cr->md->Add(MOD_BOOST_SPEED, 100, cr);
-				if (cr->isVisible() && !(cr->im & IM_HERO))
+				if (cr->isVisible() && !cr->isHero())
 				{
 					msgwin.Add("moves more quickly!");
 				}
@@ -422,7 +422,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_SLOWNESS:
 				cr->md->Add(MOD_SLOWNESS, 100, cr);
-				if (cr->isVisible() && !(cr->im & IM_HERO))
+				if (cr->isVisible() && !cr->isHero())
 				{
 					msgwin.Add(cr->name);
 					msgwin.Add("moves slowly!");
@@ -433,7 +433,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_BLEEDNESS:
 				cr->md->Add(MOD_WOUND, 30, cr);
-				if (cr->im & IM_HERO)
+				if (cr->isHero())
 				{
 					msgwin.Add("You begin to bleed.");
 				}
@@ -447,7 +447,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_DISEASE:
 				cr->md->Add(MOD_DISEASE, 100, cr);
-				if (cr->isVisible() && !(cr->im & IM_HERO))
+				if (cr->isVisible() && !cr->isHero())
 				{
 					msgwin.Add(cr->name);
 					msgwin.Add("looks ill.");
@@ -457,7 +457,7 @@ int XPotion::onDrink(XCreature * cr)
 
 			case PN_POISON:
 				cr->md->Add(MOD_POISON, 10, cr);
-				if (cr->isVisible() && !(cr->im & IM_HERO))
+				if (cr->isVisible() && !cr->isHero())
 				{
 					msgwin.Add(cr->name);
 					msgwin.Add("is poisoned.");
@@ -472,7 +472,7 @@ int XPotion::onDrink(XCreature * cr)
 	
 	if (flag == 0 && cr->isVisible())
 	{
-		if (cr->im & IM_HERO)
+		if (cr->isHero())
 		{
 			msgwin.Add("You feel nothing special!");
 		}
@@ -483,7 +483,7 @@ int XPotion::onDrink(XCreature * cr)
 			msgwin.Add(".");
 		}
 	}
-	else if (!isIdentifed() && cr->im & IM_HERO)
+	else if (!isIdentifed() && cr->isHero())
 	{
 		char buf[256];
 		Identify(1);
