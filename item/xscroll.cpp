@@ -90,6 +90,7 @@ XScroll::XScroll(SCROLL_NAME scrn)
 {
 	descr = SCROLL_REC::GetRandomDescription(scrn);
 	assert(descr > -1 && descr < SCROLL_RANDOM);
+	sc_name = scroll_descr[descr].scroll_name;
 	strcpy(name, scroll_descr[descr].real_name);
 	value = scroll_descr[descr].value;		
 	im = IM_SCROLL;
@@ -100,8 +101,6 @@ XScroll::XScroll(SCROLL_NAME scrn)
 	weight = 2;
 	dice.Setup("1d1");
 }
-
-
 
 int XScroll::isIdentifed()
 {

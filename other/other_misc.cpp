@@ -110,12 +110,9 @@ int XTrap::Activate(XCreature * cr)
 	ed.power	= 10 * (trap_level + 1);
 	ed.call_x	= x;
 	ed.call_y	= y;
-	ed.target_x = x;
-	ed.target_y = y;
+	ed.target_x	= x;
+	ed.target_y	= y;
 	ed.target	= cr;
-
-
-	XEffect::Make(&ed);
 
 	switch (trap_type)
 	{
@@ -139,6 +136,7 @@ int XTrap::Activate(XCreature * cr)
 			ed.effect = E_MAGIC_ARROW;
 
 	}
+	
 	XEffect::Make(&ed);
 
 	return 1;
