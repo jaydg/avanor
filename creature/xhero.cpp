@@ -112,6 +112,7 @@ XHero::XHero(int flag)
 
 
 //		contain.Add(new XEyeOfRaa());
+//		ContainItem(new XBlackClub());		
 /*
         it = new XPickAxe;
         CarryItem(it);
@@ -1283,6 +1284,13 @@ else
 
 			if (PickUpItem(tit))
 				nitem++;
+			else //we can't pick item, so return it back
+			{
+				tmpquae->Add(tit);
+				vRefresh();
+				vGetch();
+			}
+				
 /*					else
 			{
 				toHavy = true;

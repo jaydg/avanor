@@ -118,3 +118,4 @@ v.0.5.6
 v.0.5.7
 -------
 1) Fixed bug #214 (Eye of Raa crashes the game)
+2) Fixed bug #186 (Disappearing of picked items when overburdened)

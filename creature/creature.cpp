@@ -813,7 +813,12 @@ int XCreature::PickUpItem(XItem * i)
 		{
 			if (im & IM_HERO)
 			{
-				msgwin.Add("This stuff to heavy for you!");
+				char bufx[256];
+				char buf[256];
+				i->toString(buf);
+				sprintf(bufx, "%s is to heavy for you!", buf);
+				msgwin.ClrMsg();
+				msgwin.Add(bufx);
 			}
 			int tx = i->x;
 			int ty = i->y;
