@@ -26,7 +26,7 @@ _MAIN_ITEM_STRUCT GLOVES_STRUCT[] =
 {
 
 {IT_GLOVES,		"gloves", 		']',	"1d2-1",	"1d2-1",	"1d4-2",	"1d1",	"1d1-1",	"1d4-2",ISET_SOFT, 		2,		1,	0,	""},
-{IT_GAUNTLETS,	"gauntlets", 	']',	"1d3-1",	"1d3-1",	"1d4-2",	"1d1",	"1d2-1",	"1d4-2",ISET_SOFT, 		3,		1,	0,	""},
+{IT_GAUNTLETS,	"gauntlets", 	']',	"1d3-1",	"1d3-1",	"1d4-2",	"1d1",	"1d2-1",	"1d4-2",ISET_METALSOFT, 3,		1,	0,	""},
 {IT_KNUCKLES,	"knuckles", 	']',	"1d2-1",	"1d2-1",	"1d3-2",	"1d1",	"1d3-1",	"1d6-3",ISET_HARDMETAL,	4,		1,	0,	""}
 };
 const int r_size = 3;

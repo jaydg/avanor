@@ -36,14 +36,14 @@ _ITEMPROP item_prop[DB_PROP_SZ] =
 
 {"leather",	xBROWN,	"1d2", "1d1-1",	
 "",		"0d0",	"",			"", 		
-ISET_LEATHER, 	100,		6,		10,	CAN_LATHERLIKE,
+ISET_LEATHER, 	100,		6,		10,	CAN_LEATHERLIKE,
 "",
 SPP_NONE
 },
 
 {"studded leather", xBROWN,			"1d2",	"1d2-1",	
 "",		"0d0",	"",			"", 		
-ISET_STUDEDLEATHER,		80,		8,		12, CAN_LATHERLIKE,
+ISET_STUDEDLEATHER,		80,		8,		12, CAN_LEATHERLIKE,
 "",
 SPP_NONE
 },
