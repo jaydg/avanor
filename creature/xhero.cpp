@@ -486,6 +486,12 @@ void XHero::Die(XCreature * killer)
 			// Don't wanna die twice, since we are cheating it!
 			_HP = GetMaxHP();
 			md->Remove(MOD_WOUND,main_creature);
+			md->Remove(MOD_POISON,main_creature);
+			md->Remove(MOD_STUN,main_creature);
+			md->Remove(MOD_DISEASE,main_creature);
+			md->Remove(MOD_PARALYSE,main_creature);
+			md->Remove(MOD_WEAK,main_creature);
+			md->Remove(MOD_SLOWNESS,main_creature);
 			return;
 		}
 	}
