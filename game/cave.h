@@ -32,8 +32,26 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XMap;
 
-class XCave // :public XObject
+enum RANDOM_CAVE_TYPE
 {
+	RCT_SIMPLE1 = 0,
+	RCT_SIMPLE2,
+	RCT_USUAL, //just a simple random XY cave	
+};
+
+struct CAVE_DATA
+{
+	int width;
+	int height;
+	char * cave;
+
+	bool isExit(int x, int y);
+	char GetCode(int x, int y);
+};
+
+class XCave
+{
+	RANDOM_CAVE_TYPE rct;
 public:
 	XRect r;
 	XQList<XPoint> exits;

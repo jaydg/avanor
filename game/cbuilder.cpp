@@ -62,13 +62,6 @@ void XCaveBuilder::Build()
 	{
 		XCave * tc1 = quae[k];
 		XCave * tc2 = quae[k + 1];
-/*		int px1 = tc1->r.left + vRand() % tc1->r.Width();
-		int py1 = tc1->r.top + vRand() % tc1->r.Hight();
-		int px2 = tc2->r.left + vRand() % tc2->r.Width();
-		int py2 = tc2->r.top + vRand() % tc2->r.Hight();
-		XPoint pn1(px1, py1);
-		XPoint pn2(px2, py2);
-		Link(&pn1, &pn2);*/
 		XPoint pt1;
 		XPoint pt2;
 		tc1->GetFreeExit(&pt1);
