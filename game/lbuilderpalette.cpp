@@ -199,7 +199,7 @@ PALETTE_MAP wizard_tower_map[] = {
 char * wizard_tower_top_view[] = {
 "XXXXXXXXXXXXXXXXXXXXX",
 "X......##333##......X",
-"X.....3#222223#.....X",
+"X.....#3222223#.....X",
 "X....##2222222##....X",
 "X...#####222#####...X",
 "X...3222#222#2223...X",

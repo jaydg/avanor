@@ -444,40 +444,44 @@ void XCreature::PutStatus()
 #endif
 
 
-	if (nutrio > base_nutrio * 14)
+	if (nutrio > base_nutrio * 18)
 	{
-		sprintf(buf, "bloated ");
+		sprintf(buf, MSG_RED "overfed! ");
 	} else
-		if (nutrio > base_nutrio * 10 && nutrio <= base_nutrio * 14)
+		if (nutrio > base_nutrio * 14)
 		{
-			sprintf(buf, "satiated ");
+			sprintf(buf, "bloated ");
 		} else
-			if (nutrio > base_nutrio * 8 && nutrio <= base_nutrio * 10)
+			if (nutrio > base_nutrio * 10 && nutrio <= base_nutrio * 14)
 			{
-				sprintf(buf, "");
+				sprintf(buf, "satiated ");
 			} else
-				if (nutrio > base_nutrio * 6 && nutrio <= base_nutrio * 8)
+				if (nutrio > base_nutrio * 8 && nutrio <= base_nutrio * 10)
 				{
-					sprintf(buf, "hungry ");
+					sprintf(buf, "");
 				} else
-					if (nutrio > base_nutrio * 4 && nutrio <= base_nutrio * 6)
+					if (nutrio > base_nutrio * 6 && nutrio <= base_nutrio * 8)
 					{
-						sprintf(buf, MSG_YELLOW "very hungry ");
-						if (action_data.action != A_EAT)
-							stopAction();
+						sprintf(buf, "hungry ");
 					} else
-						if (nutrio > base_nutrio && nutrio <= base_nutrio * 4)
+						if (nutrio > base_nutrio * 4 && nutrio <= base_nutrio * 6)
 						{
-							sprintf(buf, MSG_RED "weak ");
+							sprintf(buf, MSG_YELLOW "very hungry ");
 							if (action_data.action != A_EAT)
 								stopAction();
 						} else
-							if (nutrio <= base_nutrio)
+							if (nutrio > base_nutrio && nutrio <= base_nutrio * 4)
 							{
-								sprintf(buf, MSG_RED "dying! ");
+								sprintf(buf, MSG_RED "weak ");
 								if (action_data.action != A_EAT)
 									stopAction();
-							}
+							} else
+								if (nutrio <= base_nutrio)
+								{
+									sprintf(buf, MSG_RED "dying! ");
+									if (action_data.action != A_EAT)
+										stopAction();
+								}
 
 
 	strcat(buf, MSG_LIGHTGRAY);
