@@ -223,12 +223,13 @@ public:
 
 };
 
-template <class  T> class XSortedList : public XList < T >
+template <class T> class XSortedList : public XList < T >
 {
+	typedef typename XList<T>::iterator XList_iteraror;
 public:
-	XList<T>::iterator insert(XList<T>::iterator it, T object)
+	XList_iteraror insert(XList_iteraror it, T object)
 	{
-		XList<T>::iterator i;
+		XList_iteraror i;
 		for (i = begin(); i != end(); i++)
 		{
 			if(object->im < i->im) break;

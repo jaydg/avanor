@@ -7,17 +7,14 @@
 #                                                                            #
 # Running just make builds the release version of Avanor for *nix            #
 # (Linux, FreeBSD, ...)                                                      #
-#                                                                            #
-# Also it is highly recommended that you have subversion client installed    #
-# ???                                                                        #
 ##############################################################################
+
+AVANOR_SVNVERSION := ${shell svnversion .}
 
 ifndef dos
 	CC = g++
 	LD = g++
-	AVANOR_SVNVERSION := ${shell svnversion .}
-	CFLAGS = -funsigned-char
-	CFLAGS += -pipe -DAVANOR_SVNVERSION=\"$(AVANOR_SVNVERSION)\"
+	CFLAGS = -funsigned-char -pipe
 else
 	CC = gpp
 	LD = gpp
@@ -32,7 +29,7 @@ ROOT = ./
 TOROOT = ./../
 IPATH = -I${ROOT}global -I${ROOT}map -I${ROOT}creature -I${ROOT}engine -I${ROOT}helpers \
         -I${ROOT}item -I${ROOT}magic -I${ROOT}other -I${ROOT} -I${ROOT}game \
-	-I${TOROOT}global -I${TOROOT}map -I${TOROOT}creature -I${TOROOT}engine -I${TOROOT}helpers \
+        -I${TOROOT}global -I${TOROOT}map -I${TOROOT}creature -I${TOROOT}engine -I${TOROOT}helpers \
         -I${TOROOT}item -I${TOROOT}magic -I${TOROOT}other -I${TOROOT} -I${TOROOT}game
 
 CFLAGS += $(IPATH)
@@ -98,12 +95,19 @@ clean:
 	$(RM) $(OBJDIR)/*.d
 	$(RM) $(NAME)
 
-source-zip:
+source-zip: 
 # create zip archive with Avanor sources, requires subversion command line client
 # and 7-zip archiver
 	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
 	svn export . avanor-r$(AVANOR_SVNVERSION)-src
 	7z a -tzip -r -mx avanor-r$(AVANOR_SVNVERSION)-src.zip "avanor-r$(AVANOR_SVNVERSION)-src/*"
+	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
+
+source-bz2: 
+# create tar.bz2 archive with ufo2000 sources (on *nix systems)
+	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
+	svn export . avanor-r$(AVANOR_SVNVERSION)-src
+	tar -cjf avanor-r$(AVANOR_SVNVERSION)-src.tar.bz2 avanor-r$(AVANOR_SVNVERSION)-src
 	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
 
 -include $(DEPS)

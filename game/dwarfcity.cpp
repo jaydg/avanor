@@ -30,6 +30,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 {
+	int i;
+
 	strcpy(brief_name, "DvCty");
 	strcpy(full_name, "Dwarven City");
 
@@ -45,7 +47,7 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 	XPoint pt;
 
 
-	for (int i = 0; i < 4; i++)
+	for (i = 0; i < 4; i++)
 		NewCreature(CN_DWARF_GUARD, &guard_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 
 	XRect shop_rect(12, 10, 23, 15);
