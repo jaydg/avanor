@@ -446,6 +446,9 @@ void XGame::CreateHero()
 	XHero * hero = new XHero(1);
 	Game.NewCreature(hero, pt.x, pt.y, locations[L_DEBUG1]);
 	locations[L_DEBUG1]->map->Center(hero->x, hero->y);
+	new XTrap(pt.x, pt.y, locations[L_DEBUG1], TL_RANDOM, TT_ARROW);
+//	XItem *it = new XBlackClub();
+//	it->Drop(Game.locations[L_DEBUG1], hero->x, hero->y);
 
 //	XCreature * cr = locations[L_DEBUG1]->NewCreature(CN_WOLF, 4, 15);
 //	cr->xai->companion = hero;

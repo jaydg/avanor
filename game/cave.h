@@ -45,13 +45,15 @@ enum CAVE_FLAGS
 {
 	CREATE_RANDOM_TRAP_ON_CHEST		= 0x00000001,
 	CREATE_TRAP_ON_CHEST			= 0x00000002,
+	CREATE_GUARD_ON_ROOM			= 0x00000004,
+
 };
 
 struct CAVE_DATA
 {
 	int width;
 	int height;
-	CAVE_FLAGS cf;
+	unsigned int cf;
 	int freq;
 	char * cave;
 

@@ -1791,7 +1791,7 @@ char * XCreature::GetNameEx(CR_NAME_TYPE crn)
 char * XCreature::GetVerb(char * verb)
 {
 	static char cool_buf[1024]; //hope the name will never larger than
-	if (creature_person_type == CPT_YOU)
+	if (creature_person_type & CPT_YOU)
 		sprintf(cool_buf, "%s", verb);
 	else
 	{

@@ -527,7 +527,7 @@ void XStandardAI::GetExactDirection(XPoint * target, XPoint * direction)
 
 int XStandardAI::isEnemy(XCreature * cr)
 {
-	if (cr == companion)
+	if (cr == companion || (ai_flag & AIF_GUARD_AREA && cr->group_id == ai_owner->group_id))
 		return 0;
 	if (enemy_class & cr->creature_class && ai_owner->view != cr->view)
 		return 1;
@@ -1109,6 +1109,7 @@ void XStandardAI::Store(XFile * f)
 	ai_owner.Store(f);
 	guard_area.Store(f);
 	f->Write(&guard_area_location, sizeof(LOCATION));
+	known_traps.StoreList(f);
 }
 
 void XStandardAI::Restore(XFile * f)
@@ -1128,6 +1129,7 @@ void XStandardAI::Restore(XFile * f)
 	ai_owner.Restore(f);
 	guard_area.Restore(f);
 	f->Read(&guard_area_location, sizeof(LOCATION));
+	known_traps.RestoreList(f);
 }
 
 
@@ -1213,5 +1215,27 @@ void XStandardAI::RunScript()
 		script.push_back(cmd);
 		script.pop_front();
 	}
+}
+
+
+void XStandardAI::LearnTraps()
+{
+	for (int i = guard_area.left; i < guard_area.right; i++)
+		for (int j = guard_area.top; j < guard_area.bottom; j++)
+		{
+			XMapObject * pO = ai_owner->l->map->GetSpecial(i, j);
+			if (pO && pO->im & IM_TRAP)
+				known_traps.push_back(pO);
+		}
+}
+
+bool XStandardAI::isKnowThisTrap(XMapObject * trap)
+{
+	for (XList<XMapObject *>::iterator it = known_traps.begin(); it != known_traps.end(); it++)
+	{
+		if (it == trap)
+			return true;
+	}
+	return false;
 }
 

@@ -28,12 +28,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XTrap);
 
-XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature * _owner)
+XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature * _owner, XItem * items)
 {
 	SetLocation(_l);
 	im = IM_TRAP;
 	x = _x;
 	y = _y;
+	owner = _owner;
+	trap_item = items;
 	
 	if (tt == TT_RANDOM)
 		tt = (TRAP_TYPE)vRand(TT_RANDOM);
@@ -43,30 +45,51 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 		tl = (TRAP_LEVEL)vRand(TL_RANDOM);
 	trap_level = tl;
 
+	isMagic = false;
 	switch (tt)
 	{
 		case TT_MAGICARROW:
 			color = xBROWN;
+			isMagic = true;
 			break;
 
 		case TT_FIREBOLT:
 			color = xRED;
+			isMagic = true;
 			break;
 
 		case TT_ACIDBOLT:
 			color = xGREEN;
+			isMagic = true;
 			break;
 
-		case TT_ARROW:
+/*		case TT_ARROW:
 			color = xBROWN;
+			if (trap_item == NULL)
+			{
+				trap_item = ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000);
+				trap_item->quantity = vRand(5) + 5;
+			}
 			break;
 
 		case TT_SPEAR:
 			color = xLIGHTGRAY;
+			if (trap_item == NULL)
+			{
+				trap_item = ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000);
+				trap_item->quantity = vRand(5) + 5;
+			}
 			break;
 
 		case TT_TELEPORT:
 			color = xLIGHTGREEN;
+			isMagic = true;
+			break;
+			*/
+		default:
+			color = xBROWN;
+			isMagic = true;
+			tt = TT_MAGICARROW;
 			break;
 	}
 
@@ -80,16 +103,23 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 
 int XTrap::MoveIn(XCreature * cr)
 {
-	if (!isVisibleForHero)
-		return Activate(cr);
+	if (cr->isHero())
+	{
+		if (!isVisibleForHero)
+			return Activate(cr);
+	}
 	else
 	{
-		if (cr->isVisible())
+		if (cr->xai->isKnowThisTrap(this))
 		{
-			msgwin.Add(cr->GetNameEx(CRN_T1));
-			msgwin.Add(cr->GetVerb("avoid"));
-			msgwin.Add("a trap.");
-		}
+			if (cr->isVisible())
+			{
+				msgwin.Add(cr->GetNameEx(CRN_T1));
+				msgwin.Add(cr->GetVerb("avoid"));
+				msgwin.Add("a trap.");
+			}
+		} else
+			return Activate(cr);
 	}
 	return 0;
 }
@@ -104,40 +134,87 @@ int XTrap::Activate(XCreature * cr)
 		isVisibleForHero = 1;
 	}
 
-	EFFECT_DATA ed;
-	ed.caller	= cr;
-	ed.l		= l;
-	ed.power	= 10 * (trap_level + 1);
-	ed.call_x	= x;
-	ed.call_y	= y;
-	ed.target_x	= x;
-	ed.target_y	= y;
-	ed.target	= cr;
+	bool isTrapShouldDestroyed = false;
 
-	switch (trap_type)
+	if (isMagic)
 	{
-		case TT_MAGICARROW:
-			ed.effect = E_MAGIC_ARROW;
-			break;
+		EFFECT_DATA ed;
+		ed.caller	= cr;
+		ed.l		= l;
+		ed.power	= 10 * (trap_level + 1);
+		ed.call_x	= x;
+		ed.call_y	= y;
+		ed.target_x	= x;
+		ed.target_y	= y;
+		ed.target	= cr;
 
-		case TT_FIREBOLT:
-			ed.effect = E_FIRE_BOLT;
-			break;
+		switch (trap_type)
+		{
+			case TT_MAGICARROW:
+				ed.effect = E_MAGIC_ARROW;
+				break;
 
-		case TT_ACIDBOLT:
-			ed.effect = E_ACID_BOLT;
-			break;
+			case TT_FIREBOLT:
+				ed.effect = E_FIRE_BOLT;
+				break;
 
-		case TT_TELEPORT:
-			ed.effect = E_TELEPORT;
-			break;
+			case TT_ACIDBOLT:
+				ed.effect = E_ACID_BOLT;
+				break;
 
-		default:
-			ed.effect = E_MAGIC_ARROW;
+			case TT_TELEPORT:
+				ed.effect = E_TELEPORT;
+				break;
+
+			default:
+				ed.effect = E_MAGIC_ARROW;
+
+		}
+		
+		XEffect::Make(&ed);
+	} else
+	{
+		int dmg = 0;
+		XItem * drop_item = NULL;
+
+		switch (trap_type)
+		{
+			case TT_ARROW:
+				drop_item = (XItem *)trap_item->MakeCopy();
+				drop_item->quantity = 1;
+				if (trap_item->quantity-- == 0)
+					isTrapShouldDestroyed = true;
+				dmg = drop_item->dice.Throw();
+				if (XMapObject::isVisible())
+				{
+					msgwin.Add("An arrow hits");
+					msgwin.AddLast(cr->GetNameEx(CRN_T3));
+				}
+				break;
+
+			case TT_SPEAR:
+				drop_item = (XItem *)trap_item->MakeCopy();
+				drop_item->quantity = 1;
+				if (trap_item->quantity-- == 0)
+					isTrapShouldDestroyed = true;
+				dmg = drop_item->dice.Throw();
+				if (XMapObject::isVisible())
+				{
+					msgwin.Add("A spear hits");
+					msgwin.AddLast(cr->GetNameEx(CRN_T3));
+				}
+				break;
+		}
+		if (trap_item)
+			trap_item->Drop(l, x, y);
+		
+		if (isTrapShouldDestroyed)
+		{
+			l->map->SetSpecial(x, y, NULL);
+			Invalidate();
+		}
 
 	}
-	
-	XEffect::Make(&ed);
 
 	return 1;
 }
@@ -207,6 +284,9 @@ void XTrap::Store(XFile * f)
 	XMapObject::Store(f);
 	f->Write(&trap_type, sizeof(TRAP_TYPE));
 	f->Write(&isVisibleForHero, sizeof(int));
+	f->Write(&trap_level, sizeof(TRAP_LEVEL));
+	XObject::StorePointer(f, owner);
+	XObject::StorePointer(f, trap_item);
 }
 
 void XTrap::Restore(XFile * f)
@@ -214,6 +294,9 @@ void XTrap::Restore(XFile * f)
 	XMapObject::Restore(f);
 	f->Read(&trap_type, sizeof(TRAP_TYPE));
 	f->Read(&isVisibleForHero, sizeof(int));
+	f->Read(&trap_level, sizeof(TRAP_LEVEL));
+	XObject::RestorePointer(f, &owner);
+	XObject::RestorePointer(f, &trap_item);
 	
 }
 

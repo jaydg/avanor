@@ -162,7 +162,7 @@ void XLocation::CreateTraps()
 		for (int i = 0; i < vRand(7); i++)
 		{
 			GetFreeXY(&pt);
-			new XTrap(pt.x, pt.y, this, TT_RANDOM);
+			new XTrap(pt.x, pt.y, this);
 		}
 	}
 }
@@ -199,7 +199,10 @@ XCreature * XLocation::NewCreature(CREATURE_NAME cn, XRect * rect, GROUP_ID gid,
 	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
 	if (rect &&  (ai_flags & AIF_GUARD_AREA))
+	{
 		cr->xai->SetArea(rect, ln);
+		cr->xai->LearnTraps();
+	}
 	cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
 	return cr;
 }
@@ -214,7 +217,10 @@ XCreature * XLocation::NewCreature(CREATURE_CLASS crc, XRect * rect, GROUP_ID gi
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
 	Game.NewCreature(cr, pt.x, pt.y, this);
 	if (rect &&  (ai_flags & AIF_GUARD_AREA))
+	{
 		cr->xai->SetArea(rect, ln);
+		cr->xai->LearnTraps();
+	}
 	cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
 	return cr;
 }

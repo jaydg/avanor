@@ -586,7 +586,7 @@ void XLocation::PutPalette(int x, int y, PALETTE pal, XLocation * l)
 					break;
 
 				case '^':
-					new XTrap(x + j, y + i, l, TT_RANDOM);
+					new XTrap(x + j, y + i, l);
 					points_to_resolve.push_back(XPoint(x + j, y + i));
 					break;
 

@@ -147,6 +147,11 @@ public:
 	void ExecuteScript(XQList<SCRIPT_CMD> * scr);
 	void RunScript();
 
+	//the create who know trap can't activate it
+	//used for random rooms guardians.
+	XList<XMapObject *> known_traps;
+	void LearnTraps();
+	bool isKnowThisTrap(XMapObject * trap);
 protected:
 	XPtr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
 

@@ -835,8 +835,6 @@ void XHero::PlayerSetup()
 	strcpy(name, "-=RET=-");
 #endif
 
-
-
 }
 
 char * XHero::GetRaceStr()

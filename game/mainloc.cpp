@@ -341,7 +341,7 @@ XKingsTreasureLocation::XKingsTreasureLocation(LOCATION tl) : XLocation(tl)
 	for (i = 0; i < 16; i++)
 	{
 		GetFreeXY(&pt, &area);
-		new XTrap(pt.x, pt.y, this, TT_RANDOM);
+		new XTrap(pt.x, pt.y, this);
 	}
 
 	for (i = 0; i < 9; i++)

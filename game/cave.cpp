@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "cave.h"
 #include "other_misc.h"
 #include "item_misc.h"
+#include "std_ai.h"
 
 bool CAVE_DATA::isExit(int x, int y)
 {
@@ -39,7 +40,7 @@ char CAVE_DATA::GetCode(int x, int y)
 CAVE_DATA random_caves[] = {
 	//RCT_SIMPLE1
 	{9, 7, 
-		CREATE_RANDOM_TRAP_ON_CHEST, 
+		CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
 		50,
 		"####+####"
 		"##.....##"
@@ -52,7 +53,7 @@ CAVE_DATA random_caves[] = {
 
 	//RCT_SIMPLE2
 	{9, 7, 
-		CREATE_RANDOM_TRAP_ON_CHEST, 
+		CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM, 
 		200,
 		"####+####"
 		"#.......#"
@@ -65,7 +66,7 @@ CAVE_DATA random_caves[] = {
 
 	//RCT_SIMPLE3
 	{14, 9, 
-		CREATE_TRAP_ON_CHEST, 
+		CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM, 
 		25,
 		"##############"
 		"#............#"
@@ -80,7 +81,7 @@ CAVE_DATA random_caves[] = {
 
 	//RCT_SIMPLE4
 	{17, 9, 
-		CREATE_TRAP_ON_CHEST, 
+		CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM, 
 		25,
 		"#################"
 		"#...............#"
@@ -234,6 +235,7 @@ void XCave::Draw(XLocation * l)
 	{
 		STDMAP sm = M_CAVEFLOOR;
 		for (int i = r.top; i < r.bottom; i++)
+		{
 			for (int j = r.left; j < r.right; j++)
 			{
 				char ch = random_caves[rct].GetCode(j - r.left, i - r.top);
@@ -261,6 +263,22 @@ void XCave::Draw(XLocation * l)
 				l->map->SetXY(j, i, sm);
 				l->map->SetRoom(j, i, 1);
 			}
+		}
+		if (random_caves[rct].cf & CREATE_GUARD_ON_ROOM)
+		{
+			CREATURE_CLASS crc = CR_UNDEAD;
+			switch (vRand(3))
+			{
+				case 0: crc = CR_UNDEAD; break;
+				case 1: crc = CR_GOBLIN; break;
+				case 2: crc = CR_KOBOLD; break;
+			}
+			for (int i = 0; i < 10; i++)
+			{
+				l->NewCreature(crc, &r, GID_RANDOM_GUARDIAN, AIF_GUARD_AREA);
+			}
+		}
+
 	}
 }
 

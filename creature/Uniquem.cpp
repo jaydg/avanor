@@ -863,8 +863,8 @@ REGISTER_CLASS(XMagnush);
 
 XMagnush::XMagnush(_CREATURE * cr) : XAnyCreature(cr)
 {
-	XItem * it = new XBlackClub();
-	ContainItem(it);
+//	XItem * it = new XBlackClub();
+//	ContainItem(it);
 }
 
 void XMagnush::Die(XCreature * killer)
