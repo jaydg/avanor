@@ -895,7 +895,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("This upstanding citizen of the castle of Avanor hurries about the duties of the day.  The calm relaxed confidence surrounding him demonstrates his faith in the forces of the guard and the king to protect him and his family.");
 	EQ(IM_BODY, IT_CLOTHES, 100);
 
-	XVW(CN_FCITIZEN, "female citizen", 'p', xLIGHTGRAY, CPT_SHE, CRL_VERY_LOW, CR_HUMAN);
+	XVW(CN_FCITIZEN, "citizen", 'p', xLIGHTGRAY, CPT_SHE, CRL_VERY_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
 	XA(AIF_HUMAN | AIF_PEACEFULL);
