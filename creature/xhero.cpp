@@ -1818,7 +1818,7 @@ int XHero::SelectPosition(XPoint * pt, int flag)
 int XHero::XCast(FILE * f)
 {
 	char buf[256];
-	char ch = '!';
+	int ch = '!';
 	
 	while (1)
 	{
@@ -2507,7 +2507,7 @@ void XHero::SetTactics()
 
                 vRefresh();
 
-                char ch = vGetch();
+                int ch = vGetch();
                 if (ch == 'Z' || ch == 'z' || ch == KEY_ESC)
 				{
 					msgwin.ClrMsg();

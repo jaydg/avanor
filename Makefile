@@ -14,11 +14,11 @@ AVANOR_SVNVERSION := ${shell svnversion .}
 ifndef dos
 	CC = g++
 	LD = g++
-	CFLAGS = -funsigned-char -pipe
+	CFLAGS = -fsigned-char -pipe
 else
 	CC = gpp
 	LD = gpp
-	CFLAGS = -funsigned-char
+	CFLAGS = -fsigned-char
 endif
 
 #CFLAGS += -Wall
