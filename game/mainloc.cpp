@@ -337,7 +337,7 @@ XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
 {
 	BuildCave();
 	strcpy(brief_name, "Volcano");
-	strcpy(full_name, "Crater of Extinct Volcano");
+	strcpy(full_name, "Crater of an Extinct Volcano");
 	NewWay(L_MAIN, STW_UP);
 
 	NewCreature(CN_XSHEE_VOO);
