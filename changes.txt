@@ -110,6 +110,6 @@ v.0.5.6
 13) Fixed gains attributes calculation.
 14) Add Throne of Avanor and of Dwarf city.
 15) Potion of lifeless is now Potion of death.
-16) Fixed bug where skeletons generated outside tomb.
+16) Fixed bug where skeletons generated outside tomb. (Possible fix for #195)
 17) Improve Bloated status and add Overfed!
 18) Avanor is now Open Source under the GNU Public License.
