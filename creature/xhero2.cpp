@@ -239,8 +239,6 @@ void XHero::PlayerSetup()
 			s->Add(stmp);
 			delete stmp;
 
-			gender = ch - 97;
-
 			if (ch == 'a')
 				creature_person_type = CPT_MALE_YOU;
 			else if (ch == 'b')
@@ -839,11 +837,6 @@ void XHero::PlayerSetup()
 
 
 
-}
-
-char * XHero::GetGenderStr()
-{
-	return cust_gender[gender].name;
 }
 
 char * XHero::GetRaceStr()

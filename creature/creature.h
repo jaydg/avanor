@@ -199,6 +199,7 @@ public:
 	int GetSpeed();
 
 	CR_GENDER GetGender();
+	char * GetGenderStr();
 
 	int lttm; //long doing time to move
 	int isDisturb; //is creature disturbed duaring lttm

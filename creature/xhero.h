@@ -120,14 +120,9 @@ public:
 	void doSacrifice();
 	int OrderCompanion();
 
-	//char race_str[15];
-	//char gend_str[15];
-	//char prof_str[15];
 	int race;
-	int gender;
 	int profession;	
-	
-	char * GetGenderStr();
+
 	char * GetRaceStr();
 	char * GetProfessionStr();
 

@@ -1690,7 +1690,16 @@ int XCreature::MoneyOp(int money_count)
 	return 0;
 }
 
-
+char * XCreature::GetGenderStr()
+{
+	CR_GENDER g = GetGender();
+	if(g == GEN_MALE)
+		return "male";
+	else if(g == GEN_FEMALE)
+		return "female";
+	else
+		return "neuter";
+}
 
 char * XCreature::GetNameEx(CR_NAME_TYPE crn)
 {

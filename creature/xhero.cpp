@@ -2545,7 +2545,6 @@ void XHero::Store(XFile * f)
 {
     XCreature::Store(f);
     f->Write(&race, sizeof(int), 1);
-	f->Write(&gender, sizeof(int), 1);
 	f->Write(&profession, sizeof(int), 1);
 	f->Write(&turn_count);
 	reception_list.StoreList(f);
@@ -2555,7 +2554,6 @@ void XHero::Restore(XFile * f)
 {
         XCreature::Restore(f);
         f->Read(&race, sizeof(int), 1);
-		f->Read(&gender, sizeof(int), 1);
 		f->Read(&profession, sizeof(int), 1);
 		f->Read(&turn_count);
 		reception_list.RestoreList(f);
