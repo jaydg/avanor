@@ -10,3 +10,5 @@ Cave under water ->
 * search to find it
 * -(100HP - swimming * 5)HP then visit it
 * to implement: skills: swimming, searching, hidden traps/door. spells: water_walk.
+
+
