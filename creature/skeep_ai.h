@@ -48,8 +48,8 @@ public:
 	virtual void Move();
 	virtual void onCreatureEnterShop(XCreature * customer);
 	virtual void onCreatureLeaveShop(XCreature * customer);
-	virtual int onEnyonePickItem(XCreature * customer, XItem * item);
-	virtual int onEnyoneDropItem(XCreature * customer, XItem * item);
+	virtual int onAnyonePickItem(XCreature * customer, XItem * item);
+	virtual int onAnyoneDropItem(XCreature * customer, XItem * item);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);

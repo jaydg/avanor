@@ -72,7 +72,7 @@ void XShopKeeperAI::Move()
 }
 
 
-int XShopKeeperAI::onEnyonePickItem(XCreature * customer, XItem * item)
+int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
 {
 	if (!(customer->im & IM_HERO)) return 0;
 	if (!(shop->shop_mask & item->im))
@@ -101,7 +101,7 @@ int XShopKeeperAI::onEnyonePickItem(XCreature * customer, XItem * item)
 	return 1;
 }
 
-int XShopKeeperAI::onEnyoneDropItem(XCreature * customer, XItem * item)
+int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
 {
 //	Only the hero is allowed to sell items at present
 	if (!(customer->im & IM_HERO)) return 0;
@@ -177,7 +177,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 //	of that item (by dropping it to the ground)
 	if (!(item->im & IM_MONEY))
 	{
-		int res = onEnyoneDropItem(giver, item);
+		int res = onAnyoneDropItem(giver, item);
 		if (res)
 		{
 			ai_owner->ContainItem(item);

@@ -66,7 +66,7 @@ int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
 {
 	if (owner)
 	{
-		return ((XShopKeeperAI *)(owner->xai))->onEnyonePickItem(cr, item);
+		return ((XShopKeeperAI *)(owner->xai))->onAnyonePickItem(cr, item);
 	} 
 	return 1;
 }
@@ -110,7 +110,7 @@ int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
 //	cr->contain->Add(new XMoney(item->GetValue() * item->quantity));
 	if (owner)
 	{
-		return ((XShopKeeperAI *)(owner->xai))->onEnyoneDropItem(cr, item);
+		return ((XShopKeeperAI *)(owner->xai))->onAnyoneDropItem(cr, item);
 	} 
 	return 1;
 }

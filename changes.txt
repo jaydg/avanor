@@ -101,10 +101,15 @@ v.0.5.6
 4) Added new creatures: Dwarves in Dwarftown, Female citizens, Goodwives.
 5) Modified Yohjishiro's Tower.
 6) Some grammar fixes.
-7) Added new endig of the game.
+7) Added new ending of the game.
 8) Now it is possible to target creatures over a water.
 9) Canceling of targeting now do not use mana nor ammo.
 10) Fixed crash when identifed some items.
 11) Fixed bugs (#187, #87) with invenory.
 12) Added new key '0' - force screen centering
 13) Fixed gains attributes calculation.
+14) Add Throne of Avanor and of Dwarf city.
+15) Potion of lifeless is now Potion of death.
+16) Fixed bug where skeletons generated outside tomb.
+17) Improve Bloated status and add Overfed!
+18) Avanor is now Open Source under the GNU Public License.
