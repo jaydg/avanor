@@ -87,6 +87,15 @@ public:
 	virtual void toString(char * buf);
 };
 
+class XAvanorMitre : public XCap
+{
+public:
+	XAvanorMitre();
+	DECLARE_CREATOR(XAvanorMitre, XCap);
+	virtual int Compare(XObject * o) {return -1;}
+	virtual void toString(char * buf);
+};
+
 class XTorinAxe : public XWeapon
 {
 public:

@@ -887,6 +887,9 @@ XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr)
 
 	pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
+
+	XItem * it = new XAvanorMitre();
+	ContainItem(it);
 }
 
 int XHighPriest::Chat(XCreature * chatter, char * msg)

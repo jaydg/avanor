@@ -211,6 +211,34 @@ void XAvanorCrown::toString(char * buf)
 }
 
 
+REGISTER_CLASS(XAvanorMitre);
+XAvanorMitre::XAvanorMitre() : XCap(IT_CAP)
+{
+	strcpy(name, "holy mitre");
+	it = IT_CAP;
+	view = '[';
+	color = xWHITE;
+	weight = 100;
+	value = 8000;
+	_DV = 3;
+	_PV = 2;
+	_HIT = 0;
+	dice.Setup(0, 0, 0);
+	RNG = 0;
+	if (r)
+		delete r;
+	if (s)
+		delete s;
+	r = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
+	s = new XStats("Wi:0d0+10");
+	special_property = SPP_NONE;
+}
+
+void XAvanorMitre::toString(char * buf)
+{
+	GetArtifactName(buf, "holy mitre of Avanor");
+}
+
 REGISTER_CLASS(XTorinAxe);
 XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
 {
