@@ -2213,10 +2213,18 @@ void XHero::LookAt()
 	{
 		char capt[256];
 		char buf[256];
-		sprintf(capt, 
-			MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->GetNameEx(CRN_T1));
+		if(xcr->isHero())
+		{
+			sprintf(capt, 
+				MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s, the %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->name, XHero::race_profession);
+		}
+		else
+		{
+			sprintf(capt, 
+				MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->GetNameEx(CRN_T1));
+		}
 		list.SetCaption(capt);
-		
+
 		sprintf(buf, MSG_YELLOW "%s is %s.", xcr->GetNameEx(CRN_T2), xcr->GetWoundMsg());
 		buf[2] = toupper(buf[2]);
 		list.AddItem(new XGuiItem_Text(buf, 0), 0);
