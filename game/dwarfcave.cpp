@@ -42,7 +42,7 @@ XDwarfCityCaveLocation::XDwarfCityCaveLocation(LOCATION l_name) : XLocation(l_na
 
 			NewWay(L_MAIN, STW_UP);
 			NewWay(L_DWARFCITYCAVE2, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_VERY_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_VERY_LOW, 10, 10000));
 			break;
 
 		case L_DWARFCITYCAVE2:
@@ -51,7 +51,7 @@ XDwarfCityCaveLocation::XDwarfCityCaveLocation(LOCATION l_name) : XLocation(l_na
 
 			NewWay(L_DWARFCITYCAVE1, STW_UP);
 			NewWay(L_DWARFCITYCAVE3, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
 			break;
 
 		case L_DWARFCITYCAVE3:
@@ -60,7 +60,7 @@ XDwarfCityCaveLocation::XDwarfCityCaveLocation(LOCATION l_name) : XLocation(l_na
 
 			NewWay(L_DWARFCITYCAVE2, STW_UP);
 			NewWay(L_DWARFCITYCAVE4, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
 			break;
 
 		case L_DWARFCITYCAVE4:
@@ -69,7 +69,7 @@ XDwarfCityCaveLocation::XDwarfCityCaveLocation(LOCATION l_name) : XLocation(l_na
 
 			NewWay(L_DWARFCITYCAVE3, STW_UP);
 			NewWay(L_DWARFCITYCAVE5, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
 			break;
 
 		case L_DWARFCITYCAVE5:
@@ -78,7 +78,7 @@ XDwarfCityCaveLocation::XDwarfCityCaveLocation(LOCATION l_name) : XLocation(l_na
 
 			NewWay(L_DWARFCITYCAVE4, STW_UP);
 			NewWay(L_DWARFCITYCAVE6, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE), CRL_LOW, 10, 10000));
 			break;
 
 		case L_DWARFCITYCAVE6:
@@ -87,7 +87,7 @@ XDwarfCityCaveLocation::XDwarfCityCaveLocation(LOCATION l_name) : XLocation(l_na
 
 			NewWay(L_DWARFCITYCAVE5, STW_UP);
 			NewWay(L_DWARFCITY, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE | CR_GOBLIN | CR_KOBOLD), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_FELINE | CR_CANINE | CR_GOBLIN | CR_KOBOLD), CRL_LOW, 10, 10000));
 			
 			//add one cooking set to the game
 			XCookingSet * cs = new XCookingSet();

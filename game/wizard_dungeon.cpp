@@ -38,7 +38,7 @@ XWizardDungeonLocation::XWizardDungeonLocation(LOCATION l_name) : XLocation(l_na
 			strcpy(full_name, "Ahk-Ulan's dungeons level 1");
 			NewWay(L_MAIN, STW_UP);
 			NewWay(L_WIZARD_DUNGEON2, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT), CRL_VERY_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT), CRL_VERY_LOW, 10, 10000));
 			break;
 
 		case L_WIZARD_DUNGEON2:
@@ -46,7 +46,7 @@ XWizardDungeonLocation::XWizardDungeonLocation(LOCATION l_name) : XLocation(l_na
 			strcpy(full_name, "Ahk-Ulan's dungeons level 2");
 			NewWay(L_WIZARD_DUNGEON1, STW_UP);
 			NewWay(L_WIZARD_DUNGEON3, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT), CRL_LOW, 10, 10000));
 			break;
 
 		case L_WIZARD_DUNGEON3:
@@ -54,7 +54,7 @@ XWizardDungeonLocation::XWizardDungeonLocation(LOCATION l_name) : XLocation(l_na
 			strcpy(full_name, "Ahk-Ulan's dungeons level 3");
 			NewWay(L_WIZARD_DUNGEON2, STW_UP);
 			NewWay(L_WIZARD_DUNGEON4, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT ), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT ), CRL_LOW, 10, 10000));
 			break;
 
 		case L_WIZARD_DUNGEON4:
@@ -62,7 +62,7 @@ XWizardDungeonLocation::XWizardDungeonLocation(LOCATION l_name) : XLocation(l_na
 			strcpy(full_name, "Ahk-Ulan's dungeons level 4");
 			NewWay(L_WIZARD_DUNGEON3, STW_UP);
 			NewWay(L_WIZARD_DUNGEON5, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT ), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT ), CRL_LOW, 10, 10000));
 			break;
 
 		case L_WIZARD_DUNGEON5:
@@ -70,7 +70,7 @@ XWizardDungeonLocation::XWizardDungeonLocation(LOCATION l_name) : XLocation(l_na
 			strcpy(full_name, "Ahk-Ulan's dungeons level 5");
 			NewWay(L_WIZARD_DUNGEON4, STW_UP);
 			NewWay(L_AHKULAN_CASTLE, STW_DOWN);
-			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT ), CRL_LOW, 10, 10000));
+			Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT ), CRL_LOW, 10, 10000));
 			break;
 	}
 }

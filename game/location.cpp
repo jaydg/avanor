@@ -366,7 +366,7 @@ XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, i
 	{
 		NewWay((LOCATION)way_down, STW_DOWN, NULL);
 	}
-	Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
+	Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
 }
 
 
