@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xmapobj.h"
 #include "xarchive.h"
 
-XMapObject::XMapObject() : l(NULL), zOrder(100)
+XMapObject::XMapObject() : l(NULL)
 {
 }
 
@@ -32,8 +32,7 @@ XMapObject::XMapObject(XMapObject * copy) :
 	nx      (copy->nx),
 	ny      (copy->ny),
 	view    (copy->view),
-	color   (copy->color),
-	zOrder  (copy->zOrder)
+	color   (copy->color)
 {   
 	l = copy->l.get();
 	strcpy(name, copy->name);
@@ -58,7 +57,6 @@ void XMapObject::Store(XFile * f)
 	f->Write(&ny, sizeof(int));
 	f->Write(&view, sizeof(char));
 	f->Write(&color, sizeof(int));
-	f->Write(&zOrder, sizeof(int));
 	f->Write(name, sizeof(char), 50);
 	l.Store(f);
 }
@@ -74,7 +72,6 @@ void XMapObject::Restore(XFile * f)
 	f->Read(&ny, sizeof(int));
 	f->Read(&view, sizeof(char));
 	f->Read(&color, sizeof(int));
-	f->Read(&zOrder, sizeof(int));
 	f->Read(name, sizeof(char), 50);
 	
 	l.Restore(f);;

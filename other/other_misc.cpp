@@ -238,9 +238,8 @@ XStairWay::XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE
 	ln = _ln;
 	ttm = 0;
 	color = xLIGHTGRAY;
-	zOrder = 100;
 	im = IM_WAY;
-   l = loc;
+	l = loc;
 
 	assert(loc->map->GetSpecial(x, y) == NULL);
 	switch (type)
@@ -296,7 +295,6 @@ XTeleport::XTeleport(int _x, int _y, XLocation * loc, LOCATION _ln, int _nx, int
 	ln = _ln;
 	ttm = 0;
 	color = xWHITE;
-	zOrder = 100;
 	im = IM_TELEPORT;
 	l = loc;
 	assert(loc->map->GetSpecial(x, y) == NULL);

@@ -88,7 +88,6 @@ struct MAP
 	XPtr<XMapObject> pSpecialObject; //door, way, trap door.
 //  unsigned char spec; //if something special (such as door or trap here)
 //  MFLAG mflag; //this flag for a monster AI (
-	unsigned char zOrder;
 	bool visible; // visisble for HERO!!!
 	char known; //for hero memory
 	char color; //for hero memory

@@ -60,7 +60,6 @@ MAP::MAP()
 	pMonster = NULL;
 	pSpecialObject = NULL;
 //	mflag = MF_NONE;
-	zOrder = 0;
 	visible = false;
 	known = ' ';
 	color = 0;
@@ -90,7 +89,6 @@ void MAP::Store(XFile * f)
 	pMonster.Store(f);
 	
 	f->Write(&visible, sizeof(bool));	
-	f->Write(&zOrder, sizeof(unsigned char));
 }
 
 void MAP::Restore(XFile * f)
@@ -105,7 +103,6 @@ void MAP::Restore(XFile * f)
 	pMonster.Restore(f);
 
 	f->Read(&visible, sizeof(bool));	
-	f->Read(&zOrder, sizeof(unsigned char));
 }
 
 XMap::XMap()
@@ -386,9 +383,7 @@ void XMap::Put(XCreature * cr)
 				{
 					XCreature * xb = tmap->pMonster;
 					vPutCh(xb->x - wx + SCR_X, xb->y - wy + SCR_Y, xb->view, xb->color);
-					tmap->zOrder = xb->zOrder;
 				}
-				tmap->zOrder = 0;
 			} else
 				vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
 			if (tmap->known && !tmap->visible)

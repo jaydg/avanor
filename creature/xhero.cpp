@@ -55,7 +55,6 @@ XHero::XHero(int flag)
         y = 5;
         view = '@';
         color = xWHITE;
-        zOrder = 250;
         strcpy(name, "-=RET=-");
         XDice * d;
         RNG = 5;

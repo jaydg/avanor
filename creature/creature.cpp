@@ -55,8 +55,6 @@ XCreature::XCreature()
 	added_PP       = 0;
 	carried_weight = 0;
 
-	zOrder = 200;
-
 	base_nutrio = 500;
 	nutrio = 5000;
 	nutrio_speed = 10;
