@@ -446,7 +446,7 @@ int XPotion::onDrink(XCreature * cr)
 			break;
 
 			case PN_DISEASE:
-				cr->md->Add(MOD_DISEASE, 100, cr);
+				cr->md->Add(MOD_DISEASE, 25, cr);
 				if (cr->isVisible() && !cr->isHero())
 				{
 					msgwin.Add(cr->name);
