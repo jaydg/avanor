@@ -276,10 +276,10 @@ int XMap::XGetMovability(int x, int y)
 		MAP * m = &map[x + y * len];
 		if (m->pMonster) return 2;
 		XMapObject * spec = map[x + y * len].pSpecialObject.get();
-		if (stdmap[m->n].moveable < MO_WALL 
+		if (stdmap[m->n].moveable < MO_UNWALKABLE 
 			&& !(spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0))
 			return 0;
-		else
+		else if (stdmap[m->n].moveable < MO_UNWALKABLE)
 			return 1;
 	} else return 1;
 }
@@ -494,3 +494,13 @@ void XMap::Dump(FILE * f)
 	}
 }
 
+
+void XMap::ForceRecenter(int x, int y)
+{
+	wx = x - SCR_LEN / 2;
+	if (wx + SCR_LEN > len) wx = len - SCR_LEN;
+	if (wx < 0) wx = 0;
+	wy = y - SCR_HGT / 2;
+	if (wy + SCR_HGT > hgt) wy = hgt - SCR_HGT;
+	if (wy < 0) wy = 0;
+}

@@ -40,9 +40,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SCR_Y    2
 
 enum MOVEABLE {MO_UNKNOWN = 0, MO_NORMAL = 1,
-	MO_SHARD, MO_AHARD, MO_HARD, MO_VHARD,
+	MO_SHARD, MO_AHARD, MO_HARD, MO_VHARD, 
+	MO_UNWALKABLE, 
+	MO_WATER, MO_DEEPWATER, 
 	MO_WALL = 80,
-	MO_WATER, MO_DEEPWATER, MO_MOUNTAIN};
+	MO_MOUNTAIN};
 
 enum VISIABLE {VI_UNKNOWN = 0, VI_NORMAL = 1,
 VI_SHARD, VI_AHARD, VI_HARD, VI_VHARD,
@@ -97,6 +99,7 @@ struct MAP
 class XMap
 {
 public:
+	void ForceRecenter(int x, int y);
 	int hgt, len;
 	int wx, wy;
 	MAP * map;

@@ -349,6 +349,7 @@ void XHero::NewMove()
 						case 'P' : QuickPay(); break;
 						case 'p' : Pray(); break;
                         case 'M' : msgwin.ShowHistory(); moved = 0; break;
+						case '0' : l->map->ForceRecenter(x, y); moved = 0; break;
 						case KEY_CTRL_T: ActivateTrap(); break;
 						case KEY_CTRL_O: moved = OrderCompanion(); break;
 						default : moved = 0; break;
@@ -852,7 +853,10 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
     while (1)
     {
 		XGuiList list;
-		list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Inventory " MSG_BROWN "###");
+		if ((XItemList *)&contain == item_list) 
+			list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Inventory " MSG_BROWN "###");
+		else 
+			list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Items " MSG_BROWN "###");
 		list.SetFooter(MSG_LIGHTGRAY "filtr: " MSG_BROWN "[" MSG_YELLOW "[|{}'=!?\"\\%]$X" MSG_BROWN "]");
 
 		//count items for show
@@ -867,14 +871,20 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 		if (all_item_count == 0)
 		{
 			if ((mask == IM_ALL) || (mask == IM_UNKNOWN))
-				list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "You have no such items."), 0);
+        		if ((XItemList *)&contain == item_list) 
+					list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "You have no such items."), 0);
+				else
+					list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "There are no such items."), 0);
 			else
 			{
 				for (int oi = 0; oi < output_items_size; oi++)
 				{
 					if (output_items_mask[oi] & mask)
 					{
-						sprintf(buf, MSG_LIGHTGRAY "You have no %s.", output_items_name[oi]);
+		        		if ((XItemList *)&contain == item_list) 
+							sprintf(buf, MSG_LIGHTGRAY "You have no %s.", output_items_name[oi]);
+						else
+							sprintf(buf, MSG_LIGHTGRAY "There are no %s.", output_items_name[oi]);
 						list.AddItem(new XGuiItem_Text(buf), 0);
 					}
 				}
@@ -2264,7 +2274,8 @@ void XHero::LookAt()
 XItem * XHero::onIdentifyItem()
 {
         XItem * it = Inventory(&contain);
-        contain.Add(it);
+		if (it)
+		  contain.Add(it);
         return it;
 }
 
