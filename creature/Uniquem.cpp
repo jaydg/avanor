@@ -340,6 +340,10 @@ int XJorgus::Chat(XCreature * chater, char * msg)
 				chater->MoneyOp(-1000);
 				chater->sk->Learn(SKT_STEALING, 1);
 				msgwin.Add(GMSG_JORGUS_WELCOME);
+				if(main_creature->GetGender() == GEN_MALE)
+					msgwin.Add("brother!");
+				else if(main_creature->GetGender() == GEN_FEMALE)
+					msgwin.Add("sister!");
 			} else
 			{
 				msgwin.Add(GMSG_JORGUS_NO_ENOUGH_MONEY);
@@ -351,6 +355,10 @@ int XJorgus::Chat(XCreature * chater, char * msg)
 	} else
 	{
 		msgwin.Add(GMSG_JORGUS_HELLO);
+		if(main_creature->GetGender() == GEN_MALE)
+			msgwin.Add("brother!");
+		else if(main_creature->GetGender() == GEN_FEMALE)
+			msgwin.Add("sister!");
 	}
 	return 1;
 }

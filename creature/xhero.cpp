@@ -2229,7 +2229,10 @@ void XHero::LookAt()
 		}
 		list.SetCaption(capt);
 
-		sprintf(buf, MSG_YELLOW "%s is %s.", xcr->GetNameEx(CRN_T2), xcr->GetWoundMsg());
+		if(xcr->isHero())
+			sprintf(buf, MSG_YELLOW "You are %s.", xcr->GetWoundMsg());
+		else
+			sprintf(buf, MSG_YELLOW "%s is %s.", xcr->GetNameEx(CRN_T2), xcr->GetWoundMsg());
 		buf[2] = toupper(buf[2]);
 		list.AddItem(new XGuiItem_Text(buf, 0), 0);
 		
@@ -2243,7 +2246,10 @@ void XHero::LookAt()
 				xbp->Item()->toString(xbuf);
 				if (!iflag)
 				{
-					sprintf(buf, MSG_YELLOW "%s is wearing the following items:", xcr->GetNameEx(CRN_T2));
+					if(xcr->isHero())
+						sprintf(buf, MSG_YELLOW "You are wearing the following items:");
+					else
+						sprintf(buf, MSG_YELLOW "%s is wearing the following items:", xcr->GetNameEx(CRN_T2));
 					buf[2] = toupper(buf[2]);
 					list.AddItem(new XGuiItem_Text(buf, 0), 0);
 				}
