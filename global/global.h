@@ -66,7 +66,7 @@ extern unsigned long cr_died;
 extern int __animation_flag; //0 - none, other - delay miliseconds
 
 #ifndef M_E
-	#define M_E 2.7172717274590452354
+	#define M_E 2.7182818284590452354
 #endif
 #ifndef M_PI
 	#define M_PI 3.1415
