@@ -109,7 +109,11 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 		XRect village_area(8, 6, 34, 16);
 		for (i = 0; i < 5; i++)
+		{
 			NewCreature(CN_FARMER, &village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_ARIAL);
+			NewCreature(CN_GOODWIFE, &village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_ARIAL);
+		}
+
 
 		XRect elder_area(19, 9, 25, 11);
 		NewCreature(CN_ELDER_GRIDOR, &elder_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_ARIAL);
@@ -215,8 +219,11 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		}
 
 //Lage city townee
-		for (i = 0; i < 10; i++)
+		for (i = 0; i < 5; i++)
+		{
 			NewCreature(CN_CITIZEN, &city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+			NewCreature(CN_FCITIZEN, &city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		}
 
 //Black wizard ruins
 		PutPalette(155, 44, PAL_TOWER_RUINS, this);

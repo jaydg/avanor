@@ -35,7 +35,7 @@ XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLA
 	
 	weight = corpse_owner->weight / 2;
 	
-	food_nutrio = weight / log((weight + 7.0) / 5.0);
+	food_nutrio = (int)(weight / log((weight + 7.0) / 5.0));
 	food_nutrio = food_nutrio == 0 ? 1 : food_nutrio;
 	
 	value = food_nutrio / 10;

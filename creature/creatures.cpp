@@ -872,6 +872,18 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	EQ(IM_WEAPON, IT_PITCHFORK, 100);
 	EQ(IM_BODY, IT_ROBE, 100);
 
+	XVW(CN_GOODWIFE, "goodwife", 'p', xYELLOW, CPT_SHE, CRL_VERY_LOW, CR_HUMAN);
+	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
+	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
+	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XS("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3");
+	XR("");
+	XC("1d2", "1d2");
+	XM("1d1", "0d0", "2d3+1", "2d2");
+	XD("This woman's clothing tells a story of a simple but hard life.  She prepares the meals for her husband every day and takes care of their cottage.");
+	XL(SKT_HEALING, 2);
+	EQ(IM_BODY, IT_DRESS, 100);
+
 	XVW(CN_CITIZEN, "citizen", 'p', xLIGHTGRAY, CPT_HE, CRL_VERY_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
@@ -882,6 +894,17 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XM("1d1", "0d0", "2d3+1", "2d2");
 	XD("This upstanding citizen of the castle of Avanor hurries about the duties of the day.  The calm relaxed confidence surrounding him demonstrates his faith in the forces of the guard and the king to protect him and his family.");
 	EQ(IM_BODY, IT_CLOTHES, 100);
+
+	XVW(CN_FCITIZEN, "female citizen", 'p', xLIGHTGRAY, CPT_SHE, CRL_VERY_LOW, CR_HUMAN);
+	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
+	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
+	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XS("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3");
+	XR("");
+	XC("1d2", "1d2");
+	XM("1d1", "0d0", "2d3+1", "2d2");
+	XD("This upstanding citizen of the castle of Avanor hurries about the duties of the day.  The calm relaxed confidence surrounding her demonstrates her faith in the forces of the guard and the king to protect her and her family.");
+	EQ(IM_BODY, IT_DRESS, 100);
 
 	XVW(CN_ROYAL_GUARD, "royal guardian", 'p', xBLUE, CPT_HE, CRL_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");

@@ -158,9 +158,9 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
 
 	int sacrifice_value;
 	if (item->im & IM_MONEY)
-		sacrifice_value = (sqrt(item->quantity) + 1) * (val / 4 + 1);
+		sacrifice_value = (int)(sqrt(item->quantity) + 1) * (val / 4 + 1);
 	else
-		sacrifice_value = ((sqrt(item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
+		sacrifice_value = (int)((sqrt(item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
 
 	cr->sk->UseSkill(SKT_RELIGION);
 
