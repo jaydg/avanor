@@ -642,13 +642,14 @@ int XCreature::GetPV()
 
 int XCreature::GainAttr(STATS st, int val)
 {
-	int cur = GetStats(st);
+	int cur = s->Get(st);
 	int max = max_stats.Get(st);
 	
 	if (val > 0)
 	{
 		if (cur < max)
 		{
+			if (cur + val > max) val = max - cur;
 			s->Modify(st, val);
 			if (isHero())
 			{
