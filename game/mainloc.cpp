@@ -117,6 +117,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 		XRect elder_area(19, 9, 25, 11);
 		NewCreature(CN_ELDER_GRIDOR, &elder_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
+		new XFurniture(24, 8, xBROWN, '~', "plain bed", this);
 
 		XRect shop_rect1(8, 7, 18, 11);
 		CreateShop(IM_FOOD, &shop_rect1, "Nobel, the human shopkeeper");
@@ -146,9 +147,30 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 		NewCreature(CN_GEKTA, &small_town_area, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
 		
-		XRect ozrect(24, 50, 26, 51);
+		XRect ozrect(24, 50, 27, 52);
 		NewCreature(CN_OZORIK, &ozrect, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
-		
+		new XFurniture(26, 51, xLIGHTRED, '~', "bed", this);
+		new XFurniture(24, 51, xBROWN, '~', "desk", this);
+
+		new XFurniture(13, 46, xBROWN, '~', "plain bed", this);
+		new XFurniture(19, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(25, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(31, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(37, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(43, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(49, 42, xBROWN, '~', "plain bed", this);
+
+		new XFurniture(30, 46, xBROWN, '~', "table", this);
+		new XFurniture(30, 48, xBROWN, '~', "table", this);
+		new XFurniture(32, 46, xBROWN, '~', "table", this);
+		new XFurniture(32, 48, xBROWN, '~', "table", this);
+		new XFurniture(34, 46, xBROWN, '~', "table", this);
+		new XFurniture(34, 48, xBROWN, '~', "table", this);
+		new XFurniture(36, 46, xBROWN, '~', "table", this);
+		new XFurniture(36, 48, xBROWN, '~', "table", this);
+		new XFurniture(38, 46, xBROWN, '~', "table", this);
+		new XFurniture(38, 48, xBROWN, '~', "table", this);
+
 		NewWay(13, 42, L_RATCELLAR, STW_DOWN);
 
 		XRect shop_rect2(11, 49, 22, 54);
@@ -172,15 +194,17 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		XRect shop_rect3(147, 18, 153, 24);
 		CreateShop(IM_BOOK | IM_SCROLL | IM_POTION, &shop_rect3, "Toberik, the human shopkeeper", SHOP_DOOR_RIGHT);
 
-
 		XRect magic_guild_area(163, 12, 166, 15);
 		NewCreature(CN_GEFEON, &magic_guild_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
-
+		new XFurniture(165, 13, xLIGHTRED, '~', "eternal flame", this);
 
 //Roderik palace
 		XRect roderick_area(182, 4, 183, 5);
 		NewCreature(CN_RODERIK, &roderick_area, GID_RODERICK_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
 		new XThrone(182, 4, "Avanor", this);
+		new XFurniture(172, 9, xLIGHTRED, '~', "royal bed", this);
+		new XFurniture(189, 6, xBROWN, '~', "round table", this);
+		new XFurniture(191, 12, xBROWN, '~', "dinner table", this);
 		{
 			XRect gr(180, 7, 181, 8);
 			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
@@ -284,6 +308,8 @@ XYohjiTower::XYohjiTower(LOCATION tl) : XLocation(tl)
 	// It's her house...
 	XRect wizard_tower_area(37, 7, 44, 12);
 	NewCreature(CN_YOHJISHIRO, &wizard_tower_area, GID_NONE, AIF_GUARD_AREA);
+
+	new XFurniture(37, 10, xLIGHTRED, '~', "nice bed", this);
 }
 
 

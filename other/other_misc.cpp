@@ -488,3 +488,26 @@ XThrone::XThrone(int _x, int _y, char * subscr, XLocation * _l)
 	l->map->SetSpecial(x, y, this);
 	sprintf(name, "the throne of %s", subscr);
 }
+
+REGISTER_CLASS(XFurniture);
+
+XFurniture::XFurniture(int _x, int _y, int _c, char _v, char * subscr, XLocation * _l)
+{
+	SetLocation(_l);
+	im = IM_MISC;
+	x = _x;
+	y = _y;
+	color = _c;
+	view = _v;
+	assert(l->map->GetSpecial(x, y) == NULL);
+	l->map->SetSpecial(x, y, this);
+	if(subscr[0] == 'a' || subscr[0] == 'A' ||
+		subscr[0] == 'e' || subscr[0] == 'E' ||
+		subscr[0] == 'i' || subscr[0] == 'I' ||
+		subscr[0] == 'o' || subscr[0] == 'O') //Cover the definite article for vowels
+		sprintf(name, "an %s", subscr);
+	else
+		sprintf(name, "a %s", subscr);
+}
+
+

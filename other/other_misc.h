@@ -172,6 +172,9 @@ protected:
 	XGrave() {im = IM_MISC;}
 };
 
+//////////////////////////////////////////////////////////////////////
+//XGrave
+//////////////////////////////////////////////////////////////////////
 class XThrone: public XMapObject
 {
 public:
@@ -179,6 +182,18 @@ public:
 	XThrone(int _x, int _y, char * subscr, XLocation * _l);
 protected:
 	XThrone() {im = IM_MISC;}
+};
+
+//////////////////////////////////////////////////////////////////////
+//XFurniture
+//////////////////////////////////////////////////////////////////////
+class XFurniture: public XMapObject
+{
+public:
+	DECLARE_CREATOR(XFurniture, XMapObject);
+	XFurniture(int _x, int _y, int _c, char _v, char * subscr, XLocation * _l);
+protected:
+	XFurniture() {im = IM_MISC;}
 };
 
 #endif
