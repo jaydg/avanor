@@ -549,7 +549,7 @@ void XAlchemy::Init()
 {
 	for (int i = 1; i < 5; i++)
 		alchemy.BuildReception(i);
-	FILE * f = fopen("reception.txt", "w");
+	FILE * f = fopen("recipies.txt", "w");
 	XList<XAlchemyRec *>::iterator it = alchemy.reception.begin();
 	while (it != alchemy.reception.end())
 	{
