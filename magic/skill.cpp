@@ -278,7 +278,7 @@ struct TRAP_CREATE_REC
 	{"Fire Bolt trap",		true,	6, SPELL_FIRE_BOLT,		0},
 	{"Pit",					false,	8, 0,					IT_PICKAXE},
 	{"Acid Bolt trap",		true,	10, SPELL_ACID_BOLT,	0},
-	{"Great Pit",			false,	12, IT_SHORTSPEAR,		IT_PICKAXE},
+	{"Spear Pit",			false,	12, IT_SHORTSPEAR,		IT_PICKAXE},
 	{NULL, false, 1000, 0, 0}
 };
 
@@ -324,7 +324,7 @@ int XSkill::UseCreate(XCreature * user)
 			int count = user->_PP / (sp->GetManaCost() * 2);
 			if (count == 0)
 			{
-				msgwin.Add("You have no enoght mana!");
+				msgwin.Add("You don't have enough mana!");
 			} else
 			{
 				switch (trap_create_rec[ch].var)
@@ -341,7 +341,7 @@ int XSkill::UseCreate(XCreature * user)
 				}
 				user->_PP -= sp->GetManaCost() * 2 * count;
 				user->sk->UseSkill(SKT_CREATETRAP, 10);
-				msgwin.Add("You have successfuly create a trap!");
+				msgwin.Add("You have successfuly created a trap!");
 			}
 		} else
 		{
@@ -363,22 +363,22 @@ int XSkill::UseCreate(XCreature * user)
 				{
 					new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item);
 					user->sk->UseSkill(SKT_CREATETRAP, 20);
-					msgwin.Add("You have successfuly create a trap!");
+					msgwin.Add("You have successfuly created a trap!");
 				} else if (trap_create_rec[ch].var == 0)
 				{
 					new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_PIT, user, NULL);
 					user->sk->UseSkill(SKT_CREATETRAP, 10);
-					msgwin.Add("You have successfuly create a trap!");
+					msgwin.Add("You have successfuly created a trap!");
 				}
 			} else
 			{
-				msgwin.Add("You shoud wield a pickaxe!");
+				msgwin.Add("You should wield a pickaxe!");
 			}
 		} else if (item)
 		{
 			new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ARROW, user, item);
 			user->sk->UseSkill(SKT_CREATETRAP, 15);
-			msgwin.Add("You have successfuly create a trap!");
+			msgwin.Add("You have successfuly created a trap!");
 		}
 
 	}

@@ -248,7 +248,7 @@ int XTrap::Activate(XCreature * cr)
 				switch (drop_item->it)
 				{
 					case IT_ARROW: dd.attack_name = "the arrow"; break;
-					case IT_QUARREL: dd.attack_name = "the quarell"; break;
+					case IT_QUARREL: dd.attack_name = "the quarrel"; break;
 					case IT_SHORTSPEAR: dd.attack_name = "the spear"; break;
 					case IT_LONGSPEAR: dd.attack_name = "the spear"; break;
 				}
@@ -261,7 +261,7 @@ int XTrap::Activate(XCreature * cr)
 			case TT_PIT:
 				dd.damage		= vRand(30) + 2;
 				dd.attacker		= owner;
-				dd.attack_name	= "the down of pit";
+				dd.attack_name	= "the bottom of the pit";
 				dd.attack_HIT	= 10000;
 				dd.attack_brand	= 0;
 				dd.flags		= DF_MAGIC_BOLT;
@@ -274,7 +274,7 @@ int XTrap::Activate(XCreature * cr)
 					for (int i = 0; i < trap_item->quantity; i++)
 						dd.damage += trap_item->dice.Throw();
 					dd.attacker		= owner;
-					dd.attack_name	= "the billion of needles";
+					dd.attack_name	= "the spears in the pit";
 					dd.attack_HIT	= 10000;
 					dd.attack_brand	= 0;
 					dd.flags		= DF_MAGIC_BOLT;
