@@ -105,7 +105,7 @@ int XTrap::Activate(XCreature * cr)
 	}
 
 	EFFECT_DATA ed;
-	ed.caller	= NULL;
+	ed.caller	= cr;
 	ed.l		= l;
 	ed.power	= 10 * (trap_level + 1);
 	ed.call_x	= x;

@@ -54,15 +54,17 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        creatures.cpp creature2.cpp creature.cpp cbuilder.cpp cave.cpp         \
        bodypart.cpp anycr.cpp ai_view.cpp
 
+LIBS = -lncurses
+
 ifdef debug
 	CFLAGS += -g
 	OBJDIR := ${addsuffix -d,$(OBJDIR)}
 	NAME := ${addsuffix -d,$(NAME)}
 else
 	CFLAGS += -O2 -mcpu=i586 -s
+	LIBS := -static $(LIBS)
 endif
 
-LIBS = -static -lncurses
 ifdef win
 	OBJDIR := ${addsuffix win,$(OBJDIR)}
 	NAME := ${addsuffix -win.exe,$(NAME)}
