@@ -278,7 +278,7 @@ void XHero::NewMove()
                         case '<' :
                         {
                         XMapObject * spec = l->map->GetSpecial(x, y);
-                        if (spec && spec->im & IM_WAY && ((XStarWay *)spec)->view == '<')
+                        if (spec && spec->im & IM_WAY && ((XStairWay *)spec)->view == '<')
                         {
                             int q,w;
                             for (q = - 10; q < 10; q++)
@@ -297,7 +297,7 @@ void XHero::NewMove()
                         case '>' :
                         {
                         XMapObject * spec = l->map->GetSpecial(x, y);
-                        if (spec && spec->im & IM_WAY && ((XStarWay *)spec)->view == '>')
+                        if (spec && spec->im & IM_WAY && ((XStairWay *)spec)->view == '>')
                         {
                             int q,w;
                             for (q = - 10; q < 10; q++)
@@ -2618,7 +2618,7 @@ int XHero::OrderCompanion()
 		msgwin.Add(tgt->GetNameEx(CRN_T1));
 		slave->xai->ordered_enemy = tgt;
 		slave->xai->companion_command = CC_ATTACK;
-		slave->xai->ResAIFlag(AIF_GUARD_ARIAL);
+		slave->xai->ResAIFlag(AIF_GUARD_AREA);
 		return 1;
 	} else if (ch == 'f' || ch == 'F')
 	{
@@ -2627,7 +2627,7 @@ int XHero::OrderCompanion()
 		msgwin.Add("to come to you.");
 		slave->xai->ordered_enemy = NULL;
 		slave->xai->companion_command = CC_FOLLOW;
-		slave->xai->ResAIFlag(AIF_GUARD_ARIAL);
+		slave->xai->ResAIFlag(AIF_GUARD_AREA);
 		return 1;
 	} else if (ch == 'w' || ch == 'W')
 	{
@@ -2637,8 +2637,8 @@ int XHero::OrderCompanion()
 		slave->xai->ordered_enemy = NULL;
 		slave->xai->companion_command = CC_WAIT;
 		XRect tr(slave->x, slave->y, slave->x + 1, slave->y + 1);
-		slave->xai->SetArial(&tr, slave->l->ln);
-		slave->xai->SetAIFlag(AIF_GUARD_ARIAL);
+		slave->xai->SetArea(&tr, slave->l->ln);
+		slave->xai->SetAIFlag(AIF_GUARD_AREA);
 		return 1;
 	} else
 		return 0;

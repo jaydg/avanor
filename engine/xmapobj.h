@@ -44,7 +44,7 @@ public:
 
 	char view; //char-represent view of object
 	int color;
-	int zOrder; //order of placing on map (monsters higher than starway, anlog of ZBuffer)
+	int zOrder; //order of placing on map (monsters higher than stairway, anlog of ZBuffer)
 
 
 	virtual int Compare(XObject * o);

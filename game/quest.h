@@ -36,7 +36,7 @@ public:
 		hero_win = 0;
 		orcs_killed = 0;
 		total_orcs_killed = 0;
-		gurads_get_orc_slay = 0;
+		guards_get_orc_slay = 0;
 		yohjishiro_it_quest = IT_UNKNOWN;
 		ahk_ulan_ordered = 0;
 		ahk_ulan_killed = 0;
@@ -66,7 +66,7 @@ public:
 	int orcs_killed;
 	int total_orcs_killed;
 
-	int gurads_get_orc_slay;
+	int guards_get_orc_slay;
 
 	int torin_quest;
 

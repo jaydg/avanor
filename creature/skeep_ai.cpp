@@ -26,7 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XShopKeeperAI);
 
 XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
-	 : XStandartAI(shopkeeper)
+	 : XStandardAI(shopkeeper)
 {
 	SetShop(_shop);
 	_shop->SetShopkeeper(shopkeeper);
@@ -36,9 +36,9 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
 	debt.turn_count = 0;
 	debt.debtor_leave_shop = 0;
 
-	SetArial(shop->GetArial(), shop->location->ln);
-	SetAIFlag(AIF_GUARD_ARIAL);
-	SetAIFlag(AIF_GUARD_ARIAL);
+	SetArea(shop->GetArea(), shop->location->ln);
+	SetAIFlag(AIF_GUARD_AREA);
+	SetAIFlag(AIF_GUARD_AREA);
 	SetAIFlag(AIF_COWARD);
 	SetAIFlag(AIF_RANDOM_MOVE);
 	SetEnemyClass(CR_NONE);
@@ -51,19 +51,19 @@ void XShopKeeperAI::Invalidate()
 	shop        = NULL;
 	debt.debtor = NULL;
 	debt.item_list.KillAll();
-	XStandartAI::Invalidate();
+	XStandardAI::Invalidate();
 }
 
 void XShopKeeperAI::Move()
 {
-	if (ai_owner->l->map->GetItemCount(ai_owner->x, ai_owner->y) == 0 && vRand(50) == 0 && shop->GetArial()->PointIn(ai_owner->x, ai_owner->y))
+	if (ai_owner->l->map->GetItemCount(ai_owner->x, ai_owner->y) == 0 && vRand(50) == 0 && shop->GetArea()->PointIn(ai_owner->x, ai_owner->y))
 	{
 		XItem * item = ICREATEA(shop->shop_mask);
 		item->Identify(1);
 		item->Drop(ai_owner->l, ai_owner->x, ai_owner->y);
 	}
 	
-	XStandartAI::Move();
+	XStandardAI::Move();
 
 	if (debt.debtor)
 	{
@@ -304,7 +304,7 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
 
 void XShopKeeperAI::Store(XFile * f)
 {
-	XStandartAI::Store(f);
+	XStandardAI::Store(f);
 	f->Write(&debt.debtor_add_value, sizeof(double));
 	debt.debtor.Store(f);
 	f->Write(&debt.debtor_leave_shop, sizeof(int));
@@ -316,7 +316,7 @@ void XShopKeeperAI::Store(XFile * f)
 
 void XShopKeeperAI::Restore(XFile * f)
 {
-	XStandartAI::Restore(f);
+	XStandardAI::Restore(f);
 	f->Read(&debt.debtor_add_value, sizeof(double));
 	debt.debtor.Restore(f);
 	f->Read(&debt.debtor_leave_shop, sizeof(int));

@@ -287,7 +287,7 @@ SOURCE=.\Game\cbuilder.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Game\dearfcave.cpp
+SOURCE=.\Game\dwarfcave.cpp
 # End Source File
 # Begin Source File
 

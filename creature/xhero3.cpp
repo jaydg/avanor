@@ -251,7 +251,7 @@ void XHero::EndGame(char * end_msg)
 		score += 5000;
 	}
 
-	if (XQuest::quest.gurads_get_orc_slay)
+	if (XQuest::quest.guards_get_orc_slay)
 	{
 		list.AddItem(new XGuiItem_Text("You brought a useful thing to Ozorik."));
 	}

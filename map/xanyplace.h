@@ -36,7 +36,7 @@ protected:
 	XAnyPlace() {}
 public:
 	DECLARE_CREATOR(XAnyPlace, XObject);
-	XAnyPlace(XRect * _arial, XLocation * _loc);
+	XAnyPlace(XRect * _area, XLocation * _loc);
 	virtual void Invalidate();
 
 	virtual int onCreatureMove(XCreature * cr) {return 0;}
@@ -46,7 +46,7 @@ public:
 	virtual int onCreatureDropItem(XCreature * cr, XItem * item) {return 1;}
 	virtual void onShowItem(XItem * item, char * buf);
 
-	XRect * GetArial() { return &arial; }
+	XRect * GetArea() { return &area; }
 
 	virtual XPtr<XCreature> & GetOwner() { return owner; }
 	virtual void Store(XFile * f);
@@ -54,7 +54,7 @@ public:
 	void Setup(XLocation * _map);
 	XPtr<XLocation> location;
 protected:
-	XRect           arial;
+	XRect           area;
 	XPtr<XCreature> owner;
 };
 

@@ -76,21 +76,21 @@ public:
 class XLocation;
 
 //////////////////////////////////////////////////////////////////////
-//XStarWay
+//XStairWay
 /////////////////////////////////////////////////////////////////////
-class XStarWay : public XMapObject
+class XStairWay : public XMapObject
 {
 public:
-	DECLARE_CREATOR(XStarWay, XMapObject);
-	XStarWay(int _x, int _y, XLocation * loc, LOCATION _ln, STARWAYTYPE type);
+	DECLARE_CREATOR(XStairWay, XMapObject);
+	XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE type);
 	LOCATION ln;
 	virtual int Compare(XObject * o) {return -1;}
-	void Bind(XStarWay * way);
+	void Bind(XStairWay * way);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
 	const char * GetName(XCreature * viewer) { return "a stairway"; }
 protected:
-	XStarWay() {}
+	XStairWay() {}
 };
 
 
@@ -170,6 +170,15 @@ public:
 	virtual void Restore(XFile * f);
 protected:
 	XGrave() {im = IM_MISC;}
+};
+
+class XThrone: public XMapObject
+{
+public:
+	DECLARE_CREATOR(XThrone, XMapObject);
+	XThrone(int _x, int _y, char * subscr, XLocation * _l);
+protected:
+	XThrone() {im = IM_MISC;}
 };
 
 #endif

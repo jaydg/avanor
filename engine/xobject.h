@@ -257,7 +257,7 @@ public:
 	virtual void Restore(XFile * f);// = 0;
 
 // Runable object...
-// If It returns zero, than object must be removed from sheduler
+// If It returns zero, than object must be removed from scheduler
 	virtual int Run() { return 1; }
 	int ttm; //time to move
 	int ttmb; //basis of time to move

@@ -53,7 +53,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        modifers.cpp modifer.cpp map.cpp manual.cpp mainloc.cpp Main.cpp       \
        magic.cpp los.cpp location.cpp ldebug.cpp lbuilderpalette.cpp          \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
-       Game.cpp effect.cpp dwarfcity.cpp dice.cpp deity.cpp dearfcave.cpp     \
+       Game.cpp effect.cpp dwarfcity.cpp dice.cpp deity.cpp dwarfcave.cpp     \
        creatures.cpp creature2.cpp creature.cpp cbuilder.cpp cave.cpp         \
        bodypart.cpp anycr.cpp ai_view.cpp
 

@@ -214,7 +214,7 @@ XCreature * XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
 {
 	XCreature * cr = XCreatureStorage::Create(cn);
 	cr->group_id = gid;
-	if (cr->xai->GetAIFlag() & AIF_PEACEFULL)
+	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
 	Game.NewCreature(cr, x, y, this);
 	return cr;
@@ -225,10 +225,10 @@ XCreature * XLocation::NewCreature(CREATURE_NAME cn, XRect * rect, GROUP_ID gid,
 	XPoint pt;
 	GetFreeXY(&pt, rect);
 	XCreature * cr = NewCreature(cn, pt.x, pt.y, gid);
-	if (cr->xai->GetAIFlag() & AIF_PEACEFULL)
+	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
-	if (rect &&  (ai_flags & AIF_GUARD_ARIAL))
-		cr->xai->SetArial(rect, ln);
+	if (rect &&  (ai_flags & AIF_GUARD_AREA))
+		cr->xai->SetArea(rect, ln);
 	cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
 	return cr;
 }
@@ -239,26 +239,26 @@ XCreature * XLocation::NewCreature(CREATURE_CLASS crc, XRect * rect, GROUP_ID gi
 	GetFreeXY(&pt, rect);
 	XCreature * cr = XCreatureStorage::CreateRnd(crc);
 	cr->group_id = gid;
-	if (cr->xai->GetAIFlag() & AIF_PEACEFULL)
+	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
 	Game.NewCreature(cr, pt.x, pt.y, this);
-	if (rect &&  (ai_flags & AIF_GUARD_ARIAL))
-		cr->xai->SetArial(rect, ln);
+	if (rect &&  (ai_flags & AIF_GUARD_AREA))
+		cr->xai->SetArea(rect, ln);
 	cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
 	return cr;
 }
 
 
-XStarWay * XLocation::NewWay(LOCATION target_ln, STARWAYTYPE s_type, XRect * area)
+XStairWay * XLocation::NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area)
 {
 	XPoint pt;
 	GetFreeXY(&pt, area);
 	return NewWay(pt.x, pt.y, target_ln, s_type);
 }
 
-XStarWay * XLocation::NewWay(int x, int y, LOCATION target_ln, STARWAYTYPE s_type)
+XStairWay * XLocation::NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type)
 {
-	XStarWay * pWay = new XStarWay(x, y, this, target_ln, s_type);
+	XStairWay * pWay = new XStairWay(x, y, this, target_ln, s_type);
 	ways_list.push_back(pWay);
 	return pWay;
 }
@@ -366,7 +366,7 @@ XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, i
 	{
 		NewWay((LOCATION)way_down, STW_DOWN, NULL);
 	}
-	Game.Sheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
+	Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
 }
 
 

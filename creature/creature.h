@@ -37,14 +37,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 enum AI_TYPE {AI_HERO = 0, AI_SIMPLE = 1};
 
 enum ACTION {
-	A_UNKNOWN       = 0, 
-	A_MOVE          = 1, 
-//	A_MOVETOSTARWAY = 2, 
-	A_ATTACK        = 3, 
-	A_CAST          = 4,
-	A_EAT           = 5,
-	A_READ          = 6,
-	A_USETOOL       = 7,
+	A_UNKNOWN        = 0, 
+	A_MOVE           = 1, 
+//	A_MOVETOSTAIRWAY = 2, 
+	A_ATTACK         = 3, 
+	A_CAST           = 4,
+	A_EAT            = 5,
+	A_READ           = 6,
+	A_USETOOL        = 7,
 };
 
 
@@ -93,7 +93,7 @@ struct MELEE_ATTACK
 
 
 class XAI;
-class XStandartAI;
+class XStandardAI;
 class XModifer;
 class XMagic;
 class XPotion;
@@ -188,7 +188,7 @@ public:
 	virtual void DoMove();
 	int Run();
 
-	XStandartAI * xai;
+	XStandardAI * xai;
 
 	unsigned long _EXP;
 	int level;
@@ -305,7 +305,7 @@ public:
 	int onAttacked(XCreature * attacker, int dmg);
 	int onAttackedByMagic(XCreature * attacker, int dmg, RESISTANCE tr, const char * magic_name);
 
-	virtual char * GetMeleeAttackMsg() {return "bite";}
+	virtual char * GetMeleeAttackMsg() {return "attack";}
 
 	virtual void FirstStep(int _x, int _y, XLocation * _l);
 	virtual void LastStep();

@@ -201,13 +201,13 @@ public:
 	XBandit(_CREATURE * cr);
 };
 
-class XBanditAI : public XStandartAI
+class XBanditAI : public XStandardAI
 {
 protected:
 	XBanditAI() {}
 public:
-	DECLARE_CREATOR(XBanditAI, XStandartAI);
-	XBanditAI(XCreature * cr) : XStandartAI(cr) {}
+	DECLARE_CREATOR(XBanditAI, XStandardAI);
+	XBanditAI(XCreature * cr) : XStandardAI(cr) {}
 	virtual int isEnemy(XCreature * cr);
 };
 

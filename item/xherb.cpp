@@ -199,7 +199,7 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 	strcpy(name, herbs[herb_index].herb_name);
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
-	Game.Sheduler.Add(this);
+	Game.Scheduler.Add(this);
 }
 
 
@@ -326,7 +326,7 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 	strcpy(name, herbs[mush_index].herb_name);
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
-	Game.Sheduler.Add(this);
+	Game.Scheduler.Add(this);
 }
 
 

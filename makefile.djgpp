@@ -19,7 +19,7 @@ MODULES = \
 ./creature/creature2.cpp \
 ./creature/creatures.cpp \
 ./creature/crf.cpp \
-./game/dearfcave.cpp \
+./game/dwarfcave.cpp \
 ./creature/deity.cpp \
 ./helpers/dice.cpp \
 ./game/dwarfcity.cpp \

@@ -28,7 +28,7 @@ class XMagicMCPlace : public XAnyPlace
 {
 public:
 	DECLARE_CREATOR(XMagicMCPlace, XAnyPlace);
-	XMagicMCPlace(XRect * _arial, XLocation * _loc) : XAnyPlace(_arial, _loc) {}
+	XMagicMCPlace(XRect * _area, XLocation * _loc) : XAnyPlace(_area, _loc) {}
 	int onCreatureMove(XCreature * cr)
 	{
 		if (cr->isHero() && vRand(15) == 0)
@@ -69,7 +69,7 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 		NewWay(L_MAIN, STW_UP);
 		NewWay(L_MUSHROOMS_CAVE2, STW_DOWN);
 
-//		Game.Sheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_INSECT | CR_REPTILE), CRL_VERY_LOW, 10, 15000));
+//		Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_INSECT | CR_REPTILE), CRL_VERY_LOW, 10, 15000));
 	}
 	if (loc == L_MUSHROOMS_CAVE2)
 	{
@@ -86,7 +86,7 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 		strcpy(full_name, "Kobolds Cavern Level 1");
 		NewWay(L_MUSHROOMS_CAVE2, STW_UP);
 		NewWay(L_MUSHROOMS_CAVE4, STW_DOWN);
-		Game.Sheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_KOBOLD), (CREATURE_LEVEL)(CRL_LOW | CRL_VERY_LOW), 10, 25000));
+		Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_KOBOLD), (CREATURE_LEVEL)(CRL_LOW | CRL_VERY_LOW), 10, 25000));
 	}
 	if (loc == L_MUSHROOMS_CAVE4)
 	{
@@ -94,19 +94,19 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 		strcpy(full_name, "Kobolds Cavern Level 2");
 		NewWay(L_MUSHROOMS_CAVE3, STW_UP);
 
-		Game.Sheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_KOBOLD), (CREATURE_LEVEL)(CRL_LOW | CRL_VERY_LOW), 10, 25000));
+		Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_KOBOLD), (CREATURE_LEVEL)(CRL_LOW | CRL_VERY_LOW), 10, 25000));
 	}
 	if (loc == L_MUSHROOMS_CAVE5)
 	{
 		strcpy(brief_name, "MC:3");
 		strcpy(full_name, "Mushroom Caves Level 3");
 		NewWay(L_MUSHROOMS_CAVE2, STW_UP);
-		XRect t_arial(0, 0, 80, 20);
-		XAnyPlace * place = new XMagicMCPlace(&t_arial, this);
+		XRect t_area(0, 0, 80, 20);
+		XAnyPlace * place = new XMagicMCPlace(&t_area, this);
 		AddPlace(place);
 		ttmb = 1000;
 		ttm = 1000;
-		Game.Sheduler.Add(Game.locations[L_MUSHROOMS_CAVE5].get());
+		Game.Scheduler.Add(Game.locations[L_MUSHROOMS_CAVE5].get());
 		
 	}
 }

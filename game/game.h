@@ -47,10 +47,10 @@ public:
 	void RunDemo();
 	void CreateRatCellar();
 	void Create(char type_of_start);
-	int MoveToStarway(XLocation * xl, XCreature * tc);
+	int MoveToStairway(XLocation * xl, XCreature * tc);
 	XCreature * NewCreature(XCreature * cr, int x, int y, XLocation * loc);
 	XPtr<XLocation> locations[L_EOF];
-	XSheduler Sheduler;
+	XScheduler Scheduler;
 	static int current_location;
 	static XGUID hero_guid;
 

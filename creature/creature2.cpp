@@ -149,15 +149,15 @@ int XCreature::AttackCreature(ATTACK_DATA * pData)
 				}
 			}
 
-			//backstub
-			int backstabb = 0;
+			//backstab
+			int backstab = 0;
 			if (pData->weapon && (!target->isCreatureVisible(this) || !wasEnemy))
 			{
 				if (attacker)
 				{
 					if (vRand(100) < sk->GetLevel(SKT_BACKSTABBING) * 5 + 5)
 					{
-						backstabb = 1;
+						backstab = 1;
 						tdam *= 3;
 						sk->UseSkill(SKT_BACKSTABBING, 3);
 					}
@@ -165,7 +165,7 @@ int XCreature::AttackCreature(ATTACK_DATA * pData)
 				{
 					if (vRand(100) < 5)
 					{
-						backstabb = 1;
+						backstab = 1;
 						tdam *= 3;
 					}
 				}
@@ -204,7 +204,7 @@ int XCreature::AttackCreature(ATTACK_DATA * pData)
 					if (crtical_flag)
 						msgwin.Add("exactly");
 					
-					if(backstabb)
+					if(backstab)
 						msgwin.Add(GetVerb("stab"));
 					else
 						msgwin.Add(GetVerb("hit"));
@@ -362,13 +362,13 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 				tdam *= 3;
 			}
 
-			//backstub
-			int backstabb = 0;
+			//backstab
+			int backstab = 0;
 			if (weapon && (!target->isCreatureVisible(this) || !wasEnemy))
 			{
 				if (vRand(100) < sk->GetLevel(SKT_BACKSTABBING) * 5 + 5)
 				{
-					backstabb = 1;
+					backstab = 1;
 					tdam *= 3;
 					sk->UseSkill(SKT_BACKSTABBING, 3);
 				}
@@ -391,7 +391,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 					if (crtical_flag)
 						msgwin.Add("exactly");
 					
-					if(backstabb)
+					if(backstab)
 						msgwin.Add(GetVerb("stab"));
 					else
 						msgwin.Add(GetVerb("hit"));

@@ -46,57 +46,57 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 
 
 	for (int i = 0; i < 4; i++)
-		NewCreature(CN_DWARF_GUARD, &guard_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+		NewCreature(CN_DWARF_GUARD, &guard_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 
 	XRect shop_rect(12, 10, 23, 15);
 	CreateShop(IM_ARMOUR | IM_WEAPON | IM_POTION | IM_BOOK | IM_SCROLL | IM_NECK | IM_MISSILE | IM_MISSILEW, &shop_rect, "Toberin, the dwarwen shopkeeper", SHOP_DOOR_DOWN);
 
 
 	XRect trect(22, 10, 30, 15);
-	NewCreature(CN_TODIN, &trect, GID_DWARVEN_GUARDIAN);
-
+	NewCreature(CN_TODIN, &trect, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
+	new XThrone(123, 28, "the Dwarven Kingdom", this);
 	{
 		XRect gr(61, 15, 62, 16);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 	}
 
 	{
 		XRect gr(63, 15, 64, 16);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
 		XRect gr(66, 15, 67, 16);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
 		XRect gr(66, 17, 67, 18);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
 		XRect gr(68, 15, 69, 16);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
 		XRect gr(68, 17, 69, 18);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
 		XRect gr(62, 17, 63, 18);
-		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	}
+		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	}
 
 	new XAltar(45, 11, D_LIFE, this);
 
 	XRect plaza_area(31, 2, 57, 18);
 	for(i = 0; i < 10; i++)
-		NewCreature(CN_DWARF, &plaza_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+		NewCreature(CN_DWARF, &plaza_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 
-	XRect t_arial(67, 15, 78, 18);
-	XAnyPlace * place = new XDwarvenTresurePlace(&t_arial, this);
+	XRect t_area(67, 15, 78, 18);
+	XAnyPlace * place = new XDwarvenTresurePlace(&t_area, this);
 	AddPlace(place);
 }
 
@@ -247,8 +247,8 @@ XGasMineLocation::XGasMineLocation(LOCATION loc) : XLocation(loc)
 			NewWay(L_DWARFCITY, STW_UP);
 			NewWay(L_GASMINE2, STW_DOWN);
 
-			XRect t_arial(0, 0, 80, 20);
-			XAnyPlace * place = new XGasPlace(&t_arial, this);
+			XRect t_area(0, 0, 80, 20);
+			XAnyPlace * place = new XGasPlace(&t_area, this);
 			AddPlace(place);
 		}
 			break;
@@ -259,8 +259,8 @@ XGasMineLocation::XGasMineLocation(LOCATION loc) : XLocation(loc)
 			strcpy(full_name, "Gassing Mine level 2");
 			NewWay(L_GASMINE1, STW_UP);
 			NewWay(L_GASMINE3, STW_DOWN);
-			XRect t_arial(0, 0, 80, 20);
-			XAnyPlace * place = new XGasPlace(&t_arial, this);
+			XRect t_area(0, 0, 80, 20);
+			XAnyPlace * place = new XGasPlace(&t_area, this);
 			AddPlace(place);
 
 		}
@@ -271,8 +271,8 @@ XGasMineLocation::XGasMineLocation(LOCATION loc) : XLocation(loc)
 			strcpy(brief_name, "GM3");
 			strcpy(full_name, "Gassing Mine level 3");
 			NewWay(L_GASMINE2, STW_UP);
-			XRect t_arial(0, 0, 80, 20);
-			XAnyPlace * place = new XGasPlace(&t_arial, this);
+			XRect t_area(0, 0, 80, 20);
+			XAnyPlace * place = new XGasPlace(&t_area, this);
 			AddPlace(place);
 			GetFreeXY(&pt);
 			new XGasPump(pt.x, pt.y, this);

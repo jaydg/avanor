@@ -52,7 +52,7 @@ MODULES = \
 ./engine/xshedule.cpp  \
 ./game/cave.cpp  \
 ./game/cbuilder.cpp  \
-./game/dearfcave.cpp  \
+./game/dwarfcave.cpp  \
 ./game/dwarfcity.cpp  \
 ./game/game.cpp  \
 ./game/lbuilderpalette.cpp  \

@@ -116,7 +116,7 @@ struct PALETTE_MAP
 #define MAX_PLACES 8
 
 class XMap;
-class XStarWay;
+class XStairWay;
 
 class XLocation : public XObject
 {
@@ -152,8 +152,8 @@ public:
 	XCreature * NewCreature(CREATURE_NAME cn, XRect * rect = NULL, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 	XCreature * NewCreature(CREATURE_CLASS crc, XRect * rect = NULL, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
-	XStarWay * NewWay(LOCATION target_ln, STARWAYTYPE s_type, XRect * area = NULL); //creates way at random place
-	XStarWay * NewWay(int x, int y, LOCATION target_ln, STARWAYTYPE s_type);
+	XStairWay * NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area = NULL); //creates way at random place
+	XStairWay * NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type);
 
 protected:
 	char brief_name[10];

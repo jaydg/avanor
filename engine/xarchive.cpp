@@ -48,7 +48,7 @@ int XArchive::StoreGame()
 	XAlchemy::Store(&file);
 	_HERBS::Store(&file);
 	file.Write(&XGame::hero_guid, sizeof(int));
-	Game.Sheduler.Store(&file);
+	Game.Scheduler.Store(&file);
 
 	for (int i = 0; i < L_EOF; i++)
       Game.locations[i].Store(&file);
@@ -93,7 +93,7 @@ int XArchive::RestoreGame()
 	XAlchemy::Restore(&file);
 	_HERBS::Restore(&file);
 	file.Read(&XGame::hero_guid, sizeof(int));
-	Game.Sheduler.Restore(&file);
+	Game.Scheduler.Restore(&file);
 	
 	for (int i = 0; i < L_EOF; i++)
       Game.locations[i].Restore(&file);

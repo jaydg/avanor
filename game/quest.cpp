@@ -33,7 +33,7 @@ void XQuest::Store(XFile * f)
 	f->Write(&hero_win, sizeof(int));
 	f->Write(&orcs_killed, sizeof(int));
 	f->Write(&total_orcs_killed, sizeof(int));
-	f->Write(&gurads_get_orc_slay, sizeof(int));
+	f->Write(&guards_get_orc_slay, sizeof(int));
 	f->Write(&yohjishiro_it_quest, sizeof(ITEM_TYPE));
 	f->Write(&ahk_ulan_ordered, sizeof(int));
 	f->Write(&ahk_ulan_killed, sizeof(int));
@@ -53,7 +53,7 @@ void XQuest::Restore(XFile * f)
 	f->Read(&hero_win, sizeof(int));
 	f->Read(&orcs_killed, sizeof(int));
 	f->Read(&total_orcs_killed, sizeof(int));
-	f->Read(&gurads_get_orc_slay, sizeof(int));
+	f->Read(&guards_get_orc_slay, sizeof(int));
 	f->Read(&yohjishiro_it_quest, sizeof(ITEM_TYPE));
 	f->Read(&ahk_ulan_ordered, sizeof(int));
 	f->Read(&ahk_ulan_killed, sizeof(int));

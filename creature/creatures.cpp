@@ -863,7 +863,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_FARMER, "farmer", 'p', xBROWN, CPT_HE, CRL_VERY_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
-	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XA(AIF_HUMAN | AIF_PEACEFUL);
 	XS("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3");
 	XR("");
 	XC("1d2", "1d2");
@@ -876,7 +876,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_GOODWIFE, "goodwife", 'p', xYELLOW, CPT_SHE, CRL_VERY_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
-	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XA(AIF_HUMAN | AIF_PEACEFUL);
 	XS("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3");
 	XR("");
 	XC("1d2", "1d2");
@@ -888,7 +888,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_CITIZEN, "citizen", 'p', xLIGHTGRAY, CPT_HE, CRL_VERY_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
-	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XA(AIF_HUMAN | AIF_PEACEFUL);
 	XS("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3");
 	XR("");
 	XC("1d2", "1d2");
@@ -899,7 +899,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_FCITIZEN, "citizen", 'p', xLIGHTGRAY, CPT_SHE, CRL_VERY_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
-	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XA(AIF_HUMAN | AIF_PEACEFUL);
 	XS("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3");
 	XR("");
 	XC("1d2", "1d2");
@@ -910,7 +910,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_ROYAL_GUARD, "royal guardian", 'p', xBLUE, CPT_HE, CRL_LOW, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_HUMAN | AIF_PEACEFULL);
+	XA(AIF_HUMAN | AIF_PEACEFUL);
 	XS("St 1d8+15 Dx 1d8+20 To 1d8+10 Le 1d5+10 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5");
 	XR("");
 	XC("1d6", "2d2");
@@ -938,7 +938,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_SHOPKEEPER, "shopkeeper", 'p', xLIGHTGRAY, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d10+120", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+20 Dx 1d8+20 To 1d8+20 Le 1d5+20 Wi 1d4+20 Ma 1d4+20 Pe 3d6 Ch 5d5");
 	XR("");
 	XC("1d6", "2d2");
@@ -950,7 +950,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_DWARF, "dwarf", 'h', xBROWN, CPT_HE, CRL_VERY_LOW, CR_HUMANOID);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d3+10 Dx 1d3+7 To 1d3+12 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3");
 	XR("");
 	XC("1d2", "1d2");
@@ -960,7 +960,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_DWARF_GUARD, "dwarven guardian", 'h', xLIGHTBLUE, CPT_HE, CRL_VERY_LOW, CR_HUMANOID);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50, GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d3+20 Dx 1d3+7 To 1d3+22 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3");
 	XR("");
 	XC("1d2", "1d2");
@@ -1069,7 +1069,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_ELDER_GRIDOR, "Elder Gridor", 'p', xWHITE, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0, GFS_SUPRESS_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d3+5 Dx 1d3+5 To 1d3+4 Le 9d5 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 4d4");
 	XR("");
 	XC("1d1", "1d1");
@@ -1083,7 +1083,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_JORGUS, "Jorgus, the master thief", 'p', xWHITE, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5");
 	XR("");
 	XC("1d8", "2d2");
@@ -1096,7 +1096,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_GEKTA, "Gekta, the sheep dog", 'C', xDARKGRAY, CPT_NAMED_IT, CRL_UNIQUE, CR_CANINE);
 	XBA("1d10+125", "0d0+1000", "1d100+300", CS_SMALL, "1d200+400");
 	XBO("neck", 100);
-	XA(AIF_HI_ANIMAL | AIF_PEACEFULL);
+	XA(AIF_HI_ANIMAL | AIF_PEACEFUL);
 	XS("St 1d3+10 Dx 1d5+20 To 1d3+8 Le 1d3+3 Wi 1d3+3 Ma 1d3+3 Pe 5d6 Ch 4d5");
 	XR("see_invisible:0d0+30");
 	XC("5d5", "2d6");
@@ -1107,7 +1107,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_OZORIK, "Ozorick, the royal guard captain", 'p', xLIGHTBLUE, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5");
 	XR("see_invisible:0d0+50");
 	XC("1d8", "2d2");
@@ -1119,7 +1119,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_YOHJISHIRO, "Yohjishiro, the elven wizard", 'h', xWHITE, CPT_NAMED_SHE, CRL_UNIQUE, CR_HUMANOID);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5");
 	XR("see_invisible:0d0+100");
 	XC("1d3", "1d2");
@@ -1132,7 +1132,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_GEFEON, "Gefeon, great master of Fire", 'p', xRED, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d10+110", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5");
 	XR("see_invisible:0d0+100");
 	XC("1d3", "1d2");
@@ -1145,7 +1145,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_RODERIK, "Roderick, king of Avanor", 'p', xYELLOW, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d30+150", "0d0+700", "0d0+700", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+55 Dx 1d8+60 To 1d8+40 Le 1d5+35 Wi 1d5+20 Ma 1d5+20 Pe 8d6 Ch 12d5");
 	XR("see_invisible:0d0+100");
 	XC("1d6", "1d5");
@@ -1157,7 +1157,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_AHKULAN, "Ahk-Ulan, great master of Darkness", 'p', xDARKGRAY, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMAN);
 	XBA("1d30+120", "0d0+900", "0d0+900", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5");
 	XR("see_invisible:0d0+100");
 	XC("1d3", "1d2");
@@ -1172,7 +1172,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_TODIN, "Todin, dwarven weaponsmith", 'h', xBROWN, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMANOID);
 	XBA("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5");
 	XR("see_invisible:0d0+20");
 	XC("1d8", "2d2");
@@ -1184,7 +1184,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XVW(CN_TORIN, "Torin the Great, dwarven king", 'h', xLIGHTGREEN, CPT_NAMED_HE, CRL_UNIQUE, CR_HUMANOID);
 	XBA("1d10+100", "0d0+800", "0d0+800", CS_NORMAL, "1d200+1200");
 	XBO("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, GFS_SUPRESS_INVIS | GFS_SEE_INVIS);
-	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFULL);
+	XA(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_COWARD | AIF_PEACEFUL);
 	XS("St 1d8+35 Dx 1d8+20 To 1d8+30 Le 1d5+25 Wi 1d5+25 Ma 1d5+25 Pe 5d6 Ch 4d5");
 	XR("see_invisible:0d0+100");
 	XC("1d3", "1d2");

@@ -72,7 +72,7 @@ XCreature::XCreature()
 //   reg_max = 10;
 
 	im = IM_CREATURE;
-	xai = new XStandartAI(this);
+	xai = new XStandardAI(this);
 //   ait = AI_SIMPLE;
 	md = new XModifer();
 	m = new XMagic();
@@ -1002,7 +1002,7 @@ void XCreature::MoveStairWay()
 	XMapObject * spec = xl->map->GetSpecial(tc->x, tc->y);
 	if (spec && spec->im & IM_WAY)
 	{
-		XLocation * tgtloc = Game.locations[((XStarWay *)spec)->ln].get();
+		XLocation * tgtloc = Game.locations[((XStairWay *)spec)->ln].get();
 		int tgt_x = spec->nx;
 		int tgt_y = spec->ny;
 		int n_x = tgt_x;
@@ -1462,7 +1462,7 @@ void XCreature::Restore(XFile * f)
 	wsk = new XWarSkills();
 	wsk->Restore(f);
 	
-	xai = (XStandartAI *)XObject::RestorePointer(f, this);
+	xai = (XStandardAI *)XObject::RestorePointer(f, this);
 
 	action_data.Restore(f);
 

@@ -23,8 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "xlist.h"
 
-#define XSHEDULER_TIME_SLICE  100
-#define XSHEDULER_STEPS_AHEAD 100
+#define XSCHEDULER_TIME_SLICE  100
+#define XSCHEDULER_STEPS_AHEAD 100
 
 class XMapObject;
 
@@ -46,15 +46,15 @@ public:
 	void RestoreRing(XFile * f);
 };
 
-class XSheduler
+class XScheduler
 {
 	long _time, head;
-//	XQuickRing data[XSHEDULER_STEPS_AHEAD];
-	XList<XObject*> data[XSHEDULER_STEPS_AHEAD];
+//	XQuickRing data[XSCHEDULER_STEPS_AHEAD];
+	XList<XObject*> data[XSCHEDULER_STEPS_AHEAD];
 	void Place(XObject * p);
 public:
-	XSheduler() : head(0), _time(0) { }
-	~XSheduler() { while(Get()) Remove(); }
+	XScheduler() : head(0), _time(0) { }
+	~XScheduler() { while(Get()) Remove(); }
 	void         SetTime(long t) { _time = t; }
 	long         GetTime() { return _time; }
 

@@ -37,12 +37,12 @@ struct SHOP_DEBT
 	XList<XItem *> item_list; //picked but not payed items;
 };
 
-class XShopKeeperAI : public XStandartAI
+class XShopKeeperAI : public XStandardAI
 {
 protected:	
 	XShopKeeperAI() {}
 public:
-	DECLARE_CREATOR(XShopKeeperAI, XStandartAI);
+	DECLARE_CREATOR(XShopKeeperAI, XStandardAI);
 	XShopKeeperAI(XCreature * shoopkeeper, XShop * _shop);
 	virtual void Invalidate();
 	virtual void Move();

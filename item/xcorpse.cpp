@@ -54,7 +54,7 @@ XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLA
 	roating_stopped = 0;
 	pCorpseData = &XCreatureStorage::GetCreatureData(corpse_owner->creature_name)->pCorpseData;
 	cn = corpse_owner->creature_name;
-	Game.Sheduler.Add(this);
+	Game.Scheduler.Add(this);
 }
 
 

@@ -254,7 +254,7 @@ int XAnyCreature::onGiveItem(XCreature * giver, XItem * item)
 	{
 		if (item->im & IM_WEAPON && item->brt & BR_ORCSLAYER && (item->wt == WSK_SWORD))
 		{
-			XQuest::quest.gurads_get_orc_slay++;
+			XQuest::quest.guards_get_orc_slay++;
 			msgwin.Add("'Thank you.'");
 			contain.Add(item);
 			return 1;

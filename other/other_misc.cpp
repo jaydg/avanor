@@ -227,9 +227,9 @@ void XTrap::Restore(XFile * f)
 
 
 
-REGISTER_CLASS(XStarWay);
+REGISTER_CLASS(XStairWay);
 
-XStarWay::XStarWay(int _x, int _y, XLocation * loc, LOCATION _ln, STARWAYTYPE type)
+XStairWay::XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE type)
 {
 	nx = -1;
 	ny = -1;
@@ -260,7 +260,7 @@ XStarWay::XStarWay(int _x, int _y, XLocation * loc, LOCATION _ln, STARWAYTYPE ty
 
 }
 
-void XStarWay::Bind(XStarWay * way)
+void XStairWay::Bind(XStairWay * way)
 {
 	nx = way->x;
 	ny = way->y;
@@ -269,14 +269,14 @@ void XStarWay::Bind(XStarWay * way)
 
 }
 
-void XStarWay::Store(XFile * f)
+void XStairWay::Store(XFile * f)
 {
 	XMapObject::Store(f);
 	f->Write(&ln, sizeof(LOCATION));
 }
 
 
-void XStarWay::Restore(XFile * f)
+void XStairWay::Restore(XFile * f)
 {
 	XMapObject::Restore(f);
 	f->Read(&ln, sizeof(LOCATION));
@@ -469,4 +469,21 @@ void XGrave::Restore(XFile * f)
 	XMapObject::Restore(f);
 	f->Read(&isOpened);
 	hiden_items.RestoreList(f);
+}
+
+
+
+REGISTER_CLASS(XThrone);
+
+XThrone::XThrone(int _x, int _y, char * subscr, XLocation * _l)
+{
+	SetLocation(_l);
+	im = IM_MISC;
+	x = _x;
+	y = _y;
+	color = xYELLOW;
+	view = '~';
+	assert(l->map->GetSpecial(x, y) == NULL);
+	l->map->SetSpecial(x, y, this);
+	sprintf(name, "the throne of %s", subscr);
 }

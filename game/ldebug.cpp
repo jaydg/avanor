@@ -66,8 +66,8 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 	for (int i = 0; i < 5; i++)
 	{
 		XCreature * cr = NewCreature(CN_KOBOLD);
-		cr->xai->SetArial(&r1, tl);
-		cr->xai->SetAIFlag(AIF_GUARD_ARIAL);
+		cr->xai->SetArea(&r1, tl);
+		cr->xai->SetAIFlag(AIF_GUARD_AREA);
 	}
 
 	XCreature * cr = NewCreature(CN_KOBOLD);

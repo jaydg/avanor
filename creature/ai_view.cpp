@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 struct opaque_info
 {
-	XStandartAI * ai;
+	XStandardAI * ai;
 	XMap        * map;
 };
 
@@ -36,7 +36,7 @@ static int grid_callback(void * opaque, int x, int y, int radius, int see_center
 	return NOT_EQUAL(info->map->GetMovability(x, y), MO_WALL);
 }
 
-void XStandartAI::AnalyzeView(int radius)
+void XStandardAI::AnalyzeView(int radius)
 {
 	opaque_info info = { this, ai_owner->l->map };
 

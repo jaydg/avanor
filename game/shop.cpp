@@ -25,8 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XShop);
 
-XShop::XShop(XRect * _arial, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
-	:XAnyPlace(_arial, _loc)
+XShop::XShop(XRect * _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
+	:XAnyPlace(_area, _loc)
 {
 	shop_mask = _im;
 
@@ -36,24 +36,24 @@ XShop::XShop(XRect * _arial, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 	switch (sd)
 	{
 		case SHOP_DOOR_DOWN : 
-			dx = (arial.left + arial.right) / 2;
-			dy = arial.bottom - 1;
+			dx = (area.left + area.right) / 2;
+			dy = area.bottom - 1;
 			break;
 
 		case SHOP_DOOR_UP : 
-			dx = (arial.left + arial.right) / 2;
-			dy = arial.top;
+			dx = (area.left + area.right) / 2;
+			dy = area.top;
 			break;
 
 		default: assert(0);
 
 	}
 
-	location->map->CreateRoom(arial.left, arial.top, arial.Width(), arial.Hight(), 
+	location->map->CreateRoom(area.left, area.top, area.Width(), area.Hight(), 
 		dx, dy, M_STONEFLOOR, M_STONEWALL);
 	
-	for (int i = arial.left + 1; i < arial.right - 1; i++)
-		for (int j = arial.top + 1; j < arial.bottom - 1; j++)
+	for (int i = area.left + 1; i < area.right - 1; i++)
+		for (int j = area.top + 1; j < area.bottom - 1; j++)
 		{
 			XItem * item = ICREATEA(shop_mask);
 			item->Drop(location.get(), i, j);
@@ -76,8 +76,8 @@ int XShop::onCreatureEnter(XCreature * cr)
 {
 	if (cr->im & IM_HERO)
 	{
-		for (int i = arial.left + 1; i < arial.right - 1; i++)
-			for (int j = arial.top + 1; j < arial.bottom - 1; j++)
+		for (int i = area.left + 1; i < area.right - 1; i++)
+			for (int j = area.top + 1; j < area.bottom - 1; j++)
 			{
 				XItemList * ilist = location->map->GetItemList(i, j);
 				it_iterator it;

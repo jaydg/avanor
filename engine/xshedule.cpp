@@ -144,26 +144,26 @@ void XQuickRing::RestoreRing(XFile * f)
 }
 
 
-void XSheduler::Place(XObject * p)
+void XScheduler::Place(XObject * p)
 {
 	assert(p->isValid());
 	assert(dynamic_cast<XObject *>(p));
 
 	long shift, index;
 
-	if (p->ttm < XSHEDULER_TIME_SLICE * (XSHEDULER_STEPS_AHEAD - 1))
-		shift = p->ttm / XSHEDULER_TIME_SLICE + 1; 
+	if (p->ttm < XSCHEDULER_TIME_SLICE * (XSCHEDULER_STEPS_AHEAD - 1))
+		shift = p->ttm / XSCHEDULER_TIME_SLICE + 1; 
 	else
-		shift = (XSHEDULER_STEPS_AHEAD - 1); 
+		shift = (XSCHEDULER_STEPS_AHEAD - 1); 
 
 	index = shift + head;
-	if (index >= XSHEDULER_STEPS_AHEAD) index -= XSHEDULER_STEPS_AHEAD;
-	p->ttm -= shift * XSHEDULER_TIME_SLICE;
+	if (index >= XSCHEDULER_STEPS_AHEAD) index -= XSCHEDULER_STEPS_AHEAD;
+	p->ttm -= shift * XSCHEDULER_TIME_SLICE;
 	data[index].push_back(p);
 //	data[index].PushBack(p);
 }
 
-void XSheduler::Add(XObject * p)
+void XScheduler::Add(XObject * p)
 {
 	assert(p->isValid());
 	assert(dynamic_cast<XObject *>(p));
@@ -171,7 +171,7 @@ void XSheduler::Add(XObject * p)
 	Place(p);
 }
 
-XObject * XSheduler::Get()
+XObject * XScheduler::Get()
 {
 	while (1)
 	{
@@ -179,12 +179,12 @@ XObject * XSheduler::Get()
 		while (data[head].empty()) 
 //		while (data[head].isEmpty())
    		{
-   	   		_time += XSHEDULER_TIME_SLICE;
-   			if (++head >= XSHEDULER_STEPS_AHEAD)
+   	   		_time += XSCHEDULER_TIME_SLICE;
+   			if (++head >= XSCHEDULER_STEPS_AHEAD)
 			{
-				head -= XSHEDULER_STEPS_AHEAD;
+				head -= XSCHEDULER_STEPS_AHEAD;
 				empty_count++;
-				if (empty_count > XSHEDULER_STEPS_AHEAD)
+				if (empty_count > XSCHEDULER_STEPS_AHEAD)
 					return NULL;
 			}
    			XTime::RunTime();
@@ -201,7 +201,7 @@ XObject * XSheduler::Get()
 	}
 }
 
-XObject * XSheduler::Remove()
+XObject * XScheduler::Remove()
 {
 	assert(!data[head].empty() && data[head].begin()->isValid());
 	assert(data[head].begin()->ttm < 0);
@@ -211,26 +211,26 @@ XObject * XSheduler::Remove()
 //	return data[head].PopFront();
 }
 
-void XSheduler::Store(XFile * f)
+void XScheduler::Store(XFile * f)
 {
 	f->Write(&_time, sizeof(_time));
 	f->Write(&head, sizeof(head));
 
 	XList<XObject *>::iterator it;
 
-	for (int i = 0; i < XSHEDULER_STEPS_AHEAD; i++)
+	for (int i = 0; i < XSCHEDULER_STEPS_AHEAD; i++)
 	{
 		data[i].StoreList(f);
 		//data[i].StoreRing(f);
 	}
 }
 
-void XSheduler::Restore(XFile * f)
+void XScheduler::Restore(XFile * f)
 {
 	f->Read(&_time, sizeof(_time));
 	f->Read(&head, sizeof(head));
 
-	for (int i = 0; i < XSHEDULER_STEPS_AHEAD; i++)
+	for (int i = 0; i < XSCHEDULER_STEPS_AHEAD; i++)
 	{
 		data[i].RestoreList(f);
 		//data[i].RestoreRing(f);

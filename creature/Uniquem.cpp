@@ -189,8 +189,8 @@ int XVillageElder::Chat(XCreature * chater, char * msg)
 
 		cmd.cmd = SCC_MOVE_POINT;
 		
-		cmd.pt_x = ((XStarWay *)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->x;
-		cmd.pt_y = ((XStarWay *)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->y;
+		cmd.pt_x = ((XStairWay *)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->x;
+		cmd.pt_y = ((XStairWay *)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->y;
 		cmd.ln = L_MUSHROOMS_CAVE5;
 		script.push_back(cmd);
 
@@ -371,7 +371,7 @@ int XOzorik::Chat(XCreature * chater, char * msg)
 {
 	int flag = 0;
 	if ((XQuest::quest.orcs_killed > 0 && Game.locations[L_MAIN]->GetCreatureCount(CR_ORC) == 0)
-		|| (XQuest::quest.gurads_get_orc_slay > 0))
+		|| (XQuest::quest.guards_get_orc_slay > 0))
 	{
 		flag = 1;
 		msgwin.Add(GMSG_OZORIK_QUEST_COMPLETE1);
@@ -863,8 +863,8 @@ XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
 {
 	xai->Invalidate();
 	xai = new XBanditAI(this);
-	xai->SetAIFlag(AIF_GUARD_ARIAL);
-	xai->SetAIFlag(AIF_PROTECT_ARIAL);
+	xai->SetAIFlag(AIF_GUARD_AREA);
+	xai->SetAIFlag(AIF_PROTECT_AREA);
 	xai->SetEnemyClass(CR_NONE);
 	XBodyPart * cloak = GetBodyPart(BP_CLOAK, 0);
 	if (cloak->Item())
@@ -879,7 +879,7 @@ int XBanditAI::isEnemy(XCreature * cr)
 	XBodyPart * bp = cr->GetBodyPart(BP_CLOAK);
 	if (bp && bp->Item() && bp->Item()->it == IT_FORESTBROTHERCLOAK) 
 		return 0;
-	return XStandartAI::isEnemy(cr);
+	return XStandardAI::isEnemy(cr);
 }
 
 

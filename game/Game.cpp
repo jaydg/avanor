@@ -68,7 +68,7 @@ XGame::~XGame()
 XCreature * XGame::NewCreature(XCreature * cr, int x, int y, XLocation * loc)
 {
 	cr->FirstStep(x, y, loc);
-	Sheduler.Add(cr);
+	Scheduler.Add(cr);
 	return cr;
 }
 
@@ -137,7 +137,7 @@ void XGame::RunDemo()
 	while (true)
 	{
 		for (int i = 0; i < 100; i++)
-			Game.Sheduler.Get()->Run();
+			Game.Scheduler.Get()->Run();
 #ifndef XLINUX
 		if (kbhit())
 		{
@@ -172,7 +172,7 @@ void XGame::RunWithoutHero()
 	{
 		for (int i = 0; i < 1000; i++)
 		{
-			XObject * o = Game.Sheduler.Get();
+			XObject * o = Game.Scheduler.Get();
 			o->Run();
 		}
 #ifndef XLINUX
@@ -270,12 +270,12 @@ void XGame::RunWithoutHero()
 			total_cr,
 			total_it,
             tname, best_cr_level,
-            Game.Sheduler.GetTime() / 1000,
-			(double)Game.Sheduler.GetTime() * CLOCKS_PER_SEC / (1000. * (clock() - start_clock)));
+            Game.Scheduler.GetTime() / 1000,
+			(double)Game.Scheduler.GetTime() * CLOCKS_PER_SEC / (1000. * (clock() - start_clock)));
 		vPutS(static_buffer);
 		vRefresh();
 
-/*		if (Game.Sheduler.GetTime() / 1000 > 100)
+/*		if (Game.Scheduler.GetTime() / 1000 > 100)
 			break;*/
 	}
 
@@ -292,7 +292,7 @@ void XGame::Run()
 	vHideCursor();
 
 	while (!_exit_flag && XQuest::quest.hero_win == 0 && XQuest::quest.hero_die == 0)
-		Game.Sheduler.Get()->Run();
+		Game.Scheduler.Get()->Run();
 
 	XObject::InvalidateAllObjects();
 
@@ -395,12 +395,12 @@ void XGame::CreateLocations()
 		{
 			for (XQList<XObject*>::iterator it1 = locations[i]->ways_list.begin(); it1 != locations[i]->ways_list.end(); it1++)
 			{
-				XStarWay * way = (XStarWay *)(*it1);
+				XStairWay * way = (XStairWay *)(*it1);
 				if (way->nx < 0 && way->ny < 0 && locations[way->ln])
 				{
 					for (XQList<XObject*>::iterator it2 = locations[way->ln]->ways_list.begin(); it2 != locations[way->ln]->ways_list.end(); it2++)
 					{
-						XStarWay * tmp_way = (XStarWay *)(*it2);
+						XStairWay * tmp_way = (XStairWay *)(*it2);
 						if (tmp_way->nx < 0 && tmp_way->ny < 0 && tmp_way->ln == (LOCATION)i)
 							way->Bind(tmp_way);
 					}
@@ -440,7 +440,7 @@ void XGame::CreateHero()
 		XCreature * cr = locations[L_MAIN]->NewCreature(CN_DOG, hero_point.x, hero_point.y);
 		cr->xai->companion = hero;
 		cr->xai->SetAIFlag(AIF_ALLOW_MOVE_OUT);
-		cr->xai->SetAIFlag(AIF_PEACEFULL);
+		cr->xai->SetAIFlag(AIF_PEACEFUL);
 		cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_KOBOLD | CR_GOBLIN | CR_UNDEAD | CR_INSECT | CR_IT | CR_CANINE | CR_FELINE | CR_RAT | CR_REPTILE | CR_ORC));
 	}
 #else

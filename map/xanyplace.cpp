@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "location.h"
 #include "creature.h"
 
-XAnyPlace::XAnyPlace(XRect * _arial, XLocation * _loc) : arial(_arial), XObject()
+XAnyPlace::XAnyPlace(XRect * _area, XLocation * _loc) : area(_area), XObject()
 {
 	Setup(_loc);
 	im = IM_OTHER;
@@ -44,8 +44,8 @@ void XAnyPlace::onShowItem(XItem * item, char * buf)
 void XAnyPlace::Setup(XLocation * _loc)
 {
 	location = _loc;
-	for (int i = arial.left; i < arial.right; i++)
-		for (int j = arial.top; j < arial.bottom; j++)
+	for (int i = area.left; i < area.right; i++)
+		for (int j = area.top; j < area.bottom; j++)
 			location->map->SetPlace(i, j, this);
 }
 
@@ -55,7 +55,7 @@ void XAnyPlace::Store(XFile * f)
 	
 	location.Store(f);
 	owner.Store(f);
-	arial.Store(f);
+	area.Store(f);
 }
 
 void XAnyPlace::Restore(XFile * f)
@@ -65,5 +65,5 @@ void XAnyPlace::Restore(XFile * f)
 	location.Restore(f);
 	owner.Restore(f);
 
-	arial.Restore(f);
+	area.Restore(f);
 }

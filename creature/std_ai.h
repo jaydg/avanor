@@ -38,12 +38,12 @@ enum AI_FLAG {
 	AIF_FREE_MOVE			= AIF_FREE_WAY | AIF_ALLOW_MOVE_OUT, //can creature move were it want
 
 	AIF_FIND_WAY			= 0x00000010, //creature pursuit enemy in other locations..
-	AIF_PEACEFULL			= 0x00000020, //creature never attack first
+	AIF_PEACEFUL			= 0x00000020, //creature never attack first
 	AIF_COWARD				= 0x00000040, //creature coward strenghter creatures, Also run away when wounded to much
 	AIF_ALLOW_PACK			= 0x00000100, //creature try make a pack
 	AIF_ALLOW_WEAR_ITEM		= 0x00000200, //creature can wear items
-	AIF_GUARD_ARIAL			= 0x00000400, //this creature guard a arial
-	AIF_PROTECT_ARIAL		= 0x00000800, //creature attack every who enter this arial
+	AIF_GUARD_AREA			= 0x00000400, //this creature guard a area
+	AIF_PROTECT_AREA		= 0x00000800, //creature attack every who enter this area
 	AIF_RANDOM_MOVE			= 0x00001000, //creature move randomly
 	AIF_EXPLORER_MOVE		= 0x00002000, //creature explore dangeon
 	AIF_EXECUTE_SCRIPT		= 0x00004000, //if nothing to do, execute script...
@@ -89,16 +89,16 @@ struct SCRIPT_CMD
 
 #define ENEMY_LIST_SIZE	5
 class XCreature;
-class XStandartAI : public XObject
+class XStandardAI : public XObject
 {
 protected:
-	XStandartAI() {}
+	XStandardAI() {}
 public:
-	DECLARE_CREATOR(XStandartAI, XObject);
-	XStandartAI(XCreature * _cr); 
+	DECLARE_CREATOR(XStandardAI, XObject);
+	XStandardAI(XCreature * _cr); 
 	virtual void Invalidate();
 
-	void SetArial(XRect * arial, LOCATION ln);
+	void SetArea(XRect * area, LOCATION ln);
 	void SetOwner(XCreature * cr) {ai_owner = cr;}
 
 	virtual void AnalyzeGrid(int j, int i, int w);
@@ -171,8 +171,8 @@ protected:
 	XPtr<XCreature> ai_owner;
 	CREATURE_CLASS enemy_class;
 
-	XRect guard_arial;
-	LOCATION gurad_arial_location;
+	XRect guard_area;
+	LOCATION guard_area_location;
 
 
 	XCreature * enemy;     // current targeted creature
