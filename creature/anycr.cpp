@@ -102,8 +102,8 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 					item = ICREATEA((ITEM_MASK)((*it).mask));
 				else
 					item = ICREATEB((ITEM_MASK)((*it).mask), (*it).it, 0, 10000000);
-				if (item->it == IT_DRESS && creature_person_type == CPT_HE || 
-						creature_person_type == CPT_NAMED_HE)
+				if (item->im & IM_BODY && item->it == IT_DRESS 
+					 && GetGender() == GEN_MALE)
 				{
 					// This is a kludge to prevent a "Roderick in a dress" scenario.
 					item->it = IT_CLOTHES;
