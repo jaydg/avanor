@@ -424,7 +424,7 @@ void XGame::CreateHero()
 //	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
 
 	hero_point.x = 77;
-	hero_point.y = 4;
+	hero_point.y = 11;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_DWARFCITY]);
 	locations[L_DWARFCITY]->map->Center(hero->x, hero->y);
 	locations[L_DWARFCITY]->visited_by_hero = 1;

@@ -769,6 +769,7 @@ XTorin::XTorin(_CREATURE * cr) : XAnyCreature(cr)
 
 int XTorin::Chat(XCreature * chatter, char * msg)
 {
+	return XCreature::Chat(chatter, msg);
 	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("It is time to die!");

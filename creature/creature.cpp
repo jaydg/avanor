@@ -27,6 +27,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xshedule.h"
 #include "game.h"
 
+extern "C"
+{
+	#include "./lua/include/lauxlib.h"
+}
+
+
 // a creature which is currently being displayed
 XCreature * XCreature::main_creature = NULL;
 
@@ -84,6 +90,7 @@ XCreature::XCreature()
 	tactics = TS_NORMAL;
 	group_id = GID_NONE;
 	food_feeling = FF_NORMAL;
+	event_handler = NULL;
 }
 
 void XCreature::Invalidate()
@@ -108,6 +115,9 @@ void XCreature::Invalidate()
 
 	delete wsk;
 	wsk = NULL;
+
+	if (event_handler)
+		delete[] event_handler;
 
 //   assert(aligment);
 //   if (aligment)
@@ -1393,6 +1403,23 @@ void XCreature::Store(XFile * f)
 	max_stats.Store(f);
 	f->Write(&creature_person_type, sizeof(creature_person_type));
 	f->Write(&creature_name, sizeof(creature_name));
+
+	int sz = 0;
+	if (event_handler)
+		sz = strlen(event_handler) + 1;
+	f->Write(&sz);
+	if (sz > 0)
+		f->Write(event_handler, sz);
+	if (event_handler)
+	{
+		lua_pushstring(XLocation::L, event_handler);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_SAVE);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+	}
+
 }
 
 
@@ -1456,8 +1483,34 @@ void XCreature::Restore(XFile * f)
 	
 	if (!isHero()) //skip restoing of descriptions and other for hero
 		XCreatureStorage::RestoreCreatureInfo(this);
+
+	int sz = 0;
+	f->Read(&sz);
+	if (sz > 0)
+	{
+		event_handler = new char [sz];
+		f->Read(event_handler, sz);
+	} else
+		event_handler = NULL;
+
+	if (event_handler)
+	{
+		lua_pushstring(XLocation::L, event_handler);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_LOAD);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+	}
+
 }
 
+
+void XCreature::SetEventHandler(const char * handler)
+{
+	event_handler = new char [strlen(handler) + 1];
+	strcpy(event_handler, handler);
+}
 
 int XCreature::GetCreatureStrength()
 {
@@ -1496,6 +1549,19 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject *
 
 int XCreature::Chat(XCreature * chatter, char * msg)
 {
+	if (event_handler)
+	{
+		lua_pushstring(XLocation::L, event_handler);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_CHAT);
+		lua_pushlightuserdata(XLocation::L, this);
+		lua_pushlightuserdata(XLocation::L, chatter);
+		lua_pushlightuserdata(XLocation::L, msg);
+		lua_call(XLocation::L, 4, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+		return res;
+	} 
 	return 0;
 }
 
@@ -1589,6 +1655,19 @@ int XCreature::GetVisibleRadius()
 
 int XCreature::onGiveItem(XCreature * giver, XItem * item)
 {
+	if (event_handler)
+	{
+		lua_pushstring(XLocation::L, event_handler);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_GIVE_ITEM);
+		lua_pushlightuserdata(XLocation::L, this);
+		lua_pushlightuserdata(XLocation::L, giver);
+		lua_pushlightuserdata(XLocation::L, item);
+		lua_call(XLocation::L, 4, 1);
+		int res = lua_tonumber(XLocation::L, 2);
+		lua_pop(XLocation::L, 1);
+		return res;
+	} 
 	return 0;
 }
 

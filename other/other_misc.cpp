@@ -728,6 +728,7 @@ int XOuterObject::onOuterUse(XCreature * cr)
 
 void XOuterObject::Store(XFile * f)
 {
+	XMapObject::Store(f);
 	int sz = 0;
 	if (onEventLua)
 		sz = strlen(onEventLua) + 1;
@@ -743,11 +744,13 @@ void XOuterObject::Store(XFile * f)
 		int res = lua_tonumber(XLocation::L, 2);
 		lua_pop(XLocation::L, 1);
 	}
-	XMapObject::Store(f);
+	
 }
 
 void XOuterObject::Restore(XFile * f)
 {
+	XMapObject::Restore(f);
+
 	int sz = 0;
 	f->Read(&sz);
 	if (sz > 0)
@@ -766,7 +769,5 @@ void XOuterObject::Restore(XFile * f)
 		int res = lua_tonumber(XLocation::L, 2);
 		lua_pop(XLocation::L, 1);
 	}
-
-	XMapObject::Restore(f);
 }
 

@@ -185,6 +185,8 @@ public:
 	const char * creature_description;
 	CREATURE_NAME creature_name; //allow to store less info into save file
 	const _CREATURE * super_info; //full information about Creature Creation struct...
+	char * event_handler;
+	void SetEventHandler(const char * handler);
 public:
 	DECLARE_CREATOR(XCreature, XBaseObject);
 	XCreature();

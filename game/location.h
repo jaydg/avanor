@@ -95,6 +95,8 @@ enum LUA_EVENT
 	LE_MOVE_IN			= 2,
 	LE_MOVE_OUT			= 3,
 	LE_OUTER_USE		= 4,
+	LE_CHAT				= 10,
+	LE_GIVE_ITEM		= 11,
 	LE_SAVE				= 98,
 	LE_LOAD				= 99
 };
@@ -217,6 +219,7 @@ public:
 	static int InflictDamage(lua_State * L);
 	static int ChangeStats(lua_State * L);
 	static int Rand(lua_State * L);
+	static int SetEventHandler(lua_State * L);
 
 
 	static int isHero(lua_State * L);

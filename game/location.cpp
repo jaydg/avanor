@@ -761,6 +761,13 @@ int XLocation::AddMessage(lua_State * L)
 	return 0;
 }
 
+int XLocation::SetEventHandler(lua_State * L)
+{
+	XCreature * p = (XCreature *)lua_topointer(L, 1);
+	const char * event = lua_tostring(L, 2);
+	p->SetEventHandler(event);
+	return 1;
+}
 
 
 XFile * XLocation::svg_file = NULL;
@@ -963,6 +970,8 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(LE_MOVE_IN);
 	LUA_REG(LE_MOVE_OUT);
 	LUA_REG(LE_OUTER_USE);
+	LUA_REG(LE_CHAT);
+	LUA_REG(LE_GIVE_ITEM);
 	LUA_REG(LE_SAVE);
 	LUA_REG(LE_LOAD);
 
@@ -998,6 +1007,8 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "ChangeStats", ChangeStats);
 	lua_register(L, "InflictDamage", InflictDamage);
 	lua_register(L, "Rand", Rand);
+	lua_register(L, "SetEventHandler", SetEventHandler);
+	
 	
 
 	lua_register(L, "StoreInt", StoreInt);
