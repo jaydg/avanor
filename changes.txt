@@ -122,5 +122,10 @@ v.0.5.7
 3) Fixed bug #131 (Using 'w'alk command to find invisible enemies. )
 4) Fixed bug #140 (Obsidian helm changed to steel helm )
 5) Fixed bug #216 (swapping inside shop)
-6) Fixed bug #219 (Identify bug)
-7) Added special rooms with creatures.
+6) Fixed bug #219(142) (Identify bug)
+7) Fixed bugs #218(220), #189, #213, and #279
+8) Added special rooms with creatures.
+9) New monsters: Vampire, Grey Jellies
+10) Furniture and Traps
+11) Avanor castle is now part of a capital city.
+12) Added pikes and halberds.
