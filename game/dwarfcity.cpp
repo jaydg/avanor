@@ -88,7 +88,7 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 
 	{
 		XRect gr(62, 17, 63, 18);
-		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	}
+		NewCreature(CN_TORIN, &gr, GID_DWARVEN_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP))->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	}
 		new XThrone(62, 17, "the Dwarven Kingdom", this);
 
 	new XAltar(45, 11, D_LIFE, this);
@@ -209,9 +209,9 @@ int XDwarvenTresurePlace::onCreatureMove(XCreature * cr)
 					if (grd && grd->group_id == GID_DWARVEN_GUARDIAN && !grd->xai->isEnemy(cr))
 					{
 						if (move_count < 3)
-							msgwin.Add("'Go out from here immediately!'");
+							msgwin.Add("'Leave here immediately!'");
 						else
-							msgwin.Add("'You have last chance to run away!'");
+							msgwin.Add("'This is your last chance to leave!'");
 						flg = 0;
 					}
 				}
@@ -245,7 +245,7 @@ XGasMineLocation::XGasMineLocation(LOCATION loc) : XLocation(loc)
 		case L_GASMINE1:
 		{
 			strcpy(brief_name, "GM1");
-			strcpy(full_name, "Gassing Mine level 1");
+			strcpy(full_name, "Gassed Mine level 1");
 			NewWay(L_DWARFCITY, STW_UP);
 			NewWay(L_GASMINE2, STW_DOWN);
 
@@ -258,7 +258,7 @@ XGasMineLocation::XGasMineLocation(LOCATION loc) : XLocation(loc)
 		case L_GASMINE2:
 		{
 			strcpy(brief_name, "GM2");
-			strcpy(full_name, "Gassing Mine level 2");
+			strcpy(full_name, "Gassed Mine level 2");
 			NewWay(L_GASMINE1, STW_UP);
 			NewWay(L_GASMINE3, STW_DOWN);
 			XRect t_area(0, 0, 80, 20);
@@ -271,7 +271,7 @@ XGasMineLocation::XGasMineLocation(LOCATION loc) : XLocation(loc)
 		case L_GASMINE3:
 		{
 			strcpy(brief_name, "GM3");
-			strcpy(full_name, "Gassing Mine level 3");
+			strcpy(full_name, "Gassed Mine level 3");
 			NewWay(L_GASMINE2, STW_UP);
 			XRect t_area(0, 0, 80, 20);
 			XAnyPlace * place = new XGasPlace(&t_area, this);
@@ -325,10 +325,10 @@ int XGasPump::onOuterUse(XCreature * cr)
 	if (XQuest::quest.torin_quest < 2)
 	{
 		XQuest::quest.torin_quest = 2;
-		msgwin.Add("You have hear hollow rumble.");
+		msgwin.Add("You hear hollow rumble as the pump starts.");
 	} else
 	{
-		msgwin.Add("You can't stop pump.");
+		msgwin.Add("You can't seem to stop the pump.");
 	}
 	return 1;
 }

@@ -33,7 +33,7 @@ public:
 	{
 		if (cr->isHero() && vRand(15) == 0)
 		{
-			msgwin.Add("You fill power swirling the air...");
+			msgwin.Add("You feel power swirling in the air...");
 		}
 		if (vRand(30) == 0)
 		{
@@ -74,7 +74,7 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 	if (loc == L_MUSHROOMS_CAVE2)
 	{
 		strcpy(brief_name, "MC:2");
-		strcpy(full_name, "Mushroom Caves Level 2");
+		strcpy(full_name, "Mushroom Cave Level 2");
 		NewWay(L_MUSHROOMS_CAVE1, STW_UP);
 		NewWay(L_MUSHROOMS_CAVE3, STW_DOWN);
 		NewWay(L_MUSHROOMS_CAVE5, STW_DOWN);
@@ -83,7 +83,7 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 	if (loc == L_MUSHROOMS_CAVE3)
 	{
 		strcpy(brief_name, "KC:1");
-		strcpy(full_name, "Kobolds Cavern Level 1");
+		strcpy(full_name, "Kobold Cavern Level 1");
 		NewWay(L_MUSHROOMS_CAVE2, STW_UP);
 		NewWay(L_MUSHROOMS_CAVE4, STW_DOWN);
 		Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_KOBOLD), (CREATURE_LEVEL)(CRL_LOW | CRL_VERY_LOW), 10, 25000));
@@ -91,7 +91,7 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 	if (loc == L_MUSHROOMS_CAVE4)
 	{
 		strcpy(brief_name, "KC:2");
-		strcpy(full_name, "Kobolds Cavern Level 2");
+		strcpy(full_name, "Kobold Cavern Level 2");
 		NewWay(L_MUSHROOMS_CAVE3, STW_UP);
 
 		Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_KOBOLD), (CREATURE_LEVEL)(CRL_LOW | CRL_VERY_LOW), 10, 25000));
@@ -99,7 +99,7 @@ XMushroomsCaveLocation::XMushroomsCaveLocation(LOCATION loc) : XLocation(loc)
 	if (loc == L_MUSHROOMS_CAVE5)
 	{
 		strcpy(brief_name, "MC:3");
-		strcpy(full_name, "Mushroom Caves Level 3");
+		strcpy(full_name, "Mushroom Cave Level 3");
 		NewWay(L_MUSHROOMS_CAVE2, STW_UP);
 		XRect t_area(0, 0, 80, 20);
 		XAnyPlace * place = new XMagicMCPlace(&t_area, this);

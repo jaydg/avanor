@@ -238,7 +238,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		PutPalette(100, 50, PAL_UNDEAD_TOMB0, this);
 		NewWay(118, 54, L_UNDEADS_TOMB1, STW_DOWN);
 
-		XRect tomb_area(110, 50, 117, 57);
+		XRect tomb_area(104, 51, 117, 57);
 		
 		for (i = 0; i < 20; i++)
 			NewCreature(CN_SKELETON, &tomb_area);

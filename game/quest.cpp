@@ -96,14 +96,14 @@ void XQuest::ShowQuests()
 	if (roderick_quest == 1)
 	{
 		list.AddItem(new XGuiItem_Text(
-			"Roderick, the King of Avanor asked you to find artifact called 'Eye of Raa'"));
+			"Roderick, the King of Avanor has asked you to find an artifact called the 'Eye of Raa'"));
 		flag = 0;
 	}
 
 	if (roderick_quest2 == 1)
 	{
 		list.AddItem(new XGuiItem_Text(
-			"Roderick, the King of Avanor asked you to cleanse his family crypt."));
+			"Roderick, the King of Avanor has asked you to cleanse his family crypt."));
 		flag = 0;
 	}
 
@@ -111,7 +111,7 @@ void XQuest::ShowQuests()
 	if (ahk_ulan_quest)
 	{
 		char buf[256];
-		sprintf(buf, "Ahk-Ulan asked you to bring 3 parts of ancient machine. You left to bring %d.", 4 - ahk_ulan_quest);
+		sprintf(buf, "Ahk-Ulan asked you to bring 3 parts of ancient machine. There are %d more parts left.", 4 - ahk_ulan_quest);
 		list.AddItem(new XGuiItem_Text(buf));
 		flag = 0;
 	}
