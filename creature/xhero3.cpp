@@ -186,7 +186,7 @@ void XHero::EndGame(char * end_msg)
 	sprintf(buf2, "%s, %s (L%d).", ((XHero *)main_creature)->name, ((XHero *)main_creature)->race_profession, ((XHero *)main_creature)->level);
 	list.AddItem(new XGuiItem_Text(buf2));
 	
-	sprintf(tbuf, "He made %d turns.", ((XHero *)main_creature)->turn_count);
+	sprintf(tbuf, "You survived %d turns.", ((XHero *)main_creature)->turn_count);
 	list.AddItem(new XGuiItem_Text(tbuf));
 	
 	if (XQuest::quest.hero_win)
@@ -277,7 +277,7 @@ void XHero::EndGame(char * end_msg)
 		list.AddItem(new XGuiItem_Text("You tryed to help to repulse an attack of orcs."));
 	}
 	
-	sprintf(tbuf, "He scored %d.", score);
+	sprintf(tbuf, "You scored %d.", score);
 	list.AddItem(new XGuiItem_Text(tbuf));
 	list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Achievements " MSG_BROWN "###");
 	list.Run();

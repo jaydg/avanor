@@ -38,6 +38,12 @@ struct CUSTOM_PROF
 	char * stats;
 };
 
+struct CUSTOM_GEND
+{
+	char * name;
+	char * stats;
+};
+
 CUSTOM_RACE cust_race[] = {
 {"human",
 "St:1d4+8 Dx:1d4+8 To:1d4+8 Le:1d4+8 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
@@ -105,7 +111,7 @@ CUSTOM_PROF cust_profession[] = {
 {"ranger",
 "St:0d0+0 Dx:0d0+2 To:0d0+2 Le:0d0-2 Wi:0d0-1 Ma:0d0-0 Pe:0d0+0 Ch:0d0+0"},
 
-{"priest",
+{"cleric",
 "St:0d0-2 Dx:0d0-2 To:0d0-1 Le:0d0+2 Wi:0d0+2 Ma:0d0-2 Pe:0d0+3 Ch:0d0+0"},
 
 {"paladin",
@@ -121,8 +127,20 @@ CUSTOM_PROF cust_profession[] = {
 };
 
 
+CUSTOM_GEND cust_gender[] = {
+{"male",
+"St:0d0+1 Dx:0d0+0 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
+
+{"female",
+"St:0d0+0 Dx:0d0+0 To:0d0+1 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"},
+
+
+};
+
 void XHero::PickRace()
 {
+	XStats * stmp;
+
 	vClrScr();
 	vGotoXY(7, 4);
 	vPutS(MSG_LIGHTGRAY "Choose a race:");
@@ -139,7 +157,7 @@ void XHero::PickRace()
 	}
 	vRefresh();
 	
-	char race_choise = ' ';
+	char race_choice = ' ';
 	while (1)
 	{
 
@@ -149,7 +167,7 @@ void XHero::PickRace()
 #else
 		char ch = 'c';
 #endif
-		race_choise = ch;
+		race_choice = ch;
 
 		if (ch >= 97 && ch < 97 + 7)
 		{
@@ -160,15 +178,15 @@ void XHero::PickRace()
 			s = new XStats(cust_race[ch - 97].stats);
 			max_stats.Set(cust_race[ch - 97].max_stats);
 			food_feeling = cust_race[ch - 97].ff;
-			strcpy(race_profession, cust_race[ch - 97].name);
-			strcat(race_profession, " ");
+
+			// Race name compiled at gender
 			vClrScr();
 			break;
 		}
 	}
 
 
-	switch (race_choise)
+	switch (race_choice)
 	{
 		case 'a':
 			sk->Learn(SKT_COOKING);
@@ -194,12 +212,54 @@ void XHero::PickRace()
 	}
 	sk->Learn(SKT_FIRST_AID);
 
+	vClrScr();
+	vGotoXY(7, 4);
+	vPutS(MSG_LIGHTGRAY "Choose a gender:");
+
+	for (i = 0; i < 2; i++)
+	{
+		vGotoXY(7, 6 + i);
+		sprintf(buf, MSG_LIGHTGRAY "[" MSG_YELLOW "%c" MSG_LIGHTGRAY "] %s ", i + 97,  cust_race[i].name);
+		vPutS(buf);
+	}
+	vRefresh();
+	
+	char gend_choice = ' ';
+	while (1)
+	{
+
+
+#ifndef __CHOOSE_RACE
+		char ch = vGetch();
+#else
+		char ch = 'a';
+#endif
+		gend_choice = ch;
+
+		if (ch >= 97 && ch < 97 + 1)
+		{
+			stmp = new XStats(cust_gender[ch - 97].stats);
+			s->Add(stmp);
+			delete stmp;
+			
+			// The female half-elf ...
+			strcpy(race_profession, cust_gender[ch - 97].name);
+			strcat(race_profession, " ");
+			strcat(race_profession, cust_race[race_choice - 97].name);
+			strcat(race_profession, " ");
+			vClrScr();
+			break;
+		}
+		if (ch == 'a')
+			creature_person_type = CPT_MALE_YOU;
+		else if (ch == 'b')
+			creature_person_type = CPT_FEMALE_YOU;
+	}
+
 
 	vClrScr();
 	vGotoXY(7, 4);
 	vPutS(MSG_LIGHTGRAY "Choose a profession:");
-	
-
 	
 	for (i = 0; i < 8; i++)
 	{
@@ -220,7 +280,7 @@ void XHero::PickRace()
 
 		if (ch >= 97 && ch < 97 + 8)
 		{
-			XStats * stmp = new XStats(cust_profession[ch - 97].stats);
+			stmp = new XStats(cust_profession[ch - 97].stats);
 			s->Add(stmp);
 			delete stmp;
 			for (int ii = S_STR; ii < S_EOF; ii++)
@@ -237,7 +297,7 @@ void XHero::PickRace()
 			{
 //************** warrior
 				case 'a' :
-					switch (race_choise)
+					switch (race_choice)
 					{
 						case 'a':
 							pbp = GetBodyPart(BP_HAND, 0);
@@ -366,7 +426,7 @@ void XHero::PickRace()
 
 //*************** archer
 				case 'c' :
-					switch (race_choise)
+					switch (race_choice)
 					{
 						case 'a':
 							pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
@@ -483,7 +543,7 @@ void XHero::PickRace()
 
 //*************** ranger
 				case 'd' :
-					switch (race_choise)
+					switch (race_choice)
 					{
 						case 'a':
 							pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
@@ -606,7 +666,7 @@ void XHero::PickRace()
 					break;
 
 
-//*************** priest
+//*************** cleric
 				case 'e' :
 					pbp = GetBodyPart(BP_HAND, 0);
 					pbp->Wear(ICREATEB(IM_WEAPON, IT_MACE, 10, 150));
@@ -631,8 +691,8 @@ void XHero::PickRace()
 					sk->Learn(SKT_HERBALISM);
 					sk->Learn(SKT_RELIGION);
 
-					strcat(race_profession, "priest");
-					switch (race_choise)
+					strcat(race_profession, "cleric");
+					switch (race_choice)
 					{
 						case 'a':
 						case 'e':
@@ -675,7 +735,7 @@ void XHero::PickRace()
 					sk->Learn(SKT_ATHLETICS);
 
 					strcat(race_profession, "paladin");
-					switch (race_choise)
+					switch (race_choice)
 					{
 						case 'a':
 						case 'e':

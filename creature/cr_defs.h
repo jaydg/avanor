@@ -255,15 +255,36 @@ enum FOOD_FEELING
 	FF_SENSETIVE,
 };
 
+enum CR_GENDER
+{
+	GEN_NEUTER = 0x00,
+	GEN_MALE   = 0x01,
+	GEN_FEMALE = 0x02,
+
+	// TODO: Write code to pick a random gender if male & female flags on.
+	GEN_RANDOM = (GEN_FEMALE | GEN_MALE) 
+};
+
 enum CR_PERSON_TYPE
 {
-	CPT_YOU, //you
-	CPT_NAMED_HE, //Munch-Munchm the Dread
-	CPT_NAMED_SHE, //female Munch-Munchm the Dread
-	CPT_NAMED_IT, //Gekta, the ship dog.
-	CPT_HE, //the kobold, him
-	CPT_SHE, //the female kobold, here
-	CPT_IT, //mass of fungus, rat, etc.
+	CPT_IT     = GEN_NEUTER,   // It
+	CPT_HE     = GEN_MALE,     // He
+	CPT_SHE    = GEN_FEMALE,   // She
+
+	// Default you 
+	CPT_YOU    = 0x08,
+
+	// Genderized you 
+	CPT_MALE_YOU   = (CPT_HE | CPT_YOU),
+	CPT_FEMALE_YOU = (CPT_SHE | CPT_YOU),
+
+	// Unique creatures
+	CPT_UNIQUE = 0x10,
+
+	// Backward compatibility
+	CPT_NAMED_HE  = (CPT_HE | CPT_UNIQUE),  // Munch-Munch the Dread
+	CPT_NAMED_SHE = (CPT_SHE | CPT_UNIQUE), // Yohjishiro, the elven wizard
+	CPT_NAMED_IT  = (CPT_IT | CPT_UNIQUE)   // Gekta, the sheep dog
 };
 
 enum CR_ATTACK_TYPE
