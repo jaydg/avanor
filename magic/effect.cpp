@@ -455,19 +455,19 @@ int XEffect::Make(EFFECT_DATA * pData)
 			{
 				XPoint pt;
 				pData->l->GetFreeXY(&pt);
-				if (!pData->caller->isHero() && pData->caller->isVisible())
+				if (!pData->target->isHero() && pData->target->isVisible())
 				{
-					msgwin.Add(pData->caller->name);
+					msgwin.Add(pData->target->name);
 					msgwin.Add("has suddenly disappered.");
 				}
-				pData->caller->LastStep();
-				pData->caller->FirstStep(pt.x, pt.y, pData->l);
-				if (!pData->caller->isHero() && pData->caller->isVisible())
+				pData->target->LastStep();
+				pData->target->FirstStep(pt.x, pt.y, pData->l);
+				if (!pData->target->isHero() && pData->target->isVisible())
 				{
-					msgwin.Add(pData->caller->name);
+					msgwin.Add(pData->target->name);
 					msgwin.Add("has suddenly appeared.");
 				}
-				if (pData->caller->isHero())
+				if (pData->target->isHero())
 				{
 					msgwin.Add("You have teleported away!");
 				}

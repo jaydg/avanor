@@ -396,7 +396,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 	stopAction();
 
 	bool vis1 = isVisible();
-	bool vis2 = pData->attacker ? pData->attacker->isVisible() : true;
+	bool vis2 = pData->attacker ? pData->attacker->isVisible() : vis1;
 
 	//this attack can be avoided
 	

@@ -82,9 +82,9 @@ void XHero::doSacrifice()
 	}
 }
 
-XItem * XHero::SelectItem(ITEM_FILTR * filtr)
+XItem * XHero::SelectItem(ITEM_FILTR * filtr, bool isGetAll)
 {
-	return Inventory(&contain, IM_UNKNOWN, IF_NONE, 1, filtr);
+	return Inventory(&contain, IM_UNKNOWN, IF_NONE, !isGetAll, filtr);
 }
 
 void XHero::DumpVBuffer(FILE * f)

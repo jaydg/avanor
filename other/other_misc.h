@@ -32,9 +32,9 @@ enum TRAP_TYPE
 	TT_FIREBOLT,
 	TT_ACIDBOLT,
 	TT_ARROW,
-	TT_SPEAR,
-	TT_PIT,
 	TT_TELEPORT,
+	TT_PIT,
+	TT_SPEAR_PIT,
 	TT_RANDOM
 };
 
@@ -62,11 +62,14 @@ class XTrap: public XMapObject
 	int isVisibleForHero;
 	XPtr<XItem> trap_item;
 	bool isMagic;
+	XGUID last_activator; //need for a pits
 public:
+	int activation_count;
 	DECLARE_CREATOR(XTrap, XMapObject);
 	XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature * _owner = NULL, XItem * items = NULL);
 //	XTrap(int _x, int _y, XLocation * _l, TRAP_TYPE tt = TT_RANDOM) {}
 	virtual int MoveIn(XCreature * cr);
+	virtual int MoveOut(XCreature * cr);
 	virtual int Activate(XCreature * cr);
 	virtual int Check(XCreature * cr);
 	virtual int isVisible(XCreature * cr);

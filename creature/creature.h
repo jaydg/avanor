@@ -265,7 +265,7 @@ public:
 
 	virtual int GetTarget(TARGET_REASON tr, XPoint * pt = NULL, int max_range = 0, XObject ** back = NULL);//Get target for a spell
 	virtual XItem * onIdentifyItem() {return NULL;}
-	virtual XItem * SelectItem(ITEM_FILTR * filtr) {return NULL;}
+	virtual XItem * SelectItem(ITEM_FILTR * filtr, bool isGetAll = false) {return NULL;}
 
 	int Shoot(int tx, int ty);
 	XItem * GetItem(BODYPART bp, int count = 0);

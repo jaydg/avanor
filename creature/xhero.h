@@ -75,7 +75,7 @@ public:
 	int XShoot();
 	int Targeting(int range, XPoint * pt);
 	virtual int GetTarget(TARGET_REASON tr, XPoint * pt = NULL, int max_range = 0, XObject ** back = NULL); //Get target for a spell
-	virtual XItem * SelectItem(ITEM_FILTR * filtr);
+	virtual XItem * SelectItem(ITEM_FILTR * filtr, bool isGetAll = false);
 
 	int SelectPosition(XPoint * pt, int flag = 0);
 	unsigned int turn_count;

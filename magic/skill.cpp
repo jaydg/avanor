@@ -48,6 +48,7 @@ SKILL_DB skill_db[] = {
 {"Create trap",		1},
 {"Necromancy",		1},
 {"Athletics",		1},
+{"Climbing",		1},
 };
 
 char * skill_level_name[16] = {
@@ -266,21 +267,48 @@ int XSkill::UseDisarm(XCreature * user)
 struct TRAP_CREATE_REC
 {
 	char * name;
+	bool isMagic;
 	int level;
-	unsigned int var;
+	unsigned int var; //neccessary item or spell
+	unsigned int var2; //tools
 } trap_create_rec[] = {
-	{"Arrow trap", 0, IT_ARROW},
-	{"Spear trap", 2, IT_SHORTSPEAR},
-	{"Magic Arrow trap", 4, SPELL_MAGIC_ARROW},
-	{"Fire Bolt trap", 6, SPELL_FIRE_BOLT},
-	{"Acid Bolt trap", 8, SPELL_ACID_BOLT},
-	{NULL, 1000, 0}
+	{"Arrow trap",			false,	0, IT_ARROW,			0},
+	{"Spear trap",			false,	2, IT_SHORTSPEAR,		0},
+	{"Magic Arrow trap",	true,	4, SPELL_MAGIC_ARROW,	0},
+	{"Fire Bolt trap",		true,	6, SPELL_FIRE_BOLT,		0},
+	{"Pit",					false,	8, 0,					IT_PICKAXE},
+	{"Acid Bolt trap",		true,	10, SPELL_ACID_BOLT,	0},
+	{"Great Pit",			false,	12, IT_SHORTSPEAR,		IT_PICKAXE},
+	{NULL, false, 1000, 0, 0}
 };
+
+
+int TrapArrowsFiltr(XItem * item)
+{
+	if (item->im & IM_MISSILE && (item->it == IT_ARROW || item->it == IT_QUARREL))
+		return 1;
+	else
+		return 0;
+}
+
+int TrapSpearsFiltr(XItem * item)
+{
+	if (item->im & IM_WEAPON && (item->it == IT_SHORTSPEAR || item->it == IT_LONGSPEAR))
+		return 1;
+	else
+		return 0;
+}
 
 
 int XSkill::UseCreate(XCreature * user)
 {
+	if (user->l->map->GetSpecial(user->x, user->y))
+	{
+		msgwin.Add("You can not create trap here.");
+		return 0;
+	}
 	XGuiList list;
+	list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Create Trap " MSG_BROWN "###");
 	int i = 0;
 	while (trap_create_rec[i].name && trap_create_rec[i].level < level)
 	{
@@ -288,15 +316,13 @@ int XSkill::UseCreate(XCreature * user)
 		i++;
 	}
 	int ch = list.Run();
-	if (ch == 0 || ch == 1)
-	{
-
-	} else if (ch == 2 || ch == 3 || ch == 4)
+	if (trap_create_rec[ch].isMagic)
 	{
 		XSpell * sp = user->m->GetSpell((SPELL_NAME)trap_create_rec[ch].var);
 		if (sp)
 		{
-			if (sp->GetManaCost() * 5 > user->_PP)
+			int count = user->_PP / (sp->GetManaCost() * 2);
+			if (count == 0)
 			{
 				msgwin.Add("You have no enoght mana!");
 			} else
@@ -304,21 +330,57 @@ int XSkill::UseCreate(XCreature * user)
 				switch (trap_create_rec[ch].var)
 				{
 					case SPELL_MAGIC_ARROW:
-						new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_MAGICARROW, user);
+						(new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_MAGICARROW, user))->activation_count = count;
 						break;
 					case SPELL_FIRE_BOLT:
-						new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_FIREBOLT, user);
+						(new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_FIREBOLT, user))->activation_count = count;
 						break;
 					case SPELL_ACID_BOLT:
-						new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ACIDBOLT, user);
+						(new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ACIDBOLT, user))->activation_count = count;
 						break;
 				}
+				user->_PP -= sp->GetManaCost() * 2 * count;
+				user->sk->UseSkill(SKT_CREATETRAP, 10);
 				msgwin.Add("You have successfuly create a trap!");
 			}
 		} else
 		{
 			msgwin.Add("You have to learn spell first!");
 		}
+	} else //this trap created from items...
+	{
+		XItem * item = NULL;
+		if (trap_create_rec[ch].var == IT_ARROW)
+			item = user->SelectItem(&TrapArrowsFiltr, true);
+		else if (trap_create_rec[ch].var == IT_SHORTSPEAR)
+			item = user->SelectItem(&TrapSpearsFiltr, true);
+
+		if (trap_create_rec[ch].var2 == IT_PICKAXE)
+		{
+			if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == IT_PICKAXE)
+			{
+				if (item && trap_create_rec[ch].var > 0)
+				{
+					new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item);
+					user->sk->UseSkill(SKT_CREATETRAP, 20);
+					msgwin.Add("You have successfuly create a trap!");
+				} else if (trap_create_rec[ch].var == 0)
+				{
+					new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_PIT, user, NULL);
+					user->sk->UseSkill(SKT_CREATETRAP, 10);
+					msgwin.Add("You have successfuly create a trap!");
+				}
+			} else
+			{
+				msgwin.Add("You shoud wield a pickaxe!");
+			}
+		} else if (item)
+		{
+			new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ARROW, user, item);
+			user->sk->UseSkill(SKT_CREATETRAP, 15);
+			msgwin.Add("You have successfuly create a trap!");
+		}
+
 	}
 
 	return 1;

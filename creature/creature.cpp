@@ -297,6 +297,21 @@ void XCreature::DoMove()
 
 void XCreature::Move()
 {
+
+	XMapObject * tobj = l->map->GetSpecial(x, y);
+	if (tobj)
+	{
+		//we can move easy from pit or web
+		if (tobj->im == IM_TRAP && (nx != x || ny != y) && !((XTrap *)tobj)->MoveOut(this))
+		{
+			nx = x;
+			ny = y;
+			if (!isValid())
+				return;
+		}
+	}
+
+
 	XAnyPlace * new_place = l->map->GetPlace(nx, ny);
 	XAnyPlace * old_place = l->map->GetPlace(x, y);
 	

@@ -44,7 +44,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 	if (tl == TL_RANDOM)
 		tl = (TRAP_LEVEL)vRand(TL_RANDOM);
 	trap_level = tl;
-
+	activation_count = vRand(20) + 5;
 	isMagic = false;
 	switch (tt)
 	{
@@ -72,18 +72,24 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 			}
 			break;
 
-		case TT_SPEAR:
-			color = xLIGHTGRAY;
-			if (trap_item == NULL)
-			{
-				trap_item = ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000);
-				trap_item->quantity = vRand(5) + 5;
-			}
-			break;
-
 		case TT_TELEPORT:
 			color = xLIGHTGREEN;
 			isMagic = true;
+			break;
+
+		case TT_PIT:
+			color = xDARKGRAY;
+			isMagic = false;
+			break;
+
+		case TT_SPEAR_PIT:
+			color = xDARKGRAY;
+			isMagic = false;
+			if (trap_item == NULL)
+			{
+				trap_item = ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000);
+				trap_item->quantity = vRand(3) + 2;
+			}
 			break;
 			
 		default:
@@ -106,6 +112,8 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 
 int XTrap::MoveIn(XCreature * cr)
 {
+	assert(isValid());
+	assert(cr->isValid());
 	if (cr->isHero())
 	{
 		if (!isVisibleForHero)
@@ -127,22 +135,66 @@ int XTrap::MoveIn(XCreature * cr)
 	return 0;
 }
 
+int XTrap::MoveOut(XCreature * cr)
+{
+	if (last_activator == cr->xguid && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT))
+	{
+		//to climb out from some pits you should be lucky!
+		if (vRand(100) < 30 + cr->sk->GetLevel(SKT_CLIMBING) * 5 + cr->GetStats(S_DEX) * 2)
+		{
+			cr->sk->UseSkill(SKT_CLIMBING);
+			if (cr->isVisible())
+			{
+				msgwin.Add(cr->GetNameEx(CRN_T1));
+				msgwin.Add("managed to climb out from the pit.");
+			}
+			last_activator = 0;
+			return 1;
+		} else
+		{
+			if (vRand(100) < 70)
+			{
+				cr->sk->UseSkill(SKT_CLIMBING);
+				if (cr->isVisible())
+				{
+					msgwin.Add(cr->GetNameEx(CRN_T1));
+					msgwin.Add("can not to climb out from the pit.");
+				}
+			} else //no luck!
+			{
+				Activate(cr);
+			}
+		}
+		return 0;
+	}
+	last_activator = 0;
+	return 1;
+}
+
 int XTrap::Activate(XCreature * cr)
 {
 	if (cr->isVisible())
 	{
 		msgwin.Add(cr->GetNameEx(CRN_T1));
-		msgwin.Add(cr->GetVerb("activate"));
-		msgwin.Add("a trap.");
+		if (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)
+		{
+			msgwin.Add(cr->GetVerb("fall"));
+			msgwin.Add("down to a pit.");
+		} else
+		{
+			msgwin.Add(cr->GetVerb("activate"));
+			msgwin.Add("a trap.");
+		}
 		isVisibleForHero = 1;
 	}
 
 	bool isTrapShouldDestroyed = false;
+	last_activator = cr->xguid;
 
 	if (isMagic)
 	{
 		EFFECT_DATA ed;
-		ed.caller	= cr;
+		ed.caller	= owner;
 		ed.l		= l;
 		ed.power	= 10 * (trap_level + 1);
 		ed.call_x	= x;
@@ -179,17 +231,16 @@ int XTrap::Activate(XCreature * cr)
 	{
 		int dmg = 0;
 		XItem * drop_item = NULL;
+		DAMAGE_DATA_EX dd;
 
 		switch (trap_type)
 		{
 			case TT_ARROW:
-			case TT_SPEAR:
 				drop_item = (XItem *)trap_item->MakeCopy();
 				drop_item->quantity = 1;
-				if (trap_item->quantity-- == 0)
+				if (trap_item->quantity-- <= 1)
 					isTrapShouldDestroyed = true;
 				
-				DAMAGE_DATA_EX dd;
 				dd.damage		= drop_item->dice.Throw();
 				dd.attacker		= owner;
 				//temporary soulution, should be replaced in future on general solution
@@ -206,24 +257,43 @@ int XTrap::Activate(XCreature * cr)
 				dd.flags		= DF_MAGIC_BOLT;
 				cr->InflictDamage(&dd);
 				break;
-
-
-				drop_item = (XItem *)trap_item->MakeCopy();
-				drop_item->quantity = 1;
-				if (trap_item->quantity-- == 0)
-					isTrapShouldDestroyed = true;
-				dmg = drop_item->dice.Throw();
+			
+			case TT_PIT:
+				dd.damage		= vRand(30) + 2;
+				dd.attacker		= owner;
+				dd.attack_name	= "the down of pit";
+				dd.attack_HIT	= 10000;
+				dd.attack_brand	= 0;
+				dd.flags		= DF_MAGIC_BOLT;
+				cr->InflictDamage(&dd);
 				break;
+
+			case TT_SPEAR_PIT:
+				{
+					dd.damage		= 0;
+					for (int i = 0; i < trap_item->quantity; i++)
+						dd.damage += trap_item->dice.Throw();
+					dd.attacker		= owner;
+					dd.attack_name	= "the billion of needles";
+					dd.attack_HIT	= 10000;
+					dd.attack_brand	= 0;
+					dd.flags		= DF_MAGIC_BOLT;
+					cr->InflictDamage(&dd);
+				}
+				break;
+
+
 		}
 		if (drop_item)
 			drop_item->Drop(l, x, y);
 		
-		if (isTrapShouldDestroyed)
-		{
-			l->map->SetSpecial(x, y, NULL);
-			Invalidate();
-		}
-
+	}
+	if (isTrapShouldDestroyed || activation_count-- <= 0)
+	{
+		if (isInVisibleArea())
+			msgwin.Add("The trap is broken.");
+		l->map->SetSpecial(x, y, NULL);
+		Invalidate();
 	}
 
 	return 1;
@@ -297,6 +367,8 @@ void XTrap::Store(XFile * f)
 	f->Write(&trap_level, sizeof(TRAP_LEVEL));
 	XObject::StorePointer(f, owner);
 	XObject::StorePointer(f, trap_item);
+	f->Write(&last_activator, sizeof(XGUID));
+	f->Write(&activation_count, sizeof(int));
 }
 
 void XTrap::Restore(XFile * f)
@@ -305,9 +377,10 @@ void XTrap::Restore(XFile * f)
 	f->Read(&trap_type, sizeof(TRAP_TYPE));
 	f->Read(&isVisibleForHero, sizeof(int));
 	f->Read(&trap_level, sizeof(TRAP_LEVEL));
-	XObject::RestorePointer(f, &owner);
-	XObject::RestorePointer(f, &trap_item);
-	
+	owner = (XCreature *)XObject::RestorePointer(f, NULL);
+	trap_item = (XItem *)XObject::RestorePointer(f, NULL);
+	f->Read(&last_activator, sizeof(XGUID));
+	f->Read(&activation_count, sizeof(int));
 }
 
 

@@ -816,6 +816,8 @@ void XHero::PlayerSetup()
 		wsk->SetLevel(bp->Item()->wt, 2);
 	
 	sk->Learn(SKT_DETECTTRAP);
+	sk->Learn(SKT_CREATETRAP);
+	sk->Learn(SKT_CLIMBING);
 	
 	bp = GetBodyPart(BP_BODY, 0);
 	if (vRand(2) == 0)

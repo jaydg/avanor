@@ -49,6 +49,7 @@ SKT_WOODCRAFT		= 18,
 SKT_CREATETRAP		= 19,
 SKT_NECROMANCY		= 20,
 SKT_ATHLETICS		= 21,
+SKT_CLIMBING		= 22, //at this time from pits only...
 };
 
 struct SKILL_DB
