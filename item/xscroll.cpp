@@ -157,8 +157,7 @@ int XScroll::onRead(XCreature * cr)
 		//XBasicSpell * spell = XSpellFactory::Get(scroll_descr[descr].spell_name);
 		if (cr->isHero())
 		{
-			msgwin.Add(cr->name);
-			msgwin.Add("read");
+			msgwin.Add("You read the");
 			toString(buf);
 			strcat(buf, ".");
 			msgwin.Add(buf);
@@ -166,7 +165,7 @@ int XScroll::onRead(XCreature * cr)
 		else if (cr->isVisible())
 		{
 			msgwin.Add(cr->name);
-			msgwin.Add("reads");
+			msgwin.Add("reads the");
 			toString(buf);
 			strcat(buf, ".");
 			msgwin.Add(buf);

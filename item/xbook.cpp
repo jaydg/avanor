@@ -203,7 +203,21 @@ int XBook::onRead(XCreature * reader)
 	{
 		reader->m->Learn(book_descr[descr].spell_name);
 		skill->UseSkill(10);
-		if (reader->isVisible())
+		if (reader->isHero())
+		{
+			char buf[256];
+			toString(buf);
+			msgwin.Add("You read the");
+			msgwin.AddLast(buf);
+			if (!isIdentifed())
+			{
+				Identify(1);
+				msgwin.Add("It was");
+				toString(buf);
+				msgwin.AddLast(buf);
+			}
+		}
+		else if (reader->isVisible())
 		{
 			char buf[256];
 			toString(buf);
