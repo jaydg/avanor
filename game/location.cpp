@@ -401,11 +401,33 @@ int XLocation::Settle(lua_State * L)
 
 
 //cr = Creature(CN_ROTMOTH)
+//cr = Creature(CN_RAT, [x, y, [w, h]])
 int XLocation::Creature(lua_State * L)
 {
 	int crn = lua_tonumber(L, 1);
-	current_location->NewCreature((CREATURE_NAME)crn);
-	return 0;
+	int n = lua_gettop(L);
+	XCreature * cr = NULL;
+	if (n == 1)
+	{
+		cr = current_location->NewCreature((CREATURE_NAME)crn);
+	} else
+	{
+		XRect rect;
+		int tx = lua_tonumber(L, 2);
+		int ty = lua_tonumber(L, 3);
+		if (n == 3)
+		{
+			rect = XRect(tx, ty, tx + 1, ty + 1);
+		} else
+		{
+			int tw = lua_tonumber(L, 4);
+			int th = lua_tonumber(L, 5);
+			rect = XRect(tx, ty, tx + tw, ty + th);
+		}
+		cr = current_location->NewCreature((CREATURE_NAME)crn, &rect);
+	}
+	lua_pushlightuserdata(L, cr);
+	return 1;
 }
 
 //cr = Guardian(CN_DWARF_GUARD, GID_DWARVEN_GUARDIAN, x, y)
@@ -770,6 +792,57 @@ int XLocation::SetEventHandler(lua_State * L)
 }
 
 
+int XLocation::GetObjectGUID(lua_State * L)
+{
+	XObject * p = (XObject *)lua_topointer(L, 1);
+	lua_pushnumber(L, p->xguid);
+	return 1;
+}
+
+int XLocation::GiveObjectToCreature(lua_State * L)
+{
+	XItem * p = (XItem *)lua_topointer(L, 1);
+	XCreature * cr = (XCreature *)lua_topointer(L, 2);
+	cr->ContainItem(p);
+	return 0;
+}
+
+int XLocation::GiveAward(lua_State * L)
+{
+	XCreature * owner = (XCreature *)lua_topointer(L, 1);
+	XGUID object = lua_tonumber(L, 2);
+	XCreature * target = (XCreature *)lua_topointer(L, 3);
+
+	XItem * it = owner->contain.Find(object);
+	if (it)
+	{
+		owner->contain.Remove(it->xguid);
+	} else
+	{
+		for (XList<XBodyPart *>::iterator bp = owner->components.begin(); bp != owner->components.end(); bp++)
+		{
+			if (bp->Item() && bp->Item()->xguid == object)
+			{
+				it = bp->UnWear();
+				break;
+			}
+		}
+	}
+
+	if (it)
+	{
+		owner->UnCarryItem(it);
+		if (target->CarryItem(it))
+			target->contain.Add(it);
+		else
+			owner->DropItem(it);
+		lua_pushboolean(L, true);
+	} else
+		lua_pushboolean(L, false);
+	return 1;
+}
+
+
 XFile * XLocation::svg_file = NULL;
 int XLocation::StoreInt(lua_State * L)
 {
@@ -785,6 +858,22 @@ int XLocation::RestoreInt(lua_State * L)
 	lua_pushnumber(L, tx);
 	return 1;
 }
+
+int XLocation::StoreObject(lua_State * L)
+{
+	XObject * p = (XObject *)lua_topointer(L, 1);
+	StorePointer(svg_file, p);
+	return 0;
+
+}
+
+int XLocation::RestoreObject(lua_State * L)
+{
+	XObject * p = RestorePointer(svg_file, NULL);
+	lua_pushlightuserdata(L, p);
+	return 1;
+}
+
 
 #define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); lua_dostring(L, buf); }
 
@@ -815,7 +904,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(L_GASMINE1);
 	LUA_REG(L_GASMINE2);
 	LUA_REG(L_GASMINE3);
-	
+	LUA_REG(L_RATCELLAR);
 
 	LUA_REG(CR_RAT);
 	LUA_REG(CR_FELINE);
@@ -852,6 +941,9 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(CN_DWARF_GUARD);
 	LUA_REG(CN_TORIN);
 	LUA_REG(CN_TODIN);
+	
+	LUA_REG(CN_RAT);
+	LUA_REG(CN_GHOST);
 
 	LUA_REG(CN_BEELZEVILE);
 	LUA_REG(CN_MAGNUSH);
@@ -972,6 +1064,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(LE_OUTER_USE);
 	LUA_REG(LE_CHAT);
 	LUA_REG(LE_GIVE_ITEM);
+	LUA_REG(LE_EVENT_SET);
 	LUA_REG(LE_SAVE);
 	LUA_REG(LE_LOAD);
 
@@ -1008,11 +1101,16 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "InflictDamage", InflictDamage);
 	lua_register(L, "Rand", Rand);
 	lua_register(L, "SetEventHandler", SetEventHandler);
-	
+
+	lua_register(L, "GetObjectGUID", GetObjectGUID);
+	lua_register(L, "GiveObjectToCreature", GiveObjectToCreature);
+	lua_register(L, "GiveAward", GiveAward);
 	
 
 	lua_register(L, "StoreInt", StoreInt);
 	lua_register(L, "RestoreInt", RestoreInt);
+	lua_register(L, "StoreObject", StoreObject);
+	lua_register(L, "RestoreObject", RestoreObject);
 	
 	luaopen_base(L);
 	lua_dofile(L, "location.lua");
@@ -1028,5 +1126,7 @@ void XLocation::CreateNewGame()
 {
 	CommonLuaInitialization();
 	lua_dostring(L, "MakeDwarvenCity()");
+	lua_dostring(L, "MakeRatCellar()");
+//	lua_dostring(L, "MakeMushroomCave()");
 }
 

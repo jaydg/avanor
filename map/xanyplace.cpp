@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "location.h"
 #include "creature.h"
 
+REGISTER_CLASS(XAnyPlace);
+
 extern "C"
 {
 	#include "./lua/include/lauxlib.h"

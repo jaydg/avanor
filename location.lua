@@ -6,19 +6,11 @@ UP = 1
 DOWN = 2
 
 
+
+-----------------------------------------------------------
+-------------------- DWARVEN CITY -------------------------
+
 function MakeDwarvenCity()
-	CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-		Way(UP, L_MAIN)
-		Way(DOWN, L_SMALL_CAVE2)
-		Settle(CR_RAT + CR_FELINE + CR_INSECT, CRL_VERY_LOW)
-
-
-	CreateLocation(L_SMALL_CAVE2, "SmCv:2", "Small Cave Level 2", CAVE)
-		Way(UP, L_SMALL_CAVE1)
-		Creature(CN_ROTMOTH)
-
-
-
 
 	CreateLocation(L_DWARFCITYCAVE1, "PDC:1", "Path to the Dwarven City Level 1", DUNGEON)
 		Way(UP, L_MAIN)
@@ -83,7 +75,7 @@ function MakeDwarvenCity()
 		AddTranslation("B", "Furniture(x, y, xBROWN, '~', 'a dinner table')")
 		AddTranslation("C", "Furniture(x, y, xBROWN, '~', 'a round table')")
 		AddTranslation("D", "Furniture(x, y, xLIGHTRED, '~', 'a royal bad')")
-		AddTranslation("X", "SetEventHandler(Guardian(CN_TORIN, GID_DWARVEN_GUARDIAN, x, y), 'TorinHandler') Furniture(x, y, xYELLOW, '~', 'the throne of the Dwarven Kingdom')")
+		AddTranslation("X", "CreateTorin(x, y) Furniture(x, y, xYELLOW, '~', 'the throne of the Dwarven Kingdom')")
 		AddTranslation("_", "Altar(x, y, D_LIFE)")
 		AddTranslation("P", "for i = 1, 6 do Guardian(CN_DWARF, GID_DWARVEN_GUARDIAN, x, y, 32, 16) end")
 		AddTranslation("T", "Guardian(CN_TODIN, GID_DWARVEN_GUARDIAN, x, y, 6, 4)")
@@ -118,9 +110,9 @@ function MakeDwarvenCity()
 		AddTranslation("<", "Way(UP, L_DWARFCITY, x, y)")
 		AddTranslation("$", "Treasure(x, y, 500)")
 		AddTranslation("~", "Chest(x, y)")
-		DropItem(CreateObject("XAncientMachinePart"), x, y)
+		AddTranslation("A", "DropItem(CreateObject('XAncientMachinePart'), x, y)")
 		DrawPattern(0, 0)
-
+		
 
 	CreateLocation(L_GASMINE1, "GM:1", "Gassed Mine level 1", DUNGEON)
 		Way(UP, L_DWARFCITY)
@@ -175,6 +167,8 @@ end
 
 
 gas_pump_quest = Q_UNKNOWN;
+--gas_pump_quest = Q_COMPLETE;
+torin_award = 0;
 
 function GasMineEvent(e, p)
 	if (e == LE_MOVE) then
@@ -197,6 +191,14 @@ function GasPumpEvent(e, p)
 	return 1
 end
 
+function CreateTorin(x, y)
+	local torin = Guardian(CN_TORIN, GID_DWARVEN_GUARDIAN, x, y)
+	SetEventHandler(torin, 'TorinHandler')
+	local pickaxe = CreateObject('XPickAxe')
+	torin_award = GetObjectGUID(pickaxe)
+	GiveObjectToCreature(pickaxe, torin)
+end
+
 function TorinHandler(e, t, p, v)
 	if (e == LE_CHAT) then
 		if (gas_pump_quest == Q_KNOWN) then
@@ -207,34 +209,83 @@ function TorinHandler(e, t, p, v)
 		elseif (gas_pump_quest == Q_COMPLETE) then
 			AddMessage("Thank you for your great help.")
 			gas_pump_quest = Q_CLOSED
---[[
-			XItem * it = NULL;
-			XBodyPart * tool = GetBodyPart(BP_TOOL, 0);
-			if (tool->Item() && tool->Item()->xguid == shovel_guid)
-			{
-				it = tool->UnWear();
-			}
-			if (!it)
-				it = (XItem *)contain.Find(shovel_guid);
-			if (it)
-			{
-				contain.Remove(it->xguid);
-				msgwin.Add("Take this tool as a reward.");
-				UnCarryItem(it);
-				if (chatter->CarryItem(it))
-					chatter->contain.Add(it);
-				else
-					DropItem(it);
-			}
-			XQuest::quest.torin_quest = 3;
-]]--
+			if (GiveAward(t, torin_award, p)) then
+				AddMessage('Take this tool as a reward.')
+			end
 		else
 			AddMessage("Thank you for your help.")
 		end
 	elseif (e == LE_SAVE) then
 		StoreInt(gas_pump_quest)
+		StoreInt(torin_award)
 	elseif (e == LE_LOAD) then
 		gas_pump_quest = RestoreInt()
+		torin_award = RestoreInt()
 	end
 	return 1
+end
+
+
+-----------------------------------------------------------
+-------------------- MUSHROOM CAVE ------------------------
+function MakeMushroomCave()
+
+end
+
+-----------------------------------------------------------
+-------------------- SMALL CAVE ---------------------------
+function MakeSmallCave()
+	CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
+		Way(UP, L_MAIN)
+		Way(DOWN, L_SMALL_CAVE2)
+		Settle(CR_RAT + CR_FELINE + CR_INSECT, CRL_VERY_LOW)
+
+	CreateLocation(L_SMALL_CAVE2, "SmCv:2", "Small Cave Level 2", CAVE)
+		Way(UP, L_SMALL_CAVE1)
+		Creature(CN_ROTMOTH)
+end
+
+
+-----------------------------------------------------------
+-------------------- RAT'S CELLAR ---------------------------
+function MakeRatCellar()
+	CreateLocation(L_RATCELLAR, "RC:1", "Rat's cellar", DUNGEON)
+		SetPattern(80, 20,
+		"################################################################################" ..
+		"#A,,,,,,,,,,,######################################################A,,,,,,,,,,,#" ..
+		"#,,,,,,,,,,,,+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,+,,,,,,,,,,,,#" ..
+		"#,,C,,,,,,,,,###########################,##########################,,,,,,,,,D,,#" ..
+		"#,,,,,,,,,,,,###########################,###,,,,###################,,,,,,,,,,,,#" ..
+		"#,,,,,,,,,,,,###########################,###,,,,######,############,,,,,,,,,,,,#" ..
+		"######################,,,,,,,,##########,###,,,,######,#########################" ..
+		"########B,,,##########,######,##########,####+########+#########################" ..
+		"########~,,,+,,,,,,,##,#,,,,#,##########,####,,,,,,,,,,,,,,,,,,,,,+,,###########" ..
+		"########,,,,#######,##,#,##,#,##########,####,#####################,,###########" ..
+		"########~,,,#######,##,#,##,#,,,,,,,,,,,<,,,,,,,,,,,,,,,,,,,,,,,,##,,###########" ..
+		"###################,##,#,##,############,#######################,###############" ..
+		"###################,##,,,##,############,#######################,###############" ..
+		"###################,#######,,,,,,,,,,###,#########,,############,###############" ..
+		"#A,,,,,,,,,,,######,################,###,#########,,+,,,,,,,,,,,,###A,,,,,,,,,,#" ..
+		"#,,,,,,,,,,,,######,,,,,,,,,,,,,,,,,,###,#########,,################,,,,,,,,,,,#" ..
+		"#,,F,,,,,,,,,###########################,###########################,,,,,,,,E,,#" ..
+		"#,,,,,,,,,,,,+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,+,,,,,,,,,,,#" ..
+		"#,,,,,,,,,,,,#######################################################,,,,,,,,,,,#" ..
+		"################################################################################")
+		AddTranslation("<", "Way(UP, L_MAIN, x, y)")
+		AddTranslation("~", "Chest(x, y)")
+		AddTranslation("A", "for i = 1, 8 do Creature(CN_RAT, x, y, 12, 4) end")
+		AddTranslation("B", "for i = 1, 2 do Creature(CN_GHOST, x, y, 4, 4) end")
+		local trnd = Rand(4)
+		if (trnd == 0) then 
+			AddTranslation("C", "DropItem(CreateObject('XForestBrotherCloak'), x, y)")
+		elseif (trnd == 1) then
+			AddTranslation("D", "DropItem(CreateObject('XForestBrotherCloak'), x, y)")
+		elseif (trnd == 2) then
+			AddTranslation("E", "DropItem(CreateObject('XForestBrotherCloak'), x, y)")
+		elseif (trnd == 3) then
+			AddTranslation("F", "DropItem(CreateObject('XForestBrotherCloak'), x, y)")
+		end
+		DrawPattern(0, 0)
+		Settle(CR_RAT, CRL_VERY_LOW)
+		
 end

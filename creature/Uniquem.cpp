@@ -761,16 +761,17 @@ XTorin::XTorin(_CREATURE * cr) : XAnyCreature(cr)
 	it = new XTorinAxe();
 	ContainItem(it);
 
-	it = new XPickAxe();
-	shovel_guid = it->xguid;
-	ContainItem(it);
+//	it = new XPickAxe();
+//	shovel_guid = it->xguid;
+//	ContainItem(it);
+	shovel_guid = 0;
 }
 
 
 int XTorin::Chat(XCreature * chatter, char * msg)
 {
 	return XCreature::Chat(chatter, msg);
-	if (xai->isEnemy(chatter))
+/*	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("It is time to die!");
 		return 1;
@@ -813,7 +814,7 @@ int XTorin::Chat(XCreature * chatter, char * msg)
 
 	}
 
-	return 1;
+	return 1;*/
 }
 
 

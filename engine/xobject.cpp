@@ -88,6 +88,7 @@ XObject * XClassFactory::Create(char * name)
 		if (strcmp(tmp->name, name)==0) return tmp->pClassCreator();
 		tmp = tmp->next;
 	}
+	assert(0);
 	return NULL;
 }
 
@@ -140,14 +141,18 @@ void XObject::StoreAllObjects(XFile * f)
 	std::sort(&table[0], &table[count]);
 
 	f->Write(&count, sizeof(count));
+	FILE * tmp = fopen("dmp.txt", "wt");
 	for(i = 0; i < count; i++) 
 	{
 		unsigned char name_size = strlen(table[i]->GetClassName());
 		f->Write(&name_size, sizeof(name_size));
 		f->Write(table[i]->GetClassName(), sizeof(char), name_size);
 		table[i]->bAlreadyStored = false;
+		fprintf(tmp, "[%d] %s\n", i, table[i]->GetClassName());
 	}
-	for(i = 0; i < count; i++) table[i]->Store(f);
+	fclose(tmp);
+	for(i = 0; i < count; i++) 
+		table[i]->Store(f);
 }
 
 void XObject::RestoreAllObjects(XFile * f)
@@ -156,6 +161,7 @@ void XObject::RestoreAllObjects(XFile * f)
 	assert(count == 0 && table == 0);
 	long read_count = 0;
 	f->Read(&read_count, sizeof(read_count));
+	FILE * tmp = fopen("dmp2.txt", "wt");
 	for(i = 0; i < read_count; i++) 
 	{
 		unsigned char name_size;
@@ -164,10 +170,12 @@ void XObject::RestoreAllObjects(XFile * f)
 		f->Read(buf, sizeof(char), name_size);
 		buf[name_size] = 0;
 		DYNCREATE(buf);
+		fprintf(tmp, "[%d] %s\n", i, buf);
 		delete [] buf;
 	}
 
-	table = new XObject * [count];
+	fclose(tmp);
+	table = new XObject * [count];	
 	XObject * p = root;
 	for(i = 0; i < count; i++) 
 	{ 
@@ -176,7 +184,8 @@ void XObject::RestoreAllObjects(XFile * f)
 		table[count - i - 1] = p; p = p->next; 
 	}
 
-	for(i = 0; i < count; i++) table[i]->Restore(f);
+	for(i = 0; i < count; i++) 
+		table[i]->Restore(f);
 }
 
 void XObject::InvalidateAllObjects()

@@ -363,7 +363,7 @@ void XGame::CreateLocations()
 //	new XGasMineLocation(L_GASMINE3);
 	new XKingsTreasureLocation(L_KINGS_TREASURE);
 	new XExtinctVolcanoLocation(L_EXTINCT_VOLCANO);
-	new XRatCellarLocation(L_RATCELLAR);
+//	new XRatCellarLocation(L_RATCELLAR);
 
 	new XWizardDungeonLocation(L_WIZARD_DUNGEON1);
 	new XWizardDungeonLocation(L_WIZARD_DUNGEON2);
@@ -423,11 +423,11 @@ void XGame::CreateHero()
 //	hero_point.y = 65;
 //	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
 
-	hero_point.x = 77;
-	hero_point.y = 11;
-	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_DWARFCITY]);
-	locations[L_DWARFCITY]->map->Center(hero->x, hero->y);
-	locations[L_DWARFCITY]->visited_by_hero = 1;
+	hero_point.x = 40;
+	hero_point.y = 10;
+	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_RATCELLAR]);
+	locations[L_RATCELLAR]->map->Center(hero->x, hero->y);
+	locations[L_RATCELLAR]->visited_by_hero = 1;
 /*
 	locations[L_MAIN]->map->Center(hero->x, hero->y);
 	locations[L_MAIN]->visited_by_hero = 1;

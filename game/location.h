@@ -97,6 +97,7 @@ enum LUA_EVENT
 	LE_OUTER_USE		= 4,
 	LE_CHAT				= 10,
 	LE_GIVE_ITEM		= 11,
+	LE_EVENT_SET		= 97,
 	LE_SAVE				= 98,
 	LE_LOAD				= 99
 };
@@ -228,10 +229,16 @@ public:
 	static int FindCreature(lua_State * L);
 	static int AddMessage(lua_State * L);
 
+	static int GetObjectGUID(lua_State * L);
+	static int GiveObjectToCreature(lua_State * L);
+	static int GiveAward(lua_State * L);
+
+
 	static XFile * svg_file;
 	static int StoreInt(lua_State * L);
 	static int RestoreInt(lua_State * L);
-
+	static int StoreObject(lua_State * L);
+	static int RestoreObject(lua_State * L);
 	
 	
 	
