@@ -195,7 +195,7 @@ int XCorpse::Run()
 		if (owner)
 		{
 			if (owner->im & IM_HERO) 
-				msgwin.Add("Suddenly your equipment weight less.");
+				msgwin.Add("Suddenly your equipment weighs less.");
 			owner->UnCarryItem(this);
 		} else
 			if (l && isInVisibleArea())

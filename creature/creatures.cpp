@@ -1228,7 +1228,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XR("see_invisible:0d0+100");
 	XC("1d3", "1d2");
 	XM("1d4", "1d2", "1d5+30", "1d5+10");
-	XD("Twin brother to the master smith, Torin's obvious strength and coloring are all that own the relationship.  The crown on his head glitters and his great golden beard flows over his expansive chest.  The hand he rests on the hammer at his belt belies his prowess in battle.  As your eyes drift to teh door at the back of his throne room he clears his throat as if to address you, and draw your attention.");
+	XD("Twin brother to the master smith, Torin's obvious strength and coloring are all that own the relationship.  The crown on his head glitters and his great golden beard flows over his expansive chest.  The hand he rests on the hammer at his belt belies his prowess in battle.  As your eyes drift to the door at the back of his throne room he clears his throat as if to address you, and draw your attention.");
 	XL(SKT_HEALING, SKILL_MAX_LEVEL);
 	XL(SKT_FINDWEAKNESS, SKILL_MAX_LEVEL);
 
