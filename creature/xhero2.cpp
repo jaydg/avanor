@@ -332,10 +332,6 @@ void XHero::PickRace()
 						potion = new XPotion(PN_POWER);
 						potion->Identify(1);
 						ContainItem(potion);
-						
-						potion = new XPotion(PN_DEATH);
-						potion->Identify(1);
-						ContainItem(potion);
 
 						for (int t = 1; t < 3; t++)
 						{
@@ -706,11 +702,11 @@ void XHero::PickRace()
 					scroll->Identify(1);
 					ContainItem(scroll);
 
-					scroll = new XScroll(SCROLL_RECEPTION);
+					scroll = new XScroll(SCROLL_RECIPIE);
 					scroll->Identify(1);
 					ContainItem(scroll);
 
-					scroll = new XScroll(SCROLL_RECEPTION);
+					scroll = new XScroll(SCROLL_RECIPIE);
 					scroll->Identify(1);
 					ContainItem(scroll);
 

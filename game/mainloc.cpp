@@ -47,18 +47,18 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 				map->SetXY(j, i, M_GREENTREE);
 		}
 		
-// creating hign mountines
+// creating high mountains
 	for (i = lm; i < rm; i++)
 	{
 		int z1 = vRand() % ((i & 3) + 1) + 1;
 		int z2 = vRand() % ((i & 3) + 1) + 1;
 		for (j = 0; j < z1; j++)
 		{
-			map->SetXY(i, tm + j, M_HIGHMOUNTINE);
+			map->SetXY(i, tm + j, M_HIGHMOUNTAIN);
 		}
 		for (j = 0; j < z2; j++)
 		{
-			map->SetXY(i, bm - j - 1, M_HIGHMOUNTINE);
+			map->SetXY(i, bm - j - 1, M_HIGHMOUNTAIN);
 		}
 	}
 	
@@ -68,20 +68,20 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		int z2 = vRand() % ((i & 3) + 1) + 1;
 		for (j = 0; j < z1; j++)
 		{
-			map->SetXY(lm + j, i, M_HIGHMOUNTINE);
+			map->SetXY(lm + j, i, M_HIGHMOUNTAIN);
 		}
 		for (j = 0; j < z2; j++)
 		{
-			map->SetXY(rm - j - 1, i, M_HIGHMOUNTINE);
+			map->SetXY(rm - j - 1, i, M_HIGHMOUNTAIN);
 		}
 	}
 	
-//evaluate high mountines till hills!
+//evaluate high mountains till hills!
 	for (i = 0; i < map->hgt; i++)
 		for (j = 0; j < map->len; j++)
 		{
 			int m = map->GetXY(j, i);
-			if (m > M_HILL && m <= M_HIGHMOUNTINE)
+			if (m > M_HILL && m <= M_HIGHMOUNTAIN)
 			{
 				for (int q = -2; q < 3; q++)
 					for (int w = -2; w < 3; w++)
@@ -128,7 +128,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 //master thief
 		XRect master_thief_area(40, 10, 45, 14);
-		map->CreateRoom(40, 10, 5, 4, 42, 10, M_SEND, M_WOODWALL);
+		map->CreateRoom(40, 10, 5, 4, 42, 10, M_SAND, M_WOODWALL);
 		NewCreature(CN_JORGUS, &master_thief_area, GID_FOREST_BROTHER, AIF_GUARD_ARIAL);
 
 //bandits area
@@ -163,8 +163,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 //Yohjishiro
 		PutPalette(45, 25, PAL_WIZARD_TOWER, this);
-		XRect wizard_tower_area(45, 25, 60, 35);
-		NewCreature(CN_YOHJISHIRO, &wizard_tower_area, GID_NONE, AIF_GUARD_ARIAL);
+		NewWay(55, 31, L_WIZTOWER_TOP, STW_UP);
 
 //Large City		
 		XRect city_area(103, 9, 130, 33);
@@ -261,6 +260,30 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 }
 
+XYohjiTower::XYohjiTower(LOCATION tl) : XLocation(tl)
+{
+	strcpy(brief_name, "WzTwr");
+	strcpy(full_name, "Yohjishiro's Tower");
+
+	map = new XMap(80, 20);
+	int i,j;
+
+	for (i = 0; i < map->hgt; i++)
+		for (j = 0; j < map->len; j++)
+		{
+			if (vRand() % 3)
+				map->SetXY(j, i, M_GREENGRAS);
+			else
+				map->SetXY(j, i, M_GREENTREE);
+		}
+
+	PutPalette(30, 5, PAL_WIZTOWER_TOP, this);
+	NewWay(40, 11, L_MAIN, STW_DOWN);
+
+	// It's her house...
+	XRect wizard_tower_area(37, 7, 44, 12);
+	NewCreature(CN_YOHJISHIRO, &wizard_tower_area, GID_NONE, AIF_GUARD_ARIAL);
+}
 
 
 XKingsTreasureLocation::XKingsTreasureLocation(LOCATION tl) : XLocation(tl)

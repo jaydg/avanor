@@ -863,7 +863,7 @@ int XStandartAI::DrinkPotion()
 			if (it->im & IM_POTION)
 			{
 				XPotion * pot = (XPotion *)it;
-				if (pot->pn == PN_HEAL ||
+				if (pot->pn == PN_HEALING ||
 					pot->pn == PN_CURE_LIGHT_WOUNDS ||
 					pot->pn == PN_CURE_SERIOUS_WOUNDS ||
 					pot->pn == PN_CURE_CRITICAL_WOUNDS ||

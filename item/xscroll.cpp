@@ -26,7 +26,7 @@ REGISTER_CLASS(XScroll);
 int SCROLL_REC::total_value = 0;
 
 SCROLL_REC scroll_descr[] = {
-	SCROLL_REC("healing",		E_HEAL,					SCROLL_HEAL,				200,	10),
+	SCROLL_REC("healing",		E_HEAL,					SCROLL_HEALING,				200,	10),
 	SCROLL_REC("burning hands",	E_BURNING_HANDS,		SCROLL_BURNING_HANDS,		20,		100),
 	SCROLL_REC("ice touch",		E_ICE_TOUCH,			SCROLL_ICE_TOUCH,			20,		100),
 	SCROLL_REC("heroism",		E_HEROISM,				SCROLL_HEROISM,				25,		100),
@@ -44,7 +44,7 @@ SCROLL_REC scroll_descr[] = {
 	SCROLL_REC("blink",			E_BLINK,				SCROLL_BLINK,				70,		30),
 	SCROLL_REC("self knowledge", E_SELF_KNOWLEDGE,		SCROLL_SELF_KNOWLEDGE,		150,	10),
 	SCROLL_REC("see invisible", E_SEE_INVISIBLE,		SCROLL_SEE_INVISIBLE,		40,		50),
-	SCROLL_REC("recipe",		E_NONE,					SCROLL_RECEPTION,			30,		25),
+	SCROLL_REC("recipe",		E_NONE,					SCROLL_RECIPIE,				30,		25),
 };
 
 
@@ -189,7 +189,7 @@ int XScroll::onRead(XCreature * cr)
 		flag = 0;
 		switch (scroll_descr[descr].scroll_name)
 		{
-			case SCROLL_RECEPTION:
+			case SCROLL_RECIPIE:
 				if (cr->im & IM_HERO)
 				{
 					int val = vRand(XAlchemy::GetReceptionCount());

@@ -77,6 +77,8 @@ L_EXTINCT_VOLCANO,
 
 L_KINGS_TREASURE,
 
+L_WIZTOWER_TOP,
+
 L_DEBUG1,
 L_DEBUG2,
 L_RANDOM = 100,
@@ -97,6 +99,7 @@ enum PALETTE
 	PAL_TOWER_RUINS		= 0x0008,
 	PAL_DWARF_TREASURE	= 0x0009,
 	PAL_KINGS_TREASURE	= 0x000A,
+	PAL_WIZTOWER_TOP,
 	PAL_UNDEAD_TOMB0,
 	PAL_UNDEAD_TOMB1,
 	PAL_EXTINCT_VOLCANO
@@ -223,6 +226,12 @@ class XMainLocation : public XLocation
 {
 public:
 	XMainLocation(LOCATION tl);
+};
+
+class XYohjiTower : public XLocation
+{
+public:
+	XYohjiTower(LOCATION tl);
 };
 
 class XKingsTreasureLocation : public XLocation

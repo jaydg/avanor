@@ -91,6 +91,10 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 
 	new XAltar(45, 11, D_LIFE, this);
 
+	XRect plaza_area(31, 2, 57, 18);
+	for(i = 0; i < 10; i++)
+		NewCreature(CN_DWARF, &plaza_area, GID_DWARVEN_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+
 	XRect t_arial(67, 15, 78, 18);
 	XAnyPlace * place = new XDwarvenTresurePlace(&t_arial, this);
 	AddPlace(place);

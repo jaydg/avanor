@@ -626,16 +626,16 @@ int XYohjishiro::onGiveItem(XCreature * giver, XItem * item)
 REGISTER_CLASS(XRoderick);
 XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr) 
 { 
-	XPotion * pt = new XPotion(PN_HEAL);
+	XPotion * pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
 
-	pt = new XPotion(PN_HEAL);
+	pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
 
-	pt = new XPotion(PN_HEAL);
+	pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
 
-	pt = new XPotion(PN_HEAL);
+	pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
 
 	XItem * it = new XAvanorCrown();

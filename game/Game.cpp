@@ -372,6 +372,8 @@ void XGame::CreateLocations()
 	new XWizardDungeonLocation(L_WIZARD_DUNGEON5);
 	new XAhkUlanCastleLocation(L_AHKULAN_CASTLE);
 
+	new XYohjiTower(L_WIZTOWER_TOP);
+
 	new XUndeadTombLocation(L_UNDEADS_TOMB1);
 
 	XLocation::CreateRandomCave();

@@ -98,7 +98,7 @@ POTION_REC potion_descr[] = {
 {PN_WATER, 				"water",				E_NONE,					100,	1,	1,	POTION_REC::SelectColor(PNC_CLEAR),	0},
 {PN_APPLEJUCE, 			"apple juice",			E_NONE,					95,		1,	2,	POTION_REC::SelectColor(PNC_YELLOW),	0},
 {PN_ORANGEJUCE,			"orange juice",			E_NONE,					95,		1,	3,	POTION_REC::SelectColor(PNC_ORANGE),	0},
-{PN_HEAL,				"healing",				E_HEAL,					10,		4,	200,POTION_REC::SelectColor(PNC_WHITE),	0},
+{PN_HEALING,			"healing",				E_HEAL,					10,		4,	200,POTION_REC::SelectColor(PNC_WHITE),	0},
 {PN_CURE_LIGHT_WOUNDS,	"cure light wounds",	E_CURE_LIGHT_WOUNDS,	80,		2,	15,	POTION_REC::SelectColor(),	0},
 {PN_CURE_SERIOUS_WOUNDS,"cure serious wounds",	E_CURE_SERIOUS_WOUNDS,	70,		2,	40,	POTION_REC::SelectColor(),	0},
 {PN_CURE_CRITICAL_WOUNDS,"cure critical wounds",E_CURE_CRITICAL_WOUNDS,	40,		3,	60,	POTION_REC::SelectColor(),	0},
@@ -118,7 +118,7 @@ POTION_REC potion_descr[] = {
 {PN_HEROISM,			"heroism",				E_HEROISM,				75,		2,	20, POTION_REC::SelectColor(),	0},
 {PN_SEE_INVISIBLE,		"see invisible",		E_SEE_INVISIBLE,		30,		3,	30,	POTION_REC::SelectColor(),	0},
 {PN_WEAKNESS,			"weakness",				E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
-{PN_CLUMSYNESS,			"clumsiness",			E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
+{PN_CLUMSINESS,			"clumsiness",			E_NONE,					70,		1,	5,	POTION_REC::SelectColor(),	0},
 {PN_DEATH,				"death",				E_NONE,					1,		2,	5,	POTION_REC::SelectColor(),	0},
 {PN_SATIATION,			"satiation",			E_NONE,					50,		2,	15,	POTION_REC::SelectColor(),	0},
 {PN_STARVATION,			"starvation",			E_NONE,					40,		3,	15,	POTION_REC::SelectColor(),	0},
@@ -325,7 +325,7 @@ int XPotion::onDrink(XCreature * cr)
 				cr->GainAttr(S_STR, -1);
 			break;
 
-			case PN_CLUMSYNESS:
+			case PN_CLUMSINESS:
 				cr->GainAttr(S_DEX, -1);
 			break;
 
