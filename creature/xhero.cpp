@@ -2235,7 +2235,7 @@ void XHero::LookAt()
 		if (!xcr->isHero())
 			list.AddItem(new XGuiItem_Text(xcr->creature_description, 0), 0);
 
-#ifdef __XDEBUG_03
+#ifdef __XDEBUG_01
 		list.AddItem(new XGuiItem_Text("", 0), 0);
 
 		sprintf(static_buffer, "St:%d Dx:%d To:%d Le:%d Wi:%d Ma:%d Pe:%d Ch:%d Sp:%d    ", xcr->GetStats(S_STR), xcr->GetStats(S_DEX), xcr->GetStats(S_TOU),
