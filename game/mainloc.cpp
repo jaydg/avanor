@@ -248,15 +248,23 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 			NewCreature(CN_FCITIZEN, &city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
-//Black wizard ruins
-		PutPalette(155, 44, PAL_TOWER_RUINS, this);
-		NewWay(165, 49, L_WIZARD_DUNGEON1, STW_DOWN);
-
 // teleports from small village to town and back
 		new XTeleport(23, 20, this, L_MAIN, 154, 13);
 		new XTeleport(154, 13, this, L_MAIN, 23, 20);
 
 		new XAltar(154, 4, D_LIFE, this);
+		new XFurniture(152,5,xBROWN,'~',"pew",this);
+		new XFurniture(152,6,xBROWN,'~',"pew",this);
+		new XFurniture(153,5,xBROWN,'~',"pew",this);
+		new XFurniture(153,6,xBROWN,'~',"pew",this);
+		new XFurniture(155,5,xBROWN,'~',"pew",this);
+		new XFurniture(155,6,xBROWN,'~',"pew",this);
+		new XFurniture(156,5,xBROWN,'~',"pew",this);
+		new XFurniture(156,6,xBROWN,'~',"pew",this);
+
+//Black wizard ruins
+		PutPalette(155, 44, PAL_TOWER_RUINS, this);
+		NewWay(165, 49, L_WIZARD_DUNGEON1, STW_DOWN);
 
 //tomb
 		PutPalette(100, 50, PAL_UNDEAD_TOMB0, this);
