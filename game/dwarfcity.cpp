@@ -126,11 +126,11 @@ XDwarfTreasureLocation::XDwarfTreasureLocation(LOCATION tl) : XLocation(tl)
 		XMoney * money = new XMoney(vRand() % 300 + 200);
 		money->Drop(this, i, 1);
 		if (vRand() % 3 == 0)
-			new XTrap(i, 1, this, TT_RANDOM);
+			new XTrap(i, 1, this);
 		money = new XMoney(vRand() % 300 + 200);
 		money->Drop(this, i, 9);
 		if (vRand() % 3 == 0)
-			new XTrap(i, 9, this, TT_RANDOM);
+			new XTrap(i, 9, this);
 	}
 
 	for (i = 3; i < 8; i++)

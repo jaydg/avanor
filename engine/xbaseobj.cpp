@@ -77,7 +77,8 @@ int XBaseObject::Compare(XObject * o)
 	if (XMapObject::Compare(o) == 0
 			&& _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
 			&& _HIT == tit->_HIT && dice.X == tit->dice.X
-			&& dice.Y == tit->dice.Y && dice.Z == tit->dice.Z)
+			&& dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
+			&& r->isEqual(tit->r) && s->isEqual(tit->s))
 			return 0;
 	else
 			return 1;

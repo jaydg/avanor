@@ -450,8 +450,8 @@ void XHero::NewMove()
 					FirstStep(nx, ny, tl);
 				}
 			}
-			isDisturb = 0;
 		}
+		isDisturb = 0;
 		action_data.action = A_ATTACK;
 	}
 }
@@ -522,9 +522,9 @@ void XHero::Move()
 {
         turn_count++;
 
-        if (nx != x || ny != y)
+        if (1)
         {
-			if (l->map->GetItemCount(nx, ny) > 0 || l->map->GetSpecial(nx, ny))
+			if ((l->map->GetItemCount(nx, ny) > 0 || l->map->GetSpecial(nx, ny)) && (nx != x || ny != y))
 				isDisturb = 0;
 
                 if (l->map->GetSpecial(nx, ny))

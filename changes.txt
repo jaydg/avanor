@@ -119,3 +119,8 @@ v.0.5.7
 -------
 1) Fixed bug #214 (Eye of Raa crashes the game)
 2) Fixed bug #186 (Disappearing of picked items when overburdened)
+3) Fixed bug #131 (Using 'w'alk command to find invisible enemies. )
+4) Fixed bug #140 (Obsidian helm changed to steel helm )
+5) Fixed bug #216 (swapping inside shop)
+6) Fixed bug #219 (Identify bug)
+7) Added special rooms with creatures.

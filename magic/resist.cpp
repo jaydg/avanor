@@ -93,6 +93,15 @@ void XResistance::Sub(XResistance * r)
 			resistances[i] -= r->resistances[i];
 };
 
+bool XResistance::isEqual(XResistance * xr)
+{
+	for (int i = R_WHITE; i < R_EOF; i++)
+		if (resistances[i] != xr->resistances[i])
+			return false;
+	return true;
+}
+
+
 void XResistance::Store(XFile * f)
 {
 	f->Write(&resistances[R_WHITE], sizeof(int), R_EOF);

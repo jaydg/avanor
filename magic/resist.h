@@ -54,6 +54,7 @@ public:
 	void Set(XResistance * r);
 	char * GetResistanceName(RESISTANCE r);
 	char * GetResistanceLevel(RESISTANCE r);
+	bool isEqual(XResistance * xr);
 
 	void Store(XFile * f);
 	void Restore(XFile * f);

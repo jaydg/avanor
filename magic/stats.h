@@ -46,6 +46,7 @@ public:
 	void Set(const char * str);
 	void Add(XStats * s);
 	void Sub(XStats * s);
+	bool isEqual(XStats * s);
 
 	void Store(XFile * f);
 	void Restore(XFile * f);

@@ -192,6 +192,7 @@ int XCreature::stopAction()
 	}
 	action_data.action = A_MOVE;
 	action_data.item = NULL;
+	isDisturb = 0; //prevents hero to continue automove when attaked by ghosts...
 	return 1;
 }
 
@@ -355,7 +356,7 @@ static int is_grid_viewable(void * opaque, int x, int y)
 	opaque_info * info = (opaque_info *)opaque;
 	XCreature * mover = info->mover;
 	XCreature * tcr = mover->l->map->GetMonster(x, y);
-	if ((tcr && tcr != mover && tcr->xai->isEnemy(mover)))
+	if ((tcr && tcr != mover && mover->isCreatureVisible(tcr) && tcr->xai->isEnemy(mover)))
 	{
 		mover->isDisturb = 0;
 	}
@@ -1051,7 +1052,7 @@ void XCreature::MoveStairWay()
 			tc->LastStep();
 			tc->FirstStep(n_x, n_y, tgtloc);
 			tc->l = tgtloc;
-			tc->Move();
+//			tc->Move(); //calling commented by vadim. seems that it is not necessary...
 			tc->action_data.action = A_MOVE;
 			if (tc->im & IM_HERO)
 			{

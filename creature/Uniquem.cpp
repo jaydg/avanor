@@ -617,6 +617,15 @@ int XYohjishiro::onGiveItem(XCreature * giver, XItem * item)
 			{
 				i->Identify(1);
 			}
+
+			XList<XBodyPart *>::iterator it;
+			for (it = giver->components.begin(); it != giver->components.end(); it++)
+			{
+				if ((*it)->Item())
+					(*it)->Item()->Identify(1);
+					
+			}
+			return NULL;
 		} else
 		{
 			char tbuf[256];

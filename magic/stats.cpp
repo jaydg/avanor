@@ -85,6 +85,13 @@ void XStats::Set(XStats * s)
 		stats[i] = s->stats[i];
 }
 
+bool XStats::isEqual(XStats * s)
+{
+	for(int i = S_STR; i < S_EOF; i++)
+		if (stats[i] != s->stats[i])
+			return false;
+	return true;
+}
 
 void XStats::Store(XFile * f)
 {
