@@ -102,6 +102,13 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 					item = ICREATEA((ITEM_MASK)((*it).mask));
 				else
 					item = ICREATEB((ITEM_MASK)((*it).mask), (*it).it, 0, 10000000);
+				if (item->it == IT_DRESS && creature_person_type == CPT_HE || 
+						creature_person_type == CPT_NAMED_HE)
+				{
+					// This is a kludge to prevent a "Roderick in a dress" scenario.
+					item->it = IT_CLOTHES;
+					strcpy(item->name,"clothes");
+				}
 				if (CanWear(item))
 				{
 					if (item->im & IM_MISSILEW) //if it is missile weapon we need to create proper ammo
