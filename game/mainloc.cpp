@@ -152,13 +152,22 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 		new XFurniture(26, 51, xLIGHTRED, '~', "bed", this);
 		new XFurniture(24, 51, xBROWN, '~', "desk", this);
 
-		new XFurniture(13, 46, xBROWN, '~', "plain bed", this);
-		new XFurniture(19, 42, xBROWN, '~', "plain bed", this);
-		new XFurniture(25, 42, xBROWN, '~', "plain bed", this);
-		new XFurniture(31, 42, xBROWN, '~', "plain bed", this);
-		new XFurniture(37, 42, xBROWN, '~', "plain bed", this);
-		new XFurniture(43, 42, xBROWN, '~', "plain bed", this);
-		new XFurniture(49, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(12, 46, xBROWN, '~', "plain bed", this);
+		new XFurniture(14, 46, xBROWN, '~', "plain bed", this);
+		new XFurniture(12, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(14, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(18, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(20, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(24, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(26, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(30, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(32, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(36, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(38, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(42, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(44, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(48, 42, xBROWN, '~', "plain bed", this);
+		new XFurniture(50, 42, xBROWN, '~', "plain bed", this);
 
 		new XFurniture(30, 46, xBROWN, '~', "table", this);
 		new XFurniture(30, 48, xBROWN, '~', "table", this);

@@ -67,22 +67,22 @@ XDwarfCityLocation::XDwarfCityLocation(LOCATION tl) : XLocation(tl)
 	}
 
 	{
+		XRect gr(74, 10, 75, 11);
+		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
+	}
+
+	{
 		XRect gr(75, 10, 76, 11);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
-		XRect gr(76, 10, 77, 11);
+		XRect gr(74, 12, 75, 13);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
 	{
 		XRect gr(75, 12, 76, 13);
-		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
-	}
-
-	{
-		XRect gr(76, 12, 77, 13);
 		NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));	
 	}
 
