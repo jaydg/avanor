@@ -62,7 +62,9 @@ int current_attr = 7;
 
 void vInit()
 {
+#ifdef XLINUX
 	mkdir(vMakePath(HOME_DIR, ""), 0755);
+#endif
 
 #ifdef XDOS
 	text_info ti;
