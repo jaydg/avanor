@@ -27,15 +27,15 @@ XQuest XQuest::quest;
 
 void XQuest::Store(XFile * f)
 {
-	f->Write(&beelzvile_killed, sizeof(int));
-	f->Write(&beelzvile_ordered, sizeof(int));
-	f->Write(&hero_die, sizeof(int));
-	f->Write(&hero_win, sizeof(int));
-	f->Write(&orcs_killed, sizeof(int));
-	f->Write(&total_orcs_killed, sizeof(int));
-	f->Write(&guards_get_orc_slay, sizeof(int));
+	f->Write(&beelzvile_killed);
+	f->Write(&beelzvile_ordered);
+	f->Write(&hero_die);
+	f->Write(&hero_win);
+	f->Write(&orcs_killed);
+	f->Write(&total_orcs_killed);
+	f->Write(&guards_get_orc_slay);
 	f->Write(&yohjishiro_it_quest, sizeof(ITEM_TYPE));
-	f->Write(&ahk_ulan_ordered, sizeof(int));
+	f->Write(&ahk_ulan_ordered);
 	f->Write(&ahk_ulan_killed, sizeof(int));
 	f->Write(&ahk_ulan_quest);
 	f->Write(&roderick_ordered);
@@ -43,6 +43,8 @@ void XQuest::Store(XFile * f)
 	f->Write(&roderick_quest);
 	f->Write(&roderick_quest2);
 	f->Write(&torin_quest);
+	f->Write(&rotmoth_status);
+	XObject::StorePointer(f, (XObject *)kidnapped_girl.get());
 }
 
 void XQuest::Restore(XFile * f)
@@ -63,6 +65,8 @@ void XQuest::Restore(XFile * f)
 	f->Read(&roderick_quest);
 	f->Read(&roderick_quest2);
 	f->Read(&torin_quest);
+	f->Read(&rotmoth_status);
+	kidnapped_girl = (XCreature *)(XObject::RestorePointer(f, NULL));
 }
 
 void XQuest::ShowQuests()

@@ -37,7 +37,20 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 	strcpy(full_name, "Debug Level 1");
 
 
-//	map->CreateRoom(0, 0, 80, 20, 0, 0, M_GREENGRAS, M_MAGMA);
+	map->CreateRoom(0, 0, 80, 20, 0, 0, M_GREENGRAS, M_MAGMA);
+
+	NewCreature(CN_GIANA, 14, 11)->xai->companion = NewCreature(CN_ROTMOTH, 14, 10);
+//	CreateShop(IM_ALL, &XRect(10, 10, 20, 15), "xxx");
+//	NewCreature(CN_SHAMAN_KOBOLD, 15, 5);
+//	NewCreature(CN_KING_COBRA, 14, 10);
+/*	XCreature * tcr = NewCreature(CN_KOBOLD, 15, 10);
+	tcr->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 10000));
+	tcr->Wear(ICREATEB(IM_MISSILE, IT_ARROW, 1, 10000));*/
+/*	for (int i = 0; i < 10; i++)
+	{
+		NewCreature(CN_GHOST);
+		NewCreature(CN_SHAMAN_KOBOLD);
+	}*/
 /*
 
 	{
@@ -62,14 +75,14 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 
 	XRect r1(10, 10, 15, 15);
 	
-	
-	for (int i = 0; i < 5; i++)
+*/	
+/*	for (int i = 0; i < 5; i++)
 	{
 		XCreature * cr = NewCreature(CN_KOBOLD);
-		cr->xai->SetArea(&r1, tl);
-		cr->xai->SetAIFlag(AIF_GUARD_AREA);
-	}
-
+//		cr->xai->SetArea(&r1, tl);
+//		cr->xai->SetAIFlag(AIF_GUARD_AREA);
+	}*/
+/*
 	XCreature * cr = NewCreature(CN_KOBOLD);
 	
 	XQList<SCRIPT_CMD> script;
