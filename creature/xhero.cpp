@@ -477,26 +477,38 @@ int XHero::PossibleWayCount(int px, int py)
 
 void XHero::Die(XCreature * killer)
 {
-        _exit_flag = 1;
-        msgwin.Add("You died!!!");
-        PutStatus();
-        l->map->Put(this);
-        vRefresh();
+	if(Game.isGodMode)
+	{
+		// God mode entails a choice about whether I die.
+		msgwin.Add("You died!!!  Continue game?");
+        if(GetTarget(TR_NO_YES)) 
+		{
+			// Don't wanna die twice, since we are cheating it!
+			_HP = GetMaxHP();
+			md->Remove(MOD_WOUND,main_creature);
+			return;
+		}
+	}
+	msgwin.Add("You died!!!");
+	_exit_flag = 1;
+    PutStatus();
+    l->map->Put(this);
+    vRefresh();
 
-        vGetch();
-        char buf[256] = "";
-        if (killer == this)
-			sprintf(buf, "Killed himself at %s.", l->GetFullName());
-		else if (killer)
-			sprintf(buf, "Killed by %s at %s.", killer->name, l->GetFullName());
-		else
-			sprintf(buf, "Died at %s.", l->GetFullName());
+    vGetch();
+    char buf[256] = "";
+    if (killer == this)
+		sprintf(buf, "Killed himself at %s.", l->GetFullName());
+	else if (killer)
+		sprintf(buf, "Killed by %s at %s.", killer->name, l->GetFullName());
+	else
+		sprintf(buf, "Died at %s.", l->GetFullName());
 
-        XQuest::quest.hero_die = 1;
+    XQuest::quest.hero_die = 1;
 
-		EndGame(buf);
-        vClrScr();
-        XCreature::Die(killer);
+	EndGame(buf);
+    vClrScr();
+    XCreature::Die(killer);
 }
 
 void XHero::Move()
