@@ -104,10 +104,23 @@ source-zip:
 	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
 
 source-bz2: 
-# create tar.bz2 archive with ufo2000 sources (on *nix systems)
+# create tar.bz2 archive with Avanor sources (on *nix systems)
 	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
 	svn export . avanor-r$(AVANOR_SVNVERSION)-src
 	tar -cjf avanor-r$(AVANOR_SVNVERSION)-src.tar.bz2 avanor-r$(AVANOR_SVNVERSION)-src
 	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
+
+source-gz: 
+# create tar.gz archive with Avanor sources (on *nix systems)
+	-$(RM) avanor-r$(AVANOR_SVNVERSION)-src.zip
+	svn export . avanor-r$(AVANOR_SVNVERSION)-src
+	tar -czf avanor-r$(AVANOR_SVNVERSION)-src.tar.gz avanor-r$(AVANOR_SVNVERSION)-src
+	svn delete --force avanor-r$(AVANOR_SVNVERSION)-src
+
+binary-zip: all
+	7z a -tzip -mx avanor.zip "avanor*.exe" gpl.txt changes.txt "manual/*.html" "manual/*.css"
+
+binary-gz: all
+	tar -czf avanor.tar.gz avanor gpl.txt changes.txt manual/*.html manual/*.css
 
 -include $(DEPS)
