@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DB_PROP_SZ	15 //number of materials!
 #define ENH_DB_SZ	20 //number of special powers ("of Strength")
 
+
 struct _MAIN_ITEM_STRUCT
 {
 	ITEM_TYPE it;
@@ -42,9 +43,28 @@ struct _MAIN_ITEM_STRUCT
 	int value;
 	int valume;
 	int probability;
+	ITEM_QUALITY iq;
 	char * breserved;
 };
 
+class XItemBasicStructure
+{
+public:
+	XItemBasicStructure(_MAIN_ITEM_STRUCT * pIt, int count)
+	{
+		total_prob = 0;
+		pFirstItem = pIt;
+		total_item = count;
+		for (int i = 0; i < count; i++)
+		{
+			total_prob += pIt->probability;
+			pIt++;
+		}
+	}
+	int total_prob;
+	int total_item;
+	_MAIN_ITEM_STRUCT * pFirstItem;
+};
 
 
 struct ENHANCE_STRUCT

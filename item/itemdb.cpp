@@ -34,108 +34,108 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 _ITEMPROP item_prop[DB_PROP_SZ] =
 {
 
-{"cloth",	xWHITE,	"1d1", "1d1",	
+{"cloth",	xWHITE,		"1d1", "1d1",	
 "",		"0d0",	"",			"", 		
-ISET_CLOTH, 	100,		4,		8,	CAN_PAPERLIKE,
+ISET_CLOTH, 	200,		IQ_POOR,	4,		8,	CAN_PAPERLIKE,
 "",
 SPP_NONE
 },
 
-{"leather",	xBROWN,	"1d2", "1d1-1",	
+{"leather",	xBROWN,		"1d2", "1d1",	
 "",		"0d0",	"",			"", 		
-ISET_LEATHER, 	100,		6,		10,	CAN_LEATHERLIKE,
+ISET_LEATHER, 	200,		IQ_POOR,	6,		10,	CAN_LEATHERLIKE,
 "",
 SPP_NONE
 },
 
-{"studded leather", xBROWN,			"1d2",	"1d2-1",	
+{"studded leather", xBROWN,			"1d3",	"1d2",	
 "",		"0d0",	"",			"", 		
-ISET_STUDEDLEATHER,		80,		8,		12, CAN_LEATHERLIKE,
+ISET_STUDEDLEATHER,	100,		IQ_AVG,	8,		12, CAN_LEATHERLIKE,
 "",
 SPP_NONE
 },
 
-{"wooden", 	xBROWN,			"1d3-3",	"1d3-1",	
-"1d2","0d0",	"1d2-4",	"", 		
-ISET_WOOD,	100,		8,		7, CAN_WOODLIKE,
+{"wooden", 	xBROWN,		"1d2-1",	"1d3",
+"1d2-1",	"0d0",		"1d2-1",	"", 		
+ISET_WOOD,	200,		IQ_POOR,	8,		7, CAN_WOODLIKE,
 "",
 SPP_NONE
 },
 
-{"stone", xLIGHTGRAY,		"1d3-6",	"1d4",		
-"1d3-2","0d0",	"1d2-1",	"1d1-2",	
-ISET_STONE,		100,		20,		5, CAN_STONELIKE,
-"earth:4d5",
+{"stone", xLIGHTGRAY,	"1d3-2",	"1d4+1",
+"1d3-1",	"0d0",		"1d2-1",	"1d2-1",	
+ISET_STONE,		200,	IQ_POOR,	20,		5, CAN_STONELIKE,
+"earth:0d0+10",
 SPP_NONE
 },
 
-{"iron", xDARKGRAY,		"1d2-3",	"1d3-1",	
-"1d2-2","0d0",	"1d3-2",		"1d2-1", 	
-ISET_IRON,		90,		30,		15, CAN_BLACKMETALLIKE,
+{"iron", xDARKGRAY,		"1d3-2",	"1d5+1",
+"1d2-1",	"0d0",		"1d3+0",	"1d2-1", 	
+ISET_IRON,		120,	IQ_POOR,	30,		15, CAN_BLACKMETALLIKE,
 "",
 SPP_NONE
 },
 
-{"bronze",	xBROWN,			"1d2-2",	"1d3-1",	
-"1d2-2",	"0d0",	"1d3-2",		"1d2-1", 	
-ISET_BRONZE,		60,		26,		17, CAN_GOODMETALLIKE,
-"stun:1d5",
+{"bronze",	xBROWN,		"1d3-1",	"1d5+1",
+"1d4-1",	"0d0",		"1d3+0",	"1d2-1", 	
+ISET_BRONZE,	60,		IQ_AVG,		26,		17, CAN_GOODMETALLIKE,
+"stun:0d0+5",
 SPP_NONE
 },
 
-{"brass", xBROWN,			"1d2-3",	"1d2-1",	
-"1d2-2",	"0d0",	"1d3-2",		"1d2-1", 	
-ISET_BRASS,		60,		30,		30, CAN_GOODMETALLIKE,
-"stun:1d8",
+{"brass", xBROWN,		"1d3-1",	"1d5+1",	
+"1d3-2",	"0d0",		"1d3+0",	"1d2-1", 	
+ISET_BRASS,		60,		IQ_AVG,		30,		30, CAN_GOODMETALLIKE,
+"stun:0d0+10",
 SPP_SLOWDIGESTION
 },
 
-{"silver",	xLIGHTGRAY,		"1d2-3",	"1d3-1",	
-"1d2-2",	"0d0",	"1d3-2",	"1d3-1", 	
-ISET_SILVER,		30,		20,		30, CAN_GOODMETALLIKE,
-"acid:3d5",
+{"silver",	xLIGHTGRAY,	"1d3",	"1d5+2",	
+"1d4+0",	"0d0",		"1d4+0",	"1d3-1", 	
+ISET_SILVER,	30,		IQ_FAIR,	20,		30, CAN_GOODMETALLIKE,
+"acid:0d0+10",
 SPP_NONE
 },
 
-{"golden", 	xYELLOW,		"1d2-3",	"1d3-1",	
-"1d2-2",	"0d0",	"1d3-2",	"1d4-1", 	
-ISET_GOLD,		15,		22,		50, CAN_BROKE,
-"acid:5d5",
+{"golden", 	xYELLOW,	"1d3+1",		"1d5+2",
+"1d5-1",	"0d0",		"1d5+0",	"1d4-1", 	
+ISET_GOLD,		15,		IQ_GOOD,	22,		50, CAN_BROKE,
+"acid:0d0+20",
 (SPECIAL_PROPERTY)(SPP_REGENERATION | SPP_FASTDIGESTION)
 },
 
-{"crystal",			xLIGHTMAGENTA,	"1d3-6",	"1d5",		
-"1d3-2",	"0d0",	"1d5-1",	"1d2-1", 		
-ISET_CRYSTAL,		70,		25,		14, CAN_STONELIKE,
-"water:5d5",
+{"crystal",	xLIGHTMAGENTA,"1d3+3",	"1d5+2",
+"1d5+1",	"0d0",		"1d5+1",	"1d2-1", 		
+ISET_CRYSTAL,	50,		IQ_AVG,		25,		14, CAN_STONELIKE,
+"water:0d0+10",
 SPP_NONE
 },
 
-{"steel", 			xLIGHTBLUE,		"1d4-1",	"1d4-1",	
-"1d4-2",	"0d0",	"1d4-1",	"1d2-1",	
-ISET_STEEL,	70,		15,		20, CAN_BLACKMETALLIKE,
-"stun:3d5",
+{"steel",	xLIGHTBLUE,	"1d3+3",	"1d5+2",
+"1d6+1",	"0d0",		"1d5+1",	"1d2-1",	
+ISET_STEEL,		50,		IQ_FAIR,	15,		20, CAN_BLACKMETALLIKE,
+"stun:0d0+15",
 SPP_NONE
 },
 
-{"obsidian",		xDARKGRAY,		"1d3-1",	"1d5-1",	
-"1d5-2",	"0d0",	"1d5-1",	"1d3-1",	
-ISET_OBSIDIAN,	50,		13,		20, CAN_STONELIKE,
-"fire:3d5",
+{"obsidian",xDARKGRAY,	"1d3+3",	"1d6+2",	
+"1d6+1",	"0d0",		"1d6+1",	"1d3-1",	
+ISET_OBSIDIAN,	50,		IQ_FAIR,	13,		20, CAN_STONELIKE,
+"fire:0d0+15",
 SPP_NONE
 },
 
-{"mithril",			xLIGHTCYAN,		"2d3",		"2d3",		
-"2d4-1",	"0d1",	"1d7-1",	"1d4-1",	
-ISET_MITHRIL,	5,			11,		100, CAN_NICEMETALLIKE,
-"poison:4d5 stun:3d5 confuse:3d5",
+{"mithril",	xLIGHTCYAN,	"1d3+6",	"2d3+3",
+"2d4+4",	"0d1",		"2d4+3",	"1d4-1",	
+ISET_MITHRIL,	5,		IQ_GOOD,	11,		100, CAN_NICEMETALLIKE,
+"poison:0d0+10 stun:0d0+10 confuse:0d0+20",
 SPP_NONE
 },
 
-{"adamantium", 		xLIGHTGREEN,	"2d4",		"2d4",		
-"2d6",		"1d0",	"2d4",		"1d4",		
-ISET_ADAMANTIUM,	2,			9,		300, CAN_NICEMETALLIKE,
-"paralyse:3d5 stun:5d5 confuse:5d5 blind:6d5",
+{"adamantium",xLIGHTGREEN,"1d3+12",	"2d4+5",
+"2d6+6",	"1d0",		"2d6+3",	"1d4",		
+ISET_ADAMANTIUM,	2,	IQ_EXCELLENT,		9,		300, CAN_NICEMETALLIKE,
+"paralyse:0d0+20 stun:0d0+15 confuse:0d0+30 blind:0d0+30",
 SPP_REGENERATION
 }
 };

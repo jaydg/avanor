@@ -50,6 +50,17 @@ public:
 	void Store(XFile * f);
 	void Restore(XFile * f);
 
+	//the function of very good (for Avanor's purpose) number destribution
+	//current version can generate value from 0 to 20 with next probability
+	// 0 - 75%
+	// 1 - 5%
+	// 20 - 0.1%
+	static int DFunc();
+	//normalization DFunc to (-maximum, +maximum)
+	static int NDFunc(int maximum);
+
+	//throw normalized by DFunc
+	int NThrow();
 };
 
 #endif

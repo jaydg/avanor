@@ -25,16 +25,17 @@ REGISTER_CLASS(XGloves);
 _MAIN_ITEM_STRUCT GLOVES_STRUCT[] =
 {
 
-{IT_GLOVES,		"gloves", 		']',	"1d2-1",	"1d2-1",	"1d4-2",	"1d1",	"1d1-1",	"1d4-2",ISET_ALLLEATHER,	2,		1,	0,	""},
-{IT_GAUNTLETS,	"gauntlets", 	']',	"1d3-1",	"1d3-1",	"1d4-2",	"1d1",	"1d2-1",	"1d4-2",ISET_ALLMETAL,		3,		1,	0,	""},
-{IT_KNUCKLES,	"knuckles", 	']',	"1d2-1",	"1d2-1",	"1d3-2",	"1d1",	"1d3-1",	"1d6-3",ISET_HARDMETAL,		4,		1,	0,	""}
+{IT_GLOVES,		"gloves", 		']',	"1d2",		"1d2",		"1d3",		"1d1",	"1d1",	"1d2-1",ISET_ALLLEATHER,	2,		1,	100,	IQ_AVG,	""},
+{IT_GAUNTLETS,	"gauntlets", 	']',	"1d3+1",	"1d3+1",	"1d3+1",	"1d1",	"1d2",	"1d3-1",ISET_ALLMETAL,		3,		1,	10,		IQ_FAIR,""},
+{IT_KNUCKLES,	"knuckles", 	']',	"1d2+1",	"1d2+1",	"1d2-1",	"1d1",	"1d3",	"1d2+2",ISET_HARDMETAL,		4,		1,	10,		IQ_GOOD,""}
 };
-const int r_size = 3;
+
+XItemBasicStructure gi_gloves(GLOVES_STRUCT, 3);
 
 XGloves::XGloves(ITEM_TYPE it)
 {
 	im = IM_GLOVES;
-	BasicFill(it, GLOVES_STRUCT, r_size);
+	BasicFill(it, &gi_gloves);
 	bp = BP_GLOVES;
 	dice.Z = 0;
 	RNG = 0;

@@ -25,13 +25,14 @@ REGISTER_CLASS(XMissile);
 
 _MAIN_ITEM_STRUCT MISSILE_STRUCT[] =
 {
-{IT_ARROW,		"arrow",		'\\',	"",	"",		"1d7-4","1d4",  "1d3-2","1d2-1", 	ISET_MISSILE,	1,	1,	0,	""},
-{IT_QUARREL,	"quarrel",		'\\',	"",	"",		"1d7-4","1d6",  "1d3-2","1d2-1", 	ISET_MISSILE,	1,	1,	0,	""},
-{IT_SLINGBULLET,"sling bullet",	'\\',	"",	"",		"1d7-4","1d5",  "1d3-2","1d2-1", 	ISET_MISSILE,	1,	1,	0,	""},
-{IT_ROCK,		"rock",			'*',	"",	"",		"1d3-2","1d3",  "1d3-2","1d2-1", 	ISET_STONE,		1,	1,	0,	""},
-{IT_SHURIKEN,	"shuriken",		'*',	"",	"",		"1d4-2","1d6",  "1d3-2","1d2-1", 	ISET_METAL,		1,	1,	0,	""}
+{IT_ARROW,		"arrow",		'\\',	"",	"",		"1d2","1d4",  "1d3","1d2+3", 	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
+{IT_QUARREL,	"quarrel",		'\\',	"",	"",		"1d2","1d6",  "1d3","1d2+3", 	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
+{IT_SLINGBULLET,"sling bullet",	'\\',	"",	"",		"1d2","1d5",  "1d2","1d2+3", 	ISET_MISSILE,	1,	1,	30,		IQ_FAIR,""},
+{IT_ROCK,		"rock",			'*',	"",	"",		"1d1","1d3",  "1d1","1d2+2", 	ISET_STONE,		1,	1,	300,	IQ_POOR,""},
+{IT_SHURIKEN,	"shuriken",		'*',	"",	"",		"1d2","1d6",  "1d4","1d2+2", 	ISET_METAL,		1,	1,	50,		IQ_FAIR,""}
 };
-const int msl_size = 5;
+
+XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 
 /*
 // TODO: Bind launchers to missiles.  
@@ -48,7 +49,7 @@ XMissile::XMissile(ITEM_TYPE _it)
 {
 	im = IM_MISSILE;
 	bp = BP_MISSILE;
-	BasicFill(_it, MISSILE_STRUCT, msl_size);
+	BasicFill(_it, &gi_missile);
 	if (it == IT_ROCK)
 	{
 		strcpy(name, "rock");

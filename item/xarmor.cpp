@@ -25,20 +25,21 @@ REGISTER_CLASS(XArmor);
 _MAIN_ITEM_STRUCT ARMOR_STRUCT[] =
 {
 
-{IT_CLOTHES,	"clothes",		'[',		"1d2-1",	"1d2-1",	"",		"1d1",	"",			"",		ISET_SOFT,			3,		5,	0,	""},
-{IT_DRESS,		"dress",		'[',		"1d2-1",	"1d2-1",	"",		"1d1",	"",			"",		ISET_SOFT,			3,		5,	0,	""},
-{IT_ROBE,		"robe",			'[',		"1d2",		"1d2-1",	"",		"1d1",	"",			"",		ISET_SOFT,			5,		9,	0,	""},
-{IT_LIGHTMAIL,	"scale mail",	'[',		"1d3",		"1d2-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER,  	15,		15,	0,	""},
-{IT_SCALEMAIL,	"scale mail",	'[',		"1d3-1",	"1d4-1",	"1d2-2","1d4",	"",			"",		ISET_ALLMETAL,		30,		30,	0,	""},
-{IT_PLATEMAIL,	"plate mail",	'[',		"1d3-2",	"1d5-1",	"1d2-3","1d4",	"",			"",		ISET_ALLMETAL,		45,		30,	0,	""},
-{IT_CHAINMAIL,	"chain mail",	'[',		"1d3-3",	"1d6-1",	"1d2-4","1d4",	"",			"",		ISET_ALLMETAL,		45,		30,	0,	""},
-{IT_RINGMAIL,	"ring mail", 	'[',		"1d3-3",	"1d6-1",	"1d2-4","1d4",	"",			"",		ISET_ALLMETAL,		50,		30,	0,	""}
+{IT_CLOTHES,	"clothes",		'[',		"1d2",	"1d1",	"",		"1d1",	"",			"",		ISET_SOFT,			3,		5,	100,	IQ_POOR,	""},
+{IT_DRESS,		"dress",		'[',		"1d2",	"1d1",	"",		"1d1",	"",			"",		ISET_SOFT,			3,		5,	100,	IQ_POOR,	""},
+{IT_ROBE,		"robe",			'[',		"1d2",	"1d1",	"",		"1d1",	"",			"",		ISET_SOFT,			5,		9,	150,	IQ_POOR,	""},
+{IT_LIGHTMAIL,	"scale mail",	'[',		"1d3+1","1d2",	"",		"1d1",	"",			"",		ISET_ALLLEATHER,  	15,		15,	70,		IQ_AVG,		""},
+{IT_SCALEMAIL,	"scale mail",	'[',		"1d3",	"1d2+2","1d2-2","1d4",	"",			"",		ISET_ALLMETAL,		30,		30,	20,		IQ_FAIR,	""},
+{IT_PLATEMAIL,	"plate mail",	'[',		"1d3-1","1d2+3","1d2-3","1d4",	"",			"",		ISET_ALLMETAL,		45,		30,	15,		IQ_FAIR,	""},
+{IT_CHAINMAIL,	"chain mail",	'[',		"1d3-1","1d2+4","1d2-4","1d4",	"",			"",		ISET_ALLMETAL,		45,		30,	10,		IQ_GOOD,	""},
+{IT_RINGMAIL,	"ring mail", 	'[',		"1d3-1","1d2+4","1d2-4","1d4",	"",			"",		ISET_ALLMETAL,		50,		30,	10,		IQ_GOOD,	""}
 };
-const int r_size = 8;
+
+XItemBasicStructure gi_armour(ARMOR_STRUCT, 8);
 
 XArmor::XArmor(ITEM_TYPE _it)
 {
-	BasicFill(_it, ARMOR_STRUCT, r_size);
+	BasicFill(_it, &gi_armour);
 	bp = BP_BODY;
 	im = IM_BODY;
 	dice.Z = 0;

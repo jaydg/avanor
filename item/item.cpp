@@ -53,22 +53,26 @@ void XItem::Invalidate()
 	XBaseObject::Invalidate();
 }
 
-int XItem::BasicFill(ITEM_TYPE it, _MAIN_ITEM_STRUCT * is, int is_rcount)
+
+int XItem::BasicFill(ITEM_TYPE it, XItemBasicStructure * pData)
 {
-	_MAIN_ITEM_STRUCT * x_struct = NULL;
+	_MAIN_ITEM_STRUCT * x_struct = pData->pFirstItem;
 
 	if (it == IT_RANDOM)
 	{
-		int r_val = vRand() % is_rcount;
-		x_struct = (is + r_val);
+		int r_val = vRand(pData->total_prob);
+		while (1)
+		{
+			r_val -= x_struct->probability;
+			if (r_val < 0)
+				break;
+			x_struct++;
+		}
 	} else
 	{
-		for (int i = 0; i < is_rcount; i++)
-			if ((is + i)->it == it)
-			{
-				x_struct = (is + i);
+		for (int i = 0; i < pData->total_item; i++, x_struct++)
+			if (x_struct->it == it)
 				break;
-			}
 	}
 
 	if (x_struct)
@@ -82,6 +86,7 @@ int XItem::BasicFill(ITEM_TYPE it, _MAIN_ITEM_STRUCT * is, int is_rcount)
 		return 0;
 }
 
+
 void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
 {
 	strcpy(name, is->name);
@@ -89,27 +94,28 @@ void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
 	view = is->view;
 	weight = is->valume;
 	value = is->value;
+	quality = is->iq;
 
 	XDice * d;
 
 	d = new XDice(is->dv);
-	_DV = d->Throw();
+	_DV = d->NThrow();
 	
 	d->Setup(is->pv);
-	_PV = d->Throw();
+	_PV = d->NThrow();
 	
 	d->Setup(is->hit);
-	_HIT = d->Throw();
+	_HIT = d->NThrow();
 
 	d->Setup(is->dice);
 	int tx = d->X;
 	int ty = d->Y;
 
 	d->Setup(is->z);
-	dice.Setup(tx, ty, d->Throw());
+	dice.Setup(tx, ty, d->NThrow());
 
 	d->Setup(is->r);
-	RNG = d->Throw();
+	RNG = d->NThrow();
 	delete d;
 }
 
@@ -134,24 +140,6 @@ void XItem::PropFill(ITEM_SET is, int val)
 		r_val++;
 	}
 
-
-/*	int r_val;
-	int fail_count = 0;
-	static int tryes = 0;
-	static int sum = 0;
-	while (1)
-	{
-		r_val = vRand() % DB_PROP_SZ;
-		if ((item_prop[r_val].iflag & is) &&
-			item_prop[r_val].probability >= (vRand() % val))
-			break;
-		fail_count++;
-	}
-	tryes++;
-	sum += fail_count;
-	float avg = (float)sum / tryes;
-	material_index = r_val;
-*/
 	material_index = r_val;
 	char buf[100];
 	sprintf(buf, "%s %s", item_prop[r_val].propname, name);
@@ -168,24 +156,25 @@ void XItem::PropFill(ITEM_SET is, int val)
 		if (_DV)
 		{
 			d.Setup(item_prop[r_val].dv);
-			_DV += d.S;
+			_DV += d.NThrow();//d.S;
 		}
 		
 		if (_PV)
 		{
 			d.Setup(item_prop[r_val].pv);
-			_PV += d.S;
+			_PV += d.NThrow();//d.S;
 		}
 	
 		d.Setup(item_prop[r_val].hit);
-		_HIT += d.S;
+		_HIT += d.NThrow();//d.S;
 	
 		d.Setup(item_prop[r_val].dice);
 		int tx = dice.X + d.X;
 		int ty = dice.Y + d.Y;
 		d.Setup(item_prop[r_val].z);
-		dice.Setup(tx, ty, dice.Z + d.S);
+		dice.Setup(tx, ty, dice.Z + d.NThrow());
 //	}
+	quality = (ITEM_QUALITY)(quality + item_prop[r_val].iq);
    assert(r == NULL);
 	r = new XResistance(item_prop[r_val].resistance);
    assert(s == NULL);
@@ -502,7 +491,7 @@ void XItem::Store(XFile * f)
 	
 	f->Write(&value, sizeof(int));
 	f->Write(&wt, sizeof(WSK_TYPE));
-
+	f->Write(&quality, sizeof(ITEM_QUALITY));
    owner.Store(f);
 }
 
@@ -527,6 +516,7 @@ void XItem::Restore(XFile * f)
 	
 	f->Read(&value, sizeof(int));
 	f->Read(&wt, sizeof(WSK_TYPE));
+	f->Read(&quality, sizeof(ITEM_QUALITY));
 
    owner.Restore(f);
 }

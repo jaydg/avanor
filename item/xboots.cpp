@@ -24,18 +24,18 @@ REGISTER_CLASS(XBoots);
 
 _MAIN_ITEM_STRUCT BOOTS_STRUCT[] =
 {
-
-{IT_SANDALS,	"sandals", 		']',		"1d2-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	1,		1,	0,	""},
-{IT_LIGHTBOOTS,	"light boots", 	']',		"1d3-1",	"1d2-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	2,		2,	0,	""},
-{IT_SOFTBOOTS,	"soft boots", 	']',		"1d3-2",	"1d2-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	3,		3,	0,	""},
-{IT_HARDBOOTS,	"hard boots", 	']',		"1d3-3",	"1d2-1",	"",		"1d1",	"",			"",		ISET_OBSIMETAL,		5,		5,	0,	""}
+{IT_SANDALS,	"sandals", 		']',		"1d2-1",	"0d0",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	1,		1,	150,	IQ_POOR,	""},
+{IT_LIGHTBOOTS,	"light boots", 	']',		"1d3",		"1d1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	2,		2,	80,		IQ_AVG,		""},
+{IT_SOFTBOOTS,	"soft boots", 	']',		"1d4",		"1d2",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	3,		3,	40,		IQ_FAIR,	""},
+{IT_HARDBOOTS,	"hard boots", 	']',		"1d3",		"1d2+1","",		"1d1",	"",			"",		ISET_OBSIMETAL,		5,		5,	10,		IQ_GOOD,	""}
 };
-const int r_size = 4;
+
+XItemBasicStructure gi_boots(BOOTS_STRUCT, 4);
 
 XBoots::XBoots(ITEM_TYPE _it)
 {
 	im = IM_BOOTS;
-	BasicFill(_it, BOOTS_STRUCT, r_size);
+	BasicFill(_it, &gi_boots);
 	bp = BP_BOOTS;
 	dice.Z = 0;
 	RNG = 0;

@@ -90,6 +90,20 @@ enum SPECIAL_PROPERTY
 	SPP_REGENERATION		= 0x0008
 };
 
+enum ITEM_QUALITY
+{
+	IQ_TERRIBLE		= -4,
+	IQ_VERY_BAD		= -3,
+	IQ_BAD			= -2,
+	IQ_POOR			= -1,
+	IQ_AVG			= 0,
+	IQ_FAIR			= 1,
+	IQ_GOOD			= 2,
+	IQ_EXCELLENT	= 3,
+	IQ_SUPERB		= 4,
+};
+
+
 struct _ITEMPROP
 {
 	char * propname; //wooden, metall,
@@ -102,6 +116,7 @@ struct _ITEMPROP
 	char * r; //range
 	unsigned int iflag; //wich item can consist from this material
 	int probability;
+	ITEM_QUALITY iq;
 	int density;
 	int value;
 	CAN_FLAG mflag;

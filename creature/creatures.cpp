@@ -588,7 +588,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XL(SKT_HEALING, 4);
 	XL(SKT_FINDWEAKNESS, 4);
 	XL(SKT_ARCHERY, 4);
-	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 2, 5);
+	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 2, 10);
 	EQ(IM_WEAPON, IT_DAGGER, 100);
 	EQ(IM_MISSILEW, IT_SHORTBOW, 10);
 	COE(CET_DISEASE, 20);
@@ -605,7 +605,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XL(SKT_HEALING, 5);
 	XL(SKT_FINDWEAKNESS, 5);
 	XL(SKT_ARCHERY, 5);
-	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 3, 5);
+	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 3, 12);
 	EQ(IM_WEAPON, IT_DAGGER, 100);
 	EQ(IM_WEAPON, IT_DAGGER, 10);
 	EQ(IM_MISSILEW, IT_SHORTBOW, 15);
@@ -623,7 +623,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
 	XL(SKT_ARCHERY, 6);
-	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 4, 5);
+	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 4, 15);
 	EQ(IM_WEAPON, IT_DAGGER, 100);
 	EQ(IM_WEAPON, IT_DAGGER, 20);
 	EQ(IM_MISSILEW, IT_SHORTBOW, 10);
@@ -643,7 +643,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XL(SPELL_CURE_LIGHT_WOUNDS);
 	XL(SKT_HEALING, 4);
 	XL(SKT_CONCENTRATION, 4);
-	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 4, 5);
+	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 4, 15);
 	EQ(IM_WEAPON, IT_DAGGER, 100);
 	COE(CET_DISEASE, 30);
 	COE(CET_MODIFY_MA, 1);
@@ -660,7 +660,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("A gnoll is to a kobold what a giant is to a man.  This towering cross between man and dog is known for its cunning and strength.  Carrying an axe it will plow right through most opponents leaving them dazed... if they are lucky.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 2, 5);
+	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 2, 10);
 	EQ(IM_WEAPON, IT_WARAXE, 100);
 	COE(CET_MODIFY_TO, 1);
 
@@ -675,7 +675,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("The gnoll warmaster is an eight foot fighting machine.  The double axes it carries weave an intricate dance of death around it as it takes on multiple opponents.  Only a fool would get in this berserker's way.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 3, 5);
+	EQ(IM_SCROLL | IM_POTION | IM_BOOK | IM_FOOD, 3, 10);
 	EQ(IM_WEAPON, IT_WARAXE, 100);
 	COE(CET_MODIFY_TO, 1);
 	
@@ -695,7 +695,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("This scruffy looking humanoid glances at you with fear in its face.  The stench it carries indicates that it has probably never been clean in its life.  Goblins normally perfer secrecy and stealing to open confrontation but have been known to attack travellers.");
 	XL(SKT_HEALING, 4);
 	XL(SKT_FINDWEAKNESS, 4);
-	EQ(IM_SCROLL | IM_POTION, 1, 5);
+	EQ(IM_SCROLL | IM_POTION, 1, 10);
 	EQ(IM_WEAPON, IT_SHORTSWORD, 100);
 
 	XVW(CN_GOBLIN_WARRIOR, "goblin warrior", 'g', xGREEN, CPT_HE, CRL_LOW, CR_GOBLIN);
@@ -709,7 +709,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("This goblin carries a nasty looking knife, almost a sword for one as short as he is.  His posture and multiple scars indicate that he is more than a novice at handling them as well.");
 	XL(SKT_HEALING, 5);
 	XL(SKT_FINDWEAKNESS, 5);
-	EQ(IM_SCROLL | IM_POTION, 2, 5);
+	EQ(IM_SCROLL | IM_POTION, 2, 10);
 	EQ(IM_WEAPON, IT_SHORTSWORD, 100);
 
 	XVW(CN_GOBLIN_WARMASTER, "goblin warmaster", 'g', xBLUE, CPT_HE, CRL_LOW, CR_GOBLIN);
@@ -723,7 +723,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Arms criss-crossed with scars and bulging with muscle, this goblin has a hint of white hair.  Not many goblins can live so long but the worn weapons at his side indicate that he is capable of keeping his place in the earth.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 5);
+	EQ(IM_SCROLL | IM_POTION, 3, 10);
 	EQ(IM_WEAPON, IT_SHORTSWORD, 100);
 
 	XVW(CN_GOBLIN_CHIEFTAIN, "goblin chieftain", 'g', xRED, CPT_HE, CRL_AVG, CR_GOBLIN);
@@ -737,7 +737,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Stronger and smarter than the other goblins.  This goblin has become the chief and now commands all the troops.  His shock of white hair is the only part of him that shows his age and his muscular body is toned from battles past.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 4, 5);
+	EQ(IM_SCROLL | IM_POTION, 4, 10);
 	EQ(IM_WEAPON, IT_SHORTSWORD, 100);
 
 
@@ -756,7 +756,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Orcs are roughly dwarf sized with a light green pallor to their skin.  Not extremely intelligent, they avoid sunlight whenever possible.  It has been speculated that they were once humans elves or dwarves but something drove them deep underground and they became the hardy race they are today.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 
 	XVW(CN_LARGE_ORC, "large orc", 'o', xGREEN, CPT_HE, CRL_AVG, CR_ORC);
@@ -770,7 +770,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Bigger, meaner and nastier than its smaller cousins, this orc stands near as tall as a man.  It bears a cruel looking axe and is well armored.  The wicked grin on its face tells you that it will enjoy picking your flesh from your bones.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 	COE(CET_MODIFY_ST, 1);
 
@@ -785,7 +785,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Hill orcs are descendants of orcs that left their caves to live back under the sky.  They still prefer to sleep during the day but move around enough during the day to acquire a healthy tan.  Perhaps their return to sunlight is the reason they are stronger than their cousins.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 	COE(CET_MODIFY_ST, 1);
  
@@ -800,7 +800,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Dark orcs retreated to the farthest corners of the caverns and were enslaved by the other orcs.  They were used to delve great cities beneath the earth like the dwarves.  Because of all this manual labor they grew extremely strong.  Before any battle, they cover themselves in coal dust to appear jet black and frighten their opponents.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 	COE(CET_MODIFY_ST, 1);
 
@@ -815,7 +815,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("\"Git yur sorry corpses movin'!\"  Orc sergeants act as the first tier of leadership for any orcish raid.  Known to be exceptionally mean spirited, they have been seen to kill their own troops in order to \"inspire\" the rest to better results.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 	COE(CET_MODIFY_ST, 2);
 
@@ -830,7 +830,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("Captain is a precarious position for any orc.  Displeased chiefs might have their captains killed for any failure, success or even on a whim.  The orcs under him are ready to mutiny and kill him for his position.  Thus the orc captain is always on edge and ready to strike down anything that might pose a danger.  His large frame and hefty axe are usually more than adequate to take care of any and all threats.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 	COE(CET_MODIFY_ST, 2);
 
@@ -845,7 +845,7 @@ FILL_OUT_CR_DB::FILL_OUT_CR_DB()
 	XD("The orc chieftain is the biggest, meanest orc you have ever seen.  His skin alone looks tougher than studded leather.  The axe he carries is well worn and scarred from many battles.  Only someone this mean and nasty could get the various orc tribes to work together for a raid.");
 	XL(SKT_HEALING, 6);
 	XL(SKT_FINDWEAKNESS, 6);
-	EQ(IM_SCROLL | IM_POTION, 3, 30);
+	EQ(IM_SCROLL | IM_POTION, 3, 50);
 	EQ(IM_WEAPON, IT_BATTLEAXE, 100);
 	COE(CET_MODIFY_ST, 3);
 

@@ -43,7 +43,7 @@ public:
 	virtual XObject * MakeCopy() { assert(0); return NULL;}
 	virtual void Invalidate();
 
-	int BasicFill(ITEM_TYPE it, _MAIN_ITEM_STRUCT * is, int is_rcount);
+	int BasicFill(ITEM_TYPE it, XItemBasicStructure * pData);
 	void PropFill(ITEM_SET is, int val = 1000);
 	void SpecialFill();
 
@@ -52,6 +52,7 @@ public:
 	BODYPART bp; //fit to what bp???
 	ITEM_TYPE it; //main type of item such IT_POTION
 	WSK_TYPE wt; //other type of item
+	ITEM_QUALITY quality;//quality of item. Need for generation and may be basic identification...
 
 	int durability; //   DUR_INFINITE - infinite, Other - finite 1Dur == 1000 turn
 	int ModifyDur(int val);

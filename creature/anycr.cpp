@@ -241,7 +241,7 @@ void XAnyCreature::Die(XCreature * killer)
 	}
 
 
-	if (MAX_HP + _HP > 0 && !(creature_class & CR_UNDEAD))
+	if (vRand(5) == 0/*MAX_HP + _HP > 0*/ && !(creature_class & CR_UNDEAD))
 	{
 		DropItem(new XCorpse(this, &super_info->pCorpseData));
 	}

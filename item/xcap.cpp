@@ -24,15 +24,16 @@ REGISTER_CLASS(XCap);
 
 _MAIN_ITEM_STRUCT CAP_STRUCT[] = 
 {
-{IT_HAT,		"hat", 			'[',		"1d2-1",	"1d1-1",	"",		"1d1",	"",	"",		ISET_SOFT, 			1,		1,	0,	""},
-{IT_CAP,		"cap",			'[',		"1d2-2",	"1d2-1",	"",		"1d1",  "", "",		ISET_ALLLEATHER,	2,		2,	0,	""},
-{IT_HELMET,		"helmet",		'[',		"1d2-3",	"1d3-1",	"",		"1d3",  "",	"",		ISET_HARDMETAL,		3,		3,	0,	""},
+{IT_HAT,		"hat", 			'[',		"1d1",		"0d0",		"",		"1d1",	"",	"",		ISET_SOFT, 			1,		1,	100,	IQ_POOR,	""},
+{IT_CAP,		"cap",			'[',		"1d2+1",	"1d2",		"",		"1d1",  "", "",		ISET_ALLLEATHER,	2,		2,	50,		IQ_AVG,		""},
+{IT_HELMET,		"helmet",		'[',		"1d3+2",	"1d3+1",	"",		"1d3",  "",	"",		ISET_HARDMETAL,		3,		3,	10,		IQ_FAIR,	""},
 };
-const int r_size = 3 ;
+
+XItemBasicStructure gi_cap(CAP_STRUCT, 3);
 
 XCap::XCap(ITEM_TYPE _it)
 {
-	BasicFill(_it, CAP_STRUCT, r_size);
+	BasicFill(_it, &gi_cap);
 	bp = BP_HEAD;
 	im = IM_HAT;
 	_HIT = 0;

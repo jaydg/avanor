@@ -25,14 +25,15 @@ REGISTER_CLASS(XMissileWeapon);
 
 _MAIN_ITEM_STRUCT MWEAPON_STRUCT[] =
 {
-{IT_LONGBOW,		"long bow",			'{',	"",	"",		"1d4-1",	"1d6+2",  "1d3",	"1d3+2", 	ISET_BOW,			20,	10,		0,	""},
-{IT_SHORTBOW,		"short bow",		'{',	"",	"",		"1d3-1",	"1d4+2",  "1d3",	"1d2+1", 	ISET_BOW,			10,	5,		0,	""},
-{IT_LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",		"1d2-1",	"1d5+2",  "1d3",	"1d2+1", 	ISET_BOW,			10,	5,		0,	""},
-{IT_CROSSBOW,		"crossbow",			'{',	"",	"",		"1d4-1",	"1d6+2",  "1d3",	"1d3+1", 	ISET_BOW,			15,	5,		0,	""},
-{IT_HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",		"1d6-1",	"2d3+2",  "1d4",	"1d3+2", 	ISET_BOW,			35,	30,		0,	""},
-{IT_SLING,			"sling",			'{',	"",	"",		"1d2-1",	"1d3+1",  "1d3",	"1d2+1", 	ISET_ALLLEATHER,	5,	2,		0,	""}
+{IT_LONGBOW,		"long bow",			'{',	"",	"",		"1d3+2",	"1d6",  "1d3+2",	"1d1+2", 	ISET_BOW,			20,	10,		30,		IQ_FAIR,	""},
+{IT_SHORTBOW,		"short bow",		'{',	"",	"",		"1d2",		"1d4",  "1d2",		"1d2", 		ISET_BOW,			10,	5,		150,	IQ_AVG,		""},
+{IT_LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",		"1d2",		"1d5",  "1d3",		"1d2", 		ISET_BOW,			10,	5,		120,	IQ_AVG,		""},
+{IT_CROSSBOW,		"crossbow",			'{',	"",	"",		"1d4",		"1d6",  "1d3+1",	"1d2", 		ISET_BOW,			15,	5,		70,		IQ_AVG,		""},
+{IT_HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",		"1d3-1",	"1d8",  "1d4+2",	"1d2+1", 	ISET_BOW,			35,	30,		10,		IQ_GOOD,	""},
+{IT_SLING,			"sling",			'{',	"",	"",		"1d2",		"1d3+1", "1d3",		"1d1+1", 	ISET_ALLLEATHER,	5,	2,		200,	IQ_POOR,	""}
 };
-const int mw_size = 6;
+
+XItemBasicStructure gi_missilew(MWEAPON_STRUCT, 6);
 
 _WEAPON_BIND mwbind[] = {
 {IT_LONGBOW,		WSK_BOW},
@@ -46,11 +47,11 @@ _WEAPON_BIND mwbind[] = {
 XMissileWeapon::XMissileWeapon(ITEM_TYPE _it)
 {
 	im = IM_MISSILEW;
-	BasicFill(_it, MWEAPON_STRUCT, mw_size);
+	BasicFill(_it, &gi_missilew);
 	bp = BP_MISSILEWEAPON;
 	_DV = 0;
 	_PV = 0;
-	for (int i = 0; i < mw_size; i++)
+	for (int i = 0; i < 6; i++)
 		if (mwbind[i].it == it)
 		{
 			wt = mwbind[i].ws;

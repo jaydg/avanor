@@ -25,18 +25,18 @@ REGISTER_CLASS(XShield);
 _MAIN_ITEM_STRUCT SHIELD_STRUCT[] =
 {
 
-{IT_SMALLSHIELD,"small shield",	')',	"1d2",	"1d2-1",	"",		"1d2",	"",	"",		ISET_SHIELD, 	3,		3},
-{IT_MEDIUMSHIELD,"medium shield",')',	"1d3",	"1d2-1",	"",		"1d3",	"",	"",		ISET_SHIELD, 	5,		5},
-{IT_LARGESHIELD,"large shield",	')',	"1d4",	"1d2-1",	"",		"1d4",	"",	"",		ISET_SHIELD, 	10,		8},
-{IT_TOWERSHIELD,"tower shield",	')',	"1d6",	"1d2-1",	"",		"1d4",	"",	"",		ISET_SHIELD, 	15,		15}
+{IT_SMALLSHIELD,"small shield",	')',	"0d0+2",	"1d2",	"",		"1d2",	"",	"",		ISET_SHIELD, 	3,		3,	200,	IQ_POOR,	""},
+{IT_MEDIUMSHIELD,"medium shield",')',	"0d0+3",	"1d2",	"",		"1d3",	"",	"",		ISET_SHIELD, 	5,		5,	100,	IQ_AVG,		""},
+{IT_LARGESHIELD,"large shield",	')',	"0d0+4",	"1d2",	"",		"1d4",	"",	"",		ISET_SHIELD, 	10,		8,	50,		IQ_AVG,		""},
+{IT_TOWERSHIELD,"tower shield",	')',	"0d0+6",	"1d2",	"",		"1d4",	"",	"",		ISET_SHIELD, 	15,		15,	10,		IQ_FAIR,	""}
 };
-const int r_size = 4;
 
+XItemBasicStructure gi_shield(SHIELD_STRUCT, 4);
 
 XShield::XShield(ITEM_TYPE _it)
 {
 	im = IM_SHIELD;
-	BasicFill(_it, SHIELD_STRUCT, r_size);
+	BasicFill(_it, &gi_shield);
 	_PV = 0;
 	bp = BP_HAND;
 	RNG = 0;
