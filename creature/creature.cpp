@@ -829,6 +829,25 @@ int XCreature::PickUpItem(XItem * i)
 		return 0;
 }
 
+CR_GENDER XCreature::GetGender()
+{
+	switch(creature_person_type)
+	{
+		case CPT_HE:
+		case CPT_NAMED_HE:
+		case CPT_MALE_YOU:
+			return GEN_MALE;
+			break;
+		case CPT_SHE:
+		case CPT_NAMED_SHE:
+		case CPT_FEMALE_YOU:
+			return GEN_FEMALE;
+			break;
+		default:
+			break;
+	}
+	return GEN_NEUTER;
+}
 
 int XCreature::GetMaxHP()
 {
