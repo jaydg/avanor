@@ -281,6 +281,20 @@ void vDelay(int n)
 
 }
 
+int vKbhit()
+{
+#ifdef XLINUX
+	timeout(0);
+	int ch = getch();
+	timeout(-1);
+	if (ch == ERR) return 0;
+	ungetch(ch);
+	return 1;
+#else
+	return kbhit();
+#endif	
+}
+
 int vGetch()
 {
 #ifdef XLINUX

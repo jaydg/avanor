@@ -138,8 +138,8 @@ void XGame::RunDemo()
 	{
 		for (int i = 0; i < 100; i++)
 			Game.Scheduler.Get()->Run();
-#ifndef XLINUX
-		if (kbhit())
+
+		if (vKbhit())
 		{
 			int ch = vGetch();
 			if (ch == KEY_ESC)
@@ -154,7 +154,6 @@ void XGame::RunDemo()
 			}
 
 		}
-#endif
 	}
 
 	XObject::InvalidateAllObjects();
@@ -175,8 +174,7 @@ void XGame::RunWithoutHero()
 			XObject * o = Game.Scheduler.Get();
 			o->Run();
 		}
-#ifndef XLINUX
-		if (kbhit())
+		if (vKbhit())
 		{
 			int ch = vGetch();
 			if (ch == KEY_ESC) break;
@@ -246,7 +244,6 @@ void XGame::RunWithoutHero()
 				fclose(f);
 			}
 		}
-#endif
 		vClrScr();
 		vGotoXY(0, 0);
 		char tname[256] = "";

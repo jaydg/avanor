@@ -170,6 +170,7 @@ void vXGotoXY(int x, int y);
 void vGetCursorPos(int * x, int * y);
 void vSetAttr(int color);
 void vDelay(int n);
+int  vKbhit();
 int  vGetch();
 int  vXGetch(char * ch_buf);
 void vStore(V_BUFFER * buf);
