@@ -1,0 +1,95 @@
+v.0.4.9
+------
+1) Added Torin, Dwarven King and new quest.
+2) Added 'U' command to use external object such a pumps
+3) Fixed bug with invisibility
+
+v.0.4.10
+1) bugs: 88,78
+2) Added PickAxe and Mining Skill
+3) Added Backstabbing skill
+
+v.0.4.11
+1) slightly changed tactics 'T'. Also added new skill tactics
+2) Added potion of swiftness
+3) Added potion, scroll and spell of see invisible.
+4) Changed representation of 'self knowledge' spell, added 'Resistances and Intrinsics' in memory file
+5) Fixed bug with memory file (#89)
+6) Fixed bug with 'Summon Monster' scroll (#86)
+7) Added new place - Kobolds Cavern.
+8) More intelegent creatures can carry gold
+9) Diging of wall allows to find a little a gold.
+
+v.0.5.0
+1) Changed random generation for Books and Potions
+2) Added new Quest from Roderick and new places
+3) Fixed bugs 109, 111, 114, 119(?), 105(?)
+
+v.0.5.1
+1) Bug 'overburdened' output
+2) Bug 'QUEST' after esc
+3) Added alchemy
+4) Improved herbalism
+
+v.0.5.2.
+***Fixed Several Bugs
+
+v.0.5.3.
+1) Added creatures description (special thanks to Uriah Otting)
+2) Some of grammar improvement
+3) Some magic improvement
+4) Added new races: half elf and gnome
+5) Added new classes: ranger and paladin
+6) Fixed crash with targeting
+7) Fixed bug #143 (Extra commas)- Upgraded page with enemy creature inventory description.
+8) Fixed bug #145 (grammar)
+9) Fixed bug #156 (grammar)
+10) Fixed bug #127 - Now works both 's' and '_' for sacrifice.
+11) Fixed bug #147 (spelling)
+12) Fixed bug #124 with wrong output message when trying to wear light source.
+13) Fixed bug #160 (depricated information in the manual)
+14) Added question about loading of missiles.
+15) Pressing 'R' at start of game to restore it now runs new game if game doesn't exist.
+16) Learning (Le) now have influence on reading books.
+17) Add new command 'ctrl + T' - activate trap
+18) Now it is possible to wait couple of turns staing on stairs or items.
+19) Traps becomes more powerful and also some traps was added.
+20) Implemented skill 'COOKING'
+21) Each new level now brings at least one HP and PP
+22) Now is possible to mix potions without particular order in reception.
+23) Now it is possible to cancel casting of spell without any consequences.
+
+v.0.5.4
+--------
+1) Some crash fixes.
+2) Some minior grammar fixes.
+
+//invalid or old
+bug
+#120, #144, #149
+
+rfe
+#110 #116 #80
+
+v.0.5.5
+--------
+1) Added new skill 'Athletics'. Also improved of time-to-time increasing of main stats.
+2) Fixed crash when die from hungry.
+3) Made significant improvements of Mushrooms quest.
+4) Added new creatures.
+5) Greatly Improved AI (Also partialy fix bug #173)
+6) Added possibility to issue order to companion ('ctrl + o' command).
+7) Added possibility to find a companion.
+8) Added new class - Bard.
+9) Fixed bug #169 (Foods don't stack)
+10) Fixed bug #168 (Hero can move even being overburneded)
+11) Fixed bug #172 (Changing color of some service messages when sick, paralyzed, stuned...)
+12) Fixed bug #61 (Open command works only on the top chest if you make a pile of chests)
+13) Fixed bug #167 (After restoring game, shopping doesn't cost anything.)
+14) Fixed bug #165 (multiply asking for arrows reloading)
+15) Implemented rfe #153 (mushrooms in the Mushrooms cave)
+16) Partialy implemented rfe #136 (Invisibility is overpowered). Improved AI. Some unique always see invisible.
+17) Implemented rfe #77
+18) Implemented rfe #146 (indicate Exit key on the start up screen)
+
+ 

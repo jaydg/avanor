@@ -1,0 +1,276 @@
+/*
+This file is part of "Avanor, the Land of Mystery" roguelike game
+Home page: http://www.avanor.com/
+Copyright (C) 2000-2003 Vadim Gaidukevich
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef __CR_DEFS_H
+#define __CR_DEFS_H
+
+enum CREATURE_CLASS
+{
+	CR_NONE			= 0x00000000,
+	CR_RAT			= 0x00000001,
+	CR_FELINE		= 0x00000002,
+	CR_CANINE		= 0x00000004,
+	CR_REPTILE		= 0x00000008,
+	CR_INSECT		= 0x00000010,
+	CR_HUMAN		= 0x00000020,
+	CR_ORC			= 0x00000040,
+	CR_GIANT		= 0x00000080,
+	CR_KOBOLD		= 0x00000100,
+	CR_UNDEAD		= 0x00000200,
+	CR_GOBLIN		= 0x00000400,
+	CR_DEMON		= 0x00000800,
+	CR_HUMANOID		= 0x00001000,
+	CR_IT			= 0x00002000, //warm mass, ooze
+	CR_OTHER		= 0x00004000,
+	CR_ALL			= CR_HUMAN| CR_INSECT | CR_KOBOLD | CR_UNDEAD | CR_GOBLIN | CR_REPTILE | CR_FELINE | CR_RAT | CR_CANINE | CR_HUMANOID,
+	CR_ALL_IMPL		= CR_RAT | CR_FELINE | CR_CANINE | CR_REPTILE | CR_KOBOLD | CR_INSECT | CR_GOBLIN | CR_UNDEAD,
+};
+
+
+enum CREATURE_NAME
+{
+	CN_NONE			= 0,
+
+	//CR_RAT
+	CN_RAT,
+	CN_LARGE_RAT,
+	CN_BLACK_RAT,
+	CN_HUGE_RAT,
+
+	CN_BAT,
+	CN_HUGE_BAT,
+
+
+	//CR_FELINE
+	CN_CAT,
+	CN_WILD_CAT,
+	
+	//CR_CANINE
+	CN_DOG,
+	CN_LARGE_DOG,
+	CN_RABID_DOG,
+	CN_WOLF,
+	CN_LARGE_WOLF,
+	CN_WEREWOLF,
+
+	//CR_REPTILE
+	CN_SMALL_SNAKE,
+	CN_GRAY_SNAKE,
+	CN_BROWN_SNAKE,
+	CN_SALAMANDER,
+	CN_LARGE_SNAKE,
+	CN_COBRA,
+	CN_KING_COBRA,
+	CN_RATTLESNAKE,
+
+	//CR_INSECT
+	CN_SPIDER,
+	CN_GIANT_SPIDER,
+	CN_TARANTULA,
+	CN_SCORPION,
+	CN_BLACK_SCORPION,
+	CN_PINK_SCORPION,
+
+	CN_FIRE_BEETLE,
+	CN_FROST_BEETLE,
+	CN_GREEN_BEETLE,
+	CN_KILLER_BEETLE,
+	CN_DEATH_BEETLE,
+
+	CN_GIANT_BEE,
+	CN_GIANT_WASP,
+	CN_GIANT_HORNET,
+
+	CN_CENTIPEDE,
+	CN_STEGOCENTIPEDE,
+	
+	CN_DUNGEON_CRAWLER,
+	CN_GIANT_CRAWLER,
+	CN_CARRION_CRAWLER,
+
+	//CR_HUMAN
+	CN_FARMER,
+	CN_CITIZEN,
+	CN_CHILD,
+	CN_WARRIOR,
+	CN_GUARD,
+	CN_ROYAL_GUARD,
+	CN_DEATH_KNIGHT,
+
+	//CR_ORC
+	CN_ORC,
+	CN_LARGE_ORC,
+	CN_HILL_ORC,
+	CN_DARK_ORC,
+	CN_SERGEANT_ORC,
+	CN_LIEUTENANT_ORC,
+	CN_CAPTAIN_ORC,
+	CN_CHIEFTAIN_ORC,
+
+	//CR_GIANT
+	CN_OGRE,
+	CN_BLACK_OGRE,
+	CN_GIANT,
+	CN_FROST_GIANT,
+	CN_FIRE_GIANT,
+	CN_CYCLOPE,
+	CN_TITAN,
+	
+	//CR_KOBOLD
+	CN_KOBOLD,
+	CN_LARGE_KOBOLD,
+	CN_CHIEFTAIN_KOBOLD,
+	CN_SHAMAN_KOBOLD,
+	CN_GNOLL,
+	CN_GNOLL_WARMASTER, 
+
+	//CR_UNDEAD
+	CN_SKELETON,
+	CN_ZOMBIE,
+	CN_GHOUL,
+	CN_GHOST,
+	CN_SPECTRE,
+	CN_DREAD,
+	CN_LICH,
+
+	//CR_GOBLIN
+	CN_GOBLIN,
+	CN_GOBLIN_WARRIOR,
+	CN_GOBLIN_WARMASTER,
+	CN_GOBLIN_CHIEFTAIN,
+
+	//CR_HUMANOIDS
+	CN_DWARF,
+	CN_DWARF_GUARD,
+
+	//CR_IT
+	CN_GRAY_OOZE,
+	CN_WHITE_OOZE,
+
+	//UNIQUE
+	CN_UNIQUE,
+
+	CN_ELDER_GRIDOR,
+	CN_BANDIT,
+	CN_SHOPKEEPER,
+	CN_AHKULAN,
+	CN_GEFEON,
+	CN_OZORIK,
+	CN_RODERIK,
+	CN_GEKTA,
+	CN_TODIN,
+	CN_TORIN,
+	CN_JORGUS,
+	CN_BEELZEVILE,
+	CN_YOHJISHIRO,
+	CN_XSHEE_VOO,
+	CN_MAGNUSH,
+	CN_EOF
+};
+
+
+
+enum CREATURE_LEVEL	{
+	CRL_VERY_LOW	= 0x0001,
+	CRL_LOW			= 0x0002,
+	CRL_ABOVE_LOW	= 0x0004,
+	CRL_AVG			= 0x0008,
+	CRL_ABOVE_AVG	= 0x0010,
+	CRL_HI			= 0x0020,
+	CRL_ABOVE_HI	= 0x0040,
+	CRL_VERY_HI		= 0x0080,
+	CRL_EXTREM_HI	= 0x0100,
+	CRL_UNIQUE		= 0x0200,
+	CRL_ANY			= CRL_VERY_LOW | CRL_LOW | CRL_AVG | CRL_HI | CRL_VERY_HI,
+	CRL_VL			= CRL_VERY_LOW | CRL_LOW,
+	CRL_LA			= CRL_LOW | CRL_AVG,
+	CRL_AH			= CRL_AVG | CRL_HI,
+	CRL_HVH			= CRL_HI | CRL_VERY_HI
+};
+
+enum CREATURE_EXP {
+	CRE_NONE	= 0x0001,
+	CRE_LOW		= 0x0002, //1-8
+	CRE_AVG		= 0x0004, //8-16
+	CRE_HI		= 0x0008, //16 - 24
+	CRE_ANY		= CRE_LOW | CRE_AVG | CRE_HI
+};
+
+
+enum CARRY_STATE {
+	CSTATE_NORMAL		= 0x001, //the normal carryng
+	CSTATE_BURDENED		= 0x002,
+	CSTATE_STRAINED		= 0x003,
+	CSTATE_OVERBURDEN	= 0x004,
+	CSTATE_DIE			= 0x005,
+};
+
+
+enum GROUP_ID
+{
+	GID_NONE = 0,
+	GID_ORCS_WARPARTY,
+	GID_FOREST_BROTHER,
+	GID_GUARDIAN,
+	GID_SMALL_VILLAGE_FARMER,
+	GID_TOWNEE_1,
+	GID_DWARVEN_GUARDIAN,
+	GID_AHKULAN_GUARDIAN,
+	GID_RODERICK_GUARDIAN,
+
+};
+
+enum CREATURE_SIZE
+{
+	CS_VERY_SMALL	= 1, //insects like, rats, bats
+	CS_SMALL		= 2, //kobold, hobbit like
+	CS_NORMAL		= 3, //human like
+	CS_LARGE		= 4, //TROLL
+	CS_VERY_LARGE	= 5, //Titan, dragon
+};
+
+enum FOOD_FEELING
+{
+	FF_TOLERANT,
+	FF_NORMAL,
+	FF_SENSETIVE,
+};
+
+enum CR_PERSON_TYPE
+{
+	CPT_YOU, //you
+	CPT_NAMED_HE, //Munch-Munchm the Dread
+	CPT_NAMED_SHE, //female Munch-Munchm the Dread
+	CPT_NAMED_IT, //Gekta, the ship dog.
+	CPT_HE, //the kobold, him
+	CPT_SHE, //the female kobold, here
+	CPT_IT, //mass of fungus, rat, etc.
+};
+
+enum CR_ATTACK_TYPE
+{
+	CRAT_MELEE_ONLY,
+	CRAT_BOTH
+};
+
+
+
+
+#endif

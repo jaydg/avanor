@@ -1,0 +1,419 @@
+/*
+This file is part of "Avanor, the Land of Mystery" roguelike game
+Home page: http://www.avanor.com/
+Copyright (C) 2000-2003 Vadim Gaidukevich
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef __MODIFERS_H
+#define __MODIFERS_H
+
+#include "xobject.h"
+#include "creature.h"
+#include "mod_defs.h"
+#include "xapi.h"
+
+enum MODIFER_RESULT {
+	MR_OK       = 0,
+	MR_REMOVE   = 1,
+	MR_DIE      = 2,
+};
+
+class XCreature;
+
+class XBasicModifer : public XObject
+{
+protected:
+	XBasicModifer() {}
+public:
+	DECLARE_CREATOR(XBasicModifer, XObject);
+	XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr = NULL);
+
+	virtual void Invalidate();
+
+	virtual int Compare(XObject * o)
+	{
+		assert(dynamic_cast<XBasicModifer *>(o));
+		XBasicModifer * mod = static_cast<XBasicModifer *>(o);
+		if (mod->mdt == mdt && mod->setter == setter)
+			return 0;
+		else
+			return -1;
+	}
+
+	virtual void Concat(XObject * o)
+	{
+		val += ((XBasicModifer *)o)->val;
+		XObject::Concat(o);
+	}
+
+	virtual MODIFER_RESULT Run(XCreature * owner)
+	{
+		if (owner->_HP <= 0)
+		{
+			owner->Die(setter);
+			return MR_DIE;
+		} else
+		{
+			val--;
+			return val > 0 ? MR_OK : MR_REMOVE;
+		}
+	
+	}
+	virtual int onSet(XCreature * owner) {return 1;}
+	virtual int onRemove(XCreature * owner) {return 1;}
+	
+	virtual const char * GetDisplayName(int xval) {return "err";}
+	virtual const char * SetMsg() { return ""; }
+	virtual const char * RemoveMsg() { return ""; }
+	virtual const char * ChangeMsg(int val) {return "";}
+	virtual const char * ApplyMsg() {return "";}
+
+	virtual void Store(XFile * f);
+	virtual void Restore(XFile * f);
+
+	MODIFER_TYPE mdt;
+	int val; // value of modifer;
+	XPtr<XCreature> setter;
+protected:
+};
+
+class XModWound : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModWound, XBasicModifer);
+	XModWound(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_WOUND, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval)
+	{
+		if (xval > 0)
+		{
+			if (xval < 3)
+			{
+				return MSG_LIGHTGRAY"graze";
+			}
+			else
+				if (xval >= 3 && xval < 8)
+				{
+					return MSG_LIGHTGRAY "light cut";
+				}
+				else
+					if (xval >= 8 && xval < 20)
+					{
+						return MSG_YELLOW "severely cut";
+					}
+					else
+						if (xval >= 20 && xval < 50)
+						{
+							return MSG_RED "deep wound";
+						}
+						else
+							if (xval >= 50 && xval < 100)
+							{
+								return MSG_RED "deep gash";
+							}
+							else
+								if (xval >= 100)
+								{
+									return MSG_DARKGRAY "mortal wound";
+								}
+
+			return "err";
+		} else
+			return "";
+	}
+
+	const char * SetMsg() { return "You've been wounded."; }
+	const char * RemoveMsg() { return "Your wounds heal."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "You are wounded again." : "Your bleeding slows."; }
+	const char * ApplyMsg() { return "You lose blood!"; }
+
+	virtual MODIFER_RESULT Run(XCreature * owner);
+
+};
+
+
+class XModPoison : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModPoison, XBasicModifer);
+	XModPoison(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_POISON, _val * 10, _cr) {}
+	const char * GetDisplayName(int xval) { return MSG_GREEN "poisoned"; }
+	const char * SetMsg() { return "You are poisoned!."; }
+	const char * RemoveMsg() { return "You feel relieved."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "You are poisoned again!." : "You feel somewhat relieved."; }
+	const char * ApplyMsg() { return "You feel the poison coursing through your body."; }
+
+	MODIFER_RESULT Run(XCreature * owner);
+};
+
+
+class XModConfuse : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModConfuse, XBasicModifer);
+	XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_CONFUSE, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "confused"; }
+	const char * SetMsg() { return "You are confused."; }
+	const char * RemoveMsg() { return "Your thoughts clear."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "Your confusion grows." : "You feel a little clearer."; }
+	const char * ApplyMsg() { return "You stagger."; }
+
+	virtual MODIFER_RESULT Run(XCreature * owner);
+};
+
+
+class XModStun : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModStun, XBasicModifer);
+	XModStun(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_STUN, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval)	{ return  xval < 10 ? MSG_LIGHTGRAY "stunned " : MSG_YELLOW "heavily stunned ";	}
+	const char * SetMsg() { return "You are stunned."; }
+	const char * RemoveMsg() { return "You feel steady again."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "You're stunned again." : "You feel a bit clearer."; }
+	const char * ApplyMsg() { return "You stagger."; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModHeroism : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModHeroism, XBasicModifer);
+	XModHeroism(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_HEROISM, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "hero"; }
+	const char * SetMsg() { return "You feel like a hero."; }
+	const char * RemoveMsg() { return "Your courage fades."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "Your resolve weakens." : "Your courage grows."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModDisease : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModDisease, XBasicModifer);
+	XModDisease(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_DISEASE, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval) { return MSG_GREEN "disease"; }
+	const char * SetMsg() { return "You feel very bad."; }
+	const char * RemoveMsg() { return "Your health returns."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "You start to feel better." : "You become more diseased."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+	virtual MODIFER_RESULT Run(XCreature * owner);
+};
+
+
+class XModWeak : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModWeak, XBasicModifer);
+	XModWeak(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_WEAK, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval) { return MSG_CYAN "weakness"; }
+	const char * SetMsg() { return "You feel very weak."; }
+	const char * RemoveMsg() { return "Your strength returns."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "You feel a little stronger." : "Your weakness grows."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+	virtual MODIFER_RESULT Run(XCreature * owner);
+};
+
+
+class XModParalyse : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModParalyse, XBasicModifer);
+	XModParalyse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_PARALYSE, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval) { return MSG_WHITE "paralyzed!"; }
+	const char * SetMsg() { return "You've been paralyzed!"; }
+	const char * RemoveMsg() { return "You can move again."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "Your muscles start to loosen." : "Your muscles tighten."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual MODIFER_RESULT Run(XCreature * owner);
+};
+
+
+
+class XModDelayed : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModDelayed, XBasicModifer);
+	XModDelayed(MODIFER_TYPE _mt, int value, int delay, 
+         XCreature * _cr = NULL) : XBasicModifer(MOD_DELAYED, delay, _cr),
+         set_mt(_mt), set_val(value)
+	{}
+	virtual MODIFER_RESULT Run(XCreature * owner);
+	virtual void Store(XFile * f);
+	virtual void Restore(XFile * f);
+	
+	virtual int Compare(XObject * o)
+	{
+		if (XBasicModifer::Compare(o) == 0 && set_mt == ((XModDelayed *)o)->set_mt)
+			return 0;
+		else
+			return -1;
+
+	}
+	virtual void Concat(XObject * object)
+	{
+		XModDelayed * mod = (XModDelayed *)object;
+		val = vMin(val, mod->val);
+		set_val += mod->set_val;
+		XObject::Concat(object); //hack
+	}
+
+protected:
+	MODIFER_TYPE set_mt;
+	int set_val;
+};
+
+class XModSeeInvisible : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModSeeInvisible, XBasicModifer);
+	XModSeeInvisible(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_SEE_INVISIBLE, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "perceptive"; }
+	const char * SetMsg() { return "feel more perceptive."; }
+	const char * RemoveMsg() { return "feel less perceptive."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "feel less perceptive." : "feels more preceptive."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModBoostSpeed : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModBoostSpeed, XBasicModifer);
+	XModBoostSpeed(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_BOOST_SPEED, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval){ return ""; }
+	const char * SetMsg() { return "feel very quick."; }
+	const char * RemoveMsg() { return "feel slowness coming back."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "feel quicker." : "feel slower."; }
+	const char * ApplyMsg() { return ""; }
+
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModSlowness : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModSlowness, XBasicModifer);
+	XModSlowness(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_SLOWNESS, _val, _cr) {}
+	
+	const char * GetDisplayName(int xval){ return ""; }
+	const char * SetMsg() { return "feel very slow."; }
+	const char * RemoveMsg() { return "feel quickness coming back."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "feel slower." : "feel quicker."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+
+class XModAcidResistance : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModAcidResistance, XBasicModifer);
+	XModAcidResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_ACID_RESISTANCE, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval){ return ""; }
+	const char * SetMsg() { return "feel safe."; }
+	const char * RemoveMsg() { return "feel less safe."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "." : "."; }
+	const char * ApplyMsg() { return ""; }
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModFireResistance : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModFireResistance, XBasicModifer);
+	XModFireResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_FIRE_RESISTANCE, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval){ return ""; }
+	const char * SetMsg() { return "feel safe."; }
+	const char * RemoveMsg() { return "feel less safe."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "." : "."; }
+	const char * ApplyMsg() { return ""; }
+
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModColdResistance : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModColdResistance, XBasicModifer);
+	XModColdResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_COLD_RESISTANCE, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval){ return ""; }
+	const char * SetMsg() { return "feel safe."; }
+	const char * RemoveMsg() { return "feel less safe."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "." : "."; }
+	const char * ApplyMsg() { return ""; }
+
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+class XModPoisonResistance : public XBasicModifer
+{
+public:
+	DECLARE_CREATOR(XModPoisonResistance, XBasicModifer);
+	XModPoisonResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_POISON_RESISTANCE, _val, _cr) {}
+	
+	virtual const char * GetDisplayName(int xval){ return ""; }
+	const char * SetMsg() { return "feel safe."; }
+	const char * RemoveMsg() { return "feel less safe."; }
+	const char * ChangeMsg(int val) { return val > 0 ? "." : "."; }
+	const char * ApplyMsg() { return ""; }
+
+
+	virtual int onSet(XCreature * owner);
+	virtual int onRemove(XCreature * owner);
+};
+
+
+
+
+
+#endif

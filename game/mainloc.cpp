@@ -1,0 +1,315 @@
+/*
+This file is part of "Avanor, the Land of Mystery" roguelike game
+Home page: http://www.avanor.com/
+Copyright (C) 2000-2003 Vadim Gaidukevich
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#include "other_misc.h"
+#include "creatures.h"
+#include "unique.h"
+#include "skeep_ai.h"
+#include "xgen.h"
+#include "game.h"
+#include "item_misc.h"
+
+XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
+{
+	strcpy(brief_name, "Valley");
+	strcpy(full_name, "Valley of Avanor");
+
+	int lm = 0;
+	int rm = 200;
+	int tm = 0;
+	int bm = 90;
+	map = new XMap(rm, bm);
+	int i,j;
+
+	for (i = 0; i < map->hgt; i++)
+		for (j = 0; j < map->len; j++)
+		{
+			if (vRand() % 3)
+				map->SetXY(j, i, M_GREENGRAS);
+			else
+				map->SetXY(j, i, M_GREENTREE);
+		}
+		
+// creating hign mountines
+	for (i = lm; i < rm; i++)
+	{
+		int z1 = vRand() % ((i & 3) + 1) + 1;
+		int z2 = vRand() % ((i & 3) + 1) + 1;
+		for (j = 0; j < z1; j++)
+		{
+			map->SetXY(i, tm + j, M_HIGHMOUNTINE);
+		}
+		for (j = 0; j < z2; j++)
+		{
+			map->SetXY(i, bm - j - 1, M_HIGHMOUNTINE);
+		}
+	}
+	
+	for (i = tm; i < bm; i++)
+	{
+		int z1 = vRand() % ((i & 3) + 1) + 1;
+		int z2 = vRand() % ((i & 3) + 1) + 1;
+		for (j = 0; j < z1; j++)
+		{
+			map->SetXY(lm + j, i, M_HIGHMOUNTINE);
+		}
+		for (j = 0; j < z2; j++)
+		{
+			map->SetXY(rm - j - 1, i, M_HIGHMOUNTINE);
+		}
+	}
+	
+//evaluate high mountines till hills!
+	for (i = 0; i < map->hgt; i++)
+		for (j = 0; j < map->len; j++)
+		{
+			int m = map->GetXY(j, i);
+			if (m > M_HILL && m <= M_HIGHMOUNTINE)
+			{
+				for (int q = -2; q < 3; q++)
+					for (int w = -2; w < 3; w++)
+					{
+						int nm;
+						if (abs(q) >= abs(w))
+							nm = m - abs(q);
+						else
+							nm = m - abs(w);
+						if (nm < M_HILL) nm = M_HILL;
+						if (j + q >= 0 && i + w >= 0
+							&& j + q < map->len && i + w < map->hgt
+							&& map->GetXY(j + q, i + w) < nm)
+							map->SetXY(j + q, i + w, (STDMAP)nm);
+					}
+			}
+			
+		}
+		
+		
+//Small village		
+		PutPalette(0, 0, PAL_SMALL_VILLAGE, this);
+
+		NewWay(3, 6, L_MUSHROOMS_CAVE1, STW_DOWN);
+
+		XRect village_area(8, 6, 34, 16);
+		for (i = 0; i < 5; i++)
+			NewCreature(CN_FARMER, &village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_ARIAL);
+
+		XRect elder_area(19, 9, 25, 11);
+		NewCreature(CN_ELDER_GRIDOR, &elder_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_ARIAL);
+
+		XRect shop_rect1(8, 7, 18, 11);
+		CreateShop(IM_FOOD, &shop_rect1, "Nobel, the human shopkeeper");
+	
+
+//way to darven caves		
+		NewWay(5, 29, L_DWARFCITYCAVE1, STW_DOWN);
+
+
+//master thief
+		XRect master_thief_area(40, 10, 45, 14);
+		map->CreateRoom(40, 10, 5, 4, 42, 10, M_SEND, M_WOODWALL);
+		NewCreature(CN_JORGUS, &master_thief_area, GID_FOREST_BROTHER, AIF_GUARD_ARIAL);
+
+//bandits area
+		XRect bandit_area(35, 4, 47, 16);
+		for (i = 0; i < 10; i++)
+			NewCreature(CN_BANDIT, &bandit_area, GID_FOREST_BROTHER, AIF_GUARD_ARIAL | AIF_PROTECT_ARIAL | AIF_PEACEFULL);
+
+
+//small town
+		PutPalette(10, 40, PAL_SMALL_TOWN, this);
+		XRect small_town_area(16, 42, 30, 48);
+
+		for (i = 0; i < 8; i++)
+			NewCreature(CN_ROYAL_GUARD, &small_town_area, GID_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass(CR_ORC);
+
+		NewCreature(CN_GEKTA, &small_town_area, GID_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass(CR_ORC);
+		
+		XRect ozrect(24, 50, 26, 51);
+		NewCreature(CN_OZORIK, &ozrect, GID_GUARDIAN, AIF_GUARD_ARIAL)->xai->SetEnemyClass(CR_ORC);
+		
+		NewWay(13, 42, L_RATCELLAR, STW_DOWN);
+
+		XRect shop_rect2(11, 49, 22, 54);
+		CreateShop(IM_ARMOUR | IM_WEAPON | IM_MISSILE | IM_MISSILEW, &shop_rect2, "Noberik, the human shopkeeper");
+
+//orcs!
+		XRect orc_area(10, 70, 30, 80);
+		for (i = 0; i < 20; i++)
+			NewCreature(CR_ORC, &orc_area, GID_ORCS_WARPARTY, AIF_GUARD_ARIAL);
+
+		Game.Sheduler.Add(new XMainLocationGen(this));
+
+//Yohjishiro
+		PutPalette(45, 25, PAL_WIZARD_TOWER, this);
+		XRect wizard_tower_area(45, 25, 60, 35);
+		NewCreature(CN_YOHJISHIRO, &wizard_tower_area, GID_NONE, AIF_GUARD_ARIAL);
+		
+
+//Large City		
+		XRect city_area(103, 9, 130, 33);
+		PutPalette(100, 7, PAL_CITY, this);
+
+		XRect shop_rect3(118, 15, 127, 20);
+		CreateShop(IM_BOOK | IM_SCROLL | IM_POTION, &shop_rect3, "Toberik, the human shopkeeper");
+
+
+		XRect magic_guild_area(145, 28, 149, 30);
+		NewCreature(CN_GEFEON, &magic_guild_area, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+
+
+//Roderik palace
+		XRect roderick_area(123, 29, 124, 30);
+		NewCreature(CN_RODERIK, &roderick_area, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		{
+			XRect gr(125, 27, 126, 28);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		}
+
+		{
+			XRect gr(124, 27, 125, 28);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);		
+		}
+
+		{
+			XRect gr(121, 27, 122, 28);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		}
+
+		{
+			XRect gr(122, 27, 123, 28);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		}
+
+		{
+			//treasure guradian
+			XRect gr(112, 27, 113, 28);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL | AIF_NO_SWAP); 
+			NewWay(112, 27, L_KINGS_TREASURE, STW_DOWN);
+		}
+
+		{
+			XRect gr(115, 28, 116, 29);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		}
+		{
+			XRect gr(116, 28, 117, 29);
+			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+		}
+
+//Lage city townee
+		for (i = 0; i < 10; i++)
+			NewCreature(CN_CITIZEN, &city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_ARIAL);
+
+//Black wizard ruins
+		PutPalette(155, 44, PAL_TOWER_RUINS, this);
+		NewWay(165, 49, L_WIZARD_DUNGEON1, STW_DOWN);
+
+// teleports from small village to town and back
+		new XTeleport(23, 20, this, L_MAIN, 134, 22);
+		new XTeleport(134, 22, this, L_MAIN, 23, 20);
+
+		new XAltar(154, 17, D_LIFE, this);
+
+//tomb
+		PutPalette(100, 50, PAL_UNDEAD_TOMB0, this);
+		NewWay(118, 54, L_UNDEADS_TOMB1, STW_DOWN);
+
+		XRect tomb_area(110, 50, 117, 57);
+		
+		for (i = 0; i < 20; i++)
+			NewCreature(CN_SKELETON, &tomb_area);
+
+//Extint Volcano
+		PutPalette(40, 72, PAL_EXTINCT_VOLCANO, this);
+		NewWay(46, 75, L_EXTINCT_VOLCANO, STW_DOWN);
+
+   		for (i = 0; i < map->hgt; i++)
+   			for (j = 0; j < map->len; j++)
+   			{
+         		if (vRand(18) == 0)
+				{
+					if(map->GetXY(j, i) == M_GREENGRAS && map->GetSpecial(j, i) == NULL)
+						new XHerbBush(j, i, this);
+				}
+
+   			}
+
+
+}
+
+
+
+XKingsTreasureLocation::XKingsTreasureLocation(LOCATION tl) : XLocation(tl)
+{
+	strcpy(brief_name, "RoyalTr");
+	strcpy(full_name, "Royal Treasure");
+
+	BuildCave();
+
+	PutPalette(0, 0, PAL_KINGS_TREASURE, this);
+	NewWay(10, 9, L_MAIN, STW_UP);	
+
+	int i;
+	XPoint pt;
+	XRect area(1, 1, 20, 7);
+	for (i = 0; i < 16; i++)
+	{
+		GetFreeXY(&pt, &area);
+		new XTrap(pt.x, pt.y, this, TT_RANDOM);
+	}
+
+	for (i = 0; i < 9; i++)
+	{
+		GetFreeXY(&pt, &area);
+		XChest * tchest = new XChest(5, IM_ITEM, 200, 15000);
+		tchest->Drop(this, pt.x, pt.y);
+	}
+
+	XItem * it = new XAncientMachinePart();
+	it->Drop(this, 2, 3);
+
+	it = new XAncientMachinePart();
+	it->Drop(this, 2, 4);
+
+	for (i = 1; i < 20; i++)
+	{
+		for (int j = 1; j < 7; j++)
+		{
+			if (map->XGetMovability(i, j) == 0 && map->GetItemCount(i, j) == 0)
+			{
+				XMoney * money = new XMoney(vRand() % 200 + 50);
+				money->Drop(this, i, j);
+			}
+		}
+	}
+}
+
+
+XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
+{
+	BuildCave();
+	strcpy(brief_name, "Volcano");
+	strcpy(full_name, "Crater of Extinct Volcano");
+	NewWay(L_MAIN, STW_UP);
+
+	NewCreature(CN_XSHEE_VOO);
+}
+

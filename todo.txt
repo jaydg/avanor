@@ -1,0 +1,12 @@
+1)Add features for mastery in skills: for example
+master in healing can heal poison twice fast.
+master of weapon can make 'special' hit.
+
+2)All books has limitation for minimum of Le AND Literacy to read.
+
+
+/// WATER FEATURE
+Cave under water -> 
+* search to find it
+* -(100HP - swimming * 5)HP then visit it
+* to implement: skills: swimming, searching, hidden traps/door. spells: water_walk.
