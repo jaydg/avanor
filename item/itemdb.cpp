@@ -34,6 +34,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 _ITEMPROP item_prop[DB_PROP_SZ] =
 {
 
+{"cloth",	xWHITE,	"1d1", "1d1",	
+"",		"0d0",	"",			"", 		
+ISET_CLOTH, 	100,		4,		8,	CAN_PAPERLIKE,
+"",
+SPP_NONE
+},
+
 {"leather",	xBROWN,	"1d2", "1d1-1",	
 "",		"0d0",	"",			"", 		
 ISET_LEATHER, 	100,		6,		10,	CAN_LEATHERLIKE,

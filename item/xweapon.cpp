@@ -27,7 +27,6 @@ _MAIN_ITEM_STRUCT weapon_db[] =
 {
 {IT_CLUB,		"club",			'/',		"",	"",	"",		"1d3",  "",		"", 	ISET_WOODSTONE,		1,		10,	0,	""},
 {IT_WARHAMMER,	"war hammer",	'/',		"",	"",	"1d2-4","1d7",  "1d4",	"", 	ISET_HARDMETAL,		12,		10,	0,	""},
-{IT_SCEPTER,	"scepter",		'/',		"",	"",	"",		"1d7",  "1d2",	"", 	ISET_OBSIMETAL,		10,		10,	0,	""},
 
 {IT_DAGGER,		"dagger",		'/',		"",	"",	"",		"1d4",  "",		"", 	ISET_WEAPON,		2,		3,	0,	""},
 {IT_KNIFE,		"knife",		'/',		"",	"",	"1d2-2","1d3",  "",		"", 	ISET_SIMPLEWEAPON,	1,		2,	0,	""},
@@ -54,15 +53,17 @@ _MAIN_ITEM_STRUCT weapon_db[] =
 {IT_SHORTSPEAR,	"short spear",	'/',		"",	"",	"",		"1d5",  "",		"", 	ISET_WOODSTONE,		3,		4,	0,	""},
 {IT_LONGSPEAR,	"long spear",	'/',		"",	"",	"",		"1d9",  "",		"", 	ISET_STEEL,			8,		6,	0,	""},
 {IT_PITCHFORK,	"pitchfork",	'/',		"",	"",	"1d2-4","1d3",  "",		"", 	ISET_BLACKMETAL,	1,		3,	0,	""},
+{IT_PIKE,		"pike",			'/',		"",	"",	"",		"1d10", "",		"", 	ISET_BLACKMETAL,	1,		3,	0,	""},
+{IT_HALBERD,	"halberd",		'/',		"",	"",	"",		"1d12", "",		"", 	ISET_BLACKMETAL,	1,		3,	0,	""},
 
 {IT_STAFF,		"staff",		'/',		"",	"",	"1d2-2","1d10",  "1d2",		"", 	ISET_WOOD,		8,		3,	0,	""},
 };
-const int weapon_db_size = 25;
+const int weapon_db_size = 26;
 
 _WEAPON_BIND wbind[weapon_db_size] = {
 {IT_CLUB,			WSK_CLUB},
 {IT_WARHAMMER,		WSK_CLUB},
-{IT_SCEPTER,		WSK_CLUB},
+//{IT_SCEPTER,		WSK_CLUB},
 
 {IT_DAGGER,			WSK_DAGGER},
 {IT_KNIFE,			WSK_DAGGER},
@@ -89,6 +90,8 @@ _WEAPON_BIND wbind[weapon_db_size] = {
 {IT_SHORTSPEAR,		WSK_POLEARM},
 {IT_LONGSPEAR,		WSK_POLEARM},
 {IT_PITCHFORK,		WSK_POLEARM},
+{IT_PIKE,			WSK_POLEARM},
+{IT_HALBERD,		WSK_POLEARM},
 
 {IT_STAFF,			WSK_STAVE},
 };

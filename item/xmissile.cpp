@@ -32,6 +32,17 @@ _MAIN_ITEM_STRUCT MISSILE_STRUCT[] =
 };
 const int msl_size = 4;
 
+/*
+// TODO: Bind launchers to missiles.  
+// Rock is special b/c it can be used with or without a launcher...
+
+ _WEAPON_BIND mbind[] = {
+{IT_LONGBOW,		WSK_BOW},
+{IT_LIGHTCROSSBOW,	WSK_CROSSBOW},
+{IT_SLING,			WSK_SLING},
+{IT_SLING,			WSK_THROW}
+};*/
+
 XMissile::XMissile(ITEM_TYPE _it)
 {
 	im = IM_MISSILE;

@@ -25,12 +25,12 @@ REGISTER_CLASS(XMissileWeapon);
 
 _MAIN_ITEM_STRUCT MWEAPON_STRUCT[] =
 {
-{IT_LONGBOW,		"long bow",			'{',	"",	"",		"1d4-1",	"1d6",  "1d3",	"1d3+2", 	ISET_BOW,	20,	10,		0,	""},
-{IT_SHORTBOW,		"short bow",		'{',	"",	"",		"1d3-1",	"1d4",  "1d3",	"1d2+1", 	ISET_BOW,	10,	5,		0,	""},
-{IT_LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",		"1d2-1",	"1d5",  "1d3",	"1d2+1", 	ISET_BOW,	10,	5,		0,	""},
-{IT_CROSSBOW,		"crossbow",			'{',	"",	"",		"1d4-1",	"1d6",  "1d3",	"1d3+1", 	ISET_BOW,	15,	5,		0,	""},
-{IT_HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",		"1d6-1",	"2d3",  "1d4",	"1d3+2", 	ISET_BOW,	35,	30,		0,	""},
-{IT_SLING,			"sling",			'{',	"",	"",		"1d2-1",	"1d3",  "1d3",	"1d2+1", 	ISET_SOFT,	5,	2,		0,	""}
+{IT_LONGBOW,		"long bow",			'{',	"",	"",		"1d4-1",	"1d6",  "1d3",	"1d3+2", 	ISET_BOW,			20,	10,		0,	""},
+{IT_SHORTBOW,		"short bow",		'{',	"",	"",		"1d3-1",	"1d4",  "1d3",	"1d2+1", 	ISET_BOW,			10,	5,		0,	""},
+{IT_LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",		"1d2-1",	"1d5",  "1d3",	"1d2+1", 	ISET_BOW,			10,	5,		0,	""},
+{IT_CROSSBOW,		"crossbow",			'{',	"",	"",		"1d4-1",	"1d6",  "1d3",	"1d3+1", 	ISET_BOW,			15,	5,		0,	""},
+{IT_HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",		"1d6-1",	"2d3",  "1d4",	"1d3+2", 	ISET_BOW,			35,	30,		0,	""},
+{IT_SLING,			"sling",			'{',	"",	"",		"1d2-1",	"1d3",  "1d3",	"1d2+1", 	ISET_ALLLEATHER,	5,	2,		0,	""}
 };
 const int mw_size = 6;
 

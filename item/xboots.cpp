@@ -25,10 +25,10 @@ REGISTER_CLASS(XBoots);
 _MAIN_ITEM_STRUCT BOOTS_STRUCT[] =
 {
 
-{IT_SANDALS,	"sandals", 		']',		"1d2-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_SOFT, 		1,		1,	0,	""},
-{IT_LIGHTBOOTS,	"light boots", 	']',		"1d3-1",	"1d2-1",	"",		"1d1",	"",			"",		ISET_SOFT, 		2,		2,	0,	""},
-{IT_SOFTBOOTS,	"soft boots", 	']',		"1d3-2",	"1d2-1",	"",		"1d1",	"",			"",		ISET_SOFT, 		3,		3,	0,	""},
-{IT_HARDBOOTS,	"hard boots", 	']',		"1d3-3",	"1d2-1",	"",		"1d1",	"",			"",		ISET_OBSIMETAL, 5,		5,	0,	""}
+{IT_SANDALS,	"sandals", 		']',		"1d2-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	1,		1,	0,	""},
+{IT_LIGHTBOOTS,	"light boots", 	']',		"1d3-1",	"1d2-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	2,		2,	0,	""},
+{IT_SOFTBOOTS,	"soft boots", 	']',		"1d3-2",	"1d2-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 	3,		3,	0,	""},
+{IT_HARDBOOTS,	"hard boots", 	']',		"1d3-3",	"1d2-1",	"",		"1d1",	"",			"",		ISET_OBSIMETAL,		5,		5,	0,	""}
 };
 const int r_size = 4;
 

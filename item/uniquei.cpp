@@ -154,11 +154,12 @@ XGreatElementalRing::XGreatElementalRing() : XRing()
 
 
 REGISTER_CLASS(XAvanorScepter);
-XAvanorScepter::XAvanorScepter() : XWeapon(IT_SCEPTER)
+XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
 {
 	strcpy(name, "ancient scepter");
-	it = IT_SCEPTER;
+	it = IT_CLUB;
 	view = '|';
+	color = xYELLOW;
 	weight = 400;
 	value = 12000;
 	_DV = 0;
@@ -182,11 +183,12 @@ void XAvanorScepter::toString(char * buf)
 }
 
 REGISTER_CLASS(XAvanorCrown);
-XAvanorCrown::XAvanorCrown() : XCap(IT_CROWN)
+XAvanorCrown::XAvanorCrown() : XCap(IT_CAP)
 {
 	strcpy(name, "golden crown");
-	it = IT_CROWN;
+	it = IT_CAP;
 	view = '[';
+	color = xYELLOW;
 	weight = 100;
 	value = 8000;
 	_DV = 2;
@@ -265,11 +267,12 @@ void XTorinShield::toString(char * buf)
 }
 
 REGISTER_CLASS(XDwarfCrown);
-XDwarfCrown::XDwarfCrown() : XCap(IT_CROWN)
+XDwarfCrown::XDwarfCrown() : XCap(IT_CAP)
 {
-	strcpy(name, "small golden crown");
-	it = IT_CROWN;
+	strcpy(name, "mithril crown");
+	it = IT_CAP;
 	view = '[';
+	color = xLIGHTCYAN;
 	weight = 100;
 	value = 8000;
 	_DV = 2;
@@ -299,9 +302,9 @@ XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
 	strcpy(name, "black club");
 	it = IT_CLUB;
 	view = '/';
+	color = xDARKGRAY;
 	weight = 8000;
 	value = 10000;
-	color = xDARKGRAY;
 	_DV = -10;
 	_PV = 0;
 	_HIT = -15;

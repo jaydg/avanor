@@ -25,10 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 _MAIN_ITEM_STRUCT CLOAK_STRUCT[] =
 {
 
-{IT_LIGHTCLOAK,	"light cloak",	'(',		"1d4-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_SOFT,		1,		2,	0,	""},
-{IT_CLOAK,		"cloak", 		'(',		"1d3-2",	"1d2-1",	"",		"1d1",	"",			"",		ISET_SOFT,		2,		3,	0,	""},
-{IT_SHADOWCLOAK,"shadow cloak",	'(',		"1d6-3",	"1d10-1",	"",		"1d1",	"",			"",		ISET_SOFT, 		15,		8,	0,	""},
-{IT_CAPE,		"cape",			'(',		"1d3-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_SOFT, 		2,		2,	0,	""}
+{IT_LIGHTCLOAK,	"light cloak",	'(',		"1d4-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER,		1,		2,	0,	""},
+{IT_CLOAK,		"cloak", 		'(',		"1d3-2",	"1d2-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER,		2,		3,	0,	""},
+{IT_SHADOWCLOAK,"shadow cloak",	'(',		"1d6-3",	"1d10-1",	"",		"1d1",	"",			"",		ISET_ALLLEATHER, 		15,		8,	0,	""},
+{IT_CAPE,		"cape",			'(',		"1d3-1",	"1d1-1",	"",		"1d1",	"",			"",		ISET_SOFT, 				2,		2,	0,	""}
 };
 const int r_size = 4;
 
