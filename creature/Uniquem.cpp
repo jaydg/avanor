@@ -328,6 +328,7 @@ XJorgus::XJorgus(_CREATURE * cr) : XAnyCreature(cr)
 int XJorgus::Chat(XCreature * chater, char * msg)
 {
 	int steal_level = chater->sk->GetLevel(SKT_STEALING);
+	char buf[256];
 
 	if (steal_level == 0)
 	{
@@ -339,11 +340,11 @@ int XJorgus::Chat(XCreature * chater, char * msg)
 			{
 				chater->MoneyOp(-1000);
 				chater->sk->Learn(SKT_STEALING, 1);
-				msgwin.Add(GMSG_JORGUS_WELCOME);
 				if(main_creature->GetGender() == GEN_MALE)
-					msgwin.Add("brother!");
+					sprintf(buf, GMSG_JORGUS_WELCOME, "brother");
 				else if(main_creature->GetGender() == GEN_FEMALE)
-					msgwin.Add("sister!");
+					sprintf(buf, GMSG_JORGUS_WELCOME, "sister");
+				msgwin.Add(buf);
 			} else
 			{
 				msgwin.Add(GMSG_JORGUS_NO_ENOUGH_MONEY);
@@ -354,11 +355,11 @@ int XJorgus::Chat(XCreature * chater, char * msg)
 		}
 	} else
 	{
-		msgwin.Add(GMSG_JORGUS_HELLO);
 		if(main_creature->GetGender() == GEN_MALE)
-			msgwin.Add("brother!");
+			sprintf(buf, GMSG_JORGUS_HELLO, "brother");
 		else if(main_creature->GetGender() == GEN_FEMALE)
-			msgwin.Add("sister!");
+			sprintf(buf, GMSG_JORGUS_HELLO, "sister");
+		msgwin.Add(buf);
 	}
 	return 1;
 }

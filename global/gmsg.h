@@ -40,10 +40,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 	"I can teach you the great art of theft for 1000gp. " \
 	"Would you like to learn?"
 
-#define GMSG_JORGUS_WELCOME	"You're welcome,"
+#define GMSG_JORGUS_WELCOME	"You're welcome, %s!"
 #define GMSG_JORGUS_NO_ENOUGH_MONEY	"You haven't enough money!"
 #define GMSG_JORGUS_CANCEL "Don't waste my time!"
-#define GMSG_JORGUS_HELLO "Good day,"
+#define GMSG_JORGUS_HELLO "Good day, %s!"
 
 
 #define GMSG_TODIN_STD_ANSWER "'Give me your weapon, and I'll make it the best!'"
