@@ -64,7 +64,6 @@ public:
 		return fwrite(data, sizeof(unsigned int), 1, file);
 	}
 
-
 	int Read(void * data, size_t block_size, size_t block_count = 1)
 	{
 		unsigned int res = fread(data, block_size, block_count, file);

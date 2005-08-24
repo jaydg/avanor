@@ -38,7 +38,10 @@ int sgn(int n)
 
 int vRound(float f)
 {
-   return f - (int)f < 0.5 ? (int)f : (int)f + 1;
+	if (f >= 0)
+		return f - (int)f < 0.5f ? (int)f : (int)f + 1;
+	else
+		return f - (int)f > -0.5f ? (int)f : (int)f - 1;
 }
 
 

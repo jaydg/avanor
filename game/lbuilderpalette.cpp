@@ -770,7 +770,7 @@ void XLocation::PutPalette(int x, int y)
 //		map->SetXY(x + j, y + i, M_CAVEFLOOR);
 		for (XQList<PALETTE_MAP>::iterator tit = pattern_translation.begin(); tit != pattern_translation.end(); tit++)
 		{
-			if ((*tit).this_view == current_pattern.pattern[pt.y * current_pattern.w + pt.x])
+			if ((*tit).this_view == current_pattern.pattern[(pt.y - y) * current_pattern.w + pt.x - x])
 			{
 				char buf[1024];
 				sprintf(buf, "local x, y = %d, %d\n %s", pt.x, pt.y , (*tit).lua_str);

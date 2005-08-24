@@ -955,9 +955,9 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 
 	int sacrifice_value;
 	if (item->im & IM_MONEY)
-		sacrifice_value = (int)(sqrt(item->quantity) + 1) * (val / 4 + 1);
+		sacrifice_value = (int)(sqrt((float)item->quantity) + 1) * (val / 4 + 1);
 	else
-		sacrifice_value = (int)((sqrt(item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
+		sacrifice_value = (int)((sqrt((float)item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
 
 	giver->sk->UseSkill(SKT_RELIGION, 3);
 

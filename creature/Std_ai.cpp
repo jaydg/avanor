@@ -136,7 +136,7 @@ void XStandardAI::Move()
 
 	//if no last enemy to attack only than process grids...
 //	if (!last_enemy.get())
-	if (sleep_well == 0)
+	if (sleep_well <= 0)
 	{
 		friends_count = 1;
 		friend_avg_x  = ai_owner->x;
@@ -151,7 +151,8 @@ void XStandardAI::Move()
 
 		if (enemy_dist > 100)
 			sleep_well = 3;
-	}
+	} else
+		sleep_well--;
 
 // trying to wear some item
 	if (ai_flag & AIF_ALLOW_WEAR_ITEM && enemy_dist > 1 && Wear())
@@ -824,7 +825,7 @@ int XStandardAI::CastSpell()
 	//try to attack
 	if (flag == 0 && enemy)
 	{
-		int r_enemy = (int)sqrt((enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
+		int r_enemy = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
 			(enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
 
 		assert(r_enemy > 0);
@@ -916,7 +917,7 @@ int XStandardAI::Shoot()
 	
 	if (enemy)
 	{
-		int r = (int)sqrt((enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
+		int r = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
 			(enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
 		if (r <= range)
 		{

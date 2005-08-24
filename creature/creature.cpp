@@ -922,7 +922,7 @@ void XCreature::IncLevel()
 unsigned long XCreature::ExpOfLevel(int lev)
 {
 	//return 4 * (unsigned long)(base_exp * pow(M_E, (lev / 6.0)) - base_exp / 2);
-	return (unsigned long)(2 * base_exp * pow(lev, 2.5));
+	return (unsigned long)(2 * base_exp * pow((float)lev, 2.5f));
 }
 
 int XCreature::GetHITFHBonus(XItem * weapon)
@@ -1410,7 +1410,7 @@ void XCreature::Store(XFile * f)
 	f->Write(&sz);
 	if (sz > 0)
 		f->Write(event_handler, sz);
-	if (event_handler)
+	if (event_handler && strlen(event_handler))
 	{
 		lua_pushstring(XLocation::L, event_handler);
 		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
@@ -1493,7 +1493,7 @@ void XCreature::Restore(XFile * f)
 	} else
 		event_handler = NULL;
 
-	if (event_handler)
+	if (event_handler && strlen(event_handler))
 	{
 		lua_pushstring(XLocation::L, event_handler);
 		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);

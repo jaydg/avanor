@@ -27,6 +27,16 @@ XQuest XQuest::quest;
 
 void XQuest::Store(XFile * f)
 {
+	int sz = quests.size();
+	f->Write(&sz);
+	for (XQList<QUEST_REC>::iterator it = quests.begin(); it != quests.end(); it++)
+	{
+		int status = (*it).status;
+		f->Write(&status);
+		(*it).know.Store(f);
+		(*it).closed.Store(f);
+		(*it).complete.Store(f);
+	}
 	f->Write(&beelzvile_killed);
 	f->Write(&beelzvile_ordered);
 	f->Write(&hero_die);
@@ -49,6 +59,26 @@ void XQuest::Store(XFile * f)
 
 void XQuest::Restore(XFile * f)
 {
+	int sz;
+	f->Read(&sz);
+	while (sz > 0)
+	{
+		QUEST_REC qr;
+		int status;
+		f->Read(&status);
+		qr.status = (QUEST)status;
+		qr.know.Restore(f);
+		qr.closed.Restore(f);
+		qr.complete.Restore(f);
+		quests.push_back(qr);
+		sz--;
+	}
+	for (XQList<QUEST_REC>::iterator it = quests.begin(); it != quests.end(); it++)
+	{
+		int status = (*it).status;
+		f->Write(&status);
+	}
+
 	f->Read(&beelzvile_killed, sizeof(int));
 	f->Read(&beelzvile_ordered, sizeof(int));
 	f->Read(&hero_die, sizeof(int));
@@ -75,6 +105,16 @@ void XQuest::ShowQuests()
 
 	list.SetCaption(MSG_BROWN "### " MSG_YELLOW "Current Quests" MSG_BROWN " ###");
 	int flag = 1;
+
+	for (XQList<QUEST_REC>::iterator it = quests.begin(); it != quests.end(); it++)
+	{
+		if ((*it).status == Q_KNOWN)
+		{
+			list.AddItem(new XGuiItem_Text((*it).know.c_str()));
+		}
+	}
+
+
 	if (beelzvile_ordered && !beelzvile_killed)
 	{
 		list.AddItem(new XGuiItem_Text(

@@ -168,10 +168,10 @@ void XHero::PlayerSetup()
 
 		if (ch >= 97 && ch < 97 + 7)
 		{
-			XDice * d = new XDice(cust_race[ch - 97].speed);
-			ttmb = d->Throw();
+			XDice d(cust_race[ch - 97].speed);
+			ttmb = d.Throw();
 			ttm = ttmb;
-			delete d;
+
 			s = new XStats(cust_race[ch - 97].stats);
 			max_stats.Set(cust_race[ch - 97].max_stats);
 			food_feeling = cust_race[ch - 97].ff;
@@ -267,7 +267,7 @@ void XHero::PlayerSetup()
 #ifndef __CHOOSE_RACE
 		char ch = vGetch();
 #else
-		char ch = 'b';
+		char ch = 'a';
 #endif
 
 		if (ch >= 97 && ch < 97 + 8)

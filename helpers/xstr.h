@@ -21,11 +21,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XSTR_H
 #define __XSTR_H
 
+#include <string>
+#include "xfile.h"
+
 class XStr
 {
-	char buf[2048];
+	char * str;
+	int sz;
+	void Setup(const char * s, int sz);
 public:
-	operator char * () {return buf;}
+	XStr(const char * s, int sz);
+	XStr(const char * s);
+	XStr();
+	~XStr();
+	XStr operator+ (XStr& s);
+	XStr operator+ (const char * s);
+	XStr& operator=(XStr& s);
+	XStr& operator=(const char * s);
+
+	bool operator==(const char * s);
+	const char * c_str();
+
+	size_t Len();
+
+	void Store(XFile * f);
+	void Restore(XFile * f);
 };
 
 #endif

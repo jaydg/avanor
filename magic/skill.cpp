@@ -98,7 +98,7 @@ char * XSkill::GetSkillLevel()
 
 int XSkill::GetMaxLevel()
 {
-	int xlevel = (int)(sqrt(used_time / (2 * skill_db[skt].use_per_level) + 1));
+	int xlevel = (int)(sqrt ((float)(used_time / (2 * skill_db[skt].use_per_level) + 1)) );
 	return xlevel < 15 ? xlevel : 15;
 }
 

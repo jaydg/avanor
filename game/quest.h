@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "itemdef.h"
 #include "creature.h"
+#include "xstr.h"
 //#include "xobject.h"
 
 class XFile;
@@ -34,6 +35,14 @@ enum QUEST
 	Q_KNOWN		= 1,
 	Q_COMPLETE	= 2,
 	Q_CLOSED	= 3,
+};
+
+struct QUEST_REC
+{
+	XStr know;
+	XStr complete;
+	XStr closed;
+	QUEST status;
 };
 
 class XQuest
@@ -59,6 +68,8 @@ public:
 		torin_quest = 0;
 		rotmoth_status = 0;
 	};
+
+	XQList<QUEST_REC> quests;
 
 	void ShowQuests();
 

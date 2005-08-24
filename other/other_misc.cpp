@@ -690,11 +690,13 @@ XOuterObject::XOuterObject(int _x, int _y, int _c, char _v, char * subscr, XLoca
 	im = IM_MISC;
 	x = _x;
 	y = _y;
-	color = _c;
-	view = _v;
+	
+	SetName(subscr);
+	SetView(_v, _c);
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
-	strcpy(name, subscr);
+	
+	
 
 	if (event)
 	{
@@ -718,7 +720,8 @@ int XOuterObject::onOuterUse(XCreature * cr)
 		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
 		lua_pushnumber(XLocation::L, LE_OUTER_USE);
 		lua_pushlightuserdata(XLocation::L, cr);
-		lua_call(XLocation::L, 2, 1);
+		lua_pushlightuserdata(XLocation::L, this);
+		lua_call(XLocation::L, 3, 1);
 		int res = lua_tonumber(XLocation::L, 2);
 		lua_pop(XLocation::L, 1);
 		return res;
@@ -759,7 +762,6 @@ void XOuterObject::Restore(XFile * f)
 		f->Read(onEventLua, sz);
 	} else
 		onEventLua = NULL;
-
 	if (onEventLua)
 	{
 		lua_pushstring(XLocation::L, onEventLua);

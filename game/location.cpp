@@ -108,6 +108,82 @@ void XLocation::GetFreeXY(XPoint * pt, XRect * area)
 }
 
 
+void XLocation::BuildPlain(int w, int h)
+{
+	int lm = 0;
+	int rm = w;
+	int tm = 0;
+	int bm = h;
+
+	int i, j;
+
+// Create Avanor's plain
+	map = new XMap(w, h);
+	for (i = 0; i < map->hgt; i++)
+		for (j = 0; j < map->len; j++)
+		{
+			if (vRand() % 3)
+				map->SetXY(j, i, M_GREENGRAS);
+			else
+				map->SetXY(j, i, M_GREENTREE);
+		}
+// creating high mountains
+	for (i = lm; i < rm; i++)
+	{
+		int z1 = vRand() % ((i & 3) + 1) + 1;
+		int z2 = vRand() % ((i & 3) + 1) + 1;
+		for (j = 0; j < z1; j++)
+		{
+			map->SetXY(i, tm + j, M_HIGHMOUNTAIN);
+		}
+		for (j = 0; j < z2; j++)
+		{
+			map->SetXY(i, bm - j - 1, M_HIGHMOUNTAIN);
+		}
+	}
+	
+	for (i = tm; i < bm; i++)
+	{
+		int z1 = vRand() % ((i & 3) + 1) + 1;
+		int z2 = vRand() % ((i & 3) + 1) + 1;
+		for (j = 0; j < z1; j++)
+		{
+			map->SetXY(lm + j, i, M_HIGHMOUNTAIN);
+		}
+		for (j = 0; j < z2; j++)
+		{
+			map->SetXY(rm - j - 1, i, M_HIGHMOUNTAIN);
+		}
+	}
+	
+//evaluate high mountains till hills!
+	for (i = 0; i < map->hgt; i++)
+		for (j = 0; j < map->len; j++)
+		{
+			int m = map->GetXY(j, i);
+			if (m > M_HILL && m <= M_HIGHMOUNTAIN)
+			{
+				for (int q = -2; q < 3; q++)
+					for (int w = -2; w < 3; w++)
+					{
+						int nm;
+						if (abs(q) >= abs(w))
+							nm = m - abs(q);
+						else
+							nm = m - abs(w);
+						if (nm < M_HILL) nm = M_HILL;
+						if (j + q >= 0 && i + w >= 0
+							&& j + q < map->len && i + w < map->hgt
+							&& map->GetXY(j + q, i + w) < nm)
+							map->SetXY(j + q, i + w, (STDMAP)nm);
+					}
+			}
+			
+		}
+		
+
+}
+
 void XLocation::BuildCave()
 {
 	int cl = 80;
@@ -366,8 +442,10 @@ extern "C"
 
 XLocation * XLocation::current_location = NULL;
 XCreature * XLocation::last_creature = NULL;
+int XLocation::pat_offs_x = 0;
+int XLocation::pat_offs_y = 0;
 
-LOCATION_PATTERN XLocation::current_pattern;
+LOCATION_PATTERN XLocation::current_pattern = {NULL, 0, 0};
 XQList<PALETTE_MAP> XLocation::pattern_translation;
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
@@ -384,8 +462,11 @@ int XLocation::CreateLocation(lua_State * L)
 
 	if (type == 0)
 		current_location->BuildCave();
-	else
+	else if (type == 1)
 		current_location->BuildLabirint();
+	else
+		current_location->BuildPlain(200, 90);
+	
 
 	return 0;
 }
@@ -430,7 +511,7 @@ int XLocation::Creature(lua_State * L)
 	return 1;
 }
 
-//cr = Guardian(CN_DWARF_GUARD, GID_DWARVEN_GUARDIAN, x, y)
+//cr = Guardian(CN_DWARF_GUARD, GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
 int XLocation::Guardian(lua_State * L)
 {
 	CREATURE_NAME crn = (CREATURE_NAME)lua_tonumber(L, 1);
@@ -449,7 +530,12 @@ int XLocation::Guardian(lua_State * L)
 		rect = XRect(tx, ty, tx + tw, ty + th);
 	}
 
-	XCreature * cr = current_location->NewCreature(crn, &rect, gid, AIF_GUARD_AREA);
+	int flag = AIF_GUARD_AREA;
+	if (n == 7)
+	{
+		flag |= lua_tonumber(L, 7);
+	}
+	XCreature * cr = current_location->NewCreature(crn, &rect, gid, flag);
 	cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 	lua_pushlightuserdata(L, cr);
 	return 1;
@@ -485,6 +571,8 @@ int XLocation::CreateObject(lua_State * L)
 
 
 //DropItem(item, 0, 0)
+//DropItem(item)
+//DropItem(item, object)
 int XLocation::DropItem(lua_State * L)
 {
 	XItem * pItem = (XItem *)lua_topointer(L, 1);
@@ -496,12 +584,17 @@ int XLocation::DropItem(lua_State * L)
 	{
 		tx = lua_tonumber(L, 2);
 		ty = lua_tonumber(L, 3);
-	} else
+	} else if (n == 1)
 	{
 		XPoint pt;
 		current_location->GetFreeXY(&pt);
 		tx = pt.x;
 		ty = pt.y;
+	} else if (n == 2)
+	{
+		XMapObject * pMO = (XMapObject *)lua_topointer(L, 2);
+		tx = pMO->x;
+		ty = pMO->y;
 	}
 
 	if (pItem)
@@ -519,7 +612,12 @@ int XLocation::SetPattern(lua_State * L)
 {
 	current_pattern.w = lua_tonumber(L, 1);
 	current_pattern.h = lua_tonumber(L, 2);
-	current_pattern.pattern = lua_tostring(L, 3);
+	const char * txt = lua_tostring(L, 3);
+	if (current_pattern.pattern)
+		delete[] current_pattern.pattern;
+	current_pattern.pattern = new char[strlen(txt) + 1];
+	strcpy(current_pattern.pattern, txt);
+//	current_pattern.pattern = lua_tostring(L, 3);
 	pattern_translation.clear();
 	return 0;
 }
@@ -547,6 +645,8 @@ int XLocation::DrawPattern(lua_State * L)
 {
 	int tx = lua_tonumber(L, 1);
 	int ty = lua_tonumber(L, 2);
+	pat_offs_x = tx;
+	pat_offs_y = ty;
 	current_location->PutPalette(tx, ty);
 	return 0;
 }
@@ -582,12 +682,18 @@ int XLocation::Furniture(lua_State * L)
 //Furniture(x, y, xLIGHTRED, '~', 'a royal bad', 'EventHandler')
 int XLocation::OuterObject(lua_State * L)
 {
+	int n = lua_gettop(L);
+
 	int tx = lua_tonumber(L, 1);
 	int ty = lua_tonumber(L, 2);
 	int tc = lua_tonumber(L, 3);
 	const char * tv = lua_tostring(L, 4);
 	const char * subscr = lua_tostring(L, 5);
-	const char * event = lua_tostring(L, 6);
+	
+	const char * event = NULL;
+	if (n > 5)
+		event = lua_tostring(L, 6);
+
 	XOuterObject * p = new XOuterObject(tx, ty, tc, tv[0], (char *)subscr, current_location, event);
 	lua_pushlightuserdata(L, p);
 	return 1;
@@ -697,8 +803,22 @@ int XLocation::InflictDamage(lua_State * L)
 
 int XLocation::ChangeStats(lua_State * L)
 {
+	XCreature * p = (XCreature *)lua_topointer(L, 1);
+	int st = lua_tonumber(L, 2);
+	int val = lua_tonumber(L, 3);
+	p->GainAttr((STATS)st, val);
 	return 0;
 }
+
+int XLocation::GetStats(lua_State * L)
+{
+	XCreature * p = (XCreature *)lua_topointer(L, 1);
+	int st = lua_tonumber(L, 2);
+	int val = p->GetStats((STATS)st);
+	lua_pushnumber(L, val);
+	return 1;
+}
+
 
 int XLocation::Rand(lua_State * L)
 {
@@ -775,6 +895,41 @@ int XLocation::SetItEnemyFor(lua_State * L)
 	return 0;
 }
 
+int XLocation::SetEnemy(lua_State * L)
+{
+	XCreature * p = (XCreature *)lua_topointer(L, 1);
+	int cr_class = lua_tonumber(L, 2);
+	p->xai->SetEnemyClass((CREATURE_CLASS)cr_class);
+	return 0;
+}
+
+
+int XLocation::SetName(lua_State * L)
+{
+	XMapObject * p = (XMapObject *)lua_topointer(L, 1);
+	const char * str = lua_tostring(L, 2);
+	p->SetName(str);
+	return 0;
+}
+
+
+int XLocation::SetView(lua_State * L)
+{
+	XMapObject * p = (XMapObject *)lua_topointer(L, 1);
+	const char * view = lua_tostring(L, 2);
+	int color = lua_tonumber(L, 3);
+	p->SetView(view[0], color);
+	return 0;
+}
+
+int XLocation::GetView(lua_State * L)
+{
+	XMapObject * p = (XMapObject *)lua_topointer(L, 1);
+	char buf[2] = "A";
+	buf[0] = p->view;
+	lua_pushstring(L, buf);
+	return 1;
+}
 
 int XLocation::AddMessage(lua_State * L)
 {
@@ -905,6 +1060,20 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(L_GASMINE2);
 	LUA_REG(L_GASMINE3);
 	LUA_REG(L_RATCELLAR);
+	LUA_REG(L_EXTINCT_VOLCANO);
+	
+	LUA_REG(L_WIZTOWER_TOP);
+	LUA_REG(L_KINGS_TREASURE);
+
+	LUA_REG(L_WIZARD_DUNGEON1);
+	LUA_REG(L_WIZARD_DUNGEON2);
+	LUA_REG(L_WIZARD_DUNGEON3);
+	LUA_REG(L_WIZARD_DUNGEON4);
+	LUA_REG(L_WIZARD_DUNGEON5);
+	LUA_REG(L_AHKULAN_CASTLE);
+	
+	
+	
 
 	LUA_REG(CR_RAT);
 	LUA_REG(CR_FELINE);
@@ -941,14 +1110,41 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(CN_DWARF_GUARD);
 	LUA_REG(CN_TORIN);
 	LUA_REG(CN_TODIN);
+	LUA_REG(CN_XSHEE_VOO);
 	
 	LUA_REG(CN_RAT);
 	LUA_REG(CN_GHOST);
+	LUA_REG(CN_SPECTRE);
+	LUA_REG(CN_DREAD);
+
 
 	LUA_REG(CN_BEELZEVILE);
 	LUA_REG(CN_MAGNUSH);
+	LUA_REG(CN_SMALL_SNAKE);
+	LUA_REG(CN_SPIDER);
 	LUA_REG(CN_ROTMOTH);
 	LUA_REG(CN_GIANA);
+
+	LUA_REG(CN_GOODWIFE);
+	LUA_REG(CN_FARMER);
+	LUA_REG(CN_ELDER_GRIDOR);
+	LUA_REG(CN_JORGUS);
+	LUA_REG(CN_BANDIT);
+	LUA_REG(CN_OZORIK);
+	LUA_REG(CN_GUARD);
+	LUA_REG(CN_ROYAL_GUARD);
+	LUA_REG(CN_GEKTA);
+	LUA_REG(CN_SKELETON);
+	
+	LUA_REG(CN_YOHJISHIRO);
+	LUA_REG(CN_GEFEON);
+	LUA_REG(CN_CITIZEN);
+	LUA_REG(CN_FCITIZEN);
+	LUA_REG(CN_HIGHPRIEST);
+	LUA_REG(CN_RODERIK);
+
+
+
 
 	LUA_REG(M_GREENGRAS);
 	LUA_REG(M_GREENTREE);
@@ -989,6 +1185,9 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(GID_AHKULAN_GUARDIAN);
 	LUA_REG(GID_RODERICK_GUARDIAN);
 
+	LUA_REG(AIF_GUARD_AREA);
+	LUA_REG(AIF_PROTECT_AREA);
+	LUA_REG(AIF_RANDOM_MOVE);
 
 	LUA_REG(IM_HAT);
 	LUA_REG(IM_NECK);
@@ -1058,6 +1257,16 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(D_LIFE);
 	LUA_REG(D_DEATH);
 
+	LUA_REG(S_STR);
+	LUA_REG(S_DEX);
+	LUA_REG(S_TOU);
+	LUA_REG(S_LEN);
+	LUA_REG(S_WIL);
+	LUA_REG(S_MAN);
+	LUA_REG(S_PER);
+	LUA_REG(S_CHR);
+	LUA_REG(S_EOF);
+
 	LUA_REG(LE_MOVE);
 	LUA_REG(LE_MOVE_IN);
 	LUA_REG(LE_MOVE_OUT);
@@ -1097,10 +1306,16 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "FindCreature", FindCreature);
 	lua_register(L, "AddMessage", AddMessage);
 	lua_register(L, "SetItEnemyFor", SetItEnemyFor);
+	lua_register(L, "SetEnemy", SetEnemy);
 	lua_register(L, "ChangeStats", ChangeStats);
+	lua_register(L, "GetStats", GetStats);
 	lua_register(L, "InflictDamage", InflictDamage);
 	lua_register(L, "Rand", Rand);
 	lua_register(L, "SetEventHandler", SetEventHandler);
+	
+	lua_register(L, "SetName", SetName);
+	lua_register(L, "SetView", SetView);
+	lua_register(L, "GetView", GetView);
 
 	lua_register(L, "GetObjectGUID", GetObjectGUID);
 	lua_register(L, "GiveObjectToCreature", GiveObjectToCreature);
@@ -1113,7 +1328,11 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "RestoreObject", RestoreObject);
 	
 	luaopen_base(L);
-	lua_dofile(L, "location.lua");
+	luaopen_string(L);
+	lua_dofile(L, "./world/ids.lua");
+	lua_dofile(L, "./world/valley.lua");
+	lua_dofile(L, "./world/locations.lua");
+	
 
 }
 
@@ -1125,8 +1344,11 @@ void XLocation::Restoration()
 void XLocation::CreateNewGame()
 {
 	CommonLuaInitialization();
+	lua_dostring(L, "MakeAvanorValley()");
+	lua_dostring(L, "MakeMushroomCave()");
 	lua_dostring(L, "MakeDwarvenCity()");
 	lua_dostring(L, "MakeRatCellar()");
-//	lua_dostring(L, "MakeMushroomCave()");
+	lua_dostring(L, "MakeVulcano()");
+	lua_dostring(L, "MakeWizardDungeon()");
 }
 

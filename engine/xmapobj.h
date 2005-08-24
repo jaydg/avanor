@@ -58,6 +58,9 @@ public:
 	virtual bool isVisible() { return l->map->GetVisible(x, y); }
 	virtual int onOuterUse(XCreature * user) { return 0; }
 
+	void SetName(const char * _name) { strcpy(name, _name); }
+	void SetView(char v, int c) { view = v; color = c; }
+
 	virtual const char * GetName(XCreature * viewer) { return name; }
 
 	int isInVisibleArea() { return l->map->GetVisible(x, y); } //check if object is in visible are to write Someone hits your etc.

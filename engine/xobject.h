@@ -245,7 +245,7 @@ public:
 	}
 	
    virtual const char * GetClassName() { return "XObject"; }
-   virtual XObject * MakeNew() { assert(0); return NULL; }
+   XObject * MakeNew() { assert(0); return NULL; }
    
    virtual void Dump(XFile * f);
    static void DumpAll();

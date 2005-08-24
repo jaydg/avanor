@@ -341,14 +341,14 @@ void XGame::CreateLocations()
 //	Create locations
 #ifndef __DEBUG_L
 	XLocation::CreateNewGame();
-	(new XMainLocation(L_MAIN))->NewWay(32, 3, (LOCATION)55, STW_DOWN);
+//	(new XMainLocation(L_MAIN))->NewWay(32, 3, (LOCATION)55, STW_DOWN);
 	
 
-	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE1);
+/*	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE1);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE2);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE3);
 	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE4);
-	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE5);
+	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE5);*/
 /*	new XDwarfCityCaveLocation(L_DWARFCITYCAVE1);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE2);
 	new XDwarfCityCaveLocation(L_DWARFCITYCAVE3);
@@ -361,11 +361,11 @@ void XGame::CreateLocations()
 //	new XGasMineLocation(L_GASMINE1);
 //	new XGasMineLocation(L_GASMINE2);
 //	new XGasMineLocation(L_GASMINE3);
-	new XKingsTreasureLocation(L_KINGS_TREASURE);
-	new XExtinctVolcanoLocation(L_EXTINCT_VOLCANO);
+//	new XKingsTreasureLocation(L_KINGS_TREASURE);
+//	new XExtinctVolcanoLocation(L_EXTINCT_VOLCANO);
 //	new XRatCellarLocation(L_RATCELLAR);
 
-	new XWizardDungeonLocation(L_WIZARD_DUNGEON1);
+/*	new XWizardDungeonLocation(L_WIZARD_DUNGEON1);
 	new XWizardDungeonLocation(L_WIZARD_DUNGEON2);
 	new XWizardDungeonLocation(L_WIZARD_DUNGEON3);
 	new XWizardDungeonLocation(L_WIZARD_DUNGEON4);
@@ -375,14 +375,14 @@ void XGame::CreateLocations()
 	new XYohjiTower(L_WIZTOWER_TOP);
 
 	new XUndeadTombLocation(L_UNDEADS_TOMB1);
-
-	XLocation::CreateRandomCave();
+*/
+/*	XLocation::CreateRandomCave();
 	XLocation::CreateRandomCave();
 	XLocation::CreateRandomCave();
 	XLocation * tl = Game.locations[XLocation::rand_location_count - 1];
 	XPoint pt;
 	tl->GetFreeXY(&pt);
-	(new XEyeOfRaa)->Drop(tl, pt.x, pt.y);
+	(new XEyeOfRaa)->Drop(tl, pt.x, pt.y);*/
 #else
 	new XLDebug(L_DEBUG1);
 	new XLDebug(L_DEBUG2);
@@ -419,16 +419,16 @@ void XGame::CreateHero()
 	locations[L_MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
 	XHero * hero = new XHero(1);
-//	hero_point.x = 40;
-//	hero_point.y = 65;
-//	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
+	hero_point.x = 19;
+	hero_point.y = 46;
+	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
 
-	hero_point.x = 40;
+/*	hero_point.x = 40;
 	hero_point.y = 10;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_RATCELLAR]);
 	locations[L_RATCELLAR]->map->Center(hero->x, hero->y);
 	locations[L_RATCELLAR]->visited_by_hero = 1;
-/*
+
 	locations[L_MAIN]->map->Center(hero->x, hero->y);
 	locations[L_MAIN]->visited_by_hero = 1;
 */

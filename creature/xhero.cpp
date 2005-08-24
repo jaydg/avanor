@@ -87,8 +87,8 @@ XHero::XHero(int flag)
         _PP = GetMaxPP();
 
         base_exp = (int)(GetCreatureStrength() * 0.6);
-		if (base_exp > 55)
-			base_exp = 55;
+//		if (base_exp > 55)
+//			base_exp = 55;
 
         r = new XResistance();
 
@@ -379,47 +379,45 @@ void XHero::NewMove()
 			break;
 		}
 
+		if (ax == 1 && ay == 0)
+		{
+			if (l->map->XGetMovability(x, y + 1) == 0 && l->map->XGetMovability(x, y - 1) == 1
+				&& PossibleWayCount(x, y) == 2)
+				{
+					last_char = '2';
+					continue;
+				}
+			if (l->map->XGetMovability(x, y + 1) == 1 && l->map->XGetMovability(x, y - 1) == 0
+				&& PossibleWayCount(x, y) == 2)
+			{
+				last_char = '8';
+				continue;
+			}
+		} else
+		{
+			if (ax == 0 && ay == 1)
+			{
+				if (l->map->XGetMovability(x + 1, y) == 0 && l->map->XGetMovability(x - 1, y) == 1
+					&& PossibleWayCount(x, y) == 2)
+				{
+					last_char = '6';
+					continue;
+				}
+		       if (l->map->XGetMovability(x + 1, y) == 1 && l->map->XGetMovability(x - 1, y) == 0
+			      && PossibleWayCount(x, y) == 2)
+				{
+					last_char = '4';
+					continue;
+				}
+			} else
+			{
+				isDisturb = 0;
+				continue;
+			}
+		}
+	}
 
-
-                if (ax == 1 && ay == 0)
-                {
-           if (l->map->XGetMovability(x, y + 1) == 0 && l->map->XGetMovability(x, y - 1) == 1
-              && PossibleWayCount(x, y) == 2)
-           {
-              last_char = '2';
-              continue;
-           }
-           if (l->map->XGetMovability(x, y + 1) == 1 && l->map->XGetMovability(x, y - 1) == 0
-              && PossibleWayCount(x, y) == 2)
-           {
-              last_char = '8';
-              continue;
-           }
-                } else
-                if (ax == 0 && ay == 1)
-                {
-           if (l->map->XGetMovability(x + 1, y) == 0 && l->map->XGetMovability(x - 1, y) == 1
-              && PossibleWayCount(x, y) == 2)
-           {
-              last_char = '6';
-              continue;
-           }
-           if (l->map->XGetMovability(x + 1, y) == 1 && l->map->XGetMovability(x - 1, y) == 0
-              && PossibleWayCount(x, y) == 2)
-           {
-              last_char = '4';
-              continue;
-           }
-                } else
-                {
-           isDisturb = 0;
-           continue;
-                }
-
-     }
-
-
-        }
+	}
 
 
         if (XQuest::quest.hero_die)
@@ -453,7 +451,17 @@ void XHero::NewMove()
 		}
 		isDisturb = 0;
 		action_data.action = A_ATTACK;
+	} else
+	{
+		XMapObject * spec = l->map->GetSpecial(nx, ny);
+		if (spec && spec->im & IM_DOOR && !((XDoor *)spec)->isOpened)
+		{
+			OpenDoor();
+			nx = x;
+			ny = y;
+		}
 	}
+
 }
 
 int XHero::PossibleWayCount(int px, int py)
@@ -1383,7 +1391,7 @@ void XHero::OpenChest()
 void XHero::OpenDoor()
 {
 	XMapObject * spec = l->map->GetSpecial(x, y);
-	if (spec && spec->im & IM_MISC && spec->view == '+')
+	if (spec && spec->im & IM_MISC)
 	{
 		spec->onOuterUse(this);
 		return;
@@ -1436,9 +1444,17 @@ void XHero::OpenDoor()
     if (c_door > 1)
     {
             XPoint pt;
-            if (!WhichDirection(&pt))
-                    return;
-            XMapObject * spec = l->map->GetSpecial(x + pt.x, y + pt.y);
+            XMapObject * spec;
+			if (x == nx && y == ny)
+			{
+				if (!WhichDirection(&pt))
+					return;
+				spec = l->map->GetSpecial(x + pt.x, y + pt.y);
+			} else
+			{
+				spec = l->map->GetSpecial(nx, ny);
+			}
+            
             if (spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened)
                     msgwin.Add("The door is already opened.");
             else
@@ -1657,7 +1673,7 @@ int XHero::Targeting(int range, XPoint * pt)
 
 	while (1)
 	{
-		float xrng = (float)sqrt((tx - x) * (tx - x) + (ty - y) * (ty - y));
+		float xrng = (float)sqrt((float)(tx - x) * (tx - x) + (ty - y) * (ty - y));
 		float cos_alpha;
 		float sin_alpha;
 

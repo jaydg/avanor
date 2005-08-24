@@ -131,7 +131,7 @@ struct PALETTE_MAP
 
 struct LOCATION_PATTERN
 {
-	const char * pattern;
+	char * pattern;
 	int w;
 	int h;
 };
@@ -196,6 +196,8 @@ public:
 	static lua_State * L;
 	static LOCATION_PATTERN current_pattern;
 	static XQList<PALETTE_MAP> pattern_translation;
+	static int pat_offs_x;
+	static int pat_offs_y;
 
 	static int CreateLocation(lua_State * L);
 	static int Settle(lua_State * L);
@@ -219,13 +221,19 @@ public:
 	static int EventPlace(lua_State * L);
 	static int InflictDamage(lua_State * L);
 	static int ChangeStats(lua_State * L);
+	static int GetStats(lua_State * L);
 	static int Rand(lua_State * L);
 	static int SetEventHandler(lua_State * L);
+
+	static int SetName(lua_State * L);
+	static int SetView(lua_State * L);
+	static int GetView(lua_State * L);
 
 
 	static int isHero(lua_State * L);
 	static int isEnemy(lua_State * L);
 	static int SetItEnemyFor(lua_State * L);
+	static int SetEnemy(lua_State * L);
 	static int FindCreature(lua_State * L);
 	static int AddMessage(lua_State * L);
 
@@ -253,6 +261,7 @@ protected:
 
 	void BuildCave();
 	void BuildLabirint(int create_trap_door_chest = 1);
+	void BuildPlain(int w, int h);
 	void CreateTraps();
 	void CreateChests();
 
