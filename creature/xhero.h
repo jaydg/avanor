@@ -119,6 +119,7 @@ public:
 
 	void doSacrifice();
 	int OrderCompanion();
+	int ExecuteScript();
 
 	int race;
 	int profession;	

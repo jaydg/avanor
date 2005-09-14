@@ -764,6 +764,18 @@ void XCreature::Die(XCreature * killer)
 {
 	assert(isValid());
 
+	if (event_handler)
+	{
+		lua_pushstring(XLocation::L, event_handler);
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushnumber(XLocation::L, LE_DIE);
+		lua_pushlightuserdata(XLocation::L, this);
+		lua_pushlightuserdata(XLocation::L, killer);
+		lua_call(XLocation::L, 3, 1);
+		lua_pop(XLocation::L, 1);
+	} 
+
+
 //  Drop all inventory to the ground
 	XList<XBodyPart *>::iterator it;
 	for(it = components.begin(); it != components.end(); it++)
@@ -1558,7 +1570,9 @@ int XCreature::Chat(XCreature * chatter, char * msg)
 		lua_pushlightuserdata(XLocation::L, chatter);
 		lua_pushlightuserdata(XLocation::L, msg);
 		lua_call(XLocation::L, 4, 1);
-		int res = lua_tonumber(XLocation::L, 2);
+		int res = lua_tonumber(XLocation::L, 3);
+//		int res1 = lua_tonumber(XLocation::L, 1);
+//		int res2 = lua_tonumber(XLocation::L, 3);
 		lua_pop(XLocation::L, 1);
 		return res;
 	} 

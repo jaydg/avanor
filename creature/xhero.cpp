@@ -353,6 +353,7 @@ void XHero::NewMove()
 						case '0' : l->map->ForceRecenter(x, y); moved = 0; break;
 						case KEY_CTRL_T: ActivateTrap(); break;
 						case KEY_CTRL_O: moved = OrderCompanion(); break;
+						case KEY_CTRL_D: moved = 0; ExecuteScript(); break;
 						default : moved = 0; break;
                 }
 
@@ -1146,9 +1147,20 @@ void XHero::Eat()
 		
 		XItem * food = NULL;
 
+
 		XItemList * tmpquae = l->map->GetItemList(x, y);
-		if (!tmpquae->empty())		
+		if (!tmpquae->empty())
+		{
 			food = Inventory(tmpquae, IM_FOOD, IF_FIXED_MASK, 1);
+
+			XAnyPlace * place = l->map->GetPlace(x, y);
+			if (place && food && !place->onCreaturePickItem(this, food))
+			{
+				vRefresh();
+				return;
+			}
+
+		}
 
 		if (!food)
 			food = Inventory(&contain, IM_FOOD, IF_FIXED_MASK, 1);
@@ -2718,4 +2730,22 @@ int XHero::OrderCompanion()
 		return 1;
 	} else
 		return 0;
+}
+
+
+//Location Script Support
+extern "C"
+{
+#include "./lua/include/lauxlib.h"
+#include "./lua/include/lualib.h"
+}
+
+int XHero::ExecuteScript()
+{
+	msgwin.Add("===DEBUG CMD===: ");
+	vRefresh();
+	char buf[255];
+	vGetS(buf, 250);
+	lua_dostring(XLocation::L, buf);
+	return 0;
 }

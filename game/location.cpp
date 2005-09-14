@@ -28,10 +28,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "unique.h"
 #include "quest.h"
 
+//Location Script Support
+extern "C"
+{
+#include "./lua/include/lauxlib.h"
+#include "./lua/include/lualib.h"
+}
+
 int XLocation::rand_location_count = L_RANDOM;
 
 REGISTER_CLASS(XLocation);
-REGISTER_CLASS(XMushroomsCaveLocation);
 
 XLocation::XLocation(LOCATION location)
 {
@@ -60,6 +66,22 @@ void XLocation::Invalidate()
 	delete map; // map must be the last!!!!!
 
 	XObject::Invalidate();
+}
+
+int XLocation::Run()
+{
+	if (!event.Empty())
+	{
+		lua_pushstring(XLocation::L, event.c_str());
+		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+		lua_pushlightuserdata(XLocation::L, this);
+		lua_call(XLocation::L, 1, 1);
+		int res = lua_tonumber(XLocation::L, 3);
+		lua_pop(XLocation::L, 1);
+		ttm = ttmb;
+		return res;
+	}
+	return 1;
 }
 
 void XLocation::AddPlace(XAnyPlace * pl)
@@ -433,12 +455,6 @@ XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, i
 }
 
 
-//Location Script Support
-extern "C"
-{
-	#include "./lua/include/lauxlib.h"
-	#include "./lua/include/lualib.h"
-}
 
 XLocation * XLocation::current_location = NULL;
 XCreature * XLocation::last_creature = NULL;
@@ -684,16 +700,34 @@ int XLocation::OuterObject(lua_State * L)
 {
 	int n = lua_gettop(L);
 
-	int tx = lua_tonumber(L, 1);
-	int ty = lua_tonumber(L, 2);
-	int tc = lua_tonumber(L, 3);
-	const char * tv = lua_tostring(L, 4);
-	const char * subscr = lua_tostring(L, 5);
-	
+	int tx;
+	int ty;
+	int tc;
+	const char * tv;
+	const char * subscr;
 	const char * event = NULL;
-	if (n > 5)
-		event = lua_tostring(L, 6);
-
+	if (n < 5)
+	{
+		XPoint pt;
+		current_location->GetFreeXY(&pt);
+		tx = pt.x;
+		ty = pt.y;
+		tc = lua_tonumber(L, 1);
+		tv = lua_tostring(L, 2);
+		subscr = lua_tostring(L, 3);
+		if (n == 4)
+			event = lua_tostring(L, 4);
+	} else
+	{
+		tx = lua_tonumber(L, 1);
+		ty = lua_tonumber(L, 2);
+		tc = lua_tonumber(L, 3);
+		tv = lua_tostring(L, 4);
+		subscr = lua_tostring(L, 5);
+		if (n > 5)
+			event = lua_tostring(L, 6);
+	}
+	
 	XOuterObject * p = new XOuterObject(tx, ty, tc, tv[0], (char *)subscr, current_location, event);
 	lua_pushlightuserdata(L, p);
 	return 1;
@@ -773,6 +807,15 @@ int XLocation::EventPlace(lua_State * L)
 		event = lua_tostring(L, 1);
 	}
 	XAnyPlace * place = new XAnyPlace(&area, current_location, (char *)event);
+	return 0;
+}
+
+int XLocation::CreateTimerEvent(lua_State * L)
+{
+	current_location->event = lua_tostring(L, 1);
+	current_location->ttm = lua_tonumber(L, 2);
+	current_location->ttmb = current_location->ttm;
+	Game.Scheduler.Add(current_location);
 	return 0;
 }
 
@@ -903,6 +946,14 @@ int XLocation::SetEnemy(lua_State * L)
 	return 0;
 }
 
+int XLocation::Gender(lua_State * L)
+{
+	XCreature * p = (XCreature *)lua_topointer(L, 1);
+	int gender = p->GetGender();
+	lua_pushnumber(L, gender);
+	return 1;
+}
+
 
 int XLocation::SetName(lua_State * L)
 {
@@ -954,6 +1005,16 @@ int XLocation::GetObjectGUID(lua_State * L)
 	return 1;
 }
 
+int XLocation::GetItemParam(lua_State * L)
+{
+	XItem * p = (XItem *)lua_topointer(L, 1);
+	lua_pushnumber(L, p->im);
+	lua_pushnumber(L, p->brt);
+	lua_pushnumber(L, p->wt);
+	return 3;
+}
+
+
 int XLocation::GiveObjectToCreature(lua_State * L)
 {
 	XItem * p = (XItem *)lua_topointer(L, 1);
@@ -997,6 +1058,39 @@ int XLocation::GiveAward(lua_State * L)
 	return 1;
 }
 
+int XLocation::Quest(lua_State * L)
+{
+	QUEST_REC * qr = new QUEST_REC;
+	qr->quest_id = lua_tonumber(L, 1);
+	qr->status = (QUEST)lua_tonumber(L, 2);
+	qr->know = lua_tostring(L, 3);
+	qr->complete = lua_tostring(L, 4);
+	qr->closed = lua_tostring(L, 5);
+	XQuest::quest.quests.push_back(qr);
+	return 0;
+}
+
+int XLocation::QuestModify(lua_State * L)
+{
+	int id = lua_tonumber(L, 1);
+	QUEST_REC * qr = XQuest::quest.Find(id);
+	if (qr)
+		qr->status = (QUEST)lua_tonumber(L, 2);
+	return 0;
+}
+
+
+int XLocation::QuestStatus(lua_State * L)
+{
+	int id = lua_tonumber(L, 1);
+	QUEST_REC * qr = XQuest::quest.Find(id);
+	if (qr)
+		lua_pushnumber(L, qr->status);
+	else
+		lua_pushnumber(L, Q_UNKNOWN);
+	return 1;
+}
+
 
 XFile * XLocation::svg_file = NULL;
 int XLocation::StoreInt(lua_State * L)
@@ -1027,6 +1121,65 @@ int XLocation::RestoreObject(lua_State * L)
 	XObject * p = RestorePointer(svg_file, NULL);
 	lua_pushlightuserdata(L, p);
 	return 1;
+}
+
+int XLocation::BinaryAND(lua_State * L)
+{
+	int v1 = lua_tonumber(L, 1);
+	int v2 = lua_tonumber(L, 2);
+	lua_pushboolean(L, (v1 & v2));
+	return 1;
+}
+
+int XLocation::ExecuteAIScript(lua_State * L)
+{
+	XQList<SCRIPT_CMD> script;
+	SCRIPT_CMD cmd;
+
+	XPoint pt;
+
+	cmd.cmd = SCC_MOVE_POINT;
+
+	cmd.pt_x = ((XStairWay *)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->x;
+	cmd.pt_y = ((XStairWay *)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->y;
+	cmd.ln = L_MUSHROOMS_CAVE5;
+	script.push_back(cmd);
+
+	cmd.cmd = SCC_COLLECT_MUSHROOM;
+	script.push_back(cmd);
+
+	cmd.cmd = SCC_MOVE_POINT;
+	cmd.pt_x = 13;
+	cmd.pt_y = 8;
+	cmd.ln = L_MAIN;
+	script.push_back(cmd);
+
+	cmd.cmd = SCC_DROP_ITEM;
+	cmd.im = IM_FOOD;
+	script.push_back(cmd);
+
+
+	//hack!!!
+	XObject * o = root;
+	while (o)
+	{
+		if ((o->im & IM_CREATURE) && ((XCreature *)o)->group_id == GID_SMALL_VILLAGE_FARMER)
+		{
+			((XCreature *)(o))->xai->ExecuteScript(&script);
+		}
+		o = o->next;
+	}
+
+	return 0;
+}
+
+int XLocation::CreateMushroom(lua_State * L)
+{
+	XLocation * p = (XLocation *)lua_topointer(L, 1);
+	XPoint pt;
+	p->GetFreeXY(&pt);
+	new XMushSpawn(pt.x, pt.y, p);
+	return 0;
 }
 
 
@@ -1216,6 +1369,56 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(IM_ARMOUR);
 	LUA_REG(IM_ITEM);
 
+	LUA_REG(WSK_UNKNOWN);
+	LUA_REG(WSK_UNARMED);
+	LUA_REG(WSK_DAGGER);
+	LUA_REG(WSK_SWORD);
+	LUA_REG(WSK_CLUB);
+	LUA_REG(WSK_MACE);
+	LUA_REG(WSK_POLEARM);
+	LUA_REG(WSK_AXE);
+	LUA_REG(WSK_STAVE);
+	LUA_REG(WSK_SHIELD);
+	LUA_REG(WSK_BOW);
+	LUA_REG(WSK_CROSSBOW);
+	LUA_REG(WSK_SLING);
+	LUA_REG(WSK_THROW);
+	LUA_REG(WSK_EOF);
+	LUA_REG(WSK_OTHER);
+
+	LUA_REG(BR_NONE);
+	LUA_REG(BR_FIRE);
+	LUA_REG(BR_HELLFIRE);
+	LUA_REG(BR_COLD);
+	LUA_REG(BR_ULTIMATECOLD);
+	LUA_REG(BR_LIGHTNING);
+	LUA_REG(BR_EARTH);
+	LUA_REG(BR_ELEMENTAL_MASK);
+
+	LUA_REG(BR_ACID);
+	LUA_REG(BR_POISON);
+	LUA_REG(BR_DEATH);
+	LUA_REG(BR_DISEASE);
+	LUA_REG(BR_PARALYSE);
+	LUA_REG(BR_STUN);
+	LUA_REG(BR_CONFUSE);
+	LUA_REG(BR_DRAIN_LIFE);
+	LUA_REG(BR_BLACK_MASK);
+
+	LUA_REG(BR_UNDEADSLAYER);
+	LUA_REG(BR_HUMANOIDSLAYER);
+	LUA_REG(BR_ANIMALSLAYER);
+	LUA_REG(BR_DRAGONSLAYER);
+	LUA_REG(BR_GIANTSLAYER);
+	LUA_REG(BR_ORCSLAYER);
+	LUA_REG(BR_TROLLSLAYER);
+	LUA_REG(BR_DEMONSLAYER);
+	LUA_REG(BR_SLAYER_MASK);
+
+	LUA_REG(BR_HOLYSLAYER);
+	LUA_REG(BR_EVILSLAYER);
+	LUA_REG(BR_ANY);
+
 
 	LUA_REG(R_WHITE);
 	LUA_REG(R_BLACK);
@@ -1273,6 +1476,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(LE_OUTER_USE);
 	LUA_REG(LE_CHAT);
 	LUA_REG(LE_GIVE_ITEM);
+	LUA_REG(LE_DIE);
 	LUA_REG(LE_EVENT_SET);
 	LUA_REG(LE_SAVE);
 	LUA_REG(LE_LOAD);
@@ -1282,6 +1486,11 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(Q_KNOWN);
 	LUA_REG(Q_COMPLETE);
 	LUA_REG(Q_CLOSED);
+	LUA_REG(Q_FAIL);
+
+	LUA_REG(GEN_MALE);
+	LUA_REG(GEN_FEMALE);
+	LUA_REG(GEN_NEUTER);
 
 	lua_register(L, "CreateLocation", CreateLocation);
 	lua_register(L, "Way", Way);
@@ -1312,27 +1521,41 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "InflictDamage", InflictDamage);
 	lua_register(L, "Rand", Rand);
 	lua_register(L, "SetEventHandler", SetEventHandler);
+	lua_register(L, "CreateTimerEvent", CreateTimerEvent);
 	
 	lua_register(L, "SetName", SetName);
 	lua_register(L, "SetView", SetView);
 	lua_register(L, "GetView", GetView);
 
 	lua_register(L, "GetObjectGUID", GetObjectGUID);
+	lua_register(L, "GetItemParam", GetItemParam);
 	lua_register(L, "GiveObjectToCreature", GiveObjectToCreature);
 	lua_register(L, "GiveAward", GiveAward);
 	
+	lua_register(L, "Quest", Quest);
+	lua_register(L, "QuestModify", QuestModify);
+	lua_register(L, "QuestStatus", QuestStatus);
+	lua_register(L, "Gender", Gender);	
 
 	lua_register(L, "StoreInt", StoreInt);
 	lua_register(L, "RestoreInt", RestoreInt);
 	lua_register(L, "StoreObject", StoreObject);
 	lua_register(L, "RestoreObject", RestoreObject);
-	
+	lua_register(L, "BinaryAND", BinaryAND);
+
+	lua_register(L, "ExecuteAIScript", ExecuteAIScript);
+	lua_register(L, "CreateMushroom", CreateMushroom);
+
 	luaopen_base(L);
 	luaopen_string(L);
-	lua_dofile(L, "./world/ids.lua");
-	lua_dofile(L, "./world/valley.lua");
-	lua_dofile(L, "./world/locations.lua");
+	lua_dofile(L, "./world/init.lua");
 	
+	lua_dostring(L, "LoadScripts()");
+	
+/*	lua_dofile(L, "./world/valley.lua");
+	lua_dofile(L, "./world/locations.lua");
+	lua_dofile(L, "./world/quests.lua");
+*/	
 
 }
 
@@ -1350,5 +1573,6 @@ void XLocation::CreateNewGame()
 	lua_dostring(L, "MakeRatCellar()");
 	lua_dostring(L, "MakeVulcano()");
 	lua_dostring(L, "MakeWizardDungeon()");
+	lua_dostring(L, "CreateAllQuests()");
 }
 

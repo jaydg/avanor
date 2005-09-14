@@ -30,6 +30,7 @@ class XStr
 	int sz;
 	void Setup(const char * s, int sz);
 public:
+	XStr(const XStr& s);
 	XStr(const char * s, int sz);
 	XStr(const char * s);
 	XStr();
@@ -46,6 +47,8 @@ public:
 
 	void Store(XFile * f);
 	void Restore(XFile * f);
+
+	bool Empty();
 };
 
 #endif

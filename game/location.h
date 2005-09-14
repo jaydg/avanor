@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map.h"
 #include "xanyplace.h"
 #include "cr_defs.h"
+#include "xstr.h"
 
 enum SHOP_DOOR 
 {
@@ -97,6 +98,7 @@ enum LUA_EVENT
 	LE_OUTER_USE		= 4,
 	LE_CHAT				= 10,
 	LE_GIVE_ITEM		= 11,
+	LE_DIE				= 12,
 	LE_EVENT_SET		= 97,
 	LE_SAVE				= 98,
 	LE_LOAD				= 99
@@ -146,7 +148,10 @@ struct lua_State;
 
 class XLocation : public XObject
 {
+	XStr event;
 public:
+	int Run();
+
 	bool way_found_flag; //used for recursive way found alg...
 
 	XQList<XObject*> ways_list; //ways list used for AI...
@@ -224,6 +229,7 @@ public:
 	static int GetStats(lua_State * L);
 	static int Rand(lua_State * L);
 	static int SetEventHandler(lua_State * L);
+	static int CreateTimerEvent(lua_State * L);
 
 	static int SetName(lua_State * L);
 	static int SetView(lua_State * L);
@@ -236,10 +242,18 @@ public:
 	static int SetEnemy(lua_State * L);
 	static int FindCreature(lua_State * L);
 	static int AddMessage(lua_State * L);
+	static int Gender(lua_State * L);
 
 	static int GetObjectGUID(lua_State * L);
+	static int GetItemParam(lua_State * L);
+
+
 	static int GiveObjectToCreature(lua_State * L);
 	static int GiveAward(lua_State * L);
+
+	static int Quest(lua_State * L);
+	static int QuestModify(lua_State * L);
+	static int QuestStatus(lua_State * L);
 
 
 	static XFile * svg_file;
@@ -247,6 +261,11 @@ public:
 	static int RestoreInt(lua_State * L);
 	static int StoreObject(lua_State * L);
 	static int RestoreObject(lua_State * L);
+	static int BinaryAND(lua_State * L);
+
+
+	static int ExecuteAIScript(lua_State * L);
+	static int CreateMushroom(lua_State * L);
 	
 	
 	
@@ -255,9 +274,7 @@ protected:
 	char full_name[80];
 	XPtr<XAnyPlace> places[MAX_PLACES];
 
-	void PutPalette(int x, int y, PALETTE pal, XLocation * l);
 	void PutPalette(int x, int y);
-	char ** Resolve(PALETTE pal, int * size, PALETTE_MAP ** pm, int * pm_size);
 
 	void BuildCave();
 	void BuildLabirint(int create_trap_door_chest = 1);
@@ -279,29 +296,6 @@ public:
 
 ////////////// ALL OTHER LOCATIONS /////////////////////
 
-class XUndeadTombLocation : public XLocation
-{
-public:
-	XUndeadTombLocation(LOCATION tl);
-};
-
-
-class XRatCellarLocation : public XLocation
-{
-public:
-	XRatCellarLocation(LOCATION tl);
-};
-
-
-class XMushroomsCaveLocation : public XLocation
-{
-public:
-	DECLARE_CREATOR(XMushroomsCaveLocation, XLocation);
-	XMushroomsCaveLocation(LOCATION loc);
-	XMushroomsCaveLocation() {assert(0);}
-	int Run();
-};
-
 class XWizardDungeonLocation : public XLocation
 {
 public:
@@ -314,11 +308,6 @@ public:
 	XAhkUlanCastleLocation(LOCATION tl);
 };
 
-class XDwarfCityCaveLocation : public XLocation
-{
-public:
-	XDwarfCityCaveLocation(LOCATION l_name);
-};
 
 class XMainLocation : public XLocation
 {

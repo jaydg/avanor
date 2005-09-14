@@ -165,6 +165,7 @@ extern int tri_table[120][10][2]; //120 a*3, 10 - r, 2 (0 - x, 1 - y)
 #define KEY_CTRL_Z		  26
 #define KEY_CTRL_T		  20
 #define KEY_CTRL_O		  15
+#define KEY_CTRL_D		  4
 
 #define KEY_UNKNOWN       0xFFFF
 

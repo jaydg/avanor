@@ -306,7 +306,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 }
 
-XYohjiTower::XYohjiTower(LOCATION tl) : XLocation(tl)
+/*XYohjiTower::XYohjiTower(LOCATION tl) : XLocation(tl)
 {
 	strcpy(brief_name, "WzTwr");
 	strcpy(full_name, "Yohjishiro's Tower");
@@ -378,14 +378,14 @@ XKingsTreasureLocation::XKingsTreasureLocation(LOCATION tl) : XLocation(tl)
 		}
 	}
 }
-
+*/
 
 XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
 {
 	BuildCave();
 
 	/* Random lava! */
-	for (int k = 0; k < 150; k++)
+/*	for (int k = 0; k < 150; k++)
 	{
 		int	qx = vRand() % (80 - 7) + 1;
 		int qy = vRand() % (20 - 5) + 1;
@@ -396,6 +396,6 @@ XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
 	strcpy(full_name, "Crater of an Extinct Volcano");
 	NewWay(L_MAIN, STW_UP);
 
-	NewCreature(CN_XSHEE_VOO);
+	NewCreature(CN_XSHEE_VOO);*/
 }
 

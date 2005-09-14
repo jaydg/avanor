@@ -103,9 +103,6 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
 
 int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
 {
-//	Only the hero is allowed to sell items at present
-	if (!(customer->im & IM_HERO)) return 0;
-
 //	Shopkeeper takes only items of appropriate type
 	if (!(item->im & shop->shop_mask))
 	{
@@ -113,38 +110,45 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
 		return 0;
 	}
 
-//	Return taken and unpaid items back to the shop
-	XList<XItem *>::iterator it = debt.item_list.begin();
-	while (it != debt.item_list.end())
+//	Return taken and unpaid items back to the shop (only for HERO)
+	if ((customer->im & IM_HERO))
 	{
-		if (item->im != it->im || item->Compare(it) != 0) { it++; continue; }
-		if (it->quantity > item->quantity)
+		XList<XItem *>::iterator it = debt.item_list.begin();
+		while (it != debt.item_list.end())
 		{
-			it->quantity -= item->quantity;
-			return 1;
-		} 
+			if (item->im != it->im || item->Compare(it) != 0) { it++; continue; }
+			if (it->quantity > item->quantity)
+			{
+				it->quantity -= item->quantity;
+				return 1;
+			} 
 
-		if (it->quantity == item->quantity)
-		{
-			debt.item_list.Remove(it);//->Invalidate();
-			return 1;
+			if (it->quantity == item->quantity)
+			{
+				debt.item_list.Remove(it);//->Invalidate();
+				return 1;
+			}
+
+			item->quantity -= it->quantity;
+			XItem * t = it;
+			it = debt.item_list.erase(it);
+			t->Invalidate();
 		}
-
-		item->quantity -= it->quantity;
-		XItem * t = it;
-		it = debt.item_list.erase(it);
-		t->Invalidate();
 	}
-
 //	Sell the remaining items to the shopkeeper
 	char buf[256];
 	char buf1[256];
 	item->toString(buf);
 	int price = (item->GetValue() / 4 + 1) * item->quantity;
-	sprintf(buf1, GMSG_SHOPKEEPER_ASK_PRICE, price, buf);
-	msgwin.Add(buf1);
 
-	if (customer->GetTarget(TR_NO_YES))
+	if ((customer->im & IM_HERO))
+	{
+		sprintf(buf1, GMSG_SHOPKEEPER_ASK_PRICE, price, buf);
+		msgwin.Add(buf1);
+	}
+
+	//if it is NPC or Hero asked YES
+	if (!(customer->im & IM_HERO) || customer->GetTarget(TR_NO_YES))
 	{
 		int money_to_add = price;
 		if (debt.debtor == customer)

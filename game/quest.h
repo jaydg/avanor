@@ -35,6 +35,7 @@ enum QUEST
 	Q_KNOWN		= 1,
 	Q_COMPLETE	= 2,
 	Q_CLOSED	= 3,
+	Q_FAIL		= 4,
 };
 
 struct QUEST_REC
@@ -43,6 +44,7 @@ struct QUEST_REC
 	XStr complete;
 	XStr closed;
 	QUEST status;
+	int quest_id;
 };
 
 class XQuest
@@ -69,7 +71,7 @@ public:
 		rotmoth_status = 0;
 	};
 
-	XQList<QUEST_REC> quests;
+	XQList<QUEST_REC *> quests;
 
 	void ShowQuests();
 
@@ -103,6 +105,13 @@ public:
 
 	int hero_die;
 	int hero_win;
+
+
+	static void Take(int id);
+	static void Complete(int id);
+	static void Close(int id);
+	static QUEST Status(int id);
+	static QUEST_REC * Find(int id);
 
 	void Store(XFile * f);
 	void Restore(XFile * f);

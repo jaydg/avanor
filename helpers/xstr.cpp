@@ -35,6 +35,12 @@ XStr::XStr(const char * s)
 	Setup(s, strlen(s));
 }
 
+XStr::XStr(const XStr & s)
+{
+	Setup(s.str, s.sz);
+}
+
+
 XStr::XStr(const char * s, int _sz)
 {
 	Setup(s, _sz);
@@ -105,4 +111,9 @@ void XStr::Restore(XFile * f)
 	f->Read(&sz);
 	str = new char[sz + 1];
 	f->Read(str, sz + 1);
+}
+
+bool XStr::Empty()
+{
+	return sz == 0;
 }

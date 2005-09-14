@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "unique.h"
 #include "game.h"
 
+/*
 XWizardDungeonLocation::XWizardDungeonLocation(LOCATION l_name) : XLocation(l_name)
 {
 	map = new XMap(80, 20);
@@ -132,4 +133,5 @@ XAhkUlanCastleLocation::XAhkUlanCastleLocation(LOCATION tl) : XLocation(tl)
 
 	new XAltar(43, 9, D_DEATH, this);
 }
+*/
 

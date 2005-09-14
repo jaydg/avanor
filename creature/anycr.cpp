@@ -248,23 +248,6 @@ void XAnyCreature::Die(XCreature * killer)
 	XCreature::Die(killer);
 }
 
-int XAnyCreature::onGiveItem(XCreature * giver, XItem * item)
-{
-	if (creature_name == CN_ROYAL_GUARD && group_id == GID_GUARDIAN)
-	{
-		if (item->im & IM_WEAPON && item->brt & BR_ORCSLAYER && (item->wt == WSK_SWORD))
-		{
-			XQuest::quest.guards_get_orc_slay++;
-			msgwin.Add("'Thank you.'");
-			contain.Add(item);
-			return 1;
-		} else
-			return 0;
-	}
-	return 0;
-}
-
-
 CREATURE_NAME XCreatureStorage::last_name = CN_NONE;
 
 void XCreatureStorage::View(CREATURE_NAME cn, const char * name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS crcl)
@@ -408,26 +391,23 @@ XCreature *  XCreatureStorage::Create(CREATURE_NAME cn)
 	} else
 	{
 		switch (cn)
-
 		{
-			case CN_ELDER_GRIDOR: tcr = new  XVillageElder(cr); break;
 			case CN_BANDIT: tcr = new XBandit(cr); break;
 			case CN_SHOPKEEPER: tcr = new XShopkeeper(cr); break;
 			case CN_JORGUS: tcr = new XJorgus(cr); break;
 			case CN_GEKTA: tcr = new XGekta(cr); break;
-			case CN_OZORIK: tcr = new XOzorik(cr); break;
 			case CN_YOHJISHIRO: tcr = new XYohjishiro(cr); break;
 			case CN_GEFEON: tcr = new XGefeon(cr); break;
 			case CN_RODERIK: tcr = new XRoderick(cr); break;
 			case CN_BEELZEVILE: tcr = new XBeelzvile(cr); break;
 			case CN_TODIN: tcr = new XTodin(cr); break;
-			case CN_TORIN: tcr = new XTorin(cr); break;
 			case CN_AHKULAN: tcr = new XAhkUlan(cr); break;
-			case CN_XSHEE_VOO: tcr = new XXSheeVoo(cr); break;
-			case CN_MAGNUSH: tcr = new XMagnush(cr); break;
 			case CN_HIGHPRIEST: tcr = new XHighPriest(cr); break;
 			case CN_ROTMOTH: tcr = new XRotmoth(cr); break;
 			case CN_GIANA: tcr = new XGiana(cr); break;
+			default: 
+				tcr = new XAnyCreature(cr);
+				break;
 		}
 
 	}

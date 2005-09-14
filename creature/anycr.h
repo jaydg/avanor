@@ -149,8 +149,6 @@ public:
 	DECLARE_CREATOR(XAnyCreature, XCreature);
 	XAnyCreature(_CREATURE * cr);
 	virtual void Die(XCreature * killer);
-	int onGiveItem(XCreature * giver, XItem * item);
-
 };
 
 #endif

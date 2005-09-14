@@ -419,9 +419,21 @@ void XGame::CreateHero()
 	locations[L_MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
 	XHero * hero = new XHero(1);
-	hero_point.x = 19;
-	hero_point.y = 46;
+	hero_point.x = 25;
+	hero_point.y = 50;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
+	
+	XItem * it = new XWeapon(IT_LONGSWORD);
+	it->brt = BR_ORCSLAYER;
+	hero->ContainItem(it);
+
+
+//	Game.NewCreature(hero, 77, 11, locations[L_DWARFCITY]);
+
+/*	int lll = L_EXTINCT_VOLCANO;
+	locations[lll]->GetFreeXY(&hero_point);
+	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[lll]);
+*/	
 
 /*	hero_point.x = 40;
 	hero_point.y = 10;

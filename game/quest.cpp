@@ -29,13 +29,15 @@ void XQuest::Store(XFile * f)
 {
 	int sz = quests.size();
 	f->Write(&sz);
-	for (XQList<QUEST_REC>::iterator it = quests.begin(); it != quests.end(); it++)
+	for (XQList<QUEST_REC *>::iterator it = quests.begin(); it != quests.end(); it++)
 	{
-		int status = (*it).status;
+		int idx = (*it)->quest_id;
+		f->Write(&idx);
+		int status = (*it)->status;
 		f->Write(&status);
-		(*it).know.Store(f);
-		(*it).closed.Store(f);
-		(*it).complete.Store(f);
+		(*it)->know.Store(f);
+		(*it)->closed.Store(f);
+		(*it)->complete.Store(f);
 	}
 	f->Write(&beelzvile_killed);
 	f->Write(&beelzvile_ordered);
@@ -63,20 +65,16 @@ void XQuest::Restore(XFile * f)
 	f->Read(&sz);
 	while (sz > 0)
 	{
-		QUEST_REC qr;
+		QUEST_REC * qr = new QUEST_REC;
 		int status;
+		f->Read(&qr->quest_id);
 		f->Read(&status);
-		qr.status = (QUEST)status;
-		qr.know.Restore(f);
-		qr.closed.Restore(f);
-		qr.complete.Restore(f);
+		qr->status = (QUEST)status;
+		qr->know.Restore(f);
+		qr->closed.Restore(f);
+		qr->complete.Restore(f);
 		quests.push_back(qr);
 		sz--;
-	}
-	for (XQList<QUEST_REC>::iterator it = quests.begin(); it != quests.end(); it++)
-	{
-		int status = (*it).status;
-		f->Write(&status);
 	}
 
 	f->Read(&beelzvile_killed, sizeof(int));
@@ -106,21 +104,13 @@ void XQuest::ShowQuests()
 	list.SetCaption(MSG_BROWN "### " MSG_YELLOW "Current Quests" MSG_BROWN " ###");
 	int flag = 1;
 
-	for (XQList<QUEST_REC>::iterator it = quests.begin(); it != quests.end(); it++)
+	for (XQList<QUEST_REC *>::iterator it = quests.begin(); it != quests.end(); it++)
 	{
-		if ((*it).status == Q_KNOWN)
+		if ((*it)->status == Q_KNOWN)
 		{
-			list.AddItem(new XGuiItem_Text((*it).know.c_str()));
+			list.AddItem(new XGuiItem_Text((*it)->know.c_str()));
+			flag = 0;
 		}
-	}
-
-
-	if (beelzvile_ordered && !beelzvile_killed)
-	{
-		list.AddItem(new XGuiItem_Text(
-			"The Village Elder asked you to kill the demon who atttacks villagers "
-			"and has occupied the caves to the west of the village.\n\n"));
-		flag = 0;
 	}
 
 	if (ahk_ulan_ordered)
@@ -160,15 +150,6 @@ void XQuest::ShowQuests()
 		flag = 0;
 	}
 
-	if (torin_quest == 1)
-	{
-		list.AddItem(new XGuiItem_Text(
-			"Torin, the Dwarven King asked you to switch on gas pump at the bottom of gold mine."));
-		flag = 0;
-	}
-
-
-
 
 	if (yohjishiro_it_quest != IT_UNKNOWN)
 	{
@@ -179,8 +160,6 @@ void XQuest::ShowQuests()
 		flag = 0;
 	}
 
-
-
 	if (flag)
 	{
 		list.AddItem(new XGuiItem_Text("You have no quests."));
@@ -189,3 +168,37 @@ void XQuest::ShowQuests()
 	list.Run();
 }
 
+
+void XQuest::Take(int id)
+{
+	QUEST_REC * qr = Find(id);
+	qr->status = Q_KNOWN;
+}
+
+void XQuest::Complete(int id)
+{
+	QUEST_REC * qr = Find(id);
+	qr->status = Q_COMPLETE;
+}
+
+void XQuest::Close(int id)
+{
+	QUEST_REC * qr = Find(id);
+	qr->status = Q_CLOSED;
+}
+
+QUEST XQuest::Status(int id)
+{
+	QUEST_REC * qr = Find(id);
+	return qr->status;
+}
+
+QUEST_REC * XQuest::Find(int id)
+{
+	for (XQList<QUEST_REC *>::iterator it = XQuest::quest.quests.begin(); it != XQuest::quest.quests.end(); it++)
+	{
+		if ((*it)->quest_id == id)
+			return (*it);
+	}
+	return NULL;
+}
