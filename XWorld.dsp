@@ -286,18 +286,6 @@ SOURCE=.\Game\cbuilder.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Game\dwarfcave.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Game\dwarfcity.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Game\dwarfcity.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Game\game.cpp
 # End Source File
 # Begin Source File
@@ -310,11 +298,11 @@ SOURCE=.\Game\lbuilderpalette.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Game\ldebug.cpp
+SOURCE=.\Game\xldebug.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Game\ldebug.h
+SOURCE=.\Game\xldebug.h
 # End Source File
 # Begin Source File
 
@@ -330,19 +318,11 @@ SOURCE=.\Game\mainloc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Game\mushcave.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Game\quest.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Game\quest.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\game\rat_cell.cpp
 # End Source File
 # Begin Source File
 
@@ -359,10 +339,6 @@ SOURCE=.\Game\shop.cpp
 # Begin Source File
 
 SOURCE=.\Game\shop.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\game\udeadtomb.cpp
 # End Source File
 # Begin Source File
 

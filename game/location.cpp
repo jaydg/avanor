@@ -31,8 +31,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //Location Script Support
 extern "C"
 {
-#include "./lua/include/lauxlib.h"
-#include "./lua/include/lualib.h"
+#include "../lua/lauxlib.h"
+#include "../lua/lualib.h"
 }
 
 int XLocation::rand_location_count = L_RANDOM;

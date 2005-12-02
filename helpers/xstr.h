@@ -35,9 +35,9 @@ public:
 	XStr(const char * s);
 	XStr();
 	~XStr();
-	XStr operator+ (XStr& s);
+	XStr operator+ (const XStr& s);
 	XStr operator+ (const char * s);
-	XStr& operator=(XStr& s);
+	XStr& operator=(const XStr& s);
 	XStr& operator=(const char * s);
 
 	bool operator==(const char * s);

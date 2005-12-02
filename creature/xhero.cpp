@@ -2736,8 +2736,8 @@ int XHero::OrderCompanion()
 //Location Script Support
 extern "C"
 {
-#include "./lua/include/lauxlib.h"
-#include "./lua/include/lualib.h"
+#include "../lua/lauxlib.h"
+#include "../lua/lualib.h"
 }
 
 int XHero::ExecuteScript()

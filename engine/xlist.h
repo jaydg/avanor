@@ -230,13 +230,13 @@ public:
 	XList_iteraror insert(XList_iteraror it, T object)
 	{
 		XList_iteraror i;
-		for (i = begin(); i != end(); i++)
+		for (i = this->begin(); i != this->end(); i++)
 		{
 			if(object->im < i->im) break;
 			if(object->im == i->im && object->Compare(i) <= 0) break;
 		}
 
-		if (object->GetRef() == 0 && i != end() && i->GetRef() == 1 
+		if (object->GetRef() == 0 && i != this->end() && i->GetRef() == 1 
 			&& object->im == i->im && object->Compare(i) == 0)
 		{
 			i->Concat(object);
@@ -249,8 +249,8 @@ public:
 	}
 
 	void Add(T object) {push_back(object);}
-	void push_front(const T& o) { insert(begin(), o); }
-	void push_back(const T& o) { insert(end(), o); }
+	void push_front(const T& o) { insert(this->begin(), o); }
+	void push_back(const T& o) { insert(this->end(), o); }
 
 };
 

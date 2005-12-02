@@ -29,7 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-	#include "./lua/include/lauxlib.h"
+	#include "../lua/lauxlib.h"
 }
 
 

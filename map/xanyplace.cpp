@@ -27,7 +27,7 @@ REGISTER_CLASS(XAnyPlace);
 
 extern "C"
 {
-	#include "./lua/include/lauxlib.h"
+	#include "../lua/lauxlib.h"
 }
 
 
