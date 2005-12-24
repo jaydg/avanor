@@ -248,8 +248,8 @@ void XStandardAI::Move()
 		ai_owner->ny = ai_owner->y + vRand(3) - 1;
 	}
 
-	//we can leave area only to pursuit enemy, other wise - comback
-	if (!was_attack && !was_item_pick && (ai_flag & AIF_GUARD_AREA))
+	//we can leave area only to pursuit enemy, other wise - comeback
+	if (!companion && !was_attack && !was_item_pick && (ai_flag & AIF_GUARD_AREA))
 	{
 		if (guard_area_location != ai_owner->l->ln || !guard_area.PointIn(ai_owner->nx, ai_owner->ny))
 		{

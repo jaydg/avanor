@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string.h>
 #include <assert.h>
+#include <xlist.h>
+#include "Dice.h"
 
 //warning!!! this class don't do a copy of string content, so
 //beware it cause an error!
@@ -39,6 +41,25 @@ protected:
 	const char * str;
 	int index;
 
+};
+
+
+//Format
+//"keyword:dice keyword:dice keyword dice keyword dice"
+//"St 1d1+2 St 1d1" is the same to "St 2d1+2"
+//"St 2d2+1 St 3d3-1" is the same to "St 5d3"
+struct KEYWORD_DICE_PAIR
+{
+	int keyword_index;
+	XDice dice;
+};
+
+class XStringProcEx
+{
+	XQList<KEYWORD_DICE_PAIR> pairs;
+public:
+	XStringProcEx(const char * str);
+	XQList<KEYWORD_DICE_PAIR> * GetPairsList() { return &pairs; }
 };
 
 #endif

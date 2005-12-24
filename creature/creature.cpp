@@ -29,7 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-	#include "../lua/lauxlib.h"
+	#include "./lua/include/lauxlib.h"
 }
 
 
@@ -1678,7 +1678,7 @@ int XCreature::onGiveItem(XCreature * giver, XItem * item)
 		lua_pushlightuserdata(XLocation::L, giver);
 		lua_pushlightuserdata(XLocation::L, item);
 		lua_call(XLocation::L, 4, 1);
-		int res = lua_tonumber(XLocation::L, 2);
+		int res = lua_tonumber(XLocation::L, 3);
 		lua_pop(XLocation::L, 1);
 		return res;
 	} 

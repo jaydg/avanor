@@ -231,6 +231,10 @@ public:
 	static int SetEventHandler(lua_State * L);
 	static int CreateTimerEvent(lua_State * L);
 
+	static int GetSkill(lua_State * L);
+	static int LearnSkill(lua_State * L);
+	static int MoneyOperation(lua_State * L);
+
 	static int SetName(lua_State * L);
 	static int SetView(lua_State * L);
 	static int GetView(lua_State * L);
@@ -242,11 +246,17 @@ public:
 	static int SetEnemy(lua_State * L);
 	static int FindCreature(lua_State * L);
 	static int AddMessage(lua_State * L);
+	static int AskQuestion(lua_State * L);
 	static int Gender(lua_State * L);
 
 	static int GetObjectGUID(lua_State * L);
 	static int GetItemParam(lua_State * L);
+	static int SetItemBrand(lua_State * L);
 
+	static int MakeEffect(lua_State * L);
+	static int DestroyObject(lua_State * L);
+
+	static int SetCompanion(lua_State * L);
 
 	static int GiveObjectToCreature(lua_State * L);
 	static int GiveAward(lua_State * L);
@@ -266,7 +276,25 @@ public:
 
 	static int ExecuteAIScript(lua_State * L);
 	static int CreateMushroom(lua_State * L);
-	
+
+
+	static int CRVW(lua_State * L);
+	static int CRBA(lua_State * L);
+	static int CRBO(lua_State * L);
+	static int CRA(lua_State * L);
+	static int CRS(lua_State * L);
+	static int CRR(lua_State * L);
+	static int CRM(lua_State * L);
+	static int CRD(lua_State * L);
+	static int CRC(lua_State * L);
+	static int CRAT(lua_State * L);
+	static int CRAT2(lua_State * L);
+	static int CRL(lua_State * L);
+	static int CREQ(lua_State * L);
+	static int CREQ2(lua_State * L);
+	static int CRCOE(lua_State * L);
+	static int CRCOD(lua_State * L);
+
 	
 	
 protected:

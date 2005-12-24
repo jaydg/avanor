@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xdebug.h"
 #include "game.h"
 #include "xtime.h"
-#include "xldebug.h"
+#include "ldebug.h"
 #include "quest.h"
 #include "uniquei.h"
 #include "xshedule.h"
@@ -409,6 +409,8 @@ void XGame::CreateLocations()
 	}
 }
 
+#include "item_misc.h"
+
 void XGame::CreateHero()
 {
 #ifndef __DEBUG_L
@@ -418,22 +420,47 @@ void XGame::CreateHero()
 	locations[L_MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
 	XHero * hero = new XHero(1);
-	hero_point.x = 25;
-	hero_point.y = 50;
+//	hero_point.x = 25;
+//	hero_point.y = 50;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
-	
-	XItem * it = new XWeapon(IT_LONGSWORD);
-	it->brt = BR_ORCSLAYER;
+
+/*	Game.NewCreature(hero, 27, 44, locations[L_MAIN]);
+	hero->ContainItem(new XBone());
+	hero->ContainItem(new XBone());
+	hero->ContainItem(new XBone());
+	hero->ContainItem(new XBone());
+	hero->ContainItem(new XBone());
+	hero->ContainItem(new XBone());
+	hero->ContainItem(new XBone());*/
+
+/*	XItem * it = new XWeapon(IT_LONGSWORD);
+//	it->brt = BR_ORCSLAYER;
 	hero->ContainItem(it);
+	hero->MoneyOp(2000);
+	Game.NewCreature(hero, 25, 12, locations[L_DWARFCITY]);
+*/
+//	Game.NewCreature(hero, 15, 9, locations[L_AHKULAN_CASTLE]);
+	
+	Game.NewCreature(hero, 57, 4, locations[56]);
+	hero->MoneyOp(2000);
+/*	Game.NewCreature(hero, 55, 28, locations[L_WIZTOWER_TOP]);
 
-
-//	Game.NewCreature(hero, 77, 11, locations[L_DWARFCITY]);
-
+	hero->MoneyOp(2000);
+	hero->ContainItem(new XBatWing());
+	hero->ContainItem(new XBatWing());
+	hero->ContainItem(new XBatWing());
+	hero->ContainItem(new XRatTail());
+*/
 /*	int lll = L_EXTINCT_VOLCANO;
 	locations[lll]->GetFreeXY(&hero_point);
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[lll]);
 */	
-
+/*	Game.NewCreature(hero, 44, 10, locations[L_MAIN]);
+	if (hero->GetBodyPart(BP_CLOAK, 0)->Item())
+		hero->GetBodyPart(BP_CLOAK, 0)->UnWear();
+	hero->Wear(new XForestBrotherCloak());
+	hero->MoneyOp(2000);
+*/
 /*	hero_point.x = 40;
 	hero_point.y = 10;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_RATCELLAR]);
@@ -485,3 +512,11 @@ void XGame::CreateHero()
 */
 }
 
+
+
+/* TODO
+
+1) Orc party
+3) Belzvile killing
+
+*/

@@ -59,29 +59,29 @@ enum GENERATION_FLAGS
 struct _CREATURE
 {
 	//view
-	const char * name; //"kobold"
+	XStr name; //"kobold"
 	char   view; //'k'
 	int    color; //xGREEN
 
 	//main params
-	const char * speed; //"2d5+50"
-	const char * move_energy; //1000
-	const char * attack_energy; //1000
+	XDice speed; //"2d5+50"
+	XDice move_energy; //1000
+	XDice attack_energy; //1000
 	CREATURE_SIZE creature_size; //CS_SMALL (bonus for DV)
-	const char * creature_weight; //how much corpse weight for example
+	XDice creature_weight; //how much corpse weight for example
 
-	const char * body;
-	const char * stats;
-	const char * r; //resistances
-	const char * dv;
-	const char * pv;
-	const char * hit;
-	const char * dice;
-	const char * hp;
-	const char * pp;
+	XStr body;
+	XStatsGenerator stats_gen;
+	XResistGenerator r_gen; //resistances
+	XDice dv;
+	XDice pv;
+	XDice hit;
+	XDice dice;
+	XDice hp;
+	XDice pp;
 	CREATURE_LEVEL crl;
 	CR_PERSON_TYPE person;
-	const char * creature_description;
+	XStr creature_description;
 	CORPSE_DATA pCorpseData;
 	unsigned int ai_flags;
 	CREATURE_CLASS cr_class; //class of creature
@@ -117,7 +117,7 @@ public:
 	static _CREATURE creature_storage[CN_EOF];
 	static CREATURE_SET_REC creature_set[32];
 
-	static void View(CREATURE_NAME cn, const char * name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class);
+	static void View(CREATURE_NAME cn, const char * name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class, CREATURE_NAME cn_instance = CN_NONE);
 	static void Basic(const char * speed, const char * base_energy, const char * combat_energy, CREATURE_SIZE csize, const char * weight);
 	static void Body(const char * body, int prob = 0, unsigned int gef_flags = 0);
 	static void SetAI(unsigned int aif);
@@ -134,6 +134,9 @@ public:
 	static void Equip(unsigned int mask, ITEM_TYPE it, int prob);
 	static void Corpse(int roating_time, FOOD_TYPE ft);
 	static void CorpseEffects(CORPSE_EFFECT_TYPE cet, int val);
+
+	static void Inherit(CREATURE_NAME cn);
+	static void CreateQuickBase();
 
 	static _CREATURE * GetCreatureData(CREATURE_NAME cn);
 	static XCreature * Create(CREATURE_NAME cn);

@@ -43,7 +43,7 @@ char * logo_text[] =
 	MSG_GREEN
 	"                      version " GAME_VERSION "\n",
 	MSG_YELLOW,
-	"              (c) 2000 - 2003 by Vadim Gaidukevich",
+	"              (c) 2000 - 2006 by Vadim Gaidukevich",
 	"",
 	MSG_YELLOW 
 	"                      http://www.avanor.com",
@@ -78,6 +78,7 @@ void ShowLogo()
 }
 
 XGame Game;
+
 
 int main(int argc, char * argv[])
 {

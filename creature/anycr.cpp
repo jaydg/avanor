@@ -28,63 +28,49 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XAnyCreature);
 
+_CREATURE XCreatureStorage::creature_storage[CN_EOF];
+CREATURE_SET_REC XCreatureStorage::creature_set[32];
+
+
 XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 {
 	view = cr->view;
 	color = cr->color;
-	strcpy(name, cr->name);
+	strcpy(name, cr->name.c_str());
 
 	creature_class = cr->cr_class;
 
 
-	dice.Setup(cr->dice);
+	dice.Setup(&cr->dice);
 
-	s = new XStats(cr->stats);
-	r = new XResistance(cr->r);
+	s = cr->stats_gen.Generate();
+	r = cr->r_gen.Generate();
 
 	max_stats.Set(s);
 	
-	XBodyPart::Create(this, cr->body);
+	XBodyPart::Create(this, cr->body.c_str());
 
-	XDice d;
-	d.Setup(cr->move_energy);
-	ttmb = d.S;
-	ttm = ttmb;
+	ttmb			= cr->move_energy.Throw();
+	ttm				= ttmb;
+	weight			= cr->creature_weight.Throw();
+	attack_energy	= cr->attack_energy.Throw();
+	move_energy		= cr->move_energy.Throw();
+	base_speed		= cr->speed.Throw();
 
-	d.Setup(cr->creature_weight);
-	weight = d.S;
-
-	d.Setup(cr->attack_energy);
-	attack_energy = d.S;
-
-	d.Setup(cr->move_energy);
-	move_energy = d.S;
-
-	d.Setup(cr->speed);
-	base_speed = d.S;
-
-	creature_size = cr->creature_size;
+	creature_size	= cr->creature_size;
 	
-	d.Setup(cr->dv);
-	_DV = d.S;
+	_DV				= cr->dv.Throw();
+	_PV				= cr->pv.Throw();
+	_HIT			= cr->hit.Throw();
+	MAX_HP			= cr->hp.Throw();
+	_HP				= GetMaxHP();
 
-	d.Setup(cr->pv);
-	_PV = d.S;
-
-	d.Setup(cr->hit);
-	_HIT = d.S;
-
-	d.Setup(cr->hp);
-	MAX_HP = d.S;
-	_HP = GetMaxHP();
-
-	d.Setup(cr->pp);
-	MAX_PP = d.S;
-	_PP = d.S;
+	MAX_PP			= cr->pp.Throw();
+	_PP				= MAX_PP;
 
 	base_exp = GetCreatureStrength();
 	creature_person_type = cr->person;
-	creature_description = cr->creature_description;
+	creature_description = cr->creature_description.c_str();
 
 	melee_attack = &cr->melee_attack;
 
@@ -250,10 +236,17 @@ void XAnyCreature::Die(XCreature * killer)
 
 CREATURE_NAME XCreatureStorage::last_name = CN_NONE;
 
-void XCreatureStorage::View(CREATURE_NAME cn, const char * name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS crcl)
+void XCreatureStorage::View(CREATURE_NAME cn, const char * name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS crcl, CREATURE_NAME cn_instance)
 {
 	last_name = cn;
-	assert(creature_storage[last_name].name == NULL);
+	assert(creature_storage[last_name].name.Empty());
+
+	if (cn_instance != CN_NONE)
+	{
+		_CREATURE * cr = GetCreatureData(cn_instance);
+		creature_storage[last_name] = *cr;
+	}
+
 	creature_storage[last_name].name = name;
 	creature_storage[last_name].view = view;
 	creature_storage[last_name].color = color;
@@ -284,12 +277,12 @@ void XCreatureStorage::SetAI(unsigned int aif)
 
 void XCreatureStorage::S(const char * stats)
 {
-	creature_storage[last_name].stats = stats;
+	creature_storage[last_name].stats_gen.Init(stats);
 }
 
 void XCreatureStorage::R(const char * resists)
 {
-	creature_storage[last_name].r = resists;
+	creature_storage[last_name].r_gen.Init(resists);
 }
 
 void XCreatureStorage::Combat(const char * hit, const char * dice)
@@ -381,6 +374,21 @@ _CREATURE * XCreatureStorage::GetCreatureData(CREATURE_NAME cn)
 	return &creature_storage[cn];
 }
 
+
+void XCreatureStorage::CreateQuickBase()
+{
+	for (int i = 0; i < CN_EOF; i++)
+	{
+		if (!XCreatureStorage::creature_storage[i].name.Empty())
+		{
+			CREATURE_CLASS crc = XCreatureStorage::creature_storage[i].cr_class;
+			XCreatureStorage::creature_set[vGetBitNumber(crc)].cn[XCreatureStorage::creature_set[vGetBitNumber(crc)].count] = (CREATURE_NAME)i;
+			XCreatureStorage::creature_set[vGetBitNumber(crc)].count++;
+		}
+	}
+}
+
+
 XCreature *  XCreatureStorage::Create(CREATURE_NAME cn)
 {
 	_CREATURE * cr = &creature_storage[cn];
@@ -394,14 +402,9 @@ XCreature *  XCreatureStorage::Create(CREATURE_NAME cn)
 		{
 			case CN_BANDIT: tcr = new XBandit(cr); break;
 			case CN_SHOPKEEPER: tcr = new XShopkeeper(cr); break;
-			case CN_JORGUS: tcr = new XJorgus(cr); break;
-			case CN_GEKTA: tcr = new XGekta(cr); break;
-			case CN_YOHJISHIRO: tcr = new XYohjishiro(cr); break;
 			case CN_GEFEON: tcr = new XGefeon(cr); break;
 			case CN_RODERIK: tcr = new XRoderick(cr); break;
 			case CN_BEELZEVILE: tcr = new XBeelzvile(cr); break;
-			case CN_TODIN: tcr = new XTodin(cr); break;
-			case CN_AHKULAN: tcr = new XAhkUlan(cr); break;
 			case CN_HIGHPRIEST: tcr = new XHighPriest(cr); break;
 			case CN_ROTMOTH: tcr = new XRotmoth(cr); break;
 			case CN_GIANA: tcr = new XGiana(cr); break;
@@ -437,7 +440,7 @@ XCreature * XCreatureStorage::CreateRnd(CREATURE_CLASS cc, int lvl)
 void XCreatureStorage::RestoreCreatureInfo(XCreature * cr)
 {
 	cr->melee_attack = &creature_storage[cr->creature_name].melee_attack;
-	cr->creature_description = creature_storage[cr->creature_name].creature_description;
+	cr->creature_description = creature_storage[cr->creature_name].creature_description.c_str();
 	cr->super_info = &creature_storage[cr->creature_name];
 }
 

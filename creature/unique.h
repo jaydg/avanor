@@ -30,23 +30,11 @@ class XBeelzvile : public XAnyCreature
 public:
 	DECLARE_CREATOR(XBeelzvile, XAnyCreature);
 	XBeelzvile(_CREATURE * cr);
-	virtual void Die(XCreature * killer);
 	virtual void NewMove();
 	virtual void Move();
 };
 
 
-
-class XYohjishiro : public XAnyCreature
-{
-protected:
-	XYohjishiro() {}
-public:
-	DECLARE_CREATOR(XYohjishiro, XAnyCreature);
-	XYohjishiro(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
-	virtual int onGiveItem(XCreature * giver, XItem * item);
-};
 
 class XGefeon : public XAnyCreature
 {
@@ -73,41 +61,9 @@ public:
 
 
 
-class XGekta : public XAnyCreature
-{
-protected:
-	XGekta() {}
-public:
-	DECLARE_CREATOR(XGekta, XAnyCreature);
-	XGekta(_CREATURE * cr);
-	virtual char * StdAnswer() {return "'Woof!'";}
-	virtual int onGiveItem(XCreature * giver, XItem * item);
-};
 
-
-class XTodin : public XAnyCreature
-{
-protected:
-	XTodin() {}
-public:
-	DECLARE_CREATOR(XTodin, XAnyCreature);
-	XTodin(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
-	virtual int onGiveItem(XCreature * giver, XItem * item);
-};
 
 class XShop;
-
-
-class XJorgus : public XAnyCreature
-{
-protected:
-	XJorgus() {}
-public:
-	DECLARE_CREATOR(XJorgus, XAnyCreature);
-	XJorgus(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
-};
 
 
 class XRoderick : public XAnyCreature

@@ -385,7 +385,32 @@ int XEffect::Make(EFFECT_DATA * pData)
 				return 0;
 			}
 			break;
-	
+
+		case E_GREAT_IDENTIFY:
+			{
+				for (it_iterator i = pData->target->contain.begin(); i != pData->target->contain.end(); ++i)
+					i->Identify(1);
+
+				XList<XBodyPart *>::iterator it;
+				for (it = pData->target->components.begin(); it != pData->target->components.end(); it++)
+				{
+					if ((*it)->Item())
+						(*it)->Item()->Identify(1);
+
+				}
+
+				msgwin.Add(pData->caller->GetNameEx(CRN_T1));
+				msgwin.Add(pData->caller->GetVerb("mumble"));
+				msgwin.Add("arcane formula.");
+
+				msgwin.Add(pData->target->GetNameEx(CRN_T1));
+				msgwin.Add(pData->target->GetVerb("know"));
+				msgwin.Add("about all items in the backpack.");
+
+				return 1;
+			}
+			break;
+
 		case E_SUMMON_MONSTER:
 			{
 				int flg = 0;

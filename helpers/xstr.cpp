@@ -56,7 +56,7 @@ XStr::~XStr()
 	delete[] str;
 }
 
-XStr XStr::operator +(const XStr& s)
+XStr XStr::operator +(XStr& s)
 {
 	int new_sz = sz + s.sz;
 	char * new_str = new char[new_sz + 1];
@@ -70,7 +70,7 @@ XStr XStr::operator +(const char * s)
 	return operator+(XStr(s));
 }
 
-XStr& XStr::operator=(const XStr& s)
+XStr& XStr::operator=(XStr& s)
 {
 	delete[] str;
 	sz = s.sz;
@@ -82,6 +82,31 @@ XStr& XStr::operator=(const XStr& s)
 XStr& XStr::operator=(const char * s)
 {
 	return operator=(XStr(s));
+}
+
+XStr& XStr::operator+=(const char * s)
+{
+	int len = strlen(s);
+	int new_sz = sz + len;
+	char * new_str = new char[new_sz + 1];
+	memcpy(new_str, str, sz);
+	memcpy(new_str + sz, s, len + 1);
+	sz = new_sz;
+	delete[] str;
+	str = new_str;
+	return *this;
+}
+
+XStr& XStr::operator+=(XStr& s)
+{
+	int new_sz = sz + s.sz;
+	char * new_str = new char[new_sz + 1];
+	memcpy(new_str, str, sz);
+	memcpy(new_str + sz, s.str, s.sz + 1);
+	sz = new_sz;
+	delete[] str;
+	str = new_str;
+	return *this;
 }
 
 bool XStr::operator==(const char * s)
@@ -116,4 +141,26 @@ void XStr::Restore(XFile * f)
 bool XStr::Empty()
 {
 	return sz == 0;
+}
+
+
+bool XStr::ReplaceFirst(const char * sub_string, const char * new_string)
+{
+	int len = sz + strlen(new_string) - strlen(sub_string);
+	if (len < 0)
+		return false;
+
+	char * res = new char[len + 1];
+	char * sub = strstr(str, sub_string);
+	if (!sub)
+		return false;
+	*sub = 0;
+	strcpy(res, str);
+	strcat(res, new_string);
+	strcat(res, str + strlen(sub_string));
+
+	delete[] str;
+	sz = len;
+	str = res;
+	return true;
 }

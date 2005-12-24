@@ -19,6 +19,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "strproc.h"
+#include "stats.h"
+#include "resist.h"
+#include "xstr.h"
 
 int XStringProc::GetData(char * buf, char delimiter)
 {
@@ -60,3 +63,68 @@ int XStringProc::GetParam(char * buf, char * param)
 	return 0;
 }
 
+struct KEYWORD
+{
+	const char * key;
+	int value;
+};
+
+
+KEYWORD keywords[] = {
+	{"St", S_STR},
+	{"Dx", S_DEX},
+	{"To", S_TOU},
+	{"Le", S_LEN},
+	{"Wi", S_WIL},
+	{"Ma", S_MAN},
+	{"Pe", S_PER},
+	{"Ch", S_CHR},
+
+	{"white",		R_WHITE},
+	{"black",		R_BLACK},
+	{"fire",		R_FIRE},
+	{"water",		R_WATER},
+	{"air",			R_AIR},
+	{"earth",		R_EARTH},
+	{"acid",		R_ACID},
+	{"cold",		R_COLD},
+	{"poison",		R_POISON},
+	{"decease",		R_DISEASE},
+	{"paralyse",	R_PARALYSE},
+	{"stun",		R_STUN},
+	{"confuse",		R_CONFUSE},
+	{"blind",		R_BLIND},
+	{"light",		R_LIGHT},
+	{"darkness",	R_DARKNESS},
+	{"invisible",	R_INVISIBLE},
+	{"see_invisible",R_SEEINVISIBLE},
+	{NULL, -1}
+};
+
+XStringProcEx::XStringProcEx(const char * str)
+{
+	int i = 0;
+
+	do 
+	{
+		while (str[i] == ' ') i++;
+
+		int keyword_begin = i;
+		while (str[i] > ' ' && str[i] != ':') i++;
+
+		int kwd = 0;
+		while (keywords[kwd].key && strnicmp(keywords[kwd].key, str + keyword_begin, i - keyword_begin) != 0)
+			kwd++;
+		assert(keywords[kwd].key);
+		
+		KEYWORD_DICE_PAIR key_pair;
+		key_pair.keyword_index = keywords[kwd].value;
+
+		while (str[i] == ' ' || str[i] == ':') i++;
+		keyword_begin = i;
+		while (str[i] > ' ' && str[i] != ':') i++;
+		XStr dice_str(str + keyword_begin, i - keyword_begin);
+		key_pair.dice.Setup(dice_str.c_str());
+		pairs.push_back(key_pair);
+	} while (str[i] > 0);
+}

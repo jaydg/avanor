@@ -62,4 +62,14 @@ protected:
 	int resistances[R_EOF];
 };
 
+
+class XResistGenerator
+{
+	XDice resist[R_EOF];
+public:
+	XResistGenerator();
+	void Init(const char * str);
+	XResistance * Generate();
+};
+
 #endif

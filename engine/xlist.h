@@ -391,6 +391,8 @@ public:
 	}
 
 	T RemoveFirst() { return Remove(begin()); }
+
+	T& front() { return pBeginList->pNext->o; }
 };
 
 

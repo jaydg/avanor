@@ -57,4 +57,13 @@ protected:
 	int stats[S_EOF];
 };
 
+class XStatsGenerator
+{
+	XDice stats[S_EOF];
+public:
+	XStatsGenerator();
+	void Init(const char * str);
+	XStats * Generate();
+};
+
 #endif

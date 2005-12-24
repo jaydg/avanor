@@ -6,7 +6,7 @@ function MakeAvanorValley()
 		SetPattern(55, 30,
 		"                                                       " ..
 		"                        =======                        " ..
-		"       P  @@@@@@@  @@@@@@      ==                      " ..
+		"       P  @@@@@@@  @@@@@@  9   ==                      " ..
 		"        ..@;;;;;@..@....@........=                     " ..
 		"        ..@@@/@@@..@+@@@@.........=                    " ..
 		"        .....1......1.............=                    " ..
@@ -41,12 +41,13 @@ function MakeAvanorValley()
 		AddTranslation("3", M_SAND)
 		AddTranslation("A", "Furniture(x, y, xBROWN, '~', 'plain bed')")
 		AddTranslation("S", "BuildShop(x, y, 8, 2, IM_FOOD, 'Nobel, the human shopkeeper')")
-		AddTranslation("P", "for i = 1, 3 do Guardian(CN_FARMER, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16) Guardian(CN_GOODWIFE, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16) end")
+		AddTranslation("P", "for i = 1, 4 do SetEventHandler(Guardian(CN_FARMER, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian(CN_GOODWIFE, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end")
 		AddTranslation("E", "CreateElderGridor(x, y)")
 		AddTranslation("Y", "CreateJorgus(x, y)")
 		AddTranslation("F", "for i = 1, 5 do Guardian(CN_BANDIT, GID_FOREST_BROTHER, x, y, 12, 8, AIF_GUARD_AREA + AIF_PROTECT_AREA + AIF_RANDOM_MOVE) end")
 		AddTranslation(">", "Way(DOWN, L_MUSHROOMS_CAVE1, x, y)")
 		AddTranslation("*", "Way(DOWN, L_DWARFCITYCAVE1, x, y)")
+		AddTranslation("9", "Way(DOWN, L_SMALL_CAVE1, x, y)")
 		DrawPattern(0, 0) 
 
 -- SMALL TOWN --
@@ -234,7 +235,7 @@ function MakeAvanorValley()
 		"#####################" )
 
 		AddTranslation("[", "DropItem(CreateObject('XAncientMachinePart'), x, y)")
-		AddTranslation("$", "Treasure(x, y, 250) if ")
+		AddTranslation("$", "Treasure(x, y, 250)")
 		AddTranslation("~", "Chest(x, y)")
 		AddTranslation("<", "Way(UP, L_MAIN, x, y)")
 
@@ -300,6 +301,17 @@ function MakeAvanorValley()
 		end
 end
 
+function FarmerHandler(e, t, p, v)
+	if (e == LE_CHAT) then
+		local qs = QuestStatus(QUEST_ELDER)
+		if (qs == Q_COMPLETE or qs == Q_CLOSED) then
+			AddMessage("'Thank you, great hero!'")
+		else
+			AddMessage("'Please speak with our elder. He lives in the stone house.'")
+		end
+	end
+	return 1
+end
 
 function CreateElderGridor(x, y)
 	local elder = Guardian(CN_ELDER_GRIDOR, GID_SMALL_VILLAGE_FARMER, x, y, 5, 1)
@@ -340,8 +352,39 @@ end
 
 function CreateJorgus(x, y)
 	local jorgus = Guardian(CN_JORGUS, GID_FOREST_BROTHER, x, y, 3, 2)
-	SetEventHandler(jorgus, '')
+	SetEventHandler(jorgus, 'JorgusHandler')
+	GiveObjectToCreature(CreateObject('XForestBrotherCloak'), jorgus)
 end
+
+function JorgusHandler(e, t, p, v)
+	if (e == LE_CHAT) then
+		if (GetSkill(p, SKT_STEALING) > 0) then
+			if (Gender(p) == GEN_MALE) then
+				AddMessage("Good day, brother!")
+			else
+				AddMessage("Good day, sister!")
+			end
+		else
+			if (AskQuestion("'I can teach you the great art of theft for 1000gp. Would you like to learn?'", "y n", "yes", "no") == 'y') then
+				if (MoneyOperation(p, -1000) >= 0) then
+					MoneyOperation(t, 1000)
+					LearnSkill(p, SKT_STEALING, 1)
+					if (Gender(p) == GEN_MALE) then
+						AddMessage("You're welcome, brother!")
+					else
+						AddMessage("You're welcome, sister!")
+					end
+				else
+					AddMessage("You haven't enough money!")
+				end
+			else
+				AddMessage("Don't waste my time!")
+			end
+		end
+	end
+	return 1
+end
+
 
 ozorik_award = 0
 orcs_live = 50
@@ -385,7 +428,7 @@ function OzorikHandler(e, t, p, v)
 			end
 		end
 	elseif (e == LE_GIVE_ITEM) then		
-		local im, brt, wt = GetItemParam(v)
+		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(im, IM_WEAPON) and BinaryAND(brt, BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, than return to me!'")
 		else
@@ -414,7 +457,7 @@ function RoyalGuardHandler(e, t, p, v)
 	if (e == LE_CHAT) then
 		AddMessage("'Don't bothering me!'")
 	elseif (e == LE_GIVE_ITEM) then
-		local im, brt, wt = GetItemParam(v)
+		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(im, IM_WEAPON) and BinaryAND(brt, BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Thank you!'")
 			if (QuestStatus(QUEST_OZORIK) < Q_COMPLETE) then
@@ -432,12 +475,105 @@ end
 function CreateGekta(x, y)
 	local gekta = Guardian(CN_GEKTA, GID_GUARDIAN, x, y, 14, 5)
 	SetEnemy(gekta, CR_ORC)
-	SetEventHandler(gekta, '')
+	SetEventHandler(gekta, 'GektaHandler')
 end
+
+
+function GektaHandler(e, t, p, v)
+	if (e == LE_CHAT) then
+		AddMessage("'Woof! Woof! Woof'");
+	elseif (e == LE_GIVE_ITEM) then
+		local im, brt, wt, it, count, name = GetItemParam(v)
+		if (im == IM_FOOD) then
+			if (it == IT_BONE) then
+				for i = 1, count do
+					if (Rand(7) == 0) then
+						 AddMessage("Gekta suddenly start to dig in the ground. She digs a pit. Gekta digs something up from the ground. After this, she puts a bone in the pit and buries it.")
+						 DropItem(CreateObject(IM_ITEM - IM_FOOD, 20, 500), t)
+					else
+						AddMessage(string.format("Gekta eats the %s.", name))
+					end
+				end
+			else
+				AddMessage(string.format("'Gekta eats the %s.'", name))
+				if (Rand(5) == 0) then
+					SetCompanion(p, t, true)
+					AddMessage("Gekta looks at you faithfully!");
+				end
+			end
+			DestroyObject(v)
+		else
+			AddMessage('Woof?');
+			return 0;
+		end
+	end
+	return 1
+end
+
 
 function CreateYohji(x, y)
 	local yohji = Guardian(CN_YOHJISHIRO, GID_NONE, x, y, 5, 5)
-	SetEventHandler(yohji, '')
+	SetEventHandler(yohji, 'YohjiHandler')
+end
+
+
+function YohjiHandler(e, t, p, v)
+	if (e == LE_CHAT) then
+		local result
+		if (GetSkill(p, SKT_LITERACY) == 0) then
+			result = AskQuestion("What do you wish to speak about?", "esc q l", "quest", "learn")
+		else
+			result = 'q'
+		end
+		if (result == 'q') then
+			if (QuestStatus(QUEST_YOHJI_BAT) ~= Q_KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= Q_KNOWN) then
+				if (Rand(2) == 1) then
+					AddMessage("'I can identify all your inventory, if you bring me a bat wing.'")
+					QuestModify(QUEST_YOHJI_BAT, Q_KNOWN)
+				else
+					AddMessage("'I can identify all your inventory, if you bring me a rat tail.'")
+					QuestModify(QUEST_YOHJI_RAT, Q_KNOWN)
+				end
+			else
+				AddMessage("'Please, complete my last request first'")
+			end
+		elseif (result == 'l') then
+			if (AskQuestion("'Do you want to learn literacy for 500gp?'", "y n", "yes", "no") == 'y') then
+				if (MoneyOperation(p, -500) >= 0) then
+					LearnSkill(p, SKT_LITERACY, 1)
+					MoneyOperation(t, 500)
+					AddMessage("Yohjishiro touches you. You feel more educated.")
+				else
+					AddMessage("'You haven't enough money!'")
+				end
+			else
+				AddMessage("'As you wish.'")
+			end
+		end
+	elseif (e == LE_GIVE_ITEM) then
+		local im, brt, wt, it, count, name = GetItemParam(v)
+		if (it == IT_RATTAIL or it == IT_BATWING) then
+			if (it == IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == Q_KNOWN) then
+				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about your inventory.")
+				QuestModify(QUEST_YOHJI_RAT, Q_UNKNOWN)
+			elseif (it == IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == Q_KNOWN) then
+				AddMessage("'Oh, thank you!'")
+				MakeEffect(E_GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
+				QuestModify(QUEST_YOHJI_BAT, Q_UNKNOWN)
+			else
+				if (MoneyOperation(t, -50 * count) >= 0) then
+					AddMessage(string.format("'I hope %d gp will be enough for this.'", 50 * count))
+					MoneyOperation(p, 50 * count)
+				else
+					AddMessage("Sorry, I haven't enough money to by this.")
+				end
+			end
+		else
+			AddMessage("'It is of no interest to me.'")
+			return 0
+		end
+	end
+	return 1
 end
 
 

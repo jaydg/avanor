@@ -35,10 +35,12 @@ public:
 	XStr(const char * s);
 	XStr();
 	~XStr();
-	XStr operator+ (const XStr& s);
+	XStr operator+ (XStr& s);
 	XStr operator+ (const char * s);
-	XStr& operator=(const XStr& s);
+	XStr& operator=(XStr& s);
 	XStr& operator=(const char * s);
+	XStr& operator+=(const char * s);
+	XStr& operator+=(XStr& s);
 
 	bool operator==(const char * s);
 	const char * c_str();
@@ -49,6 +51,8 @@ public:
 	void Restore(XFile * f);
 
 	bool Empty();
+
+	bool ReplaceFirst(const char * sub_string, const char * new_string);
 };
 
 #endif

@@ -151,3 +151,30 @@ char * XResistance::GetResistanceLevel(RESISTANCE r)
 	else
 		return resist_level[7];
 }
+
+
+
+XResistGenerator::XResistGenerator()
+{
+	for (int i = R_WHITE; i < R_EOF; i++)
+		resist[i].Setup(0, 0, 0);
+}
+
+void XResistGenerator::Init(const char * str)
+{
+	XStringProcEx xsp(str);
+	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();
+	for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++)
+	{
+		resist[(*it).keyword_index].Setup(&((*it).dice));
+	}
+}
+
+XResistance * XResistGenerator::Generate()
+{
+	XResistance * r = new XResistance();
+	for (int i = R_WHITE; i < R_EOF; i++)
+		r->SetResistance((RESISTANCE)i, resist[i].Throw());
+	return r;
+}
+

@@ -69,7 +69,7 @@ function MakeDwarvenCity()
 		AddTranslation("X", "CreateTorin(x, y) Furniture(x, y, xYELLOW, '~', 'the throne of the Dwarven Kingdom')")
 		AddTranslation("_", "Altar(x, y, D_LIFE)")
 		AddTranslation("P", "for i = 1, 6 do Guardian(CN_DWARF, GID_DWARVEN_GUARDIAN, x, y, 32, 16) end")
-		AddTranslation("T", "Guardian(CN_TODIN, GID_DWARVEN_GUARDIAN, x, y, 6, 4)")
+		AddTranslation("T", "CreateTodin(x, y)")
 		AddTranslation("E", "EventPlace(x - 1, y, 5, 2, 'DvCityEvent1')")
 		AddTranslation("F", "Way(DOWN, L_DWARFTREASURE, x, y)")
 		AddTranslation("G", "Way(DOWN, L_GASMINE1, x, y)")
@@ -179,6 +179,48 @@ function GasPumpEvent(e, p)
 	return 1
 end
 
+
+function CreateTodin(x, y)
+	local todin = Guardian(CN_TODIN, GID_DWARVEN_GUARDIAN, x, y, 6, 4)
+	SetEventHandler(todin, 'TodinHandler')
+end
+
+
+function TodinHandler(e, t, p, v)
+	if (e == LE_CHAT) then
+		AddMessage("'Give me your weapon, and I'll make it the best!'")
+	elseif (e == LE_GIVE_ITEM) then
+		local im, brt, wt, it, count, name = GetItemParam(v)
+		if (BinaryAND(im, IM_WEAPON)) then
+			if (BinaryAND(brt, BR_COLD + BR_FIRE + BR_ORCSLAYER)) then
+				AddMessage("'This weapon's good enough!'")
+			else
+				if (AskQuestion("'I need 450 gp to improve this weapon. Do you agree?'", "esc y n", "yes", "no") == 'y') then
+					if (MoneyOperation(p, -450) >= 0) then
+						MoneyOperation(t, 450)
+						local res = Rand(3)
+						if ( res == 0) then
+							SetItemBrand(v, BR_COLD)
+						elseif (res == 1) then
+							SetItemBrand(v, BR_FIRE)
+						else 
+							SetItemBrand(v, BR_ORCSLAYER)
+						end
+						AddMessage("'Thank you!'")
+					else
+						AddMessage("'But you haven't enough money!'")
+					end
+				else
+					AddMessage("'Don't waste my time!'")
+				end
+			end
+		else
+			AddMessage("'Sorry, I don't need this.'")
+		end
+	end
+	return 0
+end
+
 function CreateTorin(x, y)
 	local torin = Guardian(CN_TORIN, GID_DWARVEN_GUARDIAN, x, y)
 	SetEventHandler(torin, 'TorinHandler')
@@ -245,7 +287,7 @@ function MakeMushroomCave()
 		Way(UP, L_MUSHROOMS_CAVE1)
 		Way(DOWN, L_MUSHROOMS_CAVE3)
 		Way(DOWN, L_MUSHROOMS_CAVE5)
-		Creature(CN_BEELZEVILE)
+		CreateBeelzevile()
 		Settle(CR_INSECT + CR_REPTILE, CRL_VERY_LOW)
 
 	CreateLocation(L_MUSHROOMS_CAVE3, "KC:1", "Kobold Cavern Level 1", CAVE)
@@ -283,6 +325,18 @@ function SpawnMushroomEvent(l)
 	return 1
 end
 
+function CreateBeelzevile()
+	local demon = Creature(CN_BEELZEVILE)
+	SetEventHandler(demon, 'BeelzevileHandler')
+	GiveObjectToCreature(CreateObject('XGreatElementalRing'), demon)
+end
+
+function BeelzevileHandler(e, t, p, v)
+	if (e == LE_DIE) then
+		QuestModify(QUEST_ELDER, Q_COMPLETE)
+	end
+	return 0
+end
 
 -----------------------------------------------------------
 -------------------- SMALL CAVE ---------------------------
@@ -290,13 +344,96 @@ function MakeSmallCave()
 	CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
 		Way(UP, L_MAIN)
 		Way(DOWN, L_SMALL_CAVE2)
-		Settle(CR_RAT + CR_FELINE + CR_INSECT, CRL_VERY_LOW)
+--		Settle(CR_RAT + CR_FELINE + CR_INSECT, CRL_VERY_LOW)
 
 	CreateLocation(L_SMALL_CAVE2, "SmCv:2", "Small Cave Level 2", CAVE)
-		Way(UP, L_SMALL_CAVE1)
-		Creature(CN_ROTMOTH)
+		SetPattern(80, 20,
+		"################################################################################" ..
+		"################################################################################" ..
+		"######################,,,,,,,###################################################" ..
+		"###################,,,,,,<,,,,,,###########################S,,,,,,,,############" ..
+		"####################,,,,,,,,,,##############,,,,,,,,,,,,,,+,,,,,,,,,############" ..
+		"####################,###,,,,################,##############,,,,,,,,,############" ..
+		"####################,#######################,##############,,,,,,,,,############" ..
+		"####################,#######################,###################+###############" ..
+		"################,,,,,#######################,###################,###############" ..
+		"##############,,,,,,,##############,,,,,,,,,,,##################+###############" ..
+		"############,,,,,,,,,,,#################,,,,,,,,#############,,,,,,,############" ..
+		"##############,,,,,,,################,,,,,,,,,,,,,,##########,,,,A,B############" ..
+		"#############,,,,,,,,,############,,,,,,,,,,,,,,#############,,,,,,,############" ..
+		"############,,,,,,,,############,,,,,,,,,,,,,,,,,,##############+###############" ..
+		"#############,,,,,,################,,,,,,,,,,,,#################,###############" ..
+		"##################,,,,,,#############,##########################,#####$$########" ..
+		"#######################,,,,,,,,,,,,,,,##########################,,,,,+$~########" ..
+		"################################################################################" ..
+		"################################################################################" ..
+		"################################################################################" )
+	
+		AddTranslation("A", "Furniture(x, y, xBROWN, '~', 'table')")
+		AddTranslation("B", "Furniture(x, y, xBROWN, '~', 'bad')")
+		AddTranslation("$", "Treasure(x, y, 20)")
+		AddTranslation("~", "Chest(x, y)")
+		AddTranslation("<", "Way(UP, L_SMALL_CAVE1, x, y)")
+		AddTranslation("S", "SmallCaveQuestPersons(x, y)")
+		DrawPattern(0, 0)			
+--		Creature(CN_ROTMOTH)
 end
 
+function SmallCaveQuestPersons(x, y)
+	Guardian(CN_GIANA, GID_GIANA, x + 1, y, 8, 4)
+	Guardian(CN_ROTMOTH, GID_ROTMOTH, x + 1, y, 8, 4)
+	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
+end
+
+small_cave_first_visit = 0
+
+function SmallCaveEvent(e, p)
+
+	if (not isHero(p)) then 
+		return 
+	end
+	
+	local bandit = FindCreature(L_SMALL_CAVE2, GID_ROTMOTH)
+	local giana = FindCreature(L_SMALL_CAVE2, GID_GIANA)
+	
+	if (e == LE_MOVE and isHero(p)) then
+--[[		local c = FindCreature(L_DWARFCITY, GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+		if (not isEnemy(c, p)) then
+			DvCityEventMoveCount = DvCityEventMoveCount + 1
+			if (DvCityEventMoveCount < 3) then
+				AddMessage("'Leave here immediately!'")
+			elseif (DvCityEventMoveCount == 3) then
+				AddMessage("'This is your last chance to leave!'")
+			elseif (DvCityEventMoveCount > 3) then
+				SetItEnemyFor(p, c)
+			end
+		end
+]]--		
+	elseif (e == LE_MOVE_IN and isHero(p)) then
+		if (small_cave_first_visit == 0) then
+			AddMessage("Halt! Don't move anymore or I'll kill her!")
+			AddMessage("Bring me 150 golden coins, run away quikly and I probably give her a mercy!")
+			small_cave_first_visit = 1
+			if (MoneyOperation(p, 0) >= 150) then
+				if (AskQuestion("Pay him right now?", "esc y n", "yes", "no") == 'y') then
+					MoneyOperation(p, -150)
+				end
+			end
+		else
+			
+		end
+		
+	elseif (e == LE_MOVE_OUT and isHero(p)) then
+		if (small_cave_first_visit == 1) then
+			AddMessage("Remember! 150 golden coins!")
+		else
+		end
+	elseif (e == LE_SAVE) then
+		StoreInt(small_cave_first_visit)
+	elseif (e == LE_LOAD) then
+		small_cave_first_visit = RestoreInt()
+	end
+end
 
 -----------------------------------------------------------
 -------------------- RAT'S CELLAR ---------------------------
@@ -414,13 +551,13 @@ function MakeWizardDungeon()
 		"##,,,,,,,,,,,,,,,==#############################################################" ..
 		"#,,,,,,,,,,,,,,,,==#############################################################" ..
 		"#,,,,,,,,,,,,,,,,==#############################################################" ..
-		"#,,,,,,,,,,,,,,,==#####################;;;;;;;##################################" ..
+		"#,,,,,,,,,,,,,,,==#####################h;;;;;;##################################" ..
+		"#,,,rrrrrrrrr,,,==#;;##################;;;;;;;;#################################" ..
+		"#,,,,,,,,,,,,,,h==#;h##################h;;;;;;;h;;h#############################" ..
+		"#,,<;;;;;;;;;;;;;;+;;+;;;;;;;;;;;;;;;;;;;;_;;;;;;A;#############################" ..
+		"#,,,,,,,,,,,,,,h==#;h##################h;;;;;;;h;;h#############################" ..
 		"#,,,,,,,,,,,,,,,==#;;##################;;;;;;;;#################################" ..
-		"#,,,,,,,,,,,,,,,==#;;##################;;;;;;;;;;;;#############################" ..
-		"#,,<;;;;;;;;;;;;;;+;;+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;#############################" ..
-		"#,,,,,,,,,,,,,,,==#;;##################;;;;;;;;;;;;#############################" ..
-		"#,,,,,,,,,,,,,,,==#;;##################;;;;;;;;#################################" ..
-		"#,,,,,,,,,,,,,,,==#####################;;;;;;;##################################" ..
+		"#,,,,,,,,,,,,,,,==#####################h;;;;;;##################################" ..
 		"#,,,,,,,,,,,,,,,,==#############################################################" ..
 		"#,,,,,,,,,,,,,,,,==#############################################################" ..
 		"#,,,,,,,,,,,,,,,,==#############################################################" ..
@@ -429,6 +566,48 @@ function MakeWizardDungeon()
 		"################################################################################" ..
 		"################################################################################" )
 		AddTranslation("<", "Way(UP, L_WIZARD_DUNGEON5, x, y)")
+		AddTranslation("h", "Guardian(CN_DEATH_KNIGHT, GID_AHKULAN_GUARDIAN, x, y)")
+		AddTranslation("A", "CreateAhkUlan(x, y) Furniture(x, y, xDARKGRAY, '~', 'the black throne from pure obsidian')")
+		AddTranslation("_", "Altar(x, y, D_DEATH)")
+		AddTranslation("r", "Creature(CN_HUGE_RAT, x, y)")
 		DrawPattern(0, 0)
+		
 end
 
+function CreateAhkUlan(x, y)
+	local ahkulan = Guardian(CN_AHKULAN, GID_AHKULAN_GUARDIAN, x, y)
+	SetEventHandler(ahkulan, 'AhkUlanHandler')
+end
+
+
+function AhkUlanHandler(e, t, p, v)
+	if (e == LE_CHAT) then
+		local qs = QuestStatus(QUEST_ANCIENT_PART)
+		if (qs == Q_UNKNOWN) then
+			AddMessage("Hello, brave hero.")
+			AddMessage("Some years ago, some evil wizards destroyed my tower.")
+			AddMessage("Now I wait here gaining strength and planning my revenge.")
+			AddMessage("I am searching for 3 parts to an ancient machine.")
+			AddMessage("Bring them to me and I will reward you well.")
+			QuestModify(QUEST_ANCIENT_PART, Q_KNOWN)
+		elseif (qs == Q_KNOWN) then
+			AddMessage("Don't disturb me before completing my quest, puny mortal!")
+		end
+	elseif (e == LE_GIVE_ITEM) then
+		local im, brt, wt, it, count, name = GetItemParam(v)
+		if (it == IT_ANCIENTMACHINEPART) then
+			if (count == 3) then
+				AddMessage("Very nice job, servant!")
+				QuestModify(QUEST_ANCIENT_PART, Q_CLOSED)
+				return 1
+			else
+				AddMessage("PLEASE! Return with THREE... THREE parts of an ancient machine!")
+				return 0
+			end
+		else
+			AddMessage("Are you jeering at me?")
+			return 0
+		end
+	end
+	return 1
+end

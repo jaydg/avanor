@@ -42,6 +42,7 @@ public:
 	void Add(XDice * d) {X += d->X; Y = (Y + d->Y) / 2; Z += d->Z;}
 	void Add(int _X, int _Y, int _Z) {X += _X; Y += _Y; Z += _Z;}
 	int Throw();
+	bool isEqual(XDice * d) { return X == d->X && Y == d->Y && Z == d->Z; }
 	int S; //generated result by throw
 	int X;
 	int Y;

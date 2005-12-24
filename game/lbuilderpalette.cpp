@@ -53,7 +53,7 @@ STDMAP best_fit_terrain_table[] =
 //Location Script Support
 extern "C"
 {
-	#include "../lua/lauxlib.h"
+	#include "./lua/include/lauxlib.h"
 }
 
 
