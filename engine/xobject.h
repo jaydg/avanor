@@ -295,9 +295,9 @@ template<class TYPE> XPtr<TYPE>::~XPtr()
 
 template<class TYPE> void XPtr<TYPE>::operator=(TYPE * _p) 
 { 
-	if(p == _p) return;
+	if(p == (XObject *)_p) return;
 	if(p != NULL) p->Release(); 
-	p = _p;
+	p = (XObject *)_p;
 	if(p != NULL) p->AddRef(); 
 }
 

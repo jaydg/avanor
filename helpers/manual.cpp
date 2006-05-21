@@ -28,7 +28,7 @@ XGuiList * XManual::OpenPage(const char * page)
 	
 	strcpy(tbuf, "could not find file");
 	char path[256];
-	sprintf(path, "./manual/%s", page);
+	sprintf(path, "%s%s", vMakePath(DATA_DIR, "manual/"), page);
 	FILE * f = fopen(path, "rb");
 	if (f)
 	{

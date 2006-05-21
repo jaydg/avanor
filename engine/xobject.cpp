@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include "global.h"
 #include "xdebug.h"
 #include "xobject.h"
 
@@ -223,7 +224,7 @@ void XObject::FreeTable()
 void XObject::DumpAll()
 {
 	XFile file;
-	file.Open("dump.txt", "w");
+	file.Open(vMakePath(HOME_DIR, "dump.txt"), "w");
 	XObject * p = root;
 	while (p)
 	{

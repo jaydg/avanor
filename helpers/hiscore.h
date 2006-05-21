@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define GAME_VERSION "0.5.7"
 
-#define HISCORE_FILE_NAME	"avanor.hsc"
+#define HISCORE_FILE_NAME	vMakePath(DATA_DIR, "avanor.hsc")
 #define HISCORE_TOP_REC		10
 
 class XFile;

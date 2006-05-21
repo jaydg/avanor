@@ -306,7 +306,7 @@ void XHero::EndGame(char * end_msg)
 		char tname[256];
 		strcpy(tname, ((XHero *)main_creature)->name);
 		strcat(tname, ".mem");
-		FILE * f = fopen(tname, "w");
+		FILE * f = fopen(vMakePath(HOME_DIR, tname), "w");
 		((XHero *)main_creature)->DumpVBuffer(f);
 		list.Put(f);
 		fprintf(f, "\n");

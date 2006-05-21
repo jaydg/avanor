@@ -2,15 +2,23 @@
 # Compiling Avanor: make {dos=1} {win=1} {debug=1}                           #
 #                                                                            #
 # Define dos=1 when compiling with DJGPP gcc compiler for MS-DOS             #
-# Define win=1 when compiling with Mingw32 gcc compiler for windows          #
+# Define win=1 when compiling with Mingw gcc compiler for windows            #
+# Define xmingw=1 when compiling win32-binary with Mingw gcc crosscompiler   #
 # Define debug=1 when you want to build debug version of Avanor              #
 #                                                                            #
-# Running just make builds the release version of Avanor for *nix            #
+# Just typing 'make' builds the release version of ufo2000 for *nix          #
 # (Linux, FreeBSD, ...)                                                      #
+#                                                                            #
+# There are also targets for making tarballs with the sources and binaries   #
+# Examples:                                                                  #
+# 1) Create tarball (avanor-0.5.7-src.tar.bz2) with the sources of the game  #
+#    make VERSION=0.5.7 source-bz2                                           #
+# 2) Compile and package DOS-version of Avanor                               #
+#    make VERSION=0.5.7 dos=1 binary-zip                                     #
 ##############################################################################
 
-ifdef ver
-	DISTNAME := avanor-$(ver)
+ifdef VERSION
+	DISTNAME := avanor-$(VERSION)
 else
 	DISTNAME := avanor-r${shell svnversion .}
 endif
@@ -25,7 +33,20 @@ else
 	CFLAGS = -fsigned-char
 endif
 
-#CFLAGS += -Wall
+ifdef xmingw
+    CC = i386-mingw32msvc-g++
+    LD = i386-mingw32msvc-g++
+    win = 1
+endif
+
+ifdef DATA_DIR
+	CFLAGS += -DDATA_DIR=\"$(DATA_DIR)\"
+endif
+
+ifndef OPTFLAGS
+	OPTFLAGS = -O2
+endif
+
 OBJDIR = obj
 NAME = avanor
 
@@ -65,8 +86,7 @@ ifdef debug
 	OBJDIR := ${addsuffix -d,$(OBJDIR)}
 	NAME := ${addsuffix -d,$(NAME)}
 else
-	CFLAGS += -O2 -mcpu=i586 -s
-	LIBS := -static $(LIBS)
+	CFLAGS += $(OPTFLAGS)
 endif
 
 ifdef win
@@ -111,14 +131,14 @@ source-zip:
 
 source-bz2: 
 # create tar.bz2 archive with Avanor sources (on *nix systems)
-	-$(RM) $(DISTNAME)-src.zip
+	-$(RM) $(DISTNAME)-src.tar.bz2
 	svn export . $(DISTNAME)
 	tar -cjf $(DISTNAME)-src.tar.bz2 $(DISTNAME)
 	svn delete --force $(DISTNAME)
 
 source-gz: 
 # create tar.gz archive with Avanor sources (on *nix systems)
-	-$(RM) $(DISTNAME)-src.zip
+	-$(RM) $(DISTNAME)-src.tar.gz
 	svn export . $(DISTNAME)
 	tar -czf $(DISTNAME)-src.tar.gz $(DISTNAME)
 	svn delete --force $(DISTNAME)
