@@ -129,3 +129,9 @@ v.0.5.7
 10) Furniture and Traps
 11) Avanor castle is now part of a capital city.
 12) Added pikes and halberds.
+
+v.0.5.8
+-------
+1) Fixed bug with traps
+2) Support for compilation with modern compilers
+3) FHS compatibility and Gentoo Linux ebuild
