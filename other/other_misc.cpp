@@ -283,27 +283,23 @@ void XTrap::Store(XFile * f)
 {
 	XMapObject::Store(f);
 	f->Write(&trap_type, sizeof(TRAP_TYPE));
-	f->Write(&isVisibleForHero, sizeof(int));
+	f->Write(&isVisibleForHero, sizeof(isVisibleForHero));
+	f->Write(&isMagic, sizeof(isMagic));
 	f->Write(&trap_level, sizeof(TRAP_LEVEL));
-	XObject::StorePointer(f, owner);
-	XObject::StorePointer(f, trap_item);
+	owner.Store(f);
+	trap_item.Store(f);
 }
 
 void XTrap::Restore(XFile * f)
 {
 	XMapObject::Restore(f);
 	f->Read(&trap_type, sizeof(TRAP_TYPE));
-	f->Read(&isVisibleForHero, sizeof(int));
+	f->Read(&isVisibleForHero, sizeof(isVisibleForHero));
+	f->Read(&isMagic, sizeof(isMagic));
 	f->Read(&trap_level, sizeof(TRAP_LEVEL));
-	XObject::RestorePointer(f, &owner);
-	XObject::RestorePointer(f, &trap_item);
-	
+	owner.Restore(f);
+	trap_item.Restore(f);
 }
-
-
-
-
-
 
 
 
