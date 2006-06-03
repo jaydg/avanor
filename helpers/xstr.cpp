@@ -56,7 +56,7 @@ XStr::~XStr()
 	delete[] str;
 }
 
-XStr XStr::operator +(XStr& s)
+XStr XStr::operator +(const XStr& s)
 {
 	int new_sz = sz + s.sz;
 	char * new_str = new char[new_sz + 1];
@@ -70,7 +70,7 @@ XStr XStr::operator +(const char * s)
 	return operator+(XStr(s));
 }
 
-XStr& XStr::operator=(XStr& s)
+XStr& XStr::operator=(const XStr& s)
 {
 	delete[] str;
 	sz = s.sz;
@@ -97,7 +97,7 @@ XStr& XStr::operator+=(const char * s)
 	return *this;
 }
 
-XStr& XStr::operator+=(XStr& s)
+XStr& XStr::operator+=(const XStr& s)
 {
 	int new_sz = sz + s.sz;
 	char * new_str = new char[new_sz + 1];

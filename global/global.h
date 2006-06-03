@@ -62,6 +62,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifdef XLINUX
 #  include <curses.h>
 #  include <string.h>
+#  define stricmp(a, b) strcasecmp(a, b)
 #endif
 
 
