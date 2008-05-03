@@ -63,6 +63,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #  include <curses.h>
 #  include <string.h>
 #  define stricmp(a, b) strcasecmp(a, b)
+#  define strnicmp(a, b, n) strncasecmp(a, b, n)
 #endif
 
 
