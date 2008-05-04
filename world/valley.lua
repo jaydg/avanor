@@ -99,7 +99,7 @@ function MakeAvanorValley()
 		";;;1;#;;;#;;;;;;;;;;;;;=;=;;;W;W=X33WM.#;#G;###....;;;....###+##;#.." ..
 		"   = ##+##;#####;##+##;;;;;..W;W=XXWWM.#;#G;#H#.....;.....#;;;;#;#.." ..
 		"   =  #;#.;#N;;#;#;;;##;;;...W;W===WMM.#;#;;+;#..###+###..#;;;;#;#.." ..
-		"  ==  #;#.;#;;;#;#N;;M#;;;...WWWWWWWM###+#########;;3;;#########+###" ..
+		"  ==  #;#.;#;;;#;#N;;N#;;;...WWWWWWWM###+#########;;3;;#########+###" ..
 		"  ==  #;#.;#K;;+;######;;;..........M#;;;+;;;;;;;+;;3;;+;;;;;;;+;;;#" ..
 		"  ==  #;#.;#####;#S;;;#;;;#########MM2;;;#########;;3;;#########;;;2" ..
 		"  ==  #;#.;#N;N#;#;;;;#;;;#;;#N;;N#M.#;;;#.......###+###T.T.T.T#;;;#" ..
@@ -138,7 +138,7 @@ function MakeAvanorValley()
 		AddTranslation("U", "Furniture(x, y, xBROWN, '~', 'round table')")
 		
 		AddTranslation("K", "Furniture(x, y, xBROWN, '~', 'table')")
-		AddTranslation("N", "Furniture(x, y, xBROWN, '~', 'bad')")
+		AddTranslation("N", "Furniture(x, y, xBROWN, '~', 'bed')")
 		
 		
 		AddTranslation("S", "BuildShop(x, y, 4, 4, IM_BOOK + IM_SCROLL + IM_POTION, 'Toberik, the human shopkeeper')")
