@@ -41,7 +41,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 	creature_class = cr->cr_class;
 
 
-	dice.Setup(&cr->dice);
+	dice.Setup(cr->dice);
 
 	s = cr->stats_gen.Generate();
 	r = cr->r_gen.Generate();

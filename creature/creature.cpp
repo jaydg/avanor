@@ -1125,7 +1125,7 @@ void XCreature::GetRangeAttackInfo(int * range, int * hit, XDice * dmg)
 
 	*range = missile->RNG;
 	*hit = dex / 2 + missile->_HIT;
-	dmg->Setup(&(missile->dice));
+	dmg->Setup(missile->dice);
 
 	if (bow)
 	{

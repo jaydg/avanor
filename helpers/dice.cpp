@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "global.h"
 #include "xapi.h"
 
-void XDice::Setup(const char * str)
+void XDice::Setup(const char* str)
 {
 	if (str == NULL || strlen(str) < 2)
 	{

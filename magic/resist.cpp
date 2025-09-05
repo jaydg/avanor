@@ -166,7 +166,7 @@ void XResistGenerator::Init(const char * str)
 	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();
 	for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++)
 	{
-		resist[(*it).keyword_index].Setup(&((*it).dice));
+		resist[(*it).keyword_index].Setup((*it).dice);
 	}
 }
 

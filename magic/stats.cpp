@@ -113,7 +113,7 @@ void XStatsGenerator::Init(const char * str)
 	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();
 	for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++)
 	{
-		stats[(*it).keyword_index].Setup(&((*it).dice));
+		stats[(*it).keyword_index].Setup((*it).dice);
 	}
 }
 

@@ -38,7 +38,7 @@ public:
 	XDice(const char * str) { Setup(str); } // represent "XdY +Z" for example "2d6 - 5" or "4d12 + 30"
 	void Setup(int _x, int _y, int _z = 0) { X = _x; Y = _y; Z = _z; Throw();}
 	void Setup(const char * str);
-	void Setup(XDice * d) { Setup(d->X, d->Y, d->Z); }
+	void Setup(const XDice & d) { Setup(d.X, d.Y, d.Z); }
 	void Add(XDice * d) {X += d->X; Y = (Y + d->Y) / 2; Z += d->Z;}
 	void Add(int _X, int _Y, int _Z) {X += _X; Y += _Y; Z += _Z;}
 	int Throw();
