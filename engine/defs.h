@@ -21,9 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __DEFS_H
 #define __DEFS_H
 
-
-#include "defs01.h"
-
 #define DUR_INFINITE 65535
 
 enum BODYPART {BP_UNKNOWN = 0,
@@ -72,12 +69,8 @@ enum RESULT
 	FAIL		= 0,
 	SUCCESS		= 1,
 	CONTINUE	= 2,
-	ABORT		= 3, 
+	ABORT		= 3,
 };
 
 
 #endif
-
-
-
-
