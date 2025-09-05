@@ -2602,8 +2602,8 @@ int XHero::OrderCompanion()
 //Location Script Support
 extern "C"
 {
-#include "../lua/lauxlib.h"
-#include "../lua/lualib.h"
+#include "lauxlib.h"
+#include "lualib.h"
 }
 
 int XHero::ExecuteScript()
@@ -2612,6 +2612,6 @@ int XHero::ExecuteScript()
 	vRefresh();
 	char buf[255];
 	vGetS(buf, 250);
-	lua_dostring(XLocation::L, buf);
+	luaL_dostring(XLocation::L, buf);
 	return 0;
 }

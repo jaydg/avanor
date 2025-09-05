@@ -55,14 +55,9 @@ IPATH = -I${ROOT}global -I${ROOT}map -I${ROOT}creature -I${ROOT}engine -I${ROOT}
         -I${TOROOT}item -I${TOROOT}magic -I${TOROOT}other -I${TOROOT} -I${TOROOT}game
 
 CFLAGS += $(IPATH)
+CFLAGS  += $(shell pkg-config --cflags luajit)
 
 VPATH = creature engine game global helpers item magic map other lua
-
-SRCS_LUALIB = lapi.c lauxlib.c lbaselib.c lcode.c ldblib.c ldebug.c   \
-           ldo.c ldump.c lfunc.c lgc.c liolib.c llex.c lmathlib.c     \
-           lmem.c loadlib.c lobject.c lopcodes.c lparser.c            \
-           lstate.c lstring.c lstrlib.c ltable.c ltablib.c            \
-           ltests.c ltm.c lundump.c lvm.c lzio.c
 
 SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        xshedule.cpp xscroll.cpp xring.cpp xration.cpp xpotion.cpp xobject.cpp \
@@ -76,14 +71,14 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
        quest.cpp other_misc.cpp msgwin.cpp                                    \
        modifers.cpp modifer.cpp map.cpp manual.cpp mainloc.cpp Main.cpp       \
-       magic.cpp los.cpp location.cpp ldebug.cpp lbuilderpalette.cpp          \
+       magic.cpp los.cpp location.cpp lbuilderpalette.cpp                     \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
        game.cpp effect.cpp dice.cpp deity.cpp                                 \
        creature2.cpp creature.cpp cbuilder.cpp cave.cpp                       \
-       bodypart.cpp anycr.cpp ai_view.cpp                                     \
-       $(SRCS_LUALIB)
+       bodypart.cpp anycr.cpp ai_view.cpp
 
 LIBS = -lncurses
+LIBS += $(shell pkg-config --libs luajit)
 
 ifdef debug
 	CFLAGS += -g

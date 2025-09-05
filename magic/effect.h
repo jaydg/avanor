@@ -88,7 +88,6 @@ struct EFFECT_DATA
 	XCreature * target; //target creature, usualy not required
 	int target_x, target_y; //target position: we can make fire-bolt trap :)
 	int power; //power == willpower)
-	XItem * item; //some effect need an item...
 };
 
 class XEffect

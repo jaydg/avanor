@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xdebug.h"
 #include "game.h"
 #include "xtime.h"
-//#include "ldebug.h"
 #include "quest.h"
 #include "uniquei.h"
 #include "xshedule.h"

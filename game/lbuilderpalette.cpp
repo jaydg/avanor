@@ -53,7 +53,7 @@ STDMAP best_fit_terrain_table[] =
 //Location Script Support
 extern "C"
 {
-	#include "../lua/lauxlib.h"
+	#include "lauxlib.h"
 }
 
 
@@ -168,7 +168,7 @@ void XLocation::PutPalette(int x, int y)
 			{
 				char buf[1024];
 				sprintf(buf, "local x, y = %d, %d\n %s", pt.x, pt.y , (*tit).lua_str);
-				lua_dostring(L, buf);
+				luaL_dostring(L, buf);
 			}
 		}
 	}

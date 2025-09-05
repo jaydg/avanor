@@ -31,8 +31,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //Location Script Support
 extern "C"
 {
-#include "../lua/lauxlib.h"
-#include "../lua/lualib.h"
+#include "lauxlib.h"
+#include "lualib.h"
 }
 
 int XLocation::rand_location_count = L_RANDOM;
@@ -564,7 +564,7 @@ int XLocation::Guardian(lua_State * L)
 	int flag = AIF_GUARD_AREA;
 	if (n == 7)
 	{
-		flag |= lua_tonumber(L, 7);
+		flag |= static_cast<int>(lua_tonumber(L, 7));
 	}
 	XCreature * cr = current_location->NewCreature(crn, rect, gid, flag);
 	cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
@@ -1155,8 +1155,6 @@ int XLocation::SetItemBrand(lua_State * L)
 	return 0;
 }
 
-
-
 int XLocation::MakeEffect(lua_State * L)
 {
 	EFFECT_DATA ed;
@@ -1169,7 +1167,6 @@ int XLocation::MakeEffect(lua_State * L)
 	ed.target_x = lua_tonumber(L, 7);
 	ed.target_y = lua_tonumber(L, 8);
 	ed.power = lua_tonumber(L, 9);
-	ed.item = (XItem *)lua_tonumber(L, 10);
 
 	lua_pushnumber(L, XEffect::Make(&ed));
 	return 1;
@@ -1524,17 +1521,9 @@ int XLocation::CRCOD(lua_State * L)
 }
 
 
-
-
-
-
-
-
-#define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); lua_dostring(L, buf); }
+#define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); luaL_dostring(L, buf); }
 
 lua_State * XLocation::L = NULL;
-
-
 
 void XLocation::CommonLuaInitialization()
 {
@@ -2006,9 +1995,9 @@ void XLocation::CommonLuaInitialization()
 	luaopen_base(L);
 	luaopen_string(L);
 
-	lua_dofile(L, "./world/init.lua");
+	luaL_dofile(L, "./world/init.lua");
 
-	lua_dostring(L, "LoadScripts()");
+	luaL_dostring(L, "LoadScripts()");
 	XCreatureStorage::CreateQuickBase();
 }
 
@@ -2020,12 +2009,12 @@ void XLocation::Restoration()
 void XLocation::CreateNewGame()
 {
 	CommonLuaInitialization();
-	lua_dostring(L, "MakeAvanorValley()");
-	lua_dostring(L, "MakeSmallCave()");
-	lua_dostring(L, "MakeMushroomCave()");
-	lua_dostring(L, "MakeDwarvenCity()");
-	lua_dostring(L, "MakeRatCellar()");
-	lua_dostring(L, "MakeVulcano()");
-	lua_dostring(L, "MakeWizardDungeon()");
-	lua_dostring(L, "CreateAllQuests()");
+	luaL_dostring(L, "MakeAvanorValley()");
+	luaL_dostring(L, "MakeSmallCave()");
+	luaL_dostring(L, "MakeMushroomCave()");
+	luaL_dostring(L, "MakeDwarvenCity()");
+	luaL_dostring(L, "MakeRatCellar()");
+	luaL_dostring(L, "MakeVulcano()");
+	luaL_dostring(L, "MakeWizardDungeon()");
+	luaL_dostring(L, "CreateAllQuests()");
 }

@@ -27,7 +27,7 @@ REGISTER_CLASS(XAnyPlace);
 
 extern "C"
 {
-	#include "../lua/lauxlib.h"
+	#include "lauxlib.h"
 }
 
 
@@ -127,7 +127,7 @@ void XAnyPlace::Setup(XLocation * _loc)
 void XAnyPlace::Store(XFile * f)
 {
 	XObject::Store(f);
-	
+
 	location.Store(f);
 	owner.Store(f);
 	area.Store(f);
@@ -176,4 +176,3 @@ void XAnyPlace::Restore(XFile * f)
 	}
 
 }
-
