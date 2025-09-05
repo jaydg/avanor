@@ -19,7 +19,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "other_misc.h"
-#include "creatures.h"
 #include "unique.h"
 #include "skeep_ai.h"
 #include "xgen.h"
@@ -398,4 +397,3 @@ XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
 
 	NewCreature(CN_XSHEE_VOO);*/
 }
-

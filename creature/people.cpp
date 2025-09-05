@@ -18,7 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creatures.h"
 #include "itemf.h"
 
 _CREATURE people_db[] = {
@@ -44,7 +43,7 @@ CRL_LOW,
 
 REGISTER_CLASS(XPeople);
 
-XPeople::XPeople(CREATURE_SUBCLASS subclass, CREATURE_LEVEL crl, CREATURE_EXP cre) 
+XPeople::XPeople(CREATURE_SUBCLASS subclass, CREATURE_LEVEL crl, CREATURE_EXP cre)
 	: XAnyCreature(people_db, 2, subclass, crl, cre)
 {
 }
@@ -74,8 +73,8 @@ void XPeople::Equip(int low_value, int high_value)
 			break;
 
 	}
-	
-	
+
+
 /*
 	hand_1->i = ICREATEB(IM_WEAPON, IT_DAGGER, 1, 300);
 	wsk->SetLevel(WSK_DAGGER, 3);
@@ -86,4 +85,3 @@ void XPeople::Equip(int low_value, int high_value)
 	}
 */
 }
-

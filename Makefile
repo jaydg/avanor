@@ -89,7 +89,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        magic.cpp los.cpp location.cpp ldebug.cpp lbuilderpalette.cpp          \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
        Game.cpp effect.cpp dice.cpp deity.cpp                                 \
-       creatures.cpp creature2.cpp creature.cpp cbuilder.cpp cave.cpp         \
+       creature2.cpp creature.cpp cbuilder.cpp cave.cpp                       \
        bodypart.cpp anycr.cpp ai_view.cpp                                     \
        $(SRCS_LUALIB)
 
@@ -140,7 +140,7 @@ clean:
 	$(RM) $(OBJDIR)/*.d
 	$(RM) $(NAME)
 
-source-zip: 
+source-zip:
 # create zip archive with Avanor sources, requires subversion command line client
 # and 7-zip archiver
 	-$(RM) $(DISTNAME)-src.zip
@@ -148,14 +148,14 @@ source-zip:
 	7z a -tzip -r -mx $(DISTNAME)-src.zip "$(DISTNAME)/*"
 	svn delete --force $(DISTNAME)
 
-source-bz2: 
+source-bz2:
 # create tar.bz2 archive with Avanor sources (on *nix systems)
 	-$(RM) $(DISTNAME)-src.tar.bz2
 	svn export . $(DISTNAME)
 	tar -cjf $(DISTNAME)-src.tar.bz2 $(DISTNAME)
 	svn delete --force $(DISTNAME)
 
-source-gz: 
+source-gz:
 # create tar.gz archive with Avanor sources (on *nix systems)
 	-$(RM) $(DISTNAME)-src.tar.gz
 	svn export . $(DISTNAME)
