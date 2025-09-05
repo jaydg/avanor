@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <assert.h>
 #include "defs.h"
 #include "xfile.h"
+#include <string>
 
 
 enum ITEM_MASK {
@@ -91,9 +92,9 @@ struct DUMMY_STRUCT
 #define DECLARE_CREATOR(__xClass, __xBaseClass) \
 	__xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
 	static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
-	static __xClass * MakeNew() { return new __xClass(); }	\
-	virtual const char * GetClassName() {return #__xClass;} 
-	
+	static __xClass * MakeNew() { return new __xClass(); } \
+	virtual const std::string GetClassName() {return #__xClass;}
+
 //	void InvalidateLeave() {__xBaseClass::Invalidate();}
 
 //#define INVALIDATE_ENTER() static int inside = 0; assert(!inside); if (!isValid()) return; inside = 1;
@@ -104,8 +105,8 @@ struct DUMMY_STRUCT
 class XClassInfo
 {
 public:
-	XClassInfo(char * _name, CLASS_CREATOR p, CLASS_CREATOR n) {name = _name; pClassCreator = p; pClassNew = n; next = NULL;}
-	char * name;
+	XClassInfo(const std::string _name, CLASS_CREATOR p, CLASS_CREATOR n) {name = _name; pClassCreator = p; pClassNew = n; next = NULL;}
+	std::string name;
 	CLASS_CREATOR pClassCreator;
 	CLASS_CREATOR pClassNew;
 	XClassInfo * next;
@@ -116,10 +117,10 @@ class XClassFactory
 public:
 	static XClassInfo * first_class;
 	static int counter;
-	XClassFactory(char * name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
+	XClassFactory(const std::string name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
 	~XClassFactory();
-	static XObject * Create(char * name);
-	static XObject * CreateNew(char * name);
+	static XObject * Create(const std::string name);
+	static XObject * CreateNew(const std::string name);
 };
 
 #define DYNCREATE(x) XClassFactory::Create(x)
@@ -244,7 +245,7 @@ public:
 		o->Invalidate();
 	}
 	
-   virtual const char * GetClassName() { return "XObject"; }
+   virtual const std::string GetClassName() { return "XObject"; }
    XObject * MakeNew() { assert(0); return NULL; }
    
    virtual void Dump(XFile * f);

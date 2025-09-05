@@ -52,7 +52,7 @@ XGUID guid = 1;
 XClassInfo * XClassFactory::first_class = NULL;
 int XClassFactory::counter = 0;
 
-XClassFactory::XClassFactory(char * name, CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
+XClassFactory::XClassFactory(std::string name, CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
 {
 	if (!first_class)
 		XClassFactory::first_class = new XClassInfo(name, pClassCreator, pClassNew);
@@ -80,24 +80,24 @@ XClassFactory::~XClassFactory()
 	}
 }
 
-XObject * XClassFactory::Create(char * name)
+XObject * XClassFactory::Create(std::string name)
 {
 	XClassInfo * tmp = XClassFactory::first_class;
 	while(tmp)
 	{
-		if (strcmp(tmp->name, name)==0) return tmp->pClassCreator();
+		if (tmp->name == name) return tmp->pClassCreator();
 		tmp = tmp->next;
 	}
 	assert(0);
 	return NULL;
 }
 
-XObject * XClassFactory::CreateNew(char * name)
+XObject * XClassFactory::CreateNew(std::string name)
 {
 	XClassInfo * tmp = XClassFactory::first_class;
 	while(tmp)
 	{
-		if (strcmp(tmp->name, name)==0) return tmp->pClassNew();
+		if (tmp->name == name) return tmp->pClassNew();
 		tmp = tmp->next;
 	}
 	return NULL;
@@ -144,9 +144,9 @@ void XObject::StoreAllObjects(XFile * f)
 	FILE * tmp = fopen("dmp.txt", "wt");
 	for(i = 0; i < count; i++) 
 	{
-		unsigned char name_size = strlen(table[i]->GetClassName());
+		unsigned char name_size = table[i]->GetClassName().size();
 		f->Write(&name_size, sizeof(name_size));
-		f->Write(table[i]->GetClassName(), sizeof(char), name_size);
+		f->Write(table[i]->GetClassName().c_str(), sizeof(char), name_size);
 		table[i]->bAlreadyStored = false;
 		fprintf(tmp, "[%d] %s\n", i, table[i]->GetClassName());
 	}

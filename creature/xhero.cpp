@@ -2402,7 +2402,7 @@ void XHero::QuickPay()
     XCreature * shopkeeper = NULL;
 	XAnyPlace * pl = l->map->GetPlace(x, y);
 	//hack!!!
-	if (pl == NULL || strcmp(pl->GetClassName(), "XShop") != 0)
+	if (pl == NULL || (pl->GetClassName() == "XShop"))
 	{
 		msgwin.Add("You can pay only in shops.");
 		return;
