@@ -311,14 +311,14 @@ XCreature * XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, 
 	XPoint pt;
 	GetFreeXY(&pt, &rect);
 	XCreature * cr = NewCreature(cn, pt.x, pt.y, gid);
-	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
-		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
+
 	if (ai_flags & AIF_GUARD_AREA)
 	{
 		cr->xai->SetArea(rect, ln);
 		cr->xai->LearnTraps();
 	}
 	cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
+
 	return cr;
 }
 
