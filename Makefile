@@ -76,7 +76,7 @@ SRCS_LUALIB = lapi.c lauxlib.c lbaselib.c lcode.c ldblib.c ldebug.c   \
 
 SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        xshedule.cpp xscroll.cpp xring.cpp xration.cpp xpotion.cpp xobject.cpp \
-       xmoney.cpp xmissileweapon.cpp xmissile.cpp xmapobj.cpp xlist.cpp       \
+       xmoney.cpp xmissileweapon.cpp xmissile.cpp xmapobj.cpp                 \
        xhero3.cpp xhero2.cpp xhero.cpp xherb.cpp xguihtml.cpp xgui.cpp        \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothe.cpp xcloak.cpp   \
        xcap.cpp xboots.cpp xbook.cpp xbaseobj.cpp xarmor.cpp xarchive.cpp     \
