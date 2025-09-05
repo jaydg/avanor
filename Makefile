@@ -81,14 +81,14 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothe.cpp xcloak.cpp   \
        xcap.cpp xboots.cpp xbook.cpp xbaseobj.cpp xarmor.cpp xarchive.cpp     \
        xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp wskills.cpp            \
-       wmagic.cpp wizard_dungeon.cpp Uniquem.cpp uniquei.cpp                  \
-       strproc.cpp Std_ai.cpp stats.cpp spell.cpp skills.cpp skill.cpp        \
+       wmagic.cpp wizard_dungeon.cpp unique.cpp uniquei.cpp                   \
+       strproc.cpp std_ai.cpp stats.cpp spell.cpp skills.cpp skill.cpp        \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
        quest.cpp other_misc.cpp msgwin.cpp                                    \
        modifers.cpp modifer.cpp map.cpp manual.cpp mainloc.cpp Main.cpp       \
        magic.cpp los.cpp location.cpp ldebug.cpp lbuilderpalette.cpp          \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
-       Game.cpp effect.cpp dice.cpp deity.cpp                                 \
+       game.cpp effect.cpp dice.cpp deity.cpp                                 \
        creature2.cpp creature.cpp cbuilder.cpp cave.cpp                       \
        bodypart.cpp anycr.cpp ai_view.cpp                                     \
        $(SRCS_LUALIB)
