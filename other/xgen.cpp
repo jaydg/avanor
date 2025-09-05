@@ -96,11 +96,11 @@ int XMainLocationGen::Run()
 		{
 			if ((o->im & IM_CREATURE) && ((XCreature *)o)->creature_class & CR_ORC)
 			{
-				((XCreature *)(o))->xai->SetArea(&small_town_area, L_MAIN);			
+				((XCreature *)(o))->xai->SetArea(small_town_area, L_MAIN);
 			}
 			o = o->next;
 		}
-	}		
+	}
 	return 0;
 }
 

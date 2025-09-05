@@ -44,7 +44,7 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 
 
 //	NewCreature(CN_GIANA, 14, 11)->xai->companion = NewCreature(CN_ROTMOTH, 14, 10);
-//	CreateShop(IM_ALL, &XRect(10, 10, 20, 15), "xxx");
+//	CreateShop(IM_ALL, XRect(10, 10, 20, 15), "xxx");
 //	NewCreature(CN_SHAMAN_KOBOLD, 15, 5);
 //	NewCreature(CN_KING_COBRA, 14, 10);
 /*	XCreature * tcr = NewCreature(CN_KOBOLD, 15, 10);
@@ -71,7 +71,7 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 	int i;
 	for (i = 0; i < 10; i++)
 	{
-		NewCreature(CN_RAT, &tr1);
+		NewCreature(CN_RAT, tr1);
 	}
 */
 
@@ -83,7 +83,7 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 /*	for (int i = 0; i < 5; i++)
 	{
 		XCreature * cr = NewCreature(CN_KOBOLD);
-//		cr->xai->SetArea(&r1, tl);
+//		cr->xai->SetArea(r1, tl);
 //		cr->xai->SetAIFlag(AIF_GUARD_AREA);
 	}*/
 /*
@@ -118,7 +118,7 @@ XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 /*	XRect tr2(45, 5, 55, 10);
 	for (i = 0; i < 5; i++)
 	{
-		NewCreature(CN_DOG, &tr2);
+		NewCreature(CN_DOG, tr2);
 	}
 */	
 //	Game.NewCreature(XCreatureStorage::Create(CN_RAT), 28, 14, this);

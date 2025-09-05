@@ -181,8 +181,10 @@ public:
 	static void CreateRandomCave();
 
 	XCreature * NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid = GID_NONE);
-	XCreature * NewCreature(CREATURE_NAME cn, XRect * rect = NULL, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
-	XCreature * NewCreature(CREATURE_CLASS crc, XRect * rect = NULL, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
+	XCreature * NewCreature(CREATURE_NAME cn);
+	XCreature * NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
+	XCreature * NewCreature(CREATURE_CLASS crc);
+	XCreature * NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
 	XStairWay * NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area = NULL); //creates way at random place
 	XStairWay * NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type);
@@ -310,7 +312,7 @@ protected:
 	void CreateTraps();
 	void CreateChests();
 
-	void CreateShop(unsigned int im, XRect * rect, char * sk_name, SHOP_DOOR sd = SHOP_DOOR_UP);
+	void CreateShop(unsigned int im, XRect& rect, char * sk_name, SHOP_DOOR sd = SHOP_DOOR_UP);
 };
 
 class XRandomLocation : public XLocation

@@ -31,14 +31,14 @@ extern "C"
 }
 
 
-XAnyPlace::XAnyPlace(XRect * _area, XLocation * _loc) : area(_area), XObject()
+XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc) : area(_area), XObject()
 {
 	Setup(_loc);
 	im = IM_OTHER;
 	onEventLua = NULL;
 }
 
-XAnyPlace::XAnyPlace(XRect * _area, XLocation * _loc, char * _onEventLua) : area(_area), XObject()
+XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc, char * _onEventLua) : area(_area), XObject()
 {
 	Setup(_loc);
 	im = IM_OTHER;

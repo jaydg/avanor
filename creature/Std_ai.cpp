@@ -966,7 +966,7 @@ int XStandardAI::PickUpItems()
 	return 1;
 }
 
-void XStandardAI::SetArea(XRect * area, LOCATION ln)
+void XStandardAI::SetArea(XRect & area, LOCATION ln)
 {
 	guard_area.Setup(area);
 	guard_area_location = ln;

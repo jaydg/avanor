@@ -299,14 +299,21 @@ XCreature * XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
 	return cr;
 }
 
-XCreature * XLocation::NewCreature(CREATURE_NAME cn, XRect * rect, GROUP_ID gid, unsigned int ai_flags)
+XCreature * XLocation::NewCreature(CREATURE_NAME cn)
 {
 	XPoint pt;
-	GetFreeXY(&pt, rect);
+	GetFreeXY(&pt, NULL);
+	return NewCreature(cn, pt.x, pt.y);
+}
+
+XCreature * XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
+{
+	XPoint pt;
+	GetFreeXY(&pt, &rect);
 	XCreature * cr = NewCreature(cn, pt.x, pt.y, gid);
 	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
-	if (rect &&  (ai_flags & AIF_GUARD_AREA))
+	if (ai_flags & AIF_GUARD_AREA)
 	{
 		cr->xai->SetArea(rect, ln);
 		cr->xai->LearnTraps();
@@ -315,16 +322,28 @@ XCreature * XLocation::NewCreature(CREATURE_NAME cn, XRect * rect, GROUP_ID gid,
 	return cr;
 }
 
-XCreature * XLocation::NewCreature(CREATURE_CLASS crc, XRect * rect, GROUP_ID gid, unsigned int ai_flags)
+XCreature * XLocation::NewCreature(CREATURE_CLASS crc)
 {
 	XPoint pt;
-	GetFreeXY(&pt, rect);
+	GetFreeXY(&pt, NULL);
+	XCreature * cr = XCreatureStorage::CreateRnd(crc);
+
+	Game.NewCreature(cr, pt.x, pt.y, this);
+
+	return cr;
+}
+
+
+XCreature * XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
+{
+	XPoint pt;
+	GetFreeXY(&pt, &rect);
 	XCreature * cr = XCreatureStorage::CreateRnd(crc);
 	cr->group_id = gid;
 	if (cr->xai->GetAIFlag() & AIF_PEACEFUL)
 		cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
 	Game.NewCreature(cr, pt.x, pt.y, this);
-	if (rect &&  (ai_flags & AIF_GUARD_AREA))
+	if (ai_flags & AIF_GUARD_AREA)
 	{
 		cr->xai->SetArea(rect, ln);
 		cr->xai->LearnTraps();
@@ -350,7 +369,7 @@ XStairWay * XLocation::NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_t
 
 
 
-void XLocation::CreateShop(unsigned int im, XRect * rect, char * sk_name, SHOP_DOOR sd)
+void XLocation::CreateShop(unsigned int im, XRect& rect, char * sk_name, SHOP_DOOR sd)
 {
 	XShop * shop = new XShop(rect, (ITEM_MASK)im, this, sd);
 	AddPlace(shop);
@@ -523,7 +542,7 @@ int XLocation::Creature(lua_State * L)
 			int th = lua_tonumber(L, 5);
 			rect = XRect(tx, ty, tx + tw, ty + th);
 		}
-		cr = current_location->NewCreature((CREATURE_NAME)crn, &rect);
+		cr = current_location->NewCreature((CREATURE_NAME)crn, rect);
 	}
 	lua_pushlightuserdata(L, cr);
 	return 1;
@@ -553,7 +572,7 @@ int XLocation::Guardian(lua_State * L)
 	{
 		flag |= lua_tonumber(L, 7);
 	}
-	XCreature * cr = current_location->NewCreature(crn, &rect, gid, flag);
+	XCreature * cr = current_location->NewCreature(crn, rect, gid, flag);
 	cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
 	lua_pushlightuserdata(L, cr);
 	return 1;
@@ -692,7 +711,7 @@ int XLocation::BuildShop(lua_State * L)
 	XRect shop_rect(tx, ty, tx + tw, ty + th);
 	int mask = lua_tonumber(L, 5);
 	const char * keeper_name = lua_tostring(L, 6);
-	current_location->CreateShop(mask, &shop_rect, (char *)keeper_name, SHOP_BUILD_IN);
+	current_location->CreateShop(mask, shop_rect, (char *)keeper_name, SHOP_BUILD_IN);
 	return 0;
 }
 
@@ -821,7 +840,7 @@ int XLocation::EventPlace(lua_State * L)
 	{
 		event = lua_tostring(L, 1);
 	}
-	XAnyPlace * place = new XAnyPlace(&area, current_location, (char *)event);
+	XAnyPlace * place = new XAnyPlace(area, current_location, (char *)event);
 	return 0;
 }
 

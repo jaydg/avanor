@@ -192,7 +192,7 @@ XCave::XCave(int len, int hgt, bool isAllowSpecialRooms)
 		}
 	
 	}
-	r.Setup(&XRect(x, y, x + l, y + h));
+	r.Setup(x, y, x + l, y + h);
 }
 
 int XCave::Compare(XObject * o)
@@ -275,7 +275,7 @@ void XCave::Draw(XLocation * l)
 			}
 			for (int i = 0; i < 10; i++)
 			{
-				l->NewCreature(crc, &r, GID_RANDOM_GUARDIAN, AIF_GUARD_AREA);
+				l->NewCreature(crc, r, GID_RANDOM_GUARDIAN, AIF_GUARD_AREA);
 			}
 		}
 

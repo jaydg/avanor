@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XShop);
 
-XShop::XShop(XRect * _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
+XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 	:XAnyPlace(_area, _loc)
 {
 	shop_mask = _im;

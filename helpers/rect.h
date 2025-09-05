@@ -37,11 +37,14 @@ public:
 	XRect(XPoint * lt, XPoint * rb)
 	{ left = lt->x; top = lt->y; right = rb->x; bottom = rb->y; }
 
-	XRect(XRect * r)
-	{ left = r->left; right = r->right; top = r->top; bottom = r->bottom; }
+	XRect(XRect& r)
+	{ left = r.left; right = r.right; top = r.top; bottom = r.bottom; }
 
-	void Setup(XRect * r)
-	{ left = r->left; right = r->right; top = r->top; bottom = r->bottom; }
+	void Setup(XRect& r)
+	{ left = r.left; right = r.right; top = r.top; bottom = r.bottom; }
+
+	void Setup(int _left, int _top, int _right, int _bottom)
+	{left = _left; top = _top; right = _right; bottom = _bottom;}
 
 	int Intersect(XRect * r);
 	int PointIn(XPoint * pt);

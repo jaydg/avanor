@@ -56,7 +56,7 @@ void XShopKeeperAI::Invalidate()
 
 void XShopKeeperAI::Move()
 {
-	if (ai_owner->l->map->GetItemCount(ai_owner->x, ai_owner->y) == 0 && vRand(50) == 0 && shop->GetArea()->PointIn(ai_owner->x, ai_owner->y))
+	if (ai_owner->l->map->GetItemCount(ai_owner->x, ai_owner->y) == 0 && vRand(50) == 0 && shop->GetArea().PointIn(ai_owner->x, ai_owner->y))
 	{
 		XItem * item = ICREATEA(shop->shop_mask);
 		item->Identify(1);

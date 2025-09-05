@@ -98,7 +98,7 @@ public:
 	XStandardAI(XCreature * _cr); 
 	virtual void Invalidate();
 
-	void SetArea(XRect * area, LOCATION ln);
+	void SetArea(XRect& area, LOCATION ln);
 	void SetOwner(XCreature * cr) {ai_owner = cr;}
 
 	virtual void AnalyzeGrid(int j, int i, int w);

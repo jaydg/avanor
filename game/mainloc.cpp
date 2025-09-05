@@ -46,7 +46,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 			else
 				map->SetXY(j, i, M_GREENTREE);
 		}
-		
+
 // creating high mountains
 	for (i = lm; i < rm; i++)
 	{
@@ -61,7 +61,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 			map->SetXY(i, bm - j - 1, M_HIGHMOUNTAIN);
 		}
 	}
-	
+
 	for (i = tm; i < bm; i++)
 	{
 		int z1 = vRand() % ((i & 3) + 1) + 1;
@@ -75,7 +75,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 			map->SetXY(rm - j - 1, i, M_HIGHMOUNTAIN);
 		}
 	}
-	
+
 //evaluate high mountains till hills!
 	for (i = 0; i < map->hgt; i++)
 		for (j = 0; j < map->len; j++)
@@ -98,11 +98,11 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 							map->SetXY(j + q, i + w, (STDMAP)nm);
 					}
 			}
-			
+
 		}
-		
-		
-//Small village		
+
+
+//Small village
 ///		PutPalette(0, 0, PAL_SMALL_VILLAGE, this);
 
 ///		NewWay(3, 6, L_MUSHROOMS_CAVE1, STW_DOWN);
@@ -110,18 +110,18 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 ///		XRect village_area(8, 6, 34, 16);
 ///		for (i = 0; i < 5; i++)
 ///		{
-///			NewCreature(CN_FARMER, &village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
-///			NewCreature(CN_GOODWIFE, &village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
+///			NewCreature(CN_FARMER, village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
+///			NewCreature(CN_GOODWIFE, village_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
 ///		}
 
 
 ///		XRect elder_area(19, 9, 25, 11);
-///		NewCreature(CN_ELDER_GRIDOR, &elder_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
+///		NewCreature(CN_ELDER_GRIDOR, elder_area, GID_SMALL_VILLAGE_FARMER, AIF_GUARD_AREA);
 ///		new XFurniture(24, 8, xBROWN, '~', "plain bed", this);
 
 ///		XRect shop_rect1(8, 7, 18, 11);
 ///		CreateShop(IM_FOOD, &shop_rect1, "Nobel, the human shopkeeper");
-	
+
 
 //way to dwarven caves
 ///		NewWay(5, 29, L_DWARFCITYCAVE1, STW_DOWN);
@@ -130,12 +130,12 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 //master thief
 ///		XRect master_thief_area(40, 10, 45, 14);
 ///		map->CreateRoom(40, 10, 5, 4, 42, 10, M_SAND, M_WOODWALL);
-///		NewCreature(CN_JORGUS, &master_thief_area, GID_FOREST_BROTHER, AIF_GUARD_AREA);
+///		NewCreature(CN_JORGUS, master_thief_area, GID_FOREST_BROTHER, AIF_GUARD_AREA);
 
 //bandits area
 ///		XRect bandit_area(35, 4, 47, 16);
 ///		for (i = 0; i < 10; i++)
-///			NewCreature(CN_BANDIT, &bandit_area, GID_FOREST_BROTHER, AIF_GUARD_AREA | AIF_PROTECT_AREA | AIF_PEACEFUL);
+///			NewCreature(CN_BANDIT, bandit_area, GID_FOREST_BROTHER, AIF_GUARD_AREA | AIF_PROTECT_AREA | AIF_PEACEFUL);
 
 
 //small town
@@ -143,12 +143,12 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 ///		XRect small_town_area(16, 42, 30, 48);
 
 ///		for (i = 0; i < 8; i++)
-///			NewCreature(CN_ROYAL_GUARD, &small_town_area, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
+///			NewCreature(CN_ROYAL_GUARD, small_town_area, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
 
-///		NewCreature(CN_GEKTA, &small_town_area, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
-		
+///		NewCreature(CN_GEKTA, small_town_area, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
+
 ///		XRect ozrect(24, 50, 27, 52);
-///		NewCreature(CN_OZORIK, &ozrect, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
+///		NewCreature(CN_OZORIK, ozrect, GID_GUARDIAN, AIF_GUARD_AREA)->xai->SetEnemyClass(CR_ORC);
 //		new XFurniture(26, 51, xLIGHTRED, '~', "bed", this);
 //		new XFurniture(24, 51, xBROWN, '~', "desk", this);
 
@@ -188,7 +188,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 //orcs!
 		XRect orc_area(10, 70, 30, 80);
 		for (i = 0; i < 20; i++)
-			NewCreature(CR_ORC, &orc_area, GID_ORCS_WARPARTY, AIF_GUARD_AREA);
+			NewCreature(CR_ORC, orc_area, GID_ORCS_WARPARTY, AIF_GUARD_AREA);
 
 		Game.Scheduler.Add(new XMainLocationGen(this));
 
@@ -196,7 +196,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 ///		PutPalette(45, 25, PAL_WIZARD_TOWER, this);
 ///		NewWay(55, 31, L_WIZTOWER_TOP, STW_UP);
 
-//Large City		
+//Large City
 ///		XRect city_area(139, 2, 157, 26);
 ///		PutPalette(130, 2, PAL_CITY, this);
 
@@ -204,57 +204,57 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 ///		CreateShop(IM_BOOK | IM_SCROLL | IM_POTION, &shop_rect3, "Toberik, the human shopkeeper", SHOP_DOOR_RIGHT);
 
 ///		XRect magic_guild_area(163, 12, 166, 15);
-///		NewCreature(CN_GEFEON, &magic_guild_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+///		NewCreature(CN_GEFEON, magic_guild_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 ///		new XFurniture(165, 13, xLIGHTRED, '~', "eternal flame", this);
 
 //Roderik palace
 ///		XRect roderick_area(182, 4, 183, 5);
-///		NewCreature(CN_RODERIK, &roderick_area, GID_RODERICK_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
+///		NewCreature(CN_RODERIK, roderick_area, GID_RODERICK_GUARDIAN, (AIF_GUARD_AREA | AIF_NO_SWAP));
 ///		new XFurniture(182, 4, xYELLOW, '~', "the throne of Avanor", this);
 ///		new XFurniture(172, 9, xLIGHTRED, '~', "royal bed", this);
 ///		new XFurniture(189, 6, xBROWN, '~', "round table", this);
 ///		new XFurniture(191, 12, xBROWN, '~', "dinner table", this);
 /***		{
 			XRect gr(180, 7, 181, 8);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
 			XRect gr(180, 6, 181, 7);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);		
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
 			XRect gr(184, 7, 185, 8);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
 			XRect gr(184, 6, 185, 7);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 
 		{
 			//treasure guardian
 			XRect gr(175, 15, 176, 16);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA | AIF_NO_SWAP); 
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA | AIF_NO_SWAP);
 			NewWay(175, 15, L_KINGS_TREASURE, STW_DOWN);
 		}
 
 		{
 			XRect gr(172, 14, 173, 15);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 		{
 			XRect gr(172, 15, 173, 16);
-			NewCreature(CN_ROYAL_GUARD, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+			NewCreature(CN_ROYAL_GUARD, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 		}
 ***/
 //Lage city townee
 ///		for (i = 0; i < 5; i++)
 ///		{
-///			NewCreature(CN_CITIZEN, &city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
-///			NewCreature(CN_FCITIZEN, &city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+///			NewCreature(CN_CITIZEN, city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+///			NewCreature(CN_FCITIZEN, city_area, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 ///		}
 
 // teleports from small village to town and back
@@ -264,7 +264,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 ///		new XAltar(154, 4, D_LIFE, this);
 ///		{
 ///			XRect gr(153, 4, 156, 7);
-///			NewCreature(CN_HIGHPRIEST, &gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
+///			NewCreature(CN_HIGHPRIEST, gr, GID_RODERICK_GUARDIAN, AIF_GUARD_AREA);
 ///		}
 ///		new XFurniture(152,5,xBROWN,'~',"pew",this);
 ///		new XFurniture(152,6,xBROWN,'~',"pew",this);
@@ -284,9 +284,9 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 ///		NewWay(118, 54, L_UNDEADS_TOMB1, STW_DOWN);
 
 ///		XRect tomb_area(104, 51, 117, 57);
-		
+
 ///		for (i = 0; i < 20; i++)
-///			NewCreature(CN_SKELETON, &tomb_area);
+///			NewCreature(CN_SKELETON, tomb_area);
 
 //Extint Volcano
 ///		PutPalette(40, 72, PAL_EXTINCT_VOLCANO, this);
@@ -328,7 +328,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 
 	// It's her house...
 	XRect wizard_tower_area(37, 7, 44, 12);
-	NewCreature(CN_YOHJISHIRO, &wizard_tower_area, GID_NONE, AIF_GUARD_AREA);
+	NewCreature(CN_YOHJISHIRO, wizard_tower_area, GID_NONE, AIF_GUARD_AREA);
 
 	new XFurniture(37, 10, xLIGHTRED, '~', "nice bed", this);
 }
@@ -342,7 +342,7 @@ XKingsTreasureLocation::XKingsTreasureLocation(LOCATION tl) : XLocation(tl)
 	BuildCave();
 
 	PutPalette(0, 0, PAL_KINGS_TREASURE, this);
-	NewWay(10, 9, L_MAIN, STW_UP);	
+	NewWay(10, 9, L_MAIN, STW_UP);
 
 	int i;
 	XPoint pt;

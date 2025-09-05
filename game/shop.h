@@ -32,7 +32,7 @@ protected:
 	XShop() {}
 public:
 	DECLARE_CREATOR(XShop, XAnyPlace);
-	XShop(XRect * _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
+	XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
 	
 	virtual int onCreatureEnter(XCreature * cr);
 	virtual int onCreatureLeave(XCreature * cr);	

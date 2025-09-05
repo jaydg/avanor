@@ -36,8 +36,8 @@ protected:
 	XAnyPlace() {}
 public:
 	DECLARE_CREATOR(XAnyPlace, XObject);
-	XAnyPlace(XRect * _area, XLocation * _loc);
-	XAnyPlace(XRect * _area, XLocation * _loc, char * _onEventLua);
+	XAnyPlace(XRect& _area, XLocation * _loc);
+	XAnyPlace(XRect& _area, XLocation * _loc, char * _onEventLua);
 	~XAnyPlace();
 	virtual void Invalidate();
 
@@ -48,7 +48,7 @@ public:
 	virtual int onCreatureDropItem(XCreature * cr, XItem * item) {return 1;}
 	virtual void onShowItem(XItem * item, char * buf);
 
-	XRect * GetArea() { return &area; }
+	XRect& GetArea() { return area; }
 
 	virtual XPtr<XCreature> & GetOwner() { return owner; }
 	virtual void Store(XFile * f);
