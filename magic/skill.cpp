@@ -51,7 +51,7 @@ SKILL_DB skill_db[] = {
 {"Climbing",		1},
 };
 
-char * skill_level_name[16] = {
+const char* skill_level_name[16] = {
 MSG_LIGHTGRAY       "NONE",
 MSG_LIGHTGREEN      "Basic", 
 MSG_LIGHTGREEN      "Basic", 
@@ -85,12 +85,12 @@ XSkill::XSkill(SKILL_TYPE _skt, int _level)
 	}
 }
 
-char * XSkill::GetName()
+const char* XSkill::GetName()
 {
 	return skill_db[skt].name;
 }
 
-char * XSkill::GetSkillLevel()
+const char* XSkill::GetSkillLevel()
 {
 	assert(level <= SKILL_MAX_LEVEL);
 	return skill_level_name[level];
@@ -266,7 +266,7 @@ int XSkill::UseDisarm(XCreature * user)
 
 struct TRAP_CREATE_REC
 {
-	char * name;
+	const char* name;
 	bool isMagic;
 	int level;
 	unsigned int var; //neccessary item or spell

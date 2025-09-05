@@ -248,7 +248,7 @@ int XMap::GetVisibility(int x, int y)
 		return 0;
 }
 
-char * XMap::GetDescription(int x, int y)
+const char* XMap::GetDescription(int x, int y)
 {
 	if (x >= 0 && x < len && y >= 0 && y < hgt)
 	{

@@ -1070,7 +1070,7 @@ void XStandardAI::RemovePersonalEnemy(XCreature * cr)
 */
 }
 
-int XStandardAI::Chat(XCreature * chatter, char * msg)
+int XStandardAI::Chat(XCreature * chatter, const char* msg)
 {
 	if (!ai_owner->Chat(chatter, msg))
 		msgwin.Add(ai_owner->StdAnswer());

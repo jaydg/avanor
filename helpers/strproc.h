@@ -35,7 +35,7 @@ public:
 	XStringProc(const char * _str) { str = _str; index = 0;}
 	void Reset() {index = 0;}
 	int GetData(char * buf, char delimiter = ' ');
-	int GetParam(char * buf, char * param);
+	int GetParam(char * buf, const char* param);
 
 protected:
 	const char * str;

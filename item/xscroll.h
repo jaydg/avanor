@@ -50,7 +50,7 @@ enum SCROLL_NAME
 
 struct SCROLL_REC
 {
-	SCROLL_REC(char * rn, EFFECT eff, SCROLL_NAME scrn, int val, int rar) //generate scroll name
+	SCROLL_REC(const char* rn, EFFECT eff, SCROLL_NAME scrn, int val, int rar) //generate scroll name
 	{
 		real_name = rn;
 		effect = eff;
@@ -60,7 +60,7 @@ struct SCROLL_REC
 		total_value += rar;
 		rarity = rar;
 
-		char * tmp = "euioa";
+		const char* tmp = "euioa";
 		int words = vRand() % 2 + 1;
 		strcpy(name, "");
 		for (int i = 0; i < words; i++)
@@ -96,7 +96,7 @@ struct SCROLL_REC
 	SCROLL_NAME scroll_name;
 	int identify;
 	char name[20];
-	char * real_name;
+	const char* real_name;
 	int value;
 	int rarity;
 

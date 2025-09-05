@@ -175,7 +175,7 @@ void XHero::Pray()
 
 
 
-void XHero::EndGame(char * end_msg)
+void XHero::EndGame(const char* end_msg)
 {
 	int score = ((XHero *)main_creature)->_EXP + ((XHero *)main_creature)->MoneyOp(0);
 

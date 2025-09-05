@@ -26,7 +26,7 @@ REGISTER_CLASS(XBook);
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-char * books_descr[] = 
+const char* books_descr[] =
 {
 "old tome", "small tome", "ancient tome", "dirty tome", "heavy tome",
 "old book", "small book", "ancient book", "dirty book", "heavy book",

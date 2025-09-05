@@ -198,6 +198,6 @@ void vRandSeed(unsigned long seed);
 long vRand();
 long vRand(unsigned long n);
 
-char *vMakePath(char *prefix, char *filename);
+char *vMakePath(const char* prefix, const char* filename);
 
 #endif

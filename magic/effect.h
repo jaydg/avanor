@@ -96,8 +96,8 @@ class XEffect
 	static int Heal(XCreature * caster, int X, int Y, int Z);
 	static int Cure(XCreature * caster, int X, int Y, int Z);
 	static int Mana(XCreature * caster, int X, int Y, int Z);
-	static int Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg);
-	static int Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg);
+	static int Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
+	static int Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
 public:
 	static int Make(EFFECT_DATA * pData);
 	static RESULT Make(XCreature * caster, EFFECT effect, int power);

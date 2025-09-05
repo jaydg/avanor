@@ -25,23 +25,23 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 struct CUSTOM_RACE
 {
-	char * name;
-	char * stats;
-	char * max_stats;
-	char * speed;
+	const char* name;
+	const char* stats;
+	const char* max_stats;
+	const char* speed;
 	FOOD_FEELING ff;
 };
 
 struct CUSTOM_PROF
 {
-	char * name;
-	char * stats;
+	const char* name;
+	const char* stats;
 };
 
 struct CUSTOM_GEND
 {
-	char * name;
-	char * stats;
+	const char* name;
+	const char* stats;
 };
 
 CUSTOM_RACE cust_race[] = {
@@ -839,12 +839,12 @@ void XHero::PlayerSetup()
 
 }
 
-char * XHero::GetRaceStr()
+const char* XHero::GetRaceStr()
 {
 	return cust_race[race].name;
 }
 
-char * XHero::GetProfessionStr()
+const char* XHero::GetProfessionStr()
 {
 	return cust_profession[profession].name;
 }

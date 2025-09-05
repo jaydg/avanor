@@ -43,7 +43,7 @@ protected:
 public:
 	DECLARE_CREATOR(XGefeon, XAnyCreature);
 	XGefeon(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 };
 
 
@@ -54,7 +54,7 @@ protected:
 public:
 	DECLARE_CREATOR(XAhkUlan, XAnyCreature);
 	XAhkUlan(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 	virtual void Die(XCreature * killer);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
@@ -73,7 +73,7 @@ protected:
 public:
 	DECLARE_CREATOR(XRoderick, XAnyCreature);
 	XRoderick(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 	virtual void Die(XCreature * killer);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
@@ -92,7 +92,7 @@ protected:
 public:
 	DECLARE_CREATOR(XHighPriest, XAnyCreature);
 	XHighPriest(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 	virtual void Die(XCreature * killer);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 };
@@ -105,7 +105,7 @@ protected:
 public:
 	DECLARE_CREATOR(XRotmoth, XAnyCreature);
 	XRotmoth(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 };
 
 class XRotmothAI : public XStandardAI
@@ -127,7 +127,7 @@ protected:
 public:
 	DECLARE_CREATOR(XGiana, XAnyCreature);
 	XGiana(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 };
 
 
@@ -159,7 +159,7 @@ public:
 	DECLARE_CREATOR(XShopkeeper, XAnyCreature);
 	XShopkeeper(_CREATURE *cr);
 	XShopkeeper(char * _name, XShop * shop, CREATURE_LEVEL crl, CREATURE_EXP cre) {}
-	virtual char * StdAnswer();
+	virtual const char* StdAnswer();
 	virtual void Die(XCreature * killer);
 	void SetShop(char * _name, XShop * shop);
 };

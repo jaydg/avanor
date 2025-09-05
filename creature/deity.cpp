@@ -220,18 +220,18 @@ DEITY_RELATION XReligion::GetRelation(DEITY deity)
 		return DR_CHAMPION;
 }
 
-char * relation_name[] = {
+const char* relation_name[] = {
 MSG_RED "fallen champion", MSG_RED "very bad", MSG_RED "bad",
 MSG_LIGHTGRAY "normal", MSG_LIGHTGRAY "adept", MSG_LIGHTGREEN "follower",
 MSG_YELLOW "messiah", MSG_WHITE "champion"
 };
 
-char * XReligion::GetRelationName(DEITY_RELATION dr)
+const char* XReligion::GetRelationName(DEITY_RELATION dr)
 {
 	return relation_name[dr];
 }
 
-char * XReligion::GetDeityName(DEITY deity)
+const char* XReligion::GetDeityName(DEITY deity)
 {
 	if (deity == D_LIFE)
 		return "Tiamat";

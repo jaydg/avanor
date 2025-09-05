@@ -170,7 +170,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 	return flag;
 }
 
-char * XCorpse::postEat(XCreature * eater)
+const char* XCorpse::postEat(XCreature * eater)
 {
 	return "tasty";
 }

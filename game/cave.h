@@ -55,7 +55,7 @@ struct CAVE_DATA
 	int height;
 	unsigned int cf;
 	int freq;
-	char * cave;
+	const char* cave;
 
 	bool isExit(int x, int y);
 	char GetCode(int x, int y);

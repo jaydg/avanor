@@ -34,9 +34,9 @@ enum HERB_TYPE
 
 struct _HERBS
 {
-	char * herb_name;
-	char * bush_name;
-	char * post_eat;
+	const char* herb_name;
+	const char* bush_name;
+	const char* post_eat;
 	int color;
 	HERB_TYPE herb_type;
 	POTION_NAME pn;
@@ -59,7 +59,7 @@ public:
 	XHerb() { assert(0); }
 	virtual XObject * MakeCopy() { return new XHerb(this); }
 	virtual RESULT onEat(XCreature * eater);
-	virtual char * postEat(XCreature * eater);
+	virtual const char* postEat(XCreature * eater);
 	
 	virtual int Compare(XObject * o)
 	{
@@ -107,7 +107,7 @@ class XHerbBush: public XMapObject
 
 protected:
 	long          grownth_rate;
-	const char * GetName(XCreature * viewer);
+	const char* GetName(XCreature * viewer);
 	XHerbBush() { }
 
 public:

@@ -530,7 +530,7 @@ void vRestore(V_BUFFER * buf)
 
 static char path_buffer[1024];
 
-char *vMakePath(char *prefix, char *filename)
+char *vMakePath(const char* prefix, const char* filename)
 {
 #ifdef XLINUX
 	if (prefix[0] == '~')

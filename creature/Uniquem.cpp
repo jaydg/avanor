@@ -39,7 +39,7 @@ REGISTER_CLASS(XAhkUlan);
 
 XAhkUlan::XAhkUlan(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XAhkUlan::Chat(XCreature * chatter, char * msg)
+int XAhkUlan::Chat(XCreature * chatter, const char* msg)
 {
 	if (xai->isEnemy(chatter))
 	{
@@ -147,7 +147,7 @@ void XBeelzvile::Move()
 REGISTER_CLASS(XGefeon);
 XGefeon::XGefeon(_CREATURE * cr) : XAnyCreature(cr) { }
 
-int XGefeon::Chat(XCreature * chatter, char * msg)
+int XGefeon::Chat(XCreature * chatter, const char* msg)
 {
 	if (XQuest::quest.ahk_ulan_ordered == 0 && XQuest::quest.ahk_ulan_killed == 0)
 	{
@@ -204,7 +204,7 @@ XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr)
 	ContainItem(it);
 }
 
-int XRoderick::Chat(XCreature * chatter, char * msg)
+int XRoderick::Chat(XCreature * chatter, const char* msg)
 {
 	XItem * it1 = chatter->GetBodyPart(BP_HAND, 0)->Item();
 	XItem * it2 = chatter->GetBodyPart(BP_HAND, 1)->Item();
@@ -302,7 +302,7 @@ XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr)
 	ContainItem(it);
 }
 
-int XHighPriest::Chat(XCreature * chatter, char * msg)
+int XHighPriest::Chat(XCreature * chatter, const char* msg)
 {
 	if (xai->isEnemy(chatter))
 	{
@@ -379,7 +379,7 @@ XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
 
 }
 
-int XRotmoth::Chat(XCreature * chatter, char * msg)
+int XRotmoth::Chat(XCreature * chatter, const char* msg)
 {
 	if (xai->isEnemy(chatter))
 	{
@@ -445,7 +445,7 @@ XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr)
 	XQuest::quest.kidnapped_girl = this;
 }
 
-int XGiana::Chat(XCreature * chatter, char * msg)
+int XGiana::Chat(XCreature * chatter, const char* msg)
 {
 	if (xai->isEnemy(chatter))
 	{
@@ -529,7 +529,7 @@ void XShopkeeper::Die(XCreature * killer)
 	XAnyCreature::Die(killer);
 }
 
-char * XShopkeeper::StdAnswer() 
+const char* XShopkeeper::StdAnswer()
 {
 	assert(xai && dynamic_cast<XShopKeeperAI *>(xai));
 	XShopKeeperAI * ai = static_cast<XShopKeeperAI *>(xai);

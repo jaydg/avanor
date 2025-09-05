@@ -31,20 +31,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 struct _MAIN_ITEM_STRUCT
 {
 	ITEM_TYPE it;
-	char * name;
+	const char* name;
 	char view;
-	char * dv;
-	char * pv;
-	char * hit;
-	char * dice;
-	char * z; //random z to dice;
-	char * r;
+	const char* dv;
+	const char* pv;
+	const char* hit;
+	const char* dice;
+	const char* z; //random z to dice;
+	const char* r;
 	ITEM_SET iset;
 	int value;
 	int valume;
 	int probability;
 	ITEM_QUALITY iq;
-	char * breserved;
+	const char* breserved;
 };
 
 class XItemBasicStructure
@@ -69,21 +69,21 @@ public:
 
 struct ENHANCE_STRUCT
 {
-	char * name;
+	const char* name;
 	int color; //if 0 don't change a color
-	char * dv;
-	char * pv;
-	char * hit;
-	char * dice;
-	char * z; //random z to dice;
-	char * rng;
+	const char* dv;
+	const char* pv;
+	const char* hit;
+	const char* dice;
+	const char* z; //random z to dice;
+	const char* rng;
 	int val; // value
 	ITEM_MASK im;
 	BRAND_TYPE brt;
 	CAN_FLAG res_flag;
 	SPECIAL_PROPERTY spp;
-	char * s; //stats
-	char * r; //resists
+	const char* s; //stats
+	const char* r; //resists
 };
 
 typedef _MAIN_ITEM_STRUCT XITEM_STRUCT[];

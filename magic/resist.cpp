@@ -56,7 +56,7 @@ XResistance::XResistance()
 		SetResistance((RESISTANCE)i, 0);
 }
 
-XResistance::XResistance(const char * str1)
+XResistance::XResistance(const char* str1)
 {
 	XStringProc xsp1(str1);
 	char buf[256];
@@ -113,26 +113,26 @@ void XResistance::Restore(XFile * f)
 }
 
 
-char * resist_name[] = 
+const char* resist_name[] =
 { "White magic", "Black magic", "Fire magic", "Water magic", "Air magic", "Earth magic", 
 "Acid", "Cold", "Poison", "Disease", "Paralyzation",
 "Stun", "Confusion", "Blindness",
 "Light", "Darkness", "Invisible", "See Invisible"
 };
 
-char * XResistance::GetResistanceName(RESISTANCE r)
+const char* XResistance::GetResistanceName(RESISTANCE r)
 {
 	return resist_name[r];
 }
 
-char * resist_level[] = 
+const char* resist_level[] =
 {
 MSG_LIGHTRED "awful", MSG_LIGHTRED "bad", 
 MSG_LIGHTGRAY "none", MSG_LIGHTGREEN "mediocre", MSG_LIGHTGREEN "fair",
 MSG_LIGHTGREEN "good", MSG_YELLOW "excellent", MSG_WHITE "complete"
 };
 
-char * XResistance::GetResistanceLevel(RESISTANCE r)
+const char* XResistance::GetResistanceLevel(RESISTANCE r)
 {
 	if (resistances[r] < -50)
 		return resist_level[0];

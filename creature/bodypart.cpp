@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XBodyPart);
 
-char * bp_names[] = {"",
+const char* bp_names[] = {"",
 "head", "neck", "body", "cloak",
 "hand", "ring", "gloves",
 "boots", "light_source", "tool", "missile_weapon", "missile", "eof"};
@@ -60,12 +60,12 @@ void XBodyPart::Invalidate()
 //	INVALIDATE_LEAVE();
 }
 
-char * XBodyPart::GetName()
+const char* XBodyPart::GetName()
 {
 	return bp_names[bp_uin];
 }
 
-char * XBodyPart::XGetName(BODYPART bp)
+const char* XBodyPart::XGetName(BODYPART bp)
 {
 	return bp_names[bp];
 }

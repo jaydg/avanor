@@ -107,7 +107,7 @@ public:
 	void ActivateTrap();
 	void GiveItem();
 	void ChatWithMonster();
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual int Chat(XCreature * chatter, const char* msg);
 
 	void FirstStep(int _x, int _y, XLocation * _l);
 	void LastStep();
@@ -124,10 +124,10 @@ public:
 	int race;
 	int profession;	
 
-	char * GetRaceStr();
-	char * GetProfessionStr();
+	const char* GetRaceStr();
+	const char* GetProfessionStr();
 
-	static void EndGame(char * end_msg);
+	static void EndGame(const char* end_msg);
 
 	//ALCHEMY
 	int LearnReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);

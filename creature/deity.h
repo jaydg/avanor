@@ -77,7 +77,7 @@ enum PRAY
 
 struct DEITY_HELP
 {
-	char * help_name;
+	const char* help_name;
 	int help_cost;
 	PRAY pray;
 };
@@ -91,8 +91,8 @@ public:
 	void KillCreature(XCreature * killer, XCreature * victim);
 	int SacrificeItem(XCreature * cr, XItem * item, DEITY deity = D_UNKNOWN);
 	DEITY_RELATION GetRelation(DEITY deity);
-	static char * GetRelationName(DEITY_RELATION dr);
-	static char * GetDeityName(DEITY deity);
+	static const char* GetRelationName(DEITY_RELATION dr);
+	static const char* GetDeityName(DEITY deity);
 	int GetAvailHelp(DEITY deity, DEITY_HELP ** help);
 	int Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer);
 

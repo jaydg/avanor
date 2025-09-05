@@ -44,8 +44,8 @@ public:
 	MAGIC_SCHOOL GetSchool();
 	void GainLevel(int n = 1) {eff_level += n;}
 	void toString(char * buf);
-	static const char * GetName(SPELL_NAME spn);
-	const char * GetName() { return GetName(spell_name); }
+	static const char* GetName(SPELL_NAME spn);
+	const char* GetName() { return GetName(spell_name); }
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
 };

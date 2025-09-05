@@ -39,7 +39,7 @@ public:
 	int BindWeapon();
 	virtual void toString(char * buf);
 protected:
-	char * GetTemplate(unsigned int mask, int isRight = 1);
+	const char* GetTemplate(unsigned int mask, int isRight = 1);
 };
 
 #endif

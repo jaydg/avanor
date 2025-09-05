@@ -34,7 +34,7 @@ class XHiScoreItem : public XGuiItem_Text
 {
 public:
 	char buf[256];
-	XHiScoreItem(int place, unsigned int score, char * _name, char * _msg, int flg, int last_record = 0);
+	XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
 	XHiScoreItem() : isLastRecord(0) {}
 	XHiScoreItem(XHiScoreItem * copy);
 //	virtual void Put();
@@ -45,7 +45,7 @@ public:
 	void Restore(XFile * f);
 	unsigned int score;
 	int place;
-	void SetText(int place, unsigned int score, char * name, int day, int month, int year, char * msg);
+	void SetText(int place, unsigned int score, const char* name, int day, int month, int year, const char * msg);
 //   virtual const char * operator[](int index);
 protected:
 	int year;

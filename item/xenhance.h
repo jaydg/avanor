@@ -46,7 +46,7 @@ enum ENH_COLOR
 struct _ENH_COLOR_TABLE
 {
 	int color;
-	char * color_name;
+	const char* color_name;
 	int is_used;
 };
 
@@ -61,15 +61,15 @@ enum ENHANCE
 struct ENH_REC
 {
 	ENHANCE enh;
-	char * name;
-	char * dv; //modifers....
-	char * pv;
-	char * hit;
-	char * dice;
-	char * z; //random z to dice;
-	char * rng;  //rng
-	char * r; //resists
-	char * s; //stats
+	const char* name;
+	const char* dv; //modifers....
+	const char* pv;
+	const char* hit;
+	const char* dice;
+	const char* z; //random z to dice;
+	const char* rng;  //rng
+	const char* r; //resists
+	const char* s; //stats
 	int value;
 	ENH_COLOR color;
 	int identify;

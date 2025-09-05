@@ -103,7 +103,7 @@ _WEAPON_BIND wbind[weapon_db_size] = {
 struct WEAPON_BRAND_TYPE_NAME
 {
 	BRAND_TYPE brt;
-	char * templ;
+	const char * templ;
 };
 
 const int weapon_brand_name_db_size = 17;
@@ -170,7 +170,7 @@ void XWeapon::toString(char * buf)
 		}
 	}
 	
-	char * brand_templ = NULL;
+	const char* brand_templ = NULL;
 
 	char zbuf[256] = "%s";
 	if (brt)
@@ -254,9 +254,9 @@ void XWeapon::toString(char * buf)
 	}
 }
 
-char * XWeapon::GetTemplate(unsigned int mask, int isRight)
+const char* XWeapon::GetTemplate(unsigned int mask, int isRight)
 {
-	char * brand_templ = NULL;
+	const char* brand_templ = NULL;
 	for (int j = 0; j < weapon_brand_name_db_size; j++)
 	{
 		if ((weapon_brand_name_db[j].brt ^ mask) == 0)

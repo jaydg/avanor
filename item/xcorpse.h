@@ -91,7 +91,7 @@ public:
 	int Run();
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
-	virtual char * postEat(XCreature * eater);
+	virtual const char* postEat(XCreature * eater);
 	virtual int Compare(XObject * o) {return -1;}
 	virtual int GetValue();
 	virtual void toString(char * buf);

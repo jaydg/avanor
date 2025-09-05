@@ -25,7 +25,7 @@ struct SPELL_REC
 	EFFECT effect;
 	MAGIC_SCHOOL school;
 	int cost;
-	const char * name;
+	const char* name;
 	SPELL_REC();
 };
 
@@ -354,7 +354,7 @@ XSpell * XMagic::GetSpell(SPELL_NAME spell)
 }
 
 
-char * mg_name_str[] = {
+const char* mg_name_str[] = {
 "Elemental", 
 "Body and Spirit", 
 "Protection and Resistance", 
@@ -363,7 +363,7 @@ char * mg_name_str[] = {
 "Power"
 };
 
-char * mg_level_str[] = {
+const char* mg_level_str[] = {
 "", 
 MSG_LIGHTGRAY		"Beginner", 
 MSG_LIGHTGRAY		"Novice", 

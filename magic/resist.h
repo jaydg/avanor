@@ -35,7 +35,7 @@ enum FLUENCE {FLU_NONE = 0, FLU_CREATURE = 1, FLU_ITEM = 2, FLU_ALL = 3};
 
 struct RESIST_REC
 {
-	char * name; //life, fire, death etc.
+	const char* name; //life, fire, death etc.
 	FLUENCE flag;
 };
 
@@ -52,8 +52,8 @@ public:
 	void Add(XResistance * r);
 	void Sub(XResistance * r);
 	void Set(XResistance * r);
-	char * GetResistanceName(RESISTANCE r);
-	char * GetResistanceLevel(RESISTANCE r);
+	const char* GetResistanceName(RESISTANCE r);
+	const char* GetResistanceLevel(RESISTANCE r);
 	bool isEqual(XResistance * xr);
 
 	void Store(XFile * f);

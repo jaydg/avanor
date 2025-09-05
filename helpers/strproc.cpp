@@ -41,7 +41,7 @@ int XStringProc::GetData(char * buf, char delimiter)
 
 }
 
-int XStringProc::GetParam(char * buf, char * param)
+int XStringProc::GetParam(char * buf, const char* param)
 {
 	assert(param);
 	int i = 0;
@@ -101,7 +101,7 @@ KEYWORD keywords[] = {
 	{NULL, -1}
 };
 
-XStringProcEx::XStringProcEx(const char * str)
+XStringProcEx::XStringProcEx(const char* str)
 {
 	int i = 0;
 

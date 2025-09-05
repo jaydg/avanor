@@ -26,7 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "manual.h"
 #include "hiscore.h"
 
-char * logo_text[] =
+const char* logo_text[] =
 {
 	MSG_CYAN
 	"  .oooooo  oo      oo    .oooooo  oo     oo    .oooo.    ooooooo. ",

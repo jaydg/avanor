@@ -30,7 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 struct _SKILL_DB
 {
-	char * name;
+	const char* name;
 	int base_dv[16];
 	int base_hit[16];
 	int	base_dmg[16];
@@ -48,7 +48,7 @@ public:
 	int GetHIT(WSK_TYPE wt);
 	int GetDMG(WSK_TYPE wt);
 	int GetUseTime(WSK_TYPE wt);
-	char * GetName(WSK_TYPE wt);
+	const char* GetName(WSK_TYPE wt);
 	int GetMarks(WSK_TYPE wt) {return marks_counter[wt] / 10;}
 
 	void UseSkill(WSK_TYPE wt, int time = 1);

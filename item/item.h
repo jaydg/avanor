@@ -98,8 +98,8 @@ public:
 	void UnCarry();
 
 protected:
-	void GetFullName(char * buf, char * templ = NULL);
-	void GetArtifactName(char * buf, char * real_name);
+	void GetFullName(char * buf, const char* templ = NULL);
+	void GetArtifactName(char * buf, const char* real_name);
 };
 
 typedef XSortedList<XItem *>::iterator it_iterator;

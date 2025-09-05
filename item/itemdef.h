@@ -106,21 +106,21 @@ enum ITEM_QUALITY
 
 struct _ITEMPROP
 {
-	char * propname; //wooden, metall,
+	const char* propname; //wooden, metall,
 	int color;
-	char * dv; //modifers....
-	char * pv;
-	char * hit;
-	char * dice;
-	char * z; //random z to dice;
-	char * r; //range
+	const char* dv; //modifers....
+	const char* pv;
+	const char* hit;
+	const char* dice;
+	const char* z; //random z to dice;
+	const char* r; //range
 	unsigned int iflag; //wich item can consist from this material
 	int probability;
 	ITEM_QUALITY iq;
 	int density;
 	int value;
 	CAN_FLAG mflag;
-	char * resistance; //to monster
+	const char* resistance; //to monster
 	SPECIAL_PROPERTY sp;
 };
 

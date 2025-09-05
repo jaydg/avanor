@@ -553,9 +553,9 @@ void XAlchemy::Init()
 	XList<XAlchemyRec *>::iterator it = alchemy.reception.begin();
 	while (it != alchemy.reception.end())
 	{
-		char * c1 = potion_descr[it->pn1].name;
-		char * c2 = potion_descr[it->pn2].name;
-		char * c3 = potion_descr[it->result].name;
+		const char* c1 = potion_descr[it->pn1].name;
+		const char* c2 = potion_descr[it->pn2].name;
+		const char* c3 = potion_descr[it->result].name;
 		fprintf(f, "%s + %s = %s\n", c1, c2, c3);
 		it++;
 	}
@@ -564,9 +564,9 @@ void XAlchemy::Init()
 
 void XAlchemy::GetReceptionName(char * buf, POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
 {
-	char * c1 = potion_descr[pn1].name;
-	char * c2 = potion_descr[pn2].name;
-	char * c3 = potion_descr[pn3].name;
+	const char* c1 = potion_descr[pn1].name;
+	const char* c2 = potion_descr[pn2].name;
+	const char* c3 = potion_descr[pn3].name;
 	sprintf(buf, "potion of %s + potion of %s = potion of %s", c1, c2, c3);
 }
 

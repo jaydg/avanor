@@ -30,7 +30,7 @@ unsigned int XTime::hour = 0;
 
 unsigned int XTime::tic = 0;
 
-char * month_name[] = {
+const char* month_name[] = {
 "month_1",
 "month_2",
 "month_3",
@@ -46,7 +46,7 @@ char * month_name[] = {
 "month_13",
 };
 
-char * day_name[] =
+const char* day_name[] =
 {
 "day_1",
 "day_2",
@@ -57,7 +57,7 @@ char * day_name[] =
 "day_7",
 };
 
-char * week_name[] =
+const char* week_name[] =
 {
 "week_1",
 "week_2",
@@ -95,7 +95,7 @@ int XTime::GetMonth()
 	return month;
 }
 
-char * XTime::GetMonthName()
+const char* XTime::GetMonthName()
 {
 	return month_name[month];
 }
@@ -105,7 +105,7 @@ int XTime::GetDay()
 	return day;
 }
 
-char * XTime::GetDayName()
+const char* XTime::GetDayName()
 {
 	return day_name[day % 7];
 };
@@ -115,7 +115,7 @@ int XTime::GetWeek()
 	return day / 7;
 };
 
-char * XTime::GetWeekName()
+const char* XTime::GetWeekName()
 {
 	return week_name[day / 7];
 };
@@ -169,5 +169,3 @@ void XTime::RunTime()
 		}
 	}
 }
-
-

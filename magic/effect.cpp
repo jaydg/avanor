@@ -147,7 +147,7 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
 }
 
 
-int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg)
+int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
 {
 	XCreature * target = pData->l->map->GetMonster(pData->target_x, pData->target_y);
 	if (pData->l->map->GetVisible(pData->target_x, pData->target_y) && __animation_flag)
@@ -176,7 +176,7 @@ int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_T
 }
 
 
-int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, char * msg)
+int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
 {
 	MF_DATA mfd;
 	mfd.arrow_type = MFT_BALL;

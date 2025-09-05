@@ -110,7 +110,7 @@ public:
 	virtual void onDie(XCreature * killer);
 	virtual void onSteal(XCreature * rogue);
 
-	virtual int Chat(XCreature * chatter = NULL, char * msg = NULL);
+	virtual int Chat(XCreature * chatter = NULL, const char* msg = NULL);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 	virtual int GetTargetPos(XPoint * pt);
 /*	virtual int Chat(XCreature * chatter = NULL, char * msg = NULL);

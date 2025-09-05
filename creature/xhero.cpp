@@ -850,8 +850,8 @@ void XHero::ExpList()
 }
 
 
-char * empty = "                                                                 ";
-char * smask = "[|{}'=!?\"\\%]]$X";
+const char* empty = "                                                                 ";
+const char* smask = "[|{}'=!?\"\\%]]$X";
 ITEM_MASK imask[] = {
 (ITEM_MASK)(IM_HAT | IM_BODY | IM_BOOTS | IM_GLOVES | IM_CLOAK | IM_SHIELD),
 IM_WEAPON, IM_MISSILEW, IM_MISSILE,
@@ -864,8 +864,8 @@ IM_HAT, IM_BODY, IM_CLOAK, IM_GLOVES, IM_BOOTS, IM_SHIELD,
 IM_WEAPON, IM_NECK, IM_RING, IM_MISSILEW, IM_MISSILE, IM_POTION,
 IM_SCROLL, IM_BOOK, IM_WAND, IM_FOOD, IM_HERB, IM_LIGHTSOURCE, IM_TOOL, IM_MONEY};
 
-char * output_items_ext = "[[[[[[|'={}!?\"\\%%]]$";
-char * output_items_name[] = {
+const char* output_items_ext = "[[[[[[|'={}!?\"\\%%]]$";
+const char* output_items_name[] = {
 "Helmets", "Armours", "Cloaks", "Gloves", "Boots", "Shields",
 "Weapon", "Necklaces", "Rings", "Missile weapon", "Missiles", "Potions",
 "Scrolls", "Books", "Wands", "Food", "Herbs", "Light sources", "Tools", "Money"};
@@ -1007,7 +1007,7 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 }
 
 
-char * part_names[] = {"",
+const char* part_names[] = {"",
 "Head", "Necklace", "Body", "Cloak",
 "Left hand", "Left ring", "Gloves",
 "Boots", "Light source", "Tool", "Missile weapon", "Missile", "eof"};
@@ -2191,7 +2191,7 @@ int XHero::UseSkill()
     }
 }
 
-char * wsk_levels_name[] = {
+const char* wsk_levels_name[] = {
         "unskilled",
                 "basic", "basic", "basic",
                 "advanced", "advanced", "advanced", "advanced",
@@ -2390,7 +2390,7 @@ void XHero::ChatWithMonster()
                 }
 }
 
-int XHero::Chat(XCreature * chatter, char * msg)
+int XHero::Chat(XCreature * chatter, const char* msg)
 {
         msgwin.Add("You don't like to speak youself");
         return 1;

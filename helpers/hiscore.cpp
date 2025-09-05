@@ -23,8 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "global.h"
 #include <time.h>
 
-void XHiScoreItem::SetText(int place, unsigned int score, char * name, 
-	int day, int month, int year, char * msg)
+void XHiScoreItem::SetText(int place, unsigned int score, const char* name,
+	int day, int month, int year, const char* msg)
 {
 	char buf[256];
 	char dbuf[256];
@@ -42,7 +42,7 @@ void XHiScoreItem::SetText(int place, unsigned int score, char * name,
 	XGuiItem_Text::SetText(buf);
 }
 
-XHiScoreItem::XHiScoreItem(int _place, unsigned int _score, char * _name, char * _msg, int flg, int last_record)
+XHiScoreItem::XHiScoreItem(int _place, unsigned int _score, const char* _name, const char* _msg, int flg, int last_record)
 {
 	tm * _tm;
 	time_t t = time(0);

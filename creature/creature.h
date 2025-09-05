@@ -214,7 +214,7 @@ public:
 	int GetSpeed();
 
 	CR_GENDER GetGender();
-	char * GetGenderStr();
+	const char* GetGenderStr();
 
 	int lttm; //long doing time to move
 	int isDisturb; //is creature disturbed duaring lttm
@@ -318,7 +318,7 @@ public:
 	int CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker);
 	void CausePostEffect(int dmg, BRAND_TYPE brt, XCreature * attacker);
 
-	virtual char * GetMeleeAttackMsg(XItem * weapon);
+	virtual const char* GetMeleeAttackMsg(XItem * weapon);
 
 	virtual void FirstStep(int _x, int _y, XLocation * _l);
 	virtual void LastStep();
@@ -331,14 +331,14 @@ public:
 	CREATURE_CLASS creature_class;
 	GROUP_ID group_id; //orcs warparty has id 1, bandits - id 2, etc
 
-	virtual char * StdAnswer() {return "You receive no answer.";}
-	virtual int Chat(XCreature * chatter, char * msg);
+	virtual const char* StdAnswer() {return "You receive no answer.";}
+	virtual int Chat(XCreature * chatter, const char* msg);
 
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 
 	TACTICS_STATE tactics;
 	void ChangeTactics(TACTICS_STATE tact) {tactics = tact;}
-	char * GetWoundMsg(int flag = 0);
+	const char* GetWoundMsg(int flag = 0);
 
 	void GetRangeAttackInfo(int * range, int * hit, XDice * dmg);
 
@@ -359,8 +359,8 @@ public:
 
 	bool isHero() { return (im & IM_HERO) > 0;}
 
-	char * GetNameEx(CR_NAME_TYPE crn);
-	char * GetVerb(char * verb);
+	const char* GetNameEx(CR_NAME_TYPE crn);
+	const char* GetVerb(const char* verb);
 
 };
 

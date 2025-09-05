@@ -39,14 +39,14 @@ XMsgWin::~XMsgWin()
 	delete history_list;
 }
 
-void XMsgWin::AddLast(const char * str)
+void XMsgWin::AddLast(const char* str)
 {
 	static char buf[8192];
 	sprintf(buf, "%s.", str);
 	Add(buf);
 };
 
-void XMsgWin::Add(const char * tstr, int flag)
+void XMsgWin::Add(const char* tstr, int flag)
 {
 	char str[8192];
 	strcpy(str, tstr);

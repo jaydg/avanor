@@ -402,7 +402,7 @@ void XItem::StatsToString(char * buf)
 }
 
 
-void XItem::GetFullName(char * buf, char * templ)
+void XItem::GetFullName(char * buf, const char* templ)
 {
 	if (special_number >= 0)
 	{
@@ -440,7 +440,7 @@ void XItem::GetFullName(char * buf, char * templ)
 	}
 }
 
-void XItem::GetArtifactName(char * buf, char * real_name)
+void XItem::GetArtifactName(char * buf, const char* real_name)
 {
 	if (isIdentifed())
 	{

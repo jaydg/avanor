@@ -27,13 +27,13 @@ class XTime
 {
 public:
 	static int GetMonth();
-	static char * GetMonthName();
+	static const char* GetMonthName();
 
 	static int GetDay();
-	static char * GetDayName();
+	static const char* GetDayName();
 
 	static int GetWeek();
-	static char * GetWeekName();
+	static const char* GetWeekName();
 
 	static int GetYear();
 	

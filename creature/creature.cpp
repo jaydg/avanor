@@ -1022,7 +1022,7 @@ XBodyPart * XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
 
 
 
-char * XCreature::GetWoundMsg(int flag)
+const char* XCreature::GetWoundMsg(int flag)
 {
 	float rel = (float)(GetMaxHP()) / ((float)_HP);
 	if (rel <= 1.0)
@@ -1559,7 +1559,7 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject *
 	return 0;
 }
 
-int XCreature::Chat(XCreature * chatter, char * msg)
+int XCreature::Chat(XCreature * chatter, const char* msg)
 {
 	if (event_handler)
 	{
@@ -1568,7 +1568,7 @@ int XCreature::Chat(XCreature * chatter, char * msg)
 		lua_pushnumber(XLocation::L, LE_CHAT);
 		lua_pushlightuserdata(XLocation::L, this);
 		lua_pushlightuserdata(XLocation::L, chatter);
-		lua_pushlightuserdata(XLocation::L, msg);
+		lua_pushlightuserdata(XLocation::L, const_cast<char*>(msg));
 		lua_call(XLocation::L, 4, 1);
 		int res = lua_tonumber(XLocation::L, 3);
 //		int res1 = lua_tonumber(XLocation::L, 1);
@@ -1737,7 +1737,7 @@ int XCreature::MoneyOp(int money_count)
 	return 0;
 }
 
-char * XCreature::GetGenderStr()
+const char* XCreature::GetGenderStr()
 {
 	CR_GENDER g = GetGender();
 	if(g == GEN_MALE)
@@ -1748,7 +1748,7 @@ char * XCreature::GetGenderStr()
 		return "neuter";
 }
 
-char * XCreature::GetNameEx(CR_NAME_TYPE crn)
+const char* XCreature::GetNameEx(CR_NAME_TYPE crn)
 {
 	static char cool_buf[1024]; //hope the name will never larger than
 	if (isVisible())
@@ -1835,7 +1835,7 @@ char * XCreature::GetNameEx(CR_NAME_TYPE crn)
 	return "";
 }
 
-char * XCreature::GetVerb(char * verb)
+const char* XCreature::GetVerb(const char* verb)
 {
 	static char cool_buf[1024]; //hope the name will never larger than
 	if (creature_person_type & CPT_YOU)

@@ -54,7 +54,7 @@ SKT_CLIMBING		= 22, //at this time from pits only...
 
 struct SKILL_DB
 {
-	char * name;
+	const char* name;
 	int use_per_level;
 };
 
@@ -84,8 +84,8 @@ public:
 	XSkill() {assert(0);}
 	XSkill(SKILL_TYPE _skt, int _level = 1);
 	SKILL_TYPE GetSkill() {return skt;}
-	char * GetName();
-	char * GetSkillLevel();
+	const char* GetName();
+	const char* GetSkillLevel();
 	void UseSkill(int n = 1);//called by monster when this skill was used succesfuly
 	int Use(XCreature * user);
 	int isUseable();

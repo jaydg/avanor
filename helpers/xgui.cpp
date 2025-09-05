@@ -239,7 +239,7 @@ void XGuiList::Put(FILE * f)
 
 	if (!f)
 	{
-		char * tprompt = MSG_LIGHTGRAY "Use " MSG_BROWN "[" MSG_YELLOW "/*-+" MSG_BROWN "]" MSG_LIGHTGRAY "to scroll up/down, " MSG_BROWN "[" MSG_YELLOW "ESC" MSG_LIGHTGRAY "," MSG_YELLOW "Z" MSG_BROWN "]" MSG_LIGHTGRAY " to exit.";
+		const char* tprompt = MSG_LIGHTGRAY "Use " MSG_BROWN "[" MSG_YELLOW "/*-+" MSG_BROWN "]" MSG_LIGHTGRAY "to scroll up/down, " MSG_BROWN "[" MSG_YELLOW "ESC" MSG_LIGHTGRAY "," MSG_YELLOW "Z" MSG_BROWN "]" MSG_LIGHTGRAY " to exit.";
 		vGotoXY(size_x / 2 - x_strlen(tprompt) / 2, size_y - 1);
 		vPutS(tprompt);
 

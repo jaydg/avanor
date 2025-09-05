@@ -54,7 +54,7 @@ struct xMAP
 {
 	char view;
 	char color;
-	char * name;
+	const char* name;
 	MOVEABLE moveable; //0 - normal, 1 -little hard, 80 - UNMOVEABLE
 	VISIABLE visiable; //0 - noraml, 1 ... 80 - wall
 };
@@ -142,7 +142,7 @@ public:
 	void ResKnown(int x, int y);
 	int GetKnown(int x, int y);
 
-	char * GetDescription(int x, int y);
+	const char* GetDescription(int x, int y);
 
 	void SetSpecial(int x, int y, XMapObject * spec);
 	XMapObject * GetSpecial(int x, int y);

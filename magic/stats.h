@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 enum STATS {S_UNKNOWN = -1, S_STR, S_DEX, S_TOU, S_LEN, S_WIL, S_MAN, S_PER, S_CHR, S_EOF};
 
-extern char * stats_str[];
+extern const char* stats_str[];
 
 class XStats
 {
@@ -37,8 +37,8 @@ public:
 	XStats(XStats * xs);
 	XStats(); //all stats == 0 by default
 	int Get(STATS s) { return stats[s] / 100; }
-	char * GetName(STATS s) { return stats_str[s]; }
-	char * GetFullName(STATS s);
+	const char* GetName(STATS s) { return stats_str[s]; }
+	const char* GetFullName(STATS s);
 	void SetStat(STATS s, int val) { stats[s] = val * 100; }
 	void Modify(STATS s, int val) { stats[s] += val * 100; }
 	void AddFract(STATS s, int val) {stats[s] += val;}

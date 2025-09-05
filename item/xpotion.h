@@ -79,7 +79,7 @@ PN_RANDOM
 
 struct PN_COLORTABLE
 {
-	char * name;
+	const char* name;
 	int color;
 	int is_used;
 };
@@ -87,7 +87,7 @@ struct PN_COLORTABLE
 struct POTION_REC
 {
 	POTION_NAME pn;
-	char * name;
+	const char* name;
 	EFFECT effect;
 	int rarity;
 	int alchemy_power;

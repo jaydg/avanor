@@ -37,8 +37,8 @@ public:
 	DECLARE_CREATOR(XBodyPart, XObject);
 	XBodyPart(XCreature * _owner, BODYPART bp);
 	virtual void Invalidate();
-	char * GetName();
-	static char * XGetName(BODYPART bp);
+	const char* GetName();
+	static const char* XGetName(BODYPART bp);
 	static void Create(XCreature * cr, const char * str);
 	int Compare(XObject * o) { return 1; }
 

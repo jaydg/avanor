@@ -45,7 +45,7 @@ public:
 	virtual XObject * MakeCopy() { return new XAnyFood(this); }
 	virtual void toString(char * buf);
 	virtual RESULT onEat(XCreature * eater); //eat a peace from food
-	virtual char * postEat(XCreature * eater);
+	virtual const char* postEat(XCreature * eater);
 	virtual int Compare(XObject * o);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);

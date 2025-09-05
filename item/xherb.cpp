@@ -142,7 +142,7 @@ POTION_NAME XHerb::GetTargetPotion()
 	return herbs[herb_index].pn;
 }
 
-char * XHerb::postEat(XCreature * eater)
+const char* XHerb::postEat(XCreature * eater)
 {
 	return herbs[herb_index].post_eat;
 }
@@ -203,14 +203,14 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 }
 
 
-const char * XHerbBush::GetName(XCreature * viewer)
+const char* XHerbBush::GetName(XCreature * viewer)
 {
 	XSkill * xsk = viewer->sk->GetSkill(SKT_HERBALISM);
 	int val = 0; if(xsk) val += xsk->GetLevel();
 	
 	_HERBS * herb_data = &herbs[herb_index];
 
-	char * size_name = "";
+	const char* size_name = "";
 	switch (herb_strength)
 	{
 		case 1: size_name = "small"; break;

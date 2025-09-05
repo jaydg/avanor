@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "manual.h"
 #include "global.h"
 
-XGuiList * XManual::OpenPage(const char * page)
+XGuiList * XManual::OpenPage(const char* page)
 {
 	XGuiList * list = new XGuiList();
 	char tbuf[64000];
@@ -56,7 +56,7 @@ void XManual::Run()
 	list.AddItem(new XGuiItem_Text(" Game test modes", 1));
 	list.AddItem(new XGuiItem_Text(" Credits", 1));
 */
-	char * open_page = "index.html";
+	const char* open_page = "index.html";
 ///	char * open_page = "quick_start.html";
 	
 	while (1)

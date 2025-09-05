@@ -45,7 +45,7 @@ class  XGuiItem_SimpleSelect : public XGuiItem
 {
 	char buf[256];
 public:
-	XGuiItem_SimpleSelect(char * text) : XGuiItem() { 	strcpy(buf, text); }
+	XGuiItem_SimpleSelect(const char* text) : XGuiItem() { 	strcpy(buf, text); }
 	virtual int isSelectable() {return 1;}
 	virtual int isTitle() {return 0;}
 	virtual bool SetWidth(int new_width) { return true; }

@@ -121,13 +121,13 @@ RESULT XAnyFood::onEat(XCreature * eater)
 	}
 }
 
-char * food_type_feeling[] =
+const char* food_type_feeling[] =
 {
 	"delicious", "very tasty", "tasty",
 	"tasteless", "taste like a slops", "vomit"
 };
 
-char * XAnyFood::postEat(XCreature * eater)
+const char* XAnyFood::postEat(XCreature * eater)
 {
 	FOOD_TYPE ft = FoodTypeForCreature(eater);
 	if (ft > 1 && ft < 8)

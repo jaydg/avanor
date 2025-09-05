@@ -364,7 +364,7 @@ bool XCreature::isVisible()
 
 
 
-char * XCreature::GetMeleeAttackMsg(XItem * weapon)
+const char* XCreature::GetMeleeAttackMsg(XItem * weapon)
 {
 	if (weapon)
 	{

@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stats.h"
 #include "xfile.h"
 
-char * stats_str[] = {"St", "Dx", "To", "Le", "Wi", "Ma", "Pe", "Ch", "EOF"};
-char * stats_full_str[] = {
+const char* stats_str[] = {"St", "Dx", "To", "Le", "Wi", "Ma", "Pe", "Ch", "EOF"};
+const char* stats_full_str[] = {
 "Strength", "Dexterity", "Toughness", "Learning", "Willpower", 
 "Mana", "Perception", "Charisma", "EOF"
 };
@@ -58,7 +58,7 @@ void XStats::Set(const char * str)
 	}
 }
 
-char * XStats::GetFullName(STATS s)
+const char* XStats::GetFullName(STATS s)
 {
 	return stats_full_str[s];
 }
@@ -107,7 +107,7 @@ XStatsGenerator::XStatsGenerator()
 		stats[i].Setup(0, 0, 0);
 }
 
-void XStatsGenerator::Init(const char * str)
+void XStatsGenerator::Init(const char* str)
 {
 	XStringProcEx xsp(str);
 	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();

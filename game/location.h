@@ -170,8 +170,8 @@ public:
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
 	virtual void Invalidate();
-	char * GetBriefName() {return brief_name;}
-	char * GetFullName() {return full_name;}
+	const char* GetBriefName() {return brief_name;}
+	const char* GetFullName() {return full_name;}
 
 	int visited_by_hero;
 	void DumpLocation(FILE * f);
@@ -189,9 +189,9 @@ public:
 
 	
 	//Location Script Language
-	static const char * GetToken(const char * line, const char ** token, int * token_len);
-	static const char * GetNumber(const char * line, int * num);
-	static const char * GetString(const char * line, char * buf);
+	static const char* GetToken(const char * line, const char ** token, int * token_len);
+	static const char* GetNumber(const char * line, int * num);
+	static const char* GetString(const char * line, char * buf);
 
 	static void CreateNewGame();
 	static void Restoration();

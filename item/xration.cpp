@@ -27,8 +27,8 @@ struct _SIMPLE_RATION
 	ITEM_TYPE it;
 	FOOD_TYPE food_type;
 	int color;
-	char * name;
-	char * nutrio;
+	const char* name;
+	const char* nutrio;
 	int value;
 	int weight;
 };

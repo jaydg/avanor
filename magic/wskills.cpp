@@ -113,11 +113,10 @@ XWarSkills::XWarSkills()
 	}
 }
 
-char * XWarSkills::GetName(WSK_TYPE wt)
+const char* XWarSkills::GetName(WSK_TYPE wt)
 {
 	return _skill_db[wt].name;
 }
-
 
 
 int XWarSkills::GetLevel(WSK_TYPE wt)

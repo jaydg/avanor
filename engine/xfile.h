@@ -34,7 +34,7 @@ public:
 			fclose(file);
 	}
 
-	int Open(char * name, char * param)
+	int Open(const char* name, const char* param)
 	{
 		file = fopen(name, param);
 		if (file)
