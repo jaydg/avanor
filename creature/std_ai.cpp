@@ -27,9 +27,9 @@ REGISTER_CLASS(XStandardAI);
 
 XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
 {
-	ai_owner = _cr; 
+	ai_owner = _cr;
 	ai_flag = AIF_NONE; //(AI_FLAG)(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP);
-	
+
 	enemy_class = CR_ALL;
 	last_moved_way = NULL;
 
@@ -38,8 +38,6 @@ XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
 	invisible_x = -1;
 	invisible_y = -1;
 	sleep_well = 0;
-//	last_enemy_x = -1;
-//	last_enemy_y = -1;
 }
 
 void XStandardAI::Invalidate()
@@ -57,24 +55,23 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
 	if (tgt && !ai_owner->isCreatureVisible(tgt))
 		tgt = NULL;
 
-	//if (tgt && (w < enemy_dist && w > 0 && isEnemy(tgt)) || (ai_flag & AIF_PROTECT_AREA && tgt->group_id != ai_owner->group_id))
 	if (tgt && w < enemy_dist && w > 0 && isEnemy(tgt))
 	{
 		enemy = tgt;
 		enemy_dist = w;
 	}
 
-	//test for friends if 
+	//test for friends if
 	if (ai_flag & AIF_ALLOW_PACK && tgt && !isEnemy(tgt) && w > 0)
 	{
 		friends_count++;
 		//make summ of all friend coord, then div it on friend count
 		//so we got center of the pack
-		friend_avg_x += tgt->x; 
+		friend_avg_x += tgt->x;
 		friend_avg_y += tgt->y;
 	}
 
-	
+
 	//test for items
 	if (ai_flag & AIF_ALLOW_PICK_UP &&
 		(ai_owner->l->map->GetItemCount(j, i) > 0) && (w < item_dist))
@@ -108,25 +105,9 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
 
 void XStandardAI::Move()
 {
-/*	if (last_enemy.get())
-	{
-		if (!last_enemy->isValid() || !ai_owner->isCreatureVisible(last_enemy))
-		{
-			last_enemy = NULL;
-			enemy         = NULL;
-			enemy_dist    = 10000;
-		} else
-		{
-			enemy = last_enemy;
-			enemy_dist = 1;
-		}
-	} else
-	{*/
-		enemy         = NULL;
-		enemy_dist    = 10000;
-//	}
-
-// initializing variables
+	// initializing variables
+	enemy         = NULL;
+	enemy_dist    = 10000;
 	item_dist     = 10000;
 	item_x        = 0;
 	item_y        = 0;
@@ -135,7 +116,6 @@ void XStandardAI::Move()
 	way_y         = 0;
 
 	//if no last enemy to attack only than process grids...
-//	if (!last_enemy.get())
 	if (sleep_well <= 0)
 	{
 		friends_count = 1;
@@ -178,7 +158,7 @@ void XStandardAI::Move()
 			ordered_enemy = NULL;
 			companion_command = CC_NONE;
 		}
-	} 
+	}
 
 	assert(ai_owner->isValid());
 	assert(enemy != ai_owner.get());
@@ -196,7 +176,7 @@ void XStandardAI::Move()
 			invisible_y = -1;
 			invisible_hunting_mode = 0;
 		}
-	}else if (companion && (companion_command == CC_FOLLOW || companion_command == CC_NONE) 
+	}else if (companion && (companion_command == CC_FOLLOW || companion_command == CC_NONE)
 		&& MoveTo(companion->x, companion->y, companion->l))
 	{
 		//do nothing....
@@ -219,7 +199,7 @@ void XStandardAI::Move()
 	{
 
 		XMapObject * spec = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
-		if (spec && spec->im & IM_WAY  && 
+		if (spec && spec->im & IM_WAY  &&
 		(((spec->view == '>') && (ai_flag & AIF_ALLOW_MOVE_WAY_DOWN)) ||
 			((spec->view == '<') && (ai_flag & AIF_ALLOW_MOVE_WAY_UP))))
 		{
@@ -288,14 +268,14 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 	}
 	int center_x = (target->x + ai_owner->x) / 2;
 	int center_y = (target->y + ai_owner->y) / 2;
-	
+
 	int path_flags[find_path_deep + 4][find_path_deep + 4];
 	memset(path_flags, 0, (find_path_deep + 4) * (find_path_deep + 4) * sizeof(int));
-	
+
 	int map_x = center_x - find_path_deep / 2 + 2;
 	int map_y = center_y - find_path_deep / 2 + 2;
 	XRect map_rect(map_x, map_y, map_x + find_path_deep, map_y + find_path_deep);
-	
+
 	XPOINT pa[8 * find_path_deep];
 	XPOINT pb[8 * find_path_deep];
 
@@ -309,14 +289,14 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 	for (int i = 2; i < find_path_deep + 2 && stop_flag; i++)
 	{
 		int list_len_pd = 0;
-		//assert(list_len_pc < 100);
+
 		for (int j = 0; j < list_len_pc; j++)
 		{
 			XPOINT * cpt = &pc[j];
-			if (map_rect.PointIn(cpt->x - 1, cpt->y - 1) && 
+			if (map_rect.PointIn(cpt->x - 1, cpt->y - 1) &&
 				path_flags[cpt->x - map_x - 1][cpt->y - map_y - 1] == 0)
 			{
-				if (cpt->x - 1 == ai_owner->x && 
+				if (cpt->x - 1 == ai_owner->x &&
 					cpt->y - 1 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -333,10 +313,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 				}
 			}
 
-			if (map_rect.PointIn(cpt->x - 0, cpt->y - 1) && 
+			if (map_rect.PointIn(cpt->x - 0, cpt->y - 1) &&
 				path_flags[cpt->x - map_x - 0][cpt->y - map_y - 1] == 0)
 			{
-				if (cpt->x - 0 == ai_owner->x && 
+				if (cpt->x - 0 == ai_owner->x &&
 					cpt->y - 1 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -354,10 +334,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 			}
 
 
-			if (map_rect.PointIn(cpt->x + 1, cpt->y - 1) && 
+			if (map_rect.PointIn(cpt->x + 1, cpt->y - 1) &&
 				path_flags[cpt->x - map_x + 1][cpt->y - map_y - 1] == 0)
 			{
-				if (cpt->x + 1 == ai_owner->x && 
+				if (cpt->x + 1 == ai_owner->x &&
 					cpt->y - 1 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -374,10 +354,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 				}
 			}
 
-			if (map_rect.PointIn(cpt->x + 1, cpt->y + 0) && 
+			if (map_rect.PointIn(cpt->x + 1, cpt->y + 0) &&
 				path_flags[cpt->x - map_x + 1][cpt->y - map_y + 0] == 0)
 			{
-				if (cpt->x + 1 == ai_owner->x && 
+				if (cpt->x + 1 == ai_owner->x &&
 					cpt->y + 0 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -394,10 +374,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 				}
 			}
 
-			if (map_rect.PointIn(cpt->x - 1, cpt->y + 0) && 
+			if (map_rect.PointIn(cpt->x - 1, cpt->y + 0) &&
 				path_flags[cpt->x - map_x - 1][cpt->y - map_y + 0] == 0)
 			{
-				if (cpt->x - 1 == ai_owner->x && 
+				if (cpt->x - 1 == ai_owner->x &&
 					cpt->y + 0 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -415,10 +395,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 
 			}
 
-			if (map_rect.PointIn(cpt->x - 1, cpt->y + 1) && 
+			if (map_rect.PointIn(cpt->x - 1, cpt->y + 1) &&
 				path_flags[cpt->x - map_x - 1][cpt->y - map_y + 1] == 0)
 			{
-				if (cpt->x - 1 == ai_owner->x && 
+				if (cpt->x - 1 == ai_owner->x &&
 					cpt->y + 1 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -435,10 +415,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 				}
 			}
 
-			if (map_rect.PointIn(cpt->x + 0, cpt->y + 1) && 
+			if (map_rect.PointIn(cpt->x + 0, cpt->y + 1) &&
 				path_flags[cpt->x - map_x + 0][cpt->y - map_y + 1] == 0)
 			{
-				if (cpt->x + 0 == ai_owner->x && 
+				if (cpt->x + 0 == ai_owner->x &&
 					cpt->y + 1 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -446,7 +426,7 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 					direction->y = -1;
 					break;
 				}
-				
+
 				if (ai_owner->l->map->XGetMovability(cpt->x + 0, cpt->y + 1) == 0)
 				{
 					path_flags[cpt->x - map_x + 0][cpt->y - map_y + 1] = i;
@@ -456,10 +436,10 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
 				}
 			}
 
-			if (map_rect.PointIn(cpt->x + 1, cpt->y + 1) && 
+			if (map_rect.PointIn(cpt->x + 1, cpt->y + 1) &&
 				path_flags[cpt->x - map_x + 1][cpt->y - map_y + 1] == 0)
 			{
-				if (cpt->x + 1 == ai_owner->x && 
+				if (cpt->x + 1 == ai_owner->x &&
 					cpt->y + 1 == ai_owner->y)
 				{
 					stop_flag = 0;
@@ -488,7 +468,7 @@ void XStandardAI::GetDirection(XPoint * target, XPoint * direction)
 {
 	int dx = sgn(target->x - ai_owner->x);
 	int dy = sgn(target->y - ai_owner->y);
-	
+
 	if (ai_owner->x + dx == target->x && ai_owner->y + dy == target->y)
 	{
 		direction->x = dx;
@@ -497,14 +477,6 @@ void XStandardAI::GetDirection(XPoint * target, XPoint * direction)
 	}
 
 	FindPath(target, direction);
-/*	if (ai_owner->l->map->XGetMovability(ai_owner->x + dx, ai_owner->y + dy) != 0)
-	{
-		FindPath(target, direction);
-	} else
-	{
-		direction->x = dx;
-		direction->y = dy;
-	}*/
 }
 
 
@@ -512,7 +484,7 @@ void XStandardAI::GetRandDirection(XPoint * target, XPoint * direction)
 {
 	int dx = sgn(target->x - ai_owner->x);
 	int dy = sgn(target->y - ai_owner->y);
-	
+
 	if (ai_owner->x + dx == target->x && ai_owner->y + dy == target->y)
 	{
 		direction->x = dx;
@@ -559,12 +531,6 @@ int XStandardAI::isPersonalEnemy(XCreature * cr)
 	for (int i = 0; i < ENEMY_LIST_SIZE; i++)
 		if (personal_enemy[i] == cr) return 1;
 	return 0;
-/*
-	for (XQueue::iterator it = personal_enemy.begin(); it != personal_enemy.end(); it++)
-		if (it == cr) return 1;
-
-	return 0;
-*/
 }
 
 void XStandardAI::SetAIFlag(AI_FLAG aif)
@@ -613,7 +579,7 @@ int XStandardAI::Wear()
 		if ((old_item_val >= new_item_val) || !(xbp->GetProperIM() & item->im)) continue;
 
 		if (old_item) ai_owner->contain.Add(xbp->UnWear());
-			
+
 		xbp->Wear(item);
 		ai_owner->contain.Remove(it);
 
@@ -646,7 +612,7 @@ int XStandardAI::Wear()
 	{
 		XItem * item = it;
 		it++;
-		assert(item->isValid()); 
+		assert(item->isValid());
 		if(item->GetValue() > 800)
 			continue;
 		if (item->im & IM_FOOD && item->it != IT_CORPSE)
@@ -655,7 +621,7 @@ int XStandardAI::Wear()
 		if (item->im & (IM_SCROLL | IM_BOOK | IM_POTION | IM_MISSILE | IM_MONEY))
 			continue;
 
-		
+
 
 		it--;
 		it = ai_owner->contain.erase(it);
@@ -772,9 +738,9 @@ int XStandardAI::TryToRunAway() //from enemy
 int XStandardAI::AttackEnemy(int ex, int ey)
 {
 	assert(isValid());
-	
+
 	 //try to run away if we must or can
-	if (ai_flag & AIF_COWARD && enemy && 
+	if (ai_flag & AIF_COWARD && enemy &&
 		(enemy->GetExp() / 10 > ai_owner->GetExp() * friends_count //creature is more powerfull
 		|| ai_owner->GetMaxHP() / ai_owner->_HP > 4) // less than 25% of _HP
 		&& TryToRunAway())
@@ -783,7 +749,7 @@ int XStandardAI::AttackEnemy(int ex, int ey)
 	XPoint direction_point;
 	XPoint target_point(ex, ey);
 	GetDirection(&target_point, &direction_point);
-	
+
 	if (CastSpell() || Shoot() || ReadScroll() || DrinkPotion())
 	{
 		ai_owner->nx = ai_owner->x;
@@ -813,7 +779,7 @@ int XStandardAI::CastSpell()
 				spell->spell_name == SPELL_CURE_SERIOUS_WOUNDS ||
 				spell->spell_name == SPELL_CURE_CRITICAL_WOUNDS ||
 				spell->spell_name == SPELL_CURE_MORTAL_WOUNDS ||
-				spell->spell_name == SPELL_HEAL) && 
+				spell->spell_name == SPELL_HEAL) &&
 				spell->GetManaCost() <= ai_owner->_PP)
 			{
 				ai_owner->m->Cast(spell, ai_owner);
@@ -825,7 +791,7 @@ int XStandardAI::CastSpell()
 	//try to attack
 	if (flag == 0 && enemy)
 	{
-		int r_enemy = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
+		int r_enemy = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) +
 			(enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
 
 		assert(r_enemy > 0);
@@ -836,7 +802,7 @@ int XStandardAI::CastSpell()
 				spell->spell_name == SPELL_FIRE_BOLT ||
 				spell->spell_name == SPELL_ICE_BOLT ||
 				spell->spell_name == SPELL_LIGHTNING_BOLT ||
-				spell->spell_name == SPELL_ACID_BOLT) 
+				spell->spell_name == SPELL_ACID_BOLT)
 				&& spell->GetManaCost() <= ai_owner->_PP)
 			{
 				ai_owner->m->Cast(spell, ai_owner);
@@ -858,7 +824,7 @@ int XStandardAI::ReadScroll()
 			scroll->sc_name == SCROLL_FIRE_BOLT ||
 			scroll->sc_name == SCROLL_ICE_BOLT ||
 			scroll->sc_name == SCROLL_LIGHTNING_BOLT ||
-			scroll->sc_name == SCROLL_ACID_BOLT) 
+			scroll->sc_name == SCROLL_ACID_BOLT)
 		{
 			scroll->onRead(ai_owner);
 			if (--scroll->quantity <= 0)
@@ -914,10 +880,10 @@ int XStandardAI::Shoot()
 	int range;
 	XDice dmg;
 	ai_owner->GetRangeAttackInfo(&range, &hit, &dmg);
-	
+
 	if (enemy)
 	{
-		int r = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) + 
+		int r = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) +
 			(enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
 		if (r <= range)
 		{
@@ -934,7 +900,7 @@ int XStandardAI::PickUpItems()
 {
 	XItemList * item_list = ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y);
 	bool item_picked = false;
-	
+
 	it_iterator it = item_list->begin();
 	while (it != item_list->end())
 	{
@@ -942,7 +908,7 @@ int XStandardAI::PickUpItems()
 			break;
 		XItem * tit = it;
 		it = item_list->erase(it);
-		if (ai_owner->PickUpItem(tit)) 
+		if (ai_owner->PickUpItem(tit))
 		{
 			item_picked = true;
 			continue;
@@ -1034,18 +1000,6 @@ void XStandardAI::AddPersonalEnemy(XCreature * cr)
 		personal_enemy[i - 1] = personal_enemy[i].get();
 
 	personal_enemy[ENEMY_LIST_SIZE - 1] = cr;
-
-/*
-	int enemy_count = 0;
-	for (XQueue::iterator it = personal_enemy.begin(); it != personal_enemy.end(); it++)
-	{
-		if (it == cr) return;	// already in list
-		enemy_count++;
-	}
-
-	if (enemy_count >= ENEMY_LIST_SIZE) personal_enemy.RemoveFirst();
-	personal_enemy.AddUnsorted(cr);
-*/
 }
 
 void XStandardAI::RemovePersonalEnemy(XCreature * cr)
@@ -1058,16 +1012,6 @@ void XStandardAI::RemovePersonalEnemy(XCreature * cr)
 			return;
 		}
 	}
-/*
-	for (XQueue::iterator it = personal_enemy.begin(); it != personal_enemy.end(); it++)
-	{
-		if (it == cr) 
-		{
-			personal_enemy.Remove(it);
-			return;
-		}
-	}
-*/
 }
 
 int XStandardAI::Chat(XCreature * chatter, const char* msg)
@@ -1174,7 +1118,7 @@ void XStandardAI::RunScript()
 	switch (cmd.cmd)
 	{
 		case SCC_NONE: break;
-		
+
 		case SCC_MOVE_POINT:
 			MoveTo(cmd.pt_x, cmd.pt_y, Game.locations[cmd.ln]);
 			if (cmd.pt_x == ai_owner->nx && cmd.pt_y == ai_owner->ny && cmd.ln == ai_owner->l->ln)
@@ -1257,4 +1201,3 @@ bool XStandardAI::isKnowThisTrap(XMapObject * trap)
 	}
 	return false;
 }
-

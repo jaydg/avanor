@@ -83,7 +83,7 @@ int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
 			if (scroll_descr[i].scroll_name == scrn)
 				return i;
 	}
-	return -1;	
+	return -1;
 }
 
 XScroll::XScroll(SCROLL_NAME scrn)
@@ -92,7 +92,7 @@ XScroll::XScroll(SCROLL_NAME scrn)
 	assert(descr > -1 && descr < SCROLL_RANDOM);
 	sc_name = scroll_descr[descr].scroll_name;
 	strcpy(name, scroll_descr[descr].real_name);
-	value = scroll_descr[descr].value;		
+	value = scroll_descr[descr].value;
 	im = IM_SCROLL;
 	bp = BP_OTHER;
 	it = IT_SCROLL;
@@ -149,11 +149,10 @@ int XScroll::onRead(XCreature * cr)
 {
 	assert(cr->isValid());
 
-	char buf[256];	
+	char buf[256];
 	int flag = 0;
 	if (scroll_descr[descr].effect != E_NONE)
 	{
-		//XBasicSpell * spell = XSpellFactory::Get(scroll_descr[descr].spell_name);
 		if (cr->isHero())
 		{
 			msgwin.Add("You read the");

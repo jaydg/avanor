@@ -51,13 +51,10 @@ ITEM_MASK XBodyPart::GetProperIM()
 
 void XBodyPart::Invalidate()
 {
-//	INVALIDATE_ENTER();
-
 	item  = NULL;
 	owner = NULL;
 
 	XObject::Invalidate();
-//	INVALIDATE_LEAVE();
 }
 
 const char* XBodyPart::GetName()
@@ -77,7 +74,7 @@ int XBodyPart::Wear(XItem * new_item)
 	if (Fit(new_item->bp))
 	{
 		if (item) return 1;
-		item = new_item; 
+		item = new_item;
 		owner->CarryItem(item.get());
 		item->onWear(owner.get());
 		return 0;
@@ -87,18 +84,18 @@ int XBodyPart::Wear(XItem * new_item)
 }
 
 XItem * XBodyPart::UnWear()
-{ 
+{
 	assert(owner && item);
 	item->onUnWear(owner.get());
 	XItem * tmp = item.get();
 	item = NULL;
-	return tmp; 
+	return tmp;
 }
 
-XItem * XBodyPart::Item() 
-{ 
-	if(item) return item.get(); 
-	return NULL; 
+XItem * XBodyPart::Item()
+{
+	if(item) return item.get();
+	return NULL;
 }
 
 int XBodyPart::GetPartSize()

@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xpotion.h"
 
 #define HERBS_COUNT 18
-_HERBS herbs[] = 
+_HERBS herbs[] =
 {
 	{"valeriana root",			"valeriana",			"sedative",		xGREEN,		HT_HERB,		PN_UNKNOWN,	0, 0},
 	{"stellaria leave",			"stellaria",			"strange",		xGREEN,		HT_HERB,		PN_UNKNOWN,	0, 0},
@@ -186,14 +186,14 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 	x          = _x;
 	y          = _y;
 	ttm        = 1;
-	herb_strength = 1; 
-	
+	herb_strength = 1;
+
 	do
 	{
 		herb_index = vRand(HERBS_COUNT);
 	} while (herbs[herb_index].herb_type != HT_HERB);
-	
-	view       = '"';	
+
+	view       = '"';
 	color      = herbs[herb_index].color;
 
 	strcpy(name, herbs[herb_index].herb_name);
@@ -207,7 +207,7 @@ const char* XHerbBush::GetName(XCreature * viewer)
 {
 	XSkill * xsk = viewer->sk->GetSkill(SKT_HERBALISM);
 	int val = 0; if(xsk) val += xsk->GetLevel();
-	
+
 	_HERBS * herb_data = &herbs[herb_index];
 
 	const char* size_name = "";
@@ -217,7 +217,7 @@ const char* XHerbBush::GetName(XCreature * viewer)
 		case 2: size_name = "medium"; break;
 		case 3: size_name = "large"; break;
 	}
-	
+
 	if(herb_data->difficulty > val && !herb_data->identify)
 		sprintf(static_buffer, "%s bush of unknown herbs", size_name);
 	else
@@ -249,7 +249,7 @@ int XHerbBush::Run()
 	assert(isValid());
 
 	int N = CountNeighbours(x, y);
-	if(N < 2 || N > 3) 
+	if(N < 2 || N > 3)
 	{
 		if(--herb_strength <= 0)
 		{
@@ -270,7 +270,7 @@ int XHerbBush::Run()
 			new XHerbBush(i, j, l);
 		}
 
-	if(ttm <= 0 && isValid()) 
+	if(ttm <= 0 && isValid())
 		ttm += vRand(BASE_HERB_REFRESH);
 	return 1;
 }
@@ -292,7 +292,7 @@ void XHerbBush::Restore(XFile * f)
 XObject * XHerbBush::Pick(XCreature * picker)
 {
 	picker->sk->UseSkill(SKT_HERBALISM);
-	if(--herb_strength <= 0) 
+	if(--herb_strength <= 0)
 	{
 		l->map->SetSpecial(x, y, NULL);
 		Invalidate();
@@ -320,7 +320,7 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 	{
 		mush_index = vRand(HERBS_COUNT);
 	} while (herbs[mush_index].herb_type != HT_MUSHROOM);
-	view       = '`';	
+	view       = '`';
 	color      = herbs[mush_index].color;
 
 	strcpy(name, herbs[mush_index].herb_name);
@@ -332,19 +332,6 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 
 const char * XMushSpawn::GetName(XCreature * viewer)
 {
-/*	XSkill * xsk = viewer->sk->GetSkill(SKT_HERBALISM);
-	int val = 0; if(xsk) val += xsk->GetLevel();
-	
-	
-
-	if(herb_data->difficulty > val && !herb_data->identify)
-		sprintf(static_buffer, "unknown mushroom");
-	else
-	{
-		herb_data->identify = 1;
-		sprintf(static_buffer, "%s", herb_data->bush_name);
-	}
-*/
 	_HERBS * herb_data = &herbs[mush_index];
 	return herb_data->bush_name;
 }
@@ -355,7 +342,7 @@ int XMushSpawn::Run()
 {
 	assert(isValid());
 
-	if(ttm <= 0 && isValid()) 
+	if(ttm <= 0 && isValid())
 	{
 		if (isVisible())
 		{

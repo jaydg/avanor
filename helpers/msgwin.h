@@ -37,11 +37,9 @@ class XMsgWin
 public:
 	XMsgWin();
 	~XMsgWin();
-//	char buf[256 * 2 + 1];
 	char sent_buf[1024];
 	void Add(const char * str, int flag = 0); //flag == 1 if last space not needed
 	void AddLast(const char * str); //and set dot.
-	void Put();
 	void ClrMsg(int flag = 0);
 	void ShowHistory();
 	int index_x;

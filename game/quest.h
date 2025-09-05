@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "itemdef.h"
 #include "creature.h"
 #include "xstr.h"
-//#include "xobject.h"
 
 class XFile;
 class XCreature;
@@ -80,9 +79,9 @@ public:
 
 	int ahk_ulan_ordered;
 	int ahk_ulan_killed;
-	
+
 	int ahk_ulan_quest;
-	
+
 	int roderick_ordered;
 	int roderick_killed;
 	int roderick_quest;

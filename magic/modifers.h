@@ -71,11 +71,11 @@ public:
 			val--;
 			return val > 0 ? MR_OK : MR_REMOVE;
 		}
-	
+
 	}
 	virtual int onSet(XCreature * owner) {return 1;}
 	virtual int onRemove(XCreature * owner) {return 1;}
-	
+
 	virtual const char * GetDisplayName(int xval) {return "err";}
 	virtual const char * SetMsg() { return ""; }
 	virtual const char * RemoveMsg() { return ""; }
@@ -168,7 +168,7 @@ public:
 	DECLARE_CREATOR(XModConfuse, XBasicModifer);
 	XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_CONFUSE, _val, _cr) {}
 	XModConfuse() {assert(0);}
-	
+
 	const char * GetDisplayName(int xval)	{ return MSG_LIGHTGRAY "confused"; }
 	const char * SetMsg() { return "You are confused."; }
 	const char * RemoveMsg() { return "Your thoughts clear."; }
@@ -268,7 +268,7 @@ class XModDelayed : public XBasicModifer
 {
 public:
 	DECLARE_CREATOR(XModDelayed, XBasicModifer);
-	XModDelayed(MODIFER_TYPE _mt, int value, int delay, 
+	XModDelayed(MODIFER_TYPE _mt, int value, int delay,
          XCreature * _cr = NULL) : XBasicModifer(MOD_DELAYED, delay, _cr),
          set_mt(_mt), set_val(value)
 	{}
@@ -276,7 +276,7 @@ public:
 	virtual MODIFER_RESULT Run(XCreature * owner);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
-	
+
 	virtual int Compare(XObject * o)
 	{
 		if (XBasicModifer::Compare(o) == 0 && set_mt == ((XModDelayed *)o)->set_mt)
@@ -414,9 +414,5 @@ public:
 	virtual int onSet(XCreature * owner);
 	virtual int onRemove(XCreature * owner);
 };
-
-
-
-
 
 #endif

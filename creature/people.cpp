@@ -73,15 +73,4 @@ void XPeople::Equip(int low_value, int high_value)
 			break;
 
 	}
-
-
-/*
-	hand_1->i = ICREATEB(IM_WEAPON, IT_DAGGER, 1, 300);
-	wsk->SetLevel(WSK_DAGGER, 3);
-	if (vRand() % 20 > 18)
-	{
-		hand_2->i = ICREATEB(IM_SHIELD, IT_SMALLSHIELD, 1, 500);
-		wsk->SetLevel(WSK_SHIELD, 2);
-	}
-*/
 }

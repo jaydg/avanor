@@ -40,9 +40,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SCR_Y    2
 
 enum MOVEABLE {MO_UNKNOWN = 0, MO_NORMAL = 1,
-	MO_SHARD, MO_AHARD, MO_HARD, MO_VHARD, 
-	MO_UNWALKABLE, 
-	MO_WATER, MO_DEEPWATER, 
+	MO_SHARD, MO_AHARD, MO_HARD, MO_VHARD,
+	MO_UNWALKABLE,
+	MO_WATER, MO_DEEPWATER,
 	MO_WALL = 80,
 	MO_MOUNTAIN};
 
@@ -60,19 +60,6 @@ struct xMAP
 };
 
 extern xMAP stdmap[];
-/*
-enum MFLAG {
-	MF_NONE = 0x0000,
-	MF_DOOR = 0x0002,
-	MF_WAYU = 0x0004,
-	MF_WAYD = 0x0008,
-	MF_WAY  = 0x000C
-};
-
-#define SC_NONE     0x0000
-#define SC_ODOOR    0x0001
-#define SC_CDOOR    0x0002
-*/
 
 class XMapObject;
 class XItem;
@@ -96,7 +83,7 @@ struct MAP
 	//0 - no room
 	//1, 2, ... - room id
 	//at this time used to indicate "special" rooms, which should be not corssed by passages
-	int room_id; 
+	int room_id;
 };
 
 class XMap

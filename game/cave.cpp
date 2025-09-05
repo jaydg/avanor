@@ -39,7 +39,7 @@ char CAVE_DATA::GetCode(int x, int y)
 
 CAVE_DATA random_caves[] = {
 	//RCT_SIMPLE1
-	{9, 7, 
+	{9, 7,
 		CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
 		50,
 		"####+####"
@@ -48,12 +48,12 @@ CAVE_DATA random_caves[] = {
 		"+.#~.~#.+"
 		"#.##.##.#"
 		"##.....##"
-		"####+####"		
+		"####+####"
 	},
 
 	//RCT_SIMPLE2
-	{9, 7, 
-		CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM, 
+	{9, 7,
+		CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
 		200,
 		"####+####"
 		"#.......#"
@@ -61,12 +61,12 @@ CAVE_DATA random_caves[] = {
 		"+..#~#..+"
 		"#..###..#"
 		"#.......#"
-		"####+####"		
+		"####+####"
 	},
 
 	//RCT_SIMPLE3
-	{14, 9, 
-		CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM, 
+	{14, 9,
+		CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
 		25,
 		"##############"
 		"#............#"
@@ -80,8 +80,8 @@ CAVE_DATA random_caves[] = {
 	},
 
 	//RCT_SIMPLE4
-	{17, 9, 
-		CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM, 
+	{17, 9,
+		CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
 		25,
 		"#################"
 		"#...............#"
@@ -97,13 +97,6 @@ CAVE_DATA random_caves[] = {
 
 
 };
-
-
-/*XCave::XCave(XRect * _r)
-{
-	r.Setup(_r);
-}
-*/
 
 #define USUAL_CAVE_HGT 4
 #define USUAL_CAVE_LEN 4
@@ -190,15 +183,13 @@ XCave::XCave(int len, int hgt, bool isAllowSpecialRooms)
 			if (random_caves[rct].isExit(l - 1, j))
 				exits.push_back(XPoint(l - 1 + x, y + j));
 		}
-	
+
 	}
 	r.Setup(x, y, x + l, y + h);
 }
 
 int XCave::Compare(XObject * o)
 {
-//	return 0;
-
 	XCave * xc = (XCave *)o;
 	if (xc->r.left < r.left && xc->r.top <= r.top) return -1;
 	else return 1;
@@ -208,7 +199,7 @@ int XCave::Compare(XObject * o)
 int XCave::Intersect(XCave * xc, int dist)
 {
 	XRect tr(xc->r);
-//	tr.Grow(dist);
+
 	return tr.Intersect(&r);
 }
 
@@ -258,7 +249,7 @@ void XCave::Draw(XLocation * l)
 						}
 						break;
 
-					default: sm = M_CAVEFLOOR; break;	
+					default: sm = M_CAVEFLOOR; break;
 				}
 				l->map->SetXY(j, i, sm);
 				l->map->SetRoom(j, i, 1);
@@ -295,8 +286,6 @@ bool XCave::GetFreeExit(XPoint * pt)
 			n--;
 		}
 		*pt = *it;
-/*		if (rct != RCT_USUAL && (pt->x < 2 || pt->y < 2 || pt->x > map_len - 3 || pt->y > map_hgt - 3))
-			continue;*/
 		exits.erase(it);
 		return true;
 	}

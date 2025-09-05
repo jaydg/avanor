@@ -82,10 +82,7 @@ void XDice::Restore(XFile * f)
 	f->Read(&Z, sizeof(int));
 }
 
-
-
-int dfunc_data[22] = 
-// 0,	1,	2,	3,	4,	5,	6,	7,	8,	9,	10,	11,	12,	13,	14,	15,	16,	17,	18,	19,	20, 21
+int dfunc_data[22] =
 {  750, 800,840,870,890,902,914,926,937,947,956,964,971,977,982,986,990,993,996,998,999,100000};
 
 int XDice::DFunc()
@@ -98,8 +95,5 @@ int XDice::DFunc()
 
 int XDice::NDFunc(int maximum)
 {
-//	if (vRand(2))
-		return vRound((DFunc() * maximum) / 20.0f);
-//	else
-//		return -DFunc() * maximum / 20;
+	return vRound((DFunc() * maximum) / 20.0f);
 }

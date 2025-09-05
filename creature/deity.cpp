@@ -25,46 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 XCreature * XDeity::death = NULL;
 XCreature * XDeity::life = NULL;
 
-/*int XSimpleAttack::AskHelp(XCreature * asker)
-{
-	SPELL_NAME spn;
-	if (vRand(2) == 0)
-		spn = SPELL_MAGIC_ARROW;
-	else
-		spn = SPELL_DRAIN_LIFE;
-
-XBasicSpell * spell = XSpellFactory::Get(spn);
-	return spell->onCast(asker, 50);
-	return 0;
-}
-
-int XMediumAttack::AskHelp(XCreature * asker)
-{
-	SPELL_NAME spn;
-	if (vRand(2) == 0)
-		spn = SPELL_FIRE_BOLT;
-	else
-		spn = SPELL_ICE_BOLT;
-
-	XBasicSpell * spell = XSpellFactory::Get(spn);
-	return spell->onCast(asker, 50);
-	return 0;
-}
-
-int XHardAttack::AskHelp(XCreature * asker)
-{
-	SPELL_NAME spn;
-	if (vRand(2) == 0)
-		spn = SPELL_LIGHTNING_BOLT;
-	else
-		spn = SPELL_ACID_BOLT;
-
-	XBasicSpell * spell = XSpellFactory::Get(spn);
-	return spell->onCast(asker, 50);
-	return 0;
-}
-*/
-
 DEITY_HELP life_help[] = {
 	{"cure light wounds",			3,	PRAY_CURE_LIGHT_WOUNDS},
 	{"minor divine intervention",	5,	PRAY_MINOR_INTERVENTION},
@@ -73,24 +33,24 @@ DEITY_HELP life_help[] = {
 	{"heroism",						10, PRAY_HEROISM},
 
 	{"cure critical wounds",		20, PRAY_CURE_CRITICAL_WOUNDS},
-	
+
 	{"great knowledge",				30, PRAY_IDENTIFY},
 
 	{"divine restoration",			50, PRAY_RESTORATION}
 };
 
-DEITY_HELP death_help[] = 
+DEITY_HELP death_help[] =
 {
 	{"cure light wounds",			5,	PRAY_CURE_LIGHT_WOUNDS},
 	{"minor divine intervention",	5,	PRAY_MINOR_INTERVENTION},
 
 	{"divine intervention",			5,	PRAY_INTERVENTION},
 	{"divine escape",				50, PRAY_TELEPORT},
-	
+
 	{"cure critical wounds",		30, PRAY_CURE_CRITICAL_WOUNDS},
-	
+
 	{"knowledge of insight",		50, PRAY_SELF_KNOWLEDGE},
-	
+
 	{"major divine intervention",	5,	PRAY_MAJOR_INTERVENTION},
 };
 
@@ -106,9 +66,6 @@ DEITY_ACT life_deity_act[] = {
 	{10, -9}, {10, -8}, {10, -7}, {10, -6}, {10, -5},
 	{10, -4}, {10, -3}, {10, -2}, {10, -1}, {10, 0}, {10, 0}
 };
-
-
-
 
 void XReligion::KillCreature(XCreature * killer, XCreature * victim)
 {
@@ -190,7 +147,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
 			msgwin.Add("looks more powerful!");
 		}
 	}
-	
+
 	return 1;
 }
 
@@ -216,7 +173,7 @@ DEITY_RELATION XReligion::GetRelation(DEITY deity)
 		return DR_FOLLOWER;
 	else if (val < 10000)
 		return DR_MESSIAH;
-	else 
+	else
 		return DR_CHAMPION;
 }
 
@@ -275,7 +232,7 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
 		case PRAY_CURE_POISON:			effect = E_CURE_POISON; break;
 		case PRAY_HEROISM:				effect = E_HEROISM; break;
 		case PRAY_TELEPORT:				effect = E_TELEPORT; break;
-		
+
 		case PRAY_MINOR_PUNISHMENT:		effect = E_MAGIC_ARROW; break;
 		case PRAY_MINOR_INTERVENTION:	effect = E_MAGIC_ARROW; break;
 		case PRAY_INTERVENTION:			effect = vRand(2) == 0 ? E_FIRE_BOLT : E_ICE_BOLT; break;

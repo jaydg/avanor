@@ -57,14 +57,12 @@ xMAP stdmap[] = {
 
 MAP::MAP()
 {
-	n = M_GREENGRAS;//M_MAGMA;//(STDMAP)(rand() % 3 + 1);
+	n = M_GREENGRAS;
 	pMonster = NULL;
 	pSpecialObject = NULL;
-//	mflag = MF_NONE;
 	visible = false;
 	known = ' ';
 	color = 0;
-//	spec = SC_NONE;
 	place = NULL; //by default
 	room_id = 0;
 };
@@ -89,8 +87,8 @@ void MAP::Store(XFile * f)
 	place.Store(f);
 	pSpecialObject.Store(f);
 	pMonster.Store(f);
-	
-	f->Write(&visible, sizeof(bool));	
+
+	f->Write(&visible, sizeof(bool));
 }
 
 void MAP::Restore(XFile * f)
@@ -104,7 +102,7 @@ void MAP::Restore(XFile * f)
 	pSpecialObject.Restore(f);
 	pMonster.Restore(f);
 
-	f->Read(&visible, sizeof(bool));	
+	f->Read(&visible, sizeof(bool));
 }
 
 XMap::XMap()
@@ -171,30 +169,6 @@ XAnyPlace * XMap::GetPlace(int x, int y)
 	return map[x + y * len].place.get();
 }
 
-/*
-MFLAG XMap::GetMFlag(int x, int y)
-{
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		return   map[x + y * len].mflag;
-	else
-		return MF_NONE;
-}
-
-void XMap::ResMFlag(int x, int y, MFLAG mf)
-{
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		map[x + y * len].mflag = (MFLAG)(map[x + y * len].mflag | mf);
-		map[x + y * len].mflag = (MFLAG)(map[x + y * len].mflag ^ mf);
-	}
-}
-
-void XMap::SetMFlag(int x, int y, MFLAG mf)
-{
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		map[x + y * len].mflag = (MFLAG)(map[x + y * len].mflag | mf);
-}
-*/
 void XMap::ResKnown(int x, int y)
 {
 	if (x >= 0 && x < len && y >= 0 && y < hgt)
@@ -215,12 +189,11 @@ int XMap::GetKnown(int x, int y)
 		return 0;
 }
 
-
 void XMap::SetSpecial(int x, int y, XMapObject * spec)
 {
 	if (x >= 0 && x < len && y >= 0 && y < hgt)
 	{
-		map[x + y * len].pSpecialObject = spec; 
+		map[x + y * len].pSpecialObject = spec;
 	}
 }
 
@@ -237,7 +210,7 @@ int XMap::GetVisibility(int x, int y)
 	if (x >= 0 && x < len && y >= 0 && y < hgt)
 	{
 		XMapObject * spec = map[x + y * len].pSpecialObject.get();
-		if (spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0) 
+		if (spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0)
 			return 0;
 		if (stdmap[map[x + y * len].n].visiable == VI_WALL)
 			return 0;
@@ -264,7 +237,7 @@ int XMap::GetMovability(int x, int y)
 	if (x >= 0 && x < len && y >= 0 && y < hgt)
 	{
 		MAP & _map = map[x + y * len];
-	  	if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) && 
+		if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
   			((XDoor *)_map.pSpecialObject.get())->isOpened == 0) return MO_WALL;
   		return stdmap[_map.n].moveable;
 	} else
@@ -278,15 +251,13 @@ int XMap::XGetMovability(int x, int y)
 		MAP * m = &map[x + y * len];
 		if (m->pMonster) return 2;
 		XMapObject * spec = map[x + y * len].pSpecialObject.get();
-		if (stdmap[m->n].moveable < MO_UNWALKABLE 
+		if (stdmap[m->n].moveable < MO_UNWALKABLE
 			&& !(spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0))
 			return 0;
 		else
 			return 1;
 	} else return 1;
 }
-
-
 
 void XMap::PutItem(int x, int y, XItem * item)
 {
@@ -299,7 +270,6 @@ void XMap::PutItem(int x, int y, XItem * item)
 	else
 		assert(0);
 }
-
 
 XItemList * XMap::GetItemList(int x, int y)
 {
@@ -320,8 +290,6 @@ unsigned int XMap::GetItemCount(int x, int y)
 	} else
 		return 0;
 }
-
-
 
 void XMap::SetMonster(int x, int y, XCreature * monstr)
 {
@@ -442,7 +410,6 @@ int XMap::GetRoom(int x, int y)
 	return map[x + y * len].room_id;
 }
 
-
 void XMap::CreateRoom(int x, int y, int l, int h, int px, int py, STDMAP m1, STDMAP m2)
 {
 	CreateRoom(x, y, l, h, m1, m2);
@@ -463,7 +430,6 @@ void XMap::CreateRoom(int x, int y, int l, int h, STDMAP m1, STDMAP m2)
 
 		}
 }
-
 
 void XMap::Store(XFile * f)
 {
@@ -496,10 +462,10 @@ void XMap::Dump(FILE * f)
 			MAP * tmap = &map[i * len + j];
 			int n = tmap->n;
 			char vch = stdmap[n].view;
-		
+
 			if (tmap->pSpecialObject)
 				vch = tmap->pSpecialObject->view;
-			
+
 			if (!tmap->item_list.empty())
 				vch = tmap->item_list.begin()->view;
 
@@ -511,7 +477,6 @@ void XMap::Dump(FILE * f)
 		fprintf(f, "\n");
 	}
 }
-
 
 void XMap::ForceRecenter(int x, int y)
 {

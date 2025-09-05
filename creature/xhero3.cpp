@@ -29,7 +29,7 @@ int XHero::UseTool()
 	XItem * tool = NULL;
 	if (tbp)
 		tool = tbp->Item();
-	
+
 	if (tool)
 	{
 		UseItem(tool);
@@ -50,7 +50,7 @@ void XHero::doSacrifice()
 		XItem * item = NULL;
 
 		XItemList * tmpquae = l->map->GetItemList(x, y);
-		if (tmpquae->empty() || l->map->GetPlace(x, y))		
+		if (tmpquae->empty() || l->map->GetPlace(x, y))
 			item = Inventory(&contain);
 		else
 			item = Inventory(tmpquae);
@@ -185,10 +185,10 @@ void XHero::EndGame(const char* end_msg)
 	char tbuf[256];
 	sprintf(buf2, "%s, %s %s %s (L%d).", ((XHero *)main_creature)->name, ((XHero *)main_creature)->GetGenderStr(), ((XHero *)main_creature)->GetRaceStr(), ((XHero *)main_creature)->GetProfessionStr(), ((XHero *)main_creature)->level);
 	list.AddItem(new XGuiItem_Text(buf2));
-	
+
 	sprintf(tbuf, "You survived %d turns.", ((XHero *)main_creature)->turn_count);
 	list.AddItem(new XGuiItem_Text(tbuf));
-	
+
 	if (XQuest::quest.hero_win)
 	{
 		if (XQuest::quest.ahk_ulan_killed && XQuest::quest.roderick_killed)
@@ -227,7 +227,7 @@ void XHero::EndGame(const char* end_msg)
 	score += place_count * 200;
 	sprintf(tbuf, "You visited %d places.", place_count);
 	list.AddItem(new XGuiItem_Text(tbuf));
-	
+
 	DEITY_RELATION dr1 = ((XHero *)main_creature)->religion.GetRelation(D_LIFE);
 	DEITY_RELATION dr2 = ((XHero *)main_creature)->religion.GetRelation(D_DEATH);
 	int flag = 1;
@@ -286,23 +286,23 @@ void XHero::EndGame(const char* end_msg)
 	{
 		list.AddItem(new XGuiItem_Text("You tried to help to repulse an attack of orcs."));
 	}
-	
+
 	sprintf(tbuf, "You scored %d.", score);
 	list.AddItem(new XGuiItem_Text(tbuf));
 	list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Achievements " MSG_BROWN "###");
 	list.Run();
-	
+
 	vGotoXY(0, 0);
 	msgwin.ClrMsg();
 	msgwin.Add("Create Memory File? (Y/" MSG_CYAN "N" MSG_LIGHTGRAY ")");
-	msgwin.Put();
+
 	vRefresh();
 	int tch = vGetch();
 	if (tch == 'y' || tch == 'Y')
 	{
 		msgwin.ClrMsg();
 		msgwin.Add("### Screenshot ###");
-		msgwin.Put();
+
 		char tname[256];
 		strcpy(tname, ((XHero *)main_creature)->name);
 		strcat(tname, ".mem");
@@ -345,7 +345,7 @@ void XHero::ShowResistance(FILE * f)
 	XGuiList list;
 	list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Resistances and Intrinsics " MSG_BROWN "###");
 	list.SetFooter("Press any key to exit");
-   
+
 	int flag = 0;
 	char buf[256];
 	XResistance tr;
@@ -359,7 +359,7 @@ void XHero::ShowResistance(FILE * f)
 			flag = 1;
 		}
 	}
-	
+
 	if (flag == 0)
 	{
 		list.AddItem(new XGuiItem_Text("You have no Resistances and Intrinsics.", 0), 0);
@@ -441,6 +441,3 @@ void XHero::MixPotions()
 		}
     }
 }
-
-
-

@@ -119,9 +119,6 @@ xWHITE = 15
 #define SCOLOR(x) color_convert_table[x]
 extern const char* color_convert_table[];
 
-
-
-//typedef char V_BUFFER[80 * 25 * 2];
 struct V_BUFFER
 {
 	char * buffer;

@@ -36,7 +36,6 @@ protected:
 public:
 	DECLARE_CREATOR(XItem, XBaseObject);
 	void StatsToString(char * buf);
-	void PriceToString(char * buf);
 	void MainFill(_MAIN_ITEM_STRUCT * is);
 	XItem();
 	XItem(XItem * copy);
@@ -48,7 +47,7 @@ public:
 	void SpecialFill();
 
 	virtual void toString(char * buf);
-	
+
 	BODYPART bp; //fit to what bp???
 	ITEM_TYPE it; //main type of item such IT_POTION
 	WSK_TYPE wt; //other type of item
@@ -57,18 +56,15 @@ public:
 	int durability; //   DUR_INFINITE - infinite, Other - finite 1Dur == 1000 turn
 	int ModifyDur(int val);
 
-
 	int identify; // 0 - not identifed, 1 - identifed
 	int is_selected; //it is need to user interface....
-	
+
 	virtual int Compare(XObject * o); //compare objects
 	virtual int isIdentifed() {return identify;} //object can be indetifed or not
 	virtual void Identify(int level) {identify = level;} //set object indetifed
 
 	int value;
 	virtual int GetValue(); // Get Value of Object (for shop, monster AI etc.)
-//	int shop_flag; //if item not shopped
-
 
 	SPECIAL_PROPERTY special_property; //slow digestion and other propertyes
 	int special_number; //number of a struct with extension name such a "of Strength"
@@ -82,7 +78,7 @@ public:
 
 	virtual int onWear(XCreature * cr);
 	virtual int onUnWear(XCreature * cr);
-	
+
 	virtual int onPickUp(XCreature * cr);
 	virtual int onPutOn(XCreature * cr);
 

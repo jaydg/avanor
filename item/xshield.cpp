@@ -47,12 +47,6 @@ XShield::XShield(ITEM_TYPE _it)
 
 void XShield::toString(char * buf)
 {
-
-/*  if (quantity == 1)
-		sprintf(buf, "%s ", name);
-    else
-        sprintf(buf, "heap of (%d) %ss ", quantity, name);
-*/
 	GetFullName(buf);
     char tbuf[256];
 
@@ -62,4 +56,3 @@ void XShield::toString(char * buf)
     StatsToString(tbuf);
     strcat(buf, tbuf);
 }
-

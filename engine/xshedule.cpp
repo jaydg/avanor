@@ -24,126 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xtime.h"
 
 
-XQuickRing::XQuickRing()
-{
-	size = 1024;
-	begin = 0;
-	end = 0;
-	data = new XMapObject*[size];
-}
-
-XQuickRing::~XQuickRing()
-{
-	delete[] data;
-}
-
-void XQuickRing::Resize()
-{
-	XMapObject ** tmp = new XMapObject*[size * 2];
-	memcpy(tmp, data + begin, (size - begin) * sizeof(XMapObject*));
-	memcpy(tmp + size - begin, data, begin * sizeof(XMapObject*));
-	delete[] data;
-	data = tmp;
-	begin = 0;
-	end = size;
-	size = size * 2;
-}
-
-
-void XQuickRing::PushBack(XMapObject * pObj)
-{
-	assert(pObj->isValid());
-	pObj->AddRef();
-	data[end] = pObj;
-	end++;
-	if (end >= size)
-		end = 0;
-	if (end == begin)
-		Resize();
-}
-
-
-XMapObject * XQuickRing::PopFront()
-{
-	assert(begin != end);
-	XMapObject * tmp = data[begin];
-	begin++;
-	if (begin >= size)
-		begin = 0;
-	if (!tmp->isValid())
-	{
-		tmp->Release();
-		return PopFront();
-	}
-	else
-	{
-		tmp->Release();
-		return tmp;
-	}
-}
-
-XMapObject * XQuickRing::Front()
-{
-	if (!data[begin]->isValid())
-	{
-		data[begin]->Release();
-		begin++;
-		if (begin >= size)
-			begin = 0;
-		return Front();
-	}
-	return data[begin];
-}
-
-bool XQuickRing::isEmpty()
-{
-	if (begin == end)
-		return true;
-	while (begin != end)
-	{
-		if (data[begin]->isValid())
-			return false;
-		data[begin]->Release();
-		begin++;
-		if (begin >= size)
-			begin = 0;
-	}
-	return begin == end;
-}
-
-void XQuickRing::StoreRing(XFile * f)
-{
-	int i;
-	if (begin < end)
-	{
-		int ts = end - begin;
-		f->Write(&ts);
-		for (i = begin; i <= end; i++)
-			data[i]->Store(f);
-	} else
-	{
-		int ts = size - begin + end;
-		f->Write(&ts);
-		for (i = begin; i < size; i++)
-			data[i]->Store(f);
-
-		for (i = 0; i < end; i++)
-			data[i]->Store(f);
-	}
-}
-
-void XQuickRing::RestoreRing(XFile * f)
-{
-	int ts;
-	f->Read(&ts);
-	for (int i = 0; i < ts; i++)
-	{
-		XMapObject * p = (XMapObject *)XObject::RestorePointer(f, NULL);
-		PushBack(p);
-	}
-}
-
-
 void XScheduler::Place(XObject * p)
 {
 	assert(p->isValid());
@@ -152,15 +32,14 @@ void XScheduler::Place(XObject * p)
 	long shift, index;
 
 	if (p->ttm < XSCHEDULER_TIME_SLICE * (XSCHEDULER_STEPS_AHEAD - 1))
-		shift = p->ttm / XSCHEDULER_TIME_SLICE + 1; 
+		shift = p->ttm / XSCHEDULER_TIME_SLICE + 1;
 	else
-		shift = (XSCHEDULER_STEPS_AHEAD - 1); 
+		shift = (XSCHEDULER_STEPS_AHEAD - 1);
 
 	index = shift + head;
 	if (index >= XSCHEDULER_STEPS_AHEAD) index -= XSCHEDULER_STEPS_AHEAD;
 	p->ttm -= shift * XSCHEDULER_TIME_SLICE;
 	data[index].push_back(p);
-//	data[index].PushBack(p);
 }
 
 void XScheduler::Add(XObject * p)
@@ -176,8 +55,7 @@ XObject * XScheduler::Get()
 	while (1)
 	{
 		int empty_count = 0;
-		while (data[head].empty()) 
-//		while (data[head].isEmpty())
+		while (data[head].empty())
    		{
    	   		_time += XSCHEDULER_TIME_SLICE;
    			if (++head >= XSCHEDULER_STEPS_AHEAD)
@@ -191,12 +69,10 @@ XObject * XScheduler::Get()
    		}
 
    		XObject * p = data[head].begin();
-		//XMapObject * p = data[head].Front();
 		assert(dynamic_cast<XObject *>(p));
 
 		if (p->ttm < 0) return p;
    		data[head].pop_front();
-		//data[head].PopFront();
 		Place(p);
 	}
 }
@@ -205,10 +81,9 @@ XObject * XScheduler::Remove()
 {
 	assert(!data[head].empty() && data[head].begin()->isValid());
 	assert(data[head].begin()->ttm < 0);
-	XObject * p = data[head].begin(); 
+	XObject * p = data[head].begin();
 	data[head].pop_front();
 	return p;
-//	return data[head].PopFront();
 }
 
 void XScheduler::Store(XFile * f)
@@ -221,7 +96,6 @@ void XScheduler::Store(XFile * f)
 	for (int i = 0; i < XSCHEDULER_STEPS_AHEAD; i++)
 	{
 		data[i].StoreList(f);
-		//data[i].StoreRing(f);
 	}
 }
 
@@ -233,6 +107,5 @@ void XScheduler::Restore(XFile * f)
 	for (int i = 0; i < XSCHEDULER_STEPS_AHEAD; i++)
 	{
 		data[i].RestoreList(f);
-		//data[i].RestoreRing(f);
 	}
 }

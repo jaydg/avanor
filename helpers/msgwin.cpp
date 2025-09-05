@@ -27,7 +27,6 @@ XMsgWin msgwin;
 XMsgWin::XMsgWin()
 {
 	history_list = new XGuiList();
-//	strcpy(buf, "");
 	index_x = 0;
 	index_y = 0;
 	history_list->AddItem(new XGuiItem_Text("Welcome!"));
@@ -97,8 +96,6 @@ void XMsgWin::Add(const char* tstr, int flag)
 				index_x = 0;
 				index_y = 0;
 			}
-//			index_x = 0;
-//			strcpy(buf, "");
 		}
 
 		vGotoXY(index_x, index_y);
@@ -113,10 +110,6 @@ void XMsgWin::Add(const char* tstr, int flag)
 
 void XMsgWin::ClrMsg(int flag)
 {
-//   index = 0;
-//   strcpy(buf, "");
-//   if (flag)
-//	   Put();
    vGotoXY(0, 0);
    vClrEol();
    vGotoXY(0, 1);
@@ -124,25 +117,6 @@ void XMsgWin::ClrMsg(int flag)
    index_x = 0;
    index_y = 0;
 
-}
-
-void XMsgWin::Put()
-{
-	
-/*	int i = index;
-	int dx, int dy;
-
-	while (i < 160)
-	{
-		buf[i] = ' ';
-		i++;
-	}
-	buf[i + 1] = 0;
-
-	vGotoXY(MSGWIN_X, MSGWIN_Y);
-	vSetAttr(xLIGHTGRAY);
-	vPutS(buf);
-*/
 }
 
 int XMsgWin::GetWord(const char * str, int n, char * buf)
@@ -167,4 +141,3 @@ void XMsgWin::ShowHistory()
 {
 	history_list->Run();
 }
-

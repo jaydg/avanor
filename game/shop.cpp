@@ -37,12 +37,12 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 
 		switch (sd)
 		{
-			case SHOP_DOOR_DOWN : 
+			case SHOP_DOOR_DOWN :
 				dx = (area.left + area.right) / 2;
 				dy = area.bottom - 1;
 				break;
 
-			case SHOP_DOOR_UP : 
+			case SHOP_DOOR_UP :
 				dx = (area.left + area.right) / 2;
 				dy = area.top;
 				break;
@@ -61,7 +61,7 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 
 		}
 
-		location->map->CreateRoom(area.left, area.top, area.Width(), area.Hight(), 
+		location->map->CreateRoom(area.left, area.top, area.Width(), area.Hight(),
 			dx, dy, M_STONEFLOOR, M_STONEWALL);
 
 		for (int i = area.left + 1; i < area.right - 1; i++)
@@ -80,7 +80,7 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 				item->Drop(location.get(), i, j);
 			}
 	}
-	
+
 
 	hero_in = 0;
 }
@@ -90,7 +90,7 @@ int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
 	if (owner)
 	{
 		return ((XShopKeeperAI *)(owner->xai))->onAnyonePickItem(cr, item);
-	} 
+	}
 	return 1;
 }
 
@@ -130,11 +130,10 @@ int XShop::onCreatureLeave(XCreature * cr)
 
 int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
 {
-//	cr->contain->Add(new XMoney(item->GetValue() * item->quantity));
 	if (owner)
 	{
 		return ((XShopKeeperAI *)(owner->xai))->onAnyoneDropItem(cr, item);
-	} 
+	}
 	return 1;
 }
 

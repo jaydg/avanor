@@ -60,7 +60,6 @@ struct SKILL_DB
 
 class XCreature;
 
-//#define SKILL_MAX_BONUS	11
 #define SKILL_MAX_LEVEL 15
 
 enum SKILL_MASTERY

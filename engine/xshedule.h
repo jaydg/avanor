@@ -28,28 +28,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XMapObject;
 
-class XQuickRing
-{
-	int size;
-	int begin;
-	int end;
-	XMapObject ** data;
-	void Resize();
-public:
-	XQuickRing();
-	~XQuickRing();
-	void PushBack(XMapObject * pObj);
-	XMapObject * PopFront();
-	XMapObject * Front();
-	bool isEmpty();
-	void StoreRing(XFile * f);
-	void RestoreRing(XFile * f);
-};
-
 class XScheduler
 {
 	long _time, head;
-//	XQuickRing data[XSCHEDULER_STEPS_AHEAD];
 	XList<XObject*> data[XSCHEDULER_STEPS_AHEAD];
 	void Place(XObject * p);
 public:

@@ -30,7 +30,7 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
 {
 	SetShop(_shop);
 	_shop->SetShopkeeper(shopkeeper);
-	
+
 	debt.debtor = NULL;
 	debt.debtor_sum = 0;
 	debt.turn_count = 0;
@@ -62,7 +62,7 @@ void XShopKeeperAI::Move()
 		item->Identify(1);
 		item->Drop(ai_owner->l, ai_owner->x, ai_owner->y);
 	}
-	
+
 	XStandardAI::Move();
 
 	if (debt.debtor)
@@ -121,11 +121,11 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
 			{
 				it->quantity -= item->quantity;
 				return 1;
-			} 
+			}
 
 			if (it->quantity == item->quantity)
 			{
-				debt.item_list.Remove(it);//->Invalidate();
+				debt.item_list.Remove(it);
 				return 1;
 			}
 
@@ -187,7 +187,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 			ai_owner->ContainItem(item);
 		}
 		return res;
-	} 
+	}
 
 //	Giving the money to the shopkeeper results in reducing or
 //	completely clearing off a debt
@@ -196,7 +196,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
  		msgwin.Add(GMSG_SHOPKEEPER_REJECT_MONEY);
  		return 0;
  	}
-	
+
 	item->AddRef(); // prevent money object from destroying
 
 	if (!debt.item_list.empty())
@@ -218,13 +218,13 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 
 			giver->MoneyOp(-res);
 			debt.debtor_sum += titem->GetValue() * titem->quantity - res;
-			XItem * t = it; 
+			XItem * t = it;
 			it = debt.item_list.erase(it);
 			t->Invalidate();
 			msgwin.Add(GMSG_SHOPKEEPER_THANKS);
 		}
 	}
-    		
+
  	if (debt.debtor_sum > 0 && item->isValid() && item->quantity > 0)
  	{
  		char buf[256];
@@ -282,7 +282,7 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
 		item->Invalidate();
 	}
 	debt.debtor_add_value = debt.debtor_sum * 0.001;
-	
+
 	if (isEnemy(customer))
 	{
 		msgwin.Add("You will be dead soon!");
@@ -329,4 +329,3 @@ void XShopKeeperAI::Restore(XFile * f)
 	f->Read(&debt.turn_count, sizeof(int));
 	shop.Restore(f);
 }
-

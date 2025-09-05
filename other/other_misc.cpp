@@ -41,7 +41,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 	y = _y;
 	owner = _owner;
 	trap_item = items;
-	
+
 	if (tt == TT_RANDOM)
 		tt = (TRAP_TYPE)vRand(TT_RANDOM);
 	trap_type = tt;
@@ -96,7 +96,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
 				trap_item->quantity = vRand(3) + 2;
 			}
 			break;
-			
+
 		default:
 			color = xBROWN;
 			isMagic = true;
@@ -230,7 +230,7 @@ int XTrap::Activate(XCreature * cr)
 				ed.effect = E_MAGIC_ARROW;
 
 		}
-		
+
 		XEffect::Make(&ed);
 	} else
 	{
@@ -245,11 +245,11 @@ int XTrap::Activate(XCreature * cr)
 				drop_item->quantity = 1;
 				if (trap_item->quantity-- <= 1)
 					isTrapShouldDestroyed = true;
-				
+
 				dd.damage		= drop_item->dice.Throw();
 				dd.attacker		= owner;
 				//temporary soulution, should be replaced in future on general solution
-				//which returns name of item with or without 'a' 
+				//which returns name of item with or without 'a'
 				switch (drop_item->it)
 				{
 					case IT_ARROW: dd.attack_name = "the arrow"; break;
@@ -262,7 +262,7 @@ int XTrap::Activate(XCreature * cr)
 				dd.flags		= DF_MAGIC_BOLT;
 				cr->InflictDamage(&dd);
 				break;
-			
+
 			case TT_PIT:
 				dd.damage		= vRand(30) + 2;
 				dd.attacker		= owner;
@@ -291,7 +291,7 @@ int XTrap::Activate(XCreature * cr)
 		}
 		if (drop_item)
 			drop_item->Drop(l, x, y);
-		
+
 	}
 	if (isTrapShouldDestroyed || activation_count-- <= 0)
 	{
@@ -520,7 +520,7 @@ XDoor::XDoor(int _x, int _y, int flg, XLocation * _l)
 	isOpened = !flg;
 	Switch();
 	color = xBROWN;
-	
+
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
 	strcpy(name, "door");
@@ -543,7 +543,7 @@ void XDoor::Store(XFile * f)
 {
 	XMapObject::Store(f);
 	f->Write(&isOpened, sizeof(int));
-	
+
 }
 
 void XDoor::Restore(XFile * f)
@@ -561,14 +561,14 @@ XAltar::XAltar(int _x, int _y, DEITY deity, XLocation * _l)
 	im = IM_ALTAR;
 	x = _x;
 	y = _y;
-	
+
 	if (deity == D_LIFE)
 		color = xWHITE;
 	else
 		color = xDARKGRAY;
 
 	view = '_';
-	
+
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
 	strcpy(name, "altar");
@@ -641,24 +641,6 @@ void XGrave::Restore(XFile * f)
 	hiden_items.RestoreList(f);
 }
 
-
-/*
-REGISTER_CLASS(XThrone);
-
-XThrone::XThrone(int _x, int _y, char * subscr, XLocation * _l)
-{
-	SetLocation(_l);
-	im = IM_MISC;
-	x = _x;
-	y = _y;
-	color = xYELLOW;
-	view = '~';
-	assert(l->map->GetSpecial(x, y) == NULL);
-	l->map->SetSpecial(x, y, this);
-	sprintf(name, "the throne of %s", subscr);
-}
-*/
-
 REGISTER_CLASS(XFurniture);
 
 XFurniture::XFurniture(int _x, int _y, int _c, char _v, char * subscr, XLocation * _l)
@@ -672,13 +654,6 @@ XFurniture::XFurniture(int _x, int _y, int _c, char _v, char * subscr, XLocation
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
 	strcpy(name, subscr);
-/*	if(subscr[0] == 'a' || subscr[0] == 'A' ||
-		subscr[0] == 'e' || subscr[0] == 'E' ||
-		subscr[0] == 'i' || subscr[0] == 'I' ||
-		subscr[0] == 'o' || subscr[0] == 'O') //Cover the definite article for vowels
-		sprintf(name, "an %s", subscr);
-	else
-		sprintf(name, "a %s", subscr);*/
 }
 
 
@@ -690,13 +665,13 @@ XOuterObject::XOuterObject(int _x, int _y, int _c, char _v, char * subscr, XLoca
 	im = IM_MISC;
 	x = _x;
 	y = _y;
-	
+
 	SetName(subscr);
 	SetView(_v, _c);
 	assert(l->map->GetSpecial(x, y) == NULL);
 	l->map->SetSpecial(x, y, this);
-	
-	
+
+
 
 	if (event)
 	{
@@ -747,7 +722,7 @@ void XOuterObject::Store(XFile * f)
 		int res = lua_tonumber(XLocation::L, 2);
 		lua_pop(XLocation::L, 1);
 	}
-	
+
 }
 
 void XOuterObject::Restore(XFile * f)
@@ -772,4 +747,3 @@ void XOuterObject::Restore(XFile * f)
 		lua_pop(XLocation::L, 1);
 	}
 }
-

@@ -47,14 +47,14 @@ static char * insert_space(char * str)
 
 void XGuiItem_Text::WideBuffer(char * str, int newlen)
 {
-// Count length of string and number of blank spaces (blank space may consist 
+// Count length of string and number of blank spaces (blank space may consist
 // of one or more ' ' characters)
 	int len = 0, spaces = 0;
 	char * p = str;
-	while(*p != 0) 
+	while(*p != 0)
 	{
 		if(*p == 0x1F) { p += 2; continue; }
-		if(*p == ' ') 
+		if(*p == ' ')
 		{
 			spaces++; p++; len++;
 			while(*p == ' ') { p++; len++; }
@@ -66,9 +66,9 @@ void XGuiItem_Text::WideBuffer(char * str, int newlen)
 		}
 	}
 
-	while(p >= str + 2 && *(p - 1) == ' ' && *(p - 2) != 0x1F) 
-	{ 
-		p--; len--; *p = 0; 
+	while(p >= str + 2 && *(p - 1) == ' ' && *(p - 2) != 0x1F)
+	{
+		p--; len--; *p = 0;
 	}
 
 	if(len >= newlen || spaces == 0) return;
@@ -88,7 +88,7 @@ void XGuiItem_Text::WideBuffer(char * str, int newlen)
 	{
 		count1 -= subtract;
 		count2 -= subtract;
-					
+
 		if(count1 <= 0)
 		{
 			p = insert_space(p);
@@ -108,7 +108,7 @@ bool XGuiItem_Text::SetWidth(int width)
 {
 	int    color = xLIGHTGRAY;
 	char * str   = text;
-	
+
 	while(lines_count > 0) delete [] lines[--lines_count];
 
 	while(true)
@@ -130,7 +130,7 @@ bool XGuiItem_Text::SetWidth(int width)
 		if(last_space == -1) return false;
 
 		char * tmp = new char[2 + width - len + size + 1];
-		while(last_space >= 2 && str[last_space - 1] == ' ' && str[last_space - 2] != 0x1F) 
+		while(last_space >= 2 && str[last_space - 1] == ' ' && str[last_space - 2] != 0x1F)
 			last_space--;
 
 		if(str[0] != 0x1F)
@@ -151,7 +151,7 @@ bool XGuiItem_Text::SetWidth(int width)
 
 		lines[lines_count++] = tmp;
 		str += last_space;
-		if(is_line_break && *str == '\n') 
+		if(is_line_break && *str == '\n')
 			str++;
 		else
 			while(*str == ' ') str++;
@@ -199,7 +199,7 @@ void XGuiList::Put(FILE * f)
 	{
 		if(cur_line < item_first_line + item_lines_count)
 		{
-			
+
 			if(cur_line == item_first_line) vSetAttr(xLIGHTGRAY);
 
 			if(cur_line == item_first_line && item->isSelectable())
@@ -215,7 +215,7 @@ void XGuiList::Put(FILE * f)
 					vPutS(buf);
 					selectable_items_count++;
 				}
-			} 
+			}
 			if (f)
 			{
 				vFPutS(f, (*item)[cur_line++ - item_first_line]);
@@ -223,9 +223,9 @@ void XGuiList::Put(FILE * f)
 			} else
 			{
 				vGotoXY(4, y_pos);
-				vPutS((*item)[cur_line++ - item_first_line]); 
+				vPutS((*item)[cur_line++ - item_first_line]);
 			}
-			
+
 			y_pos++;
 			count--;
 		}
@@ -281,7 +281,7 @@ void XGuiList::LineUp(int count)
 
 		top_item = top_item->prev;
 		if (top_item->isSelectable()) top_selectable_index--;
-		
+
 		top_item_lines_count = top_item->GetHeight();
 		top_item_first_line -= top_item_lines_count;
 		top_item_index--;
@@ -327,7 +327,7 @@ int XGuiList::Run(int flag, int flag2)
 	vStore(&xyzbuf);
 	vClrScr();
 	vHideCursor();
-	
+
 	XGuiItem * item = head;
 	lines_count = 0;
 	while(item != 0)
@@ -402,7 +402,6 @@ int XGuiList::Run(int flag, int flag2)
 		if (flag)
 		{
 			vRestore(&xyzbuf);
-			//vRefresh();
 			return -1;
 		}
 

@@ -54,9 +54,9 @@ XGame::XGame()
 
 XGame::~XGame()
 {
-	for (int i = 0; i < L_EOF; i++) 
+	for (int i = 0; i < L_EOF; i++)
 	{
-		if (locations[i]) 
+		if (locations[i])
 		{
 			locations[i]->Invalidate();
 			locations[i] = NULL;
@@ -183,8 +183,8 @@ void XGame::RunWithoutHero()
 			if (ch == 'L')
 			{
 				FILE * f = fopen(vMakePath(HOME_DIR, "location.txt"), "w");
-				for (int i = 0; i < L_EOF; i++) 
-					if (locations[i]) 
+				for (int i = 0; i < L_EOF; i++)
+					if (locations[i])
 						locations[i]->DumpLocation(f);
 				fclose(f);
 			}
@@ -248,7 +248,7 @@ void XGame::RunWithoutHero()
 		char tname[256] = "";
 		if (best_creature)
 			sprintf(tname, "%s", best_creature->name);
-		sprintf(static_buffer, 
+		sprintf(static_buffer,
 			MSG_YELLOW "Testing Avanor - running game without hero ... (press ESC to stop)\n\n"
 			MSG_LIGHTGRAY
 			"Number of valid objects   : %d\n"
@@ -261,7 +261,7 @@ void XGame::RunWithoutHero()
 			"\n"
 			"Turns                     : %d\n"
 			"Performance               : %.1lf turns/s",
-			XObject::count, 
+			XObject::count,
 			XObject::invalid_count,
 			total_cr,
 			total_it,
@@ -270,9 +270,6 @@ void XGame::RunWithoutHero()
 			(double)Game.Scheduler.GetTime() * CLOCKS_PER_SEC / (1000. * (clock() - start_clock)));
 		vPutS(static_buffer);
 		vRefresh();
-
-/*		if (Game.Scheduler.GetTime() / 1000 > 100)
-			break;*/
 	}
 
 	XObject::InvalidateAllObjects();
@@ -340,48 +337,6 @@ void XGame::CreateLocations()
 //	Create locations
 #ifndef __DEBUG_L
 	XLocation::CreateNewGame();
-//	(new XMainLocation(L_MAIN))->NewWay(32, 3, (LOCATION)55, STW_DOWN);
-	
-
-/*	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE1);
-	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE2);
-	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE3);
-	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE4);
-	new XMushroomsCaveLocation(L_MUSHROOMS_CAVE5);*/
-/*	new XDwarfCityCaveLocation(L_DWARFCITYCAVE1);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE2);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE3);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE4);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE5);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE6);
-	new XDwarfCityCaveLocation(L_DWARFCITYCAVE7);*/
-//	new XDwarfCityLocation(L_DWARFCITY);
-//	new XDwarfTreasureLocation(L_DWARFTREASURE);
-//	new XGasMineLocation(L_GASMINE1);
-//	new XGasMineLocation(L_GASMINE2);
-//	new XGasMineLocation(L_GASMINE3);
-//	new XKingsTreasureLocation(L_KINGS_TREASURE);
-//	new XExtinctVolcanoLocation(L_EXTINCT_VOLCANO);
-//	new XRatCellarLocation(L_RATCELLAR);
-
-/*	new XWizardDungeonLocation(L_WIZARD_DUNGEON1);
-	new XWizardDungeonLocation(L_WIZARD_DUNGEON2);
-	new XWizardDungeonLocation(L_WIZARD_DUNGEON3);
-	new XWizardDungeonLocation(L_WIZARD_DUNGEON4);
-	new XWizardDungeonLocation(L_WIZARD_DUNGEON5);
-	new XAhkUlanCastleLocation(L_AHKULAN_CASTLE);
-
-	new XYohjiTower(L_WIZTOWER_TOP);
-
-	new XUndeadTombLocation(L_UNDEADS_TOMB1);
-*/
-/*	XLocation::CreateRandomCave();
-	XLocation::CreateRandomCave();
-	XLocation::CreateRandomCave();
-	XLocation * tl = Game.locations[XLocation::rand_location_count - 1];
-	XPoint pt;
-	tl->GetFreeXY(&pt);
-	(new XEyeOfRaa)->Drop(tl, pt.x, pt.y);*/
 #else
 	new XLDebug(L_DEBUG1);
 	new XLDebug(L_DEBUG2);
@@ -420,56 +375,11 @@ void XGame::CreateHero()
 	locations[L_MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
 	XHero * hero = new XHero(1);
-//	hero_point.x = 25;
-//	hero_point.y = 50;
 	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
 
-/*	Game.NewCreature(hero, 27, 44, locations[L_MAIN]);
-	hero->ContainItem(new XBone());
-	hero->ContainItem(new XBone());
-	hero->ContainItem(new XBone());
-	hero->ContainItem(new XBone());
-	hero->ContainItem(new XBone());
-	hero->ContainItem(new XBone());
-	hero->ContainItem(new XBone());*/
-
-/*	XItem * it = new XWeapon(IT_LONGSWORD);
-//	it->brt = BR_ORCSLAYER;
-	hero->ContainItem(it);
-	hero->MoneyOp(2000);
-	Game.NewCreature(hero, 25, 12, locations[L_DWARFCITY]);
-*/
-//	Game.NewCreature(hero, 15, 9, locations[L_AHKULAN_CASTLE]);
-	
 	Game.NewCreature(hero, 57, 4, locations[56]);
 	hero->MoneyOp(2000);
-/*	Game.NewCreature(hero, 55, 28, locations[L_WIZTOWER_TOP]);
 
-	hero->MoneyOp(2000);
-	hero->ContainItem(new XBatWing());
-	hero->ContainItem(new XBatWing());
-	hero->ContainItem(new XBatWing());
-	hero->ContainItem(new XRatTail());
-*/
-/*	int lll = L_EXTINCT_VOLCANO;
-	locations[lll]->GetFreeXY(&hero_point);
-	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[lll]);
-*/	
-/*	Game.NewCreature(hero, 44, 10, locations[L_MAIN]);
-	if (hero->GetBodyPart(BP_CLOAK, 0)->Item())
-		hero->GetBodyPart(BP_CLOAK, 0)->UnWear();
-	hero->Wear(new XForestBrotherCloak());
-	hero->MoneyOp(2000);
-*/
-/*	hero_point.x = 40;
-	hero_point.y = 10;
-	Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_RATCELLAR]);
-	locations[L_RATCELLAR]->map->Center(hero->x, hero->y);
-	locations[L_RATCELLAR]->visited_by_hero = 1;
-
-	locations[L_MAIN]->map->Center(hero->x, hero->y);
-	locations[L_MAIN]->visited_by_hero = 1;
-*/
 	//if hero is a bard, than create a dog for him...
 	if (strstr(hero->GetRaceStr(), "bard"))
 	{
@@ -490,28 +400,10 @@ void XGame::CreateHero()
 
 	XRect gr(pt.x + 2, pt.y + 2, pt.x + 3, pt.y + 3);
 	locations[L_DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->AddPersonalEnemy(hero);
-
-//	new XTrap(pt.x, pt.y, locations[L_DEBUG1], TL_RANDOM, TT_ARROW);
-//	XItem *it = new XBlackClub();
-//	it->Drop(Game.locations[L_DEBUG1], hero->x, hero->y);
-
-//	XCreature * cr = locations[L_DEBUG1]->NewCreature(CN_WOLF, 4, 15);
-//	cr->xai->companion = hero;
-
 #endif
 	XCreature::main_creature = hero;
 
-/*
-
-	XCreature * cr = XCreatureFactory::CreateCreature(
-		CR_REPTILE, CRS_ANY, CRL_ANY);
-	XPoint pt;
-	locations[L_MAIN]->GetFreeXY(&pt, &hero_rect);
-	Game.NewCreature(cr, pt.x, pt.y, locations[L_MAIN]);
-	cr->xai->SetAIFlag(AIF_ALLOW_MOVE_WAY_DOWN);	
-*/
 }
-
 
 
 /* TODO

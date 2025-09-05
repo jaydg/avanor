@@ -34,10 +34,10 @@ void XHiScoreItem::SetText(int place, unsigned int score, const char* name,
 		sprintf(dbuf, "Won");
 
 	if (isLastRecord)
-		sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n", 
+		sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n",
 			MSG_WHITE, place, MSG_WHITE, score, MSG_WHITE, name, dbuf, day, month, year, msg);
 	else
-		sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n", 
+		sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n",
 			MSG_CYAN, place, MSG_CYAN, score, MSG_CYAN, name, dbuf, day, month, year, msg);
 	XGuiItem_Text::SetText(buf);
 }
@@ -73,41 +73,6 @@ XHiScoreItem::XHiScoreItem(XHiScoreItem * copy)
 	flag = copy->flag;
 	SetText(place, score, name, day, month, year, msg);
 }
-
-/*
-const char * XHiScoreItem::operator[](int index)
-{
-	switch(index)
-	{
-		case 0 :
-			sprintf(buf, "%-10d %s Died on %d/%d/%d.", score, name, day, month, year);
-			return buf;
-		case 1 :
-			sprintf(buf, "           %s", msg);
-			return buf;
-		case 2 :
-			return "";
-		default :
-			assert(false);
-         return "";
-	}
-}
-
-void XHiScoreItem::Put()
-{
-	int px = 0;
-	int py = 0;
-	vGetCursorPos(&px, &py);
-	char buf[256];
-	sprintf(buf, "%d", score);
-	vPutS(buf);
-	vGotoXY(px + 10, py);
-	sprintf(buf, "%s Died on %d/%d/%d.", name, day, month, year);
-	vPutS(buf);
-	vGotoXY(px + 10, py + 1);
-	vPutS(msg);
-}
-*/
 
 void XHiScoreItem::Store(XFile * f)
 {
@@ -228,7 +193,7 @@ void XHiScore::Show()
 {
 	XGuiList list;
 
-	list.AddItem(new XGuiItem_Text(MSG_DARKGRAY 
+	list.AddItem(new XGuiItem_Text(MSG_DARKGRAY
 		"Pos   Score    Details"));
 	list.AddItem(new XGuiItem_Text(
 		"--- ---------  -------"));
@@ -244,5 +209,3 @@ void XHiScore::Show()
 
 	list.Run();
 }
-
-

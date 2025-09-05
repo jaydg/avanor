@@ -40,7 +40,6 @@ public:
 	int Get(MODIFER_TYPE mt); //return val
 	int Run(XCreature * cr);
 	void toString(char * buf);
-//	void ClearZeroMods();
 
 	void Store(XFile * f);
 	void Restore(XFile * f, XCreature * owner);

@@ -45,13 +45,13 @@ XLocation::XLocation(LOCATION location)
 	map = NULL;	//map will created by XBuilder...
 	for (int i = 0; i < MAX_PLACES; i++)
 		places[i] = NULL;
-	
+
 	assert(Game.locations[location] == NULL);
 	ln = location;
 	Game.locations[location] = this;
 
-	ttmb = 1000000; 
-	ttm = ttmb; 
+	ttmb = 1000000;
+	ttm = ttmb;
 	im = IM_OTHER;
 }
 
@@ -99,7 +99,7 @@ void XLocation::GetFreeXY(XPoint * pt, XRect * area)
 {
 	int f = 10000;
 	int tx, ty;
-	
+
 	int bx, by, dx, dy;
 	if (area)
 	{
@@ -163,7 +163,7 @@ void XLocation::BuildPlain(int w, int h)
 			map->SetXY(i, bm - j - 1, M_HIGHMOUNTAIN);
 		}
 	}
-	
+
 	for (i = tm; i < bm; i++)
 	{
 		int z1 = vRand() % ((i & 3) + 1) + 1;
@@ -177,7 +177,7 @@ void XLocation::BuildPlain(int w, int h)
 			map->SetXY(rm - j - 1, i, M_HIGHMOUNTAIN);
 		}
 	}
-	
+
 //evaluate high mountains till hills!
 	for (i = 0; i < map->hgt; i++)
 		for (j = 0; j < map->len; j++)
@@ -200,9 +200,9 @@ void XLocation::BuildPlain(int w, int h)
 							map->SetXY(j + q, i + w, (STDMAP)nm);
 					}
 			}
-			
+
 		}
-		
+
 
 }
 
@@ -236,7 +236,7 @@ void XLocation::BuildCave()
 			for (int w = 0; w < 3; w++)
 			{
 				int tx = qx + (int)(w * cos(q * M_PI / 180.0));
-				int ty = qy + (int)(w * sin(q * M_PI / 180.0)); 
+				int ty = qy + (int)(w * sin(q * M_PI / 180.0));
 				if (tx > 0 && ty > 0 && tx < 79 && ty < 19)
 				{
 					map->SetXY(tx, ty, M_CAVEFLOOR);
@@ -253,12 +253,6 @@ void XLocation::BuildLabirint(int create_trap_door_chest)
      XCaveBuilder * xcb = new XCaveBuilder(this, create_trap_door_chest);
      xcb->Build();
      delete xcb;
-//	 if (create_trap_door_chest)
-//	 {
-//		CreateDoors();
-//		CreateTraps();
-//		CreateChests();
-//	 }
 }
 
 
@@ -503,7 +497,7 @@ int XLocation::CreateLocation(lua_State * L)
 		current_location->BuildLabirint();
 	else
 		current_location->BuildPlain(200, 90);
-	
+
 
 	return 0;
 }
@@ -625,7 +619,7 @@ int XLocation::DropItem(lua_State * L)
 {
 	XItem * pItem = (XItem *)lua_topointer(L, 1);
 	int n = lua_gettop(L);
-	
+
 	int tx;
 	int ty;
 	if (n == 3)
@@ -761,7 +755,7 @@ int XLocation::OuterObject(lua_State * L)
 		if (n > 5)
 			event = lua_tostring(L, 6);
 	}
-	
+
 	XOuterObject * p = new XOuterObject(tx, ty, tc, tv[0], (char *)subscr, current_location, event);
 	lua_pushlightuserdata(L, p);
 	return 1;
@@ -994,10 +988,6 @@ int XLocation::SetItEnemyFor(lua_State * L)
 			p2->xai->AddPersonalEnemy(p1);
 			p2->xai->SetGroupEnemy(p1);
 		}
-	} else
-	{
-//		int gid = lua_tonumber(L, 2);
-//		assert(0);
 	}
 
 	return 0;
@@ -1068,7 +1058,7 @@ int XLocation::AskQuestion(lua_State * L)
 	msgwin.Add(msg);
 
 	XStr out = "[";
-	
+
 	int offs = 0;
 	char key_value[20];
 	int index = 0;
@@ -1110,7 +1100,7 @@ int XLocation::AskQuestion(lua_State * L)
 	}
 
 	out += "]";
-	
+
 	msgwin.Add(out.c_str());
 	vRefresh();
 	int ch = vGetch();
@@ -1156,7 +1146,7 @@ int XLocation::GetItemParam(lua_State * L)
 	lua_pushstring(L, p->name);
 
 	return 6;
-} 
+}
 int XLocation::SetItemBrand(lua_State * L)
 {
 	XItem * p = (XItem *)lua_topointer(L, 1);
@@ -1413,7 +1403,7 @@ int XLocation::CRBA(lua_State * L)
 int XLocation::CRBO(lua_State * L)
 {
 	const char * body = lua_tostring(L, 1);
-		
+
 	int prob = 0;
 	int flg = 0;
 	int n = lua_gettop(L);
@@ -1430,7 +1420,7 @@ int XLocation::CRBO(lua_State * L)
 
 int XLocation::CRA(lua_State * L)
 {
-	int flg = lua_tonumber(L, 1);	
+	int flg = lua_tonumber(L, 1);
 	XCreatureStorage::SetAI(flg);
 	return 0;
 }
@@ -1571,7 +1561,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(L_GASMINE3);
 	LUA_REG(L_RATCELLAR);
 	LUA_REG(L_EXTINCT_VOLCANO);
-	
+
 	LUA_REG(L_WIZTOWER_TOP);
 	LUA_REG(L_KINGS_TREASURE);
 
@@ -1581,7 +1571,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(L_WIZARD_DUNGEON4);
 	LUA_REG(L_WIZARD_DUNGEON5);
 	LUA_REG(L_AHKULAN_CASTLE);
-	
+
 
 	LUA_REG(GFS_SUPRESS_INVIS);
 	LUA_REG(GFS_SEE_INVIS);
@@ -1646,7 +1636,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(M_BLACKMARBLEWALL);
 	LUA_REG(M_GOLDENFENCE);
 	LUA_REG(M_TELEPORTWHITE);
-	
+
 
 
 	LUA_REG(GID_ORCS_WARPARTY);
@@ -1658,7 +1648,7 @@ void XLocation::CommonLuaInitialization()
 	LUA_REG(GID_AHKULAN_GUARDIAN);
 	LUA_REG(GID_RODERICK_GUARDIAN);
 
-	
+
 
 	LUA_REG(AIF_ALLOW_PICK_UP);
 	LUA_REG(AIF_ALLOW_MOVE_WAY_UP);
@@ -1784,20 +1774,20 @@ void XLocation::CommonLuaInitialization()
 
 
 	LUA_REG(xBLACK);
-	LUA_REG(xBLUE); 
-	LUA_REG(xGREEN); 
-	LUA_REG(xCYAN); 
-	LUA_REG(xRED); 
-	LUA_REG(xMAGENTA); 
-	LUA_REG(xBROWN); 
-	LUA_REG(xLIGHTGRAY); 
-	LUA_REG(xDARKGRAY); 
-	LUA_REG(xLIGHTBLUE); 
-	LUA_REG(xLIGHTGREEN); 
-	LUA_REG(xLIGHTCYAN); 
-	LUA_REG(xLIGHTRED); 
-	LUA_REG(xLIGHTMAGENTA); 
-	LUA_REG(xYELLOW); 
+	LUA_REG(xBLUE);
+	LUA_REG(xGREEN);
+	LUA_REG(xCYAN);
+	LUA_REG(xRED);
+	LUA_REG(xMAGENTA);
+	LUA_REG(xBROWN);
+	LUA_REG(xLIGHTGRAY);
+	LUA_REG(xDARKGRAY);
+	LUA_REG(xLIGHTBLUE);
+	LUA_REG(xLIGHTGREEN);
+	LUA_REG(xLIGHTCYAN);
+	LUA_REG(xLIGHTRED);
+	LUA_REG(xLIGHTMAGENTA);
+	LUA_REG(xYELLOW);
 	LUA_REG(xWHITE);
 
 	LUA_REG(D_LIFE);
@@ -1950,7 +1940,7 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "isHero", isHero);
 	lua_register(L, "isEnemy", isEnemy);
 	lua_register(L, "FindCreature", FindCreature);
-	
+
 	lua_register(L, "AddMessage", AddMessage);
 	lua_register(L, "AskQuestion", AskQuestion);
 
@@ -1966,7 +1956,7 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "GetSkill", GetSkill);
 	lua_register(L, "LearnSkill", LearnSkill);
 	lua_register(L, "MoneyOperation", MoneyOperation);
-	
+
 	lua_register(L, "SetName", SetName);
 	lua_register(L, "SetView", SetView);
 	lua_register(L, "GetView", GetView);
@@ -1976,7 +1966,7 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "SetItemBrand", SetItemBrand);
 	lua_register(L, "GiveObjectToCreature", GiveObjectToCreature);
 	lua_register(L, "GiveAward", GiveAward);
-	
+
 	lua_register(L, "MakeEffect", MakeEffect);
 	lua_register(L, "DestroyObject", DestroyObject);
 	lua_register(L, "SetCompanion", SetCompanion);
@@ -1984,7 +1974,7 @@ void XLocation::CommonLuaInitialization()
 	lua_register(L, "Quest", Quest);
 	lua_register(L, "QuestModify", QuestModify);
 	lua_register(L, "QuestStatus", QuestStatus);
-	lua_register(L, "Gender", Gender);	
+	lua_register(L, "Gender", Gender);
 
 	lua_register(L, "StoreInt", StoreInt);
 	lua_register(L, "RestoreInt", RestoreInt);
@@ -2017,7 +2007,7 @@ void XLocation::CommonLuaInitialization()
 	luaopen_string(L);
 
 	lua_dofile(L, "./world/init.lua");
-	
+
 	lua_dostring(L, "LoadScripts()");
 	XCreatureStorage::CreateQuickBase();
 }
@@ -2039,4 +2029,3 @@ void XLocation::CreateNewGame()
 	lua_dostring(L, "MakeWizardDungeon()");
 	lua_dostring(L, "CreateAllQuests()");
 }
-

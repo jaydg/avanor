@@ -95,13 +95,6 @@ struct DUMMY_STRUCT
 	static __xClass * MakeNew() { return new __xClass(); } \
 	virtual const std::string GetClassName() {return #__xClass;}
 
-//	void InvalidateLeave() {__xBaseClass::Invalidate();}
-
-//#define INVALIDATE_ENTER() static int inside = 0; assert(!inside); if (!isValid()) return; inside = 1;
-//#define INVALIDATE_LEAVE() InvalidateLeave(); inside = 0;
-
-//virtual XObject * MakeCopy() {return new __xClass(this);}
-
 class XClassInfo
 {
 public:
@@ -136,7 +129,7 @@ class XObject
 {
 public:
 	static long       invalid_count;
-	static XObject ** table;   
+	static XObject ** table;
 	static long       count;
 	static XObject  * root;
 
@@ -182,9 +175,7 @@ public:
 	static void      InvalidateAllObjects();
 	static void      FreeTable();
 
-	// DECLARE_CREATOR(XObject);
-
-	XObject(DUMMY_STRUCT * ds) : is_valid(1) 
+	XObject(DUMMY_STRUCT * ds) : is_valid(1)
 	{
 		Create();
 	}
@@ -200,23 +191,23 @@ public:
 		Create();
 	}
 
-	virtual ~XObject() 
-	{ 
+	virtual ~XObject()
+	{
 		assert(!is_valid && reference == 0);
 		invalid_count--;
 	}
 
-	void AddRef() 
-	{ 
-		reference++; 
+	void AddRef()
+	{
+		reference++;
 	}
 
-	void Release() 
-	{ 
+	void Release()
+	{
 		assert(reference > 0);
 		if(--reference == 0 && !is_valid)
 		{
-			delete this; 
+			delete this;
 		}
 	}
 
@@ -225,9 +216,8 @@ public:
       return reference;
    }
 
-	virtual void Invalidate() 
-	{ 
-//		assert(is_valid);
+	virtual void Invalidate()
+	{
 		if (!is_valid) return;
   		is_valid = 0;
 		RemoveFromList();
@@ -238,16 +228,16 @@ public:
 	}
 
 	virtual int Compare(XObject * o) { return 1; }
-	virtual void Concat(XObject * o) 
+	virtual void Concat(XObject * o)
 	{
 		assert(o->reference == 0);
 		quantity += o->quantity;
 		o->Invalidate();
 	}
-	
+
    virtual const std::string GetClassName() { return "XObject"; }
    XObject * MakeNew() { assert(0); return NULL; }
-   
+
    virtual void Dump(XFile * f);
    static void DumpAll();
 
@@ -294,23 +284,23 @@ public:
 	void Restore(XFile * f);
 };
 
-template<class TYPE> XPtr<TYPE>::~XPtr() 
-{ 
+template<class TYPE> XPtr<TYPE>::~XPtr()
+{
 	if(p != NULL) p->Release();
 }
 
-template<class TYPE> void XPtr<TYPE>::operator=(TYPE * _p) 
-{ 
+template<class TYPE> void XPtr<TYPE>::operator=(TYPE * _p)
+{
 	if(p == (XObject *)_p) return;
-	if(p != NULL) p->Release(); 
+	if(p != NULL) p->Release();
 	p = (XObject *)_p;
-	if(p != NULL) p->AddRef(); 
+	if(p != NULL) p->AddRef();
 }
 
 template<class TYPE> TYPE * XPtr<TYPE>::get_with_check() const
-{ 
-   if(p->isValid()) return static_cast<TYPE *>(p); 
-   p->Release(); 
+{
+   if(p->isValid()) return static_cast<TYPE *>(p);
+   p->Release();
    p = NULL;
    return NULL;
 }
@@ -323,7 +313,7 @@ template<class TYPE> void XPtr<TYPE>::Store(XFile * f) const
 template<class TYPE> void XPtr<TYPE>::Restore(XFile * f)
 {
    assert(p == NULL);
-   p = XObject::RestorePointer(f, this); 
+   p = XObject::RestorePointer(f, this);
    if (p != NULL) p->AddRef();
    assert(p == NULL || dynamic_cast<TYPE *>(p));
 }

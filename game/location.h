@@ -27,7 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "cr_defs.h"
 #include "xstr.h"
 
-enum SHOP_DOOR 
+enum SHOP_DOOR
 {
 	SHOP_DOOR_UP,
 	SHOP_DOOR_LEFT,
@@ -53,8 +53,8 @@ L_GASMINE1			= 15,
 L_GASMINE2			= 16,
 L_GASMINE3			= 17,
 
-L_SMALLCAVE			= 18, 
-L_RATCELLAR			= 19, 
+L_SMALLCAVE			= 18,
+L_RATCELLAR			= 19,
 
 L_MUSHROOMS_CAVE1	= 20, //first
 L_MUSHROOMS_CAVE2	= 21, //demon
@@ -104,7 +104,7 @@ enum LUA_EVENT
 	LE_LOAD				= 99
 };
 
-enum PALETTE 
+enum PALETTE
 {
 	PAL_UNKNOWN			= 0x0000,
 	PAL_SMALL_TOWN		= 0x0001,
@@ -175,7 +175,7 @@ public:
 
 	int visited_by_hero;
 	void DumpLocation(FILE * f);
-	
+
 	int GetCreatureCount(unsigned int creature_class); //count of such creatures on this level (need for quests)
 
 	static void CreateRandomCave();
@@ -189,7 +189,7 @@ public:
 	XStairWay * NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area = NULL); //creates way at random place
 	XStairWay * NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type);
 
-	
+
 	//Location Script Language
 	static const char* GetToken(const char * line, const char ** token, int * token_len);
 	static const char* GetNumber(const char * line, int * num);
@@ -208,7 +208,7 @@ public:
 
 	static int CreateLocation(lua_State * L);
 	static int Settle(lua_State * L);
-	
+
 	static int Creature(lua_State * L);
 	static int Guardian(lua_State * L);
 
@@ -297,8 +297,8 @@ public:
 	static int CRCOE(lua_State * L);
 	static int CRCOD(lua_State * L);
 
-	
-	
+
+
 protected:
 	char brief_name[10];
 	char full_name[80];
@@ -326,35 +326,10 @@ public:
 
 ////////////// ALL OTHER LOCATIONS /////////////////////
 
-class XWizardDungeonLocation : public XLocation
-{
-public:
-	XWizardDungeonLocation(LOCATION l_name);
-};
-
-class XAhkUlanCastleLocation : public XLocation
-{
-public:
-	XAhkUlanCastleLocation(LOCATION tl);
-};
-
-
 class XMainLocation : public XLocation
 {
 public:
 	XMainLocation(LOCATION tl);
-};
-
-class XYohjiTower : public XLocation
-{
-public:
-	XYohjiTower(LOCATION tl);
-};
-
-class XKingsTreasureLocation : public XLocation
-{
-public:
-	XKingsTreasureLocation(LOCATION tl);
 };
 
 class XExtinctVolcanoLocation : public XLocation

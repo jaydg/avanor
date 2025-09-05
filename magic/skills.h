@@ -35,10 +35,6 @@ public:
 	XSkill * GetSkill(SKILL_TYPE skt);
 	void Learn(SKILL_TYPE skt, int level = 1);
 
-	void GrowLevels();
-	void RunLevels();
-
-
 	XSortedList<XSkill *> skills;
 
 	void Store(XFile * f);

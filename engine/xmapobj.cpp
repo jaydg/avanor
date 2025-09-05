@@ -25,7 +25,7 @@ XMapObject::XMapObject() : l(NULL), x(-1), y(-1)
 {
 }
 
-XMapObject::XMapObject(XMapObject * copy) : 
+XMapObject::XMapObject(XMapObject * copy) :
 	XObject((XObject *)copy),
 	x       (copy->x),
 	y       (copy->y),
@@ -33,18 +33,15 @@ XMapObject::XMapObject(XMapObject * copy) :
 	ny      (copy->ny),
 	view    (copy->view),
 	color   (copy->color)
-{   
+{
 	l = copy->l.get();
 	strcpy(name, copy->name);
 }
 
 void XMapObject::Invalidate()
 {
-//	INVALIDATE_ENTER();
-
 	SetLocation(NULL);
-	XObject::Invalidate();	
-//	INVALIDATE_LEAVE();
+	XObject::Invalidate();
 }
 
 void XMapObject::Store(XFile * f)
@@ -73,7 +70,7 @@ void XMapObject::Restore(XFile * f)
 	f->Read(&view, sizeof(char));
 	f->Read(&color, sizeof(int));
 	f->Read(name, sizeof(char), 50);
-	
+
 	l.Restore(f);;
 }
 

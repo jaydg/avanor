@@ -52,31 +52,6 @@ void XSkills::Learn(SKILL_TYPE skt, int level)
 	skills.Add(new XSkill(skt, level));
 }
 
-void XSkills::RunLevels()
-{
-/*	skills->Reset();
-	for (unsigned int i = 0; i < skills->len; i++)
-	{
-		XSkill * skill = (XSkill *)skills->Get();
-		skill->DecFreq();
-		skills->Next();
-	}
-*/
-}
-
-void XSkills::GrowLevels()
-{
-/*	skills->Reset();
-	for (unsigned int i = 0; i < skills->len; i++)
-	{
-		XSkill * skill = (XSkill *)skills->Get();
-		skill->GrowSkill();
-		skills->Next();
-	}
-*/
-}
-
-
 void XSkills::Store(XFile * f)
 {
 	skills.StoreList(f);

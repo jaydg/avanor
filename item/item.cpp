@@ -100,10 +100,10 @@ void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
 
 	d = new XDice(is->dv);
 	_DV = d->NThrow();
-	
+
 	d->Setup(is->pv);
 	_PV = d->NThrow();
-	
+
 	d->Setup(is->hit);
 	_HIT = d->NThrow();
 
@@ -128,7 +128,7 @@ void XItem::PropFill(ITEM_SET is, int val)
 			tval += item_prop[i].probability;
 	}
 	assert(tval > 0);
-	
+
 	int trnd = vRand() % tval;
 	int r_val = 0;
 	while (1)
@@ -148,32 +148,29 @@ void XItem::PropFill(ITEM_SET is, int val)
 	color = item_prop[r_val].color;
 	weight *= item_prop[r_val].density;
 	value =	item_prop[r_val].value * value / 10;
-	
-//	if (item_prop[r_val].probability <= vRand() % 1000)
-//	{
-		XDice d;
 
-		if (_DV)
-		{
-			d.Setup(item_prop[r_val].dv);
-			_DV += d.NThrow();//d.S;
-		}
-		
-		if (_PV)
-		{
-			d.Setup(item_prop[r_val].pv);
-			_PV += d.NThrow();//d.S;
-		}
-	
-		d.Setup(item_prop[r_val].hit);
-		_HIT += d.NThrow();//d.S;
-	
-		d.Setup(item_prop[r_val].dice);
-		int tx = dice.X + d.X;
-		int ty = dice.Y + d.Y;
-		d.Setup(item_prop[r_val].z);
-		dice.Setup(tx, ty, dice.Z + d.NThrow());
-//	}
+	XDice d;
+	if (_DV)
+	{
+		d.Setup(item_prop[r_val].dv);
+		_DV += d.NThrow();
+	}
+
+	if (_PV)
+	{
+		d.Setup(item_prop[r_val].pv);
+		_PV += d.NThrow();
+	}
+
+	d.Setup(item_prop[r_val].hit);
+	_HIT += d.NThrow();
+
+	d.Setup(item_prop[r_val].dice);
+	int tx = dice.X + d.X;
+	int ty = dice.Y + d.Y;
+	d.Setup(item_prop[r_val].z);
+	dice.Setup(tx, ty, dice.Z + d.NThrow());
+
 	quality = (ITEM_QUALITY)(quality + item_prop[r_val].iq);
    assert(r == NULL);
 	r = new XResistance(item_prop[r_val].resistance);
@@ -183,45 +180,29 @@ void XItem::PropFill(ITEM_SET is, int val)
 
 void XItem::SpecialFill()
 {
-//	if (vRand() % 100 < 90)
-//		return;
-
 	int r_val;
 	if (im & IM_WEAPON)
 		int uu = 0;
-//	int try_count = 1000;
-//	while (try_count-- > 0)
-//	{
 	r_val = vRand() % ENH_DB_SZ;
 	if (!(ienh_db[r_val].val < vRand() % 101 && (im & ienh_db[r_val].im)))
 		return;
-//	}
-//	if (try_count == 0)
-//		return;
 
-/*	char buf[100];
-	sprintf(buf, "%s %s", name, ienh_db[r_val].name);
-	strcpy(name, buf);
-*/
 	special_number = r_val;
 
 	if (ienh_db[r_val].color)
 		color = ienh_db[r_val].color;
 
-//	weight *= item_prop[r_val].density;
-//	value =	item_prop[r_val].value * value;
-	
 	XDice * d;
 
 	d = new XDice(ienh_db[r_val].dv);
 	_DV += d->Throw();
-		
+
 	d->Setup(ienh_db[r_val].pv);
 	_PV += d->Throw();
-	
+
 	d->Setup(ienh_db[r_val].hit);
 	_HIT += d->Throw();
-	
+
 	d->Setup(ienh_db[r_val].dice);
 	int tx = dice.X + d->X;
 	int ty = dice.Y + d->Y;
@@ -247,7 +228,6 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject *)copy)
 	is_selected = copy->is_selected;
 	it = copy->it;
 	material_index = copy->material_index;
-//	shop_flag = copy->shop_flag;
 	special_number = copy->special_number;
 	special_property = copy->special_property;
 	value = copy->value;
@@ -271,18 +251,6 @@ void XItem::toString(char * buf)
 {
   assert(0);
 }
-
-/*
-void XItem::Run()
-{
-	ttm = ttmb;
-	if (it == IT_CORPSE)
-	{
-		assert(0);
-//		nutrio--;
-	}
-}
-*/
 
 int XItem::ModifyDur(int val)
 {
@@ -340,10 +308,10 @@ int XItem::GetValue()
 		}
 
 	int brtval = 0;
-	
+
 	if (brt & BR_FIRE)
 		brtval += 200;
-	
+
 	if (brt & BR_COLD)
 		brtval += 150;
 
@@ -360,15 +328,6 @@ int XItem::GetValue()
 		return 1;
 	else
 		return xval;
-}
-
-void XItem::PriceToString(char * buf)
-{
-/*	if (shop_flag)
-		sprintf(buf, "{%dgp}", GetValue());
-	else
-		strcpy(buf, "");
-*/
 }
 
 void XItem::StatsToString(char * buf)
@@ -397,10 +356,7 @@ void XItem::StatsToString(char * buf)
 			strcpy(buf, tb);
 		}
 	}
-//	PriceToString(tb);
-//	strcat(buf, tb);
 }
-
 
 void XItem::GetFullName(char * buf, const char* templ)
 {
@@ -479,16 +435,14 @@ void XItem::Store(XFile * f)
 	f->Write(&brt, sizeof(BRAND_TYPE));
 	f->Write(&durability, sizeof(int));
 	f->Write(&identify, sizeof(int));
-	
+
 	f->Write(&is_selected, sizeof(int));
 	f->Write(&it, sizeof(ITEM_TYPE));
 	f->Write(&material_index, sizeof(int));
 
-//	f->Write(&shop_flag, sizeof(int));
-	
 	f->Write(&special_number, sizeof(int));
 	f->Write(&special_property, sizeof(SPECIAL_PROPERTY));
-	
+
 	f->Write(&value, sizeof(int));
 	f->Write(&wt, sizeof(WSK_TYPE));
 	f->Write(&quality, sizeof(ITEM_QUALITY));
@@ -499,7 +453,7 @@ void XItem::Store(XFile * f)
 void XItem::Restore(XFile * f)
 {
 	XBaseObject::Restore(f);
-	
+
 	f->Read(&bp, sizeof(BODYPART));
 	f->Read(&brt, sizeof(BRAND_TYPE));
 	f->Read(&durability, sizeof(int));
@@ -509,11 +463,9 @@ void XItem::Restore(XFile * f)
 	f->Read(&it, sizeof(ITEM_TYPE));
 	f->Read(&material_index, sizeof(int));
 
-//	f->Read(&shop_flag, sizeof(int));	
-
 	f->Read(&special_number, sizeof(int));
 	f->Read(&special_property, sizeof(SPECIAL_PROPERTY));
-	
+
 	f->Read(&value, sizeof(int));
 	f->Read(&wt, sizeof(WSK_TYPE));
 	f->Read(&quality, sizeof(ITEM_QUALITY));
@@ -525,12 +477,12 @@ int XItem::onWear(XCreature * cr)
 {
 	cr->added_stats.Add(s); //modify stats;
 	cr->added_resists.Add(r); //modify resist;
-	
+
 	if (im != IM_SHIELD)
 		cr->added_DV	+= _DV;
 
 	cr->added_PV	+= _PV;
-	
+
 	if (im & IM_TOHIT)
 	{
 		cr->added_HIT	+= _HIT;
@@ -540,12 +492,12 @@ int XItem::onWear(XCreature * cr)
 	{
 		cr->added_DMG	+= dice.Z;
 	}
-	
+
 	cr->added_RNG	+= RNG;
 
 	cr->added_HP	+= _HP;
 	cr->added_PP	+= _PP;
-	
+
 	return 1;
 }
 
@@ -557,7 +509,7 @@ int XItem::onUnWear(XCreature * cr)
 	if (im != IM_SHIELD)
 		cr->added_DV	-= _DV;
 	cr->added_PV	-= _PV;
-	
+
 	if (im & IM_TOHIT)
 	{
 		cr->added_HIT	-= _HIT;
@@ -567,7 +519,7 @@ int XItem::onUnWear(XCreature * cr)
 	{
 		cr->added_DMG	-= dice.Z;
 	}
-	
+
 	cr->added_RNG	-= RNG;
 
 	cr->added_HP	-= _HP;
@@ -625,4 +577,3 @@ void XItem::UnCarry()
 	if (owner)
 		owner->UnCarryItem(this);
 }
-

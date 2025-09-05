@@ -43,83 +43,82 @@ int XModifer::Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
 		XBasicModifer * xbm;
 		switch (mt)
 		{
-			case MOD_WOUND : 
-				xbm = new XModWound(_val, _cr); 
+			case MOD_WOUND :
+				xbm = new XModWound(_val, _cr);
 				break;
-			
-			case MOD_POISON : 
+
+			case MOD_POISON :
 				_val = owner->onMagicDamage(_val, R_POISON);
 				if (_val > 0)
-					xbm = new XModPoison(_val, _cr); 
+					xbm = new XModPoison(_val, _cr);
 				else
 					return 0;
 				break;
-			
-			case MOD_CONFUSE : 
+
+			case MOD_CONFUSE :
 				_val = owner->onMagicDamage(_val, R_CONFUSE);
 				if (_val > 0)
-					xbm = new XModConfuse(_val, _cr); 
+					xbm = new XModConfuse(_val, _cr);
 				else
 					return 0;
 				break;
 
-			case MOD_STUN : 
+			case MOD_STUN :
 				_val = owner->onMagicDamage(_val, R_STUN);
 				if (_val > 0)
-					xbm = new XModStun(_val, _cr); 
+					xbm = new XModStun(_val, _cr);
 				else
 					return 0;
 				break;
 
-			case MOD_HEROISM : 
-				xbm = new XModHeroism(_val, _cr); 
+			case MOD_HEROISM :
+				xbm = new XModHeroism(_val, _cr);
 				break;
 
-			case MOD_DISEASE : 
-				xbm = new XModDisease(_val, _cr); 
+			case MOD_DISEASE :
+				xbm = new XModDisease(_val, _cr);
 				break;
 
-			case MOD_PARALYSE : 
-				xbm = new XModParalyse(_val, _cr); 
+			case MOD_PARALYSE :
+				xbm = new XModParalyse(_val, _cr);
 				break;
 
-			case MOD_WEAK : 
-				xbm = new XModWeak(_val, _cr); 
+			case MOD_WEAK :
+				xbm = new XModWeak(_val, _cr);
 				break;
 
-			case MOD_SEE_INVISIBLE : 
-				xbm = new XModSeeInvisible(_val, _cr); 
+			case MOD_SEE_INVISIBLE :
+				xbm = new XModSeeInvisible(_val, _cr);
 				break;
 
-			case MOD_BOOST_SPEED : 
-				xbm = new XModBoostSpeed(_val, _cr); 
+			case MOD_BOOST_SPEED :
+				xbm = new XModBoostSpeed(_val, _cr);
 				break;
 
-			case MOD_SLOWNESS : 
-				xbm = new XModSlowness(_val, _cr); 
+			case MOD_SLOWNESS :
+				xbm = new XModSlowness(_val, _cr);
 				break;
 
-			case MOD_ACID_RESISTANCE : 
-				xbm = new XModAcidResistance(_val, _cr); 
+			case MOD_ACID_RESISTANCE :
+				xbm = new XModAcidResistance(_val, _cr);
 				break;
 
-			case MOD_FIRE_RESISTANCE : 
-				xbm = new XModFireResistance(_val, _cr); 
+			case MOD_FIRE_RESISTANCE :
+				xbm = new XModFireResistance(_val, _cr);
 				break;
 
-			case MOD_COLD_RESISTANCE : 
-				xbm = new XModColdResistance(_val, _cr); 
+			case MOD_COLD_RESISTANCE :
+				xbm = new XModColdResistance(_val, _cr);
 				break;
 
-			case MOD_POISON_RESISTANCE : 
-				xbm = new XModPoisonResistance(_val, _cr); 
+			case MOD_POISON_RESISTANCE :
+				xbm = new XModPoisonResistance(_val, _cr);
 				break;
 
 			default : assert(0);
 		};
 		Add(xbm, owner);
-//    xbm->onSet(owner);
-//    ml->Add(xbm);
+
 		return 1;
 	} else
 	{
@@ -195,11 +194,11 @@ int XModifer::Remove(MODIFER_TYPE mdt, XCreature * owner)
     XList<XBasicModifer *>::iterator it = ml.begin();
 	while (it != ml.end())
 	{
-		XBasicModifer * tmod = static_cast<XBasicModifer *>(static_cast<XObject *>(it)); 
+		XBasicModifer * tmod = static_cast<XBasicModifer *>(static_cast<XObject *>(it));
 		it++;
-		if (tmod->mdt == mdt) 
+		if (tmod->mdt == mdt)
 		{
-			if (flag) 
+			if (flag)
 			{
 				if (owner->isHero())
 					msgwin.Add(tmod->RemoveMsg());
@@ -273,14 +272,6 @@ void XModifer::toString(char * buf)
 		strcat(buf, " ");
 		tmp->Invalidate();
 	}
-
-/*	int len = strlen(buf);
-	if (len < 60)
-	{
-		for (int i = len; i < 60; i++)
-			strcat(buf, " ");
-	}
-	*/
 }
 
 int XModifer::Run(XCreature * cr)
@@ -336,5 +327,3 @@ void XModifer::Restore(XFile * f, XCreature * owner)
 	assert(ml.empty());
 	ml.RestoreList(f);
 }
-
-

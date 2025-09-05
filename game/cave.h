@@ -38,7 +38,7 @@ enum RANDOM_CAVE_TYPE
 	RCT_SIMPLE2,
 	RCT_SIMPLE3,
 	RCT_SIMPLE4,
-	RCT_USUAL, //just a simple random XY cave	
+	RCT_USUAL, //just a simple random XY cave
 };
 
 enum CAVE_FLAGS
@@ -69,7 +69,6 @@ class XCave
 public:
 	XRect r;
 	XQList<XPoint> exits;
-//	XCave(XRect * _r);
 	XCave(int len, int hgt, bool isAllowSpecialRooms);
 	int Intersect(XCave * xc, int dist);
 	void Draw(XLocation * l);

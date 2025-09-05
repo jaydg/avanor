@@ -38,10 +38,7 @@ _ENH_COLOR_TABLE ect[] = {
 {/*EC_STEEL,*/	xBLUE,		"steel"},
 {/*EC_GLASS,*/	xLIGHTGRAY,	"glass"},
 {/*EC_OBSIDIAN*/xDARKGRAY,	"obsidian"},
-
 };
-
-
 
 ENH_COLOR ENH_REC::SelectColor(ENH_COLOR ec)
 {
@@ -69,81 +66,81 @@ ENH_COLOR ENH_REC::SelectColor(ENH_COLOR ec)
 
 
 ENH_REC enh_db[] = {
-{ENH_PROTECTION, "of protection",  
-"", "1d6-2",	
-"", "", "", "", 
-"", 
+{ENH_PROTECTION, "of protection",
+"", "1d6-2",
+"", "", "", "",
+"",
 "",
 150, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_DAMAGE, "of damage",  
-"", "",	
-"", "", "1d6-2", "", 
-"", 
+{ENH_DAMAGE, "of damage",
+"", "",
+"", "", "1d6-2", "",
+"",
 "",
 150, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_SLAYING, "of slaying",  
-"", "",	
-"1d6-2", "", "1d6-2", "", 
-"", 
+{ENH_SLAYING, "of slaying",
+"", "",
+"1d6-2", "", "1d6-2", "",
+"",
 "",
 300, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_FREEACTION, "of free action",  
-"", "",	
-"", "", "", "", 
-"stun:8d5+50 confuse:8d5+50", 
+{ENH_FREEACTION, "of free action",
+"", "",
+"", "", "", "",
+"stun:8d5+50 confuse:8d5+50",
 "",
 200, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_INVISIBILITY, "of invisibility",  
-"", "",	
-"", "", "", "", 
-"invisible:0d0+10", 
+{ENH_INVISIBILITY, "of invisibility",
+"", "",
+"", "", "", "",
+"invisible:0d0+10",
 "",
 500, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_SEEINVISIBLE, "of see invisible",  
-"", "",	
-"", "", "", "", 
-"see_invisible:0d0+10", 
+{ENH_SEEINVISIBLE, "of see invisible",
+"", "",
+"", "", "", "",
+"see_invisible:0d0+10",
 "",
 300, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_FIRERESIST, "of fire resistance",  
-"", "",	
-"", "", "", "", 
-"fire:8d5+30", 
+{ENH_FIRERESIST, "of fire resistance",
+"", "",
+"", "", "", "",
+"fire:8d5+30",
 "",
 250, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_ACIDRESIST, "of acid resistance",  
-"", "",	
-"", "", "", "", 
-"fire:8d5+25", 
+{ENH_ACIDRESIST, "of acid resistance",
+"", "",
+"", "", "", "",
+"fire:8d5+25",
 "",
 300, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_POISONRESIST, "of poison resistance",  
-"", "",	
-"", "", "", "", 
-"fire:8d5+25", 
+{ENH_POISONRESIST, "of poison resistance",
+"", "",
+"", "", "", "",
+"fire:8d5+25",
 "",
 300, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_STR, "of Strength",  
-"", "",	
-"", "", "", "", 
+{ENH_STR, "of Strength",
+"", "",
+"", "", "", "",
 "",
-"St:1d4", 
+"St:1d4",
 400, ENH_REC::SelectColor(EC_RANDOM), 0},
 
-{ENH_POWER, "of Power",  
-"", "",	
-"", "", "", "", 
+{ENH_POWER, "of Power",
+"", "",
+"", "", "", "",
 "",
-"Wi:1d4", 
+"Wi:1d4",
 400, ENH_REC::SelectColor(EC_RANDOM), 0}
 };
 
@@ -151,7 +148,7 @@ const int enh_db_sz = 11;
 
 XEnhance::XEnhance(ENHANCE enh)
 {
-	
+
 	descr = -1;
 	if (enh == ENH_EOF)
 		descr =	vRand(enh_db_sz);
@@ -174,10 +171,10 @@ XEnhance::XEnhance(ENHANCE enh)
 	XDice * d;
 	d = new XDice(is->dv);
 	_DV = d->Throw();
-	
+
 	d->Setup(is->pv);
 	_PV = d->Throw();
-	
+
 	d->Setup(is->hit);
 	_HIT = d->Throw();
 
@@ -193,7 +190,7 @@ XEnhance::XEnhance(ENHANCE enh)
 	delete d;
 	s = new XStats(is->s);
 	r = new XResistance(is->r);
-	
+
 	weight = 3;
 }
 
@@ -284,4 +281,3 @@ void XEnhance::Restore(XFile * f)
 	XItem::Restore(f);
 	f->Read(&descr, sizeof(int));
 }
-

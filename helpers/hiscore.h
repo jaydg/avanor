@@ -37,16 +37,13 @@ public:
 	XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
 	XHiScoreItem() : isLastRecord(0) {}
 	XHiScoreItem(XHiScoreItem * copy);
-//	virtual void Put();
 	virtual int isSelectable() {return 0;}
 	virtual int isTitle() {return 0;}
-//	virtual int GetHeight() {return 3;}
 	void Store(XFile * f);
 	void Restore(XFile * f);
 	unsigned int score;
 	int place;
 	void SetText(int place, unsigned int score, const char* name, int day, int month, int year, const char * msg);
-//   virtual const char * operator[](int index);
 protected:
 	int year;
 	int day;

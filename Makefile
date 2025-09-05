@@ -81,7 +81,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothe.cpp xcloak.cpp   \
        xcap.cpp xboots.cpp xbook.cpp xbaseobj.cpp xarmor.cpp xarchive.cpp     \
        xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp wskills.cpp            \
-       wizard_dungeon.cpp unique.cpp uniquei.cpp                              \
+       unique.cpp uniquei.cpp                                                 \
        strproc.cpp std_ai.cpp stats.cpp skills.cpp skill.cpp                  \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
        quest.cpp other_misc.cpp msgwin.cpp                                    \

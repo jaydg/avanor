@@ -35,7 +35,6 @@ public:
 	virtual void Invalidate();
 	XBaseObject(XBaseObject * copy);
 	~XBaseObject();
-//	virtual XObject * MakeCopy() { return new XBaseObject(this); }
 
 	int _DV, _PV, _HIT, RNG;
 	int _HP, _PP;
@@ -48,7 +47,6 @@ public:
 
 	XResistance * r;
 	XStats * s;
-//	XQuae * contain;
 
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
@@ -56,4 +54,3 @@ public:
 };
 
 #endif
-

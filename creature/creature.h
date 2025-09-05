@@ -37,10 +37,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 enum AI_TYPE {AI_HERO = 0, AI_SIMPLE = 1};
 
 enum ACTION {
-	A_UNKNOWN        = 0, 
-	A_MOVE           = 1, 
-//	A_MOVETOSTAIRWAY = 2, 
-	A_ATTACK         = 3, 
+	A_UNKNOWN        = 0,
+	A_MOVE           = 1,
+//	A_MOVETOSTAIRWAY = 2,
+	A_ATTACK         = 3,
 	A_CAST           = 4,
 	A_EAT            = 5,
 	A_READ           = 6,
@@ -284,16 +284,14 @@ public:
 	XStats       added_stats;
 	XStats       max_stats;
 	int          added_DV;
-	int          added_PV; 
+	int          added_PV;
 	int          added_HIT;
 	int          added_DMG;
 	int          added_RNG;
 	int          added_HP;
 	int          added_PP;
 	int          added_speed;
-/*	unsigned int added_xproperty;*/
 
-	
 	bool ContainItem(XItem * item); //Adds item to creature inventory, increase cqrried weight.
 	int DropItem(XItem * i);
 	int PickUpItem(XItem * i);
@@ -364,7 +362,7 @@ public:
 
 };
 
-//Fake creature is need 
+//Fake creature is need
 class XFakeCreature : public XCreature
 {
 public:

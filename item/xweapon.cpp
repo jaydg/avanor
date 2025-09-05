@@ -66,7 +66,6 @@ XItemBasicStructure gi_weapon(weapon_db, weapon_db_size);
 _WEAPON_BIND wbind[weapon_db_size] = {
 {IT_CLUB,			WSK_CLUB},
 {IT_WARHAMMER,		WSK_CLUB},
-//{IT_SCEPTER,		WSK_CLUB},
 
 {IT_DAGGER,			WSK_DAGGER},
 {IT_KNIFE,			WSK_DAGGER},
@@ -115,7 +114,7 @@ WEAPON_BRAND_TYPE_NAME weapon_brand_name_db[weapon_brand_name_db_size]=
 	{BR_COLD,			"%s of Cold"			},
 	{BR_ULTIMATECOLD,	"%s of Ultimate Cold"	},
 	{BR_LIGHTNING,		"%s of Lightning"		},
-	
+
 	{BR_ACID,			"%s of Acid"			},
 	{BR_POISON,			"%s of Poison"			},
 	{BR_DEATH,			"%s of Death"			},
@@ -155,8 +154,6 @@ int XWeapon::BindWeapon()
 
 void XWeapon::toString(char * buf)
 {
-//	GetFullName(buf);
-
 	char w_name[256];
 	_ITEMPROP * prop = GetMaterial(material_index);
 	strcpy(w_name, prop->propname);
@@ -169,7 +166,7 @@ void XWeapon::toString(char * buf)
 			break;
 		}
 	}
-	
+
 	const char* brand_templ = NULL;
 
 	char zbuf[256] = "%s";
@@ -178,7 +175,7 @@ void XWeapon::toString(char * buf)
 		int ec = vBitsCount(brt & BR_ELEMENTAL_MASK);
 		int bc = vBitsCount(brt & BR_BLACK_MASK);
 		int sc = vBitsCount(brt & BR_SLAYER_MASK);
-		
+
 		if (ec == 1 && bc == 0 && sc == 0)
 		{
 			brand_templ = GetTemplate(brt & BR_ELEMENTAL_MASK);
@@ -207,7 +204,7 @@ void XWeapon::toString(char * buf)
 		}
 
 	}
-	
+
 	if (quantity == 1)
 	{
 		if (brand_templ)

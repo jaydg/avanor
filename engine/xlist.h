@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "xobject.h"
 
-template <class T> class XList 
+template <class T> class XList
 {
 	struct XNode
 	{
@@ -60,9 +60,9 @@ public:
 	public:
 		iterator() {}
 		iterator(XNode * pNode) : position(pNode) {}
-		void operator++() 
+		void operator++()
 		{
-			assert(position); 
+			assert(position);
 			position = position->pNext;
 			while (true)
 			{
@@ -79,21 +79,18 @@ public:
 		iterator& operator=(const iterator& x) { position = x.position; return *this; }
 		bool operator==(const iterator& x) { return position == x.position; }
 		bool operator!=(const iterator& x) { return !(position == x.position); }
-		T operator*() 
-		{ 
-//			assert(position->o && position->o->isValid()); 
-			return (T)position->o; 
-		}
-		T operator->() 
+		T operator*()
 		{
-//			assert(position->o && position->o->isValid()); 
-			return (T)position->o; 
+			return (T)position->o;
+		}
+		T operator->()
+		{
+			return (T)position->o;
 		}
 
 		operator T()
 		{
-//			assert(position->o && position->o->isValid()); 
-			return (T)position->o; 
+			return (T)position->o;
 		}
 
 		iterator destroy()
@@ -109,10 +106,10 @@ public:
 		}
 	};
 
-	iterator begin() 
-	{ 
+	iterator begin()
+	{
 		XNode * pNode = pBeginList->pNext;
-		
+
 		while (true)
 		{
 			if (pNode->o == NULL || pNode->o->isValid())
@@ -125,9 +122,9 @@ public:
 	bool empty ()
 	{
 		//we need to call begin for remove invalid objects
-		return (begin().position->o == NULL); 
+		return (begin().position->o == NULL);
 	}
-	
+
 	iterator insert(iterator it, T object)
 	{
 		assert(object);
@@ -142,7 +139,7 @@ public:
 		return it;
 	}
 
-	iterator erase(iterator it) 
+	iterator erase(iterator it)
 	{
 		return it.destroy();
 	}
@@ -160,7 +157,7 @@ public:
 	void push_front(const T& o) { insert(begin(), o); }
 	void push_back(const T& o) { insert(end(), o); }
 	void pop_front() { erase(begin()); }
-	void pop_back() 
+	void pop_back()
 	{
 		iterator tmp = end();
 		erase(--tmp);
@@ -182,13 +179,13 @@ public:
 		return end();
 	}
 
-	T Remove(XGUID xguid) {return Remove(Find(xguid));} 
+	T Remove(XGUID xguid) {return Remove(Find(xguid));}
 	T Remove(iterator it)
 	{
-		if(it == end()) 
-			return NULL; 
-		
-		T p = (*it); 
+		if(it == end())
+			return NULL;
+
+		T p = (*it);
 		it = erase(it);
 		return p;
 	}
@@ -214,7 +211,7 @@ public:
 		assert(empty());
 		unsigned long count = 0;
 		f->Read(&count, sizeof(count));
-		while(count-- > 0) 
+		while(count-- > 0)
 		{
 			T p = (T)XObject::RestorePointer(f, NULL);
 			push_back(p);
@@ -236,7 +233,7 @@ public:
 			if(object->im == i->im && object->Compare(i) <= 0) break;
 		}
 
-		if (object->GetRef() == 0 && i != this->end() && i->GetRef() == 1 
+		if (object->GetRef() == 0 && i != this->end() && i->GetRef() == 1
 			&& object->im == i->im && object->Compare(i) == 0)
 		{
 			i->Concat(object);
@@ -260,7 +257,7 @@ public:
 
 
 
-template <class T> class XQList 
+template <class T> class XQList
 {
 	struct XNode
 	{
@@ -296,9 +293,9 @@ public:
 	public:
 		iterator() {}
 		iterator(XNode * pNode) : position(pNode) {}
-		void operator++() 
+		void operator++()
 		{
-			assert(position); 
+			assert(position);
 			position = position->pNext;
 		}
 
@@ -308,9 +305,9 @@ public:
 		iterator& operator=(const iterator& x) { position = x.position; return *this; }
 		bool operator==(const iterator& x) { return position == x.position; }
 		bool operator!=(const iterator& x) { return !(position == x.position); }
-		T operator*() 
-		{ 
-			return (T)position->o; 
+		T operator*()
+		{
+			return (T)position->o;
 		}
 
 		iterator destroy()
@@ -325,17 +322,17 @@ public:
 		}
 	};
 
-	iterator begin() 
-	{ 
+	iterator begin()
+	{
 		return iterator(pBeginList->pNext);
 	}
 
 	iterator end() {return iterator(pBeginList);}
 	bool empty ()
 	{
-		return (begin() == end()); 
+		return (begin() == end());
 	}
-	
+
 	iterator insert(iterator it, T object)
 	{
 		XNode * tNode = iterator::CreateNode();
@@ -348,7 +345,7 @@ public:
 		return it;
 	}
 
-	iterator erase(iterator it) 
+	iterator erase(iterator it)
 	{
 		return it.destroy();
 	}
@@ -366,7 +363,7 @@ public:
 	void push_front(const T& o) { insert(begin(), o); }
 	void push_back(const T& o) { insert(end(), o); }
 	void pop_front() { erase(begin()); }
-	void pop_back() 
+	void pop_back()
 	{
 		iterator tmp = end();
 		erase(--tmp);
@@ -382,10 +379,10 @@ public:
 
 	T Remove(iterator it)
 	{
-		if(it == end()) 
-			return NULL; 
-		
-		T p = (*it); 
+		if(it == end())
+			return NULL;
+
+		T p = (*it);
 		it = erase(it);
 		return p;
 	}

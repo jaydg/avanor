@@ -42,7 +42,7 @@ SPELL_REC::SPELL_REC()
 	spell_db[SPELL_CURE_SERIOUS_WOUNDS].school	= MS_BODY;
 	spell_db[SPELL_CURE_SERIOUS_WOUNDS].cost	= 10;
 	spell_db[SPELL_CURE_SERIOUS_WOUNDS].name	= "cure serious wounds";
-	
+
 	spell_db[SPELL_CURE_CRITICAL_WOUNDS].effect = E_CURE_CRITICAL_WOUNDS;
 	spell_db[SPELL_CURE_CRITICAL_WOUNDS].school = MS_BODY;
 	spell_db[SPELL_CURE_CRITICAL_WOUNDS].cost	= 15;
@@ -73,7 +73,7 @@ SPELL_REC::SPELL_REC()
 	spell_db[SPELL_CURE_DISEASE].cost			= 20;
 	spell_db[SPELL_CURE_DISEASE].name			= "cure disease";
 
-	
+
 	spell_db[SPELL_BURNING_HANDS].effect		= E_BURNING_HANDS;
 	spell_db[SPELL_BURNING_HANDS].school		= MS_ELEMENTAL;
 	spell_db[SPELL_BURNING_HANDS].cost			= 7;
@@ -103,7 +103,7 @@ SPELL_REC::SPELL_REC()
 	spell_db[SPELL_LIGHTNING_BOLT].school		= MS_ELEMENTAL;
 	spell_db[SPELL_LIGHTNING_BOLT].cost			= 18;
 	spell_db[SPELL_LIGHTNING_BOLT].name			= "lightning bolt";
-	
+
 	spell_db[SPELL_DRAIN_LIFE].effect			= E_DRAIN_LIFE;
 	spell_db[SPELL_DRAIN_LIFE].school			= MS_DEATH;
 	spell_db[SPELL_DRAIN_LIFE].cost				= 7;
@@ -206,10 +206,10 @@ MAGIC_SCHOOL XSpell::GetSchool()
 
 void XSpell::toString(char * buf)
 {
-	sprintf(buf, MSG_YELLOW "%-21s " MSG_LIGHTGRAY ": " MSG_YELLOW "%d" MSG_LIGHTGRAY "pp  {Eff - %d} (to next level: %d)", 
-		spell_db[spell_name].name, 
-		GetManaCost(), 
-		GetEffectivity(), 
+	sprintf(buf, MSG_YELLOW "%-21s " MSG_LIGHTGRAY ": " MSG_YELLOW "%d" MSG_LIGHTGRAY "pp  {Eff - %d} (to next level: %d)",
+		spell_db[spell_name].name,
+		GetManaCost(),
+		GetEffectivity(),
 		eff_level - cast_count);
 }
 
@@ -245,17 +245,6 @@ XMagic::~XMagic()
 {
 	spells.KillAll();
 }
-
-/*
-XSpell * XMagic::GetSpell(unsigned int n)
-{
-	assert(n >= 0 && n < spells.size());
-	
-	XList<XSpell *>::iterator it = spells.begin();
-	for (unsigned int i = 0; i < n; i++, it++);
-	return it;
-}
-*/
 
 int will_div[10] = {50, 25, 20, 15, 10, 8, 6, 3, 2, 1};
 
@@ -355,24 +344,24 @@ XSpell * XMagic::GetSpell(SPELL_NAME spell)
 
 
 const char* mg_name_str[] = {
-"Elemental", 
-"Body and Spirit", 
-"Protection and Resistance", 
-"Death and Devastation", 
-"Surviving and Enlightenment", 
+"Elemental",
+"Body and Spirit",
+"Protection and Resistance",
+"Death and Devastation",
+"Surviving and Enlightenment",
 "Power"
 };
 
 const char* mg_level_str[] = {
-"", 
-MSG_LIGHTGRAY		"Beginner", 
-MSG_LIGHTGRAY		"Novice", 
-MSG_LIGHTGRAY		"Senior Novice", 
+"",
+MSG_LIGHTGRAY		"Beginner",
+MSG_LIGHTGRAY		"Novice",
+MSG_LIGHTGRAY		"Senior Novice",
 MSG_YELLOW			"Minor Adept",
-MSG_YELLOW			"Adept", 
-MSG_YELLOW			"Major Adept", 
-MSG_LIGHTRED		"Master", 
-MSG_RED				"Senior Master", 
+MSG_YELLOW			"Adept",
+MSG_YELLOW			"Major Adept",
+MSG_LIGHTRED		"Master",
+MSG_RED				"Senior Master",
 MSG_DARKGRAY		"Grand Master"
 };
 
@@ -399,4 +388,3 @@ void XMagic::Restore(XFile * f)
 	f->Read(magic_count, sizeof(int), MS_EOF);
 	spells.RestoreList(f);
 }
-

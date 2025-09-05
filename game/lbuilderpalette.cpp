@@ -37,14 +37,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 
-STDMAP best_fit_terrain_table[] = 
+STDMAP best_fit_terrain_table[] =
 {
-	M_GREENGRAS, 
-	M_SAND, 
+	M_GREENGRAS,
+	M_SAND,
 	M_PATH,
 	M_ROAD,
-	M_CAVEFLOOR, 
-	M_STONEFLOOR, 
+	M_CAVEFLOOR,
+	M_STONEFLOOR,
 	M_OBSIDIANFLOOR,
 	M_GOLDENFLOOR,
 };
@@ -104,11 +104,11 @@ void XLocation::PutPalette(int x, int y)
 				case '.':
 					map->SetXY(x + j, y + i, M_GREENGRAS);
 					break;
-				
+
 				case ',':
 					map->SetXY(x + j, y + i, M_CAVEFLOOR);
 					break;
-				
+
 				case ';':
 					map->SetXY(x + j, y + i, M_STONEFLOOR);
 					break;
@@ -162,7 +162,6 @@ void XLocation::PutPalette(int x, int y)
 		}
 		map->SetXY(pt.x, pt.y, best_fit_terrain_table[best_fit_index]);
 
-//		map->SetXY(x + j, y + i, M_CAVEFLOOR);
 		for (XQList<PALETTE_MAP>::iterator tit = pattern_translation.begin(); tit != pattern_translation.end(); tit++)
 		{
 			if ((*tit).this_view == current_pattern.pattern[(pt.y - y) * current_pattern.w + pt.x - x])
@@ -174,4 +173,3 @@ void XLocation::PutPalette(int x, int y)
 		}
 	}
 }
-

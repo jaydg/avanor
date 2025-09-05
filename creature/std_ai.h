@@ -30,7 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 enum AI_FLAG {
 	AIF_NONE				= 0x00000000,
 	AIF_ALLOW_PICK_UP		= 0x00000001, //can creature pick items
-	
+
 	AIF_ALLOW_MOVE_WAY_UP	= 0x00000002, //can creature move upstair
 	AIF_ALLOW_MOVE_WAY_DOWN	= 0x00000004, //can creature move downstair
 	AIF_FREE_WAY			= AIF_ALLOW_MOVE_WAY_UP | AIF_ALLOW_MOVE_WAY_DOWN,
@@ -55,7 +55,7 @@ enum AI_FLAG {
 	AIF_CREATURE			= AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
 	AIF_HUMAN				= AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_MOVE | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
 	AIF_GHOST				= AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
-	
+
 };
 
 
@@ -95,7 +95,7 @@ protected:
 	XStandardAI() {}
 public:
 	DECLARE_CREATOR(XStandardAI, XObject);
-	XStandardAI(XCreature * _cr); 
+	XStandardAI(XCreature * _cr);
 	virtual void Invalidate();
 
 	void SetArea(XRect& area, LOCATION ln);
@@ -113,12 +113,7 @@ public:
 	virtual int Chat(XCreature * chatter = NULL, const char* msg = NULL);
 	virtual int onGiveItem(XCreature * giver, XItem * item);
 	virtual int GetTargetPos(XPoint * pt);
-/*	virtual int Chat(XCreature * chatter = NULL, char * msg = NULL);
-	
 
-	int Eat(int dl);
-*/
-	
 	int Wear();
 
 	void GetDirection(XPoint * target, XPoint * direction); //calculate exact direction to target
@@ -184,27 +179,24 @@ protected:
 
 	XCreature * enemy;     // current targeted creature
 	int enemy_dist;      // distance to the closest enemy
-	
+
 	XPtr<XCreature> last_enemy;
 	XMapObject * last_moved_way; //used to prevent up/down moving way repeating...
 	int invisible_x;
 	int invisible_y;
 	int invisible_hunting_mode;
-	
+
 	int friend_avg_x;
 	int friend_avg_y;
 	int friends_count; //count of friends (which has same enemy) for coward attack
-	
+
 	int item_dist;       // distance to the closest item
 	int item_x;             // item x coordinate
 	int item_y;             // item y coordinate
-	
+
 	int way_dist;
 	int way_x;
 	int way_y;
-
-//	int turns_on_level;  // number of turns spent on this level
-
 };
 
 #endif

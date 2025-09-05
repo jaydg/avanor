@@ -87,8 +87,6 @@ XHero::XHero(int flag)
         _PP = GetMaxPP();
 
         base_exp = (int)(GetCreatureStrength() * 0.6);
-//		if (base_exp > 55)
-//			base_exp = 55;
 
         r = new XResistance();
 
@@ -109,73 +107,6 @@ XHero::XHero(int flag)
 
         it = new XRation(IT_RATION);
 		ContainItem(it);
-
-
-//		contain.Add(new XEyeOfRaa());
-//		ContainItem(new XBlackClub());		
-/*
-        it = new XPickAxe;
-        CarryItem(it);
-        contain.Add(it);
-*/
-/*
-        it = new XCookingSet();
-        CarryItem(it);
-        contain.Add(it);
-*/
-/*
-        for (int i = 0; i < 100; i++)
-		{
-			it = new XRation(IT_RANDOM);
-			ContainItem(it);
-			it = new XRatTail();
-			it->Drop(Game.locations[L_MAIN], 25 + i, 4);
-			it = new XBone();
-			it->Drop(Game.locations[L_MAIN], 25 + i, 4);
-		}
-*/
-/*		XItem * missile = ICREATEB(IM_MISSILE, IT_ARROW, 0, 10000000);
-		ContainItem(missile);
-		missile = ICREATEB(IM_MISSILE, IT_ARROW, 0, 10000000);
-		ContainItem(missile);
-		missile = ICREATEB(IM_MISSILE, IT_ARROW, 0, 10000000);
-		ContainItem(missile);
-		ContainItem(ICREATEB(IM_MISSILEW, IT_LONGBOW, 0, 10000000));
-*/
-/*		it = new XChest(5, IM_ITEM, 0, 10000);
-		it->Drop(Game.locations[L_MAIN], 25, 4);
-		it = new XChest(5, IM_ITEM, 0, 10000);
-		it->Drop(Game.locations[L_MAIN], 25, 4);
-		it = new XChest(5, IM_ITEM, 0, 10000);
-		it->Drop(Game.locations[L_MAIN], 25, 4);
-		it = new XChest(5, IM_ITEM, 0, 10000);
-		it->Drop(Game.locations[L_MAIN], 26, 4);
-*/
-
-//		r->ChangeResistance(R_INVISIBLE, 20);
-//		r->ChangeResistance(R_SEEINVISIBLE, 20);
-
-/*       for (int i = 0; i < 100; i++)
-		{
-			it = ICREATEA((ITEM_MASK)(IM_SCROLL | IM_BOOK));
-			it->Identify(1);
-			ContainItem(it);
-		}
-*/
-
-/*
-		sk->Learn(SKT_LITERACY);
-*/
-
-/*
-		sk->Learn(SKT_DETECTTRAP);
-		sk->Learn(SKT_DISARMTRAP);
-		sk->Learn(SKT_COOKING);
-*/
-//		sk->Learn(SKT_ALCHEMY, 15);
-//		sk->Learn(SKT_HERBALISM, 15);
-//		ContainItem(new XAlchemySet());
-//		ContainItem(new XCookingSet()); 
 }
 
 void XHero::NewMove()
@@ -216,7 +147,7 @@ void XHero::NewMove()
 					continue;
 				}
 
-				
+
 
                 nx = x;
                 ny = y;
@@ -231,7 +162,7 @@ void XHero::NewMove()
                 }
                 else
                         ch = last_char;
-				
+
 				msgwin.ClrMsg();
 
                 int dx = 0;
@@ -491,7 +422,7 @@ void XHero::Die(XCreature * killer)
 	{
 		// God mode entails a choice about whether I die.
 		msgwin.Add("You died!!!  Continue game?");
-        if(GetTarget(TR_NO_YES)) 
+        if(GetTarget(TR_NO_YES))
 		{
 			// Don't wanna die twice, since we are cheating it!
 			_HP = GetMaxHP();
@@ -750,54 +681,6 @@ void XHero::InfoList()
                 vPutS(tbuf);
         }
 
-
-/*
-
-        char bufx[250];
-        sprintf(bufx, "Cr - %lu   It - %lu lptr - %p\r cr_killed - %lu cr_died - %lu best level %d", total_cr, total_it, last_ptr, cr_kiled, cr_died, best_cr_level);
-        vGotoXY(0, 0);
-        vPutS(bufx);
-*/
-        /*
-        XItem * in_hand[2];
-        in_hand[0] = NULL;
-        in_hand[1] = NULL;
-        int attack_n = 0;
-        components->Reset();
-        XBodyPart * tmpxbp;
-        while(tmpxbp = (XBodyPart *)components->GetNext())
-                if (tmpxbp->bp_uin == BP_HAND)
-                {
-                        in_hand[attack_n] = tmpxbp->i;
-                        attack_n++;
-                }
-
-
-        if (in_hand[0])
-        {
-                XItem * i = in_hand[0];
-                sprintf(bufx, "left hand - %+d, %dd%d %+d", i->_HIT + GetHITBonus(i, free_hand) + wsk->GetHIT(i->wt) + GetHIT(), i->dice.X, i->dice.Y, i->dice.Z + GetDMGBonus(i, free_hand) + wsk->GetDMG(i->wt));
-                vGotoXY(0, 3);
-                vPutS(bufx);
-        }
-        if (in_hand[1])
-        {
-                XItem * i = in_hand[1];
-                sprintf(bufx, "right hand - %+d, %dd%d %+d", i->_HIT + GetHITBonus(i, free_hand), i->dice.X, i->dice.Y, i->dice.Z + GetDMGBonus(i, free_hand));
-                vGotoXY(0, 4);
-                vPutS(bufx);
-        }
-
-        sprintf(bufx, "carried weight: %d", carried_weight);
-        vGotoXY(0, 6);
-        vPutS(bufx);
-
-        sprintf(bufx, "carrying capacity %d, burdened %d, strained %d, overburdened %d",
-                carried_weight, s->Get(S_STR) * 120, s->Get(S_STR) * 200, s->Get(S_STR) * 280);
-        vGotoXY(0, 6);
-        vPutS(bufx);
-*/
-
         vGotoXY(0, size_y - 1);
         vPutS("Press any key to exit.");
         vRefresh();
@@ -856,7 +739,7 @@ ITEM_MASK imask[] = {
 (ITEM_MASK)(IM_HAT | IM_BODY | IM_BOOTS | IM_GLOVES | IM_CLOAK | IM_SHIELD),
 IM_WEAPON, IM_MISSILEW, IM_MISSILE,
 IM_NECK, IM_RING, IM_POTION, IM_SCROLL, IM_BOOK,
-IM_WAND, IM_FOOD, IM_LIGHTSOURCE, 
+IM_WAND, IM_FOOD, IM_LIGHTSOURCE,
 IM_TOOL, IM_MONEY, IM_ALL};
 
 ITEM_MASK output_items_mask[] = {
@@ -880,9 +763,9 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
     while (1)
     {
 		XGuiList list;
-		if ((XItemList *)&contain == item_list) 
+		if ((XItemList *)&contain == item_list)
 			list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Inventory " MSG_BROWN "###");
-		else 
+		else
 			list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Items " MSG_BROWN "###");
 		list.SetFooter(MSG_LIGHTGRAY "filtr: " MSG_BROWN "[" MSG_YELLOW "[|{}'=!?\"\\%]$X" MSG_BROWN "]");
 
@@ -892,13 +775,13 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 		for (it = item_list->begin(); it != item_list->end(); it++)
 			if ((ifiltr && ifiltr(it)) || (it->im & mask))
 				all_item_count++;
-		
+
 		char buf[256];
 
 		if (all_item_count == 0)
 		{
 			if ((mask == IM_ALL) || (mask == IM_UNKNOWN))
-        		if ((XItemList *)&contain == item_list) 
+        		if ((XItemList *)&contain == item_list)
 					list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "You have no such items."), 0);
 				else
 					list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "There are no such items."), 0);
@@ -908,7 +791,7 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 				{
 					if (output_items_mask[oi] & mask)
 					{
-		        		if ((XItemList *)&contain == item_list) 
+		        		if ((XItemList *)&contain == item_list)
 							sprintf(buf, MSG_LIGHTGRAY "You have no %s.", output_items_name[oi]);
 						else
 							sprintf(buf, MSG_LIGHTGRAY "There are no %s.", output_items_name[oi]);
@@ -940,7 +823,7 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 							}
 						}
 					}
-					
+
 					//output item
 					list.AddItem(new XGuiItem_Inventory(it), 0);
 				}
@@ -972,7 +855,7 @@ XItem * XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG f
 						mask = imask[i];
 			}
 
-			if (ch == 0 || ch == KEY_ESC || ch == 'z' || ch == 'v' || ch == 'V' || ch == 'Z' || ch == ' ') 
+			if (ch == 0 || ch == KEY_ESC || ch == 'z' || ch == 'v' || ch == 'V' || ch == 'Z' || ch == ' ')
 				break;
 		} else
 		{
@@ -1024,7 +907,7 @@ void XHero::Equipment(FILE * f)
 		int counter = 0;
 		char buf[256];
 		XList<XBodyPart *>::iterator xbp = components.begin();
-		
+
 		XGuiList list;
 
 		list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Equipment " MSG_BROWN "###");
@@ -1033,7 +916,7 @@ void XHero::Equipment(FILE * f)
 		while (xbp != components.end())
 		{
 			xqsa[counter] = xbp;
-			
+
 			for (int i = 0; i < 128; i++) buf[i] = ' ';
 
 			strcpy(buf, MSG_LIGHTGRAY);
@@ -1079,7 +962,7 @@ void XHero::Equipment(FILE * f)
 			counter++;
 			xbp++;
 		}
-		
+
 
 		int ch;
 
@@ -1144,7 +1027,7 @@ void XHero::Eat()
 	} else
 	{
 		first_item = 0;
-		
+
 		XItem * food = NULL;
 
 
@@ -1261,7 +1144,7 @@ void XHero::DropItem()
 void XHero::PickItem()
 {
 	char bufx[256];
-	
+
 	XItemList * tmpquae = l->map->GetItemList(x, y);
 	if (tmpquae->empty())
 	{
@@ -1305,7 +1188,6 @@ else
         int nitem = 0;
 
         char buf[256];
-//				bool toHavy = false;
         while (!tmpquae->empty() && (tit = Inventory(tmpquae)))
         {
 			tit->toString(buf);
@@ -1318,26 +1200,17 @@ else
 				vRefresh();
 				vGetch();
 			}
-				
-/*					else
-			{
-				toHavy = true;
-				break;
-			}*/
         }
 		if (nitem == 1)
 		{
 			strcpy(bufx, "You pick up a ");
 			strcat(bufx, buf);
 			msgwin.AddLast(bufx);
-			msgwin.Put();
 		}
 		else if (nitem > 1)
 		{
 			msgwin.Add("You pick up a heap of items.");
 		}
-/*				if (toHavy)
-			msgwin.Add("This stuff to heavy for you!");*/
 }
 
 }
@@ -1466,7 +1339,7 @@ void XHero::OpenDoor()
 			{
 				spec = l->map->GetSpecial(nx, ny);
 			}
-            
+
             if (spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened)
                     msgwin.Add("The door is already opened.");
             else
@@ -1522,7 +1395,6 @@ void XHero::CloseDoor()
         {
                 msgwin.Add("You have closed the door.");
                 XMapObject * spec = l->map->GetSpecial(od_x, od_y);
-//    XLocation * loc = l;
                 LastStep();
                 ((XDoor *)spec)->Switch();
                 FirstStep(x, y, l.get());
@@ -1541,7 +1413,6 @@ void XHero::CloseDoor()
                         if (spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened)
                         {
                                 msgwin.Add("You have closed the door.");
-//          XLocation * loc = l;
                                 LastStep();
                                 ((XDoor *)spec)->Switch();
                                 FirstStep(x, y, l.get());
@@ -1553,7 +1424,6 @@ void XHero::CloseDoor()
 int XHero::WhichDirection(XPoint * pt, int flag)
 {
         msgwin.Add("Which direction [123456789, z]?");
-        msgwin.Put();
         vRefresh();
 
         while (1)
@@ -1856,7 +1726,7 @@ int XHero::XCast(FILE * f)
 {
 	char buf[256];
 	int ch = '!';
-	
+
 	while (1)
 	{
 		XGuiList list;
@@ -1910,7 +1780,7 @@ int XHero::RepeatCast()
 	{
 		if (m->Cast(last_cast, this) == CONTINUE)
 			return 0;
-		else 
+		else
 			return 1;
 	}
 	return 0;
@@ -1985,8 +1855,7 @@ int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject ** ba
                         msgwin.Add(buf);
 						vPutS(" ");
                         vRefresh();
-//                        vGotoXY(0, 1);
-                        gets_flag = vGetS(in_buf, 9);
+						gets_flag = vGetS(in_buf, 9);
                         if (gets_flag == 1 && strlen(in_buf) == 0)
                                 return max_range;
                         if (gets_flag == 0)
@@ -2086,7 +1955,7 @@ XSkill * XHero::SkillsList(SKILL_FLAG skill_flag, int marks_left, FILE * f)
 		{
 			list.SetCaption(MSG_BROWN "###" MSG_YELLOW " Use Skill " MSG_BROWN "###");
 		}
-		
+
 
 		XList<XSkill *>::iterator skill;
 		for (skill = sk->skills.begin(); skill != sk->skills.end(); skill++)
@@ -2157,7 +2026,7 @@ void XHero::IncLevel()
 				break;
 			}
 		}
-		
+
 		if (flag)
 		{
 			XSkill * tskill = SkillsList(SKF_IMPROVE_SKILL, counter);
@@ -2220,16 +2089,16 @@ void XHero::WarSkillsList(FILE * f)
 			list.AddItem(new XGuiItem_Text(MSG_BROWN "Shields              DV                Level              required marks", 0), 0);
 		}
 
-		
+
 		char tbuf[256];
 		if (wsk->GetLevel((WSK_TYPE)i) < 15)
 			sprintf(tbuf, "%d",  wsk->GetMarks((WSK_TYPE)i));
 		else
 			sprintf(tbuf, "NaN");
 
-		sprintf(buf, MSG_YELLOW "%-18s " MSG_LIGHTGRAY "%+4d %+4d %+4d      " MSG_BROWN "[" MSG_LIGHTGRAY "%d" MSG_BROWN "]" MSG_LIGHTGRAY " %-10s " MSG_LIGHTGRAY "%8s", 
-			wsk->GetName((WSK_TYPE)i), wsk->GetDV((WSK_TYPE)i), 
-			wsk->GetHIT((WSK_TYPE)i), wsk->GetDMG((WSK_TYPE)i), 
+		sprintf(buf, MSG_YELLOW "%-18s " MSG_LIGHTGRAY "%+4d %+4d %+4d      " MSG_BROWN "[" MSG_LIGHTGRAY "%d" MSG_BROWN "]" MSG_LIGHTGRAY " %-10s " MSG_LIGHTGRAY "%8s",
+			wsk->GetName((WSK_TYPE)i), wsk->GetDV((WSK_TYPE)i),
+			wsk->GetHIT((WSK_TYPE)i), wsk->GetDMG((WSK_TYPE)i),
 			wsk->GetLevel((WSK_TYPE)i), wsk_levels_name[wsk->GetLevel((WSK_TYPE)i)], tbuf);
 
 		list.AddItem(new XGuiItem_Text(buf, 0), 0);
@@ -2270,19 +2139,19 @@ void XHero::LookAt()
 	XCreature * xcr = l->map->GetMonster(pt.x, pt.y);
 
 	XGuiList list;
-	
+
 	if (xcr)
 	{
 		char capt[256];
 		char buf[256];
 		if(xcr->isHero())
 		{
-			sprintf(capt, 
+			sprintf(capt,
 				MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s, the %s %s %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->name, GetGenderStr(), GetRaceStr(), GetProfessionStr());
 		}
 		else
 		{
-			sprintf(capt, 
+			sprintf(capt,
 				MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->GetNameEx(CRN_T1));
 		}
 		list.SetCaption(capt);
@@ -2293,7 +2162,7 @@ void XHero::LookAt()
 			sprintf(buf, MSG_YELLOW "%s is %s.", xcr->GetNameEx(CRN_T2), xcr->GetWoundMsg());
 		buf[2] = toupper(buf[2]);
 		list.AddItem(new XGuiItem_Text(buf, 0), 0);
-		
+
 		XList<XBodyPart *>::iterator xbp = xcr->components.begin();
 		bool iflag = false;
 		while (xbp != xcr->components.end())
@@ -2327,10 +2196,10 @@ void XHero::LookAt()
 		sprintf(static_buffer, "St:%d Dx:%d To:%d Le:%d Wi:%d Ma:%d Pe:%d Ch:%d Sp:%d    ", xcr->GetStats(S_STR), xcr->GetStats(S_DEX), xcr->GetStats(S_TOU),
 			xcr->GetStats(S_LEN),xcr->GetStats(S_WIL), xcr->GetStats(S_MAN), xcr->GetStats(S_PER), xcr->GetStats(S_CHR), 100000 / xcr->GetSpeed());
 		list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
-		
+
 		sprintf(static_buffer, "HP:%d(%d)  PP:%d(%d)", xcr->_HP, xcr->GetMaxHP(), xcr->_PP, xcr->GetMaxPP());
 		list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
-		
+
 		sprintf(static_buffer, "Exp(%d)%lu", xcr->level, xcr->_EXP);
 		list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
 
@@ -2517,20 +2386,19 @@ void XHero::SetTactics()
         while (1)
         {
                 msgwin.ClrMsg();
-                msgwin.Put();
 
                 char buf[256] = "Change tactics: ";
-                
+
 				switch (tactics)
 				{
 					case TS_COWARD		: strcat(buf, "Coward "); break;
 					case TS_DEFENSIVE	: strcat(buf, "Defensive "); break;
 					case TS_NORMAL		: strcat(buf, "Normal "); break;
 					case TS_AGRESSIVE	: strcat(buf, "Aggressive "); break;
-					case TS_BERSERKER	: strcat(buf, "Berserker "); break; 
+					case TS_BERSERKER	: strcat(buf, "Berserker "); break;
 					default : assert(0);
 				}
-				
+
                 vGotoXY(0, 0);
                 vPutS(buf);
 
@@ -2548,7 +2416,6 @@ void XHero::SetTactics()
                 if (ch == 'Z' || ch == 'z' || ch == KEY_ESC)
 				{
 					msgwin.ClrMsg();
-					msgwin.Put();
 					break;
 				}
 
@@ -2663,12 +2530,11 @@ int XHero::OrderCompanion()
 		}
 
 		msgwin.Add(bufx);
-		msgwin.Put();
 		vRefresh();
 		int ch = vGetch();
 		if (ch == KEY_ESC || ch == ' ')
 			return 0;
-		
+
 		index = 96;
 		for (it = companions_list.begin(); it != companions_list.end(); it++)
 		{
@@ -2683,9 +2549,9 @@ int XHero::OrderCompanion()
 		return 0;
 
 	msgwin.ClrMsg();
-	msgwin.Add("[" MSG_CYAN "a" MSG_LIGHTGRAY "] - attack, [" MSG_CYAN "f" 
+	msgwin.Add("[" MSG_CYAN "a" MSG_LIGHTGRAY "] - attack, [" MSG_CYAN "f"
 		MSG_LIGHTGRAY "] - follow me, [" MSG_CYAN "w" MSG_LIGHTGRAY "] - wait");
-	msgwin.Put();
+
 	vRefresh();
 	int ch = vGetch();
 	msgwin.ClrMsg();

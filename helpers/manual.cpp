@@ -25,7 +25,7 @@ XGuiList * XManual::OpenPage(const char* page)
 {
 	XGuiList * list = new XGuiList();
 	char tbuf[64000];
-	
+
 	strcpy(tbuf, "could not find file");
 	char path[256];
 	sprintf(path, "%s%s", vMakePath(DATA_DIR, "manual/"), page);
@@ -43,22 +43,8 @@ XGuiList * XManual::OpenPage(const char* page)
 
 void XManual::Run()
 {
-/*	list.AddItem(new XGuiItem_Text(" Introduction", 1));
-	list.AddItem(new XGuiItem_Text(" Quick Start", 1));
-	list.AddItem(new XGuiItem_Text(" Keyboard Layout", 1));
-	list.AddItem(new XGuiItem_Text(" Basic Knowledge", 1));
-	list.AddItem(new XGuiItem_Text(" Magic and Spells", 1));
-	list.AddItem(new XGuiItem_Text(" Skills", 1));
-	list.AddItem(new XGuiItem_Text(" Weapon skills", 1));
-	list.AddItem(new XGuiItem_Text(" Equipment", 1));
-	list.AddItem(new XGuiItem_Text(" Tactics and targeting", 1));
-	list.AddItem(new XGuiItem_Text(" Miscellaneous Knowledge", 1));
-	list.AddItem(new XGuiItem_Text(" Game test modes", 1));
-	list.AddItem(new XGuiItem_Text(" Credits", 1));
-*/
 	const char* open_page = "index.html";
-///	char * open_page = "quick_start.html";
-	
+
 	while (1)
 	{
 		XGuiList * list = OpenPage(open_page);
@@ -75,7 +61,6 @@ void XManual::Run()
 			}
 		}
 
-		
 		switch (res)
 		{
 			case 0: open_page = "intro.html"; break;
@@ -93,4 +78,3 @@ void XManual::Run()
 		}
 	}
 }
-

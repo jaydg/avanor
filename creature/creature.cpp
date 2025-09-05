@@ -53,7 +53,7 @@ XCreature::XCreature()
 	total_cr++;
 
 	added_DV       = 0;
-	added_PV       = 0; 
+	added_PV       = 0;
 	added_HIT      = 0;
 	added_DMG      = 0;
 	added_RNG      = 0;
@@ -72,12 +72,8 @@ XCreature::XCreature()
 	creature_size = CS_NORMAL;
 	creature_person_type = CPT_HE;
 
-//   reg_count = 10;
-//   reg_max = 10;
-
 	im = IM_CREATURE;
 	xai = new XStandardAI(this);
-//   ait = AI_SIMPLE;
 	md = new XModifer();
 	m = new XMagic();
 	sk = new XSkills();
@@ -95,12 +91,8 @@ XCreature::XCreature()
 
 void XCreature::Invalidate()
 {
-//	INVALIDATE_ENTER();
-
 	contain.KillAll();
 	components.KillAll();
-
-//	xai->Invalidate(); //deleting AI.
 
 	delete sk;
 	sk = NULL;
@@ -119,14 +111,9 @@ void XCreature::Invalidate()
 	if (event_handler)
 		delete[] event_handler;
 
-//   assert(aligment);
-//   if (aligment)
-//    delete aligment;
-
 	total_cr--;
 
 	XBaseObject::Invalidate();
-//	INVALIDATE_LEAVE();
 }
 
 void XCreature::Regenerate()
@@ -249,7 +236,6 @@ int XCreature::DecNutrio()
 
 int XCreature::Run()
 {
-// HideOldView();
 	AddRef();
 
 	if (action_data.action == A_EAT)
@@ -267,7 +253,7 @@ int XCreature::Run()
 	{
 		NewMove();
 	}
-	
+
 	if (md && md->Run(this))
 	{
 		int atletics = sk->GetLevel(SKT_ATHLETICS);
@@ -289,9 +275,9 @@ int XCreature::Run()
 
 	if (ttm <= 0 && isValid())
 		ttm += GetSpeed();
-	
+
 	Release();
-// ShowNewView();
+
 	return 1;
 }
 
@@ -324,15 +310,15 @@ void XCreature::Move()
 
 	XAnyPlace * new_place = l->map->GetPlace(nx, ny);
 	XAnyPlace * old_place = l->map->GetPlace(x, y);
-	
+
 	if (old_place && new_place)
 	{
 		new_place->onCreatureMove(this);
-	} 
+	}
 	else if (new_place && !old_place)
 	{
 		new_place->onCreatureEnter(this);
-	} 
+	}
 	else if (old_place && !new_place)
 	{
 		old_place->onCreatureLeave(this);
@@ -359,7 +345,7 @@ void XCreature::Move()
 		{
 			if (obj->im == IM_TRAP)
 				((XTrap *)obj)->MoveIn(this);
-			
+
 			if (obj->im == IM_TELEPORT)
 				((XTeleport *)obj)->MoveIn(this);
 
@@ -408,29 +394,23 @@ static int set_grid_invisible(void * opaque, int x, int y, int radius, int see_c
 void XCreature::HideOldView()
 {
 	opaque_info info = { this, l->map };
-//   if (this == main_creature)
-//   {
-		LineOfSight(
-			x,
-			y,
-			GetVisibleRadius(),
-			&info,
-			set_grid_invisible);
-//   }
+	LineOfSight(
+		x,
+		y,
+		GetVisibleRadius(),
+		&info,
+		set_grid_invisible);
 }
 
 void XCreature::ShowNewView()
 {
 	opaque_info info = { this, l->map };
-//   if (this == main_creature)
-//   {
-		LineOfSight(
-			nx,
-			ny,
-			GetVisibleRadius(),
-			&info,
-			set_grid_visible);
-//   }
+	LineOfSight(
+		nx,
+		ny,
+		GetVisibleRadius(),
+		&info,
+		set_grid_visible);
 }
 
 void XCreature::PutStatus()
@@ -524,13 +504,13 @@ void XCreature::PutStatus()
 	CARRY_STATE cstate = GetCarryState();
 	switch (cstate)
 	{
-		case CSTATE_NORMAL: break; 
-		case CSTATE_BURDENED:   vPutS("burdened "); break; 
-		case CSTATE_STRAINED:   vPutS("strained "); break; 
-		case CSTATE_OVERBURDEN: vPutS("overburdened "); break; 
+		case CSTATE_NORMAL: break;
+		case CSTATE_BURDENED:   vPutS("burdened "); break;
+		case CSTATE_STRAINED:   vPutS("strained "); break;
+		case CSTATE_OVERBURDEN: vPutS("overburdened "); break;
 		default : break;
 	};
-	
+
 	md->toString(buf);
 	vPutS(buf);
 	vClrEol();
@@ -545,13 +525,13 @@ void XCreature::NewMove()
 int XCreature::GetSpeed()
 {
 	int speed = ttmb;
-	if (nutrio < base_nutrio * 8 && nutrio > base_nutrio * 4) 
+	if (nutrio < base_nutrio * 8 && nutrio > base_nutrio * 4)
 		speed = (int)(speed * 0.92);
 	else
-		if (nutrio < base_nutrio * 2) 
+		if (nutrio < base_nutrio * 2)
 			speed = (int)(speed * 1.2);
 		else
-			if (nutrio > base_nutrio * 12) 
+			if (nutrio > base_nutrio * 12)
 				speed = (int)(speed * 1.1);
 
 	int str = s->Get(S_STR);
@@ -567,7 +547,7 @@ int XCreature::GetSpeed()
 			{
 				speed = (int)(speed * 2);
 			}
-	
+
 	return speed;
 }
 
@@ -654,7 +634,7 @@ int XCreature::GetTacticsDMGBonus()
 		case TS_DEFENSIVE	: return GetStats(S_STR) / 10 + sk->GetLevel(SKT_TACTICS)- 1; break;
 		case TS_NORMAL		: return GetStats(S_STR) / 7 + sk->GetLevel(SKT_TACTICS); break;
 		case TS_AGRESSIVE	: return GetStats(S_STR) / 5 + sk->GetLevel(SKT_TACTICS); break;
-		case TS_BERSERKER	: return GetStats(S_STR) / 2 + sk->GetLevel(SKT_TACTICS); break; 
+		case TS_BERSERKER	: return GetStats(S_STR) / 2 + sk->GetLevel(SKT_TACTICS); break;
 		default				: assert(0);
 	}
 	return 0;
@@ -670,7 +650,7 @@ int XCreature::GainAttr(STATS st, int val)
 {
 	int cur = s->Get(st);
 	int max = max_stats.Get(st);
-	
+
 	if (val > 0)
 	{
 		if (cur < max)
@@ -773,7 +753,7 @@ void XCreature::Die(XCreature * killer)
 		lua_pushlightuserdata(XLocation::L, killer);
 		lua_call(XLocation::L, 3, 1);
 		lua_pop(XLocation::L, 1);
-	} 
+	}
 
 
 //  Drop all inventory to the ground
@@ -842,8 +822,6 @@ int XCreature::PickUpItem(XItem * i)
 				xbp->Item()->Concat(i);
 			else
 			{
-//				if (i->it != IT_CORPSE && i->reference > 0)
-//					assert(0);
 				contain.Add(i);
 			}
 			return 1;
@@ -867,8 +845,6 @@ int XCreature::PickUpItem(XItem * i)
 			i->x = tx;
 			i->y = ty;
 
-
-//			PutItem(i);
 			return 0;
 		}
 	} else
@@ -933,7 +909,6 @@ void XCreature::IncLevel()
 
 unsigned long XCreature::ExpOfLevel(int lev)
 {
-	//return 4 * (unsigned long)(base_exp * pow(M_E, (lev / 6.0)) - base_exp / 2);
 	return (unsigned long)(2 * base_exp * pow((float)lev, 2.5f));
 }
 
@@ -943,7 +918,7 @@ int XCreature::GetHITFHBonus(XItem * weapon)
 	XItem * h2 = GetItem(BP_HAND, 1);
 	int mult = (h1 && h2) ? 2 : 1;
 	float f = (float)(5.0 * log((300.0 * GetStats(S_STR)) / (10.0 * (weapon->weight) * mult)));
-	return vMin((int)f, 0/*GetStats(S_DEX) / (2 * mult)*/);
+	return vMin((int)f, 0);
 }
 
 int XCreature::GetDMGFHBonus(XItem * weapon)
@@ -959,7 +934,7 @@ XBodyPart * XCreature::GetRNDBodyPart()
 		value += tmpbp->GetPartSize();
 
 	int v = value > 0 ? vRand() % value : 0;
-	
+
 	tmpbp = components.begin();
 	while (v > 0)
 	{
@@ -991,7 +966,7 @@ XBodyPart * XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
 			return tmpxbp;
 	}
 
-	
+
 	XList<XBodyPart *>::iterator tmpxbp = components.begin();
 	int count = 0;
 	while(tmpxbp != components.end())
@@ -1089,7 +1064,6 @@ void XCreature::MoveStairWay()
 			tc->LastStep();
 			tc->FirstStep(n_x, n_y, tgtloc);
 			tc->l = tgtloc;
-//			tc->Move(); //calling commented by vadim. seems that it is not necessary...
 			tc->action_data.action = A_MOVE;
 			if (tc->im & IM_HERO)
 			{
@@ -1119,7 +1093,7 @@ void XCreature::GetRangeAttackInfo(int * range, int * hit, XDice * dmg)
 	}
 
 	XSkill * skill = sk->GetSkill(SKT_ARCHERY);
-	
+
 	int str = s->Get(S_STR);
 	int dex = s->Get(S_DEX);
 
@@ -1214,7 +1188,7 @@ int XCreature::Shoot(int tx, int ty)
 		dd.damage		= dmg.Throw();
 		dd.attacker		= this;
 		//temporary soulution, should be replaced in future on general solution
-		//which returns name of item with or without 'a' 
+		//which returns name of item with or without 'a'
 		switch (msl->it)
 		{
 			case IT_ARROW: dd.attack_name = "the arrow"; break;
@@ -1265,7 +1239,7 @@ int XCreature::CanWear(XItem * item)
 {
 	for (XList<XBodyPart *>::iterator it = components.begin(); it != components.end(); it++)
 	{
-		if ((*it)->Fit(item->bp) && (*it)->Item() == NULL) 
+		if ((*it)->Fit(item->bp) && (*it)->Item() == NULL)
 			return 1;
 	}
 	return 0;
@@ -1275,7 +1249,7 @@ int XCreature::Wear(XItem * item)
 {
 	for (XList<XBodyPart *>::iterator it = components.begin(); it != components.end(); it++)
 	{
-		if ((*it)->Fit(item->bp) && (*it)->Item() == NULL) 
+		if ((*it)->Fit(item->bp) && (*it)->Item() == NULL)
 		{
 			(*it)->Wear(item);
 			return 1;
@@ -1303,12 +1277,10 @@ void XCreature::FirstStep(int _x, int _y, XLocation * _l)
 
 	assert(!l->map->GetMonster(_x, _y));
 	l->map->SetMonster(_x, _y, this);
-//   ShowNewView();
 }
 
 void XCreature::LastStep()
 {
-//   HideOldView();
 	l->map->ResMonster(x, y);
 }
 
@@ -1340,7 +1312,7 @@ int XCreature::Read(XItem * item)
 		}
 		return 0;
 	}
-	
+
 	if (item->im & IM_SCROLL)
 	{
 		skill->UseSkill();
@@ -1378,7 +1350,7 @@ void XCreature::Store(XFile * f)
 	f->Write(&added_HP);
 	f->Write(&added_PP);
 	f->Write(&added_PV);
-	
+
 	f->Write(&attack_energy);
 	f->Write(&move_energy);
 	f->Write(&base_speed);
@@ -1407,7 +1379,7 @@ void XCreature::Store(XFile * f)
 	f->Write(&tactics, sizeof(TACTICS_STATE));
 	wsk->Store(f);
 	XObject::StorePointer(f, xai);
-	
+
 	action_data.Store(f);
 
 	contain.StoreList(f);
@@ -1438,7 +1410,7 @@ void XCreature::Store(XFile * f)
 void XCreature::Restore(XFile * f)
 {
 	XBaseObject::Restore(f);
-	
+
 	f->Read(&_EXP, sizeof(unsigned long));
 	f->Read(&added_DMG);
 	f->Read(&added_DV);
@@ -1481,7 +1453,7 @@ void XCreature::Restore(XFile * f)
 	f->Read(&tactics, sizeof(TACTICS_STATE));
 	wsk = new XWarSkills();
 	wsk->Restore(f);
-	
+
 	xai = (XStandardAI *)XObject::RestorePointer(f, this);
 
 	action_data.Restore(f);
@@ -1492,7 +1464,7 @@ void XCreature::Restore(XFile * f)
 	max_stats.Restore(f);
 	f->Read(&creature_person_type, sizeof(creature_person_type));
 	f->Read(&creature_name, sizeof(creature_name));
-	
+
 	if (!isHero()) //skip restoing of descriptions and other for hero
 		XCreatureStorage::RestoreCreatureInfo(this);
 
@@ -1539,7 +1511,7 @@ int XCreature::GetCreatureStrength()
 		thit = 1;
 	if (tdmg <= 0)
 		tdmg = 1;
-	
+
 	int hit_dmg_bonus = thit * tdmg * GetMaxHP();
 
 	return 20 + hit_dmg_bonus + dv_pv_bonus;
@@ -1551,7 +1523,7 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject *
 	switch (tr)
 	{
 		case TR_ATTACK_TARGET:
-			
+
 			return xai->GetTargetPos(pt);
 			break;
 
@@ -1571,11 +1543,9 @@ int XCreature::Chat(XCreature * chatter, const char* msg)
 		lua_pushlightuserdata(XLocation::L, const_cast<char*>(msg));
 		lua_call(XLocation::L, 4, 1);
 		int res = lua_tonumber(XLocation::L, 3);
-//		int res1 = lua_tonumber(XLocation::L, 1);
-//		int res2 = lua_tonumber(XLocation::L, 3);
 		lua_pop(XLocation::L, 1);
 		return res;
-	} 
+	}
 	return 0;
 }
 
@@ -1681,7 +1651,7 @@ int XCreature::onGiveItem(XCreature * giver, XItem * item)
 		int res = lua_tonumber(XLocation::L, 3);
 		lua_pop(XLocation::L, 1);
 		return res;
-	} 
+	}
 	return 0;
 }
 
@@ -1695,7 +1665,7 @@ int XCreature::MoneyOp(int money_count)
 		it++;
 	}
 	if (it != contain.end())
-	{	
+	{
 		XItem * money = it;
 		if (money_count >= 0)
 		{
@@ -1850,4 +1820,3 @@ const char* XCreature::GetVerb(const char* verb)
 	}
 	return cool_buf;
 }
-

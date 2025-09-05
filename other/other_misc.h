@@ -68,7 +68,6 @@ public:
 	DECLARE_CREATOR(XTrap, XMapObject);
 	XTrap() { assert(0); }
 	XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature * _owner = NULL, XItem * items = NULL);
-//	XTrap(int _x, int _y, XLocation * _l, TRAP_TYPE tt = TT_RANDOM) {}
 	virtual int MoveIn(XCreature * cr);
 	virtual int MoveOut(XCreature * cr);
 	virtual int Activate(XCreature * cr);
@@ -112,7 +111,7 @@ public:
 	XTeleport(int _x, int _y, XLocation * loc, LOCATION _ln, int _nx, int _ny);
 	LOCATION ln;
 	virtual int Compare(XObject * o) {return -1;}
-	virtual int MoveIn(XCreature * cr);	
+	virtual int MoveIn(XCreature * cr);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
 
@@ -132,7 +131,6 @@ class XDoor: public XMapObject
 public:
 	DECLARE_CREATOR(XDoor, XMapObject);
 	XDoor(int _x, int _y, int flg, XLocation * _l);
-//	virtual void Invalidate();
 	void Switch();
 	int isOpened;
 
@@ -154,7 +152,7 @@ public:
 	XAltar(int _x, int _y, DEITY deity, XLocation * _l);
 	virtual void Store(XFile * f);
 	virtual void Restore(XFile * f);
-	
+
 	const char * GetName(XCreature * viewer) { return color == xWHITE ? "an altar of white granite" : "an altar of black granite"; }
 protected:
 	XAltar() {im = IM_ALTAR;}
@@ -179,20 +177,6 @@ public:
 protected:
 	XGrave() {im = IM_MISC;}
 };
-
-/*
-//////////////////////////////////////////////////////////////////////
-//XGrave
-//////////////////////////////////////////////////////////////////////
-class XThrone: public XMapObject
-{
-public:
-	DECLARE_CREATOR(XThrone, XMapObject);
-	XThrone(int _x, int _y, char * subscr, XLocation * _l);
-protected:
-	XThrone() {im = IM_MISC;}
-};
-*/
 
 //////////////////////////////////////////////////////////////////////
 //XFurniture
@@ -223,7 +207,5 @@ public:
 protected:
 	XOuterObject() {im = IM_MISC;}
 };
-
-
 
 #endif

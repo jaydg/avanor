@@ -63,7 +63,7 @@ void XCaveBuilder::Build()
 				quae.push_back(xc);
 				xc->Draw(location);
 				iflag = 0;
-			} else 
+			} else
 				delete xc;
 		}
 	}
@@ -74,12 +74,10 @@ void XCaveBuilder::Build()
 		XCave * tc2 = quae[k + 1];
 		XPoint pt1;
 		XPoint pt2;
-		
+
 		if (tc1->GetFreeExit(&pt1) && tc2->GetFreeExit(&pt2))
 		{
-//			if (!Link(&pt1, &pt2))
-				Link(&pt1, &pt2);
-//				assert(0);
+			Link(&pt1, &pt2);
 		} else
 			assert(0);
 	}
@@ -225,7 +223,7 @@ bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)
 			py--;
 	}
 	m->SetXY(p1->x, p1->y, M_CAVEFLOOR);
-	
+
 	return true;
 }
 

@@ -29,13 +29,6 @@ XClothe::XClothe()
 
 void XClothe::toString(char * buf)
 {
-
-
-/*	if (quantity == 1)
-		sprintf(buf, "%s ", name);
-	else
-		sprintf(buf, "heap of (%d) %ss ", quantity, name);
-*/
 	GetFullName(buf);
 
 	if (isIdentifed())
@@ -65,4 +58,3 @@ void XClothe::toString(char * buf)
 		strcat(buf, tbuf);
 	}
 }
-

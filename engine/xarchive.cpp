@@ -64,25 +64,20 @@ int XArchive::StoreGame()
 
 int XArchive::RestoreGame()
 {
-// assert(post_restore_quae.len == 0);
-//	assert(post_restore_quae.size() == 0);
 	XFile file;
 	XLocation::svg_file = &file;
 
 	if (!file.Open(vMakePath(HOME_DIR, "avanor.svg"), "rb"))
 	{
-//		printf("Can't open save game file!");
 		return 0;
 	}
 	unsigned int tmp = 0;
 	file.Read(&tmp, sizeof(unsigned int));
 	if (tmp != SAVE_GAME_VERSION)
 	{
-//		printf("Incorect save file version!");
 		return 0;
-//		exit(0);
 	}
-	
+
 	XObject::RestoreAllObjects(&file);
 
 	file.Read(&::guid, sizeof(XGUID));
@@ -97,7 +92,7 @@ int XArchive::RestoreGame()
 	_HERBS::Restore(&file);
 	file.Read(&XGame::hero_guid, sizeof(int));
 	Game.Scheduler.Restore(&file);
-	
+
 	for (int i = 0; i < L_EOF; i++)
       Game.locations[i].Restore(&file);
 

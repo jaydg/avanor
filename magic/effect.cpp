@@ -61,7 +61,7 @@ EFFECT_REQ XEffect::GetReq(EFFECT effect)
 		case E_IDENTIFY:
 			return ER_ITEM;
 			break;
-		
+
 		case E_MAGIC_ARROW:
 		case E_FIRE_BOLT:
 		case E_ICE_BOLT:
@@ -70,7 +70,7 @@ EFFECT_REQ XEffect::GetReq(EFFECT effect)
 		case E_TELEPORT:
 			return ER_TARGET;
 			break;
-		
+
 		default:
 			return ER_NONE;
 	}
@@ -157,10 +157,10 @@ int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_T
 		vRefresh();
 		vDelay(__animation_flag);
 	}
-	
+
 	if (target)
 	{
-		XDice d(X, Y, Z); 
+		XDice d(X, Y, Z);
 
 		DAMAGE_DATA_EX dd;
 		dd.damage		= d.S;
@@ -186,7 +186,7 @@ int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TY
 	mfd.sy = pData->call_y;
 	mfd.ex = pData->target_x;
 	mfd.ey = pData->target_y;
-	mfd.to_hit = 1000; 
+	mfd.to_hit = 1000;
 	mfd.max_range = GetRange(pData->effect, pData->power);
 	MF_RESULT res = XCreature::MissileFlight(&mfd);
 
@@ -245,7 +245,7 @@ int XEffect::Make(EFFECT_DATA * pData)
 {
 	int flag = 0;
 	char buf[256];
-	
+
 	switch (pData->effect)
 	{
 		//healing and restoration
@@ -302,7 +302,7 @@ int XEffect::Make(EFFECT_DATA * pData)
 
 
 
-		//combat - touch			
+		//combat - touch
 		case E_BURNING_HANDS:
 			return Touch(pData, 1, pData->power, 5, xRED, BR_FIRE, "the ball of fire");
 			break;
@@ -312,11 +312,7 @@ int XEffect::Make(EFFECT_DATA * pData)
 			break;
 
 		case E_DRAIN_LIFE:
-			{
-				//char buf[256];
-				//sprintf(buf, "%s life from", pData->caller->GetVerb("drain"));
-				return Touch(pData, 1, pData->power, 9, xDARKGRAY, BR_DRAIN_LIFE, "the black sphere");
-			}
+			return Touch(pData, 1, pData->power, 9, xDARKGRAY, BR_DRAIN_LIFE, "the black sphere");
 			break;
 
 		//combat - bolts
@@ -455,7 +451,7 @@ int XEffect::Make(EFFECT_DATA * pData)
 				}
 				return 1;
 			};
-	
+
 		case E_BLINK:
 			{
 				XPoint pt;
@@ -499,8 +495,8 @@ int XEffect::Make(EFFECT_DATA * pData)
 				return 1;
 			};
 
-	
-			
+
+
 			case E_SEE_INVISIBLE:
 				return pData->caller->md->Add(MOD_SEE_INVISIBLE, pData->power, pData->caller);
 			break;

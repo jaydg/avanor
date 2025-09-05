@@ -23,28 +23,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xdebug.h"
 #include "xobject.h"
 
-/*
-#include <crtdbg.h>
-
-struct __DEBUG_STRUCT
-{
-	__DEBUG_STRUCT()
-	{
-		int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-		tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-		_CrtSetDbgFlag(tmpDbgFlag);
-	};
-};
-
-__DEBUG_STRUCT try_debug;
-*/
-
 long       XObject::invalid_count = 0;
-XObject ** XObject::table = 0;   
+XObject ** XObject::table = 0;
 long       XObject::count = 0;
 XObject  * XObject::root  = 0;
-
-	//REGISTER_CLASS(XObject);
 
 XGUID guid = 1;
 
@@ -119,7 +101,7 @@ void XObject::Store(XFile * f)
 
 void XObject::Restore(XFile * f)
 {
-	f->Read(&xguid, sizeof(XGUID)); 
+	f->Read(&xguid, sizeof(XGUID));
 	f->Read(&quantity, sizeof(int));
 	f->Read(&im, sizeof(ITEM_MASK));
 	f->Read(&ttm, sizeof(int));
@@ -133,16 +115,16 @@ void XObject::StoreAllObjects(XFile * f)
 
 	table = new XObject * [count];
 	XObject * p = root;
-	for(i = 0; i < count; i++) 
-	{ 
+	for(i = 0; i < count; i++)
+	{
 		assert(p != 0);
-		table[i] = p; p = p->next; 
+		table[i] = p; p = p->next;
 	}
 	std::sort(&table[0], &table[count]);
 
 	f->Write(&count, sizeof(count));
 	FILE * tmp = fopen("dmp.txt", "wt");
-	for(i = 0; i < count; i++) 
+	for(i = 0; i < count; i++)
 	{
 		unsigned char name_size = table[i]->GetClassName().size();
 		f->Write(&name_size, sizeof(name_size));
@@ -151,7 +133,7 @@ void XObject::StoreAllObjects(XFile * f)
 		fprintf(tmp, "[%d] %s\n", i, table[i]->GetClassName());
 	}
 	fclose(tmp);
-	for(i = 0; i < count; i++) 
+	for(i = 0; i < count; i++)
 		table[i]->Store(f);
 }
 
@@ -162,7 +144,7 @@ void XObject::RestoreAllObjects(XFile * f)
 	long read_count = 0;
 	f->Read(&read_count, sizeof(read_count));
 	FILE * tmp = fopen("dmp2.txt", "wt");
-	for(i = 0; i < read_count; i++) 
+	for(i = 0; i < read_count; i++)
 	{
 		unsigned char name_size;
 		f->Read(&name_size, sizeof(name_size));
@@ -175,16 +157,16 @@ void XObject::RestoreAllObjects(XFile * f)
 	}
 
 	fclose(tmp);
-	table = new XObject * [count];	
+	table = new XObject * [count];
 	XObject * p = root;
-	for(i = 0; i < count; i++) 
-	{ 
+	for(i = 0; i < count; i++)
+	{
 		if(p == 0)
 			assert(p != 0);
-		table[count - i - 1] = p; p = p->next; 
+		table[count - i - 1] = p; p = p->next;
 	}
 
-	for(i = 0; i < count; i++) 
+	for(i = 0; i < count; i++)
 		table[i]->Restore(f);
 }
 
@@ -262,4 +244,3 @@ void XObject::Dump(XFile * f)
 	f->Write(buf, strlen(buf));
 	f->Write("\n", 1);
 }
-

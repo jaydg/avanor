@@ -26,11 +26,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XLDebug : public XLocation
 {
 public:
-//	DECLARE_CREATOR(XLDebug);
 	XLDebug(LOCATION tl);
 	virtual void Init();
 };
-
-
 
 #endif
