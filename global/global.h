@@ -24,13 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifdef WIN32
 #  define XWIN32
 #else
-#  ifdef GO32
-#     define XDOS
-#  else
-#     define XLINUX
-#  endif
+#  define XLINUX
 #endif
-//#define XDOS
 
 // Directory for common data files (game manual, hiscore, ...)
 #ifndef DATA_DIR
@@ -48,11 +43,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#ifdef XDOS
-#  include <dos.h>
-#  include <conio.h>
-#endif // WIN32
 
 #ifdef XWIN32
 #  include <conio.h>

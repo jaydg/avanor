@@ -4,8 +4,7 @@
 
 Avanor can be compiled for playing:
 1) for Linux, *NIX etc by GCC.
-2) for DOS, Win* by DJGPP
-3) It is recommended to compile by VC++ for debug purpose only.
+2) It is recommended to compile by VC++ for debug purpose only.
 
 
 =====================================================================

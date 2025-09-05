@@ -30,9 +30,9 @@ unsigned long cr_kiled  = 0;
 unsigned long cr_died   = 0;
 
 
-const char* color_convert_table[] = 
+const char* color_convert_table[] =
 {
-	"\x1F\x00", "\x1F\x01", "\x1F\x02", "\x1F\x03", 
+	"\x1F\x00", "\x1F\x01", "\x1F\x02", "\x1F\x03",
 	"\x1F\x04", "\x1F\x05", "\x1F\x06", "\x1F\x07",
 	"\x1F\x08", "\x1F\x09", "\x1F\x0A", "\x1F\x0B",
 	"\x1F\x0C", "\x1F\x0D", "\x1F\x0E", "\x1F\x0F",
@@ -55,7 +55,7 @@ int current_attr = 7;
 	#include <windows.h>
 	HANDLE                     hStdout;
 	HANDLE                     hStdin;
-	CONSOLE_SCREEN_BUFFER_INFO csbiInfo; 
+	CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
     CONSOLE_CURSOR_INFO        ccInfo;
 	CHAR_INFO                 *vscreenw;
 #endif
@@ -66,16 +66,9 @@ void vInit()
 	mkdir(vMakePath(HOME_DIR, ""), 0755);
 #endif
 
-#ifdef XDOS
-	text_info ti;
-	gettextinfo(&ti);
-	size_x = ti.screenwidth;
-	size_y = ti.screenheight;
-#endif
-
 #ifdef XWIN32
-	hStdin  = GetStdHandle(STD_INPUT_HANDLE); 
-	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);  
+	hStdin  = GetStdHandle(STD_INPUT_HANDLE);
+	hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
     GetConsoleCursorInfo(hStdout, &ccInfo);
 
@@ -86,7 +79,7 @@ void vInit()
 	if(size_x != csbiInfo.dwSize.X || size_y != csbiInfo.dwSize.Y)
 	{
 		COORD coord = { (short)size_x, (short)size_y };
-		if(!SetConsoleScreenBufferSize(hStdout, coord)) 
+		if(!SetConsoleScreenBufferSize(hStdout, coord))
 			assert(false);
 	}
 
@@ -96,7 +89,7 @@ void vInit()
 
 #ifdef XLINUX
 	initscr();
-	cbreak(); 
+	cbreak();
 	noecho();
 	nonl();
 	raw();
@@ -110,7 +103,7 @@ void vInit()
 	init_pair(xCYAN,         COLOR_CYAN,    COLOR_BLACK);
 	init_pair(xBROWN,        COLOR_YELLOW,  COLOR_BLACK);
 	init_pair(xLIGHTGRAY,    COLOR_WHITE,   COLOR_BLACK);
-	
+
 	init_pair(xLIGHTBLUE,    COLOR_BLUE,    COLOR_BLACK);
 	init_pair(xLIGHTGREEN,   COLOR_GREEN ,  COLOR_BLACK);
 	init_pair(xLIGHTRED,     COLOR_RED,     COLOR_BLACK);
@@ -118,10 +111,10 @@ void vInit()
 	init_pair(xLIGHTCYAN,    COLOR_CYAN,    COLOR_BLACK);
 	init_pair(xYELLOW,       COLOR_YELLOW,  COLOR_BLACK);
 	init_pair(xWHITE,        COLOR_WHITE,   COLOR_BLACK);
-	
+
 	size_x = COLS;
 	size_y = LINES;
-	
+
 #endif //XLINUX
 
 #ifndef XWIN32
@@ -136,7 +129,7 @@ void vClrScr()
 #ifdef XWIN32
 	CHAR_INFO blank_char = { ' ', 7 };
 	int screenbuf_size = size_x * size_y;
-	for (int i = 0; i < screenbuf_size; i++) 
+	for (int i = 0; i < screenbuf_size; i++)
 		vscreenw[i] = blank_char;
 #else
 	for (int i = 0; i < size_x * size_y * 2; i += 2)
@@ -172,14 +165,11 @@ void vRefresh()
 
 	WriteConsoleOutput(hStdout, vscreenw, buffer_size, buffer_coord, &write_region);
 #endif
-#ifdef XDOS
-	puttext(1, 1, size_x, size_y, vscreen);
-#endif
+
 #ifdef XLINUX
 	move(0, 0);
-	for (int i = 0; i < size_x * size_y; i++)      
+	for (int i = 0; i < size_x * size_y; i++)
 	{
-//    attrset(vscreen[i * 1]);
 		char ch2 = vscreen[i * 2 + 1];
 		char ch1 = vscreen[i * 2];
 		if (ch1 < ' ') ch1 = ' ';
@@ -187,7 +177,7 @@ void vRefresh()
 			addch(ch1 | (ch2 << 8) | A_BOLD);
 		else
 			addch(ch1 | (ch2 << 8));
-		
+
 	}
 
 	refresh();
@@ -248,7 +238,7 @@ int vGetS(char * s, int buffer_size)
 	{
 		vXGotoXY(cx + strlen(s), cy);
 		ch = vGetch();
-		
+
 		s[buffer_pos] = ch;
 		if (ch == 13 || ch == 27 )
 		{
@@ -280,12 +270,8 @@ int vGetS(char * s, int buffer_size)
 void vDelay(int n)
 {
 #ifdef XWIN32
-	
-#endif
-#ifdef XDOS
-	delay(n);
-#endif
 
+#endif
 }
 
 int vKbhit()
@@ -299,7 +285,7 @@ int vKbhit()
 	return 1;
 #else
 	return kbhit();
-#endif	
+#endif
 }
 
 int vGetch()
@@ -367,11 +353,6 @@ void vXGotoXY(int x, int y)
 	SetConsoleCursorPosition(hStdout, coord);
 #endif
 
-#ifdef XDOS
-	_setcursortype(_NORMALCURSOR);
-	gotoxy(x + 1, y + 1);
-#endif
-
 #ifdef XLINUX
 	move(y, x);
 #endif
@@ -384,10 +365,6 @@ void vHideCursor()
 //	CONSOLE_CURSOR_INFO ConsoleCursorInfo = ccInfo;
 //	ConsoleCursorInfo.bVisible = FALSE;
 //	SetConsoleCursorInfo(hStdout, &ConsoleCursorInfo);
-#endif
-
-#ifdef XDOS
-	_setcursortype(_NOCURSOR);
 #endif
 
 #ifdef XLINUX
@@ -420,9 +397,9 @@ void vPutS(const char * s)
 		char ch = *s++;
 		switch(ch)
 		{
-			case 0 : 
+			case 0 :
 				return;
-			case 31 : 
+			case 31 :
 				vSetAttr(*s++); break;
 			case 13 :
 			case '\n' :
@@ -538,7 +515,7 @@ char *vMakePath(const char* prefix, const char* filename)
 		sprintf(path_buffer, "%s%s%s", getenv("HOME"), prefix + 1, filename);
 	}
 	else
-#endif	
+#endif
 	{
 		sprintf(path_buffer, "%s%s", prefix, filename);
 	}

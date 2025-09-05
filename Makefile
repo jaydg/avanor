@@ -1,7 +1,6 @@
 ##############################################################################
-# Compiling Avanor: make {dos=1} {win=1} {debug=1}                           #
+# Compiling Avanor: make {win=1} {debug=1}                                   #
 #                                                                            #
-# Define dos=1 when compiling with DJGPP gcc compiler for MS-DOS             #
 # Define win=1 when compiling with Mingw gcc compiler for windows            #
 # Define xmingw=1 when compiling win32-binary with Mingw gcc crosscompiler   #
 # Define debug=1 when you want to build debug version of Avanor              #
@@ -10,11 +9,9 @@
 # (Linux, FreeBSD, ...)                                                      #
 #                                                                            #
 # There are also targets for making tarballs with the sources and binaries   #
-# Examples:                                                                  #
-# 1) Create tarball (avanor-0.5.7-src.tar.bz2) with the sources of the game  #
+# Example:                                                                   #
+#    Create tarball (avanor-0.5.7-src.tar.bz2) with the sources of the game  #
 #    make VERSION=0.5.7 source-bz2                                           #
-# 2) Compile and package DOS-version of Avanor                               #
-#    make VERSION=0.5.7 dos=1 binary-zip                                     #
 ##############################################################################
 
 ifdef VERSION
@@ -27,17 +24,10 @@ ifdef WINDIR
 	win = 1
 endif
 
-ifndef dos
-	CX = g++
-	CC = gcc
-	LD = g++
-	CFLAGS = -fsigned-char -pipe
-else
-	CX = gpp
-	CC = gcc
-	LD = gpp
-	CFLAGS = -fsigned-char
-endif
+CX = g++
+CC = gcc
+LD = g++
+CFLAGS = -fsigned-char -pipe
 
 ifdef xmingw
     CX = i386-mingw32msvc-g++
@@ -106,11 +96,6 @@ endif
 ifdef win
 	OBJDIR := ${addsuffix win,$(OBJDIR)}
 	NAME := ${addsuffix -win.exe,$(NAME)}
-	LIBS :=
-endif
-ifdef dos
-	OBJDIR := ${addsuffix dos,$(OBJDIR)}
-	NAME := ${addsuffix -dos.exe,$(NAME)}
 	LIBS :=
 endif
 
