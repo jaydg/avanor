@@ -22,7 +22,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "uniquei.h"
 #include "quest.h"
 #include "itemf.h"
-#include "gmsg.h"
 #include "modifer.h"
 #include "xhero.h"
 #include "xapi.h"
@@ -155,14 +154,14 @@ int XGefeon::Chat(XCreature * chatter, const char* msg)
 		XQuest::quest.ahk_ulan_ordered = 1;
 		return 1;
 	}
-	
+
 	if (XQuest::quest.ahk_ulan_ordered == 1 && XQuest::quest.ahk_ulan_killed == 0)
 	{
 		msgwin.Add("And how is Ahk-Ulan? Still alive? That is very bad.");
 		return 1;
 	}
 
-	
+
 	if (XQuest::quest.ahk_ulan_killed == 1)
 	{
 		if(XQuest::quest.roderick_killed == 1)  // Kill all the competition and become king/queen.
@@ -173,7 +172,7 @@ int XGefeon::Chat(XCreature * chatter, const char* msg)
 
 		XHero::EndGame("***WINNER***");
 	}
-	
+
 	return 1;
 }
 
@@ -183,8 +182,8 @@ int XGefeon::Chat(XCreature * chatter, const char* msg)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XRoderick);
-XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr) 
-{ 
+XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr)
+{
 	XPotion * pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
 
@@ -211,7 +210,7 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
 
 	if (xai->isEnemy(chatter))
 	{
-		msgwin.Add("No mercy!");	
+		msgwin.Add("No mercy!");
 	} else if ((it1 && it1->xguid == XAvanorDefender::avanordefender_guid) || (it2 && it2->xguid == XAvanorDefender::avanordefender_guid))
 	{
 		msgwin.Add(
@@ -220,7 +219,7 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
 			"Guards! Seize the traitor!");
 		xai->AddPersonalEnemy(chatter);
 		xai->SetGroupEnemy(chatter);
-	} else 
+	} else
 	{
 		msgwin.Add("Hello, brave hero.");
 		if (XQuest::quest.roderick_quest2 == 0)
@@ -284,8 +283,8 @@ int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XHighPriest);
-XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr) 
-{ 
+XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr)
+{
 	XPotion * pt = new XPotion(PN_HEALING);
 	ContainItem(pt);
 
@@ -306,8 +305,8 @@ int XHighPriest::Chat(XCreature * chatter, const char* msg)
 {
 	if (xai->isEnemy(chatter))
 	{
-		msgwin.Add("Defiler, you must be punished!");	
-	} else 
+		msgwin.Add("Defiler, you must be punished!");
+	} else
 	{
 		msgwin.Add("Blessings on you.");
 	}
@@ -370,7 +369,7 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 
 REGISTER_CLASS(XRotmoth);
 REGISTER_CLASS(XRotmothAI);
-XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr) 
+XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
 {
 	xai->Invalidate();
 	xai = new XRotmothAI(this);
@@ -384,7 +383,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
 	if (xai->isEnemy(chatter))
 	{
 		msgwin.Add("You will be rewarded for your stupidness!");
-	} else 
+	} else
 	{
 		if (XQuest::quest.rotmoth_status == 0)
 		{
@@ -440,8 +439,8 @@ void XRotmothAI::onWasAttacked(XCreature * attacker)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XGiana);
-XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr) 
-{ 
+XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr)
+{
 	XQuest::quest.kidnapped_girl = this;
 }
 
@@ -449,8 +448,8 @@ int XGiana::Chat(XCreature * chatter, const char* msg)
 {
 	if (xai->isEnemy(chatter))
 	{
-		msgwin.Add("Don't touch me!");	
-	} else 
+		msgwin.Add("Don't touch me!");
+	} else
 	{
 		if (XQuest::quest.rotmoth_status < 2)
 			msgwin.Add("Please, save me.");
@@ -481,10 +480,10 @@ XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
 
 int XBanditAI::isEnemy(XCreature * cr)
 {
-	if (isPersonalEnemy(cr)) 
+	if (isPersonalEnemy(cr))
 		return 1;
 	XBodyPart * bp = cr->GetBodyPart(BP_CLOAK);
-	if (bp && bp->Item() && bp->Item()->it == IT_FORESTBROTHERCLOAK) 
+	if (bp && bp->Item() && bp->Item()->it == IT_FORESTBROTHERCLOAK)
 		return 0;
 	return XStandardAI::isEnemy(cr);
 }

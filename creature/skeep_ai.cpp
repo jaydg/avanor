@@ -19,11 +19,23 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "skeep_ai.h"
-#include "gmsg.h"
 #include "itemf.h"
 #include "xapi.h"
 
 REGISTER_CLASS(XShopKeeperAI);
+
+const char* GMSG_SHOPKEEPER_ATTACK = "'You were warned! Prepare to die!'";
+const char* GMSG_SHOPKEEPER_ATTACK2 = "'I'll kill you, you bastard!'";
+const char* GMSG_SHOPKEEPER_ASK_PRICE = "'I can give you " MSG_YELLOW "%d" MSG_YELLOW " gp for %s. Do you agree?'";
+const char* GMSG_SHOPKEEPER_REJECT_ITEM = "'Sorry, I can't buy this!'";
+const char* GMSG_SHOPKEEPER_REJECT_MONEY = "'Thank you, but you don't owe me anything!'";
+const char* GMSG_SHOPKEEPER_ASK_FOR_PAY = "'You must pay me %d gp for %s";
+const char* GMSG_SHOPKEEPER_ASK_FOR_PAY2 = "'You owe me %d gp, How much you would like to pay?'";
+const char* GMSG_SHOPKEEPER_THANKS = "'Thank you for paying!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER0 = "%s says 'You owe me %d gp. Don't try to take anything without paying!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER1 = "%s says 'Welcome to my shop, %s!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER2 = "%s says 'You forgot to pay me %d gp!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER3 = "%s says 'Have a nice expedition, %s!'";
 
 XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
 	 : XStandardAI(shopkeeper)
