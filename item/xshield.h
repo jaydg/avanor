@@ -19,7 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifndef __XSHIELD_H
-#define __XSHILED_H
+#define __XSHIELD_H
 
 #include "item.h"
 
