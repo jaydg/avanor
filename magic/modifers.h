@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "xobject.h"
 #include "creature.h"
-#include "mod_defs.h"
+#include "modifer.h"
 #include "xapi.h"
 
 enum MODIFER_RESULT {
