@@ -27,12 +27,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XMissileWeapon : public XItem
 {
-public:
-	DECLARE_CREATOR(XMissileWeapon, XItem);
-	XMissileWeapon(ITEM_TYPE it = IT_RANDOM);
-	virtual void toString(char * buf);
-	XMissileWeapon(XMissileWeapon * copy) : XItem((XItem *)copy) {}
-	virtual XObject * MakeCopy() {return new XMissileWeapon(this);}	
+    public:
+        DECLARE_CREATOR(XMissileWeapon, XItem);
+        XMissileWeapon(ITEM_TYPE it = IT_RANDOM);
+        virtual void toString(char* buf);
+        XMissileWeapon(XMissileWeapon * copy) : XItem((XItem*)copy) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XMissileWeapon(this);
+        }
 };
 
 #endif

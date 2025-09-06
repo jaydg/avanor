@@ -25,113 +25,157 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XGlamdring : public XWeapon
 {
-public:
-	XGlamdring();
-	DECLARE_CREATOR(XGlamdring, XWeapon);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XGlamdring();
+        DECLARE_CREATOR(XGlamdring, XWeapon);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XDeathHack : public XWeapon
 {
-public:
-	XDeathHack();
-	DECLARE_CREATOR(XDeathHack, XWeapon);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XDeathHack();
+        DECLARE_CREATOR(XDeathHack, XWeapon);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XAvanorDefender : public XWeapon
 {
-public:
-	XAvanorDefender();
-	DECLARE_CREATOR(XAvanorDefender, XWeapon);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
-	static XGUID avanordefender_guid;
-	void Restore(XFile * f);
+    public:
+        XAvanorDefender();
+        DECLARE_CREATOR(XAvanorDefender, XWeapon);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
+        static XGUID avanordefender_guid;
+        void Restore(XFile * f);
 };
 
 class XForestBrotherCloak : public XCloak
 {
-public:
-	XForestBrotherCloak();
-	virtual void toString(char * buf);
-	DECLARE_CREATOR(XForestBrotherCloak, XCloak);
-	virtual int Compare(XObject * o) {return -1;}
+    public:
+        XForestBrotherCloak();
+        virtual void toString(char* buf);
+        DECLARE_CREATOR(XForestBrotherCloak, XCloak);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
 };
 
 class XGreatElementalRing : public XRing
 {
-public:	
-	XGreatElementalRing();
-	DECLARE_CREATOR(XGreatElementalRing, XRing);
-	virtual int Compare(XObject * o) {return -1;}
+    public:
+        XGreatElementalRing();
+        DECLARE_CREATOR(XGreatElementalRing, XRing);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
 };
 
 class XAvanorScepter : public XWeapon
 {
-public:
-	XAvanorScepter();
-	DECLARE_CREATOR(XAvanorScepter, XWeapon);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XAvanorScepter();
+        DECLARE_CREATOR(XAvanorScepter, XWeapon);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XAvanorCrown : public XCap
 {
-public:
-	XAvanorCrown();
-	DECLARE_CREATOR(XAvanorCrown, XCap);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XAvanorCrown();
+        DECLARE_CREATOR(XAvanorCrown, XCap);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XAvanorMitre : public XCap
 {
-public:
-	XAvanorMitre();
-	DECLARE_CREATOR(XAvanorMitre, XCap);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XAvanorMitre();
+        DECLARE_CREATOR(XAvanorMitre, XCap);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XTorinAxe : public XWeapon
 {
-public:
-	XTorinAxe();
-	DECLARE_CREATOR(XTorinAxe, XWeapon);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
-};
+    public:
+        XTorinAxe();
+        DECLARE_CREATOR(XTorinAxe, XWeapon);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
 
+        virtual void toString(char* buf);
+};
 
 class XTorinShield : public XShield
 {
-public:
-	XTorinShield();
-	DECLARE_CREATOR(XTorinShield, XShield);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XTorinShield();
+        DECLARE_CREATOR(XTorinShield, XShield);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XDwarfCrown : public XCap
 {
-public:
-	XDwarfCrown();
-	DECLARE_CREATOR(XDwarfCrown, XCap);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
+    public:
+        XDwarfCrown();
+        DECLARE_CREATOR(XDwarfCrown, XCap);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
+
+        virtual void toString(char* buf);
 };
 
 class XBlackClub : public XWeapon
 {
-public:
-	XBlackClub();
-	DECLARE_CREATOR(XBlackClub, XWeapon);
-	virtual int Compare(XObject * o) {return -1;}
-	virtual void toString(char * buf);
-};
+    public:
+        XBlackClub();
+        DECLARE_CREATOR(XBlackClub, XWeapon);
+        virtual int Compare(XObject * o)
+        {
+            return -1;
+        }
 
+        virtual void toString(char* buf);
+};
 
 #endif

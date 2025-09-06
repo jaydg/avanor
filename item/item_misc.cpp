@@ -25,43 +25,43 @@ REGISTER_CLASS(XBatWing);
 REGISTER_CLASS(XRatTail);
 REGISTER_CLASS(XBone);
 REGISTER_CLASS(XAncientMachinePart);
-
-
 REGISTER_CLASS(XChest);
+
 XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
 {
-	color = xLIGHTGRAY;
-	view = '~';
-	it = IT_CHEST;
-	strcpy(name, "chest");
-	value = 50;
-	weight = 100;
-	im = IM_CHEST;
-	bp = BP_OTHER;
-	for (int i = 0; i < item_count; i++)
-	{
-		XItem * it = ICREATE(imask, low_v, high_v);
-		weight += it->weight;
-		contain.Add(it);
-	}
+    color = xLIGHTGRAY;
+    view = '~';
+    it = IT_CHEST;
+    strcpy(name, "chest");
+    value = 50;
+    weight = 100;
+    im = IM_CHEST;
+    bp = BP_OTHER;
 
+    for (int i = 0; i < item_count; i++) {
+        XItem * it = ICREATE(imask, low_v, high_v);
+        weight += it->weight;
+        contain.Add(it);
+    }
 }
 
-void XChest::toString(char * buf)
+void XChest::toString(char* buf)
 {
-	sprintf(buf, name);
-	if (contain.empty())
-		strcat(buf, "{empty}");
+    sprintf(buf, name);
+
+    if (contain.empty()) {
+        strcat(buf, "{empty}");
+    }
 }
 
 void XChest::Store(XFile * f)
 {
-	XItem::Store(f);
-	contain.StoreList(f);
+    XItem::Store(f);
+    contain.StoreList(f);
 }
 
 void XChest::Restore(XFile * f)
 {
-	XItem::Restore(f);
-	contain.RestoreList(f);
+    XItem::Restore(f);
+    contain.RestoreList(f);
 }

@@ -22,145 +22,150 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "string.h"
 #include "stdio.h"
 
-void XStr::Setup(const char * s, int _sz)
+void XStr::Setup(const char* s, int _sz)
 {
-	sz = _sz;
-	str = new char[sz + 1];
-	memcpy(str, s, sz);
-	*(str + sz) = 0;
+    sz = _sz;
+    str = new char[sz + 1];
+    memcpy(str, s, sz);
+    *(str + sz) = 0;
 }
 
-XStr::XStr(const char * s)
+XStr::XStr(const char* s)
 {
-	Setup(s, strlen(s));
+    Setup(s, strlen(s));
 }
 
 XStr::XStr(const XStr & s)
 {
-	Setup(s.str, s.sz);
+    Setup(s.str, s.sz);
 }
 
 
-XStr::XStr(const char * s, int _sz)
+XStr::XStr(const char* s, int _sz)
 {
-	Setup(s, _sz);
+    Setup(s, _sz);
 }
 
 XStr::XStr()
 {
-	Setup("", 0);
+    Setup("", 0);
 }
 
 XStr::~XStr()
 {
-	delete[] str;
+    delete[] str;
 }
 
 XStr XStr::operator +(const XStr& s)
 {
-	int new_sz = sz + s.sz;
-	char * new_str = new char[new_sz + 1];
-	memcpy(new_str, str, sz);
-	memcpy(new_str + sz, s.str, s.sz + 1);
-	return XStr(new_str, new_sz);
+    int new_sz = sz + s.sz;
+    char* new_str = new char[new_sz + 1];
+    memcpy(new_str, str, sz);
+    memcpy(new_str + sz, s.str, s.sz + 1);
+    return XStr(new_str, new_sz);
 }
 
 XStr XStr::operator +(const char * s)
 {
-	return operator+(XStr(s));
+    return operator+(XStr(s));
 }
 
-XStr& XStr::operator=(const XStr& s)
+XStr &XStr::operator=(const XStr& s)
 {
-	delete[] str;
-	sz = s.sz;
-	str = new char[sz + 1];
-	memcpy(str, s.str, sz + 1);
-	return *this;
+    delete[] str;
+    sz = s.sz;
+    str = new char[sz + 1];
+    memcpy(str, s.str, sz + 1);
+    return *this;
 }
 
-XStr& XStr::operator=(const char * s)
+XStr &XStr::operator=(const char * s)
 {
-	return operator=(XStr(s));
+    return operator=(XStr(s));
 }
 
-XStr& XStr::operator+=(const char * s)
+XStr &XStr::operator+=(const char * s)
 {
-	int len = strlen(s);
-	int new_sz = sz + len;
-	char * new_str = new char[new_sz + 1];
-	memcpy(new_str, str, sz);
-	memcpy(new_str + sz, s, len + 1);
-	sz = new_sz;
-	delete[] str;
-	str = new_str;
-	return *this;
+    int len = strlen(s);
+    int new_sz = sz + len;
+    char* new_str = new char[new_sz + 1];
+    memcpy(new_str, str, sz);
+    memcpy(new_str + sz, s, len + 1);
+    sz = new_sz;
+    delete[] str;
+    str = new_str;
+    return *this;
 }
 
-XStr& XStr::operator+=(const XStr& s)
+XStr &XStr::operator+=(const XStr& s)
 {
-	int new_sz = sz + s.sz;
-	char * new_str = new char[new_sz + 1];
-	memcpy(new_str, str, sz);
-	memcpy(new_str + sz, s.str, s.sz + 1);
-	sz = new_sz;
-	delete[] str;
-	str = new_str;
-	return *this;
+    int new_sz = sz + s.sz;
+    char* new_str = new char[new_sz + 1];
+    memcpy(new_str, str, sz);
+    memcpy(new_str + sz, s.str, s.sz + 1);
+    sz = new_sz;
+    delete[] str;
+    str = new_str;
+    return *this;
 }
 
 bool XStr::operator==(const char * s)
 {
-	return strcmp(str, s) == 0;
+    return strcmp(str, s) == 0;
 }
 
-const char * XStr::c_str()
+const char* XStr::c_str()
 {
-	return str;
+    return str;
 }
 
 size_t XStr::Len()
 {
-	return sz;
+    return sz;
 }
 
 void XStr::Store(XFile * f)
 {
-	f->Write(&sz);
-	f->Write(str, sz + 1);
+    f->Write(&sz);
+    f->Write(str, sz + 1);
 }
 
 void XStr::Restore(XFile * f)
 {
-	delete[] str;
-	f->Read(&sz);
-	str = new char[sz + 1];
-	f->Read(str, sz + 1);
+    delete[] str;
+    f->Read(&sz);
+    str = new char[sz + 1];
+    f->Read(str, sz + 1);
 }
 
 bool XStr::Empty()
 {
-	return sz == 0;
+    return sz == 0;
 }
 
 
-bool XStr::ReplaceFirst(const char * sub_string, const char * new_string)
+bool XStr::ReplaceFirst(const char* sub_string, const char* new_string)
 {
-	int len = sz + strlen(new_string) - strlen(sub_string);
-	if (len < 0)
-		return false;
+    int len = sz + strlen(new_string) - strlen(sub_string);
 
-	char * res = new char[len + 1];
-	char * sub = strstr(str, sub_string);
-	if (!sub)
-		return false;
-	*sub = 0;
-	strcpy(res, str);
-	strcat(res, new_string);
-	strcat(res, str + strlen(sub_string));
+    if (len < 0) {
+        return false;
+    }
 
-	delete[] str;
-	sz = len;
-	str = res;
-	return true;
+    char* res = new char[len + 1];
+    char* sub = strstr(str, sub_string);
+
+    if (!sub) {
+        return false;
+    }
+
+    *sub = 0;
+    strcpy(res, str);
+    strcat(res, new_string);
+    strcat(res, str + strlen(sub_string));
+
+    delete[] str;
+    sz = len;
+    str = res;
+    return true;
 }

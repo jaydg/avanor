@@ -24,16 +24,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xenhance.h"
 class XAmulet : public XEnhance
 {
-public:
-	DECLARE_CREATOR(XAmulet, XEnhance);
-	XAmulet(ENHANCE enh = ENH_EOF);
-	XAmulet(XAmulet * copy) : XEnhance((XEnhance *)copy){}
-	virtual XObject * MakeCopy() {return new XAmulet(this);}
-	virtual int isIdentifed();
-	virtual void Identify(int level);
-	static void StoreTable(XFile * f);
-	static void RestoreTable(XFile * f);
+    public:
+        DECLARE_CREATOR(XAmulet, XEnhance);
+        XAmulet(ENHANCE enh = ENH_EOF);
+        XAmulet(XAmulet * copy) : XEnhance((XEnhance*)copy) {}
 
+        virtual XObject* MakeCopy()
+        {
+            return new XAmulet(this);
+        }
+
+        virtual int isIdentifed();
+        virtual void Identify(int level);
+        static void StoreTable(XFile * f);
+        static void RestoreTable(XFile * f);
 };
 
 #endif

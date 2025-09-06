@@ -25,465 +25,501 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "other_misc.h"
 
 xMAP stdmap[] = {
-{' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},
-{'.', xGREEN, "green grass", MO_NORMAL, VI_NORMAL},
-{'T', xGREEN, "large tree", MO_HARD, VI_HARD},
-{'.', xYELLOW, "sand", MO_SHARD, VI_NORMAL},
-{'#', xCYAN, "window", MO_WALL, VI_NORMAL},
-{'#', xDARKGRAY, "magma", MO_WALL, VI_WALL},
-{'#', xLIGHTGRAY, "quartz", MO_WALL, VI_WALL},
-{'.', xLIGHTGRAY, "cave floor", MO_NORMAL, VI_NORMAL},
-{'.', xLIGHTGRAY, "stone floor", MO_NORMAL, VI_NORMAL},
-{'.', xBROWN, "path", MO_NORMAL, VI_NORMAL},
-{'#', xBROWN, "wooden wall", MO_WALL, VI_WALL},
-{'#', xLIGHTGRAY, "stone wall", MO_WALL, VI_WALL},
-{'=', xLIGHTBLUE, "water", MO_WATER, VI_NORMAL},
-{'=', xBLUE, "deep water", MO_DEEPWATER, VI_NORMAL},
-{'=', xRED, "lava", MO_WATER, VI_NORMAL},
-{'^', xGREEN, "hill", MO_NORMAL, VI_NORMAL},
-{'^', xBROWN, "low mountains", MO_VHARD, VI_AHARD},
-{'^', xLIGHTGRAY, "mountains", MO_MOUNTAIN, VI_HARD},
-{'^', xWHITE, "high mountains", MO_WALL, VI_VHARD},
-{'=', xBROWN, "bridge", MO_NORMAL, VI_NORMAL},
-{'.', xYELLOW, "road", MO_NORMAL, VI_NORMAL},
-{'.', xDARKGRAY, "obsidian floor", MO_NORMAL, VI_NORMAL},
-{'X', xBROWN, "fence", MO_WALL, VI_NORMAL},
-{'.', xYELLOW, "golden floor", MO_NORMAL, VI_NORMAL},
-{'#', xWHITE, "marble wall", MO_WALL, VI_WALL},
-{'#', xDARKGRAY, "black marble wall", MO_WALL, VI_WALL},
-{'X', xYELLOW, "golden fence", MO_WALL, VI_NORMAL},
-{'0', xWHITE, "teleport circle", MO_NORMAL, VI_NORMAL},
+    {' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},
+    {'.', xGREEN, "green grass", MO_NORMAL, VI_NORMAL},
+    {'T', xGREEN, "large tree", MO_HARD, VI_HARD},
+    {'.', xYELLOW, "sand", MO_SHARD, VI_NORMAL},
+    {'#', xCYAN, "window", MO_WALL, VI_NORMAL},
+    {'#', xDARKGRAY, "magma", MO_WALL, VI_WALL},
+    {'#', xLIGHTGRAY, "quartz", MO_WALL, VI_WALL},
+    {'.', xLIGHTGRAY, "cave floor", MO_NORMAL, VI_NORMAL},
+    {'.', xLIGHTGRAY, "stone floor", MO_NORMAL, VI_NORMAL},
+    {'.', xBROWN, "path", MO_NORMAL, VI_NORMAL},
+    {'#', xBROWN, "wooden wall", MO_WALL, VI_WALL},
+    {'#', xLIGHTGRAY, "stone wall", MO_WALL, VI_WALL},
+    {'=', xLIGHTBLUE, "water", MO_WATER, VI_NORMAL},
+    {'=', xBLUE, "deep water", MO_DEEPWATER, VI_NORMAL},
+    {'=', xRED, "lava", MO_WATER, VI_NORMAL},
+    {'^', xGREEN, "hill", MO_NORMAL, VI_NORMAL},
+    {'^', xBROWN, "low mountains", MO_VHARD, VI_AHARD},
+    {'^', xLIGHTGRAY, "mountains", MO_MOUNTAIN, VI_HARD},
+    {'^', xWHITE, "high mountains", MO_WALL, VI_VHARD},
+    {'=', xBROWN, "bridge", MO_NORMAL, VI_NORMAL},
+    {'.', xYELLOW, "road", MO_NORMAL, VI_NORMAL},
+    {'.', xDARKGRAY, "obsidian floor", MO_NORMAL, VI_NORMAL},
+    {'X', xBROWN, "fence", MO_WALL, VI_NORMAL},
+    {'.', xYELLOW, "golden floor", MO_NORMAL, VI_NORMAL},
+    {'#', xWHITE, "marble wall", MO_WALL, VI_WALL},
+    {'#', xDARKGRAY, "black marble wall", MO_WALL, VI_WALL},
+    {'X', xYELLOW, "golden fence", MO_WALL, VI_NORMAL},
+    {'0', xWHITE, "teleport circle", MO_NORMAL, VI_NORMAL},
 };
 
 MAP::MAP()
 {
-	n = M_GREENGRAS;
-	pMonster = NULL;
-	pSpecialObject = NULL;
-	visible = false;
-	known = ' ';
-	color = 0;
-	place = NULL; //by default
-	room_id = 0;
+    n = M_GREENGRAS;
+    pMonster = NULL;
+    pSpecialObject = NULL;
+    visible = false;
+    known = ' ';
+    color = 0;
+    place = NULL; //by default
+    room_id = 0;
 };
 
 MAP::~MAP()
 {
-	item_list.KillAll();
-	if (pSpecialObject)
-	{
-		pSpecialObject->Invalidate();
-		pSpecialObject = NULL;
-	}
+    item_list.KillAll();
+
+    if (pSpecialObject) {
+        pSpecialObject->Invalidate();
+        pSpecialObject = NULL;
+    }
 }
 
 void MAP::Store(XFile * f)
 {
-	f->Write(&color, sizeof(char));
-	item_list.StoreList(f);
-	f->Write(&known, sizeof(char));
-	f->Write(&n, sizeof(STDMAP));
+    f->Write(&color, sizeof(char));
+    item_list.StoreList(f);
+    f->Write(&known, sizeof(char));
+    f->Write(&n, sizeof(STDMAP));
 
-	place.Store(f);
-	pSpecialObject.Store(f);
-	pMonster.Store(f);
+    place.Store(f);
+    pSpecialObject.Store(f);
+    pMonster.Store(f);
 
-	f->Write(&visible, sizeof(bool));
+    f->Write(&visible, sizeof(bool));
 }
 
 void MAP::Restore(XFile * f)
 {
-	f->Read(&color, sizeof(char));
-	item_list.RestoreList(f);
-	f->Read(&known, sizeof(char));
-	f->Read(&n, sizeof(STDMAP));
+    f->Read(&color, sizeof(char));
+    item_list.RestoreList(f);
+    f->Read(&known, sizeof(char));
+    f->Read(&n, sizeof(STDMAP));
 
-	place.Restore(f);
-	pSpecialObject.Restore(f);
-	pMonster.Restore(f);
+    place.Restore(f);
+    pSpecialObject.Restore(f);
+    pMonster.Restore(f);
 
-	f->Read(&visible, sizeof(bool));
+    f->Read(&visible, sizeof(bool));
 }
 
 XMap::XMap()
 {
-	map = NULL;
-	hgt = 0;
-	len = 0;
-	wx = 0;
-	wy = 0;
+    map = NULL;
+    hgt = 0;
+    len = 0;
+    wx = 0;
+    wy = 0;
 }
 
 XMap::XMap(int l, int h)
 {
-	map = NULL;
-	map = new MAP[l * h];
-	assert(map);
+    map = NULL;
+    map = new MAP[l * h];
+    assert(map);
 
-	hgt = h;
-	len = l;
-	wx = 0;
-	wy = 0;
+    hgt = h;
+    len = l;
+    wx = 0;
+    wy = 0;
 }
 
 XMap::~XMap()
 {
-	delete[] map;
+    delete[] map;
 }
-
 
 void XMap::ResVisible(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		map[x + y * len].visible = false;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].visible = false;
+    }
 }
 
 void XMap::SetVisible(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		map[x + y * len].visible = true;
-		map[x + y * len].color = stdmap[map[x + y * len].n].color;
-		map[x + y * len].known = stdmap[map[x + y * len].n].view;
-	}
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].visible = true;
+        map[x + y * len].color = stdmap[map[x + y * len].n].color;
+        map[x + y * len].known = stdmap[map[x + y * len].n].view;
+    }
 }
 
 bool XMap::GetVisible(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		return map[x + y * len].visible;
-	else
-		return false;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return map[x + y * len].visible;
+    } else {
+        return false;
+    }
 }
-
 
 void XMap::SetPlace(int x, int y, XAnyPlace * place)
 {
-	assert(x >= 0 && x < len && y >= 0 && y < hgt);
-	map[x + y * len].place = place;
+    assert(x >= 0 && x < len && y >= 0 && y < hgt);
+    map[x + y * len].place = place;
 }
 
-XAnyPlace * XMap::GetPlace(int x, int y)
+XAnyPlace* XMap::GetPlace(int x, int y)
 {
-	assert(x >= 0 && x < len && y >= 0 && y < hgt);
-	return map[x + y * len].place.get();
+    assert(x >= 0 && x < len && y >= 0 && y < hgt);
+    return map[x + y * len].place.get();
 }
 
 void XMap::ResKnown(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		map[x + y * len].known = 0;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].known = 0;
+    }
 }
 
 void XMap::SetKnown(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		map[x + y * len].known = 1;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].known = 1;
+    }
 }
 
 int XMap::GetKnown(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		return map[x + y * len].known;
-	else
-		return 0;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return map[x + y * len].known;
+    } else {
+        return 0;
+    }
 }
 
 void XMap::SetSpecial(int x, int y, XMapObject * spec)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		map[x + y * len].pSpecialObject = spec;
-	}
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].pSpecialObject = spec;
+    }
 }
 
-XMapObject * XMap::GetSpecial(int x, int y)
+XMapObject* XMap::GetSpecial(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		return map[x + y * len].pSpecialObject.get();
-	else
-		return NULL;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return map[x + y * len].pSpecialObject.get();
+    } else {
+        return NULL;
+    }
 }
 
 int XMap::GetVisibility(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		XMapObject * spec = map[x + y * len].pSpecialObject.get();
-		if (spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0)
-			return 0;
-		if (stdmap[map[x + y * len].n].visiable == VI_WALL)
-			return 0;
-		else
-			return 1;
-	}
-	else
-		return 0;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        XMapObject * spec = map[x + y * len].pSpecialObject.get();
+
+        if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0) {
+            return 0;
+        }
+
+        if (stdmap[map[x + y * len].n].visiable == VI_WALL) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        return 0;
+    }
 }
 
 const char* XMap::GetDescription(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		return stdmap[map[x + y * len].n].name;
-	}
-	else
-		return "";
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return stdmap[map[x + y * len].n].name;
+    } else {
+        return "";
+    }
 }
-
 
 int XMap::GetMovability(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		MAP & _map = map[x + y * len];
-		if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
-  			((XDoor *)_map.pSpecialObject.get())->isOpened == 0) return MO_WALL;
-  		return stdmap[_map.n].moveable;
-	} else
-		return MO_WALL;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        MAP & _map = map[x + y * len];
+
+        if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
+            ((XDoor*)_map.pSpecialObject.get())->isOpened == 0) {
+            return MO_WALL;
+        }
+
+        return stdmap[_map.n].moveable;
+    } else {
+        return MO_WALL;
+    }
 }
 
 int XMap::XGetMovability(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		MAP * m = &map[x + y * len];
-		if (m->pMonster) return 2;
-		XMapObject * spec = map[x + y * len].pSpecialObject.get();
-		if (stdmap[m->n].moveable < MO_UNWALKABLE
-			&& !(spec && spec->im & IM_DOOR && ((XDoor *)spec)->isOpened == 0))
-			return 0;
-		else
-			return 1;
-	} else return 1;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        MAP * m = &map[x + y * len];
+
+        if (m->pMonster) {
+            return 2;
+        }
+
+        XMapObject * spec = map[x + y * len].pSpecialObject.get();
+
+        if (stdmap[m->n].moveable < MO_UNWALKABLE
+            && !(spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0)) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        return 1;
+    }
 }
 
 void XMap::PutItem(int x, int y, XItem * item)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		item->x = x;
-		item->y = y;
-		map[x + y * len].item_list.Add(item);
-	}
-	else
-		assert(0);
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        item->x = x;
+        item->y = y;
+        map[x + y * len].item_list.Add(item);
+    } else {
+        assert(0);
+    }
 }
 
-XItemList * XMap::GetItemList(int x, int y)
+XItemList* XMap::GetItemList(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		return &map[x + y * len].item_list;
-	}
-	else
-		assert(0);
-	return NULL;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return &map[x + y * len].item_list;
+    } else {
+        assert(0);
+    }
+
+    return NULL;
 }
 
 unsigned int XMap::GetItemCount(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		return map[x + y * len].item_list.size();
-	} else
-		return 0;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return map[x + y * len].item_list.size();
+    } else {
+        return 0;
+    }
 }
 
 void XMap::SetMonster(int x, int y, XCreature * monstr)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		map[x + y * len].pMonster = monstr;
-	else
-		assert(0);
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].pMonster = monstr;
+    } else {
+        assert(0);
+    }
 }
 
 void XMap::ResMonster(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-		map[x + y * len].pMonster = NULL;
-	else
-		assert(0);
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        map[x + y * len].pMonster = NULL;
+    } else {
+        assert(0);
+    }
 }
 
-XCreature * XMap::GetMonster(int x, int y)
+XCreature* XMap::GetMonster(int x, int y)
 {
-	if (x >= 0 && x < len && y >= 0 && y < hgt)
-	{
-		return map[x + y * len].pMonster.get();
-	}
-	else
-		return NULL;
+    if (x >= 0 && x < len && y >= 0 && y < hgt) {
+        return map[x + y * len].pMonster.get();
+    } else {
+        return NULL;
+    }
 }
 
 void XMap::PutChar(int x, int y, char c, int color)
 {
-	if (x >= wx && x < wx + SCR_LEN && y >= wy && y < wy + SCR_HGT)
-		vPutCh(x - wx + SCR_X, y - wy + SCR_Y, c, color);
+    if (x >= wx && x < wx + SCR_LEN && y >= wy && y < wy + SCR_HGT) {
+        vPutCh(x - wx + SCR_X, y - wy + SCR_Y, c, color);
+    }
 }
 
 void XMap::Put(XCreature * cr)
 {
-	for (int i = 0; i < SCR_HGT && wy + i < hgt; i++)
-		for (int j = 0; j < SCR_LEN  && wx + j < len; j++)
-		{
-			MAP * tmap = &map[(i + wy) * len + j + wx];
-			if (tmap->visible)
-			{
-				if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !((XTrap *)tmap->pSpecialObject.get())->isVisible(NULL)))
-				{
-					vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
-					tmap->color = tmap->pSpecialObject->color;
-					tmap->known = tmap->pSpecialObject->view;
-				} else
-				if (!tmap->item_list.empty())
-				{
-					XItem * item = tmap->item_list.begin();
-					vPutCh(j + SCR_X, i + SCR_Y, item->view, item->color);
-					tmap->color = item->color;
-					tmap->known = item->view;
-				} else
-				{
-					//int tn = (i + wy) * len + j + wx;
-					int n = tmap->n;
-					vPutCh(j + SCR_X, i + SCR_Y, stdmap[n].view, stdmap[n].color);
-				}
-				if (tmap->pMonster && cr->isCreatureVisible(tmap->pMonster))
-				{
-					XCreature * xb = tmap->pMonster;
-					vPutCh(xb->x - wx + SCR_X, xb->y - wy + SCR_Y, xb->view, xb->color);
-				}
-			} else
-				vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
-			if (tmap->known && !tmap->visible)
-			{
-				vPutCh(j + SCR_X, i + SCR_Y, tmap->known, tmap->color);
-			}
-		}
+    for (int i = 0; i < SCR_HGT && wy + i < hgt; i++)
+        for (int j = 0; j < SCR_LEN && wx + j < len; j++) {
+            MAP * tmap = &map[(i + wy) * len + j + wx];
+
+            if (tmap->visible) {
+                if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !((XTrap*)tmap->pSpecialObject.get())->isVisible(NULL))) {
+                    vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
+                    tmap->color = tmap->pSpecialObject->color;
+                    tmap->known = tmap->pSpecialObject->view;
+                } else if (!tmap->item_list.empty()) {
+                    XItem * item = tmap->item_list.begin();
+                    vPutCh(j + SCR_X, i + SCR_Y, item->view, item->color);
+                    tmap->color = item->color;
+                    tmap->known = item->view;
+                } else {
+                    //int tn = (i + wy) * len + j + wx;
+                    int n = tmap->n;
+                    vPutCh(j + SCR_X, i + SCR_Y, stdmap[n].view, stdmap[n].color);
+                }
+
+                if (tmap->pMonster && cr->isCreatureVisible(tmap->pMonster)) {
+                    XCreature * xb = tmap->pMonster;
+                    vPutCh(xb->x - wx + SCR_X, xb->y - wy + SCR_Y, xb->view, xb->color);
+                }
+            } else {
+                vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
+            }
+
+            if (tmap->known && !tmap->visible) {
+                vPutCh(j + SCR_X, i + SCR_Y, tmap->known, tmap->color);
+            }
+        }
 }
 
 void XMap::Center(int x, int y)
 {
-	if (x <= wx + 2 || x >= wx + SCR_LEN - 2)
-	{
-		wx = x - SCR_LEN / 2;
-		if (wx + SCR_LEN > len) wx = len - SCR_LEN;
-		if (wx < 0) wx = 0;
-	}
-	if (y <= wy + 2 || y >= wy + SCR_HGT - 2)
-	{
-		wy = y - SCR_HGT / 2;
-		if (wy + SCR_HGT > hgt) wy = hgt - SCR_HGT;
-		if (wy < 0) wy = 0;
-	}
+    if (x <= wx + 2 || x >= wx + SCR_LEN - 2) {
+        wx = x - SCR_LEN / 2;
+
+        if (wx + SCR_LEN > len) {
+            wx = len - SCR_LEN;
+        }
+
+        if (wx < 0) {
+            wx = 0;
+        }
+    }
+
+    if (y <= wy + 2 || y >= wy + SCR_HGT - 2) {
+        wy = y - SCR_HGT / 2;
+
+        if (wy + SCR_HGT > hgt) {
+            wy = hgt - SCR_HGT;
+        }
+
+        if (wy < 0) {
+            wy = 0;
+        }
+    }
 }
 
 void XMap::SetXY(int x, int y, STDMAP stdm)
 {
-	assert(x >= 0 && x < len);
-	assert(y >= 0 && y < hgt);
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-	map[x + y * len].n = stdm;
+    map[x + y * len].n = stdm;
 }
 
 STDMAP XMap::GetXY(int x, int y)
 {
-	assert(x >= 0 && x < len);
-	assert(y >= 0 && y < hgt);
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-	return map[x + y * len].n;
+    return map[x + y * len].n;
 }
 
 
 void XMap::SetRoom(int x, int y, int room_id)
 {
-	assert(x >= 0 && x < len);
-	assert(y >= 0 && y < hgt);
-	map[x + y * len].room_id = room_id;
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+    map[x + y * len].room_id = room_id;
 }
 
 int XMap::GetRoom(int x, int y)
 {
-	assert(x >= 0 && x < len);
-	assert(y >= 0 && y < hgt);
-	return map[x + y * len].room_id;
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+    return map[x + y * len].room_id;
 }
 
 void XMap::CreateRoom(int x, int y, int l, int h, int px, int py, STDMAP m1, STDMAP m2)
 {
-	CreateRoom(x, y, l, h, m1, m2);
-	SetXY(px, py, m1);
+    CreateRoom(x, y, l, h, m1, m2);
+    SetXY(px, py, m1);
 }
 
 void XMap::CreateRoom(int x, int y, int l, int h, STDMAP m1, STDMAP m2)
 {
-	for (int i = 0; i < l; i++)
-		for (int j = 0; j < h; j++)
-		{
-			if (i == 0 || i == l - 1 || j == 0 || j == h - 1)
-			{
-				SetXY(i + x, j + y, m2);
-			}
-			else
-				SetXY(i + x, j + y, m1);
-
-		}
+    for (int i = 0; i < l; i++)
+        for (int j = 0; j < h; j++) {
+            if (i == 0 || i == l - 1 || j == 0 || j == h - 1) {
+                SetXY(i + x, j + y, m2);
+            } else {
+                SetXY(i + x, j + y, m1);
+            }
+        }
 }
 
 void XMap::Store(XFile * f)
 {
-	f->Write(&len, sizeof(int));
-	f->Write(&hgt, sizeof(int));
+    f->Write(&len, sizeof(int));
+    f->Write(&hgt, sizeof(int));
 
-	for (int i = 0; i < hgt; i++)
-		for (int j = 0; j < len; j++)
-			map[j + i * len].Store(f);
+    for (int i = 0; i < hgt; i++)
+        for (int j = 0; j < len; j++) {
+            map[j + i * len].Store(f);
+        }
 }
 
 void XMap::Restore(XFile * f)
 {
-	f->Read(&len, sizeof(int));
-	f->Read(&hgt, sizeof(int));
-	map = new MAP[len * hgt];
+    f->Read(&len, sizeof(int));
+    f->Read(&hgt, sizeof(int));
+    map = new MAP[len * hgt];
 
-	for (int i = 0; i < hgt; i++)
-		for (int j = 0; j < len; j++)
-			map[j + i * len].Restore(f);
+    for (int i = 0; i < hgt; i++)
+        for (int j = 0; j < len; j++) {
+            map[j + i * len].Restore(f);
+        }
 
 }
 
 void XMap::Dump(FILE * f)
 {
-	for (int i = 0; i < hgt; i++)
-	{
-		for (int j = 0; j < len; j++)
-		{
-			MAP * tmap = &map[i * len + j];
-			int n = tmap->n;
-			char vch = stdmap[n].view;
+    for (int i = 0; i < hgt; i++) {
+        for (int j = 0; j < len; j++) {
+            MAP * tmap = &map[i * len + j];
+            int n = tmap->n;
+            char vch = stdmap[n].view;
 
-			if (tmap->pSpecialObject)
-				vch = tmap->pSpecialObject->view;
+            if (tmap->pSpecialObject) {
+                vch = tmap->pSpecialObject->view;
+            }
 
-			if (!tmap->item_list.empty())
-				vch = tmap->item_list.begin()->view;
+            if (!tmap->item_list.empty()) {
+                vch = tmap->item_list.begin()->view;
+            }
 
-			if (tmap->pMonster)
-				vch = tmap->pMonster->view;
+            if (tmap->pMonster) {
+                vch = tmap->pMonster->view;
+            }
 
-			fprintf(f, "%c", vch);
-		}
-		fprintf(f, "\n");
-	}
+            fprintf(f, "%c", vch);
+        }
+
+        fprintf(f, "\n");
+    }
 }
 
 void XMap::ForceRecenter(int x, int y)
 {
-	wx = x - SCR_LEN / 2;
-	if (wx + SCR_LEN > len) wx = len - SCR_LEN;
-	if (wx < 0) wx = 0;
-	wy = y - SCR_HGT / 2;
-	if (wy + SCR_HGT > hgt) wy = hgt - SCR_HGT;
-	if (wy < 0) wy = 0;
+    wx = x - SCR_LEN / 2;
+
+    if (wx + SCR_LEN > len) {
+        wx = len - SCR_LEN;
+    }
+
+    if (wx < 0) {
+        wx = 0;
+    }
+
+    wy = y - SCR_HGT / 2;
+
+    if (wy + SCR_HGT > hgt) {
+        wy = hgt - SCR_HGT;
+    }
+
+    if (wy < 0) {
+        wy = 0;
+    }
 }

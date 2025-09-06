@@ -24,17 +24,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xenhance.h"
 class XRing : public XEnhance
 {
-public:
-	DECLARE_CREATOR(XRing, XEnhance);
-	XRing(ENHANCE enh = ENH_EOF);
-	XRing(XRing * copy) : XEnhance((XEnhance *)copy) {}
-	virtual int isIdentifed();
-	virtual void Identify(int level);
-	virtual XObject * MakeCopy() { return new XRing(this); }
-	static void StoreTable(XFile * f);
-	static void RestoreTable(XFile * f);
+    public:
+        DECLARE_CREATOR(XRing, XEnhance);
+        XRing(ENHANCE enh = ENH_EOF);
+        XRing(XRing * copy) : XEnhance((XEnhance*)copy) {}
 
+        virtual int isIdentifed();
+        virtual void Identify(int level);
+        virtual XObject* MakeCopy()
+        {
+            return new XRing(this);
+        }
 
+        static void StoreTable(XFile * f);
+        static void RestoreTable(XFile * f);
 };
 
 #endif

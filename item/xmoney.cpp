@@ -24,34 +24,34 @@ REGISTER_CLASS(XMoney);
 
 XMoney::XMoney(int _quantity)
 {
-	assert(_quantity > 0);
-	quantity = _quantity;
+    assert(_quantity > 0);
+    quantity = _quantity;
 
-	im = IM_MONEY;
-	view = '$';
-	color = xYELLOW;
-	it = IT_MONEY;
-	value = 1;
+    im = IM_MONEY;
+    view = '$';
+    color = xYELLOW;
+    it = IT_MONEY;
+    value = 1;
 }
 
-void XMoney::toString(char * buf)
+void XMoney::toString(char* buf)
 {
 
-	if (quantity == 1)
-		sprintf(buf, "one golden coin");
-	else
-		sprintf(buf, "%d golden coins", quantity, name);
+    if (quantity == 1) {
+        sprintf(buf, "one golden coin");
+    } else {
+        sprintf(buf, "%d golden coins", quantity, name);
+    }
 }
 
 int XMoney::Compare(XObject * o)
 {
-	XMoney * tit;
- 	if (!(tit = dynamic_cast<XMoney *>(o)))
- 	{
- 		return XItem::Compare(o);
-	} else
-	{
-		return 0;
-	}
+    XMoney * tit;
+
+    if (!(tit = dynamic_cast<XMoney*>(o))) {
+        return XItem::Compare(o);
+    } else {
+        return 0;
+    }
 
 }

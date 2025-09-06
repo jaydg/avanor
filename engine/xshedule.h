@@ -30,21 +30,35 @@ class XMapObject;
 
 class XScheduler
 {
-	long _time, head;
-	XList<XObject*> data[XSCHEDULER_STEPS_AHEAD];
-	void Place(XObject * p);
-public:
-	XScheduler() : head(0), _time(0) { }
-	~XScheduler() { while(Get()) Remove(); }
-	void         SetTime(long t) { _time = t; }
-	long         GetTime() { return _time; }
+        long _time, head;
+        XList<XObject*> data[XSCHEDULER_STEPS_AHEAD];
+        void Place(XObject * p);
+    public:
+        XScheduler() : head(0), _time(0) { }
 
-	void         Add(XObject * p);
-	XObject * Get();
-	XObject * Remove();
+        ~XScheduler()
+        {
+            while (Get()) {
+                Remove();
+            }
+        }
 
-	void         Store(XFile * f);
-	void         Restore(XFile * f);
+        void SetTime(long t)
+        {
+            _time = t;
+        }
+
+        long GetTime()
+        {
+            return _time;
+        }
+
+        void Add(XObject * p);
+        XObject* Get();
+        XObject* Remove();
+
+        void Store(XFile * f);
+        void Restore(XFile * f);
 };
 
 #endif

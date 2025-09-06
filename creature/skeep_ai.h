@@ -27,37 +27,45 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XCreature;
 
-struct SHOP_DEBT
-{
-	XPtr<XCreature> debtor;
-	double debtor_sum;
-	double debtor_add_value;
-	int turn_count; //after some turns after debtor leave a shop - debtors can't by nothing
-	int debtor_leave_shop;
-	XList<XItem *> item_list; //picked but not payed items;
+struct SHOP_DEBT {
+    XPtr<XCreature> debtor;
+    double debtor_sum;
+    double debtor_add_value;
+    int turn_count; //after some turns after debtor leave a shop - debtors can't by nothing
+    int debtor_leave_shop;
+    XList<XItem*> item_list; //picked but not payed items;
 };
 
 class XShopKeeperAI : public XStandardAI
 {
-protected:	
-	XShopKeeperAI() {}
-public:
-	DECLARE_CREATOR(XShopKeeperAI, XStandardAI);
-	XShopKeeperAI(XCreature * shoopkeeper, XShop * _shop);
-	virtual void Invalidate();
-	virtual void Move();
-	virtual void onCreatureEnterShop(XCreature * customer);
-	virtual void onCreatureLeaveShop(XCreature * customer);
-	virtual int onAnyonePickItem(XCreature * customer, XItem * item);
-	virtual int onAnyoneDropItem(XCreature * customer, XItem * item);
-	virtual int onGiveItem(XCreature * giver, XItem * item);
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-	void SetShop(XShop * _shop) { shop = _shop; }
-	const XPtr<XShop> & GetShop() { return shop; }
-	SHOP_DEBT debt;
-protected:
-	XPtr<XShop> shop;
+    protected:
+        XShopKeeperAI() {}
+
+    public:
+        DECLARE_CREATOR(XShopKeeperAI, XStandardAI);
+        XShopKeeperAI(XCreature * shoopkeeper, XShop * _shop);
+        virtual void Invalidate();
+        virtual void Move();
+        virtual void onCreatureEnterShop(XCreature * customer);
+        virtual void onCreatureLeaveShop(XCreature * customer);
+        virtual int onAnyonePickItem(XCreature * customer, XItem * item);
+        virtual int onAnyoneDropItem(XCreature * customer, XItem * item);
+        virtual int onGiveItem(XCreature * giver, XItem * item);
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+        void SetShop(XShop * _shop)
+        {
+            shop = _shop;
+        }
+
+        const XPtr<XShop> &GetShop()
+        {
+            return shop;
+        }
+
+        SHOP_DEBT debt;
+    protected:
+        XPtr<XShop> shop;
 };
 
 #endif

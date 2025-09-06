@@ -32,49 +32,46 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XMap;
 
-enum RANDOM_CAVE_TYPE
-{
-	RCT_SIMPLE1 = 0,
-	RCT_SIMPLE2,
-	RCT_SIMPLE3,
-	RCT_SIMPLE4,
-	RCT_USUAL, //just a simple random XY cave
+enum RANDOM_CAVE_TYPE {
+    RCT_SIMPLE1 = 0,
+    RCT_SIMPLE2,
+    RCT_SIMPLE3,
+    RCT_SIMPLE4,
+    RCT_USUAL, //just a simple random XY cave
 };
 
-enum CAVE_FLAGS
-{
-	CREATE_RANDOM_TRAP_ON_CHEST		= 0x00000001,
-	CREATE_TRAP_ON_CHEST			= 0x00000002,
-	CREATE_GUARD_ON_ROOM			= 0x00000004,
-
+enum CAVE_FLAGS {
+    CREATE_RANDOM_TRAP_ON_CHEST	= 0x00000001,
+    CREATE_TRAP_ON_CHEST	= 0x00000002,
+    CREATE_GUARD_ON_ROOM	= 0x00000004,
 };
 
-struct CAVE_DATA
-{
-	int width;
-	int height;
-	unsigned int cf;
-	int freq;
-	const char* cave;
+struct CAVE_DATA {
+    int width;
+    int height;
+    unsigned int cf;
+    int freq;
+    const char* cave;
 
-	bool isExit(int x, int y);
-	char GetCode(int x, int y);
+    bool isExit(int x, int y);
+    char GetCode(int x, int y);
 };
 
 class XCave
 {
-	RANDOM_CAVE_TYPE rct;
-	int map_len;
-	int map_hgt;
-public:
-	XRect r;
-	XQList<XPoint> exits;
-	XCave(int len, int hgt, bool isAllowSpecialRooms);
-	int Intersect(XCave * xc, int dist);
-	void Draw(XLocation * l);
-	~XCave() { }
-	bool GetFreeExit(XPoint * pt);
-    int Compare(XObject * o);
+        RANDOM_CAVE_TYPE rct;
+        int map_len;
+        int map_hgt;
+    public:
+        XRect r;
+        XQList<XPoint> exits;
+        XCave(int len, int hgt, bool isAllowSpecialRooms);
+        int Intersect(XCave * xc, int dist);
+        void Draw(XLocation * l);
+        ~XCave() { }
+
+        bool GetFreeExit(XPoint * pt);
+        int Compare(XObject * o);
 };
 
 #endif

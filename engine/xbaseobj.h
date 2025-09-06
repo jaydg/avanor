@@ -26,31 +26,29 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "resist.h"
 #include "stats.h"
 
-
 class XBaseObject : public XMapObject
 {
-public:
-	DECLARE_CREATOR(XBaseObject, XMapObject);
-	XBaseObject();
-	virtual void Invalidate();
-	XBaseObject(XBaseObject * copy);
-	~XBaseObject();
+    public:
+        DECLARE_CREATOR(XBaseObject, XMapObject);
+        XBaseObject();
+        virtual void Invalidate();
+        XBaseObject(XBaseObject * copy);
+        ~XBaseObject();
 
-	int _DV, _PV, _HIT, RNG;
-	int _HP, _PP;
-	int MAX_HP;
-	int MAX_PP;
+        int _DV, _PV, _HIT, RNG;
+        int _HP, _PP;
+        int MAX_HP;
+        int MAX_PP;
 
-	int weight;
-	XDice dice;
-	virtual int Compare(XObject * o);
+        int weight;
+        XDice dice;
+        virtual int Compare(XObject * o);
 
-	XResistance * r;
-	XStats * s;
+        XResistance* r;
+        XStats* s;
 
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
 };
 
 #endif

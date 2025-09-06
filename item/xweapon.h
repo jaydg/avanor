@@ -23,23 +23,27 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item.h"
 
-struct _WEAPON_BIND
-{
-	ITEM_TYPE it;
-	WSK_TYPE ws;
+struct _WEAPON_BIND {
+    ITEM_TYPE it;
+    WSK_TYPE ws;
 };
 
 class XWeapon : public XItem
 {
-public:
-	DECLARE_CREATOR(XWeapon, XItem);
-	XWeapon(ITEM_TYPE it = IT_RANDOM);
-	XWeapon(XWeapon * copy) : XItem((XItem *)copy) {}
-	virtual XObject * MakeCopy() { return new XWeapon(this); }
-	int BindWeapon();
-	virtual void toString(char * buf);
-protected:
-	const char* GetTemplate(unsigned int mask, int isRight = 1);
+    public:
+        DECLARE_CREATOR(XWeapon, XItem);
+        XWeapon(ITEM_TYPE it = IT_RANDOM);
+        XWeapon(XWeapon * copy) : XItem((XItem*)copy) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XWeapon(this);
+        }
+
+        int BindWeapon();
+        virtual void toString(char* buf);
+    protected:
+        const char* GetTemplate(unsigned int mask, int isRight = 1);
 };
 
 #endif

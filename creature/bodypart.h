@@ -30,30 +30,38 @@ class XCreature;
 
 class XBodyPart : public XObject
 {
-	XPtr<XItem>     item; 	//main item for this body part;
-   XPtr<XCreature> owner;
-	XBodyPart() {}
-public:
-	DECLARE_CREATOR(XBodyPart, XObject);
-	XBodyPart(XCreature * _owner, BODYPART bp);
-	virtual void Invalidate();
-	const char* GetName();
-	static const char* XGetName(BODYPART bp);
-	static void Create(XCreature * cr, const char * str);
-	int Compare(XObject * o) { return 1; }
+        XPtr<XItem> item;	//main item for this body part;
+        XPtr<XCreature> owner;
+        XBodyPart() {}
 
-	int Fit(BODYPART bp) { return (bp == bp_uin); }
-	BODYPART bp_uin;
+    public:
+        DECLARE_CREATOR(XBodyPart, XObject);
+        XBodyPart(XCreature * _owner, BODYPART bp);
+        virtual void Invalidate();
+        const char* GetName();
+        static const char* XGetName(BODYPART bp);
+        static void Create(XCreature * cr, const char* str);
+        int Compare(XObject * o)
+        {
+            return 1;
+        }
 
-	XItem * Item();
-   int     Wear(XItem * item);
-   XItem * UnWear();
+        int Fit(BODYPART bp)
+        {
+            return (bp == bp_uin);
+        }
 
-	int GetPartSize();
-	ITEM_MASK GetProperIM();
+        BODYPART bp_uin;
 
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
+        XItem* Item();
+        int Wear(XItem * item);
+        XItem* UnWear();
+
+        int GetPartSize();
+        ITEM_MASK GetProperIM();
+
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
 };
 
 #endif

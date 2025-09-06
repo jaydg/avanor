@@ -26,19 +26,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XSkills
 {
-public:
-	XSkills() {}
-	~XSkills() {}
+    public:
+        XSkills() {}
 
-	int GetLevel(SKILL_TYPE skt);
-	void UseSkill(SKILL_TYPE skt, int n = 1);
-	XSkill * GetSkill(SKILL_TYPE skt);
-	void Learn(SKILL_TYPE skt, int level = 1);
+        ~XSkills() {}
 
-	XSortedList<XSkill *> skills;
+        int GetLevel(SKILL_TYPE skt);
+        void UseSkill(SKILL_TYPE skt, int n = 1);
+        XSkill* GetSkill(SKILL_TYPE skt);
+        void Learn(SKILL_TYPE skt, int level = 1);
 
-	void Store(XFile * f);
-	void Restore(XFile * f);
+        XSortedList<XSkill*> skills;
+
+        void Store(XFile * f);
+        void Restore(XFile * f);
 };
 
 #endif

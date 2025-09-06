@@ -22,36 +22,35 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XShield);
 
-_MAIN_ITEM_STRUCT SHIELD_STRUCT[] =
-{
+_MAIN_ITEM_STRUCT SHIELD_STRUCT[] = {
 
-{IT_SMALLSHIELD,"small shield",	')',	"0d0+2",	"1d2",	"",		"1d2",	"",	"",		ISET_SHIELD, 	3,		3,	200,	IQ_POOR,	""},
-{IT_MEDIUMSHIELD,"medium shield",')',	"0d0+3",	"1d2",	"",		"1d3",	"",	"",		ISET_SHIELD, 	5,		5,	100,	IQ_AVG,		""},
-{IT_LARGESHIELD,"large shield",	')',	"0d0+4",	"1d2",	"",		"1d4",	"",	"",		ISET_SHIELD, 	10,		8,	50,		IQ_AVG,		""},
-{IT_TOWERSHIELD,"tower shield",	')',	"0d0+6",	"1d2",	"",		"1d4",	"",	"",		ISET_SHIELD, 	15,		15,	10,		IQ_FAIR,	""}
+    {IT_SMALLSHIELD, "small shield",	')',	"0d0+2",	"1d2",	"",	"1d2",	"",	"",	ISET_SHIELD,	3,	3,	200,	IQ_POOR,	""},
+    {IT_MEDIUMSHIELD, "medium shield", ')',	"0d0+3",	"1d2",	"",	"1d3",	"",	"",	ISET_SHIELD,	5,	5,	100,	IQ_AVG,	""},
+    {IT_LARGESHIELD, "large shield",	')',	"0d0+4",	"1d2",	"",	"1d4",	"",	"",	ISET_SHIELD,	10,	8,	50,	IQ_AVG,	""},
+    {IT_TOWERSHIELD, "tower shield",	')',	"0d0+6",	"1d2",	"",	"1d4",	"",	"",	ISET_SHIELD,	15,	15,	10,	IQ_FAIR,	""}
 };
 
 XItemBasicStructure gi_shield(SHIELD_STRUCT, 4);
 
 XShield::XShield(ITEM_TYPE _it)
 {
-	im = IM_SHIELD;
-	BasicFill(_it, &gi_shield);
-	_PV = 0;
-	bp = BP_HAND;
-	RNG = 0;
-	wt = WSK_SHIELD;
-	dice.Z = 0;
-	_HIT = 0;
+    im = IM_SHIELD;
+    BasicFill(_it, &gi_shield);
+    _PV = 0;
+    bp = BP_HAND;
+    RNG = 0;
+    wt = WSK_SHIELD;
+    dice.Z = 0;
+    _HIT = 0;
 }
 
-void XShield::toString(char * buf)
+void XShield::toString(char* buf)
 {
-	GetFullName(buf);
+    GetFullName(buf);
     char tbuf[256];
 
-	sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-	strcat(buf, tbuf);
+    sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
+    strcat(buf, tbuf);
 
     StatsToString(tbuf);
     strcat(buf, tbuf);

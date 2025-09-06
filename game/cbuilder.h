@@ -28,14 +28,14 @@ class XLocation;
 
 class XCaveBuilder
 {
-	bool isCreateDoorTrapChest;
-public:
-	XMap * m;
-	XLocation * location;
-	XCaveBuilder(XLocation * _l, int create_door_trap_chest = 1);
-	void Build();
-	bool Link(XPoint * p1, XPoint * p2);
-	void CreateDoors();
+        bool isCreateDoorTrapChest;
+    public:
+        XMap* m;
+        XLocation* location;
+        XCaveBuilder(XLocation * _l, int create_door_trap_chest = 1);
+        void Build();
+        bool Link(XPoint * p1, XPoint * p2);
+        void CreateDoors();
 };
 
 #endif

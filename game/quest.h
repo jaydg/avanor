@@ -28,92 +28,90 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XFile;
 class XCreature;
 
-enum QUEST
-{
-	Q_UNKNOWN	= 0,
-	Q_KNOWN		= 1,
-	Q_COMPLETE	= 2,
-	Q_CLOSED	= 3,
-	Q_FAIL		= 4,
+enum QUEST {
+    Q_UNKNOWN	= 0,
+    Q_KNOWN	= 1,
+    Q_COMPLETE	= 2,
+    Q_CLOSED	= 3,
+    Q_FAIL	= 4,
 };
 
-struct QUEST_REC
-{
-	XStr know;
-	XStr complete;
-	XStr closed;
-	QUEST status;
-	int quest_id;
+struct QUEST_REC {
+    XStr know;
+    XStr complete;
+    XStr closed;
+    QUEST status;
+    int quest_id;
 };
 
 class XQuest
 {
-public:
-	XQuest()
-	{
-		beelzvile_killed = 0;
-		beelzvile_ordered = 0;
-		hero_die = 0;
-		hero_win = 0;
-		orcs_killed = 0;
-		total_orcs_killed = 0;
-		guards_get_orc_slay = 0;
-		yohjishiro_it_quest = IT_UNKNOWN;
-		ahk_ulan_ordered = 0;
-		ahk_ulan_killed = 0;
-		ahk_ulan_quest = 0;
-		roderick_ordered = 0;
-		roderick_killed = 0;
-		roderick_quest = 0;
-		roderick_quest2 = 0;
-		torin_quest = 0;
-		rotmoth_status = 0;
-	};
+    public:
+        XQuest()
+        {
+            beelzvile_killed = 0;
+            beelzvile_ordered = 0;
+            hero_die = 0;
+            hero_win = 0;
+            orcs_killed = 0;
+            total_orcs_killed = 0;
+            guards_get_orc_slay = 0;
+            yohjishiro_it_quest = IT_UNKNOWN;
+            ahk_ulan_ordered = 0;
+            ahk_ulan_killed = 0;
+            ahk_ulan_quest = 0;
+            roderick_ordered = 0;
+            roderick_killed = 0;
+            roderick_quest = 0;
+            roderick_quest2 = 0;
+            torin_quest = 0;
+            rotmoth_status = 0;
+        };
 
-	XQList<QUEST_REC *> quests;
+        XQList<QUEST_REC*> quests;
 
-	void ShowQuests();
+        void ShowQuests();
 
-	int beelzvile_killed;
-	int beelzvile_ordered;
+        int beelzvile_killed;
+        int beelzvile_ordered;
 
-	int ahk_ulan_ordered;
-	int ahk_ulan_killed;
+        int ahk_ulan_ordered;
+        int ahk_ulan_killed;
 
-	int ahk_ulan_quest;
+        int ahk_ulan_quest;
 
-	int roderick_ordered;
-	int roderick_killed;
-	int roderick_quest;
-	int roderick_quest2;
+        int roderick_ordered;
+        int roderick_killed;
+        int roderick_quest;
+        int roderick_quest2;
 
-	int orcs_killed;
-	int total_orcs_killed;
+        int orcs_killed;
+        int total_orcs_killed;
 
-	int guards_get_orc_slay;
+        int guards_get_orc_slay;
 
-	int torin_quest;
+        int torin_quest;
 
-	ITEM_TYPE yohjishiro_it_quest;
+        ITEM_TYPE yohjishiro_it_quest;
 
-	XPtr<XCreature> kidnapped_girl;
-	int rotmoth_status; //0 - initial, 1 - killed, 2 - payed;
-	int kidnapped_girl_status;
+        XPtr<XCreature> kidnapped_girl;
+        int rotmoth_status; // 0 - initial, 1 - killed, 2 - payed;
+        int kidnapped_girl_status;
 
-	static XQuest quest;
+        static XQuest quest;
 
-	int hero_die;
-	int hero_win;
+        int hero_die;
+        int hero_win;
 
 
-	static void Take(int id);
-	static void Complete(int id);
-	static void Close(int id);
-	static QUEST Status(int id);
-	static QUEST_REC * Find(int id);
+        static void Take(int id);
+        static void Complete(int id);
+        static void Close(int id);
+        static QUEST Status(int id);
+        static QUEST_REC* Find(int id);
 
-	void Store(XFile * f);
-	void Restore(XFile * f);
+        void Store(XFile * f);
+        void Restore(XFile * f);
 };
 
 #endif

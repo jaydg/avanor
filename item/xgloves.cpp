@@ -22,26 +22,25 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XGloves);
 
-_MAIN_ITEM_STRUCT GLOVES_STRUCT[] =
-{
+_MAIN_ITEM_STRUCT GLOVES_STRUCT[] = {
 
-{IT_GLOVES,		"gloves", 		']',	"1d2",		"1d2",		"1d3",		"1d1",	"1d1",	"1d2-1",ISET_ALLLEATHER,	2,		1,	100,	IQ_AVG,	""},
-{IT_GAUNTLETS,	"gauntlets", 	']',	"1d3+1",	"1d3+1",	"1d3+1",	"1d1",	"1d2",	"1d3-1",ISET_ALLMETAL,		3,		1,	10,		IQ_FAIR,""},
-{IT_KNUCKLES,	"knuckles", 	']',	"1d2+1",	"1d2+1",	"1d2-1",	"1d1",	"1d3",	"1d2+2",ISET_HARDMETAL,		4,		1,	10,		IQ_GOOD,""}
+    {IT_GLOVES,	"gloves",	']',	"1d2",	"1d2",	"1d3",	"1d1",	"1d1",	"1d2-1", ISET_ALLLEATHER,	2,	1,	100,	IQ_AVG,	""},
+    {IT_GAUNTLETS,	"gauntlets",	']',	"1d3+1",	"1d3+1",	"1d3+1",	"1d1",	"1d2",	"1d3-1", ISET_ALLMETAL,	3,	1,	10,	IQ_FAIR, ""},
+    {IT_KNUCKLES,	"knuckles",	']',	"1d2+1",	"1d2+1",	"1d2-1",	"1d1",	"1d3",	"1d2+2", ISET_HARDMETAL,	4,	1,	10,	IQ_GOOD, ""}
 };
 
 XItemBasicStructure gi_gloves(GLOVES_STRUCT, 3);
 
 XGloves::XGloves(ITEM_TYPE it)
 {
-	im = IM_GLOVES;
-	BasicFill(it, &gi_gloves);
-	bp = BP_GLOVES;
-	dice.Z = 0;
-	RNG = 0;
+    im = IM_GLOVES;
+    BasicFill(it, &gi_gloves);
+    bp = BP_GLOVES;
+    dice.Z = 0;
+    RNG = 0;
 }
 
-XGloves::XGloves(XGloves * gloves) : XClothe((XClothe *)gloves)
+XGloves::XGloves(XGloves * gloves) : XClothe((XClothe*)gloves)
 {
 }
 

@@ -29,44 +29,77 @@ class XLocation;
 
 class XMapObject : public XObject
 {
-public:
-	XPtr<XLocation> l;
-	char name[50];
+    public:
+        XPtr<XLocation> l;
+        char name[50];
 
-	DECLARE_CREATOR(XMapObject, XObject);
-	XMapObject();
-	XMapObject(XMapObject * copy);
-	virtual XObject * MakeCopy() { return new XMapObject(this); }
-	virtual void Invalidate();
+        DECLARE_CREATOR(XMapObject, XObject);
+        XMapObject();
+        XMapObject(XMapObject * copy);
+        virtual XObject* MakeCopy()
+        {
+            return new XMapObject(this);
+        }
 
-	int x, y; //co-ordinates of any object
-	int nx, ny; //used for new turn;
+        virtual void Invalidate();
 
-	char view; //char-represent view of object
-	int color;
+        int x, y; //co-ordinates of any object
+        int nx, ny; //used for new turn;
+
+        char view; //char-represent view of object
+        int color;
 
 
-	virtual int Compare(XObject * o);
+        virtual int Compare(XObject * o);
 
 
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-	virtual void toString(char * buf){};
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+        virtual void toString(char* buf) {};
 
-	bool SetLocation(XLocation * new_l);
+        bool SetLocation(XLocation * new_l);
 
-	virtual bool isVisible() { return l->map->GetVisible(x, y); }
-	virtual int onOuterUse(XCreature * user) { return 0; }
+        virtual bool isVisible()
+        {
+            return l->map->GetVisible(x, y);
+        }
 
-	void SetName(const char * _name) { strcpy(name, _name); }
-	void SetView(char v, int c) { view = v; color = c; }
+        virtual int onOuterUse(XCreature * user)
+        {
+            return 0;
+        }
 
-	virtual const char * GetName(XCreature * viewer) { return name; }
+        void SetName(const char* _name)
+        {
+            strcpy(name, _name);
+        }
 
-	int isInVisibleArea() { return l->map->GetVisible(x, y); } //check if object is in visible are to write Someone hits your etc.
-	int isVisibleArea(int x, int y) { return l->map->GetVisible(x, y); }  //cheks, if this area is visible
+        void SetView(char v, int c)
+        {
+            view = v;
+            color = c;
+        }
 
-	virtual XObject * Pick(XCreature * picker) { return NULL; } //some objects (eg. Herbs) can be picked up.
+        virtual const char* GetName(XCreature * viewer)
+        {
+            return name;
+        }
+
+        int isInVisibleArea()
+        {
+            return l->map->GetVisible(x, y); //check if object is in visible are to write Someone hits your etc.
+        }
+
+        int isVisibleArea(int x, int y)
+        {
+            return l->map->GetVisible(x, y); //cheks, if this area is visible
+        }
+
+        virtual XObject* Pick(XCreature * picker)
+        {
+            return NULL; //some objects (eg. Herbs) can be picked up.
+        }
 
 };
+
 #endif

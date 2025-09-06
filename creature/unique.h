@@ -23,62 +23,55 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "anycr.h"
 
-
 class XBeelzvile : public XAnyCreature
 {
-	XBeelzvile() {}
-public:
-	DECLARE_CREATOR(XBeelzvile, XAnyCreature);
-	XBeelzvile(_CREATURE * cr);
-	virtual void NewMove();
-	virtual void Move();
+        XBeelzvile() {}
+
+    public:
+        DECLARE_CREATOR(XBeelzvile, XAnyCreature);
+        XBeelzvile(_CREATURE * cr);
+        virtual void NewMove();
+        virtual void Move();
 };
-
-
 
 class XGefeon : public XAnyCreature
 {
-protected:
-	XGefeon() {}
-public:
-	DECLARE_CREATOR(XGefeon, XAnyCreature);
-	XGefeon(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, const char* msg);
-};
+    protected:
+        XGefeon() {}
 
+    public:
+        DECLARE_CREATOR(XGefeon, XAnyCreature);
+        XGefeon(_CREATURE * cr);
+        virtual int Chat(XCreature * chatter, const char* msg);
+};
 
 class XAhkUlan : public XAnyCreature
 {
-protected:
-	XAhkUlan() {}
-public:
-	DECLARE_CREATOR(XAhkUlan, XAnyCreature);
-	XAhkUlan(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, const char* msg);
-	virtual void Die(XCreature * killer);
-	virtual int onGiveItem(XCreature * giver, XItem * item);
+    protected:
+        XAhkUlan() {}
+
+    public:
+        DECLARE_CREATOR(XAhkUlan, XAnyCreature);
+        XAhkUlan(_CREATURE * cr);
+        virtual int Chat(XCreature * chatter, const char* msg);
+        virtual void Die(XCreature * killer);
+        virtual int onGiveItem(XCreature * giver, XItem * item);
 };
-
-
-
-
 
 class XShop;
 
-
 class XRoderick : public XAnyCreature
 {
-protected:
-	XRoderick() {}
-public:
-	DECLARE_CREATOR(XRoderick, XAnyCreature);
-	XRoderick(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, const char* msg);
-	virtual void Die(XCreature * killer);
-	virtual int onGiveItem(XCreature * giver, XItem * item);
+    protected:
+        XRoderick() {}
+
+    public:
+        DECLARE_CREATOR(XRoderick, XAnyCreature);
+        XRoderick(_CREATURE * cr);
+        virtual int Chat(XCreature * chatter, const char* msg);
+        virtual void Die(XCreature * killer);
+        virtual int onGiveItem(XCreature * giver, XItem * item);
 };
-
-
 
 class XRandomMonster : public XAnyCreature
 {
@@ -87,82 +80,86 @@ class XRandomMonster : public XAnyCreature
 
 class XHighPriest : public XAnyCreature
 {
-protected:
-	XHighPriest() {}
-public:
-	DECLARE_CREATOR(XHighPriest, XAnyCreature);
-	XHighPriest(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, const char* msg);
-	virtual void Die(XCreature * killer);
-	virtual int onGiveItem(XCreature * giver, XItem * item);
-};
+    protected:
+        XHighPriest() {}
 
+    public:
+        DECLARE_CREATOR(XHighPriest, XAnyCreature);
+        XHighPriest(_CREATURE * cr);
+        virtual int Chat(XCreature * chatter, const char* msg);
+        virtual void Die(XCreature * killer);
+        virtual int onGiveItem(XCreature * giver, XItem * item);
+};
 
 class XRotmoth : public XAnyCreature
 {
-protected:
-	XRotmoth() {}
-public:
-	DECLARE_CREATOR(XRotmoth, XAnyCreature);
-	XRotmoth(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, const char* msg);
+    protected:
+        XRotmoth() {}
+
+    public:
+        DECLARE_CREATOR(XRotmoth, XAnyCreature);
+        XRotmoth(_CREATURE * cr);
+        virtual int Chat(XCreature * chatter, const char* msg);
 };
 
 class XRotmothAI : public XStandardAI
 {
-protected:
-	XRotmothAI() {}
-public:
-	DECLARE_CREATOR(XRotmothAI, XStandardAI);
-	XRotmothAI(XCreature * cr) : XStandardAI(cr) {}
-	void onWasAttacked(XCreature * attacker);
+    protected:
+        XRotmothAI() {}
+
+    public:
+        DECLARE_CREATOR(XRotmothAI, XStandardAI);
+        XRotmothAI(XCreature * cr) : XStandardAI(cr) {}
+
+        void onWasAttacked(XCreature * attacker);
 };
-
-
 
 class XGiana : public XAnyCreature
 {
-protected:
-	XGiana() {}
-public:
-	DECLARE_CREATOR(XGiana, XAnyCreature);
-	XGiana(_CREATURE * cr);
-	virtual int Chat(XCreature * chatter, const char* msg);
-};
+    protected:
+        XGiana() {}
 
+    public:
+        DECLARE_CREATOR(XGiana, XAnyCreature);
+        XGiana(_CREATURE * cr);
+        virtual int Chat(XCreature * chatter, const char* msg);
+};
 
 class XBandit : public XAnyCreature
 {
-protected:
-	XBandit() {}
-public:
-	DECLARE_CREATOR(XBandit, XAnyCreature);
-	XBandit(_CREATURE * cr);
+    protected:
+        XBandit() {}
+
+    public:
+        DECLARE_CREATOR(XBandit, XAnyCreature);
+        XBandit(_CREATURE * cr);
 };
 
 class XBanditAI : public XStandardAI
 {
-protected:
-	XBanditAI() {}
-public:
-	DECLARE_CREATOR(XBanditAI, XStandardAI);
-	XBanditAI(XCreature * cr) : XStandardAI(cr) {}
-	virtual int isEnemy(XCreature * cr);
-};
+    protected:
+        XBanditAI() {}
 
+    public:
+        DECLARE_CREATOR(XBanditAI, XStandardAI);
+        XBanditAI(XCreature * cr) : XStandardAI(cr) {}
+
+        virtual int isEnemy(XCreature * cr);
+};
 
 class XShopkeeper : public XAnyCreature
 {
-protected:
-	XShopkeeper() {}
-public:
-	DECLARE_CREATOR(XShopkeeper, XAnyCreature);
-	XShopkeeper(_CREATURE *cr);
-	XShopkeeper(char * _name, XShop * shop, CREATURE_LEVEL crl, CREATURE_EXP cre) {}
-	virtual const char* StdAnswer();
-	virtual void Die(XCreature * killer);
-	void SetShop(char * _name, XShop * shop);
-};
+    protected:
+        XShopkeeper() {}
 
+    public:
+        DECLARE_CREATOR(XShopkeeper, XAnyCreature);
+        XShopkeeper(_CREATURE *cr);
+        XShopkeeper(char* _name, XShop * shop, CREATURE_LEVEL crl, CREATURE_EXP cre) {}
+
+        virtual const char* StdAnswer();
+        virtual void Die(XCreature * killer);
+        void SetShop(char* _name, XShop * shop);
+};
 
 #endif

@@ -23,54 +23,52 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XMissileWeapon);
 
-_MAIN_ITEM_STRUCT MWEAPON_STRUCT[] =
-{
-{IT_LONGBOW,		"long bow",			'{',	"",	"",		"1d3+2",	"1d6",  "1d3+2",	"1d1+2", 	ISET_BOW,			20,	10,		30,		IQ_FAIR,	""},
-{IT_SHORTBOW,		"short bow",		'{',	"",	"",		"1d2",		"1d4",  "1d2",		"1d2", 		ISET_BOW,			10,	5,		150,	IQ_AVG,		""},
-{IT_LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",		"1d2",		"1d5",  "1d3",		"1d2", 		ISET_BOW,			10,	5,		120,	IQ_AVG,		""},
-{IT_CROSSBOW,		"crossbow",			'{',	"",	"",		"1d4",		"1d6",  "1d3+1",	"1d2", 		ISET_BOW,			15,	5,		70,		IQ_AVG,		""},
-{IT_HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",		"1d3-1",	"1d8",  "1d4+2",	"1d2+1", 	ISET_BOW,			35,	30,		10,		IQ_GOOD,	""},
-{IT_SLING,			"sling",			'{',	"",	"",		"1d2",		"1d3+1", "1d3",		"1d1+1", 	ISET_ALLLEATHER,	5,	2,		200,	IQ_POOR,	""}
+_MAIN_ITEM_STRUCT MWEAPON_STRUCT[] = {
+    {IT_LONGBOW,	"long bow",	'{',	"",	"",	"1d3+2",	"1d6", "1d3+2",	"1d1+2",	ISET_BOW,	20,	10,	30,	IQ_FAIR,	""},
+    {IT_SHORTBOW,	"short bow",	'{',	"",	"",	"1d2",	"1d4", "1d2",	"1d2",	ISET_BOW,	10,	5,	150,	IQ_AVG,	""},
+    {IT_LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",	"1d2",	"1d5", "1d3",	"1d2",	ISET_BOW,	10,	5,	120,	IQ_AVG,	""},
+    {IT_CROSSBOW,	"crossbow",	'{',	"",	"",	"1d4",	"1d6", "1d3+1",	"1d2",	ISET_BOW,	15,	5,	70,	IQ_AVG,	""},
+    {IT_HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",	"1d3-1",	"1d8", "1d4+2",	"1d2+1",	ISET_BOW,	35,	30,	10,	IQ_GOOD,	""},
+    {IT_SLING,	"sling",	'{',	"",	"",	"1d2",	"1d3+1", "1d3",	"1d1+1",	ISET_ALLLEATHER,	5,	2,	200,	IQ_POOR,	""}
 };
 
 XItemBasicStructure gi_missilew(MWEAPON_STRUCT, 6);
 
 _WEAPON_BIND mwbind[] = {
-{IT_LONGBOW,		WSK_BOW},
-{IT_SHORTBOW,		WSK_BOW},
-{IT_LIGHTCROSSBOW,	WSK_CROSSBOW},
-{IT_CROSSBOW,		WSK_CROSSBOW},
-{IT_HEAVYCROSSBOW,	WSK_CROSSBOW},
-{IT_SLING,			WSK_SLING}
+    {IT_LONGBOW,	WSK_BOW},
+    {IT_SHORTBOW,	WSK_BOW},
+    {IT_LIGHTCROSSBOW,	WSK_CROSSBOW},
+    {IT_CROSSBOW,	WSK_CROSSBOW},
+    {IT_HEAVYCROSSBOW,	WSK_CROSSBOW},
+    {IT_SLING,	WSK_SLING}
 };
 
 XMissileWeapon::XMissileWeapon(ITEM_TYPE _it)
 {
-	im = IM_MISSILEW;
-	BasicFill(_it, &gi_missilew);
-	bp = BP_MISSILEWEAPON;
-	_DV = 0;
-	_PV = 0;
-	for (int i = 0; i < 6; i++)
-		if (mwbind[i].it == it)
-		{
-			wt = mwbind[i].ws;
-			break;
-		}
+    im = IM_MISSILEW;
+    BasicFill(_it, &gi_missilew);
+    bp = BP_MISSILEWEAPON;
+    _DV = 0;
+    _PV = 0;
+
+    for (int i = 0; i < 6; i++)
+        if (mwbind[i].it == it) {
+            wt = mwbind[i].ws;
+            break;
+        }
 }
 
-void XMissileWeapon::toString(char * buf)
+void XMissileWeapon::toString(char* buf)
 {
-
-	GetFullName(buf);
+    GetFullName(buf);
 
     char tbuf[256];
 
-	sprintf(tbuf, "<%+d>", RNG);
-	strcat(buf, tbuf);
+    sprintf(tbuf, "<%+d>", RNG);
+    strcat(buf, tbuf);
 
-	sprintf(tbuf, "(%+d, %dd%d%+d)", _HIT, dice.X, dice.Y, dice.Z);
-	strcat(buf, tbuf);
+    sprintf(tbuf, "(%+d, %dd%d%+d)", _HIT, dice.X, dice.Y, dice.Z);
+    strcat(buf, tbuf);
 
     StatsToString(tbuf);
     strcat(buf, tbuf);

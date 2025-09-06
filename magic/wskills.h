@@ -28,38 +28,40 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "itemdef.h"
 
 
-struct _SKILL_DB
-{
-	const char* name;
-	int base_dv[16];
-	int base_hit[16];
-	int	base_dmg[16];
+struct _SKILL_DB {
+    const char* name;
+    int base_dv[16];
+    int base_hit[16];
+    int	base_dmg[16];
 };
 
 class XFile;
 
 class XWarSkills
 {
-public:
-	XWarSkills();
-	int GetLevel(WSK_TYPE wt);
-	int GetN(int level);
-	int GetDV(WSK_TYPE wt);
-	int GetHIT(WSK_TYPE wt);
-	int GetDMG(WSK_TYPE wt);
-	int GetUseTime(WSK_TYPE wt);
-	const char* GetName(WSK_TYPE wt);
-	int GetMarks(WSK_TYPE wt) {return marks_counter[wt] / 10;}
+    public:
+        XWarSkills();
+        int GetLevel(WSK_TYPE wt);
+        int GetN(int level);
+        int GetDV(WSK_TYPE wt);
+        int GetHIT(WSK_TYPE wt);
+        int GetDMG(WSK_TYPE wt);
+        int GetUseTime(WSK_TYPE wt);
+        const char* GetName(WSK_TYPE wt);
+        int GetMarks(WSK_TYPE wt)
+        {
+            return marks_counter[wt] / 10;
+        }
 
-	void UseSkill(WSK_TYPE wt, int time = 1);
+        void UseSkill(WSK_TYPE wt, int time = 1);
 
-	void SetLevel(WSK_TYPE wt, int level);
+        void SetLevel(WSK_TYPE wt, int level);
 
-	void Store(XFile * f);
-	void Restore(XFile * f);
-	
-	int marks_counter[WSK_EOF];
-	int levels[WSK_EOF];
+        void Store(XFile * f);
+        void Restore(XFile * f);
+
+        int marks_counter[WSK_EOF];
+        int levels[WSK_EOF];
 };
 
 #endif

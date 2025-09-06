@@ -26,54 +26,72 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "spelldef.h"
 #include "effect.h"
 
-
 class XSpell : public XObject
 {
-	XSpell() {}
-	int cast_count;
-	int eff_level;
-public:
-	SPELL_NAME spell_name;
-	DECLARE_CREATOR(XSpell, XObject);
-	XSpell(SPELL_NAME spn);
-	SPELL_NAME GetSpellName() { return spell_name; }
-	EFFECT GetEffect();
-	void Cast(); //calling after successful casting of spell
-	int GetManaCost();
-	int GetEffectivity() { return eff_level; }
-	MAGIC_SCHOOL GetSchool();
-	void GainLevel(int n = 1) {eff_level += n;}
-	void toString(char * buf);
-	static const char* GetName(SPELL_NAME spn);
-	const char* GetName() { return GetName(spell_name); }
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-};
+        XSpell() {}
 
+        int cast_count;
+        int eff_level;
+    public:
+        SPELL_NAME spell_name;
+        DECLARE_CREATOR(XSpell, XObject);
+        XSpell(SPELL_NAME spn);
+        SPELL_NAME GetSpellName()
+        {
+            return spell_name;
+        }
+
+        EFFECT GetEffect();
+        void Cast(); //calling after successful casting of spell
+        int GetManaCost();
+        int GetEffectivity()
+        {
+            return eff_level;
+        }
+
+        MAGIC_SCHOOL GetSchool();
+        void GainLevel(int n = 1)
+        {
+            eff_level += n;
+        }
+
+        void toString(char* buf);
+        static const char* GetName(SPELL_NAME spn);
+        const char* GetName()
+        {
+            return GetName(spell_name);
+        }
+
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+};
 
 class XMagic
 {
-public:
-	XMagic();
-	XMagic(XMagic * mag);
-	~XMagic();
+    public:
+        XMagic();
+        XMagic(XMagic * mag);
+        ~XMagic();
 
-	RESULT Cast(XSpell * spell, XCreature * caster);
-	int GetSpellRange(XSpell * spell, XCreature * caster);
-	int Train(MAGIC_SCHOOL school, int count);
-	int GainLevel(MAGIC_SCHOOL school, int n = 1);
-	int LevelToString(MAGIC_SCHOOL school, char * buf);
-	void Learn(SPELL_NAME spell);
-	XSpell * GetSpell(SPELL_NAME spell);
-	int GetLevel(MAGIC_SCHOOL ms) { return magic_level[ms]; }
-	
-	XList<XSpell *> spells;
+        RESULT Cast(XSpell * spell, XCreature * caster);
+        int GetSpellRange(XSpell * spell, XCreature * caster);
+        int Train(MAGIC_SCHOOL school, int count);
+        int GainLevel(MAGIC_SCHOOL school, int n = 1);
+        int LevelToString(MAGIC_SCHOOL school, char* buf);
+        void Learn(SPELL_NAME spell);
+        XSpell* GetSpell(SPELL_NAME spell);
+        int GetLevel(MAGIC_SCHOOL ms)
+        {
+            return magic_level[ms];
+        }
 
-	void Store(XFile * f);
-	void Restore(XFile * f);
-protected:
-	int magic_level[MS_EOF];
-	int magic_count[MS_EOF];
+        XList<XSpell*> spells;
+
+        void Store(XFile * f);
+        void Restore(XFile * f);
+    protected:
+        int magic_level[MS_EOF];
+        int magic_count[MS_EOF];
 };
 
 #endif

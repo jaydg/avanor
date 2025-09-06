@@ -25,13 +25,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XMoney : public XItem
 {
-public:
-	DECLARE_CREATOR(XMoney, XItem);
-	XMoney(int _quantity = 1);
-	XMoney(XMoney * copy) : XItem((XItem *)copy) {}
-	virtual void toString(char * buf);
-	virtual int Compare(XObject * o);
-	virtual XObject * MakeCopy() {return new XMoney(this);}	
+    public:
+        DECLARE_CREATOR(XMoney, XItem);
+        XMoney(int _quantity = 1);
+        XMoney(XMoney * copy) : XItem((XItem*)copy) {}
+
+        virtual void toString(char* buf);
+        virtual int Compare(XObject * o);
+        virtual XObject* MakeCopy()
+        {
+            return new XMoney(this);
+        }
 };
 
 #endif

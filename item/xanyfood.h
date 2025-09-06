@@ -23,41 +23,43 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item.h"
 
-// 
-enum FOOD_TYPE
-{
-	FT_BESTFOOD		= 0x00000002, //feel very nice, +50% to food satiation
-	FT_GOODFOOD		= 0x00000003, //feel nice, +25% to food satiation
-	FT_NORMALFOOD	= 0x00000004, //ok
-	FT_BADFOOD		= 0x00000005, //-25% to food satiation
-	FT_VERYBADFOOD	= 0x00000006, //-50% to food satiation
-	FT_VOMIT		= 0x00000007, //-XXX from total satiation
+//
+enum FOOD_TYPE {
+    FT_BESTFOOD	= 0x00000002, //feel very nice, +50% to food satiation
+    FT_GOODFOOD	= 0x00000003, //feel nice, +25% to food satiation
+    FT_NORMALFOOD	= 0x00000004, //ok
+    FT_BADFOOD	= 0x00000005, //-25% to food satiation
+    FT_VERYBADFOOD	= 0x00000006, //-50% to food satiation
+    FT_VOMIT	= 0x00000007, //-XXX from total satiation
 };
 
 class XAnyFood : public XItem
 {
-public:
-	DECLARE_CREATOR(XAnyFood, XItem);
-	XAnyFood();
-	XAnyFood(XAnyFood * food) : food_nutrio(food->food_nutrio),  
-		consume_nutrio(food->consume_nutrio), consumed_food(food->consumed_food),
-		XItem((XItem *)food) {}
-	virtual XObject * MakeCopy() { return new XAnyFood(this); }
-	virtual void toString(char * buf);
-	virtual RESULT onEat(XCreature * eater); //eat a peace from food
-	virtual const char* postEat(XCreature * eater);
-	virtual int Compare(XObject * o);
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-	int food_nutrio;
-	int consumed_food; //how much is eated
-	FOOD_TYPE FoodTypeForCreature(XCreature * creature);
-	FOOD_TYPE food_type;
-protected:
-	int consume_nutrio; //part of food eated for one turn
+    public:
+        DECLARE_CREATOR(XAnyFood, XItem);
+        XAnyFood();
+        XAnyFood(XAnyFood * food) : food_nutrio(food->food_nutrio),
+            consume_nutrio(food->consume_nutrio), consumed_food(food->consumed_food),
+            XItem((XItem*)food) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XAnyFood(this);
+        }
+
+        virtual void toString(char* buf);
+        virtual RESULT onEat(XCreature * eater); //eat a peace from food
+        virtual const char* postEat(XCreature * eater);
+        virtual int Compare(XObject * o);
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+        int food_nutrio;
+        int consumed_food; //how much is eated
+        FOOD_TYPE FoodTypeForCreature(XCreature * creature);
+        FOOD_TYPE food_type;
+    protected:
+        int consume_nutrio; //part of food eated for one turn
 
 };
-
-
 
 #endif

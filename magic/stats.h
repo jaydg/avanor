@@ -32,38 +32,61 @@ extern const char* stats_str[];
 
 class XStats
 {
-public:
-	XStats(const char * str); // must be the same! "St:1d2 Dx:1d4 To:2d5"
-	XStats(XStats * xs);
-	XStats(); //all stats == 0 by default
-	int Get(STATS s) { return stats[s] / 100; }
-	const char* GetName(STATS s) { return stats_str[s]; }
-	const char* GetFullName(STATS s);
-	void SetStat(STATS s, int val) { stats[s] = val * 100; }
-	void Modify(STATS s, int val) { stats[s] += val * 100; }
-	void AddFract(STATS s, int val) {stats[s] += val;}
-	void Set(XStats * s);
-	void Set(const char * str);
-	void Add(XStats * s);
-	void Sub(XStats * s);
-	bool isEqual(XStats * s);
+    public:
+        XStats(const char* str); // must be the same! "St:1d2 Dx:1d4 To:2d5"
+        XStats(XStats * xs);
+        XStats(); // all stats == 0 by default
+        int Get(STATS s)
+        {
+            return stats[s] / 100;
+        }
 
-	void Store(XFile * f);
-	void Restore(XFile * f);
+        const char* GetName(STATS s)
+        {
+            return stats_str[s];
+        }
 
-	static STATS Random() { return (STATS)(vRand(S_EOF)); }
+        const char* GetFullName(STATS s);
+        void SetStat(STATS s, int val)
+        {
+            stats[s] = val * 100;
+        }
 
-protected:
-	int stats[S_EOF];
+        void Modify(STATS s, int val)
+        {
+            stats[s] += val * 100;
+        }
+
+        void AddFract(STATS s, int val)
+        {
+            stats[s] += val;
+        }
+
+        void Set(XStats * s);
+        void Set(const char* str);
+        void Add(XStats * s);
+        void Sub(XStats * s);
+        bool isEqual(XStats * s);
+
+        void Store(XFile * f);
+        void Restore(XFile * f);
+
+        static STATS Random()
+        {
+            return (STATS)(vRand(S_EOF));
+        }
+
+    protected:
+        int stats[S_EOF];
 };
 
 class XStatsGenerator
 {
-	XDice stats[S_EOF];
-public:
-	XStatsGenerator();
-	void Init(const char * str);
-	XStats * Generate();
+        XDice stats[S_EOF];
+    public:
+        XStatsGenerator();
+        void Init(const char* str);
+        XStats* Generate();
 };
 
 #endif

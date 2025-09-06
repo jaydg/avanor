@@ -37,29 +37,28 @@ extern char static_buffer[];
 
 class XGame
 {
-	void CreateLocations();
-	void CreateHero();
-public:
-	XGame();
-	~XGame();
-	void Run();
-	void RunWithoutHero();
-	void RunDemo();
-	void CreateRatCellar();
-	void Create(char type_of_start);
-	int MoveToStairway(XLocation * xl, XCreature * tc);
-	XCreature * NewCreature(XCreature * cr, int x, int y, XLocation * loc);
-	XPtr<XLocation> locations[L_EOF];
-	XScheduler Scheduler;
-	static int current_location;
-	static XGUID hero_guid;
+        void CreateLocations();
+        void CreateHero();
+    public:
+        XGame();
+        ~XGame();
+        void Run();
+        void RunWithoutHero();
+        void RunDemo();
+        void CreateRatCellar();
+        void Create(char type_of_start);
+        int MoveToStairway(XLocation * xl, XCreature * tc);
+        XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
+        XPtr<XLocation> locations[L_EOF];
+        XScheduler Scheduler;
+        static int current_location;
+        static XGUID hero_guid;
 
-	static int best_cr_level;
-	static XPtr<XCreature> best_creature;
+        static int best_cr_level;
+        static XPtr<XCreature> best_creature;
 
-
-	static bool isAvgPV;
-	static bool isGodMode;
+        static bool isAvgPV;
+        static bool isGodMode;
 };
 
 extern XGame Game;

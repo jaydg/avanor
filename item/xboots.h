@@ -23,14 +23,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "xclothe.h"
 
-class XBoots:public XClothe
+class XBoots: public XClothe
 {
-public:
-	DECLARE_CREATOR(XBoots, XClothe);
-	XBoots(ITEM_TYPE it = IT_RANDOM);
-	XBoots(XBoots * boots);
-	virtual XObject * MakeCopy() {return new XBoots(this);}
+    public:
+        DECLARE_CREATOR(XBoots, XClothe);
+        XBoots(ITEM_TYPE it = IT_RANDOM);
+        XBoots(XBoots * boots);
+        virtual XObject* MakeCopy()
+        {
+            return new XBoots(this);
+        }
 };
-
 
 #endif

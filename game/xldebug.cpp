@@ -31,12 +31,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 {
-	map = new XMap(80, 20);
-	BuildLabirint();
-	strcpy(brief_name, "DBGL:1");
-	strcpy(full_name, "Debug Level 1");
+    map = new XMap(80, 20);
+    BuildLabirint();
+    strcpy(brief_name, "DBGL:1");
+    strcpy(full_name, "Debug Level 1");
 
-	map->CreateRoom(0, 0, 80, 20, 0, 0, M_GREENGRAS, M_MAGMA);
+    map->CreateRoom(0, 0, 80, 20, 0, 0, M_GREENGRAS, M_MAGMA);
 }
 
 void XLDebug::Init()

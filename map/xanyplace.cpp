@@ -27,152 +27,155 @@ REGISTER_CLASS(XAnyPlace);
 
 extern "C"
 {
-	#include "lauxlib.h"
+#include "lauxlib.h"
 }
-
 
 XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc) : area(_area), XObject()
 {
-	Setup(_loc);
-	im = IM_OTHER;
-	onEventLua = NULL;
+    Setup(_loc);
+    im = IM_OTHER;
+    onEventLua = NULL;
 }
 
-XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc, char * _onEventLua) : area(_area), XObject()
+XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc, char* _onEventLua) : area(_area), XObject()
 {
-	Setup(_loc);
-	im = IM_OTHER;
-	if (_onEventLua)
-	{
-		onEventLua = new char[strlen(_onEventLua) + 1];
-		strcpy(onEventLua, _onEventLua);
-	}
+    Setup(_loc);
+    im = IM_OTHER;
+
+    if (_onEventLua) {
+        onEventLua = new char[strlen(_onEventLua) + 1];
+        strcpy(onEventLua, _onEventLua);
+    }
 }
 
 XAnyPlace::~XAnyPlace()
 {
-	delete[] onEventLua;
+    delete[] onEventLua;
 }
 
 int XAnyPlace::onCreatureMove(XCreature * cr)
 {
-	if (onEventLua)
-	{
-		lua_pushstring(XLocation::L, onEventLua);
-		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-		lua_pushnumber(XLocation::L, LE_MOVE);
-		lua_pushlightuserdata(XLocation::L, cr);
-		lua_call(XLocation::L, 2, 1);
-		int res = lua_tonumber(XLocation::L, 2);
-		lua_pop(XLocation::L, 1);
-		return res;
-	} else
-		return 0;
+    if (onEventLua) {
+        lua_pushstring(XLocation::L, onEventLua);
+        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+        lua_pushnumber(XLocation::L, LE_MOVE);
+        lua_pushlightuserdata(XLocation::L, cr);
+        lua_call(XLocation::L, 2, 1);
+        int res = lua_tonumber(XLocation::L, 2);
+        lua_pop(XLocation::L, 1);
+        return res;
+    } else {
+        return 0;
+    }
 }
 
 int XAnyPlace::onCreatureEnter(XCreature * cr)
 {
-	if (onEventLua)
-	{
-		lua_pushstring(XLocation::L, onEventLua);
-		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-		lua_pushnumber(XLocation::L, LE_MOVE_IN);
-		lua_pushlightuserdata(XLocation::L, cr);
-		lua_call(XLocation::L, 2, 1);
-		int res = lua_tonumber(XLocation::L, 2);
-		lua_pop(XLocation::L, 1);
-		return res;
-	} else
-		return 0;
+    if (onEventLua) {
+        lua_pushstring(XLocation::L, onEventLua);
+        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+        lua_pushnumber(XLocation::L, LE_MOVE_IN);
+        lua_pushlightuserdata(XLocation::L, cr);
+        lua_call(XLocation::L, 2, 1);
+        int res = lua_tonumber(XLocation::L, 2);
+        lua_pop(XLocation::L, 1);
+        return res;
+    } else {
+        return 0;
+    }
 }
 
 int XAnyPlace::onCreatureLeave(XCreature * cr)
 {
-	if (onEventLua)
-	{
-		lua_pushstring(XLocation::L, onEventLua);
-		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-		lua_pushnumber(XLocation::L, LE_MOVE_OUT);
-		lua_pushlightuserdata(XLocation::L, cr);
-		lua_call(XLocation::L, 2, 1);
-		int res = lua_tonumber(XLocation::L, 2);
-		lua_pop(XLocation::L, 1);
-		return res;
-	} else
-		return 0;
+    if (onEventLua) {
+        lua_pushstring(XLocation::L, onEventLua);
+        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+        lua_pushnumber(XLocation::L, LE_MOVE_OUT);
+        lua_pushlightuserdata(XLocation::L, cr);
+        lua_call(XLocation::L, 2, 1);
+        int res = lua_tonumber(XLocation::L, 2);
+        lua_pop(XLocation::L, 1);
+        return res;
+    } else {
+        return 0;
+    }
 }
 
 
 void XAnyPlace::Invalidate()
 {
-	location = NULL;
-	owner    = NULL;
-	XObject::Invalidate();
+    location = NULL;
+    owner = NULL;
+    XObject::Invalidate();
 }
 
-void XAnyPlace::onShowItem(XItem * item, char * buf)
+void XAnyPlace::onShowItem(XItem * item, char* buf)
 {
-	item->toString(buf);
+    item->toString(buf);
 }
 
 void XAnyPlace::Setup(XLocation * _loc)
 {
-	location = _loc;
-	for (int i = area.left; i < area.right; i++)
-		for (int j = area.top; j < area.bottom; j++)
-			location->map->SetPlace(i, j, this);
-}
+    location = _loc;
 
+    for (int i = area.left; i < area.right; i++)
+        for (int j = area.top; j < area.bottom; j++) {
+            location->map->SetPlace(i, j, this);
+        }
+}
 
 void XAnyPlace::Store(XFile * f)
 {
-	XObject::Store(f);
+    XObject::Store(f);
 
-	location.Store(f);
-	owner.Store(f);
-	area.Store(f);
-	int sz = 0;
-	if (onEventLua)
-		sz = strlen(onEventLua) + 1;
-	f->Write(&sz);
-	if (sz > 0)
-		f->Write(onEventLua, sz);
+    location.Store(f);
+    owner.Store(f);
+    area.Store(f);
+    int sz = 0;
 
-	if (onEventLua)
-	{
-		lua_pushstring(XLocation::L, onEventLua);
-		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-		lua_pushnumber(XLocation::L, LE_SAVE);
-		lua_call(XLocation::L, 1, 1);
-		int res = lua_tonumber(XLocation::L, 2);
-		lua_pop(XLocation::L, 1);
-	}
+    if (onEventLua) {
+        sz = strlen(onEventLua) + 1;
+    }
+
+    f->Write(&sz);
+
+    if (sz > 0) {
+        f->Write(onEventLua, sz);
+    }
+
+    if (onEventLua) {
+        lua_pushstring(XLocation::L, onEventLua);
+        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+        lua_pushnumber(XLocation::L, LE_SAVE);
+        lua_call(XLocation::L, 1, 1);
+        int res = lua_tonumber(XLocation::L, 2);
+        lua_pop(XLocation::L, 1);
+    }
 }
 
 void XAnyPlace::Restore(XFile * f)
 {
-	XObject::Restore(f);
+    XObject::Restore(f);
 
-	location.Restore(f);
-	owner.Restore(f);
-	area.Restore(f);
-	int sz = 0;
-	f->Read(&sz);
-	if (sz > 0)
-	{
-		onEventLua = new char [sz];
-		f->Read(onEventLua, sz);
-	} else
-		onEventLua = NULL;
+    location.Restore(f);
+    owner.Restore(f);
+    area.Restore(f);
+    int sz = 0;
+    f->Read(&sz);
 
-	if (onEventLua)
-	{
-		lua_pushstring(XLocation::L, onEventLua);
-		lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-		lua_pushnumber(XLocation::L, LE_LOAD);
-		lua_call(XLocation::L, 1, 1);
-		int res = lua_tonumber(XLocation::L, 2);
-		lua_pop(XLocation::L, 1);
-	}
+    if (sz > 0) {
+        onEventLua = new char [sz];
+        f->Read(onEventLua, sz);
+    } else {
+        onEventLua = NULL;
+    }
 
+    if (onEventLua) {
+        lua_pushstring(XLocation::L, onEventLua);
+        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+        lua_pushnumber(XLocation::L, LE_LOAD);
+        lua_call(XLocation::L, 1, 1);
+        int res = lua_tonumber(XLocation::L, 2);
+        lua_pop(XLocation::L, 1);
+    }
 }

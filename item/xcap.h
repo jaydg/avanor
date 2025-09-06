@@ -23,13 +23,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "xclothe.h"
 
-class XCap : public XClothe  
+class XCap : public XClothe
 {
-public:
-	DECLARE_CREATOR(XCap, XClothe);
-	XCap(ITEM_TYPE it = IT_RANDOM);
-	XCap(XCap * cap);
-	virtual XObject * MakeCopy() {return new XCap(this);}
+    public:
+        DECLARE_CREATOR(XCap, XClothe);
+        XCap(ITEM_TYPE it = IT_RANDOM);
+        XCap(XCap * cap);
+        virtual XObject* MakeCopy()
+        {
+            return new XCap(this);
+        }
 };
 
 #endif

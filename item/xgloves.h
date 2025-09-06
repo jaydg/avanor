@@ -25,12 +25,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XGloves : public XClothe
 {
-public:
-	DECLARE_CREATOR(XGloves, XClothe);
-	XGloves(ITEM_TYPE it = IT_RANDOM);
-	XGloves(XGloves * gloves);
-	virtual XObject * MakeCopy() {return new XGloves(this);}
+    public:
+        DECLARE_CREATOR(XGloves, XClothe);
+        XGloves(ITEM_TYPE it = IT_RANDOM);
+        XGloves(XGloves * gloves);
+        virtual XObject* MakeCopy()
+        {
+            return new XGloves(this);
+        }
 };
-
 
 #endif

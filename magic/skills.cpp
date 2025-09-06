@@ -22,42 +22,50 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 int XSkills::GetLevel(SKILL_TYPE skt)
 {
-	XSkill * xsk;
-	if (xsk = GetSkill(skt))
-		return xsk->GetLevel();
-	else
-		return 0;
+    XSkill * xsk;
+
+    if (xsk = GetSkill(skt)) {
+        return xsk->GetLevel();
+    } else {
+        return 0;
+    }
 }
 
 void XSkills::UseSkill(SKILL_TYPE skt, int n)
 {
-	XSkill * skill = GetSkill(skt);
-	if (skill)
-		skill->UseSkill(n);
+    XSkill * skill = GetSkill(skt);
+
+    if (skill) {
+        skill->UseSkill(n);
+    }
 }
 
-XSkill * XSkills::GetSkill(SKILL_TYPE skt)
+XSkill* XSkills::GetSkill(SKILL_TYPE skt)
 {
-	XList<XSkill *>::iterator xsk = skills.begin();
-	while (xsk != skills.end())
-	{
-		if (xsk->skt == skt) return xsk;
-		xsk++;
-	}
-	return NULL;
+    XList<XSkill*>::iterator xsk = skills.begin();
+
+    while (xsk != skills.end()) {
+        if (xsk->skt == skt) {
+            return xsk;
+        }
+
+        xsk++;
+    }
+
+    return NULL;
 }
 
 void XSkills::Learn(SKILL_TYPE skt, int level)
 {
-	skills.Add(new XSkill(skt, level));
+    skills.Add(new XSkill(skt, level));
 }
 
 void XSkills::Store(XFile * f)
 {
-	skills.StoreList(f);
+    skills.StoreList(f);
 }
 
 void XSkills::Restore(XFile * f)
 {
-	skills.RestoreList(f);
+    skills.RestoreList(f);
 }

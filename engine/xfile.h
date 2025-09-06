@@ -26,64 +26,67 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XFile
 {
-public:
-	XFile() : file(NULL) {}
-	~XFile()
-	{
-		if (file)
-			fclose(file);
-	}
+    public:
+        XFile() : file(NULL) {}
 
-	int Open(const char* name, const char* param)
-	{
-		file = fopen(name, param);
-		if (file)
-			return 1;
-		else
-			return 0;
-	}
+        ~XFile()
+        {
+            if (file) {
+                fclose(file);
+            }
+        }
 
-	void Close()
-	{
-		fclose(file);
-		file = NULL;
-	}
+        int Open(const char* name, const char* param)
+        {
+            file = fopen(name, param);
 
-	int Write(const void * data, size_t block_size, size_t block_count = 1)
-	{
-		return fwrite(data, block_size, block_count, file);
-	}
+            if (file) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
 
-	int Write(const int * data)
-	{
-		return fwrite(data, sizeof(int), 1, file);
-	}
+        void Close()
+        {
+            fclose(file);
+            file = NULL;
+        }
 
-	int Write(const unsigned int * data)
-	{
-		return fwrite(data, sizeof(unsigned int), 1, file);
-	}
+        int Write(const void* data, size_t block_size, size_t block_count = 1)
+        {
+            return fwrite(data, block_size, block_count, file);
+        }
 
-	int Read(void * data, size_t block_size, size_t block_count = 1)
-	{
-		unsigned int res = fread(data, block_size, block_count, file);
-		assert(res == block_count);
-		return res;
-	}
+        int Write(const int* data)
+        {
+            return fwrite(data, sizeof(int), 1, file);
+        }
 
-	int Read(int * data)
-	{
-		return fread(data, sizeof(int), 1, file);
-	}
+        int Write(const unsigned int* data)
+        {
+            return fwrite(data, sizeof(unsigned int), 1, file);
+        }
 
-	int Read(unsigned int * data)
-	{
-		return fread(data, sizeof(unsigned int), 1, file);
-	}
+        int Read(void* data, size_t block_size, size_t block_count = 1)
+        {
+            unsigned int res = fread(data, block_size, block_count, file);
+            assert(res == block_count);
+            return res;
+        }
 
+        int Read(int* data)
+        {
+            return fread(data, sizeof(int), 1, file);
+        }
 
-protected:
-	FILE * file;
+        int Read(unsigned int* data)
+        {
+            return fread(data, sizeof(unsigned int), 1, file);
+        }
+
+    protected:
+        FILE* file;
 };
 
 #endif

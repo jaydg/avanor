@@ -34,56 +34,65 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 template<class TYPE> class XSimpleVector
 {
-private:
-   long   count;
-   long   maxcount;
-   TYPE * ptr;
-public:
-   XSimpleVector(long startmaxcount = 1)
-   {
-      count    = 0;
-      maxcount = (startmaxcount > 0) ? startmaxcount : 1;
+    private:
+        long count;
+        long maxcount;
+        TYPE* ptr;
+    public:
+        XSimpleVector(long startmaxcount = 1)
+        {
+            count = 0;
+            maxcount = (startmaxcount > 0) ? startmaxcount : 1;
 
-      ptr = (TYPE *) new char[maxcount * sizeof(TYPE)];
-      memset(ptr, 0, maxcount * sizeof(TYPE));
-   }
-   ~XSimpleVector()
-   {
-      delete [] (char *)ptr;
-   }
+            ptr = (TYPE*) new char[maxcount * sizeof(TYPE)];
+            memset(ptr, 0, maxcount * sizeof(TYPE));
+        }
 
-   TYPE & operator[](long index)
-   {
-      if(index < count) return ptr[index];
+        ~XSimpleVector()
+        {
+            delete[](char*)ptr;
+        }
 
-      while(index >= maxcount)
-      {
-         maxcount <<= 1;
+        TYPE &operator[](long index)
+        {
+            if (index < count) {
+                return ptr[index];
+            }
 
-         TYPE * tmp = (TYPE *) new char[maxcount * sizeof(TYPE)];
-         memcpy(tmp, ptr, count * sizeof(TYPE));
-         memset(&tmp[count], 0, (maxcount - count) * sizeof(TYPE));
-         delete [] (char *)ptr;
-         ptr = tmp;
-      }
-      
-      count = index + 1; 
-      return ptr[index];
-   }
+            while (index >= maxcount) {
+                maxcount <<= 1;
 
-   long getcount() { return count; }
-   long getmaxcount() { return maxcount; }
+                TYPE * tmp = (TYPE*) new char[maxcount * sizeof(TYPE)];
+                memcpy(tmp, ptr, count * sizeof(TYPE));
+                memset(&tmp[count], 0, (maxcount - count) * sizeof(TYPE));
+                delete[](char*)ptr;
+                ptr = tmp;
+            }
 
-   void clean(long startmaxcount = 1)
-   {
-      delete [] (char *)ptr;
+            count = index + 1;
+            return ptr[index];
+        }
 
-      count    = 0;
-      maxcount = (startmaxcount > 0) ? startmaxcount : 1;
+        long getcount()
+        {
+            return count;
+        }
 
-      ptr = (TYPE *) new char[maxcount * sizeof(TYPE)];
-      memset(ptr, 0, maxcount * sizeof(TYPE));
-   }
+        long getmaxcount()
+        {
+            return maxcount;
+        }
+
+        void clean(long startmaxcount = 1)
+        {
+            delete[](char*)ptr;
+
+            count = 0;
+            maxcount = (startmaxcount > 0) ? startmaxcount : 1;
+
+            ptr = (TYPE*) new char[maxcount * sizeof(TYPE)];
+            memset(ptr, 0, maxcount * sizeof(TYPE));
+        }
 };
 
 #endif

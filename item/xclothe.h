@@ -23,13 +23,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item.h"
 
-class XClothe : public XItem  
+class XClothe : public XItem
 {
-public:
-	DECLARE_CREATOR(XClothe, XItem);
-	XClothe();
-	XClothe(XClothe * copy) : XItem((XItem *)copy) {}
-	virtual void toString(char * buf);
+    public:
+        DECLARE_CREATOR(XClothe, XItem);
+        XClothe();
+        XClothe(XClothe * copy) : XItem((XItem*)copy) {}
+
+        virtual void toString(char* buf);
 };
 
 #endif

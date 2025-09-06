@@ -25,34 +25,45 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XCookingSet : public XItem
 {
-public:
-	DECLARE_CREATOR(XCookingSet, XItem);
-	XCookingSet()
-	{
-		color = xLIGHTGRAY;
-		view = '[';
-		it = IT_COOKINGSET;
-		strcpy(name, "cooking set");
-		value = 150;
-		weight = 100;
-		im = IM_TOOL;
-		cooked_item = NULL;
-		bp = BP_TOOL;
-		s = new XStats();
-		r = new XResistance();
+    public:
+        DECLARE_CREATOR(XCookingSet, XItem);
+        XCookingSet()
+        {
+            color = xLIGHTGRAY;
+            view = '[';
+            it = IT_COOKINGSET;
+            strcpy(name, "cooking set");
+            value = 150;
+            weight = 100;
+            im = IM_TOOL;
+            cooked_item = NULL;
+            bp = BP_TOOL;
+            s = new XStats();
+            r = new XResistance();
+        }
 
-	}
-	XCookingSet(XCookingSet * copy) : XItem(copy) {assert(cooked_item == NULL);}
-	virtual XObject * MakeCopy() {return new XCookingSet(this);}
-	virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-	virtual void toString(char * buf) { strcpy(buf, name); }
+        XCookingSet(XCookingSet * copy) : XItem(copy)
+        {
+            assert(cooked_item == NULL);
+        }
 
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-	virtual void Invalidate();
-protected:
-	XPtr<XItem> cooked_item;
-	int use_time;
+        virtual XObject* MakeCopy()
+        {
+            return new XCookingSet(this);
+        }
+
+        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
+        virtual void toString(char* buf)
+        {
+            strcpy(buf, name);
+        }
+
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+        virtual void Invalidate();
+    protected:
+        XPtr<XItem> cooked_item;
+        int use_time;
 };
 
 
@@ -66,81 +77,102 @@ protected:
 
 class XPickAxe : public XItem
 {
-	int tgt_x, tgt_y;
-	int rock_resist;
-public:
-	DECLARE_CREATOR(XPickAxe, XItem);
-	XPickAxe()
-	{
-		color = xLIGHTGRAY;
-		view = '\\';
-		it = IT_PICKAXE;
-		strcpy(name, "pickaxe");
-		value = 150;
-		weight = 100;
-		im = IM_TOOL;
-		bp = BP_TOOL;
-		s = new XStats();
-		r = new XResistance();
-		dice.Setup(1, 10, 0);
-	}
-	XPickAxe(XPickAxe * copy) : XItem(copy) {}
-	virtual XObject * MakeCopy() {return new XPickAxe(this);}
-	virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-	virtual void toString(char * buf) { strcpy(buf, name); }
+        int tgt_x, tgt_y;
+        int rock_resist;
+    public:
+        DECLARE_CREATOR(XPickAxe, XItem);
+        XPickAxe()
+        {
+            color = xLIGHTGRAY;
+            view = '\\';
+            it = IT_PICKAXE;
+            strcpy(name, "pickaxe");
+            value = 150;
+            weight = 100;
+            im = IM_TOOL;
+            bp = BP_TOOL;
+            s = new XStats();
+            r = new XResistance();
+            dice.Setup(1, 10, 0);
+        }
+
+        XPickAxe(XPickAxe * copy) : XItem(copy) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XPickAxe(this);
+        }
+
+        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
+        virtual void toString(char* buf)
+        {
+            strcpy(buf, name);
+        }
 };
-
-
 
 class XEyeOfRaa : public XItem
 {
-public:
-	DECLARE_CREATOR(XEyeOfRaa, XItem);
-	XEyeOfRaa()
-	{
-		color = xCYAN;
-		view = '*';
-		it = IT_EYEOFRAA;
-		strcpy(name, "Eye of Raa");
-		value = 150;
-		weight = 100;
-		im = IM_TOOL;
-		bp = BP_TOOL;
-		s = new XStats("Ma:0d0+10 Wi:0d0+10");
-		r = new XResistance("air:100");
-		dice.Setup(1, 10, 0);
-	}
-	XEyeOfRaa(XEyeOfRaa * copy) : XItem(copy) {}
-	virtual XObject * MakeCopy() {return new XEyeOfRaa(this);}
-	virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-	virtual void toString(char * buf) { strcpy(buf, name); }
+    public:
+        DECLARE_CREATOR(XEyeOfRaa, XItem);
+        XEyeOfRaa()
+        {
+            color = xCYAN;
+            view = '*';
+            it = IT_EYEOFRAA;
+            strcpy(name, "Eye of Raa");
+            value = 150;
+            weight = 100;
+            im = IM_TOOL;
+            bp = BP_TOOL;
+            s = new XStats("Ma:0d0+10 Wi:0d0+10");
+            r = new XResistance("air:100");
+            dice.Setup(1, 10, 0);
+        }
+
+        XEyeOfRaa(XEyeOfRaa * copy) : XItem(copy) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XEyeOfRaa(this);
+        }
+
+        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
+        virtual void toString(char* buf)
+        {
+            strcpy(buf, name);
+        }
 };
-
-
 
 class XAlchemySet : public XItem
 {
-public:
-	DECLARE_CREATOR(XAlchemySet, XItem);
-	XAlchemySet()
-	{
-		color = xLIGHTGRAY;
-		view = '[';
-		it = IT_ALCHEMYSET;
-		strcpy(name, "alchemy set");
-		value = 150;
-		weight = 100;
-		im = IM_TOOL;
-		bp = BP_TOOL;
-		s = new XStats();
-		r = new XResistance();
-	}
-	XAlchemySet(XAlchemySet * copy) : XItem(copy) {}
-	virtual XObject * MakeCopy() {return new XAlchemySet(this);}
-	virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-	virtual void toString(char * buf) { strcpy(buf, name); }
+    public:
+        DECLARE_CREATOR(XAlchemySet, XItem);
+        XAlchemySet()
+        {
+            color = xLIGHTGRAY;
+            view = '[';
+            it = IT_ALCHEMYSET;
+            strcpy(name, "alchemy set");
+            value = 150;
+            weight = 100;
+            im = IM_TOOL;
+            bp = BP_TOOL;
+            s = new XStats();
+            r = new XResistance();
+        }
+
+        XAlchemySet(XAlchemySet * copy) : XItem(copy) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XAlchemySet(this);
+        }
+
+        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
+        virtual void toString(char* buf)
+        {
+            strcpy(buf, name);
+        }
 };
 
-
 #endif
-

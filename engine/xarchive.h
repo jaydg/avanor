@@ -26,10 +26,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XArchive
 {
-public:
-	static int StoreGame();
-	static int RestoreGame();
+    public:
+        static int StoreGame();
+        static int RestoreGame();
 };
-
 
 #endif

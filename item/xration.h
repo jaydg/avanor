@@ -26,16 +26,27 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XRation : public XAnyFood
 {
-public:
-	DECLARE_CREATOR(XRation, XAnyFood);
-	XRation(ITEM_TYPE it = IT_RANDOM);
-	XRation(XRation * copy) : XAnyFood((XAnyFood *)copy){}
-	virtual XObject * MakeCopy() { return new XRation(this); }
-	virtual RESULT onEat(XCreature * eater);
-	
-	virtual void Store(XFile * f) {XAnyFood::Store(f);}
-	virtual void Restore(XFile * f) {XAnyFood::Restore(f);}
+    public:
+        DECLARE_CREATOR(XRation, XAnyFood);
+        XRation(ITEM_TYPE it = IT_RANDOM);
+        XRation(XRation * copy) : XAnyFood((XAnyFood*)copy) {}
 
+        virtual XObject* MakeCopy()
+        {
+            return new XRation(this);
+        }
+
+        virtual RESULT onEat(XCreature * eater);
+
+        virtual void Store(XFile * f)
+        {
+            XAnyFood::Store(f);
+        }
+
+        virtual void Restore(XFile * f)
+        {
+            XAnyFood::Restore(f);
+        }
 };
 
 #endif

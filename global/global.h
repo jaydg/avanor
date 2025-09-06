@@ -22,40 +22,38 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __GLOBAL_H
 
 #ifdef WIN32
-#  define XWIN32
+    #define XWIN32
 #else
-#  define XLINUX
+    #define XLINUX
 #endif
 
 // Directory for common data files (game manual, hiscore, ...)
 #ifndef DATA_DIR
-#  define DATA_DIR "./"
+    #define DATA_DIR "./"
 #endif
 
 // Directory for private data files (user settings, saved games, ...)
 #ifndef HOME_DIR
-#  ifdef XLINUX
-#    define HOME_DIR "~/.avanor/"
-#  else
-#    define HOME_DIR "./"
-#  endif
+    #ifdef XLINUX
+        #define HOME_DIR "~/.avanor/"
+    #else
+        #define HOME_DIR "./"
+    #endif
 #endif
 
 #include <stdlib.h>
 #include <stdio.h>
 
 #ifdef XWIN32
-#  include <conio.h>
+    #include <conio.h>
 #endif
-
 
 #ifdef XLINUX
-#  include <curses.h>
-#  include <string.h>
-#  define stricmp(a, b) strcasecmp(a, b)
-#  define strnicmp(a, b, n) strncasecmp(a, b, n)
+    #include <curses.h>
+    #include <string.h>
+    #define stricmp(a, b) strcasecmp(a, b)
+    #define strnicmp(a, b, n) strncasecmp(a, b, n)
 #endif
-
 
 #include <math.h>
 #include <assert.h>
@@ -72,17 +70,17 @@ extern unsigned long cr_died;
 extern int __animation_flag; //0 - none, other - delay miliseconds
 
 #ifndef M_E
-	#define M_E 2.7182818284590452354
+    #define M_E 2.7182818284590452354
 #endif
 #ifndef M_PI
-	#define M_PI 3.1415926535897932384
+    #define M_PI 3.1415926535897932384
 #endif
 
 enum xColor {
-xBLACK = 0,
-xBLUE, xGREEN, xCYAN, xRED, xMAGENTA, xBROWN, xLIGHTGRAY, xDARKGRAY,
-xLIGHTBLUE, xLIGHTGREEN, xLIGHTCYAN, xLIGHTRED, xLIGHTMAGENTA, xYELLOW,
-xWHITE = 15
+    xBLACK = 0,
+    xBLUE, xGREEN, xCYAN, xRED, xMAGENTA, xBROWN, xLIGHTGRAY, xDARKGRAY,
+    xLIGHTBLUE, xLIGHTGREEN, xLIGHTCYAN, xLIGHTRED, xLIGHTMAGENTA, xYELLOW,
+    xWHITE = 15
 };
 
 #define MSG_BLACK          "\x1F\x00"
@@ -102,18 +100,17 @@ xWHITE = 15
 #define MSG_YELLOW         "\x1F\x0E"
 #define MSG_WHITE          "\x1F\x0F"
 
-//next table helps to convert dynamic xCOLOR to text const char *
-//that allows to create construction such next
-//vPutS(MSG_YELLOW "yellow" SCOLOR(vRand(15)) "random color");
+// next table helps to convert dynamic xCOLOR to text const char *
+// that allows to create construction such next
+// vPutS(MSG_YELLOW "yellow" SCOLOR(vRand(15)) "random color");
 
 #define SCOLOR(x) color_convert_table[x]
 extern const char* color_convert_table[];
 
-struct V_BUFFER
-{
-	char * buffer;
-	V_BUFFER();
-	~V_BUFFER();
+struct V_BUFFER {
+    char* buffer;
+    V_BUFFER();
+    ~V_BUFFER();
 };
 
 extern int tri_table[120][10][2]; //120 a*3, 10 - r, 2 (0 - x, 1 - y)
@@ -165,18 +162,18 @@ void vRefresh();
 void vPutCh(int x, int y, char ch);
 void vPutCh(int x, int y, char ch, int attr);
 char vTestCh(int x, int y);
-void vPutS(const char * s);
-void vFPutS(FILE * f, const char * s);
-int vGetS(char * s, int buffer_size);
+void vPutS(const char* s);
+void vFPutS(FILE * f, const char* s);
+int vGetS(char* s, int buffer_size);
 void vClrEol();
 void vGotoXY(int x, int y);
 void vXGotoXY(int x, int y);
-void vGetCursorPos(int * x, int * y);
+void vGetCursorPos(int* x, int* y);
 void vSetAttr(int color);
 void vDelay(int n);
-int  vKbhit();
-int  vGetch();
-int  vXGetch(char * ch_buf);
+int vKbhit();
+int vGetch();
+int vXGetch(char* ch_buf);
 void vStore(V_BUFFER * buf);
 void vRestore(V_BUFFER * buf);
 void vHideCursor();
@@ -185,6 +182,6 @@ void vRandSeed(unsigned long seed);
 long vRand();
 long vRand(unsigned long n);
 
-char *vMakePath(const char* prefix, const char* filename);
+char* vMakePath(const char* prefix, const char* filename);
 
 #endif

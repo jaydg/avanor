@@ -21,7 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XAPI_H
 #define __XAPI_H
 
-
 int vMax(int value1, int value2);
 int vMin(int value1, int value2);
 int sgn(int n);
@@ -32,9 +31,8 @@ int vGetBitNumber(unsigned int mask);
 int vGetHighBitNum(unsigned int number);
 int vBitsCount(unsigned int number);
 
-int vCheckForCursorKey(int key, int * dx, int * dy);
+int vCheckForCursorKey(int key, int* dx, int* dy);
 
 #define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
-
 
 #endif

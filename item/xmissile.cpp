@@ -23,19 +23,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XMissile);
 
-_MAIN_ITEM_STRUCT MISSILE_STRUCT[] =
-{
-{IT_ARROW,		"arrow",		'\\',	"",	"",		"1d2","1d4",  "1d3","1d2+3", 	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
-{IT_QUARREL,	"quarrel",		'\\',	"",	"",		"1d2","1d6",  "1d3","1d2+3", 	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
-{IT_SLINGBULLET,"sling bullet",	'\\',	"",	"",		"1d2","1d5",  "1d2","1d2+3", 	ISET_MISSILE,	1,	1,	30,		IQ_FAIR,""},
-{IT_ROCK,		"rock",			'*',	"",	"",		"1d1","1d3",  "1d1","1d2+2", 	ISET_STONE,		1,	1,	300,	IQ_POOR,""},
-{IT_SHURIKEN,	"shuriken",		'*',	"",	"",		"1d2","1d6",  "1d4","1d2+2", 	ISET_METAL,		1,	1,	50,		IQ_FAIR,""}
+_MAIN_ITEM_STRUCT MISSILE_STRUCT[] = {
+    {IT_ARROW,	"arrow",	'\\',	"",	"",	"1d2", "1d4", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
+    {IT_QUARREL,	"quarrel",	'\\',	"",	"",	"1d2", "1d6", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
+    {IT_SLINGBULLET, "sling bullet",	'\\',	"",	"",	"1d2", "1d5", "1d2", "1d2+3",	ISET_MISSILE,	1,	1,	30,	IQ_FAIR, ""},
+    {IT_ROCK,	"rock",	'*',	"",	"",	"1d1", "1d3", "1d1", "1d2+2",	ISET_STONE,	1,	1,	300,	IQ_POOR, ""},
+    {IT_SHURIKEN,	"shuriken",	'*',	"",	"",	"1d2", "1d6", "1d4", "1d2+2",	ISET_METAL,	1,	1,	50,	IQ_FAIR, ""}
 };
 
 XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 
 /*
-// TODO: Bind launchers to missiles.  
+// TODO: Bind launchers to missiles.
 // Rock is special b/c it can be used with or without a launcher...
 
  _WEAPON_BIND mbind[] = {
@@ -47,145 +46,155 @@ XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 
 XMissile::XMissile(ITEM_TYPE _it)
 {
-	im = IM_MISSILE;
-	bp = BP_MISSILE;
-	BasicFill(_it, &gi_missile);
-	if (it == IT_ROCK)
-	{
-		strcpy(name, "rock");
-		view = '*';
-		color = xDARKGRAY;
-		XDice d(1, 3);
-		_HIT = d.S;
-		d.Setup(1, 2);
-		dice.Setup(1, 5, d.S);
-		value = 1;
-		weight = 5;
-		RNG = 0;
-	}
-	r->Sub(r);
-	s->Sub(s);
+    im = IM_MISSILE;
+    bp = BP_MISSILE;
+    BasicFill(_it, &gi_missile);
 
-	int rcount = 20;
-	if (vRand(20) == 0 && (it == IT_ARROW || it == IT_QUARREL || it == IT_SLINGBULLET)) //something special...
-	{
-		rcount = 10;
-		int tr = vRand(4);
-		switch (tr)
-		{
-			case 0: brt = BR_POISON; break; //poisoned
-			case 1: brt = BR_FIRE; break; //hell arrows
-			case 2: brt = BR_UNDEADSLAYER; break; //
-			case 3: brt = BR_ORCSLAYER; break; //
-		}
-		
-	}
-	if (vRand(20) == 0)
-	{
-		rcount = rcount / 2;
-		int xr = vRand(3);
-		if (xr == 0)
-		{
-			if (it == IT_ARROW)
-			{
-				dice.Add(2, 2, 0);
-				RNG += 1;
-				strcpy(name, "seeker arrow");
-			}
-			if (it == IT_QUARREL)
-			{
-				dice.Add(2, 2, 0);
-				RNG += 1;
-				strcpy(name, "seeker quarrel");
-			}
-		} else if (xr == 1)
-		{
-			if (it == IT_ARROW)
-			{
-				_HIT += 10;
-				RNG += 2;
-				strcpy(name, "hunter arrow");
-			}
-			if (it == IT_QUARREL)
-			{
-				_HIT += 10;
-				RNG += 2;
-				strcpy(name, "hunter quarrel");
-			}
-		} else if (xr == 2)
-		{
-			if (it == IT_ARROW)
-			{
-				dice.Add(1, 1, 10);
-				RNG += 2;
-				strcpy(name, "sharp arrow");
-			}
-			if (it == IT_QUARREL)
-			{
-				dice.Add(1, 1, 10);
-				RNG += 2;
-				strcpy(name, "sharp quarrel");
-			}
-		}
-	}
+    if (it == IT_ROCK) {
+        strcpy(name, "rock");
+        view = '*';
+        color = xDARKGRAY;
+        XDice d(1, 3);
+        _HIT = d.S;
+        d.Setup(1, 2);
+        dice.Setup(1, 5, d.S);
+        value = 1;
+        weight = 5;
+        RNG = 0;
+    }
 
+    r->Sub(r);
+    s->Sub(s);
 
-	quantity = vRand() % rcount + 3;
-	weight = (weight / 5 + 1);
+    int rcount = 20;
+
+    if (vRand(20) == 0 && (it == IT_ARROW || it == IT_QUARREL || it == IT_SLINGBULLET)) { //something special...
+        rcount = 10;
+        int tr = vRand(4);
+
+        switch (tr) {
+            case 0:
+                brt = BR_POISON;
+                break; //poisoned
+
+            case 1:
+                brt = BR_FIRE;
+                break; //hell arrows
+
+            case 2:
+                brt = BR_UNDEADSLAYER;
+                break; //
+
+            case 3:
+                brt = BR_ORCSLAYER;
+                break; //
+        }
+
+    }
+
+    if (vRand(20) == 0) {
+        rcount = rcount / 2;
+        int xr = vRand(3);
+
+        if (xr == 0) {
+            if (it == IT_ARROW) {
+                dice.Add(2, 2, 0);
+                RNG += 1;
+                strcpy(name, "seeker arrow");
+            }
+
+            if (it == IT_QUARREL) {
+                dice.Add(2, 2, 0);
+                RNG += 1;
+                strcpy(name, "seeker quarrel");
+            }
+        } else if (xr == 1) {
+            if (it == IT_ARROW) {
+                _HIT += 10;
+                RNG += 2;
+                strcpy(name, "hunter arrow");
+            }
+
+            if (it == IT_QUARREL) {
+                _HIT += 10;
+                RNG += 2;
+                strcpy(name, "hunter quarrel");
+            }
+        } else if (xr == 2) {
+            if (it == IT_ARROW) {
+                dice.Add(1, 1, 10);
+                RNG += 2;
+                strcpy(name, "sharp arrow");
+            }
+
+            if (it == IT_QUARREL) {
+                dice.Add(1, 1, 10);
+                RNG += 2;
+                strcpy(name, "sharp quarrel");
+            }
+        }
+    }
+
+    quantity = vRand() % rcount + 3;
+    weight = (weight / 5 + 1);
 }
 
-void XMissile::toString(char * buf)
+void XMissile::toString(char* buf)
 {
-	if (quantity == 1)
-		sprintf(buf, "%s%s%s <%+d>(%+d, %dd%d%+d)%s",
-			brt & BR_POISON ? "poisoned " : "",
-			brt & BR_UNDEADSLAYER ? "holy " : "",
-			name, RNG, _HIT, dice.X, dice.Y, dice.Z,
-			brt & BR_FIRE ? " of fire" : ""
-			);
-	else
-	{
-		sprintf(buf, "heap of (%d) %s%s%ss <%+d>(%+d, %dd%d%+d)%s",
-			quantity,
-			brt & BR_POISON ? "poisoned " : "",
-			brt & BR_UNDEADSLAYER ? "holy " : "",
-			name, RNG, _HIT, dice.X, dice.Y, dice.Z,
-			brt & BR_FIRE ? " of fire" : ""
-			);
-	}
-
+    if (quantity == 1)
+        sprintf(buf, "%s%s%s <%+d>(%+d, %dd%d%+d)%s",
+            brt & BR_POISON ? "poisoned " : "",
+            brt & BR_UNDEADSLAYER ? "holy " : "",
+            name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+            brt & BR_FIRE ? " of fire" : ""
+        );
+    else {
+        sprintf(buf, "heap of (%d) %s%s%ss <%+d>(%+d, %dd%d%+d)%s",
+            quantity,
+            brt & BR_POISON ? "poisoned " : "",
+            brt & BR_UNDEADSLAYER ? "holy " : "",
+            name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+            brt & BR_FIRE ? " of fire" : ""
+        );
+    }
 }
 
 bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
 {
-	if (weapon)
-	{
-		switch (weapon->wt)
-		{
-			case WSK_BOW: 
-				if (missile->it == IT_ARROW)
-					return true;
-				else
-					return false;
-				break;
-			case WSK_CROSSBOW: 
-				if (missile->it == IT_QUARREL)
-					return true;
-				else
-					return false;
-				break;
-			case WSK_SLING: 
-				if (missile->it == IT_ROCK || missile->it == IT_SLINGBULLET)
-					return true;
-				else
-					return false;
-				break;
-			default: return false;
-		}
+    if (weapon) {
+        switch (weapon->wt) {
+            case WSK_BOW:
+                if (missile->it == IT_ARROW) {
+                    return true;
+                } else {
+                    return false;
+                }
 
-	} else
-	{
-		return true; //all can be throwed without weapon
-	}
+                break;
+
+            case WSK_CROSSBOW:
+                if (missile->it == IT_QUARREL) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+                break;
+
+            case WSK_SLING:
+                if (missile->it == IT_ROCK || missile->it == IT_SLINGBULLET) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+                break;
+
+            default:
+                return false;
+        }
+
+    } else {
+        return true; //all can be throwed without weapon
+    }
 }
-

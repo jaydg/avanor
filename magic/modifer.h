@@ -30,23 +30,22 @@ class XCreature;
 
 class XModifer
 {
-public:
-	XModifer();
-	~XModifer();
-	XModifer(XModifer * m);
-	int Add(XBasicModifer * mod, XCreature * owner);
-	int Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr = NULL);
-	int Remove(MODIFER_TYPE mdt, XCreature * owner);
-	int Get(MODIFER_TYPE mt); //return val
-	int Run(XCreature * cr);
-	void toString(char * buf);
+    public:
+        XModifer();
+        ~XModifer();
+        XModifer(XModifer * m);
+        int Add(XBasicModifer * mod, XCreature * owner);
+        int Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr = NULL);
+        int Remove(MODIFER_TYPE mdt, XCreature * owner);
+        int Get(MODIFER_TYPE mt); //return val
+        int Run(XCreature * cr);
+        void toString(char* buf);
 
-	void Store(XFile * f);
-	void Restore(XFile * f, XCreature * owner);
+        void Store(XFile * f);
+        void Restore(XFile * f, XCreature * owner);
 
-protected:
-	XList<XBasicModifer *> ml;
+    protected:
+        XList<XBasicModifer*> ml;
 };
-
 
 #endif

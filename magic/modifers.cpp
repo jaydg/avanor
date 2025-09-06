@@ -24,285 +24,298 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XBasicModifer::XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr)
 {
-	mdt = mt; 
-	val = _val; 
-	setter = _cr;
-	im = IM_OTHER; 
+    mdt = mt;
+    val = _val;
+    setter = _cr;
+    im = IM_OTHER;
 }
 
 void XBasicModifer::Invalidate()
 {
-	setter = NULL;
-	XObject::Invalidate();
+    setter = NULL;
+    XObject::Invalidate();
 }
 
 void XBasicModifer::Store(XFile * f)
 {
-	XObject::Store(f);
-	f->Write(&val, sizeof(int));
-	f->Write(&mdt, sizeof(MODIFER_TYPE));
-	setter.Store(f);
+    XObject::Store(f);
+    f->Write(&val, sizeof(int));
+    f->Write(&mdt, sizeof(MODIFER_TYPE));
+    setter.Store(f);
 }
 
 void XBasicModifer::Restore(XFile * f)
 {
-	XObject::Restore(f);
-	f->Read(&val, sizeof(int));
-	f->Read(&mdt, sizeof(MODIFER_TYPE));
-	setter.Restore(f);
+    XObject::Restore(f);
+    f->Read(&val, sizeof(int));
+    f->Read(&mdt, sizeof(MODIFER_TYPE));
+    setter.Restore(f);
 }
 
 REGISTER_CLASS(XModWound);
 
 MODIFER_RESULT XModWound::Run(XCreature * owner)
 {
-	val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(SKT_FIRST_AID));
-	owner->sk->UseSkill(SKT_FIRST_AID);
-	if (val > 0)
-	{
-		owner->_HP -= val;
-		if (owner->isHero())
-			msgwin.Add(ApplyMsg());
-	}
-	return XBasicModifer::Run(owner);
+    val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(SKT_FIRST_AID));
+    owner->sk->UseSkill(SKT_FIRST_AID);
+
+    if (val > 0) {
+        owner->_HP -= val;
+
+        if (owner->isHero()) {
+            msgwin.Add(ApplyMsg());
+        }
+    }
+
+    return XBasicModifer::Run(owner);
 }
 
 REGISTER_CLASS(XModPoison);
 MODIFER_RESULT XModPoison::Run(XCreature * owner)
 {
-	if (vRand() % 3 == 0)
-	{
-		int rnd = vRand() % 4;
-		owner->_HP -= rnd;
-		if (owner->isHero())
-			msgwin.Add(ApplyMsg());
-	}
-	val -= owner->sk->GetLevel(SKT_FIRST_AID);
-	return XBasicModifer::Run(owner);
+    if (vRand() % 3 == 0) {
+        int rnd = vRand() % 4;
+        owner->_HP -= rnd;
+
+        if (owner->isHero()) {
+            msgwin.Add(ApplyMsg());
+        }
+    }
+
+    val -= owner->sk->GetLevel(SKT_FIRST_AID);
+    return XBasicModifer::Run(owner);
 }
 
 REGISTER_CLASS(XModConfuse);
 MODIFER_RESULT XModConfuse::Run(XCreature * owner)
 {
-	owner->nx = owner->x + vRand() % 3 - 1;
-	owner->ny = owner->y + vRand() % 3 - 1;
-	if (owner->isHero())
-		msgwin.Add(ApplyMsg());
-	return XBasicModifer::Run(owner);
+    owner->nx = owner->x + vRand() % 3 - 1;
+    owner->ny = owner->y + vRand() % 3 - 1;
+
+    if (owner->isHero()) {
+        msgwin.Add(ApplyMsg());
+    }
+
+    return XBasicModifer::Run(owner);
 }
 
 REGISTER_CLASS(XModStun);
 int XModStun::onSet(XCreature * owner)
 {
-	owner->added_DV -= 5;
-	owner->added_HIT -= 10;
-	return 1;
+    owner->added_DV -= 5;
+    owner->added_HIT -= 10;
+    return 1;
 }
 
 int XModStun::onRemove(XCreature * owner)
 {
-	owner->added_DV += 5;
-	owner->added_HIT += 10;
-	return 1;
+    owner->added_DV += 5;
+    owner->added_HIT += 10;
+    return 1;
 }
 
 REGISTER_CLASS(XModHeroism);
 int XModHeroism::onSet(XCreature * owner)
 {
-	owner->added_DV += 5;
-	owner->added_HIT += 10;
-	return 1;
+    owner->added_DV += 5;
+    owner->added_HIT += 10;
+    return 1;
 }
 
 int XModHeroism::onRemove(XCreature * owner)
 {
-	owner->added_DV -= 5;
-	owner->added_HIT -= 10;
-	return 1;
+    owner->added_DV -= 5;
+    owner->added_HIT -= 10;
+    return 1;
 }
 
 REGISTER_CLASS(XModDisease);
 int XModDisease::onSet(XCreature * owner)
 {
-	owner->added_DV -= 5;
-	owner->added_HIT -= 5;
-	owner->added_stats.Modify(S_STR, -3);
-	owner->added_stats.Modify(S_DEX, -4);
-	owner->added_stats.Modify(S_TOU, -3);
-	return 1;
+    owner->added_DV -= 5;
+    owner->added_HIT -= 5;
+    owner->added_stats.Modify(S_STR, -3);
+    owner->added_stats.Modify(S_DEX, -4);
+    owner->added_stats.Modify(S_TOU, -3);
+    return 1;
 }
 
 int XModDisease::onRemove(XCreature * owner)
 {
-	owner->added_DV += 5;
-	owner->added_HIT += 5;
-	owner->added_stats.Modify(S_STR, +3);
-	owner->added_stats.Modify(S_DEX, +4);
-	owner->added_stats.Modify(S_TOU, +3);
-	return 1;
+    owner->added_DV += 5;
+    owner->added_HIT += 5;
+    owner->added_stats.Modify(S_STR, +3);
+    owner->added_stats.Modify(S_DEX, +4);
+    owner->added_stats.Modify(S_TOU, +3);
+    return 1;
 }
 
 MODIFER_RESULT XModDisease::Run(XCreature * owner)
 {
-	switch (vRand(300))
-	{
-		case 0: owner->GainAttr(S_STR, -1); break;
-		case 1: owner->GainAttr(S_DEX, -1); break;
-		case 2: owner->GainAttr(S_TOU, -1); break;
-	}
-	return XBasicModifer::Run(owner);
+    switch (vRand(300)) {
+        case 0:
+            owner->GainAttr(S_STR, -1);
+            break;
+
+        case 1:
+            owner->GainAttr(S_DEX, -1);
+            break;
+
+        case 2:
+            owner->GainAttr(S_TOU, -1);
+            break;
+    }
+
+    return XBasicModifer::Run(owner);
 }
 
 REGISTER_CLASS(XModWeak);
 int XModWeak::onSet(XCreature * owner)
 {
-	owner->added_stats.Modify(S_STR, -5);
-	return 1;
+    owner->added_stats.Modify(S_STR, -5);
+    return 1;
 }
 
 int XModWeak::onRemove(XCreature * owner)
 {
-	owner->added_stats.Modify(S_STR, +5);
-	return 1;
+    owner->added_stats.Modify(S_STR, +5);
+    return 1;
 }
 
 MODIFER_RESULT XModWeak::Run(XCreature * owner)
 {
-	switch (vRand(100))
-	{
-		case 0: owner->GainAttr(S_STR, -1); break;
-	}
-	return XBasicModifer::Run(owner);
+    switch (vRand(100)) {
+        case 0:
+            owner->GainAttr(S_STR, -1);
+            break;
+    }
+
+    return XBasicModifer::Run(owner);
 }
 
 REGISTER_CLASS(XModParalyse);
 MODIFER_RESULT XModParalyse::Run(XCreature * owner)
 {
-	owner->nx = owner->x;
-	owner->ny = owner->y;
-	return XBasicModifer::Run(owner);
+    owner->nx = owner->x;
+    owner->ny = owner->y;
+    return XBasicModifer::Run(owner);
 }
 
 
 REGISTER_CLASS(XModDelayed);
 MODIFER_RESULT XModDelayed::Run(XCreature * owner)
 {
-	MODIFER_RESULT mr = XBasicModifer::Run(owner);
-	if (mr == MR_REMOVE)
-	{
-		owner->md->Add(set_mt, set_val, owner);
-	}
-	return mr;
+    MODIFER_RESULT mr = XBasicModifer::Run(owner);
+
+    if (mr == MR_REMOVE) {
+        owner->md->Add(set_mt, set_val, owner);
+    }
+
+    return mr;
 }
 
 void XModDelayed::Store(XFile * f)
 {
-	XBasicModifer::Store(f);
-	f->Write(&set_mt, sizeof(MODIFER_TYPE));
-	f->Write(&set_val, sizeof(int));
+    XBasicModifer::Store(f);
+    f->Write(&set_mt, sizeof(MODIFER_TYPE));
+    f->Write(&set_val, sizeof(int));
 }
 
 void XModDelayed::Restore(XFile * f)
 {
-	XBasicModifer::Restore(f);
-	f->Read(&set_mt, sizeof(MODIFER_TYPE));
-	f->Read(&set_val, sizeof(int));
+    XBasicModifer::Restore(f);
+    f->Read(&set_mt, sizeof(MODIFER_TYPE));
+    f->Read(&set_val, sizeof(int));
 }
 
 
 REGISTER_CLASS(XModSeeInvisible);
 int XModSeeInvisible::onSet(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_SEEINVISIBLE, 10);
-	return 1;
+    owner->added_resists.ChangeResistance(R_SEEINVISIBLE, 10);
+    return 1;
 }
 
 int XModSeeInvisible::onRemove(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_SEEINVISIBLE, -10);
-	return 1;
+    owner->added_resists.ChangeResistance(R_SEEINVISIBLE, -10);
+    return 1;
 }
-
 
 REGISTER_CLASS(XModBoostSpeed);
 int XModBoostSpeed::onSet(XCreature * owner)
 {
-	owner->ttmb -= 300;
-	return 1;
+    owner->ttmb -= 300;
+    return 1;
 }
 
 int XModBoostSpeed::onRemove(XCreature * owner)
 {
-	owner->ttmb += 300;
-	return 1;
+    owner->ttmb += 300;
+    return 1;
 }
-
 
 REGISTER_CLASS(XModSlowness);
 int XModSlowness::onSet(XCreature * owner)
 {
-	owner->ttmb += 300;
-	return 1;
+    owner->ttmb += 300;
+    return 1;
 }
 
 int XModSlowness::onRemove(XCreature * owner)
 {
-	owner->ttmb -= 300;
-	return 1;
+    owner->ttmb -= 300;
+    return 1;
 }
-
 
 REGISTER_CLASS(XModAcidResistance);
 int XModAcidResistance::onSet(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_ACID, 40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_ACID, 40);
+    return 1;
 }
 
 int XModAcidResistance::onRemove(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_ACID, -40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_ACID, -40);
+    return 1;
 }
-
 
 REGISTER_CLASS(XModFireResistance);
 int XModFireResistance::onSet(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_FIRE, 40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_FIRE, 40);
+    return 1;
 }
 
 int XModFireResistance::onRemove(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_FIRE, -40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_FIRE, -40);
+    return 1;
 }
-
 
 REGISTER_CLASS(XModColdResistance);
 int XModColdResistance::onSet(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_COLD, 40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_COLD, 40);
+    return 1;
 }
 
 int XModColdResistance::onRemove(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_COLD, -40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_COLD, -40);
+    return 1;
 }
-
 
 REGISTER_CLASS(XModPoisonResistance);
 int XModPoisonResistance::onSet(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_POISON, 40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_POISON, 40);
+    return 1;
 }
 
 int XModPoisonResistance::onRemove(XCreature * owner)
 {
-	owner->added_resists.ChangeResistance(R_POISON, -40);
-	return 1;
+    owner->added_resists.ChangeResistance(R_POISON, -40);
+    return 1;
 }

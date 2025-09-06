@@ -23,14 +23,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "xclothe.h"
 
-class XArmor:public XClothe
+class XArmor: public XClothe
 {
-public:
-	DECLARE_CREATOR(XArmor, XClothe);
-	XArmor(ITEM_TYPE it = IT_RANDOM);
-	XArmor(XArmor * armor);
-	virtual XObject * MakeCopy() { return new XArmor(this); }
+    public:
+        DECLARE_CREATOR(XArmor, XClothe);
+        XArmor(ITEM_TYPE it = IT_RANDOM);
+        XArmor(XArmor * armor);
+        virtual XObject* MakeCopy()
+        {
+            return new XArmor(this);
+        }
 };
-
 
 #endif

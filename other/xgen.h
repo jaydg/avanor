@@ -26,60 +26,76 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XGenerator : public XMapObject
 {
-protected:
-	XGenerator () {}
-public:
-	DECLARE_CREATOR(XGenerator, XMapObject);
-	XGenerator(int run_time)
-	{
-		ttmb = run_time;
-		ttm = ttmb;
-		x = -1;
-		y = -1;
-		im = IM_OTHER;
-	}
-	int Run() {assert(0); return 0;}
-	virtual int Compare(XObject * o) {return 1;}
+    protected:
+        XGenerator() {}
+
+    public:
+        DECLARE_CREATOR(XGenerator, XMapObject);
+        XGenerator(int run_time)
+        {
+            ttmb = run_time;
+            ttm = ttmb;
+            x = -1;
+            y = -1;
+            im = IM_OTHER;
+        }
+
+        int Run()
+        {
+            assert(0);
+            return 0;
+        }
+
+        virtual int Compare(XObject * o)
+        {
+            return 1;
+        }
 };
 
 class XUniversalGen : public XGenerator
 {
-protected:
-	XUniversalGen() {}
-public:
-	DECLARE_CREATOR(XUniversalGen, XGenerator);
-	XUniversalGen(XLocation * loc, CREATURE_CLASS _crc, CREATURE_LEVEL _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
-	{
-		l   = loc;
-		crl = _crl;
-		crc = _crc;
-		max_creature = _max_creature;
-	}
-	int Run();
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-protected:
-	CREATURE_LEVEL crl;
-	CREATURE_CLASS crc;
-	unsigned int max_creature;
-};
+    protected:
+        XUniversalGen() {}
 
+    public:
+        DECLARE_CREATOR(XUniversalGen, XGenerator);
+        XUniversalGen(XLocation * loc, CREATURE_CLASS _crc, CREATURE_LEVEL _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
+        {
+            l = loc;
+            crl = _crl;
+            crc = _crc;
+            max_creature = _max_creature;
+        }
+
+        int Run();
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+    protected:
+        CREATURE_LEVEL crl;
+        CREATURE_CLASS crc;
+        unsigned int max_creature;
+};
 
 class XMainLocationGen : public XGenerator
 {
-public:
-	DECLARE_CREATOR(XMainLocationGen, XGenerator);
-	XMainLocationGen(XLocation * loc) : XGenerator(1000)
-	{
-		l           = loc;
-		turns_count = 0;
-	}
-	XMainLocationGen() { assert(0); }
-	int Run();
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-protected:
-	int turns_count;
+    public:
+        DECLARE_CREATOR(XMainLocationGen, XGenerator);
+        XMainLocationGen(XLocation * loc) : XGenerator(1000)
+        {
+            l = loc;
+            turns_count = 0;
+        }
+
+        XMainLocationGen()
+        {
+            assert(0);
+        }
+
+        int Run();
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+    protected:
+        int turns_count;
 };
 
 #endif

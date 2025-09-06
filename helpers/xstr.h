@@ -26,33 +26,33 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XStr
 {
-	char * str;
-	int sz;
-	void Setup(const char * s, int sz);
-public:
-	XStr(const XStr& s);
-	XStr(const char * s, int sz);
-	XStr(const char * s);
-	XStr();
-	~XStr();
-	XStr operator+ (const XStr& s);
-	XStr operator+ (const char * s);
-	XStr& operator=(const XStr& s);
-	XStr& operator=(const char * s);
-	XStr& operator+=(const char * s);
-	XStr& operator+=(const XStr& s);
+        char* str;
+        int sz;
+        void Setup(const char* s, int sz);
+    public:
+        XStr(const XStr& s);
+        XStr(const char* s, int sz);
+        XStr(const char* s);
+        XStr();
+        ~XStr();
+        XStr operator+ (const XStr& s);
+        XStr operator+ (const char * s);
+        XStr &operator=(const XStr& s);
+        XStr &operator=(const char * s);
+        XStr &operator+=(const char * s);
+        XStr &operator+=(const XStr& s);
 
-	bool operator==(const char * s);
-	const char * c_str();
+        bool operator==(const char * s);
+        const char* c_str();
 
-	size_t Len();
+        size_t Len();
 
-	void Store(XFile * f);
-	void Restore(XFile * f);
+        void Store(XFile * f);
+        void Restore(XFile * f);
 
-	bool Empty();
+        bool Empty();
 
-	bool ReplaceFirst(const char * sub_string, const char * new_string);
+        bool ReplaceFirst(const char* sub_string, const char* new_string);
 };
 
 #endif

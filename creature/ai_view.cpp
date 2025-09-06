@@ -23,27 +23,30 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define NOT_EQUAL(a, b) ((a) - (b)) // is faster than a != b when we need int instead of bool
 
-struct opaque_info
-{
-	XStandardAI * ai;
-	XMap        * map;
+struct opaque_info {
+    XStandardAI* ai;
+    XMap* map;
 };
 
-static int grid_callback(void * opaque, int x, int y, int radius, int see_center)
+static int grid_callback(void* opaque, int x, int y, int radius, int see_center)
 {
-	opaque_info * info = (opaque_info *)opaque;
-	if (see_center) info->ai->AnalyzeGrid(x, y, radius);
-	return NOT_EQUAL(info->map->GetMovability(x, y), MO_WALL);
+    opaque_info * info = (opaque_info*)opaque;
+
+    if (see_center) {
+        info->ai->AnalyzeGrid(x, y, radius);
+    }
+
+    return NOT_EQUAL(info->map->GetMovability(x, y), MO_WALL);
 }
 
 void XStandardAI::AnalyzeView(int radius)
 {
-	opaque_info info = { this, ai_owner->l->map };
+    opaque_info info = { this, ai_owner->l->map };
 
-	LineOfSight(
-		ai_owner->x,
-		ai_owner->y,
-		radius,
-		&info,
-		grid_callback);
+    LineOfSight(
+        ai_owner->x,
+        ai_owner->y,
+        radius,
+        &info,
+        grid_callback);
 }

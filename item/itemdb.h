@@ -24,73 +24,69 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "defs.h"
 #include "itemdef.h"
 
-#define DB_PROP_SZ	15 //number of materials!
-#define ENH_DB_SZ	20 //number of special powers ("of Strength")
+#define DB_PROP_SZ	15 // number of materials!
+#define ENH_DB_SZ	20 // number of special powers ("of Strength")
 
-
-struct _MAIN_ITEM_STRUCT
-{
-	ITEM_TYPE it;
-	const char* name;
-	char view;
-	const char* dv;
-	const char* pv;
-	const char* hit;
-	const char* dice;
-	const char* z; //random z to dice;
-	const char* r;
-	ITEM_SET iset;
-	int value;
-	int valume;
-	int probability;
-	ITEM_QUALITY iq;
-	const char* breserved;
+struct _MAIN_ITEM_STRUCT {
+    ITEM_TYPE it;
+    const char* name;
+    char view;
+    const char* dv;
+    const char* pv;
+    const char* hit;
+    const char* dice;
+    const char* z; //random z to dice;
+    const char* r;
+    ITEM_SET iset;
+    int value;
+    int valume;
+    int probability;
+    ITEM_QUALITY iq;
+    const char* breserved;
 };
 
 class XItemBasicStructure
 {
-public:
-	XItemBasicStructure(_MAIN_ITEM_STRUCT * pIt, int count)
-	{
-		total_prob = 0;
-		pFirstItem = pIt;
-		total_item = count;
-		for (int i = 0; i < count; i++)
-		{
-			total_prob += pIt->probability;
-			pIt++;
-		}
-	}
-	int total_prob;
-	int total_item;
-	_MAIN_ITEM_STRUCT * pFirstItem;
+    public:
+        XItemBasicStructure(_MAIN_ITEM_STRUCT * pIt, int count)
+        {
+            total_prob = 0;
+            pFirstItem = pIt;
+            total_item = count;
+
+            for (int i = 0; i < count; i++) {
+                total_prob += pIt->probability;
+                pIt++;
+            }
+        }
+
+        int total_prob;
+        int total_item;
+        _MAIN_ITEM_STRUCT* pFirstItem;
 };
 
-
-struct ENHANCE_STRUCT
-{
-	const char* name;
-	int color; //if 0 don't change a color
-	const char* dv;
-	const char* pv;
-	const char* hit;
-	const char* dice;
-	const char* z; //random z to dice;
-	const char* rng;
-	int val; // value
-	ITEM_MASK im;
-	BRAND_TYPE brt;
-	CAN_FLAG res_flag;
-	SPECIAL_PROPERTY spp;
-	const char* s; //stats
-	const char* r; //resists
+struct ENHANCE_STRUCT {
+    const char* name;
+    int color; //if 0 don't change a color
+    const char* dv;
+    const char* pv;
+    const char* hit;
+    const char* dice;
+    const char* z; //random z to dice;
+    const char* rng;
+    int val; // value
+    ITEM_MASK im;
+    BRAND_TYPE brt;
+    CAN_FLAG res_flag;
+    SPECIAL_PROPERTY spp;
+    const char* s; //stats
+    const char* r; //resists
 };
 
 typedef _MAIN_ITEM_STRUCT XITEM_STRUCT[];
-typedef XITEM_STRUCT * ITEM_STRUCT;
+typedef XITEM_STRUCT* ITEM_STRUCT;
 
 extern _ITEMPROP item_prop[DB_PROP_SZ];
 extern ENHANCE_STRUCT ienh_db[ENH_DB_SZ];
-
 
 #endif

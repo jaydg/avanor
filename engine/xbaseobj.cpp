@@ -22,138 +22,147 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xbaseobj.h"
 
 XBaseObject::XBaseObject() :
-	RNG(0),  s(NULL), r(NULL), weight(0)
+    RNG(0), s(NULL), r(NULL), weight(0)
 {
 }
 
 void XBaseObject::Invalidate()
 {
-	XMapObject::Invalidate();
+    XMapObject::Invalidate();
 }
 
 XBaseObject::~XBaseObject()
 {
-	if (s != NULL)
-	{
-		delete s;
-		s = NULL;
-	}
-	
-	if (r != NULL)
-	{
-		delete r;
-		s = NULL;
-	}
+    if (s != NULL) {
+        delete s;
+        s = NULL;
+    }
+
+    if (r != NULL) {
+        delete r;
+        s = NULL;
+    }
 }
 
 XBaseObject::XBaseObject(XBaseObject * copy) :
-	XMapObject((XMapObject *)copy),
-	_DV      (copy->_DV),
-	_HIT     (copy->_HIT),
-	_HP      (copy->_HP),
-	_PP      (copy->_PP),
-	_PV      (copy->_PV),
-	dice     (copy->dice),
-	MAX_HP   (copy->MAX_HP),
-	MAX_PP   (copy->MAX_PP),
-	weight   (copy->weight),
-	RNG      (copy->RNG)
+    XMapObject((XMapObject*)copy),
+    _DV(copy->_DV),
+    _HIT(copy->_HIT),
+    _HP(copy->_HP),
+    _PP(copy->_PP),
+    _PV(copy->_PV),
+    dice(copy->dice),
+    MAX_HP(copy->MAX_HP),
+    MAX_PP(copy->MAX_PP),
+    weight(copy->weight),
+    RNG(copy->RNG)
 {
-	if (copy->r)
-		r = new XResistance(copy->r);
-	else
-		r = NULL;
-	if (copy->s)
-		s = new XStats(copy->s);
-	else
-		s = NULL;
+    if (copy->r) {
+        r = new XResistance(copy->r);
+    } else {
+        r = NULL;
+    }
+
+    if (copy->s) {
+        s = new XStats(copy->s);
+    } else {
+        s = NULL;
+    }
 }
 
 int XBaseObject::Compare(XObject * o)
 {
-	assert(dynamic_cast<XBaseObject *>(o));
+    assert(dynamic_cast<XBaseObject*>(o));
 
-	XBaseObject * tit = (XBaseObject *)o;
-	if (XMapObject::Compare(o) == 0
-			&& _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
-			&& _HIT == tit->_HIT && dice.X == tit->dice.X
-			&& dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
-			&& r->isEqual(tit->r) && s->isEqual(tit->s))
-			return 0;
-	else
-			return 1;
+    XBaseObject * tit = (XBaseObject*)o;
+
+    if (XMapObject::Compare(o) == 0
+        && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
+        && _HIT == tit->_HIT && dice.X == tit->dice.X
+        && dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
+        && r->isEqual(tit->r) && s->isEqual(tit->s)) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 void XBaseObject::Store(XFile * f)
 {
-	XMapObject::Store(f);
+    XMapObject::Store(f);
 
-	f->Write(&_DV);
-	f->Write(&_PV);
-	f->Write(&_HIT);
-	f->Write(&RNG);
-	f->Write(&_HP);
-	f->Write(&_PP);
-	f->Write(&MAX_HP);
-	f->Write(&MAX_PP);
-	f->Write(&weight);
-	
-	dice.Store(f);
+    f->Write(&_DV);
+    f->Write(&_PV);
+    f->Write(&_HIT);
+    f->Write(&RNG);
+    f->Write(&_HP);
+    f->Write(&_PP);
+    f->Write(&MAX_HP);
+    f->Write(&MAX_PP);
+    f->Write(&weight);
 
-	int flag = 0;
-	if (r)
-		flag = 1;
+    dice.Store(f);
 
-	f->Write(&flag, sizeof(int));
-	if (flag)
-		r->Store(f);
+    int flag = 0;
 
-	flag = 0;
-	if (s)
-		flag = 1;
+    if (r) {
+        flag = 1;
+    }
 
-	f->Write(&flag, sizeof(int));
-	if (flag)
-		s->Store(f);
+    f->Write(&flag, sizeof(int));
+
+    if (flag) {
+        r->Store(f);
+    }
+
+    flag = 0;
+
+    if (s) {
+        flag = 1;
+    }
+
+    f->Write(&flag, sizeof(int));
+
+    if (flag) {
+        s->Store(f);
+    }
 }
 
 
 void XBaseObject::Restore(XFile * f)
 {
-	XMapObject::Restore(f);
+    XMapObject::Restore(f);
 
-	f->Read(&_DV);
-	f->Read(&_PV);
-	f->Read(&_HIT);
-	f->Read(&RNG);
-	f->Read(&_HP);
-	f->Read(&_PP);
-	f->Read(&MAX_HP);
-	f->Read(&MAX_PP);
-	f->Read(&weight);
-	
-	dice.Restore(f);
+    f->Read(&_DV);
+    f->Read(&_PV);
+    f->Read(&_HIT);
+    f->Read(&RNG);
+    f->Read(&_HP);
+    f->Read(&_PP);
+    f->Read(&MAX_HP);
+    f->Read(&MAX_PP);
+    f->Read(&weight);
 
-	int flag = 0;
-	f->Read(&flag, sizeof(int));
-	if (flag)
-	{
-		r = new XResistance();
-		r->Restore(f);
-	} else
-	{
-		r = NULL;
-	}
+    dice.Restore(f);
 
-	flag = 0;
-	f->Read(&flag, sizeof(int));
-	if (flag)
-	{
-		s = new XStats();
-		s->Restore(f);
-	} else
-	{
-		s = NULL;
-	}
+    int flag = 0;
+    f->Read(&flag, sizeof(int));
+
+    if (flag) {
+        r = new XResistance();
+        r->Restore(f);
+    } else {
+        r = NULL;
+    }
+
+    flag = 0;
+    f->Read(&flag, sizeof(int));
+
+    if (flag) {
+        s = new XStats();
+        s->Restore(f);
+    } else {
+        s = NULL;
+    }
 }
 

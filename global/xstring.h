@@ -23,9 +23,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string.h>
 
-char * x_strchr(char * str, char c);
-int x_strlen(const char * str);
-int x_strsize(const char * str);
-void x_strcpy(char * dst, const char * src);
+char* x_strchr(char* str, char c);
+int x_strlen(const char* str);
+int x_strsize(const char* str);
+void x_strcpy(char* dst, const char* src);
 
 #endif

@@ -25,36 +25,36 @@ class XFile;
 
 class XTime
 {
-public:
-	static int GetMonth();
-	static const char* GetMonthName();
+    public:
+        static int GetMonth();
+        static const char* GetMonthName();
 
-	static int GetDay();
-	static const char* GetDayName();
+        static int GetDay();
+        static const char* GetDayName();
 
-	static int GetWeek();
-	static const char* GetWeekName();
+        static int GetWeek();
+        static const char* GetWeekName();
 
-	static int GetYear();
-	
-	static void RunTime();
+        static int GetYear();
 
-	static int GetHour();
-	static int GetSec();
-	static int GetMin();
+        static void RunTime();
 
-	static void Store(XFile * f);
-	static void Restore(XFile * f);
+        static int GetHour();
+        static int GetSec();
+        static int GetMin();
 
-	static unsigned int tic;
-protected:
+        static void Store(XFile * f);
+        static void Restore(XFile * f);
 
-	static unsigned int sec;
-	static unsigned int min;
-	static unsigned int hour;
-	static unsigned int day;
-	static unsigned int month;
-	static unsigned int year;
+        static unsigned int tic;
+    protected:
+
+        static unsigned int sec;
+        static unsigned int min;
+        static unsigned int hour;
+        static unsigned int day;
+        static unsigned int month;
+        static unsigned int year;
 };
 
 #endif

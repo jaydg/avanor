@@ -22,10 +22,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __LOS_H__
 
 void LineOfSight(
-	int   x,
-	int   y,
-	int   radius,
-	void *opaque,
-	int (*grid_callback)(void *opaque, int x, int y, int radius, int see_center));
+    int x,
+    int y,
+    int radius,
+    void* opaque,
+    int (*grid_callback)(void* opaque, int x, int y, int radius, int see_center));
 
 #endif

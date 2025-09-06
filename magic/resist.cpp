@@ -23,158 +23,164 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "global.h"
 
 RESIST_REC resists_data[] = {
-{"unknown",			FLU_NONE},
-{"white",			FLU_CREATURE},
-{"black",			FLU_CREATURE},
-{"fire",			FLU_ALL},
-{"water",			FLU_ALL},
-{"air",				FLU_ALL},
-{"earth",			FLU_ALL},
-{"acid",			FLU_ALL},
-{"cold",			FLU_ALL},
-{"poison",			FLU_CREATURE},
-{"decease",			FLU_CREATURE},
-{"paralyse",		FLU_CREATURE},
-{"stun",			FLU_CREATURE},
-{"confuse",			FLU_CREATURE},
-{"blind",			FLU_CREATURE},
-{"light",			FLU_CREATURE},
-{"darkness",		FLU_CREATURE},
-{"invisible",		FLU_CREATURE},
-{"see_invisible",	FLU_CREATURE},
-"eof", 				FLU_NONE};
-
+    {"unknown",	FLU_NONE},
+    {"white",	FLU_CREATURE},
+    {"black",	FLU_CREATURE},
+    {"fire",	FLU_ALL},
+    {"water",	FLU_ALL},
+    {"air",	FLU_ALL},
+    {"earth",	FLU_ALL},
+    {"acid",	FLU_ALL},
+    {"cold",	FLU_ALL},
+    {"poison",	FLU_CREATURE},
+    {"decease",	FLU_CREATURE},
+    {"paralyse",	FLU_CREATURE},
+    {"stun",	FLU_CREATURE},
+    {"confuse",	FLU_CREATURE},
+    {"blind",	FLU_CREATURE},
+    {"light",	FLU_CREATURE},
+    {"darkness",	FLU_CREATURE},
+    {"invisible",	FLU_CREATURE},
+    {"see_invisible",	FLU_CREATURE},
+    "eof",	FLU_NONE
+};
 
 XResistance::XResistance(XResistance * xr)
 {
-	Set(xr);
+    Set(xr);
 }
 
 XResistance::XResistance()
 {
-	for (int i = R_WHITE; i < R_EOF; i++)
-		SetResistance((RESISTANCE)i, 0);
+    for (int i = R_WHITE; i < R_EOF; i++) {
+        SetResistance((RESISTANCE)i, 0);
+    }
 }
 
 XResistance::XResistance(const char* str1)
 {
-	XStringProc xsp1(str1);
-	char buf[256];
-	XDice d;
-	for(int i = R_WHITE; i < R_EOF; i++)
-	{
-		if (xsp1.GetParam(buf, resists_data[i + 1].name))
-		{
-			d.Setup(buf);
-			SetResistance((RESISTANCE)i, d.Throw());
-		} else
-			SetResistance((RESISTANCE)i, 0);
-	}
+    XStringProc xsp1(str1);
+    char buf[256];
+    XDice d;
+
+    for (int i = R_WHITE; i < R_EOF; i++) {
+        if (xsp1.GetParam(buf, resists_data[i + 1].name)) {
+            d.Setup(buf);
+            SetResistance((RESISTANCE)i, d.Throw());
+        } else {
+            SetResistance((RESISTANCE)i, 0);
+        }
+    }
 }
 
 void XResistance::Set(XResistance * r)
 {
-	if (r)
-		for (int i = R_WHITE; i < R_EOF; i++)
-			SetResistance((RESISTANCE)i, r->GetResistance((RESISTANCE)i));
+    if (r)
+        for (int i = R_WHITE; i < R_EOF; i++) {
+            SetResistance((RESISTANCE)i, r->GetResistance((RESISTANCE)i));
+        }
 }
 
 void XResistance::Add(XResistance * r)
 {
-	if (r)
-		for (int i = R_WHITE; i < R_EOF; i++)
-			resistances[i] += r->resistances[i];
+    if (r)
+        for (int i = R_WHITE; i < R_EOF; i++) {
+            resistances[i] += r->resistances[i];
+        }
 }
 
 void XResistance::Sub(XResistance * r)
 {
-	if (r)
-		for (int i = R_WHITE; i < R_EOF; i++)
-			resistances[i] -= r->resistances[i];
+    if (r)
+        for (int i = R_WHITE; i < R_EOF; i++) {
+            resistances[i] -= r->resistances[i];
+        }
 };
 
 bool XResistance::isEqual(XResistance * xr)
 {
-	for (int i = R_WHITE; i < R_EOF; i++)
-		if (resistances[i] != xr->resistances[i])
-			return false;
-	return true;
-}
+    for (int i = R_WHITE; i < R_EOF; i++)
+        if (resistances[i] != xr->resistances[i]) {
+            return false;
+        }
 
+    return true;
+}
 
 void XResistance::Store(XFile * f)
 {
-	f->Write(&resistances[R_WHITE], sizeof(int), R_EOF);
+    f->Write(&resistances[R_WHITE], sizeof(int), R_EOF);
 }
 
 void XResistance::Restore(XFile * f)
 {
-	f->Read(&resistances[R_WHITE], sizeof(int), R_EOF);
+    f->Read(&resistances[R_WHITE], sizeof(int), R_EOF);
 }
 
 
-const char* resist_name[] =
-{ "White magic", "Black magic", "Fire magic", "Water magic", "Air magic", "Earth magic", 
-"Acid", "Cold", "Poison", "Disease", "Paralyzation",
-"Stun", "Confusion", "Blindness",
-"Light", "Darkness", "Invisible", "See Invisible"
+const char* resist_name[] = {
+    "White magic", "Black magic", "Fire magic", "Water magic", "Air magic", "Earth magic",
+    "Acid", "Cold", "Poison", "Disease", "Paralyzation",
+    "Stun", "Confusion", "Blindness",
+    "Light", "Darkness", "Invisible", "See Invisible"
 };
 
 const char* XResistance::GetResistanceName(RESISTANCE r)
 {
-	return resist_name[r];
+    return resist_name[r];
 }
 
-const char* resist_level[] =
-{
-MSG_LIGHTRED "awful", MSG_LIGHTRED "bad", 
-MSG_LIGHTGRAY "none", MSG_LIGHTGREEN "mediocre", MSG_LIGHTGREEN "fair",
-MSG_LIGHTGREEN "good", MSG_YELLOW "excellent", MSG_WHITE "complete"
+const char* resist_level[] = {
+    MSG_LIGHTRED "awful", MSG_LIGHTRED "bad",
+    MSG_LIGHTGRAY "none", MSG_LIGHTGREEN "mediocre", MSG_LIGHTGREEN "fair",
+    MSG_LIGHTGREEN "good", MSG_YELLOW "excellent", MSG_WHITE "complete"
 };
 
 const char* XResistance::GetResistanceLevel(RESISTANCE r)
 {
-	if (resistances[r] < -50)
-		return resist_level[0];
-	else if (resistances[r] < 0)
-		return resist_level[1];
-	else if (resistances[r] == 0)
-		return resist_level[2];
-	else if (resistances[r] < 10)
-		return resist_level[3];
-	else if (resistances[r] < 40)
-		return resist_level[4];
-	else if (resistances[r] < 80)
-		return resist_level[5];
-	else if (resistances[r] < 100)
-		return resist_level[6];
-	else
-		return resist_level[7];
+    if (resistances[r] < -50) {
+        return resist_level[0];
+    } else if (resistances[r] < 0) {
+        return resist_level[1];
+    } else if (resistances[r] == 0) {
+        return resist_level[2];
+    } else if (resistances[r] < 10) {
+        return resist_level[3];
+    } else if (resistances[r] < 40) {
+        return resist_level[4];
+    } else if (resistances[r] < 80) {
+        return resist_level[5];
+    } else if (resistances[r] < 100) {
+        return resist_level[6];
+    } else {
+        return resist_level[7];
+    }
 }
-
-
 
 XResistGenerator::XResistGenerator()
 {
-	for (int i = R_WHITE; i < R_EOF; i++)
-		resist[i].Setup(0, 0, 0);
+    for (int i = R_WHITE; i < R_EOF; i++) {
+        resist[i].Setup(0, 0, 0);
+    }
 }
 
-void XResistGenerator::Init(const char * str)
+void XResistGenerator::Init(const char* str)
 {
-	XStringProcEx xsp(str);
-	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();
-	for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++)
-	{
-		resist[(*it).keyword_index].Setup((*it).dice);
-	}
+    XStringProcEx xsp(str);
+    XQList<KEYWORD_DICE_PAIR>* lst = xsp.GetPairsList();
+
+    for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++) {
+        resist[(*it).keyword_index].Setup((*it).dice);
+    }
 }
 
-XResistance * XResistGenerator::Generate()
+XResistance* XResistGenerator::Generate()
 {
-	XResistance * r = new XResistance();
-	for (int i = R_WHITE; i < R_EOF; i++)
-		r->SetResistance((RESISTANCE)i, resist[i].Throw());
-	return r;
-}
+    XResistance * r = new XResistance();
 
+    for (int i = R_WHITE; i < R_EOF; i++) {
+        r->SetResistance((RESISTANCE)i, resist[i].Throw());
+    }
+
+    return r;
+}

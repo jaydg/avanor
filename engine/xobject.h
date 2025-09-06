@@ -31,89 +31,95 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 enum ITEM_MASK {
-IM_UNKNOWN     = 0x00000000,
-IM_HERO        = 0x00000001, //let it's be
-IM_CREATURE    = 0x00000002,
-IM_MONSTER     = IM_HERO | IM_CREATURE,
-IM_WAY         = 0x00000004,
-IM_DOOR        = 0x00000008,
-IM_TRAP        = 0x00000010,
-IM_TELEPORT	   = 0x00000020,
-IM_ALTAR	   = 0x00000040,
-IM_MISC		   = 0x00000080,
+    IM_UNKNOWN = 0x00000000,
+    IM_HERO = 0x00000001, // let it's be
+    IM_CREATURE = 0x00000002,
+    IM_MONSTER = IM_HERO | IM_CREATURE,
+    IM_WAY = 0x00000004,
+    IM_DOOR = 0x00000008,
+    IM_TRAP = 0x00000010,
+    IM_TELEPORT = 0x00000020,
+    IM_ALTAR = 0x00000040,
+    IM_MISC = 0x00000080,
 
-IM_HAT         = 0x00000100,
-IM_NECK        = 0x00000200,
-IM_BODY        = 0x00000400,
-IM_CLOAK       = 0x00000800,
-IM_WEAPON      = 0x00001000,
-IM_SHIELD      = 0x00002000,
-IM_HAND        = IM_WEAPON | IM_SHIELD, //for a bodyparts
-IM_GLOVES      = 0x00004000,
-IM_RING        = 0x00008000,
-IM_BOOTS       = 0x00010000,
-IM_MISSILEW    = 0x00020000,
-IM_MISSILE     = 0x00040000,
-IM_POTION      = 0x00100000,
-IM_SCROLL      = 0x00200000,
-IM_BOOK        = 0x00400000,
-IM_WAND        = 0x00800000,
-IM_FOOD        = 0x01000000,
-IM_HERB        = 0x02000000,
-IM_LIGHTSOURCE = 0x04000000,
-IM_TOOL        = 0x08000000,
-IM_GEM         = 0x10000000,
-IM_MONEY       = 0x20000000,
-IM_STACKABLE   = 0x40000000, //for spells
-IM_CHEST	   = 0x80000000,
-IM_ITEM        = 0x2FFFFF00, //all items!
+    IM_HAT = 0x00000100,
+    IM_NECK = 0x00000200,
+    IM_BODY = 0x00000400,
+    IM_CLOAK = 0x00000800,
+    IM_WEAPON = 0x00001000,
+    IM_SHIELD = 0x00002000,
+    IM_HAND = IM_WEAPON | IM_SHIELD, // for a bodyparts
+    IM_GLOVES = 0x00004000,
+    IM_RING = 0x00008000,
+    IM_BOOTS = 0x00010000,
+    IM_MISSILEW = 0x00020000,
+    IM_MISSILE = 0x00040000,
+    IM_POTION = 0x00100000,
+    IM_SCROLL = 0x00200000,
+    IM_BOOK = 0x00400000,
+    IM_WAND = 0x00800000,
+    IM_FOOD = 0x01000000,
+    IM_HERB = 0x02000000,
+    IM_LIGHTSOURCE = 0x04000000,
+    IM_TOOL = 0x08000000,
+    IM_GEM = 0x10000000,
+    IM_MONEY = 0x20000000,
+    IM_STACKABLE = 0x40000000, // for spells
+    IM_CHEST = 0x80000000,
+    IM_ITEM = 0x2FFFFF00, // all items!
 
-IM_OTHER       = 0x80000000,
-IM_TOHIT       = IM_HAT | IM_NECK | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS | IM_RING | IM_WEAPON,
-IM_ARMOUR      = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS,
-IM_VALUEDICE   = IM_WEAPON | IM_MISSILEW | IM_MISSILE,
-IM_VALUEDVPV   = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS | IM_WEAPON,
-IM_VALUEHITDMG = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_BOOTS | IM_WEAPON,
-IM_ALL         = 0xFFFFFFFF
+    IM_OTHER = 0x80000000,
+    IM_TOHIT = IM_HAT | IM_NECK | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS | IM_RING | IM_WEAPON,
+    IM_ARMOUR = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS,
+    IM_VALUEDICE = IM_WEAPON | IM_MISSILEW | IM_MISSILE,
+    IM_VALUEDVPV = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS | IM_WEAPON,
+    IM_VALUEHITDMG = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_BOOTS | IM_WEAPON,
+    IM_ALL = 0xFFFFFFFF
 };
 
 
 class XObject;
-//next code is for creating class by it name
-typedef XObject * (*CLASS_CREATOR)();
+// next code is for creating class by it name
+typedef XObject* (*CLASS_CREATOR)();
 
 #define REGISTER_CLASS(__xClass) \
-	XClassFactory reg##__xClass(#__xClass, (CLASS_CREATOR)__xClass::Creator, (CLASS_CREATOR)__xClass::MakeNew)
+    XClassFactory reg##__xClass(#__xClass, (CLASS_CREATOR)__xClass::Creator, (CLASS_CREATOR)__xClass::MakeNew)
 
-struct DUMMY_STRUCT
-{
+struct DUMMY_STRUCT {
 };
 
 #define DECLARE_CREATOR(__xClass, __xBaseClass) \
-	__xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
-	static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
-	static __xClass * MakeNew() { return new __xClass(); } \
-	virtual const std::string GetClassName() {return #__xClass;}
+    __xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
+    static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
+    static __xClass * MakeNew() { return new __xClass(); } \
+    virtual const std::string GetClassName() {return #__xClass;}
 
 class XClassInfo
 {
-public:
-	XClassInfo(const std::string _name, CLASS_CREATOR p, CLASS_CREATOR n) {name = _name; pClassCreator = p; pClassNew = n; next = NULL;}
-	std::string name;
-	CLASS_CREATOR pClassCreator;
-	CLASS_CREATOR pClassNew;
-	XClassInfo * next;
+    public:
+        XClassInfo(const std::string _name, CLASS_CREATOR p, CLASS_CREATOR n)
+        {
+            name = _name;
+            pClassCreator = p;
+            pClassNew = n;
+            next = NULL;
+        }
+
+        std::string name;
+        CLASS_CREATOR pClassCreator;
+        CLASS_CREATOR pClassNew;
+        XClassInfo* next;
 };
 
 class XClassFactory
 {
-public:
-	static XClassInfo * first_class;
-	static int counter;
-	XClassFactory(const std::string name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
-	~XClassFactory();
-	static XObject * Create(const std::string name);
-	static XObject * CreateNew(const std::string name);
+    public:
+        static XClassInfo* first_class;
+        static int counter;
+        XClassFactory(const std::string name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
+        ~XClassFactory();
+        static XObject* Create(const std::string name);
+        static XObject* CreateNew(const std::string name);
 };
 
 #define DYNCREATE(x) XClassFactory::Create(x)
@@ -124,198 +130,272 @@ public:
 typedef unsigned long XGUID;
 extern XGUID guid;
 
-//this class is a base class for most important part's of cernel
+// this class is a base class for most important part's of cernel
 class XObject
 {
-public:
-	static long       invalid_count;
-	static XObject ** table;
-	static long       count;
-	static XObject  * root;
+    public:
+        static long invalid_count;
+        static XObject** table;
+        static long count;
+        static XObject* root;
 
-	XObject         * prev;
-	XObject         * next;
+        XObject* prev;
+        XObject* next;
 
-	bool              bAlreadyStored;
+        bool bAlreadyStored;
 
-	void AddToList()
-	{
-		assert(table == 0);
-		if (root != 0) root->prev = this;
-		prev = 0;
-		next = root;
-		root = this;
-		count++;
-	}
+        void AddToList()
+        {
+            assert(table == 0);
 
-	void RemoveFromList()
-	{
-		assert(table == 0);
-		if (this == root) root = next;
-		if (prev != 0) prev->next = next;
-		if (next != 0) next->prev = prev;
-		count--;
-		invalid_count++;
-	}
+            if (root != 0) {
+                root->prev = this;
+            }
 
-	int reference; //objects can't be deleted till reference > 0
-	int is_valid;
+            prev = 0;
+            next = root;
+            root = this;
+            count++;
+        }
 
-	void Create()
-	{
-		reference = 0;
-		AddToList();
-	}
+        void RemoveFromList()
+        {
+            assert(table == 0);
 
-public:
-	static void      StorePointer(XFile * f, XObject * p);
-	static XObject * RestorePointer(XFile * f, void * owner);
-	static void      StoreAllObjects(XFile * f);
-	static void      RestoreAllObjects(XFile * f);
-	static void      InvalidateAllObjects();
-	static void      FreeTable();
+            if (this == root) {
+                root = next;
+            }
 
-	XObject(DUMMY_STRUCT * ds) : is_valid(1)
-	{
-		Create();
-	}
+            if (prev != 0) {
+                prev->next = next;
+            }
 
-	XObject() : xguid(::guid++), quantity(1), im(IM_UNKNOWN), is_valid(1)
-	{
-		Create();
-	}
+            if (next != 0) {
+                next->prev = prev;
+            }
 
-	XObject(XObject * o) : xguid(::guid++), quantity(o->quantity), im(o->im), is_valid(1), 	ttm(o->ttm), ttmb(o->ttmb)
+            count--;
+            invalid_count++;
+        }
 
-	{
-		Create();
-	}
+        int reference; // objects can't be deleted till reference > 0
+        int is_valid;
 
-	virtual ~XObject()
-	{
-		assert(!is_valid && reference == 0);
-		invalid_count--;
-	}
+        void Create()
+        {
+            reference = 0;
+            AddToList();
+        }
 
-	void AddRef()
-	{
-		reference++;
-	}
+    public:
+        static void StorePointer(XFile * f, XObject * p);
+        static XObject* RestorePointer(XFile * f, void* owner);
+        static void StoreAllObjects(XFile * f);
+        static void RestoreAllObjects(XFile * f);
+        static void InvalidateAllObjects();
+        static void FreeTable();
 
-	void Release()
-	{
-		assert(reference > 0);
-		if(--reference == 0 && !is_valid)
-		{
-			delete this;
-		}
-	}
+        XObject(DUMMY_STRUCT * ds) : is_valid(1)
+        {
+            Create();
+        }
 
-   int GetRef()
-   {
-      return reference;
-   }
+        XObject() : xguid(::guid++), quantity(1), im(IM_UNKNOWN), is_valid(1)
+        {
+            Create();
+        }
 
-	virtual void Invalidate()
-	{
-		if (!is_valid) return;
-  		is_valid = 0;
-		RemoveFromList();
-		if (reference == 0)
-		{
-			delete this;
-		}
-	}
+        XObject(XObject * o) : xguid(::guid++), quantity(o->quantity), im(o->im), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
 
-	virtual int Compare(XObject * o) { return 1; }
-	virtual void Concat(XObject * o)
-	{
-		assert(o->reference == 0);
-		quantity += o->quantity;
-		o->Invalidate();
-	}
+        {
+            Create();
+        }
 
-   virtual const std::string GetClassName() { return "XObject"; }
-   XObject * MakeNew() { assert(0); return NULL; }
+        virtual ~XObject()
+        {
+            assert(!is_valid && reference == 0);
+            invalid_count--;
+        }
 
-   virtual void Dump(XFile * f);
-   static void DumpAll();
+        void AddRef()
+        {
+            reference++;
+        }
 
-	int quantity; //some objects can stacked to a bundle: "bundle of 23 arrow (1d4)"
-	XGUID xguid; //all objects has global unique inditifer
-             //(it has no sense to store pointers)
-	ITEM_MASK im; //many years ago it was item mask, now it is mask for all!
+        void Release()
+        {
+            assert(reference > 0);
 
-	int isValid() { return is_valid; }
+            if (--reference == 0 && !is_valid) {
+                delete this;
+            }
+        }
 
-// interface for store/restore functions
-	virtual void Store(XFile * f);// = 0;
-	virtual void Restore(XFile * f);// = 0;
+        int GetRef()
+        {
+            return reference;
+        }
 
-// Runable object...
-// If It returns zero, than object must be removed from scheduler
-	virtual int Run() { return 1; }
-	int ttm; //time to move
-	int ttmb; //basis of time to move
+        virtual void Invalidate()
+        {
+            if (!is_valid) {
+                return;
+            }
+
+            is_valid = 0;
+            RemoveFromList();
+
+            if (reference == 0) {
+                delete this;
+            }
+        }
+
+        virtual int Compare(XObject * o)
+        {
+            return 1;
+        }
+
+        virtual void Concat(XObject * o)
+        {
+            assert(o->reference == 0);
+            quantity += o->quantity;
+            o->Invalidate();
+        }
+
+        virtual const std::string GetClassName()
+        {
+            return "XObject";
+        }
+
+        XObject* MakeNew()
+        {
+            assert(0);
+            return NULL;
+        }
+
+        virtual void Dump(XFile * f);
+        static void DumpAll();
+
+        int quantity; // some objects can stacked to a bundle: "bundle of 23 arrow (1d4)"
+        XGUID xguid; // all objects has global unique inditifer
+        // (it has no sense to store pointers)
+        ITEM_MASK im; // many years ago it was item mask, now it is mask for all!
+
+        int isValid()
+        {
+            return is_valid;
+        }
+
+        // interface for store/restore functions
+        virtual void Store(XFile * f);// = 0;
+        virtual void Restore(XFile * f);// = 0;
+
+        // Runable object...
+        // If It returns zero, than object must be removed from scheduler
+        virtual int Run()
+        {
+            return 1;
+        }
+
+        int ttm; // time to move
+        int ttmb; // basis of time to move
 
 };
 
 template<class TYPE> class XPtr
 {
-	mutable XObject * p;
-	void operator=(const XPtr<TYPE> &);
-	XPtr(const XPtr<TYPE> &);
-	TYPE * get_with_check() const;
-public:
-	XPtr() : p(NULL) { }
-	XPtr(TYPE * _p) : p(_p) { if(p != NULL) p->AddRef(); }
-	~XPtr();
+        mutable XObject* p;
+        void operator=(const XPtr<TYPE> &);
+        XPtr(const XPtr<TYPE> &);
+        TYPE* get_with_check() const;
+    public:
+        XPtr() : p(NULL) { }
 
-	bool operator==(XPtr<TYPE> & x) const { return operator TYPE * () == x.operator TYPE * (); }
+        XPtr(TYPE * _p) : p(_p)
+        {
+            if (p != NULL) {
+                p->AddRef();
+            }
+        }
 
-	void operator=(TYPE * _p);
+        ~XPtr();
 
-	operator TYPE * () const { return (p == NULL) ? NULL : get_with_check(); }
+        bool operator==(XPtr<TYPE> &x) const
+        {
+            return operator TYPE * () == x.operator TYPE * ();
+        }
 
-	TYPE * get() const { return static_cast<TYPE *>(p); }
-	TYPE * operator->() const { return static_cast<TYPE *>(p); }
+        void operator=(TYPE * _p);
 
-	void Store(XFile * f) const;
-	void Restore(XFile * f);
+        operator TYPE * () const
+        {
+            return (p == NULL) ? NULL : get_with_check();
+        }
+
+        TYPE* get() const
+        {
+            return static_cast<TYPE*>(p);
+        }
+
+        TYPE * operator->() const
+        {
+            return static_cast<TYPE*>(p);
+        }
+
+        void Store(XFile * f) const;
+        void Restore(XFile * f);
 };
 
 template<class TYPE> XPtr<TYPE>::~XPtr()
 {
-	if(p != NULL) p->Release();
+    if (p != NULL) {
+        p->Release();
+    }
 }
 
 template<class TYPE> void XPtr<TYPE>::operator=(TYPE * _p)
 {
-	if(p == (XObject *)_p) return;
-	if(p != NULL) p->Release();
-	p = (XObject *)_p;
-	if(p != NULL) p->AddRef();
+    if (p == (XObject*)_p) {
+        return;
+    }
+
+    if (p != NULL) {
+        p->Release();
+    }
+
+    p = (XObject*)_p;
+
+    if (p != NULL) {
+        p->AddRef();
+    }
 }
 
-template<class TYPE> TYPE * XPtr<TYPE>::get_with_check() const
+template<class TYPE> TYPE* XPtr<TYPE>::get_with_check() const
 {
-   if(p->isValid()) return static_cast<TYPE *>(p);
-   p->Release();
-   p = NULL;
-   return NULL;
+    if (p->isValid()) {
+        return static_cast<TYPE*>(p);
+    }
+
+    p->Release();
+    p = NULL;
+    return NULL;
 }
 
 template<class TYPE> void XPtr<TYPE>::Store(XFile * f) const
 {
-	XObject::StorePointer(f, operator TYPE * ());
+    XObject::StorePointer(f, operator TYPE * ());
 }
 
 template<class TYPE> void XPtr<TYPE>::Restore(XFile * f)
 {
-   assert(p == NULL);
-   p = XObject::RestorePointer(f, this);
-   if (p != NULL) p->AddRef();
-   assert(p == NULL || dynamic_cast<TYPE *>(p));
+    assert(p == NULL);
+    p = XObject::RestorePointer(f, this);
+
+    if (p != NULL) {
+        p->AddRef();
+    }
+
+    assert(p == NULL || dynamic_cast<TYPE*>(p));
 }
 
 #endif

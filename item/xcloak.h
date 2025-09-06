@@ -25,12 +25,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XCloak : public XClothe
 {
-public:
-	DECLARE_CREATOR(XCloak, XClothe);
-	XCloak(ITEM_TYPE it = IT_RANDOM);
-	XCloak(XCloak * cap);
-	virtual XObject * MakeCopy() {return new XCloak(this);}
+    public:
+        DECLARE_CREATOR(XCloak, XClothe);
+        XCloak(ITEM_TYPE it = IT_RANDOM);
+        XCloak(XCloak * cap);
+        virtual XObject* MakeCopy()
+        {
+            return new XCloak(this);
+        }
 };
-
 
 #endif

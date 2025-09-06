@@ -23,105 +23,114 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 const char* stats_str[] = {"St", "Dx", "To", "Le", "Wi", "Ma", "Pe", "Ch", "EOF"};
 const char* stats_full_str[] = {
-"Strength", "Dexterity", "Toughness", "Learning", "Willpower", 
-"Mana", "Perception", "Charisma", "EOF"
+    "Strength", "Dexterity", "Toughness", "Learning", "Willpower",
+    "Mana", "Perception", "Charisma", "EOF"
 };
 
 XStats::XStats()
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		stats[i] = 0;
+    for (int i = S_STR; i < S_EOF; i++) {
+        stats[i] = 0;
+    }
 }
 
 XStats::XStats(XStats * xs)
 {
-	if (xs)
-		for(int i = S_STR; i < S_EOF; i++)
-			stats[i] = xs->Get((STATS)i);
+    if (xs)
+        for (int i = S_STR; i < S_EOF; i++) {
+            stats[i] = xs->Get((STATS)i);
+        }
 }
 
-
-XStats::XStats(const char * str)
+XStats::XStats(const char* str)
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		stats[i] = 0;
-	Set(str);
+    for (int i = S_STR; i < S_EOF; i++) {
+        stats[i] = 0;
+    }
+
+    Set(str);
 }
 
-void XStats::Set(const char * str)
+void XStats::Set(const char* str)
 {
-	XStringProcEx xsp(str);
-	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();
-	for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++)
-	{
-		stats[(*it).keyword_index] += (*it).dice.Throw() * 100;
-	}
+    XStringProcEx xsp(str);
+    XQList<KEYWORD_DICE_PAIR>* lst = xsp.GetPairsList();
+
+    for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++) {
+        stats[(*it).keyword_index] += (*it).dice.Throw() * 100;
+    }
 }
 
 const char* XStats::GetFullName(STATS s)
 {
-	return stats_full_str[s];
+    return stats_full_str[s];
 }
 
 void XStats::Add(XStats * s)
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		stats[i] += s->stats[i];
+    for (int i = S_STR; i < S_EOF; i++) {
+        stats[i] += s->stats[i];
+    }
 }
 
 void XStats::Sub(XStats * s)
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		stats[i] -= s->stats[i];
+    for (int i = S_STR; i < S_EOF; i++) {
+        stats[i] -= s->stats[i];
+    }
 }
 
 void XStats::Set(XStats * s)
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		stats[i] = s->stats[i];
+    for (int i = S_STR; i < S_EOF; i++) {
+        stats[i] = s->stats[i];
+    }
 }
 
 bool XStats::isEqual(XStats * s)
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		if (stats[i] != s->stats[i])
-			return false;
-	return true;
+    for (int i = S_STR; i < S_EOF; i++)
+        if (stats[i] != s->stats[i]) {
+            return false;
+        }
+
+    return true;
 }
 
 void XStats::Store(XFile * f)
 {
-	f->Write(&stats[S_STR], sizeof(int), S_EOF);
+    f->Write(&stats[S_STR], sizeof(int), S_EOF);
 }
 
 void XStats::Restore(XFile * f)
 {
-	f->Read(&stats[S_STR], sizeof(int), S_EOF);
+    f->Read(&stats[S_STR], sizeof(int), S_EOF);
 }
-
-
 
 XStatsGenerator::XStatsGenerator()
 {
-	for(int i = S_STR; i < S_EOF; i++)
-		stats[i].Setup(0, 0, 0);
+    for (int i = S_STR; i < S_EOF; i++) {
+        stats[i].Setup(0, 0, 0);
+    }
 }
 
 void XStatsGenerator::Init(const char* str)
 {
-	XStringProcEx xsp(str);
-	XQList<KEYWORD_DICE_PAIR> * lst = xsp.GetPairsList();
-	for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++)
-	{
-		stats[(*it).keyword_index].Setup((*it).dice);
-	}
+    XStringProcEx xsp(str);
+    XQList<KEYWORD_DICE_PAIR>* lst = xsp.GetPairsList();
+
+    for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++) {
+        stats[(*it).keyword_index].Setup((*it).dice);
+    }
 }
 
-XStats * XStatsGenerator::Generate()
+XStats* XStatsGenerator::Generate()
 {
-	XStats * s = new XStats();
-	for(int i = S_STR; i < S_EOF; i++)
-		s->SetStat((STATS)i, stats[i].Throw());
-	return s;
-}
+    XStats * s = new XStats();
 
+    for (int i = S_STR; i < S_EOF; i++) {
+        s->SetStat((STATS)i, stats[i].Throw());
+    }
+
+    return s;
+}

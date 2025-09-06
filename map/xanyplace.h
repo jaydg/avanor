@@ -32,33 +32,49 @@ class XLocation;
 
 class XAnyPlace : public XObject
 {
-protected:
-	XAnyPlace() {}
-public:
-	DECLARE_CREATOR(XAnyPlace, XObject);
-	XAnyPlace(XRect& _area, XLocation * _loc);
-	XAnyPlace(XRect& _area, XLocation * _loc, char * _onEventLua);
-	~XAnyPlace();
-	virtual void Invalidate();
+    protected:
+        XAnyPlace() {}
 
-	virtual int onCreatureMove(XCreature * cr);
-	virtual int onCreatureEnter(XCreature * cr);
-	virtual int onCreatureLeave(XCreature * cr);
-	virtual int onCreaturePickItem(XCreature * cr, XItem * item) {return 1;}
-	virtual int onCreatureDropItem(XCreature * cr, XItem * item) {return 1;}
-	virtual void onShowItem(XItem * item, char * buf);
+    public:
+        DECLARE_CREATOR(XAnyPlace, XObject);
+        XAnyPlace(XRect& _area, XLocation * _loc);
+        XAnyPlace(XRect& _area, XLocation * _loc, char* _onEventLua);
+        ~XAnyPlace();
+        virtual void Invalidate();
 
-	XRect& GetArea() { return area; }
+        virtual int onCreatureMove(XCreature * cr);
+        virtual int onCreatureEnter(XCreature * cr);
+        virtual int onCreatureLeave(XCreature * cr);
+        virtual int onCreaturePickItem(XCreature * cr, XItem * item)
+        {
+            return 1;
+        }
 
-	virtual XPtr<XCreature> & GetOwner() { return owner; }
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
-	void Setup(XLocation * _map);
-	XPtr<XLocation> location;
-protected:
-	XRect           area;
-	XPtr<XCreature> owner;
-	char * onEventLua;
+        virtual int onCreatureDropItem(XCreature * cr, XItem * item)
+        {
+            return 1;
+        }
+
+        virtual void onShowItem(XItem * item, char* buf);
+
+        XRect &GetArea()
+        {
+            return area;
+        }
+
+        virtual XPtr<XCreature> &GetOwner()
+        {
+            return owner;
+        }
+
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+        void Setup(XLocation * _map);
+        XPtr<XLocation> location;
+    protected:
+        XRect area;
+        XPtr<XCreature> owner;
+        char* onEventLua;
 };
 
 #endif

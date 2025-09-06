@@ -25,12 +25,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XShield : public XItem
 {
-public:
-	DECLARE_CREATOR(XShield, XItem);
-	XShield(ITEM_TYPE it = IT_RANDOM);
-	XShield(XShield * copy) : XItem((XItem *)copy) {}
-	virtual XObject * MakeCopy() { return new XShield(this); }
-	virtual void toString(char * buf);
+    public:
+        DECLARE_CREATOR(XShield, XItem);
+        XShield(ITEM_TYPE it = IT_RANDOM);
+        XShield(XShield * copy) : XItem((XItem*)copy) {}
+
+        virtual XObject* MakeCopy()
+        {
+            return new XShield(this);
+        }
+
+        virtual void toString(char* buf);
 };
 
 #endif

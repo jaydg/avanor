@@ -27,34 +27,29 @@ XClothe::XClothe()
 
 }
 
-void XClothe::toString(char * buf)
+void XClothe::toString(char* buf)
 {
-	GetFullName(buf);
+    GetFullName(buf);
 
-	if (isIdentifed())
-	{
-		char tbuf[256];
+    if (isIdentifed()) {
+        char tbuf[256];
 
-		if (RNG != 0)
-		{
-			sprintf(tbuf, "<%+d>", RNG);
-			strcat(buf, tbuf);
-		}
+        if (RNG != 0) {
+            sprintf(tbuf, "<%+d>", RNG);
+            strcat(buf, tbuf);
+        }
 
-		if(dice.Z != 0)
-		{
-			sprintf(tbuf, "(%+d, %+d)", _HIT, dice.Z);
-			strcat(buf, tbuf);
-		} else
-			if (_HIT != 0)
-			{
-				sprintf(tbuf, "(%+d)", _HIT, dice.Z);
-				strcat(buf, tbuf);
-			}
+        if (dice.Z != 0) {
+            sprintf(tbuf, "(%+d, %+d)", _HIT, dice.Z);
+            strcat(buf, tbuf);
+        } else if (_HIT != 0) {
+            sprintf(tbuf, "(%+d)", _HIT, dice.Z);
+            strcat(buf, tbuf);
+        }
 
-		sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-		strcat(buf, tbuf);
-		StatsToString(tbuf);
-		strcat(buf, tbuf);
-	}
+        sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
+        strcat(buf, tbuf);
+        StatsToString(tbuf);
+        strcat(buf, tbuf);
+    }
 }

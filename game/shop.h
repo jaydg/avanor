@@ -25,30 +25,32 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xanyplace.h"
 #include "location.h"
 
-
 class XShop : public XAnyPlace
 {
-protected:
-	XShop() {}
-public:
-	DECLARE_CREATOR(XShop, XAnyPlace);
-	XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
-	
-	virtual int onCreatureEnter(XCreature * cr);
-	virtual int onCreatureLeave(XCreature * cr);	
-	virtual int onCreaturePickItem(XCreature * cr, XItem * item);
-	virtual int onCreatureDropItem(XCreature * cr, XItem * item);
-	virtual int onCreatureMove(XCreature * cr);
-	virtual void onShowItem(XItem * item, char * buf);
-	void SetShopkeeper(XCreature * shopkeeper) { owner = shopkeeper; }
+    protected:
+        XShop() {}
 
-	virtual void Store(XFile * f);
-	virtual void Restore(XFile * f);
+    public:
+        DECLARE_CREATOR(XShop, XAnyPlace);
+        XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
 
-	ITEM_MASK shop_mask;
-protected:
-	int hero_in;
+        virtual int onCreatureEnter(XCreature * cr);
+        virtual int onCreatureLeave(XCreature * cr);
+        virtual int onCreaturePickItem(XCreature * cr, XItem * item);
+        virtual int onCreatureDropItem(XCreature * cr, XItem * item);
+        virtual int onCreatureMove(XCreature * cr);
+        virtual void onShowItem(XItem * item, char* buf);
+        void SetShopkeeper(XCreature * shopkeeper)
+        {
+            owner = shopkeeper;
+        }
+
+        virtual void Store(XFile * f);
+        virtual void Restore(XFile * f);
+
+        ITEM_MASK shop_mask;
+    protected:
+        int hero_in;
 };
 
 #endif
-

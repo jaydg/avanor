@@ -22,23 +22,44 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __POINT_H
 
 
-struct XPOINT
-{
-	int x;
-	int y;
+struct XPOINT {
+    int x;
+    int y;
 };
 
 class XPoint
 {
-public:
-	XPoint(): x(0), y(0) {}
-	XPoint(int _x, int _y) : x(_x), y(_y){}
-	XPoint(const XPoint& pt) : x(pt.x), y(pt.y) {}
-	XPoint& operator=(const XPoint& pt) {x = pt.x; y = pt.y; return *this;}
-	void Set(int _x, int _y) {x = _x; y = _y;}
-	int GetX() {return x;}
-	int GetY() {return y;}
-	int x, y;
+    public:
+        XPoint(): x(0), y(0) {}
+
+        XPoint(int _x, int _y) : x(_x), y(_y) {}
+
+        XPoint(const XPoint& pt) : x(pt.x), y(pt.y) {}
+
+        XPoint &operator=(const XPoint& pt)
+        {
+            x = pt.x;
+            y = pt.y;
+            return *this;
+        }
+
+        void Set(int _x, int _y)
+        {
+            x = _x;
+            y = _y;
+        }
+
+        int GetX()
+        {
+            return x;
+        }
+
+        int GetY()
+        {
+            return y;
+        }
+
+        int x, y;
 };
 
 #endif

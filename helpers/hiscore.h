@@ -32,37 +32,46 @@ class XFile;
 
 class XHiScoreItem : public XGuiItem_Text
 {
-public:
-	char buf[256];
-	XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
-	XHiScoreItem() : isLastRecord(0) {}
-	XHiScoreItem(XHiScoreItem * copy);
-	virtual int isSelectable() {return 0;}
-	virtual int isTitle() {return 0;}
-	void Store(XFile * f);
-	void Restore(XFile * f);
-	unsigned int score;
-	int place;
-	void SetText(int place, unsigned int score, const char* name, int day, int month, int year, const char * msg);
-protected:
-	int year;
-	int day;
-	int month;
-	char name[80];
-	char msg[160];
-	int isLastRecord;
-	int flag; //win or death
-	int reserved[10];
+    public:
+        char buf[256];
+        XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
+        XHiScoreItem() : isLastRecord(0) {}
+
+        XHiScoreItem(XHiScoreItem * copy);
+        virtual int isSelectable()
+        {
+            return 0;
+        }
+
+        virtual int isTitle()
+        {
+            return 0;
+        }
+
+        void Store(XFile * f);
+        void Restore(XFile * f);
+        unsigned int score;
+        int place;
+        void SetText(int place, unsigned int score, const char* name, int day, int month, int year, const char* msg);
+    protected:
+        int year;
+        int day;
+        int month;
+        char name[80];
+        char msg[160];
+        int isLastRecord;
+        int flag; // win or death
+        int reserved[10];
 };
 
 class XHiScore
 {
-public:
-	XHiScore();
-	~XHiScore();
-	void AddRecord(XHiScoreItem * item);
-	void Show();
-	XHiScoreItem * items[HISCORE_TOP_REC];
+    public:
+        XHiScore();
+        ~XHiScore();
+        void AddRecord(XHiScoreItem * item);
+        void Show();
+        XHiScoreItem* items[HISCORE_TOP_REC];
 };
 
 #endif
