@@ -88,10 +88,9 @@ void XCaveBuilder::Build()
     }
 }
 
-
 struct LINK_STACK {
     int pt_count;
-    XPOINT pa[2000]; //it is seems that will never be more than 2000 points.
+    XPoint pa[2000]; // it is seems that will never be more than 2000 points.
     void PushPoint(int x, int y)
     {
         pa[pt_count].x = x;
@@ -100,7 +99,6 @@ struct LINK_STACK {
         assert(pt_count < 2000);
     }
 };
-
 
 //linking of room is using standard flood-fill algorithm
 bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)

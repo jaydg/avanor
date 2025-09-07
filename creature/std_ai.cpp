@@ -270,22 +270,22 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
     int map_y = center_y - find_path_deep / 2 + 2;
     XRect map_rect(map_x, map_y, map_x + find_path_deep, map_y + find_path_deep);
 
-    XPOINT pa[8 * find_path_deep];
-    XPOINT pb[8 * find_path_deep];
+    XPoint pa[8 * find_path_deep];
+    XPoint pb[8 * find_path_deep];
 
     path_flags[target->x - map_x][target->y - map_y] = 1;
     pa[0].x = target->x;
     pa[0].y = target->y;
     int stop_flag = 1;
-    XPOINT * pc = pa;
+    XPoint *pc = pa;
     int list_len_pc = 1;
-    XPOINT * pd = pb;
+    XPoint *pd = pb;
 
     for (int i = 2; i < find_path_deep + 2 && stop_flag; i++) {
         int list_len_pd = 0;
 
         for (int j = 0; j < list_len_pc; j++) {
-            XPOINT * cpt = &pc[j];
+            XPoint *cpt = &pc[j];
 
             if (map_rect.PointIn(cpt->x - 1, cpt->y - 1) &&
                 path_flags[cpt->x - map_x - 1][cpt->y - map_y - 1] == 0) {
@@ -434,7 +434,7 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
             }
         }
 
-        XPOINT * pt = pd;
+        XPoint* pt = pd;
         pd = pc;
         pc = pt;
         list_len_pc = list_len_pd;

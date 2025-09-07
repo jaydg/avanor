@@ -21,13 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __POINT_H
 #define __POINT_H
 
-
-struct XPOINT {
-    int x;
-    int y;
-};
-
-class XPoint
+struct XPoint
 {
     public:
         XPoint(): x(0), y(0) {}
