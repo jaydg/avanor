@@ -20,10 +20,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "creature/los.h"
+#include "engine/xapi.h"
 #include "engine/xarchive.h"
 #include "engine/xscheduler.h"
 #include "game/game.h"
-#include "global/xapi.h"
 #include "magic/modifer.h"
 #include "map/map_objects.h"
 

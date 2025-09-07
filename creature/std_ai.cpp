@@ -19,8 +19,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/std_ai.h"
+#include "engine/xapi.h"
 #include "game/game.h"
-#include "global/xapi.h"
 #include "map/map_objects.h"
 
 REGISTER_CLASS(XStandardAI);

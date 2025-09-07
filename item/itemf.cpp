@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "global/xapi.h"
+#include "engine/xapi.h"
 #include "item/itemf.h"
 
 XItem* XItemFactory::CreateAnyItem(ITEM_MASK im, ITEM_TYPE _it, int low_v, int hi_v)

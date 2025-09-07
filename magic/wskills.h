@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdlib.h>
 
 #include "engine/defs.h"
-#include "global/global.h"
+#include "engine/global.h"
 #include "item/itemdef.h"
 
 struct _SKILL_DB {

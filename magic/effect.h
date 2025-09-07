@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __EFFECT_H
 #define __EFFECT_H
 
-#include "global/global.h"
 #include "engine/defs.h"
+#include "engine/global.h"
 #include "item/itemdef.h"
 #include "magic/resist.h"
 

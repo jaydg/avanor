@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/anycr.h"
 #include "creature/creature.h"
-#include "global/global.h"
+#include "engine/global.h"
 #include "helpers/xgui.h"
 #include "item/incl_i.h"
 

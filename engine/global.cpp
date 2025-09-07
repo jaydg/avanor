@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdlib.h>
 #include <string.h>
 
-#include "global/global.h"
+#include "engine/global.h"
 
 unsigned long total_cr = 0;
 unsigned long total_it = 0;

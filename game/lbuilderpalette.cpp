@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "engine/xapi.h"
 #include "game/location.h"
-#include "global/xapi.h"
 #include "map/map_objects.h"
 
 //******* palletes script langugage ******* //

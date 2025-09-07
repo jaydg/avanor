@@ -20,8 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/anycr.h"
 #include "creature/unique.h"
+#include "engine/xapi.h"
 #include "game/quest.h"
-#include "global/xapi.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
 

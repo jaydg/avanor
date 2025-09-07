@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XANYPLACE_H
 #define __XANYPLACE_H
 
+#include "engine/global.h"
 #include "engine/xobject.h"
-#include "global/global.h"
 #include "helpers/rect.h"
 
 class XMap;

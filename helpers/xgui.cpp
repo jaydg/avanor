@@ -19,8 +19,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/xhero.h"
-#include "global/global.h"
-#include "global/xstring.h"
 #include "helpers/xgui.h"
 
 //////////////////////////////////////////////////////////////////////////////

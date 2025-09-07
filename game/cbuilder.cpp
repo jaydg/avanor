@@ -20,8 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <vector>
 
+#include "engine/xapi.h"
 #include "game/cbuilder.h"
-#include "global/xapi.h"
 #include "map/map_objects.h"
 
 XCaveBuilder::XCaveBuilder(XLocation * _l, int create_door_trap_chest)

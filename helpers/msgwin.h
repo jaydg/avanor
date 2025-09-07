@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string.h>
 
-#include "global/global.h"
+#include "engine/global.h"
 
 #define MSGWIN_X 0
 #define MSGWIN_Y 0

@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "engine/global.h"
 #include "engine/xfile.h"
-#include "global/global.h"
 #include "magic/resist.h"
 
 RESIST_REC resists_data[] = {

@@ -23,9 +23,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdio.h>
 
-#include "global/global.h"
-#include "global/xstring.h"
-#include "global/xvector.h"
+#include "engine/global.h"
+#include "helpers/xstring.h"
+#include "helpers/xvector.h"
 
 class XGuiItem
 {

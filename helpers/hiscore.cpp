@@ -20,8 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <time.h>
 
+#include "engine/global.h"
 #include "engine/xfile.h"
-#include "global/global.h"
 #include "helpers/hiscore.h"
 
 void XHiScoreItem::SetText(int place, unsigned int score, const char* name,
