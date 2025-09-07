@@ -19,8 +19,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/xhero.h"
-#include "item/itemf.h"
 #include "engine/xdebug.h"
+#include "item/itemf.h"
 #include "item/xtool.h"
 
 struct CUSTOM_RACE {

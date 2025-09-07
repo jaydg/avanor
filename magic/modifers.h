@@ -21,10 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __MODIFERS_H
 #define __MODIFERS_H
 
-#include "engine/xobject.h"
 #include "creature/creature.h"
-#include "magic/modifer.h"
+#include "engine/xobject.h"
 #include "global/xapi.h"
+#include "magic/modifer.h"
 
 enum MODIFER_RESULT {
     MR_OK = 0,

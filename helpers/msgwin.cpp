@@ -18,9 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <ctype.h>
+
 #include "helpers/msgwin.h"
 #include "helpers/xgui.h"
-#include <ctype.h>
 
 XMsgWin msgwin;
 

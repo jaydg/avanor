@@ -18,14 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <stdlib.h>
 #include <ctype.h>
+#include <stdlib.h>
 
-#include "global/global.h"
-#include "game/game.h"
 #include "engine/xdebug.h"
-#include "helpers/manual.h"
+#include "game/game.h"
+#include "global/global.h"
 #include "helpers/hiscore.h"
+#include "helpers/manual.h"
 
 const char* logo_text[] = {
     MSG_CYAN

@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __RECT_H
 #define __RECT_H
 
-#include "helpers/point.h"
 #include "engine/xfile.h"
+#include "helpers/point.h"
 
 class XRect
 {

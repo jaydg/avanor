@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "magic/modifers.h"
 #include "engine/xarchive.h"
 #include "magic/modifer.h"
+#include "magic/modifers.h"
 
 XBasicModifer::XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr)
 {

@@ -19,9 +19,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/xhero.h"
+#include "game/game.h"
 #include "game/quest.h"
 #include "helpers/hiscore.h"
-#include "game/game.h"
 
 int XHero::UseTool()
 {

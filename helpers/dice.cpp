@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "helpers/dice.h"
 #include "engine/xfile.h"
 #include "global/global.h"
 #include "global/xapi.h"
+#include "helpers/dice.h"
 
 void XDice::Setup(const char* str)
 {

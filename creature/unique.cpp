@@ -18,18 +18,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature/unique.h"
-#include "item/uniquei.h"
-#include "game/quest.h"
-#include "item/itemf.h"
-#include "magic/modifer.h"
-#include "creature/xhero.h"
-#include "global/xapi.h"
-#include "game/setting.h"
-#include "item/xtool.h"
 #include "creature/skeep_ai.h"
+#include "creature/unique.h"
+#include "creature/xhero.h"
 #include "game/game.h"
-
+#include "game/quest.h"
+#include "game/setting.h"
+#include "global/xapi.h"
+#include "item/itemf.h"
+#include "item/uniquei.h"
+#include "item/xtool.h"
+#include "magic/modifer.h"
 
 ///////////////////////////////////////////////////////////////////////
 // AHK-ULAN

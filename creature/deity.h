@@ -21,13 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __DEITY_H
 #define __DEITY_H
 
-#include "magic/spelldef.h"
 #include "engine/xfile.h"
 #include "magic/effect.h"
+#include "magic/spelldef.h"
 
 class XCreature;
 class XItem;
-
 
 enum DEITY {
     D_LIFE = 0, D_DEATH = 1, D_UNKNOWN

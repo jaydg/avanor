@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XHERB_H
 #define __XHERB_H
 
-#include "item/xanyfood.h"
 #include "item/itemdef.h"
+#include "item/xanyfood.h"
 #include "item/xpotion.h"
 
 enum HERB_TYPE {

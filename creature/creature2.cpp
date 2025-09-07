@@ -19,8 +19,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/creature.h"
-#include "magic/modifer.h"
 #include "global/xapi.h"
+#include "magic/modifer.h"
 
 void XCreature::Attack()
 {

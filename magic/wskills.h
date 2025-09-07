@@ -21,11 +21,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __WSKILLS_H
 #define __WSKILLS_H
 
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
-#include "global/global.h"
 #include "engine/defs.h"
+#include "global/global.h"
 #include "item/itemdef.h"
 
 struct _SKILL_DB {

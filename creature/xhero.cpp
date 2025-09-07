@@ -18,24 +18,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <ctype.h>
+
+#include "creature/skeep_ai.h"
 #include "creature/xhero.h"
-#include "item/itemf.h"
-#include "item/uniquei.h"
-#include "game/quest.h"
 #include "engine/xarchive.h"
-#include "game/xtime.h"
-#include "helpers/msgwin.h"
-#include "helpers/manual.h"
-#include "other/other_misc.h"
 #include "engine/xdebug.h"
+#include "game/game.h"
+#include "game/quest.h"
+#include "game/xtime.h"
 #include "global/xapi.h"
 #include "helpers/hiscore.h"
-#include "magic/modifer.h"
-#include "item/xtool.h"
+#include "helpers/msgwin.h"
+#include "helpers/manual.h"
+#include "item/itemf.h"
 #include "item/item_misc.h"
-#include "game/game.h"
-#include "creature/skeep_ai.h"
-#include <ctype.h>
+#include "item/xtool.h"
+#include "item/uniquei.h"
+#include "magic/modifer.h"
+#include "other/other_misc.h"
 
 REGISTER_CLASS(XHero);
 int _exit_flag = 0;

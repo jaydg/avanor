@@ -21,10 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __MAGIC_H
 #define __MAGIC_H
 
-#include "engine/xlist.h"
 #include "creature/creature.h"
-#include "magic/spelldef.h"
+#include "engine/xlist.h"
 #include "magic/effect.h"
+#include "magic/spelldef.h"
 
 class XSpell : public XObject
 {

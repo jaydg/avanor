@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "engine/defs.h"
 #include "creature/bodypart.h"
-#include "engine/xarchive.h"
 #include "creature/creature.h"
+#include "engine/defs.h"
+#include "engine/xarchive.h"
 
 REGISTER_CLASS(XBodyPart);
 

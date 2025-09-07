@@ -18,10 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "helpers/hiscore.h"
+#include <time.h>
+
 #include "engine/xfile.h"
 #include "global/global.h"
-#include <time.h>
+#include "helpers/hiscore.h"
 
 void XHiScoreItem::SetText(int place, unsigned int score, const char* name,
     int day, int month, int year, const char* msg)

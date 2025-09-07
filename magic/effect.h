@@ -22,9 +22,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __EFFECT_H
 
 #include "global/global.h"
-#include "magic/resist.h"
 #include "engine/defs.h"
 #include "item/itemdef.h"
+#include "magic/resist.h"
 
 enum EFFECT_REQ {
     ER_NONE	= 0,

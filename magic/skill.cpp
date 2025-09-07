@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "magic/skill.h"
 #include "creature/creature.h"
-#include "other/other_misc.h"
 #include "helpers/xgui.h"
+#include "magic/skill.h"
+#include "other/other_misc.h"
 
 REGISTER_CLASS(XSkill);
 

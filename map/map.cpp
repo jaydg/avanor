@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "map/map.h"
-#include "item/item.h"
 #include "creature/creature.h"
 #include "engine/xarchive.h"
+#include "item/item.h"
+#include "map/map.h"
 #include "other/other_misc.h"
 
 xMAP stdmap[] = {

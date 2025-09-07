@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __STRPROC_H
 #define __STRPROC_H
 
-#include <string.h>
 #include <assert.h>
+#include <string.h>
 
 #include "engine/xlist.h"
 #include "helpers/dice.h"

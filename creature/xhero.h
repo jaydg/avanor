@@ -22,11 +22,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __XHERO_H
 
 #include <math.h>
-#include "global/global.h"
-#include "creature/creature.h"
-#include "item/incl_i.h"
+
 #include "creature/anycr.h"
+#include "creature/creature.h"
+#include "global/global.h"
 #include "helpers/xgui.h"
+#include "item/incl_i.h"
 
 extern int _exit_flag;
 

@@ -19,9 +19,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "helpers/strproc.h"
-#include "magic/stats.h"
-#include "magic/resist.h"
 #include "helpers/xstr.h"
+#include "magic/resist.h"
+#include "magic/stats.h"
 
 int XStringProc::GetData(char* buf, char delimiter)
 {

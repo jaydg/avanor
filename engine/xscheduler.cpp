@@ -19,8 +19,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <assert.h>
-#include "engine/xscheduler.h"
+
 #include "engine/xmapobj.h"
+#include "engine/xscheduler.h"
 #include "game/xtime.h"
 
 void XScheduler::Place(XObject * p)

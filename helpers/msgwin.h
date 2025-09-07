@@ -22,8 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __MSGWIN_H
 
 #include <string.h>
-#include "global/global.h"
 
+#include "global/global.h"
 
 #define MSGWIN_X 0
 #define MSGWIN_Y 0

@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "other/xgen.h"
-#include "global/xapi.h"
 #include "game/game.h"
+#include "global/xapi.h"
+#include "other/xgen.h"
 
 REGISTER_CLASS(XUniversalGen);
 

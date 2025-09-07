@@ -18,11 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "item/xherb.h"
 #include "creature/creature.h"
-#include "magic/modifer.h"
 #include "game/game.h"
+#include "item/xherb.h"
 #include "item/xpotion.h"
+#include "magic/modifer.h"
 
 #define HERBS_COUNT 18
 

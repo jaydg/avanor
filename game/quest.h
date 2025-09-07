@@ -21,9 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __QUEST_H
 #define __QUEST_H
 
-#include "item/itemdef.h"
 #include "creature/creature.h"
 #include "helpers/xstr.h"
+#include "item/itemdef.h"
 
 class XFile;
 class XCreature;

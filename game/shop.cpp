@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "game/shop.h"
-#include "item/itemf.h"
 #include "creature/skeep_ai.h"
 #include "engine/xarchive.h"
+#include "game/shop.h"
+#include "item/itemf.h"
 
 REGISTER_CLASS(XShop);
 

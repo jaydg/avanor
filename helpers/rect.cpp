@@ -18,8 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "helpers/rect.h"
 #include <stdlib.h>
+
+#include "helpers/rect.h"
 
 int XRect::Intersect(XRect * r)
 {

@@ -18,16 +18,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "creature/skeep_ai.h"
+#include "creature/unique.h"
+#include "game/game.h"
+#include "game/shop.h"
 #include "game/xldebug.h"
 #include "other/xgen.h"
-#include "creature/unique.h"
-#include "item/uniquei.h"
 #include "item/incl_i.h"
 #include "item/itemf.h"
-#include "game/shop.h"
-#include "creature/skeep_ai.h"
+#include "item/uniquei.h"
 #include "other/other_misc.h"
-#include "game/game.h"
 
 XLDebug::XLDebug(LOCATION tl) : XLocation(tl)
 {

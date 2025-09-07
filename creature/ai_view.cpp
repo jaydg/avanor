@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature/std_ai.h"
 #include "creature/los.h"
+#include "creature/std_ai.h"
 
 #define NOT_EQUAL(a, b) ((a) - (b)) // is faster than a != b when we need int instead of bool
 

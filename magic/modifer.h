@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __MODIFER_H
 #define __MODIFER_H
 
-#include "engine/xobject.h"
 #include "engine/xlist.h"
+#include "engine/xobject.h"
 
 class XBasicModifer;
 class XCreature;

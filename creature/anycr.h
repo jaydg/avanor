@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __ANY_CR_H
 #define __ANY_CR_H
 
-#include "creature/creature.h"
 #include "creature/cr_defs.h"
+#include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/resist.h"
 

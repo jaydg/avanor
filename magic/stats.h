@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __STATS_H
 
 #include <stdio.h>
+
 #include "helpers/dice.h"
 #include "helpers/strproc.h"
 #include "global/global.h"

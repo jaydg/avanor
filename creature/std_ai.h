@@ -22,10 +22,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __STD_AI_H
 
 #include "creature/creature.h"
-#include "item/item.h"
 #include "creature/cr_defs.h"
-#include "helpers/rect.h"
 #include "helpers/msgwin.h"
+#include "helpers/rect.h"
+#include "item/item.h"
 
 enum AI_FLAG {
     AIF_NONE	= 0x00000000,

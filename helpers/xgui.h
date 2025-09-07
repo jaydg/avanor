@@ -22,8 +22,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __XGUI_H
 
 #include <stdio.h>
-#include "global/xstring.h"
+
 #include "global/global.h"
+#include "global/xstring.h"
 #include "global/xvector.h"
 
 class XGuiItem
