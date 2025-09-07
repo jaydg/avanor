@@ -27,7 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/location.h"
 #include "game/quest.h"
 #include "item/item_misc.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 //Location Script Support
 extern "C"

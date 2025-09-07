@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "game/cave.h"
 #include "item/item_misc.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 bool CAVE_DATA::isExit(int x, int y)
 {

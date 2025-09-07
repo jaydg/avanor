@@ -62,7 +62,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xstr.cpp xshield.cpp       \
        unique.cpp uniquei.cpp                                                 \
        strproc.cpp std_ai.cpp stats.cpp skills.cpp skill.cpp                  \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
-       quest.cpp other_misc.cpp msgwin.cpp                                    \
+       quest.cpp map_objects.cpp msgwin.cpp                                   \
        modifers.cpp modifer.cpp map.cpp manual.cpp mainloc.cpp Main.cpp       \
        magic.cpp los.cpp location.cpp lbuilderpalette.cpp                     \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \

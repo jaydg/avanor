@@ -36,7 +36,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xtool.h"
 #include "item/uniquei.h"
 #include "magic/modifer.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 REGISTER_CLASS(XHero);
 int _exit_flag = 0;

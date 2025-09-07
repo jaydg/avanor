@@ -20,10 +20,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/skeep_ai.h"
 #include "creature/unique.h"
+#include "engine/xgen.h"
 #include "game/game.h"
 #include "item/item_misc.h"
-#include "other/other_misc.h"
-#include "other/xgen.h"
+#include "map/map_objects.h"
 
 XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 {

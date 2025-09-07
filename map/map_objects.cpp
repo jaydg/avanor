@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "game/location.h"
 #include "map/map.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 extern "C"
 {

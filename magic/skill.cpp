@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "helpers/xgui.h"
 #include "magic/skill.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 REGISTER_CLASS(XSkill);
 

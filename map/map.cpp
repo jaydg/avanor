@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xarchive.h"
 #include "item/item.h"
 #include "map/map.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 xMAP stdmap[] = {
     {' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},

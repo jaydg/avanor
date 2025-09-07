@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "game/location.h"
 #include "global/xapi.h"
-#include "other/other_misc.h"
+#include "map/map_objects.h"
 
 //******* palletes script langugage ******* //
 // Some simbols has default values, but can be overrided
