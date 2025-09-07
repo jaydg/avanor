@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XRATION_H
 #define __XRATION_H
 
-#include "xanyfood.h"
-#include "itemdef.h"
+#include "item/xanyfood.h"
+#include "item/itemdef.h"
 
 class XRation : public XAnyFood
 {

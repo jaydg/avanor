@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XMONEY_H
 #define __XMONEY_H
 
-#include "item.h"
+#include "item/item.h"
 
 class XMoney : public XItem
 {

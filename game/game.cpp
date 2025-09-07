@@ -20,13 +20,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <time.h>
 
-#include "xdebug.h"
-#include "game.h"
-#include "xtime.h"
-#include "quest.h"
-#include "uniquei.h"
-#include "setting.h"
-#include "xtool.h"
+#include "engine/xdebug.h"
+#include "game/game.h"
+#include "game/xtime.h"
+#include "game/quest.h"
+#include "item/item_misc.h"
+#include "item/uniquei.h"
+#include "game/setting.h"
+#include "item/xtool.h"
 
 #ifndef XLINUX
     #include <conio.h>
@@ -377,8 +378,6 @@ void XGame::CreateLocations()
         }
     }
 }
-
-#include "item_misc.h"
 
 void XGame::CreateHero()
 {

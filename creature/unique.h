@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __UNIQUE_H
 #define __UNIQUE_H
 
-#include "anycr.h"
+#include "creature/anycr.h"
 
 class XBeelzvile : public XAnyCreature
 {

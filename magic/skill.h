@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __SKILL_H
 #define __SKILL_H
 
-#include "xobject.h"
-#include "dice.h"
+#include "engine/xobject.h"
+#include "helpers/dice.h"
 
 enum SKILL_TYPE {
     SKT_UNKNOWN	= -1,

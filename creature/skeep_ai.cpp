@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "skeep_ai.h"
-#include "itemf.h"
-#include "xapi.h"
+#include "creature/skeep_ai.h"
+#include "item/itemf.h"
+#include "global/xapi.h"
 
 REGISTER_CLASS(XShopKeeperAI);
 

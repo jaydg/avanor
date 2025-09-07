@@ -21,11 +21,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __LOCATION_H
 #define __LOCATION_H
 
-#include "point.h"
-#include "map.h"
-#include "xanyplace.h"
-#include "cr_defs.h"
-#include "xstr.h"
+#include "helpers/point.h"
+#include "map/map.h"
+#include "map/xanyplace.h"
+#include "creature/cr_defs.h"
+#include "helpers/xstr.h"
 
 enum SHOP_DOOR {
     SHOP_DOOR_UP,

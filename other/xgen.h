@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XGEN_H
 #define __XGEN_H
 
-#include "map.h"
-#include "xmapobj.h"
+#include "map/map.h"
+#include "engine/xmapobj.h"
 
 class XGenerator : public XMapObject
 {

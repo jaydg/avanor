@@ -19,14 +19,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <ctype.h>
-#include "location.h"
-#include "cbuilder.h"
-#include "xarchive.h"
-#include "other_misc.h"
-#include "item_misc.h"
-#include "game.h"
-#include "unique.h"
-#include "quest.h"
+#include "game/location.h"
+#include "game/cbuilder.h"
+#include "engine/xarchive.h"
+#include "other/other_misc.h"
+#include "item/item_misc.h"
+#include "game/game.h"
+#include "creature/unique.h"
+#include "game/quest.h"
 
 //Location Script Support
 extern "C"

@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature.h"
-#include "modifer.h"
-#include "xapi.h"
+#include "creature/creature.h"
+#include "magic/modifer.h"
+#include "global/xapi.h"
 
 void XCreature::Attack()
 {

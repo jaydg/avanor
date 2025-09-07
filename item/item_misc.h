@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __ITEM_MISC_H
 #define __ITEM_MISC_H
 
-#include "xanyfood.h"
+#include "item/xanyfood.h"
 
 class XBatWing : public XAnyFood
 {

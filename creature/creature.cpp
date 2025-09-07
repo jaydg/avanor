@@ -18,14 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature.h"
-#include "los.h"
-#include "xarchive.h"
-#include "other_misc.h"
-#include "xapi.h"
-#include "modifer.h"
-#include "xscheduler.h"
-#include "game.h"
+#include "creature/creature.h"
+#include "creature/los.h"
+#include "engine/xarchive.h"
+#include "other/other_misc.h"
+#include "global/xapi.h"
+#include "magic/modifer.h"
+#include "engine/xscheduler.h"
+#include "game/game.h"
 
 extern "C"
 {

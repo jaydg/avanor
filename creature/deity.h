@@ -21,9 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __DEITY_H
 #define __DEITY_H
 
-#include "spelldef.h"
-#include "xfile.h"
-#include "effect.h"
+#include "magic/spelldef.h"
+#include "engine/xfile.h"
+#include "magic/effect.h"
 
 class XCreature;
 class XItem;

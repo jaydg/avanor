@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __HISCORE_H
 #define __HISCORE_H
 
-#include "xgui.h"
+#include "helpers/xgui.h"
 
 #define GAME_VERSION "0.6.0"
 

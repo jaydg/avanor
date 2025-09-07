@@ -25,10 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <assert.h>
 #include <stdio.h>
 
-#include "xobject.h"
-#include "point.h"
-#include "rect.h"
-#include "map.h"
+#include "engine/xobject.h"
+#include "helpers/point.h"
+#include "helpers/rect.h"
+#include "map/map.h"
 
 class XMap;
 

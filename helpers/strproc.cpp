@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "strproc.h"
-#include "stats.h"
-#include "resist.h"
-#include "xstr.h"
+#include "helpers/strproc.h"
+#include "magic/stats.h"
+#include "magic/resist.h"
+#include "helpers/xstr.h"
 
 int XStringProc::GetData(char* buf, char delimiter)
 {

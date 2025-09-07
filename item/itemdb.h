@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __ITEMDB_H
 #define __ITEMDB_H
 
-#include "defs.h"
-#include "itemdef.h"
+#include "engine/defs.h"
+#include "item/itemdef.h"
 
 #define DB_PROP_SZ	15 // number of materials!
 #define ENH_DB_SZ	20 // number of special powers ("of Strength")

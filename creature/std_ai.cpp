@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "std_ai.h"
-#include "xapi.h"
-#include "other_misc.h"
-#include "game.h"
+#include "creature/std_ai.h"
+#include "global/xapi.h"
+#include "other/other_misc.h"
+#include "game/game.h"
 
 REGISTER_CLASS(XStandardAI);
 

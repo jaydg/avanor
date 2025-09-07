@@ -18,11 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "map.h"
-#include "item.h"
-#include "creature.h"
-#include "xarchive.h"
-#include "other_misc.h"
+#include "map/map.h"
+#include "item/item.h"
+#include "creature/creature.h"
+#include "engine/xarchive.h"
+#include "other/other_misc.h"
 
 xMAP stdmap[] = {
     {' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},

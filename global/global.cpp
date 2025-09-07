@@ -21,8 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdlib.h>
-#include "global.h"
-#include "string.h"
+#include <string.h>
+
+#include "global/global.h"
 
 unsigned long total_cr = 0;
 unsigned long total_it = 0;

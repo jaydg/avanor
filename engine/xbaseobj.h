@@ -21,10 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XBASEOBJ_H__
 #define __XBASEOBJ_H__
 
-#include "xmapobj.h"
-#include "dice.h"
-#include "resist.h"
-#include "stats.h"
+#include "engine/xmapobj.h"
+#include "helpers/dice.h"
+#include "magic/resist.h"
+#include "magic/stats.h"
 
 class XBaseObject : public XMapObject
 {

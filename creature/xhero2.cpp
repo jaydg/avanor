@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xhero.h"
-#include "itemf.h"
-#include "xdebug.h"
-#include "xtool.h"
+#include "creature/xhero.h"
+#include "item/itemf.h"
+#include "engine/xdebug.h"
+#include "item/xtool.h"
 
 struct CUSTOM_RACE {
     const char* name;

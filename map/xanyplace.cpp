@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xanyplace.h"
-#include "map.h"
-#include "location.h"
-#include "creature.h"
+#include "map/xanyplace.h"
+#include "map/map.h"
+#include "game/location.h"
+#include "creature/creature.h"
 
 REGISTER_CLASS(XAnyPlace);
 

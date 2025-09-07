@@ -18,12 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature.h"
-#include "modifer.h"
-#include "modifers.h"
-#include "xcorpse.h"
-#include "game.h"
-#include "anycr.h"
+#include "creature/creature.h"
+#include "magic/modifer.h"
+#include "magic/modifers.h"
+#include "item/xcorpse.h"
+#include "game/game.h"
+#include "creature/anycr.h"
 
 REGISTER_CLASS(XCorpse);
 

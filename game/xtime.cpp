@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xtime.h"
-#include "xfile.h"
+#include "game/xtime.h"
+#include "engine/xfile.h"
 
 unsigned int XTime::month = 4;
 unsigned int XTime::day = 0;

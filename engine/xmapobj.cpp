@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xmapobj.h"
-#include "xarchive.h"
+#include "engine/xmapobj.h"
+#include "engine/xarchive.h"
 
 XMapObject::XMapObject() : l(NULL), x(-1), y(-1)
 {

@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef	__XCLOTHE_H
 #define	__XCLOTHE_H
 
-#include "item.h"
+#include "item/item.h"
 
 class XClothe : public XItem
 {

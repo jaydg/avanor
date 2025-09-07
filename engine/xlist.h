@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XLIST_H
 #define __XLIST_H
 
-#include "xobject.h"
+#include "engine/xobject.h"
 
 template <class T> class XList
 {

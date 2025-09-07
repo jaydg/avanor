@@ -18,11 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xarchive.h"
-#include "game.h"
-#include "quest.h"
-#include "xtime.h"
-#include "xherb.h"
+#include "engine/xarchive.h"
+#include "game/game.h"
+#include "game/quest.h"
+#include "game/xtime.h"
+#include "item/xherb.h"
 
 const unsigned int SAVE_GAME_VERSION = 0x0000045;
 const unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;

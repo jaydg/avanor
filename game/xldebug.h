@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XLDEBUG_H
 #define __XLDEBUG_H
 
-#include "location.h"
+#include "game/location.h"
 
 class XLDebug : public XLocation
 {

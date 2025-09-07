@@ -47,7 +47,7 @@ original algorightm used for Angband:
 #include <assert.h>
 #include <string.h>
 
-#include "los.h"
+#include "creature/los.h"
 
 struct grid_delta_type {
     signed char dy;

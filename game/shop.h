@@ -21,9 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XSHOP_H
 #define __XSHOP_H
 
-#include "incl_i.h"
-#include "xanyplace.h"
-#include "location.h"
+#include "item/incl_i.h"
+#include "map/xanyplace.h"
+#include "game/location.h"
 
 class XShop : public XAnyPlace
 {

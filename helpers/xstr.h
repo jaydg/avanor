@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __XSTR_H
 
 #include <string>
-#include "xfile.h"
+#include "engine/xfile.h"
 
 class XStr
 {

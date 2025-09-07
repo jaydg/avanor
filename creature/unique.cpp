@@ -18,17 +18,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "unique.h"
-#include "uniquei.h"
-#include "quest.h"
-#include "itemf.h"
-#include "modifer.h"
-#include "xhero.h"
-#include "xapi.h"
-#include "setting.h"
-#include "xtool.h"
-#include "skeep_ai.h"
-#include "game.h"
+#include "creature/unique.h"
+#include "item/uniquei.h"
+#include "game/quest.h"
+#include "item/itemf.h"
+#include "magic/modifer.h"
+#include "creature/xhero.h"
+#include "global/xapi.h"
+#include "game/setting.h"
+#include "item/xtool.h"
+#include "creature/skeep_ai.h"
+#include "game/game.h"
 
 
 ///////////////////////////////////////////////////////////////////////

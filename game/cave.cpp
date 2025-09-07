@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "cave.h"
-#include "other_misc.h"
-#include "item_misc.h"
-#include "std_ai.h"
+#include "game/cave.h"
+#include "other/other_misc.h"
+#include "item/item_misc.h"
+#include "creature/std_ai.h"
 
 bool CAVE_DATA::isExit(int x, int y)
 {

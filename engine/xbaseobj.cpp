@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "global.h"
-#include "xbaseobj.h"
+#include "global/global.h"
+#include "engine/xbaseobj.h"
 
 XBaseObject::XBaseObject() :
     RNG(0), s(NULL), r(NULL), weight(0)

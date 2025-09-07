@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __GLOVES_H
 #define __GLOVES_H
 
-#include "xclothe.h"
+#include "item/xclothe.h"
 
 class XGloves : public XClothe
 {

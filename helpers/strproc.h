@@ -23,8 +23,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string.h>
 #include <assert.h>
-#include <xlist.h>
-#include "dice.h"
+
+#include "engine/xlist.h"
+#include "helpers/dice.h"
 
 // warning!!! this class don't do a copy of string content, so
 // beware it cause an error!

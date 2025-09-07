@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XMAPOBJECT_H
 #define __XMAPOBJECT_H
 
-#include "xobject.h"
-#include "location.h"
+#include "engine/xobject.h"
+#include "game/location.h"
 
 class XCreature;
 class XLocation;

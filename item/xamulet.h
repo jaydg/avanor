@@ -21,7 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XAMULET_H
 #define __XAMULET_H
 
-#include "xenhance.h"
+#include "item/xenhance.h"
+
 class XAmulet : public XEnhance
 {
     public:

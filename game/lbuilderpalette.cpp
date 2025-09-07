@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "location.h"
-#include "other_misc.h"
-#include "xapi.h"
+#include "game/location.h"
+#include "other/other_misc.h"
+#include "global/xapi.h"
 
 //******* palletes script langugage ******* //
 // Some simbols has default values, but can be overrided

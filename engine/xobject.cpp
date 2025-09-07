@@ -19,9 +19,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
-#include "global.h"
-#include "xdebug.h"
-#include "xobject.h"
+
+#include "global/global.h"
+#include "engine/xdebug.h"
+#include "engine/xobject.h"
 
 long XObject::invalid_count = 0;
 XObject** XObject::table = 0;

@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __MANUAL_H
 #define __MANUAL_H
 
-#include "xgui.h"
+#include "helpers/xgui.h"
 
 class XManual
 {

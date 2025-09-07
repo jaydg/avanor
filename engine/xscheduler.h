@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XSCHEDULER_H__
 #define __XSCHEDULER_H__
 
-#include "xlist.h"
+#include "engine/xlist.h"
 
 #define XSCHEDULER_TIME_SLICE  100
 #define XSCHEDULER_STEPS_AHEAD 100

@@ -20,11 +20,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdlib.h>
 #include <ctype.h>
-#include "global.h"
-#include "game.h"
-#include "xdebug.h"
-#include "manual.h"
-#include "hiscore.h"
+
+#include "global/global.h"
+#include "game/game.h"
+#include "engine/xdebug.h"
+#include "helpers/manual.h"
+#include "helpers/hiscore.h"
 
 const char* logo_text[] = {
     MSG_CYAN

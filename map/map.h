@@ -24,11 +24,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdlib.h>
 #include <assert.h>
 
-#include "global.h"
-#include "point.h"
-#include "rect.h"
-#include "xanyplace.h"
-#include "xlist.h"
+#include "global/global.h"
+#include "helpers/point.h"
+#include "helpers/rect.h"
+#include "map/xanyplace.h"
+#include "engine/xlist.h"
 
 #define MAP_MINX 10
 #define MAP_MINY 10

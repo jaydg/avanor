@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <stack>
 
-#include "xgui.h"
+#include "helpers/xgui.h"
 
 #define	YYCTYPE		char
 #define	YYCURSOR	cursor

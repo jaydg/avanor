@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xstring.h"
-#include "xgui.h"
-#include "global.h"
-#include "xhero.h"
+#include "global/xstring.h"
+#include "helpers/xgui.h"
+#include "global/global.h"
+#include "creature/xhero.h"
 
 //////////////////////////////////////////////////////////////////////////////
 // The XGuiItem_Text::WideBuffer(char * str, int newlen) function           //

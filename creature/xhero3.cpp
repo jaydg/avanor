@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xhero.h"
-#include "quest.h"
-#include "hiscore.h"
-#include "game.h"
+#include "creature/xhero.h"
+#include "game/quest.h"
+#include "helpers/hiscore.h"
+#include "game/game.h"
 
 int XHero::UseTool()
 {

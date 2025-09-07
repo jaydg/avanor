@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __CLOAK_H
 #define __CLOAK_H
 
-#include "xclothe.h"
+#include "item/xclothe.h"
 
 class XCloak : public XClothe
 {

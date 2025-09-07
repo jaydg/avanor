@@ -18,12 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "anycr.h"
-#include "itemf.h"
-#include "xapi.h"
-#include "unique.h"
-#include "quest.h"
-#include "item_misc.h"
+#include "creature/anycr.h"
+#include "item/itemf.h"
+#include "global/xapi.h"
+#include "creature/unique.h"
+#include "game/quest.h"
+#include "item/item_misc.h"
 
 
 REGISTER_CLASS(XAnyCreature);

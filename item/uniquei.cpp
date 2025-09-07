@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "uniquei.h"
+#include "item/uniquei.h"
 
 REGISTER_CLASS(XGlamdring);
 XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)

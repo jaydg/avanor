@@ -21,7 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XRING_H
 #define __XRING_H
 
-#include "xenhance.h"
+#include "item/xenhance.h"
+
 class XRing : public XEnhance
 {
     public:

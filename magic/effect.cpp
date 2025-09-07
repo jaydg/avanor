@@ -18,12 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "effect.h"
-#include "dice.h"
-#include "creature.h"
-#include "modifer.h"
-#include "xhero.h"
-#include "game.h"
+#include "magic/effect.h"
+#include "helpers/dice.h"
+#include "creature/creature.h"
+#include "magic/modifer.h"
+#include "creature/xhero.h"
+#include "game/game.h"
 
 EFFECT_REQ XEffect::GetReq(EFFECT effect)
 {

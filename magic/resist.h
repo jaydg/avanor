@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __RESIST_H
 #define __RESIST_H
 
-#include "strproc.h"
-#include "dice.h"
+#include "helpers/strproc.h"
+#include "helpers/dice.h"
 
 enum RESISTANCE {R_NONE = -1,
     R_WHITE, R_BLACK, R_FIRE, R_WATER, R_AIR, R_EARTH,

@@ -23,15 +23,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <time.h>
 
-#include "location.h"
-#include "xhero.h"
-#include "other_misc.h"
-#include "xgen.h"
-#include "incl_i.h"
-#include "shop.h"
-#include "itemf.h"
-#include "xarchive.h"
-#include "xscheduler.h"
+#include "game/location.h"
+#include "creature/xhero.h"
+#include "other/other_misc.h"
+#include "other/xgen.h"
+#include "item/incl_i.h"
+#include "game/shop.h"
+#include "item/itemf.h"
+#include "engine/xarchive.h"
+#include "engine/xscheduler.h"
 
 extern char static_buffer[];
 

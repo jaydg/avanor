@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XPOTION_H
 #define __XPOTION_H
 
-#include "item.h"
-#include "effect.h"
+#include "item/item.h"
+#include "magic/effect.h"
 
 
 enum POTION_COLOR {

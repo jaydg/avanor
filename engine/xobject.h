@@ -25,10 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "defs.h"
-#include "xfile.h"
 #include <string>
 
+#include "engine/defs.h"
+#include "engine/xfile.h"
 
 enum ITEM_MASK {
     IM_UNKNOWN = 0x00000000,

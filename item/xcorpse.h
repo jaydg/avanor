@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XCORPSE_H
 #define __XCORPSE_H
 
-#include "xanyfood.h"
+#include "item/xanyfood.h"
 
 enum CORPSE_CONDITION {
     CCOND_NICE,

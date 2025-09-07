@@ -18,9 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "resist.h"
-#include "xfile.h"
-#include "global.h"
+#include "magic/resist.h"
+#include "engine/xfile.h"
+#include "global/global.h"
 
 RESIST_REC resists_data[] = {
     {"unknown",	FLU_NONE},

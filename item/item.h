@@ -21,10 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __ITEM_H
 #define __ITEM_H
 
-#include "xlist.h"
-#include "xbaseobj.h"
-#include "itemdb.h"
-#include "itemdef.h"
+#include "engine/xlist.h"
+#include "engine/xbaseobj.h"
+#include "item/itemdb.h"
+#include "item/itemdef.h"
 
 class XCreature;
 

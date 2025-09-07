@@ -21,9 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __BODYPART_H
 #define __BODYPART_H
 
-#include "xobject.h"
-#include "xmapobj.h"
-#include "item.h"
+#include "engine/xobject.h"
+#include "engine/xmapobj.h"
+#include "item/item.h"
 
 class XItem;
 class XCreature;

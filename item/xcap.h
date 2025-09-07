@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XCAP_H
 #define	__XCAP_H
 
-#include "xclothe.h"
+#include "item/xclothe.h"
 
 class XCap : public XClothe
 {

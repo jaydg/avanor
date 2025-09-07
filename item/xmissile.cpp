@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "xmissile.h"
-#include "xweapon.h"
+#include "item/xmissile.h"
+#include "item/xweapon.h"
 
 REGISTER_CLASS(XMissile);
 

@@ -18,12 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "other_misc.h"
+#include "other/other_misc.h"
 
-#include "creature.h"
-#include "location.h"
-#include "map.h"
-#include "game.h"
+#include "creature/creature.h"
+#include "game/location.h"
+#include "map/map.h"
+#include "game/game.h"
 
 extern "C"
 {

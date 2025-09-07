@@ -47,15 +47,8 @@ endif
 OBJDIR = obj
 NAME = avanor
 
-ROOT = ./
-TOROOT = ./../
-IPATH = -I${ROOT}global -I${ROOT}map -I${ROOT}creature -I${ROOT}engine -I${ROOT}helpers \
-        -I${ROOT}item -I${ROOT}magic -I${ROOT}other -I${ROOT} -I${ROOT}game \
-        -I${TOROOT}global -I${TOROOT}map -I${TOROOT}creature -I${TOROOT}engine -I${TOROOT}helpers \
-        -I${TOROOT}item -I${TOROOT}magic -I${TOROOT}other -I${TOROOT} -I${TOROOT}game
-
-CFLAGS += $(IPATH)
-CFLAGS  += $(shell pkg-config --cflags luajit)
+CFLAGS += -I.
+CFLAGS += $(shell pkg-config --cflags luajit)
 
 VPATH = creature engine game global helpers item magic map other lua
 

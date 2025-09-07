@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XARMOR_H
 #define __XARMOR_H
 
-#include "xclothe.h"
+#include "item/xclothe.h"
 
 class XArmor: public XClothe
 {

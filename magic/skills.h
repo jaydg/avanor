@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __SKILLS_H
 #define __SKILLS_H
 
-#include "xlist.h"
-#include "skill.h"
+#include "engine/xlist.h"
+#include "magic/skill.h"
 
 class XSkills
 {

@@ -22,9 +22,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __STATS_H
 
 #include <stdio.h>
-#include "dice.h"
-#include "strproc.h"
-#include "global.h"
+#include "helpers/dice.h"
+#include "helpers/strproc.h"
+#include "global/global.h"
 
 enum STATS {S_UNKNOWN = -1, S_STR, S_DEX, S_TOU, S_LEN, S_WIL, S_MAN, S_PER, S_CHR, S_EOF};
 

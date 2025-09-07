@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __UNIQUEI_H
 #define __UNIQUEI_H
 
-#include "incl_i.h"
+#include "item/incl_i.h"
 
 class XGlamdring : public XWeapon
 {

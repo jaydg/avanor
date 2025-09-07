@@ -18,10 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "quest.h"
-#include "xfile.h"
-#include "global.h"
-#include "xgui.h"
+#include "game/quest.h"
+#include "engine/xfile.h"
+#include "global/global.h"
+#include "helpers/xgui.h"
 
 XQuest XQuest::quest;
 

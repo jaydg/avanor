@@ -22,17 +22,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __CREATURE_H
 
 #include <math.h>
-#include "xlist.h"
-#include "std_ai.h"
-#include "bodypart.h"
-#include "magic.h"
-#include "skills.h"
-#include "wskills.h"
-#include "xpotion.h"
-#include "xcorpse.h"
-#include "incl_i.h"
-#include "cr_defs.h"
-#include "deity.h"
+#include "engine/xlist.h"
+#include "creature/std_ai.h"
+#include "creature/bodypart.h"
+#include "magic/magic.h"
+#include "magic/skills.h"
+#include "magic/wskills.h"
+#include "item/xpotion.h"
+#include "item/xcorpse.h"
+#include "item/incl_i.h"
+#include "creature/cr_defs.h"
+#include "creature/deity.h"
 
 enum AI_TYPE {AI_HERO = 0, AI_SIMPLE = 1};
 

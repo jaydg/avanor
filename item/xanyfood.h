@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XANYFOOD_H
 #define __XANYFOOD_H
 
-#include "item.h"
+#include "item/item.h"
 
 //
 enum FOOD_TYPE {

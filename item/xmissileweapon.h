@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XMWEAPON_H
 #define __XMWEAPON_H
 
-#include "item.h"
+#include "item/item.h"
 
 //struct _WEAPON_BIND;
 

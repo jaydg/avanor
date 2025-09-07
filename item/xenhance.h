@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef	__XENHANCE_H
 #define	__XENHANCE_H
 
-#include "item.h"
+#include "item/item.h"
 
 enum ENH_COLOR {
     EC_WHITE	=	0,

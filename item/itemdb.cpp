@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "item.h"
-#include "itemdb.h"
+#include "item/item.h"
+#include "item/itemdb.h"
 
 // name				color			dv  		pv			hit		dice	z			r			iflag
 // dv, pv, dice, r - armor

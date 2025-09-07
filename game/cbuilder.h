@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __CBUILDER_H
 #define __CBUILDER_H
 
-#include "cave.h"
+#include "game/cave.h"
 
 class XMap;
 class XLocation;

@@ -21,9 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __SKEEP_AI_H
 #define __SKEEP_AI_H
 
-#include "std_ai.h"
-#include "rect.h"
-#include "shop.h"
+#include "creature/std_ai.h"
+#include "helpers/rect.h"
+#include "game/shop.h"
 
 class XCreature;
 
