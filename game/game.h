@@ -31,7 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "shop.h"
 #include "itemf.h"
 #include "xarchive.h"
-#include "xshedule.h"
+#include "xscheduler.h"
 
 extern char static_buffer[];
 

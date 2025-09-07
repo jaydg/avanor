@@ -25,7 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xtime.h"
 #include "quest.h"
 #include "uniquei.h"
-#include "xshedule.h"
 #include "setting.h"
 #include "xtool.h"
 

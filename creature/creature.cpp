@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "other_misc.h"
 #include "xapi.h"
 #include "modifer.h"
-#include "xshedule.h"
+#include "xscheduler.h"
 #include "game.h"
 
 extern "C"
