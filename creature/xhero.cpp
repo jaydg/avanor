@@ -2426,7 +2426,7 @@ void XHero::QuickPay()
     XAnyPlace * pl = l->map->GetPlace(x, y);
 
     //hack!!!
-    if (pl == NULL || (pl->GetClassName() == "XShop")) {
+    if (pl == NULL || (pl->GetClassName() != "XShop")) {
         msgwin.Add("You can pay only in shops.");
         return;
     }
