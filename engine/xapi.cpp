@@ -21,28 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/xapi.h"
 
-int vMax(int value1, int value2)
-{
-    return ((value1 > value2) ? value1 : value2);
-}
-
-int vMin(int value1, int value2)
-{
-    return ((value1 < value2) ? value1 : value2);
-}
-
 int sgn(int n)
 {
     return ((n > 0) - (n < 0));
-}
-
-int vRound(float f)
-{
-    if (f >= 0) {
-        return f - (int)f < 0.5f ? (int)f : (int)f + 1;
-    } else {
-        return f - (int)f > -0.5f ? (int)f : (int)f - 1;
-    }
 }
 
 unsigned int vGetRandomBit(unsigned int mask)

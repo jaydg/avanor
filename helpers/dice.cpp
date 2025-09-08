@@ -103,5 +103,5 @@ int XDice::DFunc()
 
 int XDice::NDFunc(int maximum)
 {
-    return vRound((DFunc() * maximum) / 20.0f);
+    return std::lround((DFunc() * maximum) / 20.0f);
 }

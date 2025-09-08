@@ -233,12 +233,12 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
         fl_range++;
         float nmx = mx + cos_alpha;
         float nmy = my + sin_alpha;
-        epx = vRound(nmx);
-        epy = vRound(nmy);
+        epx = std::lround(nmx);
+        epy = std::lround(nmy);
 
         if (tmap->GetMovability(epx, epy) >= MO_WALL) {
-            epx = vRound(mx);
-            epy = vRound(my);
+            epx = std::lround(mx);
+            epy = std::lround(my);
             break;
         }
 
@@ -248,8 +248,8 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
             if (mfd->arrow_type == MFT_BALL) {
                 tmap->PutChar(epx, epy, '*', mfd->arrow_color);
             } else {
-                int ttx = vRound(nmx - mx);
-                int tty = vRound(nmy - my);
+                int ttx = std::lround(nmx - mx);
+                int tty = std::lround(nmy - my);
 
                 if (ttx * tty == 1) {
                     tmap->PutChar(epx, epy, '\\', mfd->arrow_color);

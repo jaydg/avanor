@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
 #include <ctype.h>
 
 #include "creature/skeep_ai.h"
@@ -1646,8 +1647,8 @@ int XHero::Targeting(int range, XPoint * pt)
         for (int j = -7; j <= 7; j++)
             if (l->map->GetMonster(x + j, y + i) && l->map->GetMonster(x + j, y + i)->isVisible()
                 && l->map->GetMonster(x + j, y + i)->xai->isEnemy(this)
-                && vMax(abs(i), abs(j)) < dist && !(j == 0 && i == 0)) {
-                dist = vMax(abs(i), abs(j));
+                && std::max(abs(i), abs(j)) < dist && !(j == 0 && i == 0)) {
+                dist = std::max(abs(i), abs(j));
                 tgt = l->map->GetMonster(x + j, y + i);
             }
 
@@ -1689,21 +1690,21 @@ int XHero::Targeting(int range, XPoint * pt)
             mx += cos_alpha;
             my += sin_alpha;
 
-            if ((vRound(mx) != x || vRound(my) != y) && flag) {
+            if ((std::lround(mx) != x || std::lround(my) != y) && flag) {
                 if (trange >= 0) {
-                    l->map->PutChar(vRound(mx), vRound(my), '*', xYELLOW);
+                    l->map->PutChar(std::lround(mx), std::lround(my), '*', xYELLOW);
                 } else {
-                    l->map->PutChar(vRound(mx), vRound(my), '*', xRED);
+                    l->map->PutChar(std::lround(mx), std::lround(my), '*', xRED);
                 }
             }
 
-            if ((l->map->GetMovability(vRound(mx), vRound(my)) >= MO_WALL
-                || !l->map->GetVisible(vRound(mx), vRound(my)))
+            if ((l->map->GetMovability(std::lround(mx), std::lround(my)) >= MO_WALL
+                || !l->map->GetVisible(std::lround(mx), std::lround(my)))
                 && flag) {
                 if (trange >= 0) {
-                    l->map->PutChar(vRound(mx), vRound(my), 'X', xYELLOW);
+                    l->map->PutChar(std::lround(mx), std::lround(my), 'X', xYELLOW);
                 } else {
-                    l->map->PutChar(vRound(mx), vRound(my), 'X', xRED);
+                    l->map->PutChar(std::lround(mx), std::lround(my), 'X', xRED);
                 }
 
                 flag = 0;

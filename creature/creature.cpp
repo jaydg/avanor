@@ -18,9 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
+
 #include "creature/creature.h"
 #include "creature/los.h"
-#include "engine/xapi.h"
 #include "engine/xarchive.h"
 #include "engine/xscheduler.h"
 #include "game/game.h"
@@ -1056,7 +1057,7 @@ int XCreature::GetHITFHBonus(XItem * weapon)
     XItem * h2 = GetItem(BP_HAND, 1);
     int mult = (h1 && h2) ? 2 : 1;
     float f = (float)(5.0 * log((300.0 * GetStats(S_STR)) / (10.0 * (weapon->weight) * mult)));
-    return vMin((int)f, 0);
+    return std::min((int)f, 0);
 }
 
 int XCreature::GetDMGFHBonus(XItem * weapon)

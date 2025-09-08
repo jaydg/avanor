@@ -21,10 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XAPI_H
 #define __XAPI_H
 
-int vMax(int value1, int value2);
-int vMin(int value1, int value2);
 int sgn(int n);
-int vRound(float f);
 
 unsigned int vGetRandomBit(unsigned int mask);
 int vGetBitNumber(unsigned int mask);

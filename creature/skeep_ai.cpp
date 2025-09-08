@@ -18,8 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
+
 #include "creature/skeep_ai.h"
-#include "engine/xapi.h"
 #include "item/itemf.h"
 
 REGISTER_CLASS(XShopKeeperAI);
@@ -228,7 +229,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
             titem->toString(buf1);
             sprintf(buf, GMSG_SHOPKEEPER_ASK_FOR_PAY, titem->GetValue() * titem->quantity, buf1);
             msgwin.Add(buf);
-            XPoint pt(0, vMin(titem->GetValue() * titem->quantity, item->quantity));
+            XPoint pt(0, std::min(titem->GetValue() * titem->quantity, item->quantity));
             int res = giver->GetTarget(TR_HOW_MUCH, &pt, titem->GetValue() * titem->quantity);
 
             if (res <= 0) {

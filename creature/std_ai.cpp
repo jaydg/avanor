@@ -126,8 +126,8 @@ void XStandardAI::Move()
         AnalyzeView(ai_owner->GetVisibleRadius());
 
         //calculate avg coordinats for AIF_ALLOW_PACK
-        friend_avg_x = vRound((float)friend_avg_x / (float)friends_count);
-        friend_avg_y = vRound((float)friend_avg_y / (float)friends_count);
+        friend_avg_x = std::lround((float)friend_avg_x / (float)friends_count);
+        friend_avg_y = std::lround((float)friend_avg_y / (float)friends_count);
 
         if (enemy_dist > 100) {
             sleep_well = 3;

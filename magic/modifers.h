@@ -21,8 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __MODIFERS_H
 #define __MODIFERS_H
 
+#include <algorithm>
+
 #include "creature/creature.h"
-#include "engine/xapi.h"
 #include "engine/xobject.h"
 #include "magic/modifer.h"
 
@@ -491,7 +492,7 @@ class XModDelayed : public XBasicModifer
         virtual void Concat(XObject * object)
         {
             XModDelayed * mod = (XModDelayed*)object;
-            val = vMin(val, mod->val);
+            val = std::min(val, mod->val);
             set_val += mod->set_val;
             XObject::Concat(object); //hack
         }
