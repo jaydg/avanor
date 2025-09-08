@@ -478,7 +478,6 @@ void XItem::Store(XFile * f)
     owner.Store(f);
 }
 
-
 void XItem::Restore(XFile * f)
 {
     XBaseObject::Restore(f);
@@ -504,8 +503,8 @@ void XItem::Restore(XFile * f)
 
 int XItem::onWear(XCreature * cr)
 {
-    cr->added_stats.Add(s); //modify stats;
-    cr->added_resists.Add(r); //modify resist;
+    cr->added_stats.Add(s); // modify stats
+    cr->added_resists.Add(r); // modify resist
 
     if (im != IM_SHIELD) {
         cr->added_DV	+= _DV;
@@ -574,7 +573,6 @@ int XItem::onHit(XCreature * user, XCreature * target)
 
     return 1;
 }
-
 
 _ITEMPROP* XItem::GetMaterial(int index)
 {

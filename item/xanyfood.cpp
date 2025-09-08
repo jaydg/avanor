@@ -162,7 +162,6 @@ FOOD_TYPE XAnyFood::FoodTypeForCreature(XCreature * creature)
     return food_type;
 }
 
-
 void XAnyFood::Store(XFile * f)
 {
     XItem::Store(f);

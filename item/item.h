@@ -52,21 +52,21 @@ class XItem : public XBaseObject
 
         virtual void toString(char* buf);
 
-        BODYPART bp; //fit to what bp???
-        ITEM_TYPE it; //main type of item such IT_POTION
-        WSK_TYPE wt; //other type of item
-        ITEM_QUALITY quality;//quality of item. Need for generation and may be basic identification...
+        BODYPART bp;    // fit to what bp???
+        ITEM_TYPE it;   // main type of item such IT_POTION
+        WSK_TYPE wt;    // other type of item
+        ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
 
         int durability; // DUR_INFINITE - infinite, Other - finite 1Dur == 1000 turn
         int ModifyDur(int val);
 
-        int identify; // 0 - not identifed, 1 - identifed
-        int is_selected; //it is need to user interface....
+        int identify;    // 0 - not identifed, 1 - identifed
+        int is_selected; // it is need to user interface....
 
-        virtual int Compare(XObject * o); //compare objects
+        virtual int Compare(XObject * o); // compare objects
         virtual int isIdentifed()
         {
-            return identify; //object can be indetifed or not
+            return identify; // object can be indetifed or not
         }
 
         virtual void Identify(int level)
@@ -77,10 +77,10 @@ class XItem : public XBaseObject
         int value;
         virtual int GetValue(); // Get Value of Object (for shop, monster AI etc.)
 
-        SPECIAL_PROPERTY special_property; //slow digestion and other propertyes
-        int special_number; //number of a struct with extension name such a "of Strength"
+        SPECIAL_PROPERTY special_property; // slow digestion and other propertyes
+        int special_number; // number of a struct with extension name such a "of Strength"
         BRAND_TYPE brt;
-        int material_index; //reference to material;
+        int material_index; // reference to material;
         _ITEMPROP* GetMaterial(int index);
 
 

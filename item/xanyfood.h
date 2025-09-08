@@ -23,14 +23,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item.h"
 
-//
 enum FOOD_TYPE {
-    FT_BESTFOOD	= 0x00000002, //feel very nice, +50% to food satiation
-    FT_GOODFOOD	= 0x00000003, //feel nice, +25% to food satiation
-    FT_NORMALFOOD	= 0x00000004, //ok
-    FT_BADFOOD	= 0x00000005, //-25% to food satiation
-    FT_VERYBADFOOD	= 0x00000006, //-50% to food satiation
-    FT_VOMIT	= 0x00000007, //-XXX from total satiation
+    FT_BESTFOOD     = 0x00000002, // feel very nice, +50% to food satiation
+    FT_GOODFOOD     = 0x00000003, // feel nice, +25% to food satiation
+    FT_NORMALFOOD   = 0x00000004, // ok
+    FT_BADFOOD      = 0x00000005, // -25% to food satiation
+    FT_VERYBADFOOD  = 0x00000006, // -50% to food satiation
+    FT_VOMIT        = 0x00000007, // -XXX from total satiation
 };
 
 class XAnyFood : public XItem
@@ -48,17 +47,17 @@ class XAnyFood : public XItem
         }
 
         virtual void toString(char* buf);
-        virtual RESULT onEat(XCreature * eater); //eat a peace from food
+        virtual RESULT onEat(XCreature * eater); // eat a peace from food
         virtual const char* postEat(XCreature * eater);
         virtual int Compare(XObject * o);
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
         int food_nutrio;
-        int consumed_food; //how much is eated
+        int consumed_food;  // how much is eated
         FOOD_TYPE FoodTypeForCreature(XCreature * creature);
         FOOD_TYPE food_type;
     protected:
-        int consume_nutrio; //part of food eated for one turn
+        int consume_nutrio; // part of food eated for one turn
 
 };
 
