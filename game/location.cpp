@@ -1810,7 +1810,6 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(S_CHR);
     LUA_REG(S_EOF);
 
-    LUA_REG(SKT_UNKNOWN);
     LUA_REG(SKT_ARCHERY);
     LUA_REG(SKT_FINDWEAKNESS);
     LUA_REG(SKT_HEALING);

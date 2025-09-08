@@ -25,7 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/dice.h"
 
 enum SKILL_TYPE {
-    SKT_UNKNOWN	= -1,
     SKT_ARCHERY	= 0,
     SKT_FINDWEAKNESS	= 1,
     SKT_HEALING	= 2, // restore hit points
