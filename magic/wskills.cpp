@@ -126,7 +126,7 @@ int XWarSkills::GetLevel(WSK_TYPE wt)
 int XWarSkills::GetN(int level)
 {
     //30, 26
-    return 10 * vRound((float)(25.0 * (pow(M_E, level / 4.0) - 1)));
+    return 10 * std::lround((float)(25.0 * (pow(M_E, level / 4.0) - 1)));
 }
 
 void XWarSkills::SetLevel(WSK_TYPE wt, int level)
