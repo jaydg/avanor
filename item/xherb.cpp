@@ -191,7 +191,7 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 
 const char* XHerbBush::GetName(XCreature * viewer)
 {
-    XSkill * xsk = viewer->sk->GetSkill(SKT_HERBALISM);
+    XSkill * xsk = viewer->sk->GetSkill(XSkill::Skill::HERBALISM);
     int val = 0;
 
     if (xsk) {
@@ -304,7 +304,7 @@ void XHerbBush::Restore(XFile * f)
 
 XObject* XHerbBush::Pick(XCreature * picker)
 {
-    picker->sk->UseSkill(SKT_HERBALISM);
+    picker->sk->UseSkill(XSkill::Skill::HERBALISM);
 
     if (--herb_strength <= 0) {
         l->map->SetSpecial(x, y, NULL);
@@ -378,7 +378,7 @@ void XMushSpawn::Restore(XFile * f)
 
 XObject* XMushSpawn::Pick(XCreature * picker)
 {
-    picker->sk->UseSkill(SKT_HERBALISM);
+    picker->sk->UseSkill(XSkill::Skill::HERBALISM);
     l->map->SetSpecial(x, y, NULL);
     Invalidate();
     XHerb * it = new XHerb(mush_index);

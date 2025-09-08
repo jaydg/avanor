@@ -59,7 +59,7 @@ DEITY_ACT life_deity_act[] = {
 
 void XReligion::KillCreature(XCreature * killer, XCreature * victim)
 {
-    int val = killer->sk->GetLevel(SKT_RELIGION);
+    int val = killer->sk->GetLevel(XSkill::Skill::RELIGION);
     int bad = life_deity_act[val].bad;
     int good = life_deity_act[val].good;
 
@@ -74,7 +74,7 @@ void XReligion::KillCreature(XCreature * killer, XCreature * victim)
 
 int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
 {
-    int val = cr->sk->GetLevel(SKT_RELIGION);
+    int val = cr->sk->GetLevel(XSkill::Skill::RELIGION);
 
     if (deity == D_UNKNOWN) {
         if (life_act > death_act) {
@@ -111,11 +111,11 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
         sacrifice_value = (int)((sqrt((float)item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
     }
 
-    cr->sk->UseSkill(SKT_RELIGION);
+    cr->sk->UseSkill(XSkill::Skill::RELIGION);
 
     if (tmo && tmo->im & IM_ALTAR) {
         sacrifice_value *= 3;
-        cr->sk->UseSkill(SKT_RELIGION, 5);
+        cr->sk->UseSkill(XSkill::Skill::RELIGION, 5);
     }
 
     item->UnCarry();
@@ -285,7 +285,7 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
             death_act -= pray->help_cost;
         }
 
-        prayer->sk->UseSkill(SKT_RELIGION, 3);
+        prayer->sk->UseSkill(XSkill::Skill::RELIGION, 3);
     }
 
     if (res != ABORT) {

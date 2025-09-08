@@ -304,7 +304,7 @@ void XHighPriest::Die(XCreature * killer)
 
 int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 {
-    int val = giver->sk->GetLevel(SKT_RELIGION);
+    int val = giver->sk->GetLevel(XSkill::Skill::RELIGION);
     char buf[120];
 
     msgwin.Add("Thank you for your charitable donation!");
@@ -325,7 +325,7 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
         sacrifice_value = (int)((sqrt((float)item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
     }
 
-    giver->sk->UseSkill(SKT_RELIGION, 3);
+    giver->sk->UseSkill(XSkill::Skill::RELIGION, 3);
 
     giver->religion.life_act += 2 * sacrifice_value;
 

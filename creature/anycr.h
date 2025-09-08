@@ -38,7 +38,7 @@ struct CREATURE_SET_REC {
 
 
 struct SKILL_REC {
-    SKILL_TYPE skt;
+    XSkill::Skill skt;
     int level;
 };
 
@@ -125,7 +125,7 @@ class XCreatureStorage
         static void Melee(EXTENDED_ATTACK ea, int prob);
         static void Main(const char* dv, const char* pv, const char* hp, const char* pp);
         static void D(const char* descr);
-        static void Learn(SKILL_TYPE skt, int lvl);
+        static void Learn(XSkill::Skill skt, int lvl);
         static void Learn(SPELL_NAME spn);
         static void Equip(unsigned int mask, int count, int prob);
         static void Equip(unsigned int mask, ITEM_TYPE it, int prob);

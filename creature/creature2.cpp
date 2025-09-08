@@ -102,11 +102,11 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     			int backstab = 0;
     			if (weapon && (!target->isCreatureVisible(this) || !wasEnemy))
     			{
-    				if (vRand(100) < sk->GetLevel(SKT_BACKSTABBING) * 5 + 5)
+    				if (vRand(100) < sk->GetLevel(XSkill::Skill::BACKSTABBING) * 5 + 5)
     				{
     					backstab = 1;
     					tdam *= 3;
-    					sk->UseSkill(SKT_BACKSTABBING, 3);
+    					sk->UseSkill(XSkill::Skill::BACKSTABBING, 3);
     				}
     			}
     */
@@ -433,8 +433,8 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         bool critical_hit = false;
         bool ignore_armour = false;
 
-        if (pData->attacker && vRand(100) < (2 + pData->attacker->sk->GetLevel(SKT_FINDWEAKNESS))) {
-            pData->attacker->sk->UseSkill(SKT_FINDWEAKNESS);
+        if (pData->attacker && vRand(100) < (2 + pData->attacker->sk->GetLevel(XSkill::Skill::FINDWEAKNESS))) {
+            pData->attacker->sk->UseSkill(XSkill::Skill::FINDWEAKNESS);
             critical_hit = true;
             dmg *= 3;
         }
@@ -458,7 +458,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 xpv = txbp->Item()->_PV;
             }
 
-            if (!pData->attacker || vRand(100) >= (2 + pData->attacker->sk->GetLevel(SKT_FINDWEAKNESS)) || xpv == 0) {
+            if (!pData->attacker || vRand(100) >= (2 + pData->attacker->sk->GetLevel(XSkill::Skill::FINDWEAKNESS)) || xpv == 0) {
 
                 //if it is a body, then we should count PV of a cloak.
                 if (txbp && txbp->bp_uin == BP_BODY) {
@@ -472,7 +472,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 //some dmg absorbed by armour
                 dmg -= xpv;
             } else {
-                pData->attacker->sk->UseSkill(SKT_FINDWEAKNESS);
+                pData->attacker->sk->UseSkill(XSkill::Skill::FINDWEAKNESS);
                 ignore_armour = true;
             }
         }

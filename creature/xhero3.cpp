@@ -412,11 +412,11 @@ void XHero::MixPotions()
         if (pot2) {
             POTION_NAME pn = XAlchemy::GetPotionName(pot1->pn, pot2->pn);
             POTION_REC * pr = POTION_REC::GetRec(pot1->pn);
-            int val = sk->GetLevel(SKT_ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
+            int val = sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
             if (pn != PN_UNKNOWN && vRand(100) < val) {
                 XPotion * pot = new XPotion(pn);
-                sk->UseSkill(SKT_ALCHEMY, 3);
+                sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
                 char buf[256];
                 char buf1[256];
                 pot->toString(buf);

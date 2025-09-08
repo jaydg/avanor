@@ -120,7 +120,7 @@ void XCreature::Invalidate()
 void XCreature::Regenerate()
 {
     if (_HP < GetMaxHP()) {
-        XSkill * xsk = sk->GetSkill(SKT_HEALING);
+        XSkill * xsk = sk->GetSkill(XSkill::Skill::HEALING);
         int val = 1;
 
         if (xsk) {
@@ -140,7 +140,7 @@ void XCreature::Regenerate()
     }
 
     if (_PP < GetMaxPP()) {
-        XSkill * xsk = sk->GetSkill(SKT_CONCENTRATION);
+        XSkill * xsk = sk->GetSkill(XSkill::Skill::CONCENTRATION);
         int val = 1;
 
         if (xsk) {
@@ -261,16 +261,16 @@ int XCreature::Run()
     }
 
     if (md && md->Run(this)) {
-        int atletics = sk->GetLevel(SKT_ATHLETICS);
+        int atletics = sk->GetLevel(XSkill::Skill::ATHLETICS);
 
         if (GetCarryState() >= CSTATE_STRAINED) {
             if (vRand(3000 / (5 + atletics)) == 0) {
                 GainAttr(S_STR, 1);
-                sk->UseSkill(SKT_ATHLETICS, 10);
+                sk->UseSkill(XSkill::Skill::ATHLETICS, 10);
             }
         } else if (vRand(6000 / (5 + atletics)) == 0) {
             GainAttr(S_DEX, 1);
-            sk->UseSkill(SKT_ATHLETICS, 10);
+            sk->UseSkill(XSkill::Skill::ATHLETICS, 10);
         }
 
         DoMove();
@@ -619,23 +619,23 @@ int XCreature::GetTacticsDVBonus()
 {
     switch (tactics) {
         case TS_COWARD	:
-            return (3 * (GetStats(S_DEX) + sk->GetLevel(SKT_TACTICS))) / 2;
+            return (3 * (GetStats(S_DEX) + sk->GetLevel(XSkill::Skill::TACTICS))) / 2;
             break;
 
         case TS_DEFENSIVE	:
-            return GetStats(S_DEX) + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_DEX) + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_NORMAL	:
-            return (2 * GetStats(S_DEX)) / 3 + sk->GetLevel(SKT_TACTICS);
+            return (2 * GetStats(S_DEX)) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_AGRESSIVE	:
-            return GetStats(S_DEX) / 3 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_BERSERKER	:
-            return GetStats(S_DEX) / 10 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_DEX) / 10 + sk->GetLevel(XSkill::Skill::TACTICS);
             break; //compensate DV given by Dx
 
         default	:
@@ -649,23 +649,23 @@ int XCreature::GetTacticsHITBonus()
 {
     switch (tactics) {
         case TS_COWARD	:
-            return GetStats(S_DEX) / 10 + sk->GetLevel(SKT_TACTICS) - 5;
+            return GetStats(S_DEX) / 10 + sk->GetLevel(XSkill::Skill::TACTICS) - 5;
             break;
 
         case TS_DEFENSIVE	:
-            return GetStats(S_DEX) / 7 + sk->GetLevel(SKT_TACTICS) - 3;
+            return GetStats(S_DEX) / 7 + sk->GetLevel(XSkill::Skill::TACTICS) - 3;
             break;
 
         case TS_NORMAL	:
-            return GetStats(S_DEX) / 4 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_DEX) / 4 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_AGRESSIVE	:
-            return GetStats(S_DEX) / 3 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_BERSERKER	:
-            return GetStats(S_DEX) / 2 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_DEX) / 2 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         default	:
@@ -679,23 +679,23 @@ int XCreature::GetTacticsDMGBonus()
 {
     switch (tactics) {
         case TS_COWARD	:
-            return GetStats(S_STR) / 20 + sk->GetLevel(SKT_TACTICS) - 3;
+            return GetStats(S_STR) / 20 + sk->GetLevel(XSkill::Skill::TACTICS) - 3;
             break;
 
         case TS_DEFENSIVE	:
-            return GetStats(S_STR) / 10 + sk->GetLevel(SKT_TACTICS) - 1;
+            return GetStats(S_STR) / 10 + sk->GetLevel(XSkill::Skill::TACTICS) - 1;
             break;
 
         case TS_NORMAL	:
-            return GetStats(S_STR) / 7 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_STR) / 7 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_AGRESSIVE	:
-            return GetStats(S_STR) / 5 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_STR) / 5 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_BERSERKER	:
-            return GetStats(S_STR) / 2 + sk->GetLevel(SKT_TACTICS);
+            return GetStats(S_STR) / 2 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         default	:
@@ -1241,7 +1241,7 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
         return;
     }
 
-    XSkill * skill = sk->GetSkill(SKT_ARCHERY);
+    XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
 
     int str = s->Get(S_STR);
     int dex = s->Get(S_DEX);
@@ -1280,7 +1280,7 @@ int XCreature::Shoot(int tx, int ty)
 
     XItem * bow = GetItem(BP_MISSILEWEAPON);
     XItem * missile = GetItem(BP_MISSILE);
-    XSkill * skill = sk->GetSkill(SKT_ARCHERY);
+    XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
 
     if (!missile) {
         return 0; //there are no missile to shoot!
@@ -1472,7 +1472,7 @@ int XCreature::continueRead()
 
 int XCreature::Read(XItem * item)
 {
-    XSkill * skill = sk->GetSkill(SKT_LITERACY);
+    XSkill * skill = sk->GetSkill(XSkill::Skill::LITERACY);
 
     if (!skill) {
         if (im & IM_HERO) {

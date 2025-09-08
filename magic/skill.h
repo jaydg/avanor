@@ -24,32 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xobject.h"
 #include "helpers/dice.h"
 
-enum SKILL_TYPE {
-    SKT_ARCHERY	= 0,
-    SKT_FINDWEAKNESS	= 1,
-    SKT_HEALING	= 2, // restore hit points
-    SKT_CONCENTRATION	= 3,
-    SKT_DODGE	= 4,
-    SKT_TRADING	= 5,
-    SKT_STEALING	= 6,
-    SKT_LITERACY	= 7,
-    SKT_DETECTTRAP	= 8,
-    SKT_DISARMTRAP	= 9,
-    SKT_COOKING	= 10,
-    SKT_MINING	= 11,
-    SKT_HERBALISM = 12,
-    SKT_RELIGION	= 13,
-    SKT_BACKSTABBING	= 14, // attacking creature which haven't wait attack from you
-    SKT_FIRST_AID	= 15, // cure wounds
-    SKT_TACTICS	= 16,
-    SKT_ALCHEMY	= 17,
-    SKT_WOODCRAFT	= 18,
-    SKT_CREATETRAP	= 19,
-    SKT_NECROMANCY	= 20,
-    SKT_ATHLETICS	= 21,
-    SKT_CLIMBING	= 22, // at this time from pits only...
-};
-
 struct SKILL_DB {
     const char* name;
     int use_per_level;
@@ -74,14 +48,40 @@ class XSkill : public XObject
         int UseDisarm(XCreature * user);
         int UseCreate(XCreature * user);
     public:
+        enum Skill {
+            ARCHERY,
+            FINDWEAKNESS,
+            HEALING,       // restore hit points
+            CONCENTRATION,
+            DODGE,
+            TRADING,
+            STEALING,
+            LITERACY,
+            DETECTTRAP,
+            DISARMTRAP,
+            COOKING,
+            MINING,
+            HERBALISM,
+            RELIGION,
+            BACKSTABBING,  // attacking creature which haven't wait attack from you
+            FIRST_AID,     // cure wounds
+            TACTICS,
+            ALCHEMY,
+            WOODCRAFT,
+            CREATETRAP,
+            NECROMANCY,
+            ATHLETICS,
+            CLIMBING,      // at this time from pits only...
+        };
+
         DECLARE_CREATOR(XSkill, XObject);
         XSkill()
         {
             assert(0);
         }
 
-        XSkill(SKILL_TYPE _skt, int _level = 1);
-        SKILL_TYPE GetSkill()
+        XSkill(Skill _skt, int _level = 1);
+        Skill GetSkill()
         {
             return skt;
         }
@@ -100,7 +100,7 @@ class XSkill : public XObject
         int GetMaxLevel();
         SKILL_MASTERY GetMastery();
 
-        SKILL_TYPE skt;
+        Skill skt;
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
 

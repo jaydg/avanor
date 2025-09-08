@@ -151,8 +151,8 @@ int XTrap::MoveOut(XCreature * cr)
 {
     if (last_activator == cr->xguid && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
         //to climb out from some pits you should be lucky!
-        if (vRand(100) < 30 + cr->sk->GetLevel(SKT_CLIMBING) * 5 + cr->GetStats(S_DEX) * 2) {
-            cr->sk->UseSkill(SKT_CLIMBING);
+        if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(S_DEX) * 2) {
+            cr->sk->UseSkill(XSkill::Skill::CLIMBING);
 
             if (cr->isVisible()) {
                 msgwin.Add(cr->GetNameEx(CRN_T1));
@@ -163,7 +163,7 @@ int XTrap::MoveOut(XCreature * cr)
             return 1;
         } else {
             if (vRand(100) < 70) {
-                cr->sk->UseSkill(SKT_CLIMBING);
+                cr->sk->UseSkill(XSkill::Skill::CLIMBING);
 
                 if (cr->isVisible()) {
                     msgwin.Add(cr->GetNameEx(CRN_T1));
@@ -327,7 +327,7 @@ int XTrap::Check(XCreature * cr)
         return 0;
     }
 
-    XSkill * skill = cr->sk->GetSkill(SKT_DETECTTRAP);
+    XSkill * skill = cr->sk->GetSkill(XSkill::Skill::DETECTTRAP);
     int chance = cr->GetStats(S_PER) * 10;
 
     if (skill) {
@@ -358,7 +358,7 @@ int XTrap::isVisible(XCreature * cr)
 
 int XTrap::Disarm(XCreature * cr)
 {
-    XSkill * skill = cr->sk->GetSkill(SKT_DISARMTRAP);
+    XSkill * skill = cr->sk->GetSkill(XSkill::Skill::DISARMTRAP);
     int chance = 10;
 
     if (skill) {

@@ -31,10 +31,10 @@ class XSkills
 
         ~XSkills() {}
 
-        int GetLevel(SKILL_TYPE skt);
-        void UseSkill(SKILL_TYPE skt, int n = 1);
-        XSkill* GetSkill(SKILL_TYPE skt);
-        void Learn(SKILL_TYPE skt, int level = 1);
+        int GetLevel(XSkill::Skill skt);
+        void UseSkill(XSkill::Skill skt, int n = 1);
+        XSkill* GetSkill(XSkill::Skill skt);
+        void Learn(XSkill::Skill skt, int level = 1);
 
         XSortedList<XSkill*> skills;
 

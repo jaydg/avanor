@@ -55,7 +55,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
                 cooked_item = corpse;
                 ((XCorpse*)corpse)->roating_stopped = 1;
-                use_time = 50 - cr->sk->GetLevel(SKT_COOKING) * 2;
+                use_time = 50 - cr->sk->GetLevel(XSkill::Skill::COOKING) * 2;
 
                 if (cr->isVisible()) {
                     msgwin.Add(cr->GetNameEx(CRN_T1));
@@ -76,13 +76,13 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
                 XCorpse * corpse = (XCorpse*)cooked_item.get();
                 corpse->UnCarry();
 
-                if (vRand(100) < cr->sk->GetLevel(SKT_COOKING) * 4 + 30) {
+                if (vRand(100) < cr->sk->GetLevel(XSkill::Skill::COOKING) * 4 + 30) {
                     corpse->Cook();
                     corpse->food_nutrio *= 2;
                     corpse->weight /= 10;
                     corpse->weight = corpse->weight == 0 ? 1 : corpse->weight;
                     cr->ContainItem(corpse);
-                    cr->sk->UseSkill(SKT_COOKING, 3);
+                    cr->sk->UseSkill(XSkill::Skill::COOKING, 3);
 
                     if (cr->isVisible()) {
                         msgwin.Add(cr->GetNameEx(CRN_T1));
@@ -168,7 +168,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
             break;
 
         case UIS_CONTINUE:
-            rock_resist -= (dice.Throw() + cr->sk->GetLevel(SKT_MINING) * 5 + cr->GetStats(S_STR) / 2);
+            rock_resist -= (dice.Throw() + cr->sk->GetLevel(XSkill::Skill::MINING) * 5 + cr->GetStats(S_STR) / 2);
 
             if (rock_resist < 0) {
                 if (cr->isHero()) {
@@ -176,7 +176,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
                     msgwin.Add(cr->GetVerb("smash"));
                     msgwin.Add("the stone to pieces.");
                     cr->l->map->SetXY(tgt_x, tgt_y, M_STONEFLOOR);
-                    cr->sk->UseSkill(SKT_MINING);
+                    cr->sk->UseSkill(XSkill::Skill::MINING);
 
                     if (vRand(3) == 0) {
                         msgwin.Add("There was some gold in ore.");
@@ -247,7 +247,7 @@ RESULT XAlchemySet::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
     POTION_NAME pn = herb->GetTargetPotion();
     POTION_REC * pr = POTION_REC::GetRec(pn);
-    int val = cr->sk->GetLevel(SKT_ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
+    int val = cr->sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
     if (vRand(100) < val) {
         XPotion * pot = new XPotion(pr->pn);
@@ -259,7 +259,7 @@ RESULT XAlchemySet::onUse(USE_ITEM_STATE uis, XCreature * cr)
         msgwin.Add(buf1);
         cr->CarryItem(pot);
         cr->contain.Add(pot);
-        cr->sk->UseSkill(SKT_ALCHEMY);
+        cr->sk->UseSkill(XSkill::Skill::ALCHEMY);
     } else {
         msgwin.Add(cr->name);
         msgwin.Add("failed to create a potion.");

@@ -852,7 +852,7 @@ int XLocation::GetSkill(lua_State * L)
 {
     XCreature * p = (XCreature*)lua_topointer(L, 1);
     int skill = lua_tonumber(L, 2);
-    XSkill * sk = p->sk->GetSkill((SKILL_TYPE)skill);
+    XSkill * sk = p->sk->GetSkill((XSkill::Skill)skill);
 
     if (sk) {
         lua_pushnumber(L, sk->GetLevel());
@@ -869,8 +869,8 @@ int XLocation::LearnSkill(lua_State * L)
     int skill = lua_tonumber(L, 2);
     int val = lua_tonumber(L, 3);
 
-    if (!p->sk->GetSkill((SKILL_TYPE)skill)) {
-        p->sk->Learn((SKILL_TYPE)skill, val);
+    if (!p->sk->GetSkill((XSkill::Skill)skill)) {
+        p->sk->Learn((XSkill::Skill)skill, val);
     }
 
     return 0;
@@ -1549,6 +1549,7 @@ int XLocation::CRCOD(lua_State * L)
 }
 
 #define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); luaL_dostring(L, buf); }
+#define LUA_REG_ALTNAME(name, value) { char buf[256]; sprintf(buf, #name "=%d", value); luaL_dostring(L, buf); }
 
 lua_State* XLocation::L = NULL;
 
@@ -1810,29 +1811,29 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(S_CHR);
     LUA_REG(S_EOF);
 
-    LUA_REG(SKT_ARCHERY);
-    LUA_REG(SKT_FINDWEAKNESS);
-    LUA_REG(SKT_HEALING);
-    LUA_REG(SKT_CONCENTRATION);
-    LUA_REG(SKT_DODGE);
-    LUA_REG(SKT_TRADING);
-    LUA_REG(SKT_STEALING);
-    LUA_REG(SKT_LITERACY);
-    LUA_REG(SKT_DETECTTRAP);
-    LUA_REG(SKT_DISARMTRAP);
-    LUA_REG(SKT_COOKING);
-    LUA_REG(SKT_MINING);
-    LUA_REG(SKT_HERBALISM);
-    LUA_REG(SKT_RELIGION);
-    LUA_REG(SKT_BACKSTABBING);
-    LUA_REG(SKT_FIRST_AID);
-    LUA_REG(SKT_TACTICS);
-    LUA_REG(SKT_ALCHEMY);
-    LUA_REG(SKT_WOODCRAFT);
-    LUA_REG(SKT_CREATETRAP);
-    LUA_REG(SKT_NECROMANCY);
-    LUA_REG(SKT_ATHLETICS);
-    LUA_REG(SKT_CLIMBING);
+    LUA_REG_ALTNAME(SKT_ARCHERY, XSkill::Skill::ARCHERY);
+    LUA_REG_ALTNAME(SKT_FINDWEAKNESS, XSkill::Skill::FINDWEAKNESS);
+    LUA_REG_ALTNAME(SKT_HEALING, XSkill::Skill::HEALING);
+    LUA_REG_ALTNAME(SKT_CONCENTRATION, XSkill::Skill::CONCENTRATION);
+    LUA_REG_ALTNAME(SKT_DODGE, XSkill::Skill::DODGE);
+    LUA_REG_ALTNAME(SKT_TRADING, XSkill::Skill::TRADING);
+    LUA_REG_ALTNAME(SKT_STEALING, XSkill::Skill::STEALING);
+    LUA_REG_ALTNAME(SKT_LITERACY, XSkill::Skill::LITERACY);
+    LUA_REG_ALTNAME(SKT_DETECTTRAP, XSkill::Skill::DETECTTRAP);
+    LUA_REG_ALTNAME(SKT_DISARMTRAP, XSkill::Skill::DISARMTRAP);
+    LUA_REG_ALTNAME(SKT_COOKING, XSkill::Skill::COOKING);
+    LUA_REG_ALTNAME(SKT_MINING, XSkill::Skill::MINING);
+    LUA_REG_ALTNAME(SKT_HERBALISM, XSkill::Skill::HERBALISM);
+    LUA_REG_ALTNAME(SKT_RELIGION, XSkill::Skill::RELIGION);
+    LUA_REG_ALTNAME(SKT_BACKSTABBING, XSkill::Skill::BACKSTABBING);
+    LUA_REG_ALTNAME(SKT_FIRST_AID, XSkill::Skill::FIRST_AID);
+    LUA_REG_ALTNAME(SKT_TACTICS, XSkill::Skill::TACTICS);
+    LUA_REG_ALTNAME(SKT_ALCHEMY, XSkill::Skill::ALCHEMY);
+    LUA_REG_ALTNAME(SKT_WOODCRAFT, XSkill::Skill::WOODCRAFT);
+    LUA_REG_ALTNAME(SKT_CREATETRAP, XSkill::Skill::CREATETRAP);
+    LUA_REG_ALTNAME(SKT_NECROMANCY, XSkill::Skill::NECROMANCY);
+    LUA_REG_ALTNAME(SKT_ATHLETICS, XSkill::Skill::ATHLETICS);
+    LUA_REG_ALTNAME(SKT_CLIMBING, XSkill::Skill::CLIMBING);
 
     LUA_REG(LE_MOVE);
     LUA_REG(LE_MOVE_IN);

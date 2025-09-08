@@ -70,7 +70,7 @@ const char* skill_level_name[16] = {
     MSG_DARKGRAY "Grand Master"
 };
 
-XSkill::XSkill(SKILL_TYPE _skt, int _level)
+XSkill::XSkill(XSkill::Skill _skt, int _level)
 {
     skt = _skt;
     level = _level;
@@ -150,13 +150,13 @@ SKILL_MASTERY XSkill::GetMastery()
 int XSkill::Use(XCreature * user)
 {
     switch (skt) {
-        case SKT_STEALING :
+        case XSkill::Skill::STEALING :
             return UseSteal(user);
 
-        case SKT_DISARMTRAP :
+        case XSkill::Skill::DISARMTRAP :
             return UseDisarm(user);
 
-        case SKT_CREATETRAP:
+        case XSkill::Skill::CREATETRAP:
             return UseCreate(user);
 
     };
@@ -166,7 +166,7 @@ int XSkill::Use(XCreature * user)
 
 int XSkill::isUseable()
 {
-    if (skt == SKT_STEALING || skt == SKT_DISARMTRAP || skt == SKT_CREATETRAP) {
+    if (skt == XSkill::Skill::STEALING || skt == XSkill::Skill::DISARMTRAP || skt == XSkill::Skill::CREATETRAP) {
         return 1;
     } else {
         return 0;
@@ -183,7 +183,7 @@ void XSkill::Store(XFile * f)
     XObject::Store(f);
 
     f->Write(&level, sizeof(int));
-    f->Write(&skt, sizeof(SKILL_TYPE));
+    f->Write(&skt, sizeof(XSkill::Skill));
     f->Write(&used_time, sizeof(int));
 }
 
@@ -192,7 +192,7 @@ void XSkill::Restore(XFile * f)
     XObject::Restore(f);
 
     f->Read(&level, sizeof(int));
-    f->Read(&skt, sizeof(SKILL_TYPE));
+    f->Read(&skt, sizeof(XSkill::Skill));
     f->Read(&used_time, sizeof(int));
 }
 
@@ -225,7 +225,7 @@ int XSkill::UseSteal(XCreature * user)
 
             assert(cr);
             double perception = 1 + cr->s->Get(S_PER);
-            double stealing = 1 + user->sk->GetLevel(SKT_STEALING);
+            double stealing = 1 + user->sk->GetLevel(XSkill::Skill::STEALING);
             int p = (int)((stealing * 300) / perception);
 
             if (vRand() % 100 < p || !user->isVisible()) {
@@ -356,7 +356,7 @@ int XSkill::UseCreate(XCreature * user)
                 }
 
                 user->_PP -= sp->GetManaCost() * 2 * count;
-                user->sk->UseSkill(SKT_CREATETRAP, 10);
+                user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
                 msgwin.Add("You have successfuly created a trap!");
             }
         } else {
@@ -376,11 +376,11 @@ int XSkill::UseCreate(XCreature * user)
             if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == IT_PICKAXE) {
                 if (item && trap_create_rec[ch].var > 0) {
                     new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item);
-                    user->sk->UseSkill(SKT_CREATETRAP, 20);
+                    user->sk->UseSkill(XSkill::Skill::CREATETRAP, 20);
                     msgwin.Add("You have successfuly created a trap!");
                 } else if (trap_create_rec[ch].var == 0) {
                     new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_PIT, user, NULL);
-                    user->sk->UseSkill(SKT_CREATETRAP, 10);
+                    user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
                     msgwin.Add("You have successfuly created a trap!");
                 }
             } else {
@@ -388,7 +388,7 @@ int XSkill::UseCreate(XCreature * user)
             }
         } else if (item) {
             new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ARROW, user, item);
-            user->sk->UseSkill(SKT_CREATETRAP, 15);
+            user->sk->UseSkill(XSkill::Skill::CREATETRAP, 15);
             msgwin.Add("You have successfuly created a trap!");
         }
     }

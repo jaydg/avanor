@@ -319,7 +319,7 @@ void XCreatureStorage::D(const char* descr)
     creature_storage[last_name].creature_description = descr;
 }
 
-void XCreatureStorage::Learn(SKILL_TYPE skt, int lvl)
+void XCreatureStorage::Learn(XSkill::Skill skt, int lvl)
 {
     SKILL_REC scr;
     scr.level = lvl;

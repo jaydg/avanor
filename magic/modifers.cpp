@@ -56,8 +56,8 @@ REGISTER_CLASS(XModWound);
 
 MODIFER_RESULT XModWound::Run(XCreature * owner)
 {
-    val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(SKT_FIRST_AID));
-    owner->sk->UseSkill(SKT_FIRST_AID);
+    val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(XSkill::Skill::FIRST_AID));
+    owner->sk->UseSkill(XSkill::Skill::FIRST_AID);
 
     if (val > 0) {
         owner->_HP -= val;
@@ -82,7 +82,7 @@ MODIFER_RESULT XModPoison::Run(XCreature * owner)
         }
     }
 
-    val -= owner->sk->GetLevel(SKT_FIRST_AID);
+    val -= owner->sk->GetLevel(XSkill::Skill::FIRST_AID);
     return XBasicModifer::Run(owner);
 }
 

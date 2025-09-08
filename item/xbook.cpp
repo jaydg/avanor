@@ -188,7 +188,7 @@ int XBook::onRead(XCreature * reader)
         reader_guid = reader->xguid;
     }
 
-    XSkill * skill = reader->sk->GetSkill(SKT_LITERACY);
+    XSkill * skill = reader->sk->GetSkill(XSkill::Skill::LITERACY);
     left_to_read -= (skill->GetLevel() + reader->GetStats(S_LEN));
 
     if (left_to_read <= 0) {

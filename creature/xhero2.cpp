@@ -185,34 +185,34 @@ void XHero::PlayerSetup()
 
     switch (race_choice) {
         case 'a':
-            sk->Learn(SKT_COOKING);
-            sk->Learn(SKT_BACKSTABBING);
+            sk->Learn(XSkill::Skill::COOKING);
+            sk->Learn(XSkill::Skill::BACKSTABBING);
             break;
 
         case 'b':
             break;
 
         case 'c':
-            sk->Learn(SKT_COOKING);
+            sk->Learn(XSkill::Skill::COOKING);
             break;
 
         case 'd':
             break;
 
         case 'e':
-            sk->Learn(SKT_ATHLETICS);
+            sk->Learn(XSkill::Skill::ATHLETICS);
             break;
 
         case 'f':
-            sk->Learn(SKT_MINING);
+            sk->Learn(XSkill::Skill::MINING);
 
         case 'g':
-            sk->Learn(SKT_MINING);
-            sk->Learn(SKT_FINDWEAKNESS);
+            sk->Learn(XSkill::Skill::MINING);
+            sk->Learn(XSkill::Skill::FINDWEAKNESS);
             break;
     }
 
-    sk->Learn(SKT_FIRST_AID);
+    sk->Learn(XSkill::Skill::FIRST_AID);
 
     vClrScr();
     vGotoXY(7, 4);
@@ -332,7 +332,7 @@ void XHero::PlayerSetup()
                             pbp = GetBodyPart(BP_BOOTS, 0);
                             pbp->Wear(ICREATEB(IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
 
-                            sk->Learn(SKT_DISARMTRAP);
+                            sk->Learn(XSkill::Skill::DISARMTRAP);
                             break;
 
                         case 'e':
@@ -368,10 +368,10 @@ void XHero::PlayerSetup()
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    sk->Learn(SKT_FINDWEAKNESS);
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_TACTICS);
-                    sk->Learn(SKT_ATHLETICS);
+                    sk->Learn(XSkill::Skill::FINDWEAKNESS);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::TACTICS);
+                    sk->Learn(XSkill::Skill::ATHLETICS);
 
                     break;
 
@@ -408,10 +408,10 @@ void XHero::PlayerSetup()
                     book->Identify(1);
                     ContainItem(book);
 
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_LITERACY);
-                    sk->Learn(SKT_CONCENTRATION);
-                    sk->Learn(SKT_HERBALISM);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::LITERACY);
+                    sk->Learn(XSkill::Skill::CONCENTRATION);
+                    sk->Learn(XSkill::Skill::HERBALISM);
                 }
                 break;
 
@@ -519,10 +519,10 @@ void XHero::PlayerSetup()
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    sk->Learn(SKT_FINDWEAKNESS);
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_ARCHERY);
-                    sk->Learn(SKT_ATHLETICS);
+                    sk->Learn(XSkill::Skill::FINDWEAKNESS);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::ARCHERY);
+                    sk->Learn(XSkill::Skill::ATHLETICS);
 
                     break;
 
@@ -637,12 +637,12 @@ void XHero::PlayerSetup()
                     book->Identify(1);
                     ContainItem(book);
 
-                    sk->Learn(SKT_FINDWEAKNESS);
-                    sk->Learn(SKT_ARCHERY);
-                    sk->Learn(SKT_CONCENTRATION);
-                    sk->Learn(SKT_LITERACY);
-                    sk->Learn(SKT_COOKING);
-                    sk->Learn(SKT_ATHLETICS);
+                    sk->Learn(XSkill::Skill::FINDWEAKNESS);
+                    sk->Learn(XSkill::Skill::ARCHERY);
+                    sk->Learn(XSkill::Skill::CONCENTRATION);
+                    sk->Learn(XSkill::Skill::LITERACY);
+                    sk->Learn(XSkill::Skill::COOKING);
+                    sk->Learn(XSkill::Skill::ATHLETICS);
 
                     break;
 
@@ -667,10 +667,10 @@ void XHero::PlayerSetup()
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_LITERACY);
-                    sk->Learn(SKT_HERBALISM);
-                    sk->Learn(SKT_RELIGION);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::LITERACY);
+                    sk->Learn(XSkill::Skill::HERBALISM);
+                    sk->Learn(XSkill::Skill::RELIGION);
 
                     switch (race_choice) {
                         case 'a':
@@ -709,10 +709,10 @@ void XHero::PlayerSetup()
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_LITERACY);
-                    sk->Learn(SKT_RELIGION);
-                    sk->Learn(SKT_ATHLETICS);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::LITERACY);
+                    sk->Learn(XSkill::Skill::RELIGION);
+                    sk->Learn(XSkill::Skill::ATHLETICS);
 
                     switch (race_choice) {
                         case 'a':
@@ -769,10 +769,10 @@ void XHero::PlayerSetup()
                         ContainItem(it);
                     }
 
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_LITERACY);
-                    sk->Learn(SKT_HERBALISM);
-                    sk->Learn(SKT_ALCHEMY);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::LITERACY);
+                    sk->Learn(XSkill::Skill::HERBALISM);
+                    sk->Learn(XSkill::Skill::ALCHEMY);
 
                     break;
 
@@ -785,10 +785,10 @@ void XHero::PlayerSetup()
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    sk->Learn(SKT_HEALING);
-                    sk->Learn(SKT_LITERACY);
-                    sk->Learn(SKT_HERBALISM);
-                    sk->Learn(SKT_ALCHEMY);
+                    sk->Learn(XSkill::Skill::HEALING);
+                    sk->Learn(XSkill::Skill::LITERACY);
+                    sk->Learn(XSkill::Skill::HERBALISM);
+                    sk->Learn(XSkill::Skill::ALCHEMY);
 
                 }
                 break;
@@ -804,9 +804,9 @@ void XHero::PlayerSetup()
         wsk->SetLevel(bp->Item()->wt, 2);
     }
 
-    sk->Learn(SKT_DETECTTRAP);
-    sk->Learn(SKT_CREATETRAP);
-    sk->Learn(SKT_CLIMBING);
+    sk->Learn(XSkill::Skill::DETECTTRAP);
+    sk->Learn(XSkill::Skill::CREATETRAP);
+    sk->Learn(XSkill::Skill::CLIMBING);
 
     bp = GetBodyPart(BP_BODY, 0);
 

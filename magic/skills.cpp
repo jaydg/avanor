@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "magic/skills.h"
 
-int XSkills::GetLevel(SKILL_TYPE skt)
+int XSkills::GetLevel(XSkill::Skill skt)
 {
     XSkill * xsk;
 
@@ -31,7 +31,7 @@ int XSkills::GetLevel(SKILL_TYPE skt)
     }
 }
 
-void XSkills::UseSkill(SKILL_TYPE skt, int n)
+void XSkills::UseSkill(XSkill::Skill skt, int n)
 {
     XSkill * skill = GetSkill(skt);
 
@@ -40,7 +40,7 @@ void XSkills::UseSkill(SKILL_TYPE skt, int n)
     }
 }
 
-XSkill* XSkills::GetSkill(SKILL_TYPE skt)
+XSkill* XSkills::GetSkill(XSkill::Skill skt)
 {
     XList<XSkill*>::iterator xsk = skills.begin();
 
@@ -55,7 +55,7 @@ XSkill* XSkills::GetSkill(SKILL_TYPE skt)
     return NULL;
 }
 
-void XSkills::Learn(SKILL_TYPE skt, int level)
+void XSkills::Learn(XSkill::Skill skt, int level)
 {
     skills.Add(new XSkill(skt, level));
 }
