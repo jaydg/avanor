@@ -146,7 +146,7 @@ void XObject::StoreAllObjects(XFile * f)
         f->Write(&name_size, sizeof(name_size));
         f->Write(table[i]->GetClassName().c_str(), sizeof(char), name_size);
         table[i]->bAlreadyStored = false;
-        fprintf(tmp, "[%d] %s\n", i, table[i]->GetClassName());
+        fprintf(tmp, "[%d] %s\n", i, table[i]->GetClassName().c_str());
     }
 
     fclose(tmp);
@@ -266,7 +266,7 @@ void XObject::DumpAll()
 void XObject::Dump(XFile * f)
 {
     char buf[256];
-    sprintf(buf, "%5d   %2d     %s", xguid, reference, GetClassName());
+    sprintf(buf, "%5d   %2d     %s", xguid, reference, GetClassName().c_str());
     f->Write(buf, strlen(buf));
     f->Write("\n", 1);
 }
