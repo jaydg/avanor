@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XGUI_H
 #define __XGUI_H
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "engine/global.h"
 #include "helpers/xstring.h"

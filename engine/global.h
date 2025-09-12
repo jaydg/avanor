@@ -41,8 +41,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
     #endif
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 #ifdef XWIN32
     #include <conio.h>
@@ -50,13 +50,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef XLINUX
     #include <curses.h>
-    #include <string.h>
+    #include <cstring>
     #define stricmp(a, b) strcasecmp(a, b)
     #define strnicmp(a, b, n) strncasecmp(a, b, n)
 #endif
 
-#include <math.h>
-#include <assert.h>
+#include <cmath>
+#include <cassert>
 
 extern long size_x;
 extern long size_y;

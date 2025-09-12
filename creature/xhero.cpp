@@ -19,7 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
 
 #include "creature/skeep_ai.h"
 #include "creature/xhero.h"

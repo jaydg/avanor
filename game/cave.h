@@ -21,9 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __CAVE_H
 #define __CAVE_H
 
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
 
 #include "engine/xobject.h"
 #include "helpers/point.h"

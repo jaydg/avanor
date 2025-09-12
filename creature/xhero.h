@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XHERO_H
 #define __XHERO_H
 
-#include <math.h>
+#include <cmath>
 
 #include "creature/anycr.h"
 #include "creature/creature.h"

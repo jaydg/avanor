@@ -21,8 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __WSKILLS_H
 #define __WSKILLS_H
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 
 #include "engine/defs.h"
 #include "engine/global.h"
@@ -65,4 +65,3 @@ class XWarSkills
 };
 
 #endif
-

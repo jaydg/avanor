@@ -30,7 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // or any other values of simple data type                                  //
 //////////////////////////////////////////////////////////////////////////////
 
-#include <string.h>
+#include <cstring>
 
 template<class TYPE> class XSimpleVector
 {

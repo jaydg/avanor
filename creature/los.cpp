@@ -44,8 +44,8 @@ original algorightm used for Angband:
 
 */
 
-#include <assert.h>
-#include <string.h>
+#include <cassert>
+#include <cstring>
 
 #include "creature/los.h"
 

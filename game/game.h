@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __GAME_H
 #define __GAME_H
 
-#include <time.h>
+#include <ctime>
 
 #include "creature/xhero.h"
 #include "game/location.h"
