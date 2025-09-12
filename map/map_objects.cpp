@@ -149,7 +149,7 @@ int XTrap::MoveIn(XCreature * cr)
 
 int XTrap::MoveOut(XCreature * cr)
 {
-    if (last_activator == cr->xguid && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
+    if (last_activator == cr->guid() && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
         //to climb out from some pits you should be lucky!
         if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(S_DEX) * 2) {
             cr->sk->UseSkill(XSkill::Skill::CLIMBING);
@@ -198,7 +198,7 @@ int XTrap::Activate(XCreature * cr)
     }
 
     bool isTrapShouldDestroyed = false;
-    last_activator = cr->xguid;
+    last_activator = cr->guid();
 
     if (isMagic) {
         EFFECT_DATA ed;

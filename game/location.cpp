@@ -379,7 +379,7 @@ int XLocation::GetCreatureCount(unsigned int creature_class)
     XObject * o = root;
 
     while (o) {
-        if ((o->im & IM_CREATURE) && (((XCreature*)o)->l->xguid == this->xguid) && (((XCreature*)o)->creature_class) & creature_class) {
+        if ((o->im & IM_CREATURE) && (((XCreature*)o)->l->guid() == this->guid()) && (((XCreature*)o)->creature_class) & creature_class) {
             count++;
         }
 
@@ -1143,7 +1143,7 @@ int XLocation::SetEventHandler(lua_State * L)
 int XLocation::GetObjectGUID(lua_State * L)
 {
     XObject * p = (XObject*)lua_topointer(L, 1);
-    lua_pushnumber(L, p->xguid);
+    lua_pushnumber(L, p->guid());
     return 1;
 }
 
@@ -1230,10 +1230,10 @@ int XLocation::GiveAward(lua_State * L)
     XItem * it = owner->contain.Find(object);
 
     if (it) {
-        owner->contain.Remove(it->xguid);
+        owner->contain.Remove(it->guid());
     } else {
         for (XList<XBodyPart*>::iterator bp = owner->components.begin(); bp != owner->components.end(); bp++) {
-            if (bp->Item() && bp->Item()->xguid == object) {
+            if (bp->Item() && bp->Item()->guid() == object) {
                 it = bp->UnWear();
                 break;
             }

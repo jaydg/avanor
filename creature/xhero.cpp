@@ -2593,7 +2593,7 @@ void XHero::SaveGame()
     vGotoXY(0, 0);
     vPutS(MSG_LIGHTGRAY "Storing the game:");
     vRefresh();
-    XGame::hero_guid = xguid;
+    XGame::hero_guid = guid();
     XArchive::StoreGame();
     vRestore(&xyzbuf);
     vRefresh();

@@ -196,7 +196,7 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
 
     if (xai->isEnemy(chatter)) {
         msgwin.Add("No mercy!");
-    } else if ((it1 && it1->xguid == XAvanorDefender::avanordefender_guid) || (it2 && it2->xguid == XAvanorDefender::avanordefender_guid)) {
+    } else if ((it1 && it1->guid() == XAvanorDefender::avanordefender_guid) || (it2 && it2->guid() == XAvanorDefender::avanordefender_guid)) {
         msgwin.Add(
             "I recognize that sword in your hand. "
             "You have looted the tomb of my ancestors! "

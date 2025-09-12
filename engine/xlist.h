@@ -240,7 +240,7 @@ template <class T> class XList
         iterator Find(XGUID xguid)
         {
             for (iterator it = begin(); it != end(); it++)
-                if ((*it)->xguid == xguid) {
+                if ((*it)->guid() == xguid) {
                     return it;
                 }
 

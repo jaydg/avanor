@@ -111,7 +111,7 @@ XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
     s = new XStats("St:0d0+10 To:0d0+10");
     brt = (BRAND_TYPE)(BR_COLD | BR_FIRE | BR_DEMONSLAYER);
     special_property = SPP_NONE;
-    avanordefender_guid = xguid;
+    avanordefender_guid = guid();
 }
 
 void XAvanorDefender::toString(char* buf)
@@ -122,7 +122,7 @@ void XAvanorDefender::toString(char* buf)
 void XAvanorDefender::Restore(XFile * f)
 {
     XWeapon::Restore(f);
-    avanordefender_guid = xguid;
+    avanordefender_guid = guid();
 }
 
 REGISTER_CLASS(XForestBrotherCloak);

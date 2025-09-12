@@ -879,7 +879,7 @@ int XStandardAI::DrinkPotion()
                         pot->quantity--;
                     } else {
                         XObject * obj = ai_owner->contain.Remove(i);
-                        assert(obj->xguid == pot->xguid);
+                        assert(obj->guid() == pot->guid());
                         pot->Invalidate();
                     }
 

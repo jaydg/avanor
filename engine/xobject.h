@@ -133,16 +133,57 @@ extern XGUID guid;
 // this class is a base class for most important part's of cernel
 class XObject
 {
-    public:
-        static long invalid_count;
-        static XObject** table;
+    private:
+        // linked list of objects
         static long count;
-        static XObject* root;
-
         XObject* prev;
+
+        // reference count
+        // objects can't be deleted till reference > 0
+        int reference;
+        int is_valid;
+
+        // counter of deleted objects
+        static long invalid_count;
+
+        // used during saving
+        static XObject** table;
+        bool bAlreadyStored;
+
+        // all objects have a global unique inditifer
+        // (it has no sense to store pointers)
+        XGUID xguid;
+
+    protected:
+        // required by various object iterators
+        // root of the linked list
+        static XObject* root;
         XObject* next;
 
-        bool bAlreadyStored;
+        friend class XGame;
+        friend class XLocation;
+        friend class XMainLocationGen;
+        friend class XUniversalGen;
+        friend class XStandardAI;
+
+        // required by XScheduler and modifiers
+        int ttm; // time to move
+        int ttmb; // basis of time to move
+        friend class XScheduler;
+        friend class XModBoostSpeed;
+        friend class XModSlowness;
+
+    public:
+        // some objects can be stacked to a bundle: "bundle of 23 arrow (1d4)"
+        int quantity;
+
+        // many years ago it was item mask, now it is mask for all!
+        ITEM_MASK im;
+
+        const XGUID guid()
+        {
+            return xguid;
+        }
 
         void AddToList()
         {
@@ -178,16 +219,12 @@ class XObject
             invalid_count++;
         }
 
-        int reference; // objects can't be deleted till reference > 0
-        int is_valid;
-
         void Create()
         {
             reference = 0;
             AddToList();
         }
 
-    public:
         static void StorePointer(XFile * f, XObject * p);
         static XObject* RestorePointer(XFile * f, void* owner);
         static void StoreAllObjects(XFile * f);
@@ -276,11 +313,6 @@ class XObject
         virtual void Dump(XFile * f);
         static void DumpAll();
 
-        int quantity; // some objects can stacked to a bundle: "bundle of 23 arrow (1d4)"
-        XGUID xguid; // all objects has global unique inditifer
-        // (it has no sense to store pointers)
-        ITEM_MASK im; // many years ago it was item mask, now it is mask for all!
-
         int isValid()
         {
             return is_valid;
@@ -296,10 +328,6 @@ class XObject
         {
             return 1;
         }
-
-        int ttm; // time to move
-        int ttmb; // basis of time to move
-
 };
 
 template<class TYPE> class XPtr

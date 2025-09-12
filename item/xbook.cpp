@@ -183,9 +183,9 @@ void XBook::toString(char* buf)
 
 int XBook::onRead(XCreature * reader)
 {
-    if (reader->xguid != reader_guid) {
+    if (reader->guid() != reader_guid) {
         left_to_read = value * 20;
-        reader_guid = reader->xguid;
+        reader_guid = reader->guid();
     }
 
     XSkill * skill = reader->sk->GetSkill(XSkill::Skill::LITERACY);
