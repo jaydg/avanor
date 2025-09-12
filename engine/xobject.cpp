@@ -25,9 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xobject.h"
 
 long XObject::invalid_count = 0;
-XObject** XObject::table = 0;
-long XObject::count = 0;
-XObject* XObject::root = 0;
+XObjectMap XObject::objects = XObjectMap();
 
 XGUID guid = 1;
 
@@ -97,7 +95,6 @@ XObject* XClassFactory::CreateNew(std::string name)
     return NULL;
 }
 
-
 void XObject::Store(XFile * f)
 {
     if (bAlreadyStored) {
@@ -124,47 +121,37 @@ void XObject::Restore(XFile * f)
 
 void XObject::StoreAllObjects(XFile * f)
 {
-    assert(table == 0);
-    long i;
+    size_t size = objects.size();
+    f->Write(&size, sizeof(size_t), 1);
 
-    table = new XObject * [count];
-    XObject * p = root;
-
-    for (i = 0; i < count; i++) {
-        assert(p != 0);
-        table[i] = p;
-        p = p->next;
-    }
-
-    std::sort(&table[0], &table[count]);
-
-    f->Write(&count, sizeof(count));
     FILE * tmp = fopen("dmp.txt", "wt");
 
-    for (i = 0; i < count; i++) {
-        unsigned char name_size = table[i]->GetClassName().size();
+    long i = 0;
+    for (const auto& [key, obj] : objects) {
+        unsigned char name_size = obj->GetClassName().size();
         f->Write(&name_size, sizeof(name_size));
-        f->Write(table[i]->GetClassName().c_str(), sizeof(char), name_size);
-        table[i]->bAlreadyStored = false;
-        fprintf(tmp, "[%d] %s\n", i, table[i]->GetClassName().c_str());
+        f->Write(obj->GetClassName().c_str(), sizeof(char), name_size);
+        obj->bAlreadyStored = false;
+        fprintf(tmp, "[%d] %s\n", i++, obj->GetClassName().c_str());
     }
 
     fclose(tmp);
 
-    for (i = 0; i < count; i++) {
-        table[i]->Store(f);
+    for (const auto& [key, obj] : objects) {
+        obj->Store(f);
     }
 }
 
 void XObject::RestoreAllObjects(XFile * f)
 {
-    long i;
-    assert(count == 0 && table == 0);
+    assert(objects.size() == 0);
+
     long read_count = 0;
     f->Read(&read_count, sizeof(read_count));
+
     FILE * tmp = fopen("dmp2.txt", "wt");
 
-    for (i = 0; i < read_count; i++) {
+    for (long i = 0; i < read_count; i++) {
         unsigned char name_size;
         f->Read(&name_size, sizeof(name_size));
         char* buf = new char[name_size + 1];
@@ -176,88 +163,56 @@ void XObject::RestoreAllObjects(XFile * f)
     }
 
     fclose(tmp);
-    table = new XObject * [count];
-    XObject * p = root;
 
-    for (i = 0; i < count; i++) {
-        if (p == 0) {
-            assert(p != 0);
-        }
-
-        table[count - i - 1] = p;
-        p = p->next;
-    }
-
-    for (i = 0; i < count; i++) {
-        table[i]->Restore(f);
+    for (auto& [key, obj] : objects) {
+        obj->Restore(f);
     }
 }
 
 void XObject::InvalidateAllObjects()
 {
-    while (root != NULL) {
-        root->Invalidate();
+    for (auto& [key, obj] : objects)
+    {
+        obj->Invalidate();
     }
 }
 
 void XObject::StorePointer(XFile * f, XObject * p)
 {
+    // Default to storing -1 to show that we later
+    // need to restore this pointer value as NULL
+    long guid = -1;
+
     if (p != NULL) {
-        // Binary search in a sorted array of pointers
-        long min = 0, max = count - 1;
-
-        while (min <= max) {
-            long i = (min + max) / 2;
-
-            if (table[i] < p) {
-                min = i + 1;
-            } else if (table[i] > p) {
-                max = i - 1;
-            } else {
-                f->Write(&i, sizeof(i));
-                return;
-            }
-        }
-
-        assert(false);
+        guid = p->guid();
     }
 
-    // Unable to find a pointer to this object. Storing -1 to show
-    // that we later need to restore this pointer value as NULL
-    long i = -1;
-    f->Write(&i, sizeof(i));
+    f->Write(&guid, sizeof(guid));
 }
 
 XObject* XObject::RestorePointer(XFile * f, void* owner)
 {
-    long i;
-    f->Read(&i, sizeof(i));
+    long guid;
 
-    if (i == -1) {
-        return 0;
+    f->Read(&guid, sizeof(guid));
+
+    if (guid == -1) {
+        return NULL;
     }
-
-    assert(i >= 0 && i < count);
-    XObject * p = table[i];
-    return table[i];
-}
-
-void XObject::FreeTable()
-{
-    assert(table != 0);
-    delete[] table;
-    table = 0;
+    else
+    {
+        return objects[guid];
+    }
 }
 
 void XObject::DumpAll()
 {
     XFile file;
     file.Open(vMakePath(HOME_DIR, "dump.txt"), "w");
-    XObject * p = root;
 
-    while (p) {
-        p->Dump(&file);
-        p = p->next;
+    for (auto& [key, obj] : objects)
+    {
+        obj->Dump(&file);
     }
 
     file.Close();

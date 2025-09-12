@@ -197,15 +197,12 @@ void XGame::RunWithoutHero()
             }
 
             if (ch == 'I') {
-                XObject * pItem = XObject::root;
                 int count = 0;
 
-                while (pItem) {
+                for (const auto& [key, pItem] : XObject::objects) {
                     if (pItem && pItem->im & IM_ITEM) {
                         count++;
                     }
-
-                    pItem = pItem->next;
                 }
 
                 struct TMP {
@@ -215,18 +212,14 @@ void XGame::RunWithoutHero()
 
                 TMP * ia = new TMP[count];
 
-                pItem = XObject::root;
-
                 int index = 0;
 
-                while (pItem) {
+                for (const auto& [key, pItem] : XObject::objects) {
                     if (pItem && pItem->im & IM_ITEM) {
                         ia[index].pI = (XItem*)pItem;
                         ia[index].val = ia[index].pI->GetValue();
                         index++;
                     }
-
-                    pItem = pItem->next;
                 }
 
                 // sort it by value;
@@ -279,7 +272,7 @@ void XGame::RunWithoutHero()
         "\n"
         "Turns                     : %d\n"
         "Performance               : %.1lf turns/s",
-            XObject::count,
+            XObject::objects.size(),
             XObject::invalid_count,
             total_cr,
             total_it,

@@ -26,19 +26,13 @@ REGISTER_CLASS(XUniversalGen);
 
 int XUniversalGen::Run()
 {
-    unsigned int cr_count[32];
-    memset(cr_count, 0, sizeof(int) * 32);
+    unsigned int cr_count[32] = {0};
 
-    //hack!!!
-    XObject * o = root;
-
-    while (o) {
-        if ((o->im & IM_CREATURE) && ((XCreature*)o)->l == l) {
-            int n = vGetHighBitNum((((XCreature*)o)->creature_class));
+    for (const auto& [key, obj] : objects) {
+        if ((obj->im & IM_CREATURE) && ((XCreature*)obj)->l == l) {
+            int n = vGetHighBitNum((((XCreature*)obj)->creature_class));
             cr_count[n]++;
         }
-
-        o = o->next;
     }
 
     int cmask = 0;
@@ -91,15 +85,10 @@ int XMainLocationGen::Run()
     if (turns_count == 10000) {
         XRect small_town_area(20, 42, 28, 48);
 
-        //hack!!!
-        XObject * o = root;
-
-        while (o) {
-            if ((o->im & IM_CREATURE) && ((XCreature*)o)->creature_class & CR_ORC) {
-                ((XCreature*)(o))->xai->SetArea(small_town_area, L_MAIN);
+        for (const auto& [key, obj] : objects) {
+            if ((obj->im & IM_CREATURE) && ((XCreature*)obj)->creature_class & CR_ORC) {
+                ((XCreature*)(obj))->xai->SetArea(small_town_area, L_MAIN);
             }
-
-            o = o->next;
         }
     }
 

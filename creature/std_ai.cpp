@@ -986,18 +986,13 @@ void XStandardAI::onDie(XCreature * killer)
 void XStandardAI::SetGroupEnemy(XCreature * enemy)
 {
     if (ai_owner->group_id != GID_NONE && enemy) {
-        //hack!!!
-        XObject * o = enemy->root;
-
-        while (o) {
-            if (o->im & IM_CREATURE && ((XCreature*)o)->group_id == ai_owner->group_id) {
-                ((XCreature*)o)->xai->AddPersonalEnemy(enemy);
-                //((XCreature *)o)->xai->SetLastEnemy(enemy->x, enemy->y);
-                ((XCreature*)o)->xai->ResAIFlag(AIF_GUARD_AREA);
-                ((XCreature*)o)->xai->enemy = (XCreature*)o;
+        for (const auto& [key, obj] : objects) {
+            if (obj->im & IM_CREATURE && ((XCreature*)obj)->group_id == ai_owner->group_id) {
+                ((XCreature*)obj)->xai->AddPersonalEnemy(enemy);
+                //((XCreature *)obj)->xai->SetLastEnemy(enemy->x, enemy->y);
+                ((XCreature*)obj)->xai->ResAIFlag(AIF_GUARD_AREA);
+                ((XCreature*)obj)->xai->enemy = (XCreature*)obj;
             }
-
-            o = o->next;
         }
     }
 }

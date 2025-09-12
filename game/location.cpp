@@ -376,14 +376,12 @@ void XLocation::CreateShop(unsigned int im, XRect& rect, char* sk_name, SHOP_DOO
 int XLocation::GetCreatureCount(unsigned int creature_class)
 {
     int count = 0;
-    XObject * o = root;
 
-    while (o) {
-        if ((o->im & IM_CREATURE) && (((XCreature*)o)->l->guid() == this->guid()) && (((XCreature*)o)->creature_class) & creature_class) {
+    for (const auto& [key, obj] : objects) {
+        if ((obj->im & IM_CREATURE) && (((XCreature*)obj)->l->guid() == this->guid())
+                && (((XCreature*)obj)->creature_class) & creature_class) {
             count++;
         }
-
-        o = o->next;
     }
 
     return count;
@@ -1369,15 +1367,10 @@ int XLocation::ExecuteAIScript(lua_State * L)
     cmd.im = IM_FOOD;
     script.push_back(cmd);
 
-    //hack!!!
-    XObject * o = root;
-
-    while (o) {
-        if ((o->im & IM_CREATURE) && ((XCreature*)o)->group_id == GID_SMALL_VILLAGE_FARMER) {
-            ((XCreature*)(o))->xai->ExecuteScript(&script);
+    for (const auto& [key, obj] : objects) {
+        if ((obj->im & IM_CREATURE) && ((XCreature*)obj)->group_id == GID_SMALL_VILLAGE_FARMER) {
+            ((XCreature*)(obj))->xai->ExecuteScript(&script);
         }
-
-        o = o->next;
     }
 
     return 0;

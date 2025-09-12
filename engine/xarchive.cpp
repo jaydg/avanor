@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/xtime.h"
 #include "item/xherb.h"
 
-const unsigned int SAVE_GAME_VERSION = 0x0000045;
+const unsigned int SAVE_GAME_VERSION = 0x0000046;
 const unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 int XArchive::StoreGame()
@@ -63,7 +63,7 @@ int XArchive::StoreGame()
     unsigned int tmp = SAVE_GAME_CONTROL;
     file.Write(&tmp, sizeof(unsigned int));
     file.Close();
-    XObject::FreeTable();
+
     return 1;
 }
 
@@ -111,6 +111,6 @@ int XArchive::RestoreGame()
     }
 
     file.Close();
-    XObject::FreeTable();
+
     return 1;
 }

@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <map>
 #include <string>
 
 #include "engine/defs.h"
@@ -130,14 +131,12 @@ class XClassFactory
 typedef unsigned long XGUID;
 extern XGUID guid;
 
+typedef std::map<XGUID, class XObject*> XObjectMap;
+
 // this class is a base class for most important part's of cernel
 class XObject
 {
     private:
-        // linked list of objects
-        static long count;
-        XObject* prev;
-
         // reference count
         // objects can't be deleted till reference > 0
         int reference;
@@ -147,7 +146,6 @@ class XObject
         static long invalid_count;
 
         // used during saving
-        static XObject** table;
         bool bAlreadyStored;
 
         // all objects have a global unique inditifer
@@ -155,16 +153,10 @@ class XObject
         XGUID xguid;
 
     protected:
-        // required by various object iterators
-        // root of the linked list
-        static XObject* root;
-        XObject* next;
-
+        // object registry
+        static XObjectMap objects;
+        // used in XGame::RunWithoutHero
         friend class XGame;
-        friend class XLocation;
-        friend class XMainLocationGen;
-        friend class XUniversalGen;
-        friend class XStandardAI;
 
         // required by XScheduler and modifiers
         int ttm; // time to move
@@ -185,44 +177,10 @@ class XObject
             return xguid;
         }
 
-        void AddToList()
-        {
-            assert(table == 0);
-
-            if (root != 0) {
-                root->prev = this;
-            }
-
-            prev = 0;
-            next = root;
-            root = this;
-            count++;
-        }
-
-        void RemoveFromList()
-        {
-            assert(table == 0);
-
-            if (this == root) {
-                root = next;
-            }
-
-            if (prev != 0) {
-                prev->next = next;
-            }
-
-            if (next != 0) {
-                next->prev = prev;
-            }
-
-            count--;
-            invalid_count++;
-        }
-
         void Create()
         {
             reference = 0;
-            AddToList();
+            objects[xguid] = this;
         }
 
         static void StorePointer(XFile * f, XObject * p);
@@ -230,7 +188,6 @@ class XObject
         static void StoreAllObjects(XFile * f);
         static void RestoreAllObjects(XFile * f);
         static void InvalidateAllObjects();
-        static void FreeTable();
 
         XObject(DUMMY_STRUCT * ds) : is_valid(1)
         {
@@ -280,7 +237,7 @@ class XObject
             }
 
             is_valid = 0;
-            RemoveFromList();
+            objects.erase(xguid);
 
             if (reference == 0) {
                 delete this;
