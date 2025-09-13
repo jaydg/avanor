@@ -18,14 +18,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
 #include <ctime>
+#include <fstream>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
 
 #include "engine/global.h"
-#include "engine/xfile.h"
 #include "helpers/hiscore.h"
 
-void XHiScoreItem::SetText(int place, unsigned int score, const char* name,
-    int day, int month, int year, const char* msg)
+XGuiItem_Text* XHiScoreItem::toGuiItem()
 {
     char buf[256];
     char dbuf[256];
@@ -43,7 +46,7 @@ void XHiScoreItem::SetText(int place, unsigned int score, const char* name,
         sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n",
             MSG_CYAN, place, MSG_CYAN, score, MSG_CYAN, name, dbuf, day, month, year, msg);
 
-    XGuiItem_Text::SetText(buf);
+    return new XGuiItem_Text(buf);
 }
 
 XHiScoreItem::XHiScoreItem(int _place, unsigned int _score, const char* _name, const char* _msg, int flg, int last_record)
@@ -61,144 +64,67 @@ XHiScoreItem::XHiScoreItem(int _place, unsigned int _score, const char* _name, c
     strcpy(msg, _msg);
     isLastRecord = last_record;
     flag = flg;
-    SetText(place, score, name, day, month, year, msg);
 }
-
-XHiScoreItem::XHiScoreItem(XHiScoreItem * copy)
-{
-    year = copy->year;
-    month = copy->month;
-    day = copy->day;
-    score = copy->score;
-    place = copy->place;
-    strcpy(name, copy->name);
-    strcpy(msg, copy->msg);
-    isLastRecord = copy->isLastRecord;
-    flag = copy->flag;
-    SetText(place, score, name, day, month, year, msg);
-}
-
-void XHiScoreItem::Store(XFile * f)
-{
-    f->Write(name, sizeof(char), 80);
-    f->Write(msg, sizeof(char), 80);
-    f->Write(&year, sizeof(int));
-    f->Write(&day, sizeof(int));
-    f->Write(&month, sizeof(int));
-    f->Write(&score, sizeof(int));
-    f->Write(&place, sizeof(int));
-    f->Write(&flag, sizeof(int));
-    f->Write(&reserved, sizeof(int) * 10);
-};
-
-void XHiScoreItem::Restore(XFile * f)
-{
-    f->Read(name, sizeof(char), 80);
-    f->Read(msg, sizeof(char), 80);
-    f->Read(&year, sizeof(int));
-    f->Read(&day, sizeof(int));
-    f->Read(&month, sizeof(int));
-    f->Read(&score, sizeof(int));
-    f->Read(&place, sizeof(int));
-    f->Read(&flag, sizeof(int));
-    f->Read(&reserved, sizeof(int) * 10);
-    SetText(place, score, name, day, month, year, msg);
-};
 
 #define HISCORE_VERSION 0xFFEEEE0C
 
 XHiScore::XHiScore()
 {
-    int i;
+    // read existing scores, if present
+    std::ifstream file(vMakePath(DATA_DIR, FileName));
 
-    for (i = 0; i < HISCORE_TOP_REC; i++) {
-        items[i] = NULL;
+    if (!file.is_open()) {
+        return;
     }
 
-    XFile f;
+    // file exists, we can read it
+    cereal::JSONInputArchive archive(file);
 
-    if (f.Open(HISCORE_FILE_NAME, "rb")) {
-        int ver = 0;
+    int version;
 
-        if (f.Read(&ver, sizeof(int)) > 0) {
-            if (ver != HISCORE_VERSION) {
-                f.Close();
-                f.Open(HISCORE_FILE_NAME, "w");
-            } else {
-                int rec_count = 0;
-
-                if (f.Read(&rec_count, sizeof(int)) > 0) {
-                    for (i = 0; i < rec_count; i++) {
-                        items[i] = new XHiScoreItem();
-                        items[i]->Restore(&f);
-                    }
-                }
-            }
-        }
-
-        f.Close();
-    }
+    archive(
+        version,
+        items
+    );
 }
 
 XHiScore::~XHiScore()
 {
-    for (int i = 0; i < HISCORE_TOP_REC; i++)
-        if (items[i]) {
-            delete items[i];
-        }
+    items.erase(items.begin(), items.end());
 }
 
-void XHiScore::AddRecord(XHiScoreItem * item)
+void XHiScore::AddRecord(std::shared_ptr<XHiScoreItem> item)
 {
-    int i = 0;
+    items.push_back(item);
 
-    for (; i < HISCORE_TOP_REC - 1; i++) {
-        if (!items[i] || items[i]->score < item->score) {
-            break;
-        }
+    // sort by score
+    std::sort(
+        items.begin(),
+        items.end(),
+        [](std::shared_ptr<XHiScoreItem> a, std::shared_ptr<XHiScoreItem> b) {return a->score > b->score; }
+    );
+
+    // trim to desired length
+    if (items.size() > TopRecords) {
+        items.resize(TopRecords);
     }
 
-    if (i < HISCORE_TOP_REC) {
-        if (items[HISCORE_TOP_REC - 1]) {
-            delete items[HISCORE_TOP_REC - 1];
-        }
-
-        for (int j = HISCORE_TOP_REC - 1; j > i ; j--) {
-            items[j] = items[j - 1];
-
-            if (items[j]) {
-                items[j]->place = j + 1;
-            }
-        }
-
-        items[i] = item;
-        items[i]->place = i + 1;
+    // add place to scores
+    int place = 1;
+    for (std::shared_ptr<XHiScoreItem> item : items) {
+        item->place = place++;
     }
 
-    int rec_count = 0;
+    // write scores
+    std::ofstream file(vMakePath(DATA_DIR, FileName));
+    cereal::JSONOutputArchive archive(file);
 
-    for (i = 0; i < HISCORE_TOP_REC; i++) {
-        if (items[i]) {
-            rec_count++;
-        } else {
-            break;
-        }
+    int version = HISCORE_VERSION;
 
-    }
-
-    XFile f;
-
-    if (f.Open(HISCORE_FILE_NAME, "wb")) {
-        int ver = HISCORE_VERSION;
-        f.Write(&ver, sizeof(int));
-        f.Write(&rec_count, sizeof(int));
-
-        for (i = 0; i < rec_count; i++) {
-            items[i]->Store(&f);
-        }
-
-        f.Close();
-    }
+    archive(
+        version,
+        items
+    );
 };
 
 void XHiScore::Show()
@@ -210,11 +136,8 @@ void XHiScore::Show()
     list.AddItem(new XGuiItem_Text(
         "--- ---------  -------"));
 
-    for (int i = 0; i < HISCORE_TOP_REC; i++) {
-        if (items[i]) {
-            XHiScoreItem * item = new XHiScoreItem(items[i]);
-            list.AddItem(item);
-        }
+    for (std::shared_ptr<XHiScoreItem> item : items) {
+        list.AddItem(item->toGuiItem());
     }
 
     list.Run();

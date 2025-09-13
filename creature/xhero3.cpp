@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <memory>
+
 #include "creature/xhero.h"
 #include "game/game.h"
 #include "game/quest.h"
@@ -320,13 +322,7 @@ void XHero::EndGame(const char* end_msg)
         vClrScr();
     }
 
-    XHiScoreItem * hii;
-
-    if (XQuest::quest.hero_win) {
-        hii = new XHiScoreItem(0, score, buf2, end_msg, 1, 1);
-    } else {
-        hii = new XHiScoreItem(0, score, buf2, end_msg, 0, 1);
-    }
+    std::shared_ptr<XHiScoreItem> hii(new XHiScoreItem(0, score, buf2, end_msg, XQuest::quest.hero_win, 1));
 
     XHiScore hiscore;
     hiscore.AddRecord(hii);

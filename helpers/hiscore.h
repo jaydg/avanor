@@ -21,38 +21,42 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __HISCORE_H
 #define __HISCORE_H
 
+#include <memory>
+#include <cereal/cereal.hpp>
+
 #include "helpers/xgui.h"
 
 #define GAME_VERSION "0.6.0"
 
-#define HISCORE_FILE_NAME	vMakePath(DATA_DIR, "avanor.hsc")
-#define HISCORE_TOP_REC		10
-
 class XFile;
 
-class XHiScoreItem : public XGuiItem_Text
+class XHiScoreItem
 {
     public:
         char buf[256];
         XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
         XHiScoreItem() : isLastRecord(0) {}
 
-        XHiScoreItem(XHiScoreItem * copy);
-        virtual int isSelectable()
-        {
-            return 0;
-        }
+        XGuiItem_Text* toGuiItem();
 
-        virtual int isTitle()
-        {
-            return 0;
-        }
-
-        void Store(XFile * f);
-        void Restore(XFile * f);
         unsigned int score;
         int place;
-        void SetText(int place, unsigned int score, const char* name, int day, int month, int year, const char* msg);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(
+                name,
+                msg,
+                year,
+                day,
+                month,
+                score,
+                place,
+                flag
+            );
+        }
+
     protected:
         int year;
         int day;
@@ -61,17 +65,20 @@ class XHiScoreItem : public XGuiItem_Text
         char msg[160];
         int isLastRecord;
         int flag; // win or death
-        int reserved[10];
 };
 
 class XHiScore
 {
+    private:
+        const char* FileName = "avanor.hsc";
+        const int TopRecords = 10;
+        std::vector<std::shared_ptr<XHiScoreItem>> items;
+
     public:
         XHiScore();
         ~XHiScore();
-        void AddRecord(XHiScoreItem * item);
+        void AddRecord(std::shared_ptr<XHiScoreItem> item);
         void Show();
-        XHiScoreItem* items[HISCORE_TOP_REC];
 };
 
 #endif
