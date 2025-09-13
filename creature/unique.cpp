@@ -30,69 +30,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xtool.h"
 #include "magic/modifer.h"
 
-///////////////////////////////////////////////////////////////////////
-// AHK-ULAN
-///////////////////////////////////////////////////////////////////////
-REGISTER_CLASS(XAhkUlan);
-
-XAhkUlan::XAhkUlan(_CREATURE * cr) : XAnyCreature(cr) { }
-
-int XAhkUlan::Chat(XCreature * chatter, const char* msg)
-{
-    if (xai->isEnemy(chatter)) {
-        msgwin.Add("It is time to die!");
-        return 1;
-    }
-
-    if (XQuest::quest.ahk_ulan_quest == 0) {
-        msgwin.Add("Hello, brave hero.");
-        msgwin.Add("Some years ago, some evil wizards destroyed my tower.  Now I wait here gaining strength and planning my revenge. I am searching for 3 parts to an ancient machine. Bring them to me and I will reward you well.");
-        XQuest::quest.ahk_ulan_quest = 1;
-        return 1;
-    }
-
-    if (XQuest::quest.ahk_ulan_quest < 4 || (XQuest::quest.roderick_ordered && !XQuest::quest.roderick_killed)) {
-        msgwin.Add("Don't disturb me before completing my quest, puny mortal!");
-        return 1;
-    }
-
-    if (XQuest::quest.roderick_killed) {
-        XQuest::quest.hero_win = 1;
-        XHero::EndGame("***WINNER***");
-    }
-
-    return 1;
-}
-
-void XAhkUlan::Die(XCreature * killer)
-{
-    XQuest::quest.ahk_ulan_killed = 1;
-    XAnyCreature::Die(killer);
-}
-
-int XAhkUlan::onGiveItem(XCreature * giver, XItem * item)
-{
-    if (item->it == IT_ANCIENTMACHINEPART) {
-        ContainItem(item);
-        XQuest::quest.ahk_ulan_quest += item->quantity;
-
-        if (XQuest::quest.ahk_ulan_quest >= 4) {
-            msgwin.Add("Very nice job, servant!");
-            msgwin.Add("And now, my last request: kill Roderick, for he is only one who can stop me now.");
-            XQuest::quest.roderick_ordered = 1;
-        } else {
-            msgwin.Add("You are a loyal servant!");
-        }
-
-        return 1;
-    } else {
-        msgwin.Add("Are you jeering at me?");
-        Sacrifice(item);
-        return 1;
-    }
-
-    return 0;
-}
 
 ///////////////////////////////////////////////////////////////////////
 // Beelzevile
