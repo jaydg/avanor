@@ -237,7 +237,7 @@ CREATURE_NAME XCreatureStorage::last_name = CN_NONE;
 void XCreatureStorage::View(CREATURE_NAME cn, const char* name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS crcl, CREATURE_NAME cn_instance)
 {
     last_name = cn;
-    assert(creature_storage[last_name].name.Empty());
+    assert(creature_storage[last_name].name.size() == 0);
 
     if (cn_instance != CN_NONE) {
         _CREATURE * cr = GetCreatureData(cn_instance);
@@ -374,7 +374,7 @@ _CREATURE* XCreatureStorage::GetCreatureData(CREATURE_NAME cn)
 void XCreatureStorage::CreateQuickBase()
 {
     for (int i = 0; i < CN_EOF; i++) {
-        if (!XCreatureStorage::creature_storage[i].name.Empty()) {
+        if (XCreatureStorage::creature_storage[i].name.size() != 0) {
             CREATURE_CLASS crc = XCreatureStorage::creature_storage[i].cr_class;
             XCreatureStorage::creature_set[vGetBitNumber(crc)].cn[XCreatureStorage::creature_set[vGetBitNumber(crc)].count] = (CREATURE_NAME)i;
             XCreatureStorage::creature_set[vGetBitNumber(crc)].count++;

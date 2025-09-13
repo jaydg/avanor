@@ -18,8 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <string>
+
 #include "helpers/strproc.h"
-#include "helpers/xstr.h"
 #include "magic/resist.h"
 #include "magic/stats.h"
 
@@ -160,7 +161,7 @@ XStringProcEx::XStringProcEx(const char* str)
             i++;
         }
 
-        XStr dice_str(str + keyword_begin, i - keyword_begin);
+        std::string dice_str(str + keyword_begin, i - keyword_begin);
         key_pair.dice.Setup(dice_str.c_str());
         pairs.push_back(key_pair);
     } while (str[i] > 0);

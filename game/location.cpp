@@ -73,7 +73,7 @@ void XLocation::Invalidate()
 
 int XLocation::Run()
 {
-    if (!event.Empty()) {
+    if (event.size()) {
         lua_pushstring(XLocation::L, event.c_str());
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
         lua_pushlightuserdata(XLocation::L, this);
@@ -400,7 +400,7 @@ void XLocation::Store(XFile * f)
     f->Write(full_name, 80);
     f->Write(&visited_by_hero);
     f->Write(&ln, sizeof(LOCATION));
-    event.Store(f);
+    f->WriteStr(event);
 }
 
 void XLocation::Restore(XFile * f)
@@ -421,7 +421,7 @@ void XLocation::Restore(XFile * f)
     f->Read(full_name, 80);
     f->Read(&visited_by_hero);
     f->Read(&ln, sizeof(LOCATION));
-    event.Restore(f);
+    f->ReadStr(event);
 }
 
 void XLocation::DumpLocation(FILE * f)
@@ -1055,7 +1055,7 @@ int XLocation::AddMessage(lua_State * L)
 
 //AskQuestion("Are you sure?", "yn", "Yes", "No")
 struct ASK_QUESTION_REC {
-    XStr val;
+    std::string val;
     int key;
 };
 
@@ -1065,7 +1065,7 @@ int XLocation::AskQuestion(lua_State * L)
     const char* key = lua_tostring(L, 2);
     msgwin.Add(msg);
 
-    XStr out = "[";
+    std::string out = "[";
 
     int offs = 0;
     char key_value[20];
@@ -1075,7 +1075,7 @@ int XLocation::AskQuestion(lua_State * L)
 
     while (sscanf(key + offs, "%s10%n", key_value, &offs) > 0) {
         ASK_QUESTION_REC aqr;
-        XStr variant;
+        std::string variant;
 
         if (stricmp(key_value, "esc") == 0) {
             variant = MSG_CYAN "ESC" MSG_LIGHTGRAY;
@@ -1092,7 +1092,7 @@ int XLocation::AskQuestion(lua_State * L)
             substring[0] = key_value[0];
             char newstr[] = MSG_CYAN "x" MSG_LIGHTGRAY;
             newstr[2] = key_value[0];
-            variant.ReplaceFirst(substring, newstr);
+            variant.replace(0, 1, newstr);
             aqr.key = key_value[0];
             aqr.val = substring;
         }

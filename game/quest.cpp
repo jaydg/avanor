@@ -35,9 +35,9 @@ void XQuest::Store(XFile * f)
         f->Write(&idx);
         int status = (*it)->status;
         f->Write(&status);
-        (*it)->know.Store(f);
-        (*it)->closed.Store(f);
-        (*it)->complete.Store(f);
+        f->WriteStr((*it)->know);
+        f->WriteStr((*it)->closed);
+        f->WriteStr((*it)->complete);
     }
 
     f->Write(&beelzvile_killed);
@@ -71,9 +71,9 @@ void XQuest::Restore(XFile * f)
         f->Read(&qr->quest_id);
         f->Read(&status);
         qr->status = (QUEST)status;
-        qr->know.Restore(f);
-        qr->closed.Restore(f);
-        qr->complete.Restore(f);
+        f->ReadStr(qr->know);
+        f->ReadStr(qr->closed);
+        f->ReadStr(qr->complete);
         quests.push_back(qr);
         sz--;
     }

@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __ANY_CR_H
 #define __ANY_CR_H
 
+#include <string>
+
 #include "creature/cr_defs.h"
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
@@ -58,7 +60,7 @@ enum GENERATION_FLAGS {
 
 struct _CREATURE {
     //view
-    XStr name; //"kobold"
+    std::string name; //"kobold"
     char view; //'k'
     int color; //xGREEN
 
@@ -69,7 +71,7 @@ struct _CREATURE {
     CREATURE_SIZE creature_size; //CS_SMALL (bonus for DV)
     XDice creature_weight; //how much corpse weight for example
 
-    XStr body;
+    std::string body;
     XStatsGenerator stats_gen;
     XResistGenerator r_gen; //resistances
     XDice dv;
@@ -80,7 +82,7 @@ struct _CREATURE {
     XDice pp;
     CREATURE_LEVEL crl;
     CR_PERSON_TYPE person;
-    XStr creature_description;
+    std::string creature_description;
     CORPSE_DATA pCorpseData;
     unsigned int ai_flags;
     CREATURE_CLASS cr_class; //class of creature

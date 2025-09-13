@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cassert>
 #include <cstdio>
+#include <string>
 
 class XFile
 {
@@ -68,6 +69,13 @@ class XFile
             return fwrite(data, sizeof(unsigned int), 1, file);
         }
 
+        int WriteStr(const std::string& str)
+        {
+            int sz = str.size();
+            Write(&sz);
+            return Write(str.c_str(), sz + 1);
+        }
+
         int Read(void* data, size_t block_size, size_t block_count = 1)
         {
             unsigned int res = fread(data, block_size, block_count, file);
@@ -83,6 +91,19 @@ class XFile
         int Read(unsigned int* data)
         {
             return fread(data, sizeof(unsigned int), 1, file);
+        }
+
+        int ReadStr(std::string& str)
+        {
+            int sz;
+            Read(&sz);
+            char* buf = new char[sz + 1];
+            int ret = Read(buf, sz + 1);
+
+            str = buf;
+            delete buf;
+
+            return ret;
         }
 
     protected:

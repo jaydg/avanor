@@ -21,8 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __QUEST_H
 #define __QUEST_H
 
+#include <string>
+
 #include "creature/creature.h"
-#include "helpers/xstr.h"
 #include "item/itemdef.h"
 
 class XFile;
@@ -37,9 +38,9 @@ enum QUEST {
 };
 
 struct QUEST_REC {
-    XStr know;
-    XStr complete;
-    XStr closed;
+    std::string know;
+    std::string complete;
+    std::string closed;
     QUEST status;
     int quest_id;
 };

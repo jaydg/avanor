@@ -21,9 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __LOCATION_H
 #define __LOCATION_H
 
+#include <string>
+
 #include "creature/cr_defs.h"
 #include "helpers/point.h"
-#include "helpers/xstr.h"
 #include "map/map.h"
 #include "map/xanyplace.h"
 
@@ -143,7 +144,7 @@ struct lua_State;
 
 class XLocation : public XObject
 {
-        XStr event;
+        std::string event;
     public:
         int Run();
 
