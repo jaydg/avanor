@@ -2101,9 +2101,7 @@ XSkill* XHero::SkillsList(SKILL_FLAG skill_flag, int marks_left, FILE * f)
             list.SetCaption(MSG_BROWN "###" MSG_YELLOW " Use Skill " MSG_BROWN "###");
         }
 
-        XList<XSkill*>::iterator skill;
-
-        for (skill = sk->skills.begin(); skill != sk->skills.end(); skill++) {
+        for (const auto& [skt, skill] : sk->skills) {
             strcpy(buf, MSG_LIGHTGRAY);
             strcat(buf, skill->GetName());
 
@@ -2137,14 +2135,13 @@ XSkill* XHero::SkillsList(SKILL_FLAG skill_flag, int marks_left, FILE * f)
                 }
             } else {
                 if (skill_flag == SKF_IMPROVE_SKILL || skill_flag == SKF_USE_SKILL) {
-                    skill = sk->skills.begin();
-
-                    while (ch > 0) {
-                        skill++;
-                        ch--;
+                    for (const auto& [skt, skill] : sk->skills) {
+                        if (ch > 0) {
+                            ch--;
+                        } else {
+                            return skill;
+                        }
                     }
-
-                    return skill;
                 }
             }
         }
@@ -2169,7 +2166,7 @@ void XHero::IncLevel()
         XList<XSkill*>::iterator skill;
         int flag = 0;
 
-        for (skill = sk->skills.begin(); skill != sk->skills.end(); skill++) {
+        for (const auto& [skt, skill] : sk->skills) {
             if (skill->GetLevel() < skill->GetMaxLevel()) {
                 flag = 1;
                 break;

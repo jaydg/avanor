@@ -285,6 +285,44 @@ class XObject
         {
             return 1;
         }
+
+        template<typename T>
+        static int StoreObjectMap(XFile* f, const T& map)
+        {
+            using key_type = typename T::key_type;
+
+            size_t written = 0;
+            size_t count = map.size();
+            f->Write(&count, sizeof(count));
+
+            for (const auto& [key, obj] : map) {
+                written += f->Write(&key, sizeof(key_type));
+                StorePointer(f, obj);
+            }
+
+            return written;
+        }
+
+        template<typename T>
+        static int RestoreObjectMap(XFile *f, T& map) {
+            using key_type = typename T::key_type;
+            using val_type = typename T::mapped_type;
+
+            assert(map.empty());
+
+            size_t read = 0;
+            size_t count = 0;
+            f->Read(&count, sizeof(count));
+
+            while (count-- > 0) {
+                key_type key;
+
+                read += f->Read(&key, sizeof(key_type));
+                map[key] = static_cast<val_type>(RestorePointer(f, NULL));
+            }
+
+            return read;
+        }
 };
 
 template<class TYPE> class XPtr

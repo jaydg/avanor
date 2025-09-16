@@ -21,11 +21,19 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __SKILLS_H
 #define __SKILLS_H
 
-#include "engine/xlist.h"
+#include <map>
+
 #include "magic/skill.h"
+
+typedef std::map<XSkill::Skill, XSkill*> XSkillMap;
 
 class XSkills
 {
+    protected:
+        XSkillMap skills;
+        // access to the skills is required for showing them
+        friend class XHero;
+
     public:
         XSkills() {}
 
@@ -35,8 +43,6 @@ class XSkills
         void UseSkill(XSkill::Skill skt, int n = 1);
         XSkill* GetSkill(XSkill::Skill skt);
         void Learn(XSkill::Skill skt, int level = 1);
-
-        XSortedList<XSkill*> skills;
 
         void Store(XFile * f);
         void Restore(XFile * f);

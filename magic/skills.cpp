@@ -19,10 +19,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "magic/skills.h"
+#include "engine/xobject.h"
+
+#include <stdexcept>
 
 int XSkills::GetLevel(XSkill::Skill skt)
 {
-    XSkill * xsk;
+    XSkill* xsk;
 
     if (xsk = GetSkill(skt)) {
         return xsk->GetLevel();
@@ -33,7 +36,7 @@ int XSkills::GetLevel(XSkill::Skill skt)
 
 void XSkills::UseSkill(XSkill::Skill skt, int n)
 {
-    XSkill * skill = GetSkill(skt);
+    XSkill* skill = GetSkill(skt);
 
     if (skill) {
         skill->UseSkill(n);
@@ -42,30 +45,24 @@ void XSkills::UseSkill(XSkill::Skill skt, int n)
 
 XSkill* XSkills::GetSkill(XSkill::Skill skt)
 {
-    XList<XSkill*>::iterator xsk = skills.begin();
-
-    while (xsk != skills.end()) {
-        if (xsk->skt == skt) {
-            return xsk;
-        }
-
-        xsk++;
+    try {
+        return skills.at(skt);
+    } catch (const std::out_of_range& ex) {
+        return NULL;
     }
-
-    return NULL;
 }
 
 void XSkills::Learn(XSkill::Skill skt, int level)
 {
-    skills.Add(new XSkill(skt, level));
+    skills[skt] = new XSkill(skt, level);
 }
 
-void XSkills::Store(XFile * f)
+void XSkills::Store(XFile* f)
 {
-    skills.StoreList(f);
+    XObject::StoreObjectMap(f, skills);
 }
 
-void XSkills::Restore(XFile * f)
+void XSkills::Restore(XFile* f)
 {
-    skills.RestoreList(f);
+    XObject::RestoreObjectMap(f, skills);
 }
