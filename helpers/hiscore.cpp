@@ -49,11 +49,10 @@ XGuiItem_Text* XHiScoreItem::toGuiItem()
     return new XGuiItem_Text(buf);
 }
 
-XHiScoreItem::XHiScoreItem(int _place, unsigned int _score, const char* _name, const char* _msg, int flg, int last_record)
+XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, const char* _name, const char* _msg, const int flg, const int last_record)
 {
-    tm * _tm;
-    time_t t = time(0);
-    _tm = gmtime(&t);
+    const time_t t = time(nullptr);
+    const tm* _tm = gmtime(&t);
 
     year = _tm->tm_year + 1900;
     month = _tm->tm_mon + 1;
@@ -93,7 +92,7 @@ XHiScore::~XHiScore()
     items.erase(items.begin(), items.end());
 }
 
-void XHiScore::AddRecord(std::shared_ptr<XHiScoreItem> item)
+void XHiScore::AddRecord(const std::shared_ptr<XHiScoreItem>& item)
 {
     items.push_back(item);
 
@@ -101,7 +100,7 @@ void XHiScore::AddRecord(std::shared_ptr<XHiScoreItem> item)
     std::sort(
         items.begin(),
         items.end(),
-        [](std::shared_ptr<XHiScoreItem> a, std::shared_ptr<XHiScoreItem> b) {return a->score > b->score; }
+        [](const std::shared_ptr<XHiScoreItem>& a, const std::shared_ptr<XHiScoreItem>& b) {return a->score > b->score; }
     );
 
     // trim to desired length
@@ -111,8 +110,8 @@ void XHiScore::AddRecord(std::shared_ptr<XHiScoreItem> item)
 
     // add place to scores
     int place = 1;
-    for (std::shared_ptr<XHiScoreItem> item : items) {
-        item->place = place++;
+    for (const std::shared_ptr<XHiScoreItem>& _item : items) {
+        _item->place = place++;
     }
 
     // write scores
@@ -127,8 +126,7 @@ void XHiScore::AddRecord(std::shared_ptr<XHiScoreItem> item)
     );
 };
 
-void XHiScore::Show()
-{
+void XHiScore::Show() const {
     XGuiList list;
 
     list.AddItem(new XGuiItem_Text(MSG_DARKGRAY
@@ -136,7 +134,7 @@ void XHiScore::Show()
     list.AddItem(new XGuiItem_Text(
         "--- ---------  -------"));
 
-    for (std::shared_ptr<XHiScoreItem> item : items) {
+    for (const std::shared_ptr<XHiScoreItem>& item : items) {
         list.AddItem(item->toGuiItem());
     }
 

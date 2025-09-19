@@ -33,14 +33,13 @@ class XFile;
 class XHiScoreItem
 {
     public:
-        char buf[256];
         XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
         XHiScoreItem() : isLastRecord(0) {}
 
         XGuiItem_Text* toGuiItem();
 
-        unsigned int score;
-        int place;
+        unsigned int score{};
+        int place{};
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -58,13 +57,13 @@ class XHiScoreItem
         }
 
     protected:
-        int year;
-        int day;
-        int month;
-        char name[80];
-        char msg[160];
+        int year{};
+        int day{};
+        int month{};
+        char name[80]{};
+        char msg[160]{};
         int isLastRecord;
-        int flag; // win or death
+        int flag{}; // win or death
 };
 
 class XHiScore
@@ -77,8 +76,8 @@ class XHiScore
     public:
         XHiScore();
         ~XHiScore();
-        void AddRecord(std::shared_ptr<XHiScoreItem> item);
-        void Show();
+        void AddRecord(const std::shared_ptr<XHiScoreItem>& item);
+        void Show() const;
 };
 
 #endif
