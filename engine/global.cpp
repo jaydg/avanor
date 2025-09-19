@@ -189,7 +189,7 @@ void vRefresh()
 #endif
 }
 
-void vPutCh(int x, int y, char ch, int attr)
+void vPutCh(const int x, const int y, char ch, int attr)
 {
     assert(x >= 0 && y >= 0 && x <= size_x && y <= size_y);
 #ifdef XWIN32
@@ -201,7 +201,7 @@ void vPutCh(int x, int y, char ch, int attr)
 #endif
 };
 
-char vTestCh(int x, int y)
+char vTestCh(const int x, const int y)
 {
 #ifdef XWIN32
     return vscreenw[x + y * size_x].Char.AsciiChar;
@@ -231,18 +231,17 @@ void vGetCursorPos(int* x, int* y)
     *y = cursor_pos_y;
 }
 
-int vGetS(char* s, int buffer_size)
+int vGetS(char* s, const int buffer_size)
 {
     int cx;
     int cy;
     vGetCursorPos(&cx, &cy);
     int buffer_pos = 0;
-    char ch;
     strcpy(s, "");
 
     do {
         vXGotoXY(cx + strlen(s), cy);
-        ch = vGetch();
+        const int ch = vGetch();
 
         s[buffer_pos] = ch;
 
@@ -286,7 +285,7 @@ int vKbhit()
 {
 #ifdef XLINUX
     timeout(0);
-    int ch = getch();
+    const int ch = getch();
     timeout(-1);
 
     if (ch == ERR) {
@@ -349,9 +348,10 @@ int vGetch()
 
         case '6':
             return getch() == '~' ? KEY_PGDOWN : KEY_UNKNOWN;
+        default:
+            return KEY_UNKNOWN;
     }
 
-    return KEY_UNKNOWN;
 #else
     int ch = getch();
 
@@ -363,12 +363,12 @@ int vGetch()
 #endif
 }
 
-int vXGetch(char* ch_buf)
+int vXGetch(const char* ch_buf)
 {
-    int slen = strlen(ch_buf);
+    size_t slen = strlen(ch_buf);
 
-    while (1) {
-        int ch = vGetch();
+    while (true) {
+        const int ch = vGetch();
 
         for (int i = 0; i < slen; i++) {
             if (ch == ch_buf[i]) {
@@ -416,7 +416,7 @@ void vHideCursor()
 #endif
 }
 
-void vSetAttr(int color)
+void vSetAttr(const int color)
 {
     current_attr = color;
 }
@@ -437,9 +437,7 @@ void vPutS(const char* s)
     }
 
     while (true) {
-        char ch = *s++;
-
-        switch (ch) {
+        switch (const char ch = *s++) {
             case 0 :
                 return;
 
@@ -489,7 +487,7 @@ void vFPutS(FILE * f, const char* s)
 
 static unsigned long randx;
 
-void vRandSeed(unsigned long seed)
+void vRandSeed(const unsigned long seed)
 {
     randx = seed;
 }
@@ -538,7 +536,7 @@ V_BUFFER::~V_BUFFER()
     delete[] buffer;
 }
 
-void vStore(V_BUFFER * buf)
+void vStore(const V_BUFFER* buf)
 {
 #ifdef XWIN32
     memcpy(buf->buffer, vscreenw, size_x * size_y * sizeof(CHAR_INFO));
@@ -547,7 +545,7 @@ void vStore(V_BUFFER * buf)
 #endif
 }
 
-void vRestore(V_BUFFER * buf)
+void vRestore(const V_BUFFER* buf)
 {
 #ifdef XWIN32
     memcpy(vscreenw, buf->buffer, size_x * size_y * sizeof(CHAR_INFO));

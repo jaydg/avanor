@@ -29,10 +29,10 @@ XObjectMap XObject::objects = XObjectMap();
 
 XGUID guid = 1;
 
-XClassInfo* XClassFactory::first_class = NULL;
+XClassInfo* XClassFactory::first_class = nullptr;
 int XClassFactory::counter = 0;
 
-XClassFactory::XClassFactory(std::string name, CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
+XClassFactory::XClassFactory(const std::string& name, const CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
 {
     if (!first_class) {
         XClassFactory::first_class = new XClassInfo(name, pClassCreator, pClassNew);
@@ -52,21 +52,21 @@ XClassFactory::XClassFactory(std::string name, CLASS_CREATOR pClassCreator, CLAS
 XClassFactory::~XClassFactory()
 {
     if (--XClassFactory::counter <= 0) {
-        XClassInfo * tmp = XClassFactory::first_class;
+        const XClassInfo* tmp = XClassFactory::first_class;
 
         while (tmp) {
-            XClassInfo * del = tmp;
+            const XClassInfo * del = tmp;
             tmp = tmp->next;
             delete del;
         }
 
-        XClassFactory::first_class = NULL;
+        XClassFactory::first_class = nullptr;
     }
 }
 
-XObject* XClassFactory::Create(std::string name)
+XObject* XClassFactory::Create(const std::string& name)
 {
-    XClassInfo * tmp = XClassFactory::first_class;
+    const XClassInfo * tmp = XClassFactory::first_class;
 
     while (tmp) {
         if (tmp->name == name) {
@@ -77,12 +77,12 @@ XObject* XClassFactory::Create(std::string name)
     }
 
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
-XObject* XClassFactory::CreateNew(std::string name)
+XObject* XClassFactory::CreateNew(const std::string& name)
 {
-    XClassInfo * tmp = XClassFactory::first_class;
+    const XClassInfo* tmp = XClassFactory::first_class;
 
     while (tmp) {
         if (tmp->name == name) {
@@ -92,7 +92,7 @@ XObject* XClassFactory::CreateNew(std::string name)
         tmp = tmp->next;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void XObject::Store(XFile * f)
@@ -121,7 +121,7 @@ void XObject::Restore(XFile * f)
 
 void XObject::StoreAllObjects(XFile * f)
 {
-    size_t size = objects.size();
+    const size_t size = objects.size();
     f->Write(&size, sizeof(size_t), 1);
 
     FILE * tmp = fopen("dmp.txt", "wt");
@@ -132,7 +132,7 @@ void XObject::StoreAllObjects(XFile * f)
         f->Write(&name_size, sizeof(name_size));
         f->Write(obj->GetClassName().c_str(), sizeof(char), name_size);
         obj->bAlreadyStored = false;
-        fprintf(tmp, "[%d] %s\n", i++, obj->GetClassName().c_str());
+        fprintf(tmp, "[%ld] %s\n", i++, obj->GetClassName().c_str());
     }
 
     fclose(tmp);
@@ -144,7 +144,7 @@ void XObject::StoreAllObjects(XFile * f)
 
 void XObject::RestoreAllObjects(XFile * f)
 {
-    assert(objects.size() == 0);
+    assert(objects.empty());
 
     long read_count = 0;
     f->Read(&read_count, sizeof(read_count));
@@ -154,7 +154,7 @@ void XObject::RestoreAllObjects(XFile * f)
     for (long i = 0; i < read_count; i++) {
         unsigned char name_size;
         f->Read(&name_size, sizeof(name_size));
-        char* buf = new char[name_size + 1];
+        const auto buf = new char[name_size + 1];
         f->Read(buf, sizeof(char), name_size);
         buf[name_size] = 0;
         DYNCREATE(buf);
@@ -183,7 +183,7 @@ void XObject::StorePointer(XFile * f, XObject * p)
     // need to restore this pointer value as NULL
     long guid = -1;
 
-    if (p != NULL) {
+    if (p != nullptr) {
         guid = p->guid();
     }
 
@@ -197,7 +197,7 @@ XObject* XObject::RestorePointer(XFile * f, void* owner)
     f->Read(&guid, sizeof(guid));
 
     if (guid == -1) {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -221,7 +221,7 @@ void XObject::DumpAll()
 void XObject::Dump(XFile * f)
 {
     char buf[256];
-    sprintf(buf, "%5d   %2d     %s", xguid, reference, GetClassName().c_str());
+    sprintf(buf, "%5lu   %2d     %s", xguid, reference, GetClassName().c_str());
     f->Write(buf, strlen(buf));
     f->Write("\n", 1);
 }

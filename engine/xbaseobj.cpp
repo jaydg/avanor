@@ -21,8 +21,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/xbaseobj.h"
 
+#include "xfile.h"
+#include "xobject.h"
+
 XBaseObject::XBaseObject() :
-    RNG(0), s(NULL), r(NULL), weight(0)
+    RNG(0), weight(0), r(nullptr), s(nullptr)
 {
 }
 
@@ -33,40 +36,40 @@ void XBaseObject::Invalidate()
 
 XBaseObject::~XBaseObject()
 {
-    if (s != NULL) {
+    if (s != nullptr) {
         delete s;
-        s = NULL;
+        s = nullptr;
     }
 
-    if (r != NULL) {
+    if (r != nullptr) {
         delete r;
-        s = NULL;
+        s = nullptr;
     }
 }
 
 XBaseObject::XBaseObject(XBaseObject * copy) :
-    XMapObject((XMapObject*)copy),
+    XMapObject(static_cast<XMapObject *>(copy)),
     _DV(copy->_DV),
+    _PV(copy->_PV),
     _HIT(copy->_HIT),
+    RNG(copy->RNG),
     _HP(copy->_HP),
     _PP(copy->_PP),
-    _PV(copy->_PV),
-    dice(copy->dice),
     MAX_HP(copy->MAX_HP),
     MAX_PP(copy->MAX_PP),
     weight(copy->weight),
-    RNG(copy->RNG)
+    dice(copy->dice)
 {
     if (copy->r) {
         r = new XResistance(copy->r);
     } else {
-        r = NULL;
+        r = nullptr;
     }
 
     if (copy->s) {
         s = new XStats(copy->s);
     } else {
-        s = NULL;
+        s = nullptr;
     }
 }
 
@@ -74,7 +77,7 @@ int XBaseObject::Compare(XObject * o)
 {
     assert(dynamic_cast<XBaseObject*>(o));
 
-    XBaseObject * tit = (XBaseObject*)o;
+    auto* tit = dynamic_cast<XBaseObject *>(o);
 
     if (XMapObject::Compare(o) == 0
         && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
@@ -87,7 +90,7 @@ int XBaseObject::Compare(XObject * o)
     }
 }
 
-void XBaseObject::Store(XFile * f)
+void XBaseObject::Store(XFile* f)
 {
     XMapObject::Store(f);
 
@@ -152,7 +155,7 @@ void XBaseObject::Restore(XFile * f)
         r = new XResistance();
         r->Restore(f);
     } else {
-        r = NULL;
+        r = nullptr;
     }
 
     flag = 0;
@@ -162,7 +165,7 @@ void XBaseObject::Restore(XFile * f)
         s = new XStats();
         s->Restore(f);
     } else {
-        s = NULL;
+        s = nullptr;
     }
 }
 

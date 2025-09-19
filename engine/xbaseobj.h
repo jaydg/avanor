@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XBASEOBJ_H__
 #define __XBASEOBJ_H__
 
+#include "xobject.h"
 #include "engine/xmapobj.h"
 #include "helpers/dice.h"
 #include "magic/resist.h"
@@ -31,24 +32,24 @@ class XBaseObject : public XMapObject
     public:
         DECLARE_CREATOR(XBaseObject, XMapObject);
         XBaseObject();
-        virtual void Invalidate();
-        XBaseObject(XBaseObject * copy);
-        ~XBaseObject();
+        void Invalidate() override;
+        explicit XBaseObject(XBaseObject * copy);
+        ~XBaseObject() override;
 
-        int _DV, _PV, _HIT, RNG;
-        int _HP, _PP;
-        int MAX_HP;
-        int MAX_PP;
+        int _DV{}, _PV{}, _HIT{}, RNG;
+        int _HP{}, _PP{};
+        int MAX_HP{};
+        int MAX_PP{};
 
         int weight;
         XDice dice;
-        virtual int Compare(XObject * o);
+        int Compare(XObject * o) override;
 
         XResistance* r;
         XStats* s;
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 };
 
 #endif

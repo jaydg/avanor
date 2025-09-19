@@ -29,8 +29,8 @@ int XUniversalGen::Run()
     unsigned int cr_count[32] = {0};
 
     for (const auto& [key, obj] : objects) {
-        if ((obj->im & IM_CREATURE) && ((XCreature*)obj)->l == l) {
-            int n = vGetHighBitNum((((XCreature*)obj)->creature_class));
+        if ((obj->im & IM_CREATURE) && dynamic_cast<XCreature *>(obj)->l == l) {
+            int n = vGetHighBitNum((dynamic_cast<XCreature *>(obj)->creature_class));
             cr_count[n]++;
         }
     }
@@ -45,9 +45,7 @@ int XUniversalGen::Run()
         }
     }
 
-    CREATURE_CLASS n_mask = (CREATURE_CLASS)(cmask & crc);
-
-    if (n_mask) {
+    if (auto n_mask = static_cast<CREATURE_CLASS>(cmask & crc)) {
         XCreature * cr = XCreatureStorage::CreateRnd(n_mask, crl);
         XPoint pt;
         l->GetFreeXY(&pt);
@@ -85,9 +83,9 @@ int XMainLocationGen::Run()
     if (turns_count == 10000) {
         XRect small_town_area(20, 42, 28, 48);
 
-        for (const auto& [key, obj] : objects) {
-            if ((obj->im & IM_CREATURE) && ((XCreature*)obj)->creature_class & CR_ORC) {
-                ((XCreature*)(obj))->xai->SetArea(small_town_area, L_MAIN);
+        for (const auto& [key, obj] : XObject::objects) {
+            if ((obj->im & IM_CREATURE) && reinterpret_cast<XCreature *>(obj)->creature_class & CR_ORC) {
+                reinterpret_cast<XCreature *>(obj)->xai->SetArea(small_town_area, L_MAIN);
             }
         }
     }

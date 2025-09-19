@@ -24,8 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/xtime.h"
 #include "item/xherb.h"
 
-const unsigned int SAVE_GAME_VERSION = 0x0000046;
-const unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
+constexpr unsigned int SAVE_GAME_VERSION = 0x0000046;
+constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 int XArchive::StoreGame()
 {
@@ -55,12 +55,12 @@ int XArchive::StoreGame()
     file.Write(&XGame::hero_guid, sizeof(int));
     Game.Scheduler.Store(&file);
 
-    for (int i = 0; i < L_EOF; i++) {
-        Game.locations[i].Store(&file);
+    for (const auto & location : Game.locations) {
+        location.Store(&file);
     }
 
     XObject::StorePointer(&file, XCreature::main_creature);
-    unsigned int tmp = SAVE_GAME_CONTROL;
+    constexpr unsigned int tmp = SAVE_GAME_CONTROL;
     file.Write(&tmp, sizeof(unsigned int));
     file.Close();
 
@@ -98,11 +98,11 @@ int XArchive::RestoreGame()
     file.Read(&XGame::hero_guid, sizeof(int));
     Game.Scheduler.Restore(&file);
 
-    for (int i = 0; i < L_EOF; i++) {
-        Game.locations[i].Restore(&file);
+    for (auto & location : Game.locations) {
+        location.Restore(&file);
     }
 
-    XCreature::main_creature = (XCreature*)XObject::RestorePointer(&file, NULL);
+    XCreature::main_creature = dynamic_cast<XCreature *>(XObject::RestorePointer(&file, nullptr));
     file.Read(&tmp, sizeof(unsigned int));
 
     if (tmp != SAVE_GAME_CONTROL) {

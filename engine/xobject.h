@@ -117,10 +117,10 @@ class XClassFactory
     public:
         static XClassInfo* first_class;
         static int counter;
-        XClassFactory(const std::string name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
+        XClassFactory(const std::string& name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
         ~XClassFactory();
-        static XObject* Create(const std::string name);
-        static XObject* CreateNew(const std::string name);
+        static XObject* Create(const std::string& name);
+        static XObject* CreateNew(const std::string &name);
 };
 
 #define DYNCREATE(x) XClassFactory::Create(x)

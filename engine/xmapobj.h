@@ -35,13 +35,13 @@ class XMapObject : public XObject
 
         DECLARE_CREATOR(XMapObject, XObject);
         XMapObject();
-        XMapObject(XMapObject * copy);
+        explicit XMapObject(XMapObject * copy);
         virtual XObject* MakeCopy()
         {
             return new XMapObject(this);
         }
 
-        virtual void Invalidate();
+        void Invalidate() override;
 
         int x, y; //co-ordinates of any object
         int nx, ny; //used for new turn;
@@ -50,11 +50,11 @@ class XMapObject : public XObject
         int color;
 
 
-        virtual int Compare(XObject * o);
+        int Compare(XObject * o) override;
 
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
         virtual void toString(char* buf) {};
 
         bool SetLocation(XLocation * new_l);
@@ -85,19 +85,19 @@ class XMapObject : public XObject
             return name;
         }
 
-        int isInVisibleArea()
+        int isInVisibleArea() const
         {
             return l->map->GetVisible(x, y); //check if object is in visible are to write Someone hits your etc.
         }
 
-        int isVisibleArea(int x, int y)
+        int isVisibleArea(int x, int y) const
         {
             return l->map->GetVisible(x, y); //cheks, if this area is visible
         }
 
         virtual XObject* Pick(XCreature * picker)
         {
-            return NULL; //some objects (eg. Herbs) can be picked up.
+            return nullptr; //some objects (eg. Herbs) can be picked up.
         }
 
 };

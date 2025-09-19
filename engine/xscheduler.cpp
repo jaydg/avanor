@@ -29,7 +29,7 @@ void XScheduler::Place(XObject * p)
     assert(p->isValid());
     assert(dynamic_cast<XObject*>(p));
 
-    long shift, index;
+    long shift;
 
     if (p->ttm < XSCHEDULER_TIME_SLICE * (XSCHEDULER_STEPS_AHEAD - 1)) {
         shift = p->ttm / XSCHEDULER_TIME_SLICE + 1;
@@ -37,7 +37,7 @@ void XScheduler::Place(XObject * p)
         shift = (XSCHEDULER_STEPS_AHEAD - 1);
     }
 
-    index = shift + head;
+    long index = shift + head;
 
     if (index >= XSCHEDULER_STEPS_AHEAD) {
         index -= XSCHEDULER_STEPS_AHEAD;
@@ -68,7 +68,7 @@ XObject* XScheduler::Get()
                 empty_count++;
 
                 if (empty_count > XSCHEDULER_STEPS_AHEAD) {
-                    return NULL;
+                    return nullptr;
                 }
             }
 
@@ -103,8 +103,8 @@ void XScheduler::Store(XFile * f)
 
     XList<XObject*>::iterator it;
 
-    for (int i = 0; i < XSCHEDULER_STEPS_AHEAD; i++) {
-        data[i].StoreList(f);
+    for (auto & i : data) {
+        i.StoreList(f);
     }
 }
 
@@ -113,7 +113,7 @@ void XScheduler::Restore(XFile * f)
     f->Read(&_time, sizeof(_time));
     f->Read(&head, sizeof(head));
 
-    for (int i = 0; i < XSCHEDULER_STEPS_AHEAD; i++) {
-        data[i].RestoreList(f);
+    for (auto & i : data) {
+        i.RestoreList(f);
     }
 }

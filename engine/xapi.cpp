@@ -21,12 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/xapi.h"
 
-int sgn(int n)
+int sgn(const int n)
 {
     return ((n > 0) - (n < 0));
 }
 
-unsigned int vGetRandomBit(unsigned int mask)
+unsigned int vGetRandomBit(const unsigned int mask)
 {
     unsigned int b_n = 1;
     int rn_count = 0;
@@ -40,7 +40,7 @@ unsigned int vGetRandomBit(unsigned int mask)
         b_n = b_n * 2;
     }
 
-    int rn_val = vRand() % rn_count;
+    long rn_val = vRand() % rn_count;
     b_n = 1;
 
     for (i = 0; i < 32; i++) {
@@ -98,7 +98,7 @@ int vBitsCount(unsigned int number)
     return res;
 }
 
-int vCheckForCursorKey(int key, int* dx, int* dy)
+int vCheckForCursorKey(const int key, int* dx, int* dy)
 {
     int res = 1;
 

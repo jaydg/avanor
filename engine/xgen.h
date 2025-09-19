@@ -30,8 +30,8 @@ class XGenerator : public XMapObject
         XGenerator() {}
 
     public:
-        DECLARE_CREATOR(XGenerator, XMapObject);
-        XGenerator(int run_time)
+        explicit DECLARE_CREATOR(XGenerator, XMapObject);
+        explicit XGenerator(const int run_time)
         {
             ttmb = run_time;
             ttm = ttmb;
@@ -40,25 +40,26 @@ class XGenerator : public XMapObject
             im = IM_OTHER;
         }
 
-        int Run()
+        int Run() override
         {
             assert(0);
             return 0;
         }
 
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return 1;
         }
 };
 
-class XUniversalGen : public XGenerator
+class XUniversalGen final : public XGenerator
 {
     protected:
-        XUniversalGen() {}
+        XUniversalGen() : crl(), crc() {
+        }
 
     public:
-        DECLARE_CREATOR(XUniversalGen, XGenerator);
+        explicit DECLARE_CREATOR(XUniversalGen, XGenerator);
         XUniversalGen(XLocation * loc, CREATURE_CLASS _crc, CREATURE_LEVEL _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
         {
             l = loc;
@@ -67,33 +68,32 @@ class XUniversalGen : public XGenerator
             max_creature = _max_creature;
         }
 
-        int Run();
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        int Run() override;
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
     protected:
         CREATURE_LEVEL crl;
         CREATURE_CLASS crc;
-        unsigned int max_creature;
+        unsigned int max_creature{};
 };
 
-class XMainLocationGen : public XGenerator
+class XMainLocationGen final : public XGenerator
 {
     public:
-        DECLARE_CREATOR(XMainLocationGen, XGenerator);
-        XMainLocationGen(XLocation * loc) : XGenerator(1000)
+        explicit DECLARE_CREATOR(XMainLocationGen, XGenerator);
+        explicit XMainLocationGen(XLocation * loc) : XGenerator(1000)
         {
             l = loc;
             turns_count = 0;
         }
 
-        XMainLocationGen()
-        {
+        XMainLocationGen() : turns_count(0) {
             assert(0);
         }
 
-        int Run();
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        int Run() override;
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
     protected:
         int turns_count;
 };

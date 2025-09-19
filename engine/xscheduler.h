@@ -23,8 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/xlist.h"
 
-#define XSCHEDULER_TIME_SLICE  100
-#define XSCHEDULER_STEPS_AHEAD 100
+constexpr int XSCHEDULER_TIME_SLICE = 100;
+constexpr int XSCHEDULER_STEPS_AHEAD = 100;
 
 class XMapObject;
 
@@ -34,7 +34,7 @@ class XScheduler
         XList<XObject*> data[XSCHEDULER_STEPS_AHEAD];
         void Place(XObject * p);
     public:
-        XScheduler() : head(0), _time(0) { }
+        XScheduler() : _time(0), head(0) { }
 
         ~XScheduler()
         {
@@ -48,7 +48,7 @@ class XScheduler
             _time = t;
         }
 
-        long GetTime()
+        [[nodiscard]] long GetTime() const
         {
             return _time;
         }

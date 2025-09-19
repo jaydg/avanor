@@ -173,9 +173,9 @@ void vSetAttr(int color);
 void vDelay(int n);
 int vKbhit();
 int vGetch();
-int vXGetch(char* ch_buf);
-void vStore(V_BUFFER * buf);
-void vRestore(V_BUFFER * buf);
+int vXGetch(const char* ch_buf);
+void vStore(const V_BUFFER * buf);
+void vRestore(const V_BUFFER * buf);
 void vHideCursor();
 
 void vRandSeed(unsigned long seed);

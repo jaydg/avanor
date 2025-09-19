@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XFile
 {
     public:
-        XFile() : file(NULL) {}
+        XFile() : file(nullptr) {}
 
         ~XFile()
         {
@@ -37,71 +37,63 @@ class XFile
             }
         }
 
-        int Open(const char* name, const char* param)
+        bool Open(const char* name, const char* param)
         {
             file = fopen(name, param);
 
             if (file) {
-                return 1;
+                return true;
             } else {
-                return 0;
+                return false;
             }
         }
 
         void Close()
         {
             fclose(file);
-            file = NULL;
+            file = nullptr;
         }
 
-        int Write(const void* data, size_t block_size, size_t block_count = 1)
+        size_t Write(const void* data, const size_t block_size, const size_t block_count = 1) const
         {
             return fwrite(data, block_size, block_count, file);
         }
 
-        int Write(const int* data)
+        template <typename T>
+        size_t Write(const T* data) const
         {
-            return fwrite(data, sizeof(int), 1, file);
+            return fwrite(data, sizeof(T), 1, file);
         }
 
-        int Write(const unsigned int* data)
+        size_t WriteStr(const std::string& str) const
         {
-            return fwrite(data, sizeof(unsigned int), 1, file);
+            const size_t sz = str.size();
+            const size_t res = Write(&sz);
+            return res + Write(str.c_str(), sz + 1);
         }
 
-        int WriteStr(const std::string& str)
+        size_t Read(void* data, const size_t block_size, const size_t block_count = 1) const
         {
-            int sz = str.size();
-            Write(&sz);
-            return Write(str.c_str(), sz + 1);
-        }
-
-        int Read(void* data, size_t block_size, size_t block_count = 1)
-        {
-            unsigned int res = fread(data, block_size, block_count, file);
+            const unsigned int res = fread(data, block_size, block_count, file);
             assert(res == block_count);
             return res;
         }
 
-        int Read(int* data)
+        template <typename T>
+        size_t Read(T* data) const
         {
-            return fread(data, sizeof(int), 1, file);
+            return fread(data, sizeof(T), 1, file);
         }
 
-        int Read(unsigned int* data)
-        {
-            return fread(data, sizeof(unsigned int), 1, file);
-        }
-
-        int ReadStr(std::string& str)
+        size_t ReadStr(std::string& str) const
         {
             int sz;
             Read(&sz);
-            char* buf = new char[sz + 1];
-            int ret = Read(buf, sz + 1);
+            const auto buf = new char[sz + 1];
+            const size_t ret = Read(buf, sz + 1);
 
             str = buf;
-            delete buf;
+            delete[] buf;
 
             return ret;
         }
