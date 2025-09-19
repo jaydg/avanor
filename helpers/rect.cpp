@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/rect.h"
 
-int XRect::Intersect(XRect * r)
+int XRect::Intersect(const XRect* r) const
 {
     if (PointIn(r->left, r->top) ||
         PointIn(r->right, r->top) ||
@@ -40,20 +40,18 @@ int XRect::Intersect(XRect * r)
     // |  |
     // +--+
 
-    int min_x = right - left + r->right - r->left;
-    int min_y = bottom - top + r->bottom - r->top;
-    int px = abs((right + left) / 2 - (r->right + r->left) / 2);
-    int py = abs((top + bottom) / 2 - (r->top + r->bottom) / 2);
+    const int min_x = right - left + r->right - r->left;
+    const int min_y = bottom - top + r->bottom - r->top;
+    const int px = abs((right + left) / 2 - (r->right + r->left) / 2);
 
-    if (px < min_x && py < min_y) {
+    if (const int py = abs((top + bottom) / 2 - (r->top + r->bottom) / 2); px < min_x && py < min_y) {
         return 1;
     } else {
         return 0;
     }
 }
 
-int XRect::PointIn(XPoint * pt)
-{
+int XRect::PointIn(const XPoint* pt) const {
     if (pt->x >= left && pt->x < right && pt->y >= top && pt->y < bottom) {
         return 1;
     } else {
@@ -61,7 +59,7 @@ int XRect::PointIn(XPoint * pt)
     }
 }
 
-int XRect::PointIn(int x, int y)
+int XRect::PointIn(const int x, const int y) const
 {
     if (x >= left && x < right && y >= top && y < bottom) {
         return 1;
@@ -70,7 +68,7 @@ int XRect::PointIn(int x, int y)
     }
 }
 
-void XRect::Grow(int r)
+void XRect::Grow(const int r)
 {
     left -= r;
     right += r;
@@ -78,17 +76,17 @@ void XRect::Grow(int r)
     bottom += r;
 }
 
-int XRect::Width()
+int XRect::Width() const
 {
     return right - left;
 }
 
-int XRect::Hight()
+int XRect::Height() const
 {
     return bottom - top;
 }
 
-void XRect::Store(XFile * f)
+void XRect::Store(const XFile* f) const
 {
     f->Write(&left, sizeof(int));
     f->Write(&right, sizeof(int));
@@ -96,7 +94,7 @@ void XRect::Store(XFile * f)
     f->Write(&bottom, sizeof(int));
 }
 
-void XRect::Restore(XFile * f)
+void XRect::Restore(const XFile* f)
 {
     f->Read(&left, sizeof(int));
     f->Read(&right, sizeof(int));

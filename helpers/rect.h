@@ -27,11 +27,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XRect
 {
     public:
-        int left, top, right, bottom;
+        int left{}, top{}, right{}, bottom{};
 
         XRect() {}
 
-        XRect(int _left, int _top, int _right, int _bottom)
+        XRect(const int _left, const int _top, const int _right, const int _bottom)
         {
             left = _left;
             top = _top;
@@ -63,7 +63,7 @@ class XRect
             bottom = r.bottom;
         }
 
-        void Setup(int _left, int _top, int _right, int _bottom)
+        void Setup(const int _left, const int _top, const int _right, const int _bottom)
         {
             left = _left;
             top = _top;
@@ -71,14 +71,14 @@ class XRect
             bottom = _bottom;
         }
 
-        int Intersect(XRect * r);
-        int PointIn(XPoint * pt);
-        int PointIn(int x, int y);
+        int Intersect(const XRect * r) const;
+        int PointIn(const XPoint * pt) const;
+        int PointIn(int x, int y) const;
         void Grow(int r);
-        int Width();
-        int Hight();
-        void Store(XFile * f);
-        void Restore(XFile * f);
+        int Width() const;
+        int Height() const;
+        void Store(const XFile * f) const;
+        void Restore(const XFile * f);
 };
 
 #endif

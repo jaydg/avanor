@@ -59,7 +59,7 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
                 assert(0);
         }
 
-        location->map->CreateRoom(area.left, area.top, area.Width(), area.Hight(),
+        location->map->CreateRoom(area.left, area.top, area.Width(), area.Height(),
             dx, dy, M_STONEFLOOR, M_STONEWALL);
 
         for (int i = area.left + 1; i < area.right - 1; i++)

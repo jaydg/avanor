@@ -109,7 +109,7 @@ void XLocation::GetFreeXY(XPoint * pt, XRect * area)
         bx = area->left;
         by = area->top;
         dx = area->Width();
-        dy = area->Hight();
+        dy = area->Height();
     } else {
         bx = 0;
         by = 0;
