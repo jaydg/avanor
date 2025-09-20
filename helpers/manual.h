@@ -26,8 +26,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XManual
 {
     public:
-        XGuiList* OpenPage(const char* page);
-        void Run();
+        static XGuiList* OpenPage(const char* page);
+        static void Run();
 };
 
 #endif

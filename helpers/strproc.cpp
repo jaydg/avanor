@@ -61,15 +61,14 @@ int XStringProc::GetData(char* buf, char delimiter)
 
 }
 
-int XStringProc::GetParam(char* buf, const char* param)
-{
+int XStringProc::GetParam(char* buf, const char* param) const {
     assert(param);
     int i = 0;
-    int xlen = strlen(param);
+    size_t xlen = strlen(param);
 
     while (str[i]) {
         if (str[i] == param[0] && strncmp(&str[i], param, xlen) == 0 && (i == 0 || str[i - 1] == ' ')) {
-            int j = i + xlen + 1;
+            size_t j = i + xlen + 1;
             i = j;
 
             while (str[j] > 32) {
@@ -122,7 +121,7 @@ KEYWORD keywords[] = {
     {"darkness",	R_DARKNESS},
     {"invisible",	R_INVISIBLE},
     {"see_invisible", R_SEEINVISIBLE},
-    {NULL, -1}
+    {nullptr, -1}
 };
 
 XStringProcEx::XStringProcEx(const char* str)

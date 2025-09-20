@@ -26,29 +26,24 @@ struct XPoint
     public:
         XPoint(): x(0), y(0) {}
 
-        XPoint(int _x, int _y) : x(_x), y(_y) {}
+        XPoint(const int _x, const int _y) : x(_x), y(_y) {}
 
-        XPoint(const XPoint& pt) : x(pt.x), y(pt.y) {}
+        XPoint(const XPoint& pt) = default;
 
-        XPoint &operator=(const XPoint& pt)
-        {
-            x = pt.x;
-            y = pt.y;
-            return *this;
-        }
+        XPoint &operator=(const XPoint& pt) = default;
 
-        void Set(int _x, int _y)
+        void Set(const int _x, const int _y)
         {
             x = _x;
             y = _y;
         }
 
-        int GetX()
+        [[nodiscard]] int GetX() const
         {
             return x;
         }
 
-        int GetY()
+        [[nodiscard]] int GetY() const
         {
             return y;
         }

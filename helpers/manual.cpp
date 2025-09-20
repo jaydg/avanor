@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XGuiList* XManual::OpenPage(const char* page)
 {
-    XGuiList * list = new XGuiList();
+    auto* list = new XGuiList();
     char tbuf[64000];
 
     strcpy(tbuf, "could not find file");
@@ -32,7 +32,7 @@ XGuiList* XManual::OpenPage(const char* page)
     FILE * f = fopen(path, "rb");
 
     if (f) {
-        int rb = fread(tbuf, 1, 63999, f);
+        const size_t rb = fread(tbuf, 1, 63999, f);
         fclose(f);
         tbuf[rb] = 0;
     } else {
@@ -45,11 +45,11 @@ XGuiList* XManual::OpenPage(const char* page)
 
 void XManual::Run()
 {
-    const char* open_page = "index.html";
+    auto open_page = "index.html";
 
-    while (1) {
+    while (true) {
         XGuiList * list = OpenPage(open_page);
-        int res = list->Run();
+        const int res = list->Run();
         delete list;
 
         if (res == -1) {
@@ -108,6 +108,9 @@ void XManual::Run()
 
             case 11:
                 open_page = "credits.html";
+                break;
+
+            default:
                 break;
         }
     }

@@ -50,12 +50,12 @@ static char* insert_space(char* str)
     return str;
 }
 
-void XGuiItem_Text::WideBuffer(char* str, int newlen)
+void XGuiItem_Text::WideBuffer(char* buf, int newlen)
 {
     // Count length of string and number of blank spaces (blank space may consist
     // of one or more ' ' characters)
     int len = 0, spaces = 0;
-    char* p = str;
+    char* p = buf;
 
     while (*p != 0) {
         if (*p == 0x1F) {
@@ -82,7 +82,7 @@ void XGuiItem_Text::WideBuffer(char* str, int newlen)
         }
     }
 
-    while (p >= str + 2 && *(p - 1) == ' ' && *(p - 2) != 0x1F) {
+    while (p >= buf + 2 && *(p - 1) == ' ' && *(p - 2) != 0x1F) {
         p--;
         len--;
         *p = 0;
@@ -99,7 +99,7 @@ void XGuiItem_Text::WideBuffer(char* str, int newlen)
 
     int subtract = new_spaces < spaces ? new_spaces * 2 : spaces * 2;
 
-    p = after_next_space(str);
+    p = after_next_space(buf);
 
     int counter = new_spaces;
 
@@ -123,10 +123,10 @@ void XGuiItem_Text::WideBuffer(char* str, int newlen)
     }
 }
 
-bool XGuiItem_Text::SetWidth(int width)
+bool XGuiItem_Text::SetWidth(int new_width)
 {
     int color = xLIGHTGRAY;
-    char* str = text;
+    const char* str = text;
 
     while (lines_count > 0) {
         delete[] lines[--lines_count];
@@ -141,7 +141,7 @@ bool XGuiItem_Text::SetWidth(int width)
 
         int last_space = -1, size = 0, len = 0;
 
-        while (len <= width) {
+        while (len <= new_width) {
             if (str[size] == 0x1F) {
                 size += 2;
                 continue;
@@ -171,7 +171,7 @@ bool XGuiItem_Text::SetWidth(int width)
             return false;
         }
 
-        char* tmp = new char[2 + width - len + size + 1];
+        char* tmp = new char[2 + new_width - len + size + 1];
 
         while (last_space >= 2 && str[last_space - 1] == ' ' && str[last_space - 2] != 0x1F) {
             last_space--;
@@ -195,7 +195,7 @@ bool XGuiItem_Text::SetWidth(int width)
             }
 
         if (!is_last_line && !is_line_break) {
-            WideBuffer(tmp, width);
+            WideBuffer(tmp, new_width);
         }
 
         lines[lines_count++] = tmp;
@@ -209,7 +209,7 @@ bool XGuiItem_Text::SetWidth(int width)
             }
     }
 
-    this->width = width;
+    this->width = new_width;
     return true;
 }
 
@@ -218,7 +218,7 @@ void XGuiList::Put(FILE * f)
     vClrScr();
 
     if (caption) {
-        int dx = size_x / 2 - x_strlen(caption) / 2;
+        const int dx = size_x / 2 - x_strlen(caption) / 2;
 
         if (!f) {
             vGotoXY(dx, 0);

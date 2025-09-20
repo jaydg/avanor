@@ -147,7 +147,7 @@ int XMsgWin::GetWord(const char* str, int n, char* buf)
     return 1;
 }
 
-void XMsgWin::ShowHistory()
+void XMsgWin::ShowHistory() const
 {
     history_list->Run();
 }

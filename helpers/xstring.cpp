@@ -33,7 +33,7 @@ char* x_strchr(char* str, char c)
         }
 
         if (*str++ == 0) {
-            return 0;
+            return nullptr;
         }
     }
 }

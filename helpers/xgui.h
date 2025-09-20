@@ -30,9 +30,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XGuiItem
 {
     public:
-        XGuiItem() : next(0), prev(0) {}
+        XGuiItem() : next(nullptr), prev(nullptr) {}
 
-        virtual ~XGuiItem() {}
+        virtual ~XGuiItem() = default;
 
         XGuiItem* next;
         XGuiItem* prev;
@@ -49,65 +49,66 @@ class XGuiItem
             return 0;
         }
 
-        virtual const char * operator[](int index)
+        virtual const char* operator[](int index)
         {
-            return 0;
+            return nullptr;
         }
 };
 
-class XGuiItem_SimpleSelect : public XGuiItem
+class XGuiItem_SimpleSelect final : public XGuiItem
 {
-        char buf[256];
+        char buf[256]{};
     public:
-        XGuiItem_SimpleSelect(const char* text) : XGuiItem()
+        explicit XGuiItem_SimpleSelect(const char* text) : XGuiItem()
         {
             strcpy(buf, text);
         }
 
-        virtual int isSelectable()
+        int isSelectable() override
         {
             return 1;
         }
 
-        virtual int isTitle()
+        int isTitle() override
         {
             return 0;
         }
 
-        virtual bool SetWidth(int new_width)
+        bool SetWidth(int new_width) override
         {
             return true;
         }
 
-        virtual int GetHeight()
+        int GetHeight() override
         {
             return 1;
         }
 
-        virtual const char * operator[](int index)
+        const char * operator[](int index) override
         {
             return buf;
         }
 };
 
 
-class XGuiItem_Text : public XGuiItem
+class XGuiItem_Text final : public XGuiItem
 {
         char* text;
         XSimpleVector<char*> lines;
         int lines_count;
-        int width;
+        int width{};
         int select_flag;
-        void WideBuffer(char* buf, int new_width);
+
+        static void WideBuffer(char* buf, int new_width);
 
     public:
-        XGuiItem_Text() : XGuiItem(), select_flag(0), text(0)
+        XGuiItem_Text() : XGuiItem(), text(nullptr), select_flag(0)
         {
             lines_count = 0;
             SetText("");
         }
 
-        XGuiItem_Text(const char* _text, int sf = 0) : XGuiItem(), select_flag(sf), text(0)
+        explicit XGuiItem_Text(const char* _text, const int sf = 0) : XGuiItem(), text(nullptr), select_flag(sf)
         {
             lines_count = 0;
 
@@ -124,9 +125,7 @@ class XGuiItem_Text : public XGuiItem
                 delete[] lines[--lines_count];
             }
 
-            if (text != 0) {
-                delete[] text;
-            }
+            delete[] text;
 
             int textsize = x_strsize(_text);
             text = new char[textsize + 1];
@@ -134,34 +133,32 @@ class XGuiItem_Text : public XGuiItem
             SetWidth(x_strlen(text));
         }
 
-        virtual ~XGuiItem_Text()
+        ~XGuiItem_Text() override
         {
             while (lines_count > 0) {
                 delete[] lines[--lines_count];
             }
 
-            if (text != 0) {
-                delete[] text;
-            }
+            delete[] text;
         }
 
-        virtual int isSelectable()
+        int isSelectable() override
         {
             return select_flag;
         }
 
-        virtual int isTitle()
+        int isTitle() override
         {
             return 0;
         }
 
-        virtual bool SetWidth(int new_width);
-        virtual int GetHeight()
+        bool SetWidth(int new_width) override;
+        int GetHeight() override
         {
             return lines_count;
         }
 
-        virtual const char * operator[](int index)
+        const char* operator[](const int index) override
         {
             return lines[index];
         }
@@ -170,22 +167,22 @@ class XGuiItem_Text : public XGuiItem
 #define XGUI_LIST_HEADER 3
 #define XGUI_LIST_FOOTER 3
 
-class XGuiList
+class XGuiList final
 {
         XGuiItem* head;
         XGuiItem* tail;
 
-        XGuiItem* top_item;
-        int top_item_first_line;
-        int top_item_lines_count;
-        int top_line;
-        int top_item_index;
+        XGuiItem* top_item{};
+        int top_item_first_line{};
+        int top_item_lines_count{};
+        int top_line{};
+        int top_item_index{};
         int top_selectable_index;
         int selectable_items_count;
 
         int items_count;
         int lines_count;
-        int width;
+        int width{};
 
         int list_height;
         int list_width;
@@ -196,13 +193,13 @@ class XGuiList
         const char* caption;
         const char* footer;
 
-        int last_pressed_key;
+        int last_pressed_key{};
 
 
     public:
         XGuiList() :
-            head(NULL), tail(NULL), items_count(0), lines_count(0), top_selectable_index(0), selectable_items_count(0),
-            caption(NULL), footer(NULL)
+            head(nullptr), tail(nullptr), top_selectable_index(0), selectable_items_count(0), items_count(0), lines_count(0),
+            caption(nullptr), footer(nullptr)
         {
             list_height = size_y - 5;
             list_width = size_x - 6;
@@ -210,8 +207,8 @@ class XGuiList
 
         virtual ~XGuiList()
         {
-            while (head != 0) {
-                XGuiItem * tmp = head;
+            while (head != nullptr) {
+                const XGuiItem* tmp = head;
                 head = head->next;
                 delete tmp;
             }
@@ -219,7 +216,7 @@ class XGuiList
 
         void AddItemHead(XGuiItem * item)
         {
-            if (head != 0) {
+            if (head != nullptr) {
                 item->next = head;
                 head->prev = item;
                 head = item;
@@ -237,7 +234,7 @@ class XGuiList
 
         void AddItemTail(XGuiItem * item)
         {
-            if (tail != 0) {
+            if (tail != nullptr) {
                 tail->next = item;
                 item->prev = tail;
                 tail = item;
@@ -252,7 +249,7 @@ class XGuiList
             }
         }
 
-        void AddItem(XGuiItem * item, int is_first = 0)
+        void AddItem(XGuiItem * item, const int is_first = 0)
         {
             if (is_first) {
                 AddItemHead(item);
@@ -266,7 +263,7 @@ class XGuiList
 
         void AddHtmlText(char* text);
 
-        void Put(FILE * f = NULL);
+        void Put(FILE* f = nullptr);
         int Run(int flag = 0, int flag2 = 0);
 
         void LineUp(int count = 1);
@@ -288,12 +285,12 @@ class XGuiList
             return lines_count;
         }
 
-        int GetTopItemIndex()
+        [[nodiscard]] int GetTopItemIndex() const
         {
             return top_item_index;
         }
 
-        int GetLastKey()
+        [[nodiscard]] int GetLastKey() const
         {
             return last_pressed_key;
         }

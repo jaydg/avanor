@@ -33,7 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XStringProc
 {
     public:
-        XStringProc(const char* _str)
+        explicit XStringProc(const char* _str)
         {
             str = _str;
             index = 0;
@@ -45,7 +45,7 @@ class XStringProc
         }
 
         int GetData(char* buf, char delimiter = ' ');
-        int GetParam(char* buf, const char* param);
+        int GetParam(char* buf, const char* param) const;
 
     protected:
         const char* str;
@@ -58,7 +58,7 @@ class XStringProc
 // "St 1d1+2 St 1d1" is the same to "St 2d1+2"
 // "St 2d2+1 St 3d3-1" is the same to "St 5d3"
 struct KEYWORD_DICE_PAIR {
-    int keyword_index;
+    int keyword_index{};
     XDice dice;
 };
 
@@ -66,7 +66,7 @@ class XStringProcEx
 {
         XQList<KEYWORD_DICE_PAIR> pairs;
     public:
-        XStringProcEx(const char* str);
+        explicit XStringProcEx(const char* str);
         XQList<KEYWORD_DICE_PAIR>* GetPairsList()
         {
             return &pairs;
