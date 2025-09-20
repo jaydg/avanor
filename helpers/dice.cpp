@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void XDice::Setup(const char* str)
 {
-    if (str == NULL || strlen(str) < 2) {
+    if (str == nullptr || strlen(str) < 2) {
         X = Y = 0;
         Z = 0;
         Throw();
@@ -65,25 +65,26 @@ int XDice::Throw()
 
 }
 
-int XDice::NThrow()
+int XDice::NThrow() const
 {
     return NDFunc(X * Y) + Z;
 }
 
-void XDice::Store(XFile * f)
-{
-    f->Write(&S, sizeof(int));
-    f->Write(&X, sizeof(int));
-    f->Write(&Y, sizeof(int));
-    f->Write(&Z, sizeof(int));
+void XDice::Store(const XFile* f) const {
+    size_t wc;
+
+    wc = f->Write(&S); assert(wc == sizeof(S));
+    wc = f->Write(&X); assert(wc == sizeof(X));
+    wc = f->Write(&Y); assert(wc == sizeof(Y));
+    wc = f->Write(&Z); assert(wc == sizeof(Z));
 }
 
-void XDice::Restore(XFile * f)
+void XDice::Restore(const XFile* f)
 {
-    f->Read(&S, sizeof(int));
-    f->Read(&X, sizeof(int));
-    f->Read(&Y, sizeof(int));
-    f->Read(&Z, sizeof(int));
+    f->Read(&S);
+    f->Read(&X);
+    f->Read(&Y);
+    f->Read(&Z);
 }
 
 int dfunc_data[22] =
@@ -101,7 +102,7 @@ int XDice::DFunc()
     return i;
 }
 
-int XDice::NDFunc(int maximum)
+int XDice::NDFunc(const int maximum)
 {
     return std::lround((DFunc() * maximum) / 20.0f);
 }

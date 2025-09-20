@@ -28,28 +28,28 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XFile;
 
-// this class is represent XdY : throw Y - side cube X turns
+// this class is represented XdY : throw Y - side cube X turns
 class XDice
 {
     public:
-        XDice() {}
+        XDice() = default;
 
-        XDice(int _x, int _y, int _z = 0)
+        XDice(const int _x, const int _y, const int _z = 0)
         {
             Setup(_x, _y, _z);
         }
 
-        XDice(XDice * d)
+        explicit XDice(const XDice* d)
         {
-            Setup(d);
+            Setup(*d);
         }
 
-        XDice(const char* str)
+        explicit XDice(const char* str)
         {
             Setup(str); // represent "XdY +Z" for example "2d6 - 5" or "4d12 + 30"
         }
 
-        void Setup(int _x, int _y, int _z = 0)
+        void Setup(const int _x, const int _y, const int _z = 0)
         {
             X = _x;
             Y = _y;
@@ -63,35 +63,35 @@ class XDice
             Setup(d.X, d.Y, d.Z);
         }
 
-        void Add(XDice * d)
+        void Add(const XDice* d)
         {
             X += d->X;
             Y = (Y + d->Y) / 2;
             Z += d->Z;
         }
 
-        void Add(int _X, int _Y, int _Z)
+        void Add(const int toX, const int toY, const int toZ)
         {
-            X += _X;
-            Y += _Y;
-            Z += _Z;
+            X += toX;
+            Y += toY;
+            Z += toZ;
         }
 
         int Throw();
-        bool isEqual(XDice * d)
+        bool isEqual(const XDice* d) const
         {
             return X == d->X && Y == d->Y && Z == d->Z;
         }
 
-        int S; // generated result by throw
-        int X;
-        int Y;
-        int Z;
+        int S{}; // generated result by throw
+        int X{};
+        int Y{};
+        int Z{};
 
-        void Store(XFile * f);
-        void Restore(XFile * f);
+        void Store(const XFile* f) const;
+        void Restore(const XFile* f);
 
-        // the function of very good (for Avanor's purpose) number destribution
+        // the function of very good (for Avanor's purpose) number distribution
         // current version can generate value from 0 to 20 with next probability
         // 0 - 75%
         // 1 - 5%
@@ -101,7 +101,7 @@ class XDice
         static int NDFunc(int maximum);
 
         // throw normalized by DFunc
-        int NThrow();
+        [[nodiscard]] int NThrow() const;
 };
 
 #endif

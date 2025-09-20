@@ -254,10 +254,10 @@ void XCreatureStorage::View(CREATURE_NAME cn, const char* name, char view, int c
 
 void XCreatureStorage::Basic(const char* speed, const char* base_energy, const char* combat_energy, CREATURE_SIZE csize, const char* weight)
 {
-    creature_storage[last_name].speed = speed;
-    creature_storage[last_name].move_energy = base_energy;
-    creature_storage[last_name].attack_energy = combat_energy;
-    creature_storage[last_name].creature_weight = weight;
+    creature_storage[last_name].speed = XDice(speed);
+    creature_storage[last_name].move_energy = XDice(base_energy);
+    creature_storage[last_name].attack_energy = XDice(combat_energy);
+    creature_storage[last_name].creature_weight = XDice(weight);
 }
 
 void XCreatureStorage::Body(const char* body, int prob, unsigned int gen_flags)
@@ -284,8 +284,8 @@ void XCreatureStorage::R(const char* resists)
 
 void XCreatureStorage::Combat(const char* hit, const char* dice)
 {
-    creature_storage[last_name].hit = hit;
-    creature_storage[last_name].dice = dice;
+    creature_storage[last_name].hit = XDice(hit);
+    creature_storage[last_name].dice = XDice(dice);
 }
 
 void XCreatureStorage::Melee(BRAND_TYPE br, int prob)
@@ -308,10 +308,10 @@ void XCreatureStorage::Melee(EXTENDED_ATTACK ea, int prob)
 
 void XCreatureStorage::Main(const char* dv, const char* pv, const char* hp, const char* pp)
 {
-    creature_storage[last_name].dv = dv;
-    creature_storage[last_name].pv = pv;
-    creature_storage[last_name].hp = hp;
-    creature_storage[last_name].pp = pp;
+    creature_storage[last_name].dv = XDice(dv);
+    creature_storage[last_name].pv = XDice(pv);
+    creature_storage[last_name].hp = XDice(hp);
+    creature_storage[last_name].pp = XDice(pp);
 }
 
 void XCreatureStorage::D(const char* descr)
