@@ -29,7 +29,7 @@ class XRect
     public:
         int left{}, top{}, right{}, bottom{};
 
-        XRect() {}
+        XRect() = default;
 
         XRect(const int _left, const int _top, const int _right, const int _bottom)
         {
@@ -39,7 +39,7 @@ class XRect
             bottom = _bottom;
         }
 
-        XRect(XPoint * lt, XPoint * rb)
+        XRect(const XPoint* lt, const XPoint* rb)
         {
             left = lt->x;
             top = lt->y;
@@ -47,7 +47,7 @@ class XRect
             bottom = rb->y;
         }
 
-        XRect(XRect& r)
+        XRect(const XRect& r)
         {
             left = r.left;
             right = r.right;
@@ -73,12 +73,12 @@ class XRect
 
         int Intersect(const XRect * r) const;
         int PointIn(const XPoint * pt) const;
-        int PointIn(int x, int y) const;
+        [[nodiscard]] int PointIn(int x, int y) const;
         void Grow(int r);
-        int Width() const;
-        int Height() const;
-        void Store(const XFile * f) const;
-        void Restore(const XFile * f);
+        [[nodiscard]] int Width() const;
+        [[nodiscard]] int Height() const;
+        void Store(const XFile* f) const;
+        void Restore(const XFile* f);
 };
 
 #endif
