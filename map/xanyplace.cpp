@@ -30,14 +30,14 @@ extern "C"
 #include "lauxlib.h"
 }
 
-XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc) : area(_area), XObject()
+XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc) : area(_area)
 {
     Setup(_loc);
     im = IM_OTHER;
-    onEventLua = NULL;
+    onEventLua = nullptr;
 }
 
-XAnyPlace::XAnyPlace(XRect& _area, XLocation * _loc, char* _onEventLua) : area(_area), XObject()
+XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc, const char* _onEventLua) : area(_area)
 {
     Setup(_loc);
     im = IM_OTHER;
@@ -53,7 +53,7 @@ XAnyPlace::~XAnyPlace()
     delete[] onEventLua;
 }
 
-int XAnyPlace::onCreatureMove(XCreature * cr)
+int XAnyPlace::onCreatureMove(XCreature* cr)
 {
     if (onEventLua) {
         lua_pushstring(XLocation::L, onEventLua);
@@ -61,15 +61,16 @@ int XAnyPlace::onCreatureMove(XCreature * cr)
         lua_pushnumber(XLocation::L, LE_MOVE);
         lua_pushlightuserdata(XLocation::L, cr);
         lua_call(XLocation::L, 2, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
         lua_pop(XLocation::L, 1);
+
         return res;
     } else {
         return 0;
     }
 }
 
-int XAnyPlace::onCreatureEnter(XCreature * cr)
+int XAnyPlace::onCreatureEnter(XCreature* cr)
 {
     if (onEventLua) {
         lua_pushstring(XLocation::L, onEventLua);
@@ -77,15 +78,16 @@ int XAnyPlace::onCreatureEnter(XCreature * cr)
         lua_pushnumber(XLocation::L, LE_MOVE_IN);
         lua_pushlightuserdata(XLocation::L, cr);
         lua_call(XLocation::L, 2, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
         lua_pop(XLocation::L, 1);
+
         return res;
     } else {
         return 0;
     }
 }
 
-int XAnyPlace::onCreatureLeave(XCreature * cr)
+int XAnyPlace::onCreatureLeave(XCreature* cr)
 {
     if (onEventLua) {
         lua_pushstring(XLocation::L, onEventLua);
@@ -93,8 +95,9 @@ int XAnyPlace::onCreatureLeave(XCreature * cr)
         lua_pushnumber(XLocation::L, LE_MOVE_OUT);
         lua_pushlightuserdata(XLocation::L, cr);
         lua_call(XLocation::L, 2, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
         lua_pop(XLocation::L, 1);
+
         return res;
     } else {
         return 0;
@@ -104,19 +107,19 @@ int XAnyPlace::onCreatureLeave(XCreature * cr)
 
 void XAnyPlace::Invalidate()
 {
-    location = NULL;
-    owner = NULL;
+    location = nullptr;
+    owner = nullptr;
     XObject::Invalidate();
 }
 
-void XAnyPlace::onShowItem(XItem * item, char* buf)
+void XAnyPlace::onShowItem(XItem* item, char* buf)
 {
     item->toString(buf);
 }
 
-void XAnyPlace::Setup(XLocation * _loc)
+void XAnyPlace::Setup(XLocation* _map)
 {
-    location = _loc;
+    location = _map;
 
     for (int i = area.left; i < area.right; i++)
         for (int j = area.top; j < area.bottom; j++) {
@@ -124,14 +127,14 @@ void XAnyPlace::Setup(XLocation * _loc)
         }
 }
 
-void XAnyPlace::Store(XFile * f)
+void XAnyPlace::Store(XFile* f)
 {
     XObject::Store(f);
 
     location.Store(f);
     owner.Store(f);
     area.Store(f);
-    int sz = 0;
+    size_t sz = 0;
 
     if (onEventLua) {
         sz = strlen(onEventLua) + 1;
@@ -153,21 +156,21 @@ void XAnyPlace::Store(XFile * f)
     }
 }
 
-void XAnyPlace::Restore(XFile * f)
+void XAnyPlace::Restore(XFile* f)
 {
     XObject::Restore(f);
 
     location.Restore(f);
     owner.Restore(f);
     area.Restore(f);
-    int sz = 0;
+    size_t sz = 0;
     f->Read(&sz);
 
     if (sz > 0) {
         onEventLua = new char [sz];
         f->Read(onEventLua, sz);
     } else {
-        onEventLua = NULL;
+        onEventLua = nullptr;
     }
 
     if (onEventLua) {

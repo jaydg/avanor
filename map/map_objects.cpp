@@ -32,10 +32,9 @@ extern "C"
 #include "lauxlib.h"
 }
 
-
 REGISTER_CLASS(XTrap);
 
-XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature * _owner, XItem * items)
+XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature* _owner, XItem* items)
 {
     SetLocation(_l);
     im = IM_TRAP;
@@ -45,13 +44,13 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
     trap_item = items;
 
     if (tt == TT_RANDOM) {
-        tt = (TRAP_TYPE)vRand(TT_RANDOM);
+        tt = static_cast<TRAP_TYPE>(vRand(TT_RANDOM));
     }
 
     trap_type = tt;
 
     if (tl == TL_RANDOM) {
-        tl = (TRAP_LEVEL)vRand(TL_RANDOM);
+        tl = static_cast<TRAP_LEVEL>(vRand(TL_RANDOM));
     }
 
     trap_level = tl;
@@ -77,7 +76,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
         case TT_ARROW:
             color = xBROWN;
 
-            if (trap_item == NULL) {
+            if (trap_item == nullptr) {
                 trap_item = ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000);
                 trap_item->quantity = vRand(5) + 5;
             }
@@ -98,7 +97,7 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
             color = xDARKGRAY;
             isMagic = false;
 
-            if (trap_item == NULL) {
+            if (trap_item == nullptr) {
                 trap_item = ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000);
                 trap_item->quantity = vRand(3) + 2;
             }
@@ -120,12 +119,12 @@ XTrap::XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreat
         isVisibleForHero = 0;
     }
 
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     strcpy(name, "trap");
 }
 
-int XTrap::MoveIn(XCreature * cr)
+int XTrap::MoveIn(XCreature* cr)
 {
     assert(isValid());
     assert(cr->isValid());
@@ -149,7 +148,7 @@ int XTrap::MoveIn(XCreature * cr)
     return 0;
 }
 
-int XTrap::MoveOut(XCreature * cr)
+int XTrap::MoveOut(XCreature* cr)
 {
     if (last_activator == cr->guid() && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
         //to climb out from some pits you should be lucky!
@@ -183,7 +182,7 @@ int XTrap::MoveOut(XCreature * cr)
     return 1;
 }
 
-int XTrap::Activate(XCreature * cr)
+int XTrap::Activate(XCreature* cr)
 {
     if (cr->isVisible()) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
@@ -203,7 +202,7 @@ int XTrap::Activate(XCreature * cr)
     last_activator = cr->guid();
 
     if (isMagic) {
-        EFFECT_DATA ed;
+        EFFECT_DATA ed{};
         ed.caller	= owner;
         ed.l	= l;
         ed.power	= 10 * (trap_level + 1);
@@ -238,12 +237,12 @@ int XTrap::Activate(XCreature * cr)
         XEffect::Make(&ed);
     } else {
         int dmg = 0;
-        XItem * drop_item = NULL;
-        DAMAGE_DATA_EX dd;
+        XItem* drop_item = nullptr;
+        DAMAGE_DATA_EX dd{};
 
         switch (trap_type) {
             case TT_ARROW:
-                drop_item = (XItem*)trap_item->MakeCopy();
+                drop_item = dynamic_cast<XItem*>(trap_item->MakeCopy());
                 drop_item->quantity = 1;
 
                 if (trap_item->quantity-- <= 1) {
@@ -253,8 +252,9 @@ int XTrap::Activate(XCreature * cr)
                 dd.damage	= drop_item->dice.Throw();
                 dd.attacker	= owner;
 
-                //temporary soulution, should be replaced in future on general solution
-                //which returns name of item with or without 'a'
+                // temporary solution, should be replaced in future with a
+                // general solution which returns the name of an item with
+                // or without 'a'
                 switch (drop_item->it) {
                     case IT_ARROW:
                         dd.attack_name = "the arrow";
@@ -265,11 +265,11 @@ int XTrap::Activate(XCreature * cr)
                         break;
 
                     case IT_SHORTSPEAR:
+                    case IT_LONGSPEAR:
                         dd.attack_name = "the spear";
                         break;
 
-                    case IT_LONGSPEAR:
-                        dd.attack_name = "the spear";
+                    default:
                         break;
                 }
 
@@ -304,6 +304,9 @@ int XTrap::Activate(XCreature * cr)
                 cr->InflictDamage(&dd);
             }
             break;
+
+            default:
+                break;
         }
 
         if (drop_item) {
@@ -316,14 +319,14 @@ int XTrap::Activate(XCreature * cr)
             msgwin.Add("The trap is broken.");
         }
 
-        l->map->SetSpecial(x, y, NULL);
+        l->map->SetSpecial(x, y, nullptr);
         Invalidate();
     }
 
     return 1;
 }
 
-int XTrap::Check(XCreature * cr)
+int XTrap::Check(XCreature* cr)
 {
     if (isVisibleForHero) {
         return 0;
@@ -344,7 +347,10 @@ int XTrap::Check(XCreature * cr)
             msgwin.Add(cr->GetVerb("found"));
             msgwin.Add("a trap.");
             isVisibleForHero = 1;
-            skill->UseSkill();
+
+            if (skill) {
+                skill->UseSkill();
+            }
         }
 
         return 1;
@@ -374,10 +380,10 @@ int XTrap::Disarm(XCreature * cr)
         msgwin.Add(cr->GetNameEx(CRN_T1));
         msgwin.Add(cr->GetVerb("disarm"));
         msgwin.Add("a trap successfully.");
-        l->map->SetSpecial(x, y, NULL);
+        l->map->SetSpecial(x, y, nullptr);
         Invalidate();
         return 1;
-    } else if (val < (int)(chance * 1.3)) {
+    } else if (val < static_cast<int>(chance * 1.3)) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
         msgwin.Add("doesn't manage to disarm a trap.");
     } else {
@@ -406,15 +412,15 @@ void XTrap::Restore(XFile * f)
     f->Read(&trap_type, sizeof(TRAP_TYPE));
     f->Read(&isVisibleForHero, sizeof(int));
     f->Read(&trap_level, sizeof(TRAP_LEVEL));
-    owner = (XCreature*)XObject::RestorePointer(f, NULL);
-    trap_item = (XItem*)XObject::RestorePointer(f, NULL);
+    owner = dynamic_cast<XCreature*>(XObject::RestorePointer(f, nullptr));
+    trap_item = dynamic_cast<XItem*>(XObject::RestorePointer(f, nullptr));
     f->Read(&last_activator, sizeof(XGUID));
     f->Read(&activation_count, sizeof(int));
 }
 
 REGISTER_CLASS(XStairWay);
 
-XStairWay::XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE type)
+XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const STAIRWAYTYPE type)
 {
     nx = -1;
     ny = -1;
@@ -426,7 +432,7 @@ XStairWay::XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE
     im = IM_WAY;
     l = loc;
 
-    assert(loc->map->GetSpecial(x, y) == NULL);
+    assert(loc->map->GetSpecial(x, y) == nullptr);
 
     switch (type) {
         case STW_UP:
@@ -439,6 +445,10 @@ XStairWay::XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE
             view = '>';
             loc->map->SetSpecial(x, y, this);
             strcpy(name, "way down");
+            break;
+
+        default:
+            assert(false);
             break;
     }
 }
@@ -465,7 +475,7 @@ void XStairWay::Restore(XFile * f)
 
 REGISTER_CLASS(XTeleport);
 
-XTeleport::XTeleport(int _x, int _y, XLocation * loc, LOCATION _ln, int _nx, int _ny)
+XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const int _nx, const int _ny)
 {
     nx = _nx;
     ny = _ny;
@@ -476,26 +486,26 @@ XTeleport::XTeleport(int _x, int _y, XLocation * loc, LOCATION _ln, int _nx, int
     color = xWHITE;
     im = IM_TELEPORT;
     l = loc;
-    assert(loc->map->GetSpecial(x, y) == NULL);
+    assert(loc->map->GetSpecial(x, y) == nullptr);
 
     view = '0';
     loc->map->SetSpecial(x, y, this);
     strcpy(name, "magic circle");
 }
 
-void XTeleport::Store(XFile * f)
+void XTeleport::Store(XFile* f)
 {
     XMapObject::Store(f);
     f->Write(&ln, sizeof(LOCATION));
 }
 
-void XTeleport::Restore(XFile * f)
+void XTeleport::Restore(XFile* f)
 {
     XMapObject::Restore(f);
     f->Read(&ln, sizeof(LOCATION));
 }
 
-int XTeleport::MoveIn(XCreature * cr)
+int XTeleport::MoveIn(XCreature* cr)
 {
     if (!cr->isHero()) {
         return 1; // Citizens shouldn't want to go visit the village...
@@ -511,7 +521,7 @@ int XTeleport::MoveIn(XCreature * cr)
 
 REGISTER_CLASS(XDoor);
 
-XDoor::XDoor(int _x, int _y, int flg, XLocation * _l)
+XDoor::XDoor(const int _x, const int _y, const int flg, XLocation* _l)
 {
     SetLocation(_l);
     im = IM_DOOR;
@@ -521,7 +531,7 @@ XDoor::XDoor(int _x, int _y, int flg, XLocation * _l)
     Switch();
     color = xBROWN;
 
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     strcpy(name, "door");
 }
@@ -537,14 +547,14 @@ void XDoor::Switch()
     }
 }
 
-void XDoor::Store(XFile * f)
+void XDoor::Store(XFile* f)
 {
     XMapObject::Store(f);
     f->Write(&isOpened, sizeof(int));
 
 }
 
-void XDoor::Restore(XFile * f)
+void XDoor::Restore(XFile* f)
 {
     XMapObject::Restore(f);
     f->Read(&isOpened, sizeof(int));
@@ -552,7 +562,7 @@ void XDoor::Restore(XFile * f)
 
 REGISTER_CLASS(XAltar);
 
-XAltar::XAltar(int _x, int _y, DEITY deity, XLocation * _l)
+XAltar::XAltar(const int _x, const int _y, const DEITY deity, XLocation* _l)
 {
     SetLocation(_l);
     im = IM_ALTAR;
@@ -567,7 +577,7 @@ XAltar::XAltar(int _x, int _y, DEITY deity, XLocation * _l)
 
     view = '_';
 
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     strcpy(name, "altar");
 }
@@ -584,7 +594,7 @@ void XAltar::Restore(XFile * f)
 
 REGISTER_CLASS(XGrave);
 
-XGrave::XGrave(int _x, int _y, char* subscr, XLocation * _l)
+XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 {
     SetLocation(_l);
     im = IM_MISC;
@@ -592,18 +602,18 @@ XGrave::XGrave(int _x, int _y, char* subscr, XLocation * _l)
     y = _y;
     color = xLIGHTGRAY;
     view = '+';
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     sprintf(name, "the grave signed '%s'", subscr);
     isOpened = 0;
 }
 
-void XGrave::HideItem(XItem * item)
+void XGrave::HideItem(XItem* item)
 {
     hiden_items.push_back(item);
 }
 
-int XGrave::onOuterUse(XCreature * cr)
+int XGrave::onOuterUse(XCreature* cr)
 {
     if (cr->isHero()) {
         if (isOpened) {
@@ -622,14 +632,14 @@ int XGrave::onOuterUse(XCreature * cr)
     return 1;
 }
 
-void XGrave::Store(XFile * f)
+void XGrave::Store(XFile* f)
 {
     XMapObject::Store(f);
     f->Write(&isOpened);
     hiden_items.StoreList(f);
 }
 
-void XGrave::Restore(XFile * f)
+void XGrave::Restore(XFile* f)
 {
     XMapObject::Restore(f);
     f->Read(&isOpened);
@@ -638,7 +648,7 @@ void XGrave::Restore(XFile * f)
 
 REGISTER_CLASS(XFurniture);
 
-XFurniture::XFurniture(int _x, int _y, int _c, char _v, char* subscr, XLocation * _l)
+XFurniture::XFurniture(const int _x, const int _y, const int _c, const char _v, const char* subscr, XLocation* _l)
 {
     SetLocation(_l);
     im = IM_MISC;
@@ -646,13 +656,13 @@ XFurniture::XFurniture(int _x, int _y, int _c, char _v, char* subscr, XLocation 
     y = _y;
     color = _c;
     view = _v;
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     strcpy(name, subscr);
 }
 
 REGISTER_CLASS(XOuterObject);
-XOuterObject::XOuterObject(int _x, int _y, int _c, char _v, char* subscr, XLocation * _l, const char* event)
+XOuterObject::XOuterObject(const int _x, const int _y, const int _c, const char _v, const char* subscr, XLocation* _l, const char* event)
 {
     SetLocation(_l);
     im = IM_MISC;
@@ -661,14 +671,14 @@ XOuterObject::XOuterObject(int _x, int _y, int _c, char _v, char* subscr, XLocat
 
     SetName(subscr);
     SetView(_v, _c);
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
 
     if (event) {
         onEventLua = new char[strlen(event) + 1];
         strcpy(onEventLua, event);
     } else {
-        onEventLua = NULL;
+        onEventLua = nullptr;
     }
 }
 
@@ -679,7 +689,7 @@ XOuterObject::~XOuterObject()
     }
 }
 
-int XOuterObject::onOuterUse(XCreature * cr)
+int XOuterObject::onOuterUse(XCreature* cr)
 {
     if (onEventLua) {
         lua_pushstring(XLocation::L, onEventLua);
@@ -688,15 +698,16 @@ int XOuterObject::onOuterUse(XCreature * cr)
         lua_pushlightuserdata(XLocation::L, cr);
         lua_pushlightuserdata(XLocation::L, this);
         lua_call(XLocation::L, 3, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
         lua_pop(XLocation::L, 1);
+
         return res;
     } else {
         return XMapObject::onOuterUse(cr);
     }
 }
 
-void XOuterObject::Store(XFile * f)
+void XOuterObject::Store(XFile* f)
 {
     XMapObject::Store(f);
     int sz = 0;
@@ -721,7 +732,7 @@ void XOuterObject::Store(XFile * f)
     }
 }
 
-void XOuterObject::Restore(XFile * f)
+void XOuterObject::Restore(XFile* f)
 {
     XMapObject::Restore(f);
 

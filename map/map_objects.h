@@ -52,7 +52,7 @@ class XLocation;
 //////////////////////////////////////////////////////////////////////
 //XTrap
 /////////////////////////////////////////////////////////////////////
-class XTrap: public XMapObject
+class XTrap final : public XMapObject
 {
         TRAP_TYPE trap_type;
         TRAP_LEVEL trap_level;
@@ -60,24 +60,24 @@ class XTrap: public XMapObject
         int isVisibleForHero;
         XPtr<XItem> trap_item;
         bool isMagic;
-        XGUID last_activator; //need for a pits
+        XGUID last_activator{}; //need for a pits
     public:
         int activation_count;
         DECLARE_CREATOR(XTrap, XMapObject);
-        XTrap()
-        {
+        XTrap() : trap_type(), trap_level(), isVisibleForHero(0), isMagic(false), last_activator(0),
+                  activation_count(0) {
             assert(0);
         }
 
-        XTrap(int _x, int _y, XLocation * _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature * _owner = NULL, XItem * items = NULL);
+        XTrap(int _x, int _y, XLocation* _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature* _owner = nullptr, XItem* items = nullptr);
         virtual int MoveIn(XCreature * cr);
         virtual int MoveOut(XCreature * cr);
         virtual int Activate(XCreature * cr);
         virtual int Check(XCreature * cr);
         virtual int isVisible(XCreature * cr);
         virtual int Disarm(XCreature * cr);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
 };
 
 class XLocation;
@@ -85,60 +85,62 @@ class XLocation;
 //////////////////////////////////////////////////////////////////////
 //XStairWay
 /////////////////////////////////////////////////////////////////////
-class XStairWay : public XMapObject
+class XStairWay final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XStairWay, XMapObject);
-        XStairWay(int _x, int _y, XLocation * loc, LOCATION _ln, STAIRWAYTYPE type);
+        XStairWay(int _x, int _y, XLocation* loc, LOCATION _ln, STAIRWAYTYPE type);
         LOCATION ln;
-        virtual int Compare(XObject * o)
+        int Compare(XObject* o) override
         {
             return -1;
         }
 
-        void Bind(XStairWay * way);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        const char* GetName(XCreature * viewer)
+        void Bind(XStairWay* way);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
+        const char* GetName(XCreature* viewer) override
         {
             return "a stairway";
         }
 
     protected:
-        XStairWay() {}
+        XStairWay() : ln() {
+        }
 };
 
 //////////////////////////////////////////////////////////////////////
 //XTeleport
 /////////////////////////////////////////////////////////////////////
-class XTeleport : public XMapObject
+class XTeleport final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XTeleport, XMapObject);
-        XTeleport(int _x, int _y, XLocation * loc, LOCATION _ln, int _nx, int _ny);
+        XTeleport(int _x, int _y, XLocation* loc, LOCATION _ln, int _nx, int _ny);
         LOCATION ln;
-        virtual int Compare(XObject * o)
+        int Compare(XObject* o) override
         {
             return -1;
         }
 
-        virtual int MoveIn(XCreature * cr);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        virtual int MoveIn(XCreature* cr);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
 
-        const char* GetName(XCreature * viewer)
+        const char* GetName(XCreature* viewer) override
         {
             return "a magic circle";
         }
 
     protected:
-        XTeleport() {}
+        XTeleport() : ln() {
+        }
 };
 
 //////////////////////////////////////////////////////////////////////
 //XDoor
 //////////////////////////////////////////////////////////////////////
-class XDoor: public XMapObject
+class XDoor final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XDoor, XMapObject);
@@ -146,16 +148,15 @@ class XDoor: public XMapObject
         void Switch();
         int isOpened;
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        const char* GetName(XCreature * viewer)
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
+        const char* GetName(XCreature* viewer) override
         {
             return "a door";
         }
 
     protected:
-        XDoor()
-        {
+        XDoor() : isOpened(0) {
             im = IM_DOOR;
         }
 };
@@ -163,15 +164,15 @@ class XDoor: public XMapObject
 //////////////////////////////////////////////////////////////////////
 //XAltar
 //////////////////////////////////////////////////////////////////////
-class XAltar: public XMapObject
+class XAltar final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XAltar, XMapObject);
-        XAltar(int _x, int _y, DEITY deity, XLocation * _l);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        XAltar(int _x, int _y, DEITY deity, XLocation* _l);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
 
-        const char* GetName(XCreature * viewer)
+        const char* GetName(XCreature* viewer) override
         {
             return color == xWHITE ? "an altar of white granite" : "an altar of black granite";
         }
@@ -193,13 +194,12 @@ class XGrave: public XMapObject
     public:
         DECLARE_CREATOR(XGrave, XMapObject);
         XGrave(int _x, int _y, char* subscr, XLocation * _l);
-        void HideItem(XItem * item);
-        int onOuterUse(XCreature * cr);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void HideItem(XItem* item);
+        int onOuterUse(XCreature* cr) override;
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
     protected:
-        XGrave()
-        {
+        XGrave() : isOpened(0) {
             im = IM_MISC;
         }
 };
@@ -211,7 +211,7 @@ class XFurniture: public XMapObject
 {
     public:
         DECLARE_CREATOR(XFurniture, XMapObject);
-        XFurniture(int _x, int _y, int _c, char _v, char* subscr, XLocation * _l);
+        XFurniture(int _x, int _y, int _c, char _v, const char* subscr, XLocation* _l);
     protected:
         XFurniture()
         {
@@ -222,19 +222,18 @@ class XFurniture: public XMapObject
 //////////////////////////////////////////////////////////////////////
 //XOuterObject
 //////////////////////////////////////////////////////////////////////
-class XOuterObject: public XMapObject
+class XOuterObject final : public XMapObject
 {
         char* onEventLua;
     public:
         DECLARE_CREATOR(XOuterObject, XMapObject);
-        XOuterObject(int _x, int _y, int _c, char _v, char* subscr, XLocation * _l, const char* event);
-        ~XOuterObject();
-        int onOuterUse(XCreature * cr);
-        void Store(XFile * f);
-        void Restore(XFile * f);
+        XOuterObject(int _x, int _y, int _c, char _v, const char* subscr, XLocation* _l, const char* event);
+        ~XOuterObject() override;
+        int onOuterUse(XCreature* cr) override;
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
     protected:
-        XOuterObject()
-        {
+        XOuterObject() : onEventLua(nullptr) {
             im = IM_MISC;
         }
 };

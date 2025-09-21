@@ -57,12 +57,12 @@ xMAP stdmap[] = {
 MAP::MAP()
 {
     n = M_GREENGRAS;
-    pMonster = NULL;
-    pSpecialObject = NULL;
+    pMonster = nullptr;
+    pSpecialObject = nullptr;
     visible = false;
     known = ' ';
     color = 0;
-    place = NULL; //by default
+    place = nullptr; // by default
     room_id = 0;
 };
 
@@ -72,7 +72,7 @@ MAP::~MAP()
 
     if (pSpecialObject) {
         pSpecialObject->Invalidate();
-        pSpecialObject = NULL;
+        pSpecialObject = nullptr;
     }
 }
 
@@ -106,16 +106,15 @@ void MAP::Restore(XFile * f)
 
 XMap::XMap()
 {
-    map = NULL;
+    map = nullptr;
     hgt = 0;
     len = 0;
     wx = 0;
     wy = 0;
 }
 
-XMap::XMap(int l, int h)
+XMap::XMap(const int l, const int h)
 {
-    map = NULL;
     map = new MAP[l * h];
     assert(map);
 
@@ -130,14 +129,14 @@ XMap::~XMap()
     delete[] map;
 }
 
-void XMap::ResVisible(int x, int y)
+void XMap::ResVisible(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         map[x + y * len].visible = false;
     }
 }
 
-void XMap::SetVisible(int x, int y)
+void XMap::SetVisible(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         map[x + y * len].visible = true;
@@ -146,7 +145,7 @@ void XMap::SetVisible(int x, int y)
     }
 }
 
-bool XMap::GetVisible(int x, int y)
+bool XMap::GetVisible(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].visible;
@@ -155,33 +154,33 @@ bool XMap::GetVisible(int x, int y)
     }
 }
 
-void XMap::SetPlace(int x, int y, XAnyPlace * place)
+void XMap::SetPlace(const int x, const int y, XAnyPlace* place) const
 {
     assert(x >= 0 && x < len && y >= 0 && y < hgt);
     map[x + y * len].place = place;
 }
 
-XAnyPlace* XMap::GetPlace(int x, int y)
+XAnyPlace* XMap::GetPlace(const int x, const int y) const
 {
     assert(x >= 0 && x < len && y >= 0 && y < hgt);
     return map[x + y * len].place.get();
 }
 
-void XMap::ResKnown(int x, int y)
+void XMap::ResKnown(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         map[x + y * len].known = 0;
     }
 }
 
-void XMap::SetKnown(int x, int y)
+void XMap::SetKnown(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         map[x + y * len].known = 1;
     }
 }
 
-int XMap::GetKnown(int x, int y)
+int XMap::GetKnown(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].known;
@@ -190,28 +189,28 @@ int XMap::GetKnown(int x, int y)
     }
 }
 
-void XMap::SetSpecial(int x, int y, XMapObject * spec)
+void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         map[x + y * len].pSpecialObject = spec;
     }
 }
 
-XMapObject* XMap::GetSpecial(int x, int y)
+XMapObject* XMap::GetSpecial(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].pSpecialObject.get();
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
-int XMap::GetVisibility(int x, int y)
+int XMap::GetVisibility(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        XMapObject * spec = map[x + y * len].pSpecialObject.get();
+        XMapObject* spec = map[x + y * len].pSpecialObject.get();
 
-        if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0) {
+        if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
             return 0;
         }
 
@@ -225,7 +224,7 @@ int XMap::GetVisibility(int x, int y)
     }
 }
 
-const char* XMap::GetDescription(int x, int y)
+const char* XMap::GetDescription(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return stdmap[map[x + y * len].n].name;
@@ -234,13 +233,13 @@ const char* XMap::GetDescription(int x, int y)
     }
 }
 
-int XMap::GetMovability(int x, int y)
+int XMap::GetMovability(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        MAP & _map = map[x + y * len];
+        MAP& _map = map[x + y * len];
 
         if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
-            ((XDoor*)_map.pSpecialObject.get())->isOpened == 0) {
+            dynamic_cast<XDoor *>(_map.pSpecialObject.get())->isOpened == 0) {
             return MO_WALL;
         }
 
@@ -250,19 +249,19 @@ int XMap::GetMovability(int x, int y)
     }
 }
 
-int XMap::XGetMovability(int x, int y)
+int XMap::XGetMovability(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        MAP * m = &map[x + y * len];
+        const MAP* m = &map[x + y * len];
 
         if (m->pMonster) {
             return 2;
         }
 
-        XMapObject * spec = map[x + y * len].pSpecialObject.get();
+        XMapObject* spec = map[x + y * len].pSpecialObject.get();
 
         if (stdmap[m->n].moveable < MO_UNWALKABLE
-            && !(spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0)) {
+            && !(spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0)) {
             return 0;
         } else {
             return 1;
@@ -272,7 +271,7 @@ int XMap::XGetMovability(int x, int y)
     }
 }
 
-void XMap::PutItem(int x, int y, XItem * item)
+void XMap::PutItem(const int x, const int y, XItem* item) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         item->x = x;
@@ -283,7 +282,7 @@ void XMap::PutItem(int x, int y, XItem * item)
     }
 }
 
-XItemList* XMap::GetItemList(int x, int y)
+XItemList* XMap::GetItemList(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return &map[x + y * len].item_list;
@@ -291,10 +290,10 @@ XItemList* XMap::GetItemList(int x, int y)
         assert(0);
     }
 
-    return NULL;
+    return nullptr;
 }
 
-unsigned int XMap::GetItemCount(int x, int y)
+unsigned int XMap::GetItemCount(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].item_list.size();
@@ -303,48 +302,48 @@ unsigned int XMap::GetItemCount(int x, int y)
     }
 }
 
-void XMap::SetMonster(int x, int y, XCreature * monstr)
+void XMap::SetMonster(const int x, const int y, XCreature* monst) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].pMonster = monstr;
+        map[x + y * len].pMonster = monst;
     } else {
         assert(0);
     }
 }
 
-void XMap::ResMonster(int x, int y)
+void XMap::ResMonster(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].pMonster = NULL;
+        map[x + y * len].pMonster = nullptr;
     } else {
         assert(0);
     }
 }
 
-XCreature* XMap::GetMonster(int x, int y)
+XCreature* XMap::GetMonster(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].pMonster.get();
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
-void XMap::PutChar(int x, int y, char c, int color)
+void XMap::PutChar(const int x, const int y, const char c, const int color) const
 {
     if (x >= wx && x < wx + SCR_LEN && y >= wy && y < wy + SCR_HGT) {
         vPutCh(x - wx + SCR_X, y - wy + SCR_Y, c, color);
     }
 }
 
-void XMap::Put(XCreature * cr)
+void XMap::Put(XCreature * cr) const
 {
     for (int i = 0; i < SCR_HGT && wy + i < hgt; i++)
         for (int j = 0; j < SCR_LEN && wx + j < len; j++) {
             MAP * tmap = &map[(i + wy) * len + j + wx];
 
             if (tmap->visible) {
-                if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !((XTrap*)tmap->pSpecialObject.get())->isVisible(NULL))) {
+                if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !dynamic_cast<XTrap *>(tmap->pSpecialObject.get())->isVisible(NULL))) {
                     vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
                     tmap->color = tmap->pSpecialObject->color;
                     tmap->known = tmap->pSpecialObject->view;
@@ -373,7 +372,7 @@ void XMap::Put(XCreature * cr)
         }
 }
 
-void XMap::Center(int x, int y)
+void XMap::Center(const int x, const int y)
 {
     if (x <= wx + 2 || x >= wx + SCR_LEN - 2) {
         wx = x - SCR_LEN / 2;
@@ -400,15 +399,15 @@ void XMap::Center(int x, int y)
     }
 }
 
-void XMap::SetXY(int x, int y, STDMAP stdm)
+void XMap::SetXY(const int x, const int y, const STDMAP std_map) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    map[x + y * len].n = stdm;
+    map[x + y * len].n = std_map;
 }
 
-STDMAP XMap::GetXY(int x, int y)
+STDMAP XMap::GetXY(const int x, const int y) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
@@ -417,29 +416,31 @@ STDMAP XMap::GetXY(int x, int y)
 }
 
 
-void XMap::SetRoom(int x, int y, int room_id)
+void XMap::SetRoom(const int x, const int y, const int room_id) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
+
     map[x + y * len].room_id = room_id;
 }
 
-int XMap::GetRoom(int x, int y)
+int XMap::GetRoom(const int x, const int y) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
+
     return map[x + y * len].room_id;
 }
 
-void XMap::CreateRoom(int x, int y, int l, int h, int px, int py, STDMAP m1, STDMAP m2)
+void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const STDMAP m1, const STDMAP m2) const
 {
     CreateRoom(x, y, l, h, m1, m2);
     SetXY(px, py, m1);
 }
 
-void XMap::CreateRoom(int x, int y, int l, int h, STDMAP m1, STDMAP m2)
+void XMap::CreateRoom(const int x, const int y, const int l, const int h, const STDMAP m1, const STDMAP m2) const
 {
-    for (int i = 0; i < l; i++)
+    for (int i = 0; i < l; i++) {
         for (int j = 0; j < h; j++) {
             if (i == 0 || i == l - 1 || j == 0 || j == h - 1) {
                 SetXY(i + x, j + y, m2);
@@ -447,9 +448,10 @@ void XMap::CreateRoom(int x, int y, int l, int h, STDMAP m1, STDMAP m2)
                 SetXY(i + x, j + y, m1);
             }
         }
+    }
 }
 
-void XMap::Store(XFile * f)
+void XMap::Store(XFile* f) const
 {
     f->Write(&len, sizeof(int));
     f->Write(&hgt, sizeof(int));
@@ -460,7 +462,7 @@ void XMap::Store(XFile * f)
         }
 }
 
-void XMap::Restore(XFile * f)
+void XMap::Restore(XFile* f)
 {
     f->Read(&len, sizeof(int));
     f->Read(&hgt, sizeof(int));
@@ -470,10 +472,9 @@ void XMap::Restore(XFile * f)
         for (int j = 0; j < len; j++) {
             map[j + i * len].Restore(f);
         }
-
 }
 
-void XMap::Dump(FILE * f)
+void XMap::Dump(FILE* f) const
 {
     for (int i = 0; i < hgt; i++) {
         for (int j = 0; j < len; j++) {
@@ -500,7 +501,7 @@ void XMap::Dump(FILE * f)
     }
 }
 
-void XMap::ForceRecenter(int x, int y)
+void XMap::ForceRecenter(const int x, const int y)
 {
     wx = x - SCR_LEN / 2;
 

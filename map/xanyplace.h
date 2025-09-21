@@ -36,20 +36,20 @@ class XAnyPlace : public XObject
 
     public:
         DECLARE_CREATOR(XAnyPlace, XObject);
-        XAnyPlace(XRect& _area, XLocation * _loc);
-        XAnyPlace(XRect& _area, XLocation * _loc, char* _onEventLua);
-        ~XAnyPlace();
-        virtual void Invalidate();
+        XAnyPlace(const XRect& _area, XLocation* _loc);
+        XAnyPlace(const XRect& _area, XLocation* _loc, const char* _onEventLua);
+        ~XAnyPlace() override;
+        void Invalidate() override;
 
-        virtual int onCreatureMove(XCreature * cr);
-        virtual int onCreatureEnter(XCreature * cr);
-        virtual int onCreatureLeave(XCreature * cr);
-        virtual int onCreaturePickItem(XCreature * cr, XItem * item)
+        virtual int onCreatureMove(XCreature* cr);
+        virtual int onCreatureEnter(XCreature* cr);
+        virtual int onCreatureLeave(XCreature* cr);
+        virtual int onCreaturePickItem(XCreature* cr, XItem* item)
         {
             return 1;
         }
 
-        virtual int onCreatureDropItem(XCreature * cr, XItem * item)
+        virtual int onCreatureDropItem(XCreature* cr, XItem* item)
         {
             return 1;
         }
@@ -66,14 +66,15 @@ class XAnyPlace : public XObject
             return owner;
         }
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        void Setup(XLocation * _map);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
+        void Setup(XLocation* _map);
         XPtr<XLocation> location;
+
     protected:
         XRect area;
         XPtr<XCreature> owner;
-        char* onEventLua;
+        char* onEventLua{};
 };
 
 #endif
