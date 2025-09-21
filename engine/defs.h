@@ -23,48 +23,93 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define DUR_INFINITE 65535
 
-enum BODYPART {BP_UNKNOWN = 0,
-    BP_HEAD, BP_NECK, BP_BODY, BP_CLOAK,
-    BP_HAND, BP_RING, BP_GLOVES,
-    BP_BOOTS, BP_LIGHTSORCE, BP_TOOL, BP_MISSILEWEAPON, BP_MISSILE, BP_EOF, BP_OTHER,
-    BP_ONEHANDED, BP_TWOHANDED
+enum BODYPART {
+    BP_UNKNOWN,
+    BP_HEAD,
+    BP_NECK,
+    BP_BODY,
+    BP_CLOAK,
+    BP_HAND,
+    BP_RING,
+    BP_GLOVES,
+    BP_BOOTS,
+    BP_LIGHTSORCE,
+    BP_TOOL,
+    BP_MISSILEWEAPON,
+    BP_MISSILE,
+    BP_EOF,
+    BP_OTHER,
+    BP_ONEHANDED,
+    BP_TWOHANDED
 };
 
-enum RBP_FLAG {RBP_UNKNOWN = 0, RBP_BLOCK = 1};
+enum RBP_FLAG {
+    RBP_UNKNOWN,
+    RBP_BLOCK
+};
 
-enum STAIRWAYTYPE {STW_UNKNOWN = 0, STW_UP, STW_DOWN };
+enum STAIRWAYTYPE {
+    STW_UNKNOWN,
+    STW_UP,
+    STW_DOWN
+};
 
 enum ARTIFACT_STATE {
-    ARTIFACT_NO	= 0,
-    ARTIFACT_YES	= 1,
-    ARTIFACT_CREATED = 2
+    ARTIFACT_NO,
+    ARTIFACT_YES,
+    ARTIFACT_CREATED
 };
 
 enum TARGET_REASON {
-    TR_NONE	= 0,
-    TR_ATTACK_TARGET	= 1,
-    TR_ATTACK_POSTION	= 2,
-    TR_ATTACK_DIRECTION	= 3,
-    TR_IMPROVE	= 4,
-    TR_YES_NO	= 5, //by default - no
-    TR_NO_YES	= 6, //by default - yes
-    TR_HOW_MUCH	= 7, //enter a number betwean to numbers...
-    TR_LETTER	= 8, //enrer a letter in range
-    TR_STEAL_ITEM	= 9,
-    TR_SELECT_ITEM	= 10,
+    TR_NONE,
+    TR_ATTACK_TARGET,
+    TR_ATTACK_POSTION,
+    TR_ATTACK_DIRECTION,
+    TR_IMPROVE,
+    TR_YES_NO,      // by default - no
+    TR_NO_YES,      // by default - yes
+    TR_HOW_MUCH,    // enter a number between two numbers
+    TR_LETTER,      // enter a letter in range
+    TR_STEAL_ITEM,
+    TR_SELECT_ITEM,
 };
 
-enum STDMAP {M_UNKNOWN = 0, M_GREENGRAS, M_GREENTREE, M_SAND, M_WINDOW, M_MAGMA,
-    M_QUARTZ, M_CAVEFLOOR, M_STONEFLOOR, M_PATH, M_WOODWALL, M_STONEWALL, M_WATER, M_DEEPWATER,
-    M_LAVA, M_HILL, M_LOWMOUNTAIN, M_MOUNTAIN, M_HIGHMOUNTAIN, M_BRIDGE, M_ROAD, M_OBSIDIANFLOOR,
-    M_FENCE, M_GOLDENFLOOR, M_MARBLEWALL, M_BLACKMARBLEWALL, M_GOLDENFENCE, M_TELEPORTWHITE
+enum STDMAP {
+    M_UNKNOWN,
+    M_GREENGRAS,
+    M_GREENTREE,
+    M_SAND,
+    M_WINDOW,
+    M_MAGMA,
+    M_QUARTZ,
+    M_CAVEFLOOR,
+    M_STONEFLOOR,
+    M_PATH,
+    M_WOODWALL,
+    M_STONEWALL,
+    M_WATER,
+    M_DEEPWATER,
+    M_LAVA,
+    M_HILL,
+    M_LOWMOUNTAIN,
+    M_MOUNTAIN,
+    M_HIGHMOUNTAIN,
+    M_BRIDGE,
+    M_ROAD,
+    M_OBSIDIANFLOOR,
+    M_FENCE,
+    M_GOLDENFLOOR,
+    M_MARBLEWALL,
+    M_BLACKMARBLEWALL,
+    M_GOLDENFENCE,
+    M_TELEPORTWHITE
 };
 
 enum RESULT {
-    FAIL	= 0,
-    SUCCESS	= 1,
-    CONTINUE	= 2,
-    ABORT	= 3,
+    FAIL,
+    SUCCESS,
+    CONTINUE,
+    ABORT,
 };
 
 #endif
