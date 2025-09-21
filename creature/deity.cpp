@@ -18,12 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <cmath>
+
 #include "creature/creature.h"
 #include "creature/deity.h"
 #include "item/item.h"
 
-XCreature* XDeity::death = NULL;
-XCreature* XDeity::life = NULL;
+XCreature* XDeity::death = nullptr;
+XCreature* XDeity::life = nullptr;
 
 DEITY_HELP life_help[] = {
     {"cure light wounds",	3,	PRAY_CURE_LIGHT_WOUNDS},
@@ -106,9 +108,11 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     int sacrifice_value;
 
     if (item->im & IM_MONEY) {
-        sacrifice_value = (int)(sqrt((float)item->quantity) + 1) * (val / 4 + 1);
+        sacrifice_value = static_cast<int>(std::sqrt(static_cast<float>(item->quantity)) + 1)
+            * (val / 4 + 1);
     } else {
-        sacrifice_value = (int)((sqrt((float)item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
+        sacrifice_value = static_cast<int>((std::sqrt(static_cast<float>(item->GetValue() * item->quantity)) + 1))
+            * (val / 4 + 1);
     }
 
     cr->sk->UseSkill(XSkill::Skill::RELIGION);
@@ -139,7 +143,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     return 1;
 }
 
-DEITY_RELATION XReligion::GetRelation(DEITY deity)
+DEITY_RELATION XReligion::GetRelation(const DEITY deity) const
 {
     int val = 0;
 
@@ -150,6 +154,9 @@ DEITY_RELATION XReligion::GetRelation(DEITY deity)
 
         case D_DEATH:
             val = death_act;
+            break;
+
+        default:
             break;
     }
 
@@ -192,7 +199,7 @@ const char* XReligion::GetDeityName(DEITY deity)
     }
 }
 
-int XReligion::GetAvailHelp(DEITY deity, DEITY_HELP** help)
+int XReligion::GetAvailHelp(const DEITY deity, DEITY_HELP** help) const
 {
     if (deity == D_LIFE) {
         *help = &life_help[0];
@@ -201,7 +208,7 @@ int XReligion::GetAvailHelp(DEITY deity, DEITY_HELP** help)
         *help = &death_help[0];
     }
 
-    DEITY_RELATION rel = GetRelation(deity);
+    const DEITY_RELATION rel = GetRelation(deity);
 
     if (rel < DR_ADEPT) {
         return 0;
@@ -260,9 +267,6 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
             break;
 
         case PRAY_MINOR_PUNISHMENT:
-            effect = E_MAGIC_ARROW;
-            break;
-
         case PRAY_MINOR_INTERVENTION:
             effect = E_MAGIC_ARROW;
             break;
@@ -295,13 +299,13 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
     return 1;
 }
 
-void XReligion::Store(XFile * f)
+void XReligion::Store(const XFile* f)
 {
     f->Write(&life_act);
     f->Write(&death_act);
 }
 
-void XReligion::Restore(XFile * f)
+void XReligion::Restore(const XFile* f)
 {
     f->Read(&life_act);
     f->Read(&death_act);

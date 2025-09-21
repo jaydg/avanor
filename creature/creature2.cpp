@@ -44,7 +44,7 @@ void XCreature::Attack()
     }
 
     if (flag == 0) {
-        ttm_res += MeleeAttack(target, NULL);
+        ttm_res += MeleeAttack(target, nullptr);
     }
 }
 
@@ -81,12 +81,12 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         }
     }
 
-    DAMAGE_DATA_EX dd;
+    DAMAGE_DATA_EX dd{};
     dd.damage	= tdam;
     dd.attacker	= this;
-    dd.attack_name	= NULL;
+    dd.attack_name	= nullptr;
     dd.attack_HIT	= tohit;
-    dd.attack_brand	= (BRAND_TYPE)brt;
+    dd.attack_brand	= static_cast<BRAND_TYPE>(brt);
     dd.flags	= DF_MAGIC_BOLT;
     dd.weapon	= weapon;
 
@@ -113,10 +113,10 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     return res;
 }
 
-int XCreature::onMagicDamage(int dmg, RESISTANCE tr)
+int XCreature::onMagicDamage(const int dmg, const RESISTANCE tr)
 {
     assert(isValid());
-    int damage = dmg - (dmg * GetResistance(tr)) / 100;
+    const int damage = dmg - (dmg * GetResistance(tr)) / 100;
     return damage < 0 ? 0 : damage;
 }
 

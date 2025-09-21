@@ -44,7 +44,9 @@ original algorightm used for Angband:
 
 */
 
+#ifdef DEBUG_LOS
 #include <cassert>
+#endif
 #include <cstring>
 
 #include "creature/los.h"
@@ -123,13 +125,13 @@ static int GetMaxSight()
 {
     int d = 0;
 
-    for (unsigned int i = 0; i < MAX_GRIDS; i++) {
-        if (los_info[i].d > d) {
-            d = los_info[i].d;
+    for (auto & i : los_info) {
+        if (i.d > d) {
+            d = i.d;
         }
 
-        if (los_info[i].next0 == los_info[i].next1) {
-            los_info[i].next1 = 0;
+        if (i.next0 == i.next1) {
+            i.next1 = 0;
         }
     }
 
@@ -138,8 +140,8 @@ static int GetMaxSight()
 
 const int MAX_SIGHT = GetMaxSight();
 
-// Dimentions of the cache array, it must be at least (MAX_SIGHT + 1) * 2
-// in orger not to have buffer overflows. It is also strongly recommented
+// Dimensions of the cache array, it must be at least (MAX_SIGHT + 1) * 2
+// in order not to have buffer overflows. It is also strongly recommented
 // that it is a power of 2, so index in this array can be found using
 // just bit shifts and no multiply operations
 #define CACHE_SIZE 32
@@ -168,16 +170,16 @@ void LineOfSight(
         char enqued_grids[MAX_GRIDS];
         memset(enqued_grids, 0, sizeof(enqued_grids));
 #endif
-        // Initialize horizontal/vertical and diagonal usage flagmask
+        // Initialize horizontal/vertical and diagonal usage flag mask
         // (used in order not to call grid_callback function twice)
-        int flagmask = (2L >> (o % 2)) | 4;
+        int flag_mask = (2L >> (o % 2)) | 4;
 
         if (o == 0) {
-            flagmask |= 3;
+            flag_mask |= 3;
         }
 
         if (o == 7) {
-            flagmask &= ~3;
+            flag_mask &= ~3;
         }
 
         // Angbandish trick, very useful for avoiding coming to the same grid twice
@@ -212,7 +214,7 @@ void LineOfSight(
 
                 // For grids, disabled in flagmask, take their visibility value from cache
                 // (the flags are chosen so that this value should already be there)
-                if (p->flag & flagmask) {
+                if (p->flag & flag_mask) {
                     grid_transparant = (char)grid_callback(
                         opaque, px + dx, py + dy, p->d, ((bits0 & p->bits0_c) == p->bits0_c));
                     *pcache = grid_transparant;

@@ -57,12 +57,11 @@ XHero::XHero(int flag)
     view = '@';
     color = xWHITE;
     strcpy(name, "-=RET=-");
-    XDice * d;
     RNG = 5;
-    target = NULL;
+    target = nullptr;
     im = IM_HERO;
 
-    d = new XDice("1d3");
+    auto *d = new XDice("1d3");
     _DV = d->Throw();
     delete d;
 
@@ -86,14 +85,14 @@ XHero::XHero(int flag)
     MAX_PP = s->Get(S_MAN) / 2 + 1 + (XGame::isGodMode ? 1000 : 0);
     _PP = GetMaxPP();
 
-    base_exp = (int)(GetCreatureStrength() * 0.6);
+    base_exp = static_cast<int>(GetCreatureStrength() * 0.6);
 
     r = new XResistance();
 
     isDisturb = 0;
     last_char = '5';
     run_way_count = 0;
-    target = NULL;
+    target = nullptr;
 
     creature_class = CR_HUMAN;
 
@@ -116,10 +115,10 @@ void XHero::NewMove()
     if (im & IM_HERO) {
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++) {
-                XMapObject * obj = l->map->GetSpecial(x + i, y + j);
+                XMapObject* obj = l->map->GetSpecial(x + i, y + j);
 
                 if (obj && obj->im == IM_TRAP) {
-                    if (((XTrap*)obj)->Check(this)) {
+                    if (dynamic_cast<XTrap *>(obj)->Check(this)) {
                         if (isDisturb > 0) {
                             isDisturb = 0;
                         }
@@ -129,7 +128,7 @@ void XHero::NewMove()
     }
 
     while (!moved) {
-        int paralyse = md->Get(MOD_PARALYSE);
+        const int paralyse = md->Get(MOD_PARALYSE);
         moved = 1;
 
         l->map->Center(x, y);
@@ -187,7 +186,7 @@ void XHero::NewMove()
                     isDisturb = 30;
                     last_char = vGetch();
 
-                    if (!vCheckForCursorKey(last_char, NULL, NULL)) {
+                    if (!vCheckForCursorKey(last_char, nullptr, nullptr)) {
                         isDisturb = 0;
                     }
 
@@ -208,13 +207,11 @@ void XHero::NewMove()
                     break;
 
                 case '<' : {
-                    XMapObject * spec = l->map->GetSpecial(x, y);
+                    XMapObject* spec = l->map->GetSpecial(x, y);
 
                     if (spec && spec->im & IM_WAY && ((XStairWay*)spec)->view == '<') {
-                        int q, w;
-
-                        for (q = - 10; q < 10; q++)
-                            for (w = - 10; w < 10; w++) {
+                        for (int q = -10; q < 10; q++)
+                            for (int w = -10; w < 10; w++) {
                                 l->map->ResVisible(x + w, y + q);
                             }
 
@@ -228,13 +225,11 @@ void XHero::NewMove()
                 }
 
                 case '>' : {
-                    XMapObject * spec = l->map->GetSpecial(x, y);
+                    XMapObject* spec = l->map->GetSpecial(x, y);
 
                     if (spec && spec->im & IM_WAY && ((XStairWay*)spec)->view == '>') {
-                        int q, w;
-
-                        for (q = - 10; q < 10; q++)
-                            for (w = - 10; w < 10; w++) {
+                        for (int q = -10; q < 10; q++)
+                            for (int w = -10; w < 10; w++) {
                                 l->map->ResVisible(x + w, y + q);
                             }
 
@@ -491,7 +486,7 @@ void XHero::NewMove()
     }
 
     if (l->map->XGetMovability(nx, ny) == 2 && (nx != x || ny != y)) {
-        XCreature * cr = l->map->GetMonster(nx, ny);
+        XCreature* cr = l->map->GetMonster(nx, ny);
 
         if (!cr->xai->isEnemy(this)) {
             char buf[256];
@@ -517,9 +512,9 @@ void XHero::NewMove()
         isDisturb = 0;
         action_data.action = A_ATTACK;
     } else {
-        XMapObject * spec = l->map->GetSpecial(nx, ny);
+        XMapObject* spec = l->map->GetSpecial(nx, ny);
 
-        if (spec && spec->im & IM_DOOR && !((XDoor*)spec)->isOpened) {
+        if (spec && spec->im & IM_DOOR && !dynamic_cast<XDoor *>(spec)->isOpened) {
             OpenDoor();
             nx = x;
             ny = y;
@@ -527,7 +522,7 @@ void XHero::NewMove()
     }
 }
 
-int XHero::PossibleWayCount(int px, int py)
+int XHero::PossibleWayCount(const int px, const int py) const
 {
     int res = 0;
 
@@ -552,12 +547,12 @@ int XHero::PossibleWayCount(int px, int py)
 
 void XHero::Die(XCreature * killer)
 {
-    if (Game.isGodMode) {
+    if (XGame::isGodMode) {
         // God mode entails a choice about whether I die.
         msgwin.Add("You died!!!  Continue game?");
 
         if (GetTarget(TR_NO_YES)) {
-            // Don't wanna die twice, since we are cheating it!
+            // Don't want to die twice, since we are cheating it!
             _HP = GetMaxHP();
             md->Remove(MOD_WOUND, main_creature);
             md->Remove(MOD_POISON, main_creature);
@@ -598,14 +593,13 @@ void XHero::Move()
 {
     turn_count++;
 
-    if (1) {
+    if constexpr (true) {
         if ((l->map->GetItemCount(nx, ny) > 0 || l->map->GetSpecial(nx, ny)) && (nx != x || ny != y)) {
             isDisturb = 0;
         }
 
         if (l->map->GetSpecial(nx, ny)) {
-            XMapObject * spec;
-            spec = l->map->GetSpecial(nx, ny);
+            XMapObject *spec = l->map->GetSpecial(nx, ny);
             char buf[256];
             sprintf(buf, "There is %s here.", spec->GetName(this));
             msgwin.Add(buf);
@@ -614,11 +608,11 @@ void XHero::Move()
         if (l->map->GetItemCount(nx, ny) > 1) {
             msgwin.Add("There is a heap of items here.");
         } else if (l->map->GetItemCount(nx, ny) == 1) {
-            XItemList * ilist = (l->map->GetItemList(nx, ny));
+            XItemList* ilist = (l->map->GetItemList(nx, ny));
             XItem * ite = ilist->begin();
             char buf[256];
             msgwin.Add("There is a");
-            XAnyPlace * place = l->map->GetPlace(nx, ny);
+            XAnyPlace* place = l->map->GetPlace(nx, ny);
 
             if (place) {
                 place->onShowItem(ite, buf);
@@ -666,17 +660,17 @@ void XHero::InfoList()
         char stat[256];
         vGotoXY(0, i + 3);
         vSetAttr(xBROWN);
-        vPutS(s->GetFullName((STATS)i));
-        sprintf(stat, "%d", s->Get((STATS)i));
+        vPutS(s->GetFullName(static_cast<STATS>(i)));
+        sprintf(stat, "%d", s->Get(static_cast<STATS>(i)));
         vSetAttr(xLIGHTGRAY);
         vGotoXY(15 - strlen(stat), 3 + i);
         vPutS(stat);
-        sprintf(stat, "%d", max_stats.Get((STATS)i));
+        sprintf(stat, "%d", max_stats.Get(static_cast<STATS>(i)));
         vSetAttr(xBROWN);
         vGotoXY(20 - strlen(stat), 3 + i);
         vPutS(stat);
 
-        int tres = added_stats.Get((STATS)i);
+        int tres = added_stats.Get(static_cast<STATS>(i));
 
         if (tres != 0) {
             if (tres > 0) {
@@ -691,7 +685,7 @@ void XHero::InfoList()
             vPutS(stat);
         }
 
-        tres = s->Get((STATS)i) + added_stats.Get((STATS)i);
+        tres = s->Get(static_cast<STATS>(i)) + added_stats.Get(static_cast<STATS>(i));
 
         if (tres <= 0) {
             tres = 1;
@@ -777,7 +771,7 @@ void XHero::InfoList()
     XBodyPart * hand_1 = GetBodyPart(BP_HAND, 0);
     XBodyPart * hand_2 = GetBodyPart(BP_HAND, 1);
 
-    int free_hand = (hand_1->Item() == NULL) | (hand_2->Item() == NULL);
+    int free_hand = (hand_1->Item() == nullptr) | (hand_2->Item() == nullptr);
 
     if (hand_1->Item() && hand_1->Item()->im & IM_WEAPON) {
         sprintf(tbuf, "Left hand:  (" MSG_YELLOW "%+d" MSG_BROWN ", "
@@ -820,7 +814,7 @@ void XHero::InfoList()
 }
 
 
-void XHero::ExpList()
+void XHero::ExpList() const
 {
     V_BUFFER xbuf;
     vStore(&xbuf);
@@ -863,10 +857,10 @@ void XHero::ExpList()
 }
 
 
-const char* empty = "                                                                 ";
-const char* smask = "[|{}'=!?\"\\%]]$X";
+auto empty = "                                                                 ";
+auto smask = "[|{}'=!?\"\\%]]$X";
 ITEM_MASK imask[] = {
-    (ITEM_MASK)(IM_HAT | IM_BODY | IM_BOOTS | IM_GLOVES | IM_CLOAK | IM_SHIELD),
+    static_cast<ITEM_MASK>(IM_HAT | IM_BODY | IM_BOOTS | IM_GLOVES | IM_CLOAK | IM_SHIELD),
     IM_WEAPON, IM_MISSILEW, IM_MISSILE,
     IM_NECK, IM_RING, IM_POTION, IM_SCROLL, IM_BOOK,
     IM_WAND, IM_FOOD, IM_LIGHTSOURCE,
@@ -879,7 +873,7 @@ ITEM_MASK output_items_mask[] = {
     IM_SCROLL, IM_BOOK, IM_WAND, IM_FOOD, IM_HERB, IM_LIGHTSOURCE, IM_TOOL, IM_MONEY
 };
 
-const char* output_items_ext = "[[[[[[|'={}!?\"\\%%]]$";
+auto output_items_ext = "[[[[[[|'={}!?\"\\%%]]$";
 const char* output_items_name[] = {
     "Helmets", "Armours", "Cloaks", "Gloves", "Boots", "Shields",
     "Weapon", "Necklaces", "Rings", "Missile weapon", "Missiles", "Potions",
@@ -887,16 +881,16 @@ const char* output_items_name[] = {
 };
 
 
-//first_item must be 0 if need to start from first item
+// first_item must be 0 if need to start from first item
 static int first_item = 0;
-static XItemList* pLastList = NULL;
+static XItemList* pLastList = nullptr;
 
-XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG flag, int ret_item_count, ITEM_FILTR * ifiltr, FILE * f)
+XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count, ITEM_FILTR* ifiltr, FILE* f)
 {
-    while (1) {
+    while (true) {
         XGuiList list;
 
-        if ((XItemList*)&contain == item_list) {
+        if (&contain == item_list) {
             list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Inventory " MSG_BROWN "###");
         } else {
             list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Items " MSG_BROWN "###");
@@ -908,7 +902,7 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
         it_iterator it;
         int all_item_count = 0;
 
-        for (it = item_list->begin(); it != item_list->end(); it++)
+        for (it = item_list->begin(); it != item_list->end(); ++it)
             if ((ifiltr && ifiltr(it)) || (it->im & mask)) {
                 all_item_count++;
             }
@@ -937,11 +931,11 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
         } else {
             ITEM_MASK last_mask = IM_UNKNOWN;
 
-            for (it = item_list->begin(); it != item_list->end(); it++) {
+            for (it = item_list->begin(); it != item_list->end(); ++it) {
                 if ((ifiltr && ifiltr(it)) || (it->im & mask)) {
-                    //we need to show item group name (e.g. boots, weapons etc)
+                    // we need to show item group name (e.g. boots, weapons etc.)
                     if (it->im != last_mask) {
-                        //skip output empty string for first item in inventiry
+                        // skip output empty string for first item in inventory
                         if (last_mask != IM_UNKNOWN) {
                             list.AddItem(new XGuiItem_Text(""), 0);
                         }
@@ -970,14 +964,14 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
 
         if (f) {
             list.Put(f);
-            return NULL;
+            return nullptr;
         }
 
         int item_number = list.Run(1, first_item);
         first_item = list.GetTopItemIndex();
 
         if (item_number == -1 || (flag & IF_VIEW_ONLY)) { //there was no item selected
-            int ch = list.GetLastKey();
+            const int ch = list.GetLastKey();
 
             if (!(flag & IF_FIXED_MASK)) {
                 for (unsigned int i = 0; i < strlen(smask); i++)
@@ -993,7 +987,7 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
             it_iterator selected_it = item_list->begin();
             int stop_flag = -1;
 
-            while (1) {
+            while (true) {
                 if ((ifiltr && ifiltr(selected_it)) || (selected_it->im & mask)) {
                     stop_flag++;
                 }
@@ -1002,7 +996,7 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
                     break;
                 }
 
-                selected_it++;
+                ++selected_it;
             }
 
             assert(stop_flag == item_number);
@@ -1015,7 +1009,7 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
             if (ritem->quantity <= ret_item_count) {
                 return ritem;
             } else {
-                XItem * sitem = (XItem*)ritem->MakeCopy();
+                auto sitem = dynamic_cast<XItem *>(ritem->MakeCopy());
                 sitem->quantity = ret_item_count;
                 ritem->quantity -= ret_item_count;
                 item_list->Add(ritem);
@@ -1024,7 +1018,7 @@ XItem* XHero::Inventory(XItemList * item_list, ITEM_MASK mask, INVENTORY_FLAG fl
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -1094,7 +1088,7 @@ void XHero::Equipment(FILE * f)
 
             list.AddItem(new XGuiItem_SimpleSelect(buf));
             counter++;
-            xbp++;
+            ++xbp;
         }
 
         int ch;
@@ -1117,17 +1111,17 @@ void XHero::Equipment(FILE * f)
                 Inventory(&contain, IM_ALL, IF_VIEW_ONLY);
             }
         } else {
-            int n = ch;
-            XItem * witem = ((XBodyPart*)xqsa[n])->Item();
+            const int n = ch;
+            XItem* witem = dynamic_cast<XBodyPart *>(xqsa[n])->Item();
 
-            if (witem != NULL) {
-                ((XBodyPart*)xqsa[n])->UnWear();
+            if (witem != nullptr) {
+                dynamic_cast<XBodyPart *>(xqsa[n])->UnWear();
                 contain.Add(witem);
             } else {
-                if (((XBodyPart*)xqsa[n])->GetProperIM() == IM_MISSILE) {
-                    witem = Inventory(&contain, ((XBodyPart*)xqsa[n])->GetProperIM(), IF_FIXED_MASK);
+                if (dynamic_cast<XBodyPart *>(xqsa[n])->GetProperIM() == IM_MISSILE) {
+                    witem = Inventory(&contain, dynamic_cast<XBodyPart *>(xqsa[n])->GetProperIM(), IF_FIXED_MASK);
                 } else {
-                    witem = Inventory(&contain, ((XBodyPart*)xqsa[n])->GetProperIM(), IF_FIXED_MASK, 1);
+                    witem = Inventory(&contain, dynamic_cast<XBodyPart *>(xqsa[n])->GetProperIM(), IF_FIXED_MASK, 1);
                 }
 
                 if (witem) {
@@ -1155,13 +1149,13 @@ void XHero::Eat()
     } else {
         first_item = 0;
 
-        XItem * food = NULL;
-        XItemList * tmpquae = l->map->GetItemList(x, y);
+        XItem* food = nullptr;
+        XItemList* tmpquae = l->map->GetItemList(x, y);
 
         if (!tmpquae->empty()) {
             food = Inventory(tmpquae, IM_FOOD, IF_FIXED_MASK, 1);
 
-            XAnyPlace * place = l->map->GetPlace(x, y);
+            XAnyPlace* place = l->map->GetPlace(x, y);
 
             if (place && food && !place->onCreaturePickItem(this, food)) {
                 vRefresh();
@@ -1177,7 +1171,7 @@ void XHero::Eat()
         vRefresh();
 
         if (food) {
-            XCreature::Eat((XAnyFood*)food);
+            XCreature::Eat(dynamic_cast<XAnyFood *>(food));
         }
     }
 }
@@ -1191,7 +1185,7 @@ int XHero::stopAction()
 void XHero::ReadAll()
 {
     first_item = 0;
-    XItem * i = Inventory(&contain, (ITEM_MASK)(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
+    XItem * i = Inventory(&contain, static_cast<ITEM_MASK>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
 
     if (i) {
         if (i->im & IM_SCROLL) {
@@ -1211,7 +1205,7 @@ void XHero::ReadAll()
 void XHero::DrinkPotion()
 {
     first_item = 0;
-    XPotion * pot = (XPotion*)Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1);
+    auto pot = dynamic_cast<XPotion *>(Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1));
 
     if (pot) {
         if (pot->onDrink(this)) {
@@ -1229,7 +1223,7 @@ void XHero::DropItem()
     first_item = 0;
 
     while (contain.begin() != contain.end() && (item = Inventory(&contain))) {
-        XItem * drop_item = item;
+        XItem* drop_item = item;
 
         if (item->quantity > 1) {
             msgwin.ClrMsg();
@@ -1243,7 +1237,7 @@ void XHero::DropItem()
             }
 
             if (res != item->quantity) {
-                drop_item = (XItem*)item->MakeCopy();
+                drop_item = dynamic_cast<XItem *>(item->MakeCopy());
                 drop_item->quantity = res;
                 item->quantity -= res;
                 contain.Add(item);
@@ -1280,7 +1274,7 @@ void XHero::PickItem()
         if (obj == 0 || !obj->isValid() || obj->im != IM_OTHER) {
             msgwin.Add("There is nothing to pick up here.");
         } else {
-            XItem * tit = (XItem*)(obj->Pick(this));
+            const auto tit = static_cast<XItem *>(obj->Pick(this));
             char buf[256];
             tit->toString(buf);
 
@@ -1334,26 +1328,25 @@ void XHero::PickItem()
 
 void XHero::OpenChest()
 {
-    XItemList * tq = l->map->GetItemList(x, y);
-    it_iterator it;
+    XItemList* tq = l->map->GetItemList(x, y);
     int chest_count = 0;
-    XChest * last_chest = NULL;
+    XChest* last_chest = nullptr;
 
-    for (it = tq->begin(); it != tq->end(); it++) {
+    for (const auto it : *tq) {
         if (it->im == IM_CHEST) {
-            last_chest = (XChest*)(*it);
+            last_chest = dynamic_cast<XChest *>(it);
             chest_count++;
         }
     }
 
     if (chest_count > 1) {
-        last_chest = (XChest*)Inventory(tq, IM_CHEST, IF_NONE, 1);
+        last_chest = dynamic_cast<XChest *>(Inventory(tq, IM_CHEST, IF_NONE, 1));
 
         if (!last_chest) {
             return;
         }
 
-        XItem * it = NULL;
+        XItem* it = nullptr;
 
         do {
             it = Inventory(&last_chest->contain);
@@ -1372,7 +1365,7 @@ void XHero::OpenChest()
         msgwin.Add("Do you wish to open the chest?");
 
         if (GetTarget(TR_NO_YES)) {
-            XItem * it = NULL;
+            XItem* it = nullptr;
 
             do {
                 it = Inventory(&last_chest->contain);
@@ -1394,7 +1387,7 @@ void XHero::OpenChest()
 
 void XHero::OpenDoor()
 {
-    XMapObject * spec = l->map->GetSpecial(x, y);
+    XMapObject* spec = l->map->GetSpecial(x, y);
 
     if (spec && spec->im & IM_MISC) {
         spec->onOuterUse(this);
@@ -1409,13 +1402,13 @@ void XHero::OpenDoor()
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
             if (!(i == 0 && j == 0)) {
-                XMapObject * spec = l->map->GetSpecial(x + i, y + j);
+                XMapObject* spec = l->map->GetSpecial(x + i, y + j);
 
-                if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0) {
+                if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
                     c_door++;
                     cd_x = x + i;
                     cd_y = y + j;
-                } else if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 1) {
+                } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 1) {
                     o_door++;
                 }
             }
@@ -1436,14 +1429,14 @@ void XHero::OpenDoor()
 
     if (c_door == 1) {
         msgwin.Add("You have opened the door.");
-        XMapObject * spec = l->map->GetSpecial(cd_x, cd_y);
-        ((XDoor*)spec)->Switch();
+        XMapObject* spec = l->map->GetSpecial(cd_x, cd_y);
+        dynamic_cast<XDoor *>(spec)->Switch();
         return;
     }
 
     if (c_door > 1) {
         XPoint pt;
-        XMapObject * spec;
+        XMapObject* spec;
 
         if (x == nx && y == ny) {
             if (!WhichDirection(&pt)) {
@@ -1455,11 +1448,11 @@ void XHero::OpenDoor()
             spec = l->map->GetSpecial(nx, ny);
         }
 
-        if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened) {
+        if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened) {
             msgwin.Add("The door is already opened.");
-        } else if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0) {
+        } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
             msgwin.Add("You have opened the door.");
-            ((XDoor*)spec)->Switch();
+            dynamic_cast<XDoor *>(spec)->Switch();
         } else {
             msgwin.Add("There is no door here.");
         }
@@ -1476,13 +1469,13 @@ void XHero::CloseDoor()
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
             if (!(i == 0 && j == 0)) {
-                XMapObject * spec = l->map->GetSpecial(x + i, y + j);
+                XMapObject* spec = l->map->GetSpecial(x + i, y + j);
 
-                if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened) {
+                if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened) {
                     o_door++;
                     od_x = x + i;
                     od_y = y + j;
-                } else if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0) {
+                } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
                     c_door++;
                 }
             }
@@ -1505,7 +1498,7 @@ void XHero::CloseDoor()
         msgwin.Add("You have closed the door.");
         XMapObject * spec = l->map->GetSpecial(od_x, od_y);
         LastStep();
-        ((XDoor*)spec)->Switch();
+        dynamic_cast<XDoor *>(spec)->Switch();
         FirstStep(x, y, l.get());
         return;
     }
@@ -1517,14 +1510,14 @@ void XHero::CloseDoor()
             return;
         }
 
-        XMapObject * spec = l->map->GetSpecial(x + pt.x, y + pt.y);
+        XMapObject* spec = l->map->GetSpecial(x + pt.x, y + pt.y);
 
-        if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened == 0) {
+        if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
             msgwin.Add("The door is already closed.");
-        } else if (spec && spec->im & IM_DOOR && ((XDoor*)spec)->isOpened) {
+        } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened) {
             msgwin.Add("You have closed the door.");
             LastStep();
-            ((XDoor*)spec)->Switch();
+            dynamic_cast<XDoor *>(spec)->Switch();
             FirstStep(x, y, l.get());
         } else {
             msgwin.Add("There is no door here.");
@@ -1532,13 +1525,13 @@ void XHero::CloseDoor()
     }
 }
 
-int XHero::WhichDirection(XPoint * pt, int flag)
+int XHero::WhichDirection(XPoint * pt, const int flag)
 {
     msgwin.Add("Which direction [123456789, z]?");
     vRefresh();
 
-    while (1) {
-        int ch = vGetch();
+    while (true) {
+        const int ch = vGetch();
         int dx = 0;
         int dy = 0;
 
@@ -1561,7 +1554,7 @@ int XHero::WhichDirection(XPoint * pt, int flag)
 int XHero::XShoot()
 {
     XItem * missile = GetItem(BP_MISSILE);
-    XMissileWeapon * missilew = (XMissileWeapon*)GetItem(BP_MISSILEWEAPON);
+    XMissileWeapon* missilew = dynamic_cast<XMissileWeapon *>(GetItem(BP_MISSILEWEAPON));
 
     if (!missile) { //if no missile, try to load them
         for (XItemList::iterator it = contain.begin(); it != contain.end(); it++) {

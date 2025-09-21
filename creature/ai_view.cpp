@@ -28,9 +28,9 @@ struct opaque_info {
     XMap* map;
 };
 
-static int grid_callback(void* opaque, int x, int y, int radius, int see_center)
+static int grid_callback(void* opaque, const int x, const int y, const int radius, const int see_center)
 {
-    opaque_info * info = (opaque_info*)opaque;
+    const auto* info = static_cast<opaque_info *>(opaque);
 
     if (see_center) {
         info->ai->AnalyzeGrid(x, y, radius);
@@ -39,7 +39,7 @@ static int grid_callback(void* opaque, int x, int y, int radius, int see_center)
     return NOT_EQUAL(info->map->GetMovability(x, y), MO_WALL);
 }
 
-void XStandardAI::AnalyzeView(int radius)
+void XStandardAI::AnalyzeView(const int radius)
 {
     opaque_info info = { this, ai_owner->l->map };
 

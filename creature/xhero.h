@@ -43,7 +43,7 @@ enum SKILL_FLAG {
     SKF_USE_SKILL,
 };
 
-class XHero : public XCreature
+class XHero final : public XCreature
 {
     protected:
         XHero()
@@ -51,55 +51,55 @@ class XHero : public XCreature
             last_char = '5';
             isDisturb = 0;
             run_way_count = 0;
-            target = NULL;
+            target = nullptr;
         }
 
         int last_char;
         int run_way_count;
-        XPtr<XCreature> target; //for convenient user intrface
-        int PossibleWayCount(int px, int py);
+        XPtr<XCreature> target; // for convenient user interface
+        int PossibleWayCount(int px, int py) const;
     public:
         DECLARE_CREATOR(XHero, XCreature);
-        XHero(int flag);
+        explicit XHero(int flag);
         void PlayerSetup();
-        void NewMove();
-        void Move();
-        XItem* Inventory(XItemList * quae, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE, int ret_item_cout = 0, ITEM_FILTR * ifiltr = NULL, FILE * f = NULL);
-        void Equipment(FILE * f = NULL);
+        void NewMove() override;
+        void Move() override;
+        XItem* Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE, int ret_item_count = 0, ITEM_FILTR* ifiltr = nullptr, FILE* f = nullptr);
+        void Equipment(FILE* f = nullptr);
         void PickItem();
         void DropItem();
         void LookAt();
         void CreateScreenShot();
-        static void DumpVBuffer(FILE * f);
+        static void DumpVBuffer(FILE* f);
         void ReadAll();
-        int Compare(XObject * o)
+        int Compare(XObject* o) override
         {
             return -1;
         }
 
-        void ExpList();
+        void ExpList() const;
         void InfoList();
         void Eat();
         int XShoot();
-        int Targeting(int range, XPoint * pt);
-        virtual int GetTarget(TARGET_REASON tr, XPoint * pt = NULL, int max_range = 0, XObject** back = NULL); //Get target for a spell
-        virtual XItem* SelectItem(ITEM_FILTR * filtr, bool isGetAll = false);
+        int Targeting(int range, XPoint* pt);
+        int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr) override; //Get target for a spell
+        XItem* SelectItem(ITEM_FILTR* filtr, bool isGetAll = false) override;
 
         int SelectPosition(XPoint * pt, int flag = 0);
-        unsigned int turn_count;
+        unsigned int turn_count{};
         void OpenDoor();
         void OpenChest();
         void CloseDoor();
-        virtual void Die(XCreature * killer);
-        int XCast(FILE * f = NULL);
+        void Die(XCreature* killer) override;
+        int XCast(FILE* f = nullptr);
         XList<XSpell*>::iterator last_cast;
         int RepeatCast();
 
         void MagicLevelList();
-        XSkill* SkillsList(SKILL_FLAG skill_flag, int marks_left = 0, FILE * f = NULL);
+        XSkill* SkillsList(SKILL_FLAG skill_flag, int marks_left = 0, FILE* f = nullptr);
         int UseSkill();
-        void IncLevel();
-        void WarSkillsList(FILE * f = NULL);
+        void IncLevel() override;
+        void WarSkillsList(FILE* f = nullptr);
         void HelpScreen();
         void DrinkPotion();
         void SetTactics();
@@ -108,54 +108,54 @@ class XHero : public XCreature
         int UseOuterObject();
         void QuickPay();
         void Pray();
-        int WhichDirection(XPoint * pt, int flag = 1);//flag == 1 - allow 0,0 coords (self)
-        XItem* onIdentifyItem();
-        void ShowResistance(FILE * f = NULL);
+        static int WhichDirection(XPoint* pt, int flag = 1); // flag == 1 - allow 0,0 coords (self)
+        XItem* onIdentifyItem() override;
+        void ShowResistance(FILE* f = nullptr);
 
         void ActivateTrap();
         void GiveItem();
         void ChatWithMonster();
-        virtual int Chat(XCreature * chatter, const char* msg);
+        int Chat(XCreature* chatter, const char* msg) override;
 
-        void FirstStep(int _x, int _y, XLocation * _l);
-        void LastStep();
+        void FirstStep(int _x, int _y, XLocation* _l) override;
+        void LastStep() override;
 
-        virtual int stopAction();
+        int stopAction() override;
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
 
         void doSacrifice();
         int OrderCompanion();
         int ExecuteScript();
 
-        int race;
-        int profession;
+        int race{};
+        int profession{};
 
         const char* GetRaceStr();
         const char* GetProfessionStr();
 
         static void EndGame(const char* end_msg);
 
-        //ALCHEMY
+        // ALCHEMY
         int LearnReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
         void ShowReception();
         void MixPotions();
         XList<XAlchemyRec*> reception_list;
 };
 
-class XGuiItem_Inventory : public XGuiItem
+class XGuiItem_Inventory final : public XGuiItem
 {
         XItem* pItem;
-        char buf[256];
+        char buf[256]{};
     public:
-        XGuiItem_Inventory(XItem * item) : pItem(item), XGuiItem()
+        explicit XGuiItem_Inventory(XItem* item) : XGuiItem(), pItem(item)
         {
             char tbuf[256];
             strcpy(buf, MSG_LIGHTGRAY);
             item->toString(buf + strlen(buf));
 
-            for (int i = strlen(buf); i < size_x; i++) {
+            for (size_t i = strlen(buf); i < size_x; i++) {
                 buf[i] = ' ';
             }
 
@@ -163,27 +163,27 @@ class XGuiItem_Inventory : public XGuiItem
             strcpy(buf + size_x - 5 - x_strlen(tbuf), tbuf);
         }
 
-        virtual int isSelectable()
+        int isSelectable() override
         {
             return 1;
         }
 
-        virtual int isTitle()
+        int isTitle() override
         {
             return 0;
         }
 
-        virtual bool SetWidth(int new_width)
+        bool SetWidth(int new_width) override
         {
             return true;
         }
 
-        virtual int GetHeight()
+        int GetHeight() override
         {
             return 1;
         }
 
-        virtual const char * operator[](int index)
+        const char* operator[](int index) override
         {
             return buf;
         }

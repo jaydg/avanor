@@ -73,18 +73,18 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
     melee_attack = &cr->melee_attack;
 
     //Setup AI
-    xai->SetAIFlag((AI_FLAG)(cr->ai_flags));
+    xai->SetAIFlag(static_cast<AI_FLAG>(cr->ai_flags));
 
     //EQUIP CREATURE
-    for (XQList<EQUIP_REC>::iterator it = cr->equipment.begin(); it != cr->equipment.end(); it++) {
-        for (int i = 0; i < (*it).count; i++)
-            if (vRand(100) < (*it).probability) {
-                XItem * item = NULL;
+    for (auto [mask, count, probability, it] : cr->equipment) {
+        for (int i = 0; i < count; i++)
+            if (vRand(100) < probability) {
+                XItem * item = nullptr;
 
-                if ((*it).it == IT_UNKNOWN) {
-                    item = ICREATEA((ITEM_MASK)((*it).mask));
+                if (it == IT_UNKNOWN) {
+                    item = ICREATEA((ITEM_MASK)(mask));
                 } else {
-                    item = ICREATEB((ITEM_MASK)((*it).mask), (*it).it, 0, 10000000);
+                    item = ICREATEB((ITEM_MASK)(mask), it, 0, 10000000);
                 }
 
                 if (item->im & IM_BODY && item->it == IT_DRESS
@@ -107,14 +107,14 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
             }
     }
 
-    //wear random items if it wasn't weared before.
-    XBodyPart * hand_1 = NULL;
-    XBodyPart * hand_2 = NULL;
+    //wear random items if it wasn't worn before.
+    XBodyPart * hand_1 = nullptr;
+    XBodyPart * hand_2 = nullptr;
 
-    for (XList<XBodyPart*>::iterator bp_it = components.begin(); bp_it != components.end(); bp_it++) {
+    for (XList<XBodyPart*>::iterator bp_it = components.begin(); bp_it != components.end(); ++bp_it) {
         if (!(*bp_it)->Item() && vRand(100) < cr->equip_probability) {
             if (bp_it->bp_uin == BP_HAND) {
-                if (hand_1 == NULL) {
+                if (hand_1 == nullptr) {
                     hand_1 = bp_it;
                 } else {
                     hand_2 = bp_it;
@@ -157,7 +157,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
     }
 
     if (cr->generation_flags & GFS_SEE_INVIS) {
-        while (1) {
+        while (true) {
             if (neck && neck->Item() && neck->Item()->r->GetResistance(R_SEEINVISIBLE)) {
                 break;
             }
@@ -170,11 +170,11 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
                 break;
             }
 
-            if (ring1->Item()) {
+            if (ring1 && ring1->Item()) {
                 ring1->UnWear()->Invalidate();
+                ring1->Wear(new XRing(ENH_SEEINVISIBLE));
             }
 
-            ring1->Wear(new XRing(ENH_SEEINVISIBLE));
             break;
         }
     }
@@ -188,13 +188,13 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
     }
 
     //Learn skill
-    for (XQList<SKILL_REC>::iterator sk_it = cr->skills.begin(); sk_it != cr->skills.end(); sk_it++) {
-        sk->Learn((*sk_it).skt, (*sk_it).level);
+    for (auto [skt, level] : cr->skills) {
+        sk->Learn(skt, level);
     }
 
     //Learns spells
-    for (XQList<SPELL_NAME>::iterator sp_it = cr->spells.begin(); sp_it != cr->spells.end(); sp_it++) {
-        m->Learn((*sp_it));
+    for (auto spell : cr->spells) {
+        m->Learn(spell);
     }
 }
 
@@ -234,13 +234,13 @@ void XAnyCreature::Die(XCreature * killer)
 
 CREATURE_NAME XCreatureStorage::last_name = CN_NONE;
 
-void XCreatureStorage::View(CREATURE_NAME cn, const char* name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS crcl, CREATURE_NAME cn_instance)
+void XCreatureStorage::View(const CREATURE_NAME cn, const char* name, const char view, const int color, const CR_PERSON_TYPE person, const CREATURE_LEVEL crl, const CREATURE_CLASS crcl, const CREATURE_NAME cn_instance)
 {
     last_name = cn;
-    assert(creature_storage[last_name].name.size() == 0);
+    assert(creature_storage[last_name].name.empty());
 
     if (cn_instance != CN_NONE) {
-        _CREATURE * cr = GetCreatureData(cn_instance);
+        const _CREATURE * cr = GetCreatureData(cn_instance);
         creature_storage[last_name] = *cr;
     }
 
@@ -260,14 +260,14 @@ void XCreatureStorage::Basic(const char* speed, const char* base_energy, const c
     creature_storage[last_name].creature_weight = XDice(weight);
 }
 
-void XCreatureStorage::Body(const char* body, int prob, unsigned int gen_flags)
+void XCreatureStorage::Body(const char* body, const int prob, const unsigned int gen_flags)
 {
     creature_storage[last_name].body = body;
     creature_storage[last_name].equip_probability = prob;
     creature_storage[last_name].generation_flags = gen_flags;
 }
 
-void XCreatureStorage::SetAI(unsigned int aif)
+void XCreatureStorage::SetAI(const unsigned int aif)
 {
     creature_storage[last_name].ai_flags = aif;
 }
@@ -288,18 +288,18 @@ void XCreatureStorage::Combat(const char* hit, const char* dice)
     creature_storage[last_name].dice = XDice(dice);
 }
 
-void XCreatureStorage::Melee(BRAND_TYPE br, int prob)
+void XCreatureStorage::Melee(const BRAND_TYPE br, const int prob)
 {
-    MELEE_ATTACK ma;
+    MELEE_ATTACK ma{};
     ma.e_attack = EA_NONE;
     ma.br_attack = br;
     ma.prob = prob;
     creature_storage[last_name].melee_attack.push_back(ma);
 }
 
-void XCreatureStorage::Melee(EXTENDED_ATTACK ea, int prob)
+void XCreatureStorage::Melee(const EXTENDED_ATTACK ea, const int prob)
 {
-    MELEE_ATTACK ma;
+    MELEE_ATTACK ma{};
     ma.e_attack = ea;
     ma.br_attack = BR_NONE;
     ma.prob = prob;
@@ -319,22 +319,22 @@ void XCreatureStorage::D(const char* descr)
     creature_storage[last_name].creature_description = descr;
 }
 
-void XCreatureStorage::Learn(XSkill::Skill skt, int lvl)
+void XCreatureStorage::Learn(const XSkill::Skill skt, const int lvl)
 {
-    SKILL_REC scr;
+    SKILL_REC scr{};
     scr.level = lvl;
     scr.skt = skt;
     creature_storage[last_name].skills.push_back(scr);
 }
 
-void XCreatureStorage::Learn(SPELL_NAME spn)
+void XCreatureStorage::Learn(const SPELL_NAME spn)
 {
     creature_storage[last_name].spells.push_back(spn);
 }
 
-void XCreatureStorage::Equip(unsigned int mask, int count, int prob)
+void XCreatureStorage::Equip(const unsigned int mask, const int count, const int prob)
 {
-    EQUIP_REC er;
+    EQUIP_REC er{};
     er.mask = mask;
     er.count = count;
     er.probability = prob;
@@ -342,9 +342,9 @@ void XCreatureStorage::Equip(unsigned int mask, int count, int prob)
     creature_storage[last_name].equipment.push_back(er);
 }
 
-void XCreatureStorage::Equip(unsigned int mask, ITEM_TYPE it, int prob)
+void XCreatureStorage::Equip(const unsigned int mask, const ITEM_TYPE it, const int prob)
 {
-    EQUIP_REC er;
+    EQUIP_REC er{};
     er.mask = mask;
     er.count = 1;
     er.probability = prob;
@@ -352,21 +352,21 @@ void XCreatureStorage::Equip(unsigned int mask, ITEM_TYPE it, int prob)
     creature_storage[last_name].equipment.push_back(er);
 }
 
-void XCreatureStorage::Corpse(int roating_time, FOOD_TYPE ft)
+void XCreatureStorage::Corpse(const int rotting_time, const FOOD_TYPE ft)
 {
-    creature_storage[last_name].pCorpseData.roating_time = roating_time;
+    creature_storage[last_name].pCorpseData.roating_time = rotting_time;
     creature_storage[last_name].pCorpseData.ft = ft;
 }
 
-void XCreatureStorage::CorpseEffects(CORPSE_EFFECT_TYPE cet, int val)
+void XCreatureStorage::CorpseEffects(const CORPSE_EFFECT_TYPE cet, const int val)
 {
-    CORPSE_EFFECT ce;
+    CORPSE_EFFECT ce{};
     ce.type = cet;
     ce.value = val;
     creature_storage[last_name].pCorpseData.effect.push_back(ce);
 }
 
-_CREATURE* XCreatureStorage::GetCreatureData(CREATURE_NAME cn)
+_CREATURE* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 {
     return &creature_storage[cn];
 }
@@ -374,18 +374,18 @@ _CREATURE* XCreatureStorage::GetCreatureData(CREATURE_NAME cn)
 void XCreatureStorage::CreateQuickBase()
 {
     for (int i = 0; i < CN_EOF; i++) {
-        if (XCreatureStorage::creature_storage[i].name.size() != 0) {
-            CREATURE_CLASS crc = XCreatureStorage::creature_storage[i].cr_class;
+        if (!XCreatureStorage::creature_storage[i].name.empty()) {
+            const CREATURE_CLASS crc = XCreatureStorage::creature_storage[i].cr_class;
             XCreatureStorage::creature_set[vGetBitNumber(crc)].cn[XCreatureStorage::creature_set[vGetBitNumber(crc)].count] = (CREATURE_NAME)i;
             XCreatureStorage::creature_set[vGetBitNumber(crc)].count++;
         }
     }
 }
 
-XCreature* XCreatureStorage::Create(CREATURE_NAME cn)
+XCreature* XCreatureStorage::Create(const CREATURE_NAME cn)
 {
     _CREATURE * cr = &creature_storage[cn];
-    XCreature * tcr = NULL;
+    XCreature * tcr = nullptr;
 
     if (cn < CN_UNIQUE) {
         tcr = new XAnyCreature(cr);
@@ -432,20 +432,15 @@ XCreature* XCreatureStorage::Create(CREATURE_NAME cn)
     tcr->creature_name = cn;
     RestoreCreatureInfo(tcr);
     return tcr;
-
-    assert(0);
-    return NULL;
 }
 
-XCreature* XCreatureStorage::CreateRnd(CREATURE_CLASS cc, int lvl)
+XCreature* XCreatureStorage::CreateRnd(const CREATURE_CLASS cc, const int lvl)
 {
-    int set = vGetBitNumber(vGetRandomBit(cc));
+    const int set = vGetBitNumber(vGetRandomBit(cc));
     int count = 100;
 
     while (count > 0) {
-        int r = vRand(creature_set[set].count);
-
-        if (creature_storage[creature_set[set].cn[r]].crl <= lvl) {
+        if (long r = vRand(creature_set[set].count); creature_storage[creature_set[set].cn[r]].crl <= lvl) {
             return Create(creature_set[set].cn[r]);
         }
 
@@ -455,7 +450,7 @@ XCreature* XCreatureStorage::CreateRnd(CREATURE_CLASS cc, int lvl)
     return Create(creature_set[set].cn[0]);
 }
 
-void XCreatureStorage::RestoreCreatureInfo(XCreature * cr)
+void XCreatureStorage::RestoreCreatureInfo(XCreature* cr)
 {
     cr->melee_attack = &creature_storage[cr->creature_name].melee_attack;
     cr->creature_description = creature_storage[cr->creature_name].creature_description.c_str();

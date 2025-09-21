@@ -65,11 +65,11 @@ enum CR_NAME_TYPE {
 
 
 /////// attack structures ///////////
-// 1) Creatures can make one attack with several consiquences:
+// 1) Creatures can make one attack with several consequences:
 //	a) just a simple damage
 //	b) stun, paralyze, poison
 //	c) fire, cold or other damage (same with 'b')
-// 2) Creature extend it damage by some fetures
+// 2) Creature extend it damage by some features
 //	a) spawn when attack was successful
 //	b) 'eat' armour or weapon
 
@@ -81,7 +81,7 @@ enum EXTENDED_ATTACK {
 struct MELEE_ATTACK {
     EXTENDED_ATTACK e_attack;
     BRAND_TYPE br_attack;
-    int prob; //0..100
+    int prob; // 0..100
 };
 
 class XAI;
@@ -94,7 +94,7 @@ class XScroll;
 enum MAGIC_SCHOOL;
 
 struct ACTION_DATA {
-    ACTION_DATA() : item(NULL), action(A_MOVE) {}
+    ACTION_DATA() : item(nullptr), action(A_MOVE) {}
 
     ACTION action;
     XPtr<XItem> item;
@@ -115,24 +115,26 @@ enum MF_RESULT {
     MF_BLOCK,
 };
 
-struct MF_DATA { //struct for missile flight
-    int sx; //start position;
+// struct for missile flight
+struct MF_DATA {
+    int sx; // start position;
     int sy;
-    int ex; //target position
+    int ex; // target position
     int ey;
     MISSILE_FL_TYPE arrow_type;
     int arrow_color;
-    int max_range; //if creature avoid missile - it flight away.
-    int missile_speed; //greater speed, harder to avoid.
-    int to_hit; //hit bonus of missile;
-    XPoint pt; //position where arrow stopped
-    XLocation* l; //where it is...
+    int max_range;      // if creature avoid missile - it flight away.
+    int missile_speed;  // greater speed, harder to avoid.
+    int to_hit;         // hit bonus of missile;
+    XPoint pt;          // position where arrow stopped
+    XLocation* l;       // where it is...
 };
 
-struct DAMAGE_DATA { //struct for inflict damage to creature
+// struct for inflict damage to creature
+struct DAMAGE_DATA {
     XCreature* target;
     XCreature* attacker;
-    const char* attacker_name; //if specified this name, than write it instead attacker name
+    const char* attacker_name; // if this name is specified, then write it instead attacker name
     int damage;
 };
 
@@ -149,13 +151,13 @@ enum DAMAGE_FLAGS {
 };
 
 struct DAMAGE_DATA_EX {
-    XCreature* attacker; //who is inflicting damage (to increase exp). can be NULL
-    const char* attack_name; //Attacking Item (e.g. Arrow, Bolt of Fire)
-    int damage; //suposed damage
-    int attack_HIT; //the target can avoid attack.
-    unsigned int attack_brand; //such a cold, demon slaying,
-    unsigned int flags; //see DAMAGE_FLAGS
-    XItem* weapon; //used only in melee combat (can be undefined if defined attack_name)
+    XCreature* attacker;       // who is inflicting damage (to increase exp). can be NULL
+    const char* attack_name;   // Attacking item (e.g. Arrow, Bolt of Fire)
+    int damage;                // supposed damage
+    int attack_HIT;            // the target can avoid attack.
+    unsigned int attack_brand; // such a cold, demon slaying,
+    unsigned int flags;        // see DAMAGE_FLAGS
+    XItem* weapon;             // used only in melee combat (can be undefined if attack_name is defined)
 };
 
 
@@ -168,16 +170,16 @@ class XCreature : public XBaseObject
         XList<XBodyPart*> components;
         CR_PERSON_TYPE creature_person_type;
         const char* creature_description;
-        CREATURE_NAME creature_name; //allow to store less info into save file
-        const _CREATURE* super_info; //full information about Creature Creation struct...
+        CREATURE_NAME creature_name; // allow to store less info into save file
+        const _CREATURE* super_info; // full information about Creature Creation struct...
         char* event_handler;
         void SetEventHandler(const char* handler);
     public:
         DECLARE_CREATOR(XCreature, XBaseObject);
         XCreature();
-        virtual void Invalidate();
+        void Invalidate() override;
 
-        virtual int Compare(XObject * o)
+        int Compare(XObject* o) override
         {
             return 1;
         }
@@ -189,14 +191,14 @@ class XCreature : public XBaseObject
         virtual void ShowNewView();
         virtual void PutStatus();
         virtual void DoMove();
-        int Run();
+        int Run() override;
 
         XStandardAI* xai;
 
         unsigned long _EXP;
         int level;
         int base_exp;
-        unsigned long ExpOfLevel(int lev);
+        unsigned long ExpOfLevel(int lev) const;
         void AddExp(unsigned long exp);
 
         int GetSpeed();
@@ -204,8 +206,8 @@ class XCreature : public XBaseObject
         CR_GENDER GetGender();
         const char* GetGenderStr();
 
-        int lttm; //long doing time to move
-        int isDisturb; //is creature disturbed duaring lttm
+        int lttm;      // long doing time to move
+        int isDisturb; // is creature disturbed during lttm
 
         ACTION_DATA action_data;
         virtual int stopAction();
@@ -216,18 +218,18 @@ class XCreature : public XBaseObject
 
         virtual void IncLevel();
 
-        virtual int Read(XItem * item);
+        virtual int Read(XItem* item);
         int continueRead();
 
-        virtual int Eat(XAnyFood * food);
+        virtual int Eat(XAnyFood* food);
         int continueEat();
 
-        virtual int UseItem(XItem * item);
+        virtual int UseItem(XItem* item);
         int continueUseItem();
 
-        int base_nutrio; //stomach size for normal satiation
-        int nutrio; //stomach satioation;
-        int nutrio_speed; //speed with which nutrients decrease;
+        int base_nutrio;  // stomach size for normal satiation
+        int nutrio;       // stomach satiation;
+        int nutrio_speed; // speed with which nutrients decrease;
         int DecNutrio();
         FOOD_FEELING food_feeling;
 
@@ -238,11 +240,11 @@ class XCreature : public XBaseObject
 
         XBodyPart* GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf);
         XBodyPart* GetRNDBodyPart();
-        int GetHITFHBonus(XItem * weapon);
+        int GetHITFHBonus(XItem* weapon);
         int GetShieldDVBonus();
-        int GetDMGFHBonus(XItem * weapon);
+        int GetDMGFHBonus(XItem* weapon);
         int GetHIT();
-        int GetDV(XCreature * attacker = NULL);
+        int GetDV(XCreature* attacker = nullptr);
         int GetDMG();
         int GetPV();
         int GetResistance(RESISTANCE tr);
@@ -251,22 +253,23 @@ class XCreature : public XBaseObject
         int GetTacticsHITBonus();
         int GetTacticsDMGBonus();
 
-        virtual int GetTarget(TARGET_REASON tr, XPoint * pt = NULL, int max_range = 0, XObject** back = NULL); //Get target for a spell
+        // Get target for a spell
+        virtual int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr);
         virtual XItem* onIdentifyItem()
         {
-            return NULL;
+            return nullptr;
         }
 
-        virtual XItem* SelectItem(ITEM_FILTR * filtr, bool isGetAll = false)
+        virtual XItem* SelectItem(ITEM_FILTR* filtr, bool isGetAll = false)
         {
-            return NULL;
+            return nullptr;
         }
 
         int Shoot(int tx, int ty);
         XItem* GetItem(BODYPART bp, int count = 0);
         XBodyPart* GetBodyPart(BODYPART bp, int count = 0);
-        int CanWear(XItem * item);
-        int Wear(XItem * item); //if can Wear, Wear it.
+        int CanWear(XItem* item);
+        int Wear(XItem* item); // if can Wear, Wear it.
 
         XModifer* md;
         XMagic* m;
@@ -285,13 +288,15 @@ class XCreature : public XBaseObject
         int added_PP;
         int added_speed;
 
-        bool ContainItem(XItem * item); //Adds item to creature inventory, increase cqrried weight.
-        int DropItem(XItem * i);
-        int PickUpItem(XItem * i);
+        // Adds item to creature inventory, increase carried weight.
+        bool ContainItem(XItem* item);
+
+        int DropItem(XItem* i);
+        int PickUpItem(XItem* i);
         CARRY_STATE GetCarryState();
         int CarryValue(CARRY_STATE cs);
-        bool CarryItem(XItem * item);
-        void UnCarryItem(XItem * item);
+        bool CarryItem(XItem* item);
+        void UnCarryItem(XItem* item);
         int carried_weight;
 
         int MoneyOp(int money_count); // if money_count >= 0 then add money, else sub.
@@ -301,61 +306,61 @@ class XCreature : public XBaseObject
         int GainResist(RESISTANCE rs, int val);
         int GetMaxHP();
         int GetMaxPP();
-        int GetExp();
+        int GetExp() const;
         int GetCreatureStrength();
 
-        int InflictDamage(DAMAGE_DATA_EX * pData);
+        int InflictDamage(DAMAGE_DATA_EX* pData);
         int onMagicDamage(int dmg, RESISTANCE tr);
-        int CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker);
-        void CausePostEffect(int dmg, BRAND_TYPE brt, XCreature * attacker);
+        int CauseEffect(int dmg, BRAND_TYPE brt, XCreature* attacker);
+        void CausePostEffect(int dmg, BRAND_TYPE brt, XCreature* attacker);
 
-        virtual const char* GetMeleeAttackMsg(XItem * weapon);
+        virtual const char* GetMeleeAttackMsg(XItem* weapon);
 
-        virtual void FirstStep(int _x, int _y, XLocation * _l);
+        virtual void FirstStep(int _x, int _y, XLocation* _l);
         virtual void LastStep();
 
-        static MF_RESULT MissileFlight(MF_DATA * mfd);
+        static MF_RESULT MissileFlight(MF_DATA* mfd);
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
 
         CREATURE_CLASS creature_class;
-        GROUP_ID group_id; //orcs warparty has id 1, bandits - id 2, etc
+        GROUP_ID group_id; // orc war party has id 1, bandits - id 2, etc
 
         virtual const char* StdAnswer()
         {
             return "You receive no answer.";
         }
 
-        virtual int Chat(XCreature * chatter, const char* msg);
+        virtual int Chat(XCreature* chatter, const char* msg);
 
-        virtual int onGiveItem(XCreature * giver, XItem * item);
+        virtual int onGiveItem(XCreature* giver, XItem * item);
 
         TACTICS_STATE tactics;
-        void ChangeTactics(TACTICS_STATE tact)
+        void ChangeTactics(const TACTICS_STATE tact)
         {
             tactics = tact;
         }
 
         const char* GetWoundMsg(int flag = 0);
 
-        void GetRangeAttackInfo(int* range, int* hit, XDice * dmg);
+        void GetRangeAttackInfo(int* range, int* hit, XDice* dmg);
 
         CREATURE_SIZE creature_size;
         int attack_energy;
         int move_energy;
         int base_speed;
-        int MeleeAttack(XCreature * target, XItem * weapon);
+        int MeleeAttack(XCreature* target, XItem* weapon);
         XQList<MELEE_ATTACK>* melee_attack;
 
-        void Sacrifice(XItem * item);
+        void Sacrifice(XItem* item);
         XReligion religion;
 
-        int isCreatureVisible(XCreature * cr); //check if creature visible or invisible
-        bool isVisible(); //check if creature visible to add acction message to msgwin
-        static XCreature* main_creature; //at this time is used to determine visibility of msg
+        int isCreatureVisible(XCreature* cr); // check if creature visible or invisible
+        bool isVisible() override;       // check if creature visible to add action message to msgwin
+        static XCreature* main_creature; // at this time is used to determine visibility of msg
 
-        bool isHero()
+        bool isHero() const
         {
             return (im & IM_HERO) > 0;
         }
@@ -364,11 +369,11 @@ class XCreature : public XBaseObject
         const char* GetVerb(const char* verb);
 };
 
-//Fake creature is need
-class XFakeCreature : public XCreature
+// Fake creature is need
+class XFakeCreature final : public XCreature
 {
     public:
-        XFakeCreature(char* fake_name)
+        explicit XFakeCreature(const char* fake_name)
         {
             strcpy(name, fake_name);
         }

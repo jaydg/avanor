@@ -33,21 +33,21 @@ enum DEITY {
 };
 
 enum DEITY_RELATION {
-    DR_FALLEN_CHAMPION	= 0, //no way up
-    DR_VERY_BAD	= 1, //praying can kill
-    DR_BAD	= 2, //you dont heared
-    DR_NORMAL	= 3, //from zero till litle more
-    DR_ADEPT	= 4, //you can ask some help
-    DR_FOLLOWER	= 5, //you can ask lot of help
-    DR_MESSIAH	= 6, //you can ask much of help
-    DR_CHAMPION	= 7, //you can ask all of help
+    DR_FALLEN_CHAMPION, // no way up
+    DR_VERY_BAD,        // praying can kill
+    DR_BAD,             // you won't be heard
+    DR_NORMAL,          // from zero till little more
+    DR_ADEPT,           // you can ask some help
+    DR_FOLLOWER,        // you can ask for a lot of help
+    DR_MESSIAH,         // you can ask for much of help
+    DR_CHAMPION,        // you can ask for all help
 };
 
 class XDeity
 {
     public:
-        static XCreature* life; //Tiamat
-        static XCreature* death; //Murdok
+        static XCreature* life;  // Tiamat
+        static XCreature* death; // Murdok
         /*	static XCreature * fire;
         	static XCreature * water;
         	static XCreature * earth;
@@ -82,18 +82,18 @@ class XReligion
     public:
         XReligion() : life_act(0), death_act(0) {}
 
-        int life_act; //killing undeads
-        int death_act; //killing anyone, espicialy with life.
-        void KillCreature(XCreature * killer, XCreature * victim);
-        int SacrificeItem(XCreature * cr, XItem * item, DEITY deity = D_UNKNOWN);
-        DEITY_RELATION GetRelation(DEITY deity);
+        int life_act;   // killing undead
+        int death_act;  // killing anyone, especially with life.
+        void KillCreature(XCreature* killer, XCreature* victim);
+        int SacrificeItem(XCreature* cr, XItem* item, DEITY deity = D_UNKNOWN);
+        [[nodiscard]] DEITY_RELATION GetRelation(DEITY deity) const;
         static const char* GetRelationName(DEITY_RELATION dr);
         static const char* GetDeityName(DEITY deity);
-        int GetAvailHelp(DEITY deity, DEITY_HELP** help);
-        int Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer);
+        int GetAvailHelp(DEITY deity, DEITY_HELP** help) const;
+        int Pray(DEITY deity, DEITY_HELP* pray, XCreature* prayer);
 
-        void Store(XFile * f);
-        void Restore(XFile * f);
+        void Store(const XFile* f);
+        void Restore(const XFile* f);
         /*	int fire_act;
         	int water_act;
         	int earth_act;

@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include <cmath>
 
 #include "creature/creature.h"
 #include "creature/los.h"
@@ -1020,7 +1021,7 @@ int XCreature::GetMaxPP()
     return MAX_PP + (MAX_PP * GetStats(S_MAN)) / 10;
 }
 
-int XCreature::GetExp()
+int XCreature::GetExp() const
 {
     return base_exp + _EXP / 10;
 }
@@ -1046,12 +1047,12 @@ void XCreature::IncLevel()
     }
 }
 
-unsigned long XCreature::ExpOfLevel(int lev)
+unsigned long XCreature::ExpOfLevel(const int lev) const
 {
-    return (unsigned long)(2 * base_exp * pow((float)lev, 2.5f));
+    return static_cast<unsigned long>(2.0 * base_exp * std::pow(static_cast<float>(lev), 2.5f));
 }
 
-int XCreature::GetHITFHBonus(XItem * weapon)
+int XCreature::GetHITFHBonus(XItem* weapon)
 {
     XItem * h1 = GetItem(BP_HAND, 0);
     XItem * h2 = GetItem(BP_HAND, 1);
@@ -1060,7 +1061,7 @@ int XCreature::GetHITFHBonus(XItem * weapon)
     return std::min((int)f, 0);
 }
 
-int XCreature::GetDMGFHBonus(XItem * weapon)
+int XCreature::GetDMGFHBonus(XItem* weapon)
 {
     return 0;
 }

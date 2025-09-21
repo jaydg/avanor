@@ -43,8 +43,8 @@ int __animation_flag = 100;
     char* vscreen;
 #endif
 
-long size_x = 80;
-long size_y = 25;
+int size_x = 80;
+int size_y = 25;
 
 int cursor_pos_x = 0;
 int cursor_pos_y = 0;

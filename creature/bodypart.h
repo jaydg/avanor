@@ -28,40 +28,41 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XItem;
 class XCreature;
 
-class XBodyPart : public XObject
+class XBodyPart final : public XObject
 {
         XPtr<XItem> item;	//main item for this body part;
         XPtr<XCreature> owner;
-        XBodyPart() {}
+        XBodyPart() : bp_uin() {
+        }
 
     public:
         DECLARE_CREATOR(XBodyPart, XObject);
         XBodyPart(XCreature * _owner, BODYPART bp);
-        virtual void Invalidate();
-        const char* GetName();
+        void Invalidate() override;
+        const char* GetName() const;
         static const char* XGetName(BODYPART bp);
-        static void Create(XCreature * cr, const char* str);
-        int Compare(XObject * o)
+        static void Create(XCreature* cr, const char* str);
+        int Compare(XObject* o) override
         {
             return 1;
         }
 
-        int Fit(BODYPART bp)
+        int Fit(const BODYPART bp) const
         {
             return (bp == bp_uin);
         }
 
         BODYPART bp_uin;
 
-        XItem* Item();
-        int Wear(XItem * item);
+        XItem* Item() const;
+        int Wear(XItem* new_item);
         XItem* UnWear();
 
-        int GetPartSize();
-        ITEM_MASK GetProperIM();
+        int GetPartSize() const;
+        ITEM_MASK GetProperIM() const;
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile* f) override;
+        void Restore(XFile* f) override;
 };
 
 #endif

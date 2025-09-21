@@ -34,7 +34,7 @@ struct CREATURE_SET_REC {
         count = 0;
     }
 
-    CREATURE_NAME cn[256]; //up to 256 creature of one type
+    CREATURE_NAME cn[256]{}; //up to 256 creature of one type
     int count;
 };
 
@@ -118,7 +118,7 @@ class XCreatureStorage
 
         static void View(CREATURE_NAME cn, const char* name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class, CREATURE_NAME cn_instance = CN_NONE);
         static void Basic(const char* speed, const char* base_energy, const char* combat_energy, CREATURE_SIZE csize, const char* weight);
-        static void Body(const char* body, int prob = 0, unsigned int gef_flags = 0);
+        static void Body(const char* body, int prob = 0, unsigned int gen_flags = 0);
         static void SetAI(unsigned int aif);
         static void S(const char* stats);
         static void R(const char* resists);
@@ -131,10 +131,9 @@ class XCreatureStorage
         static void Learn(SPELL_NAME spn);
         static void Equip(unsigned int mask, int count, int prob);
         static void Equip(unsigned int mask, ITEM_TYPE it, int prob);
-        static void Corpse(int roating_time, FOOD_TYPE ft);
+        static void Corpse(int rotting_time, FOOD_TYPE ft);
         static void CorpseEffects(CORPSE_EFFECT_TYPE cet, int val);
 
-        static void Inherit(CREATURE_NAME cn);
         static void CreateQuickBase();
 
         static _CREATURE* GetCreatureData(CREATURE_NAME cn);
@@ -150,8 +149,8 @@ class XAnyCreature : public XCreature
 
     public:
         DECLARE_CREATOR(XAnyCreature, XCreature);
-        XAnyCreature(_CREATURE * cr);
-        virtual void Die(XCreature * killer);
+        explicit XAnyCreature(_CREATURE * cr);
+        void Die(XCreature * killer) override;
 };
 
 #endif

@@ -36,7 +36,7 @@ enum CREATURE_CLASS {
     CR_GOBLIN	= 0x00000400,
     CR_DEMON	= 0x00000800,
     CR_HUMANOID	= 0x00001000,
-    CR_BLOB	= 0x00002000, //warm mass, ooze
+    CR_BLOB	= 0x00002000, // warm mass, ooze
     CR_OTHER	= 0x00004000,
     CR_ALL	= CR_HUMAN | CR_INSECT | CR_KOBOLD | CR_UNDEAD | CR_GOBLIN | CR_REPTILE | CR_FELINE | CR_RAT | CR_CANINE | CR_HUMANOID,
     CR_ALL_IMPL	= CR_RAT | CR_FELINE | CR_CANINE | CR_REPTILE | CR_KOBOLD | CR_INSECT | CR_GOBLIN | CR_UNDEAD,
@@ -87,14 +87,14 @@ enum CREATURE_LEVEL	{
 
 enum CREATURE_EXP {
     CRE_NONE	= 0x0001,
-    CRE_LOW	= 0x0002, //1-8
-    CRE_AVG	= 0x0004, //8-16
-    CRE_HI	= 0x0008, //16 - 24
+    CRE_LOW	= 0x0002, // 1-8
+    CRE_AVG	= 0x0004, // 8-16
+    CRE_HI	= 0x0008, // 16 - 24
     CRE_ANY	= CRE_LOW | CRE_AVG | CRE_HI
 };
 
 enum CARRY_STATE {
-    CSTATE_NORMAL	= 0x001, //the normal carryng
+    CSTATE_NORMAL	= 0x001, // the normal carrying
     CSTATE_BURDENED	= 0x002,
     CSTATE_STRAINED	= 0x003,
     CSTATE_OVERBURDEN	= 0x004,
@@ -115,11 +115,11 @@ enum GROUP_ID {
 };
 
 enum CREATURE_SIZE {
-    CS_VERY_SMALL	= 1, //insects like, rats, bats
-    CS_SMALL	= 2, //kobold, hobbit like
-    CS_NORMAL	= 3, //human like
-    CS_LARGE	= 4, //TROLL
-    CS_VERY_LARGE	= 5, //Titan, dragon
+    CS_VERY_SMALL = 1, // insects like, rats, bats
+    CS_SMALL      = 2, // kobold, hobbit like
+    CS_NORMAL     = 3, // human like
+    CS_LARGE      = 4, // TROLL
+    CS_VERY_LARGE = 5, // Titan, dragon
 };
 
 enum FOOD_FEELING {
@@ -138,8 +138,8 @@ enum CR_GENDER {
 };
 
 enum CR_PERSON_TYPE {
-    CPT_IT = GEN_NEUTER, // It
-    CPT_HE = GEN_MALE, // He
+    CPT_IT = GEN_NEUTER,  // It
+    CPT_HE = GEN_MALE,    // He
     CPT_SHE = GEN_FEMALE, // She
 
     // Default you
@@ -153,9 +153,9 @@ enum CR_PERSON_TYPE {
     CPT_UNIQUE = 0x10,
 
     // Backward compatibility
-    CPT_NAMED_HE = (CPT_HE | CPT_UNIQUE), // Munch-Munch the Dread
+    CPT_NAMED_HE = (CPT_HE | CPT_UNIQUE),   // Munch-Munch the Dread
     CPT_NAMED_SHE = (CPT_SHE | CPT_UNIQUE), // Yohjishiro, the elven wizard
-    CPT_NAMED_IT = (CPT_IT | CPT_UNIQUE) // Gekta, the sheep dog
+    CPT_NAMED_IT = (CPT_IT | CPT_UNIQUE)    // Gekta, the sheep dog
 };
 
 enum CR_ATTACK_TYPE {

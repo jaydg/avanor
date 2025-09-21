@@ -58,8 +58,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cmath>
 #include <cassert>
 
-extern long size_x;
-extern long size_y;
+extern int size_x;
+extern int size_y;
 
 extern unsigned long total_cr;
 extern unsigned long total_it;

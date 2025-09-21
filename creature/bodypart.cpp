@@ -37,39 +37,39 @@ ITEM_MASK bpim[] = {IM_OTHER,
         IM_BOOTS, IM_LIGHTSOURCE, IM_TOOL, IM_MISSILEW, IM_MISSILE, IM_ALL
     };
 
-XBodyPart::XBodyPart(XCreature * _owner, BODYPART bp) : owner(_owner)
+XBodyPart::XBodyPart(XCreature* _owner, const BODYPART bp) : owner(_owner)
 {
     owner = _owner;
     bp_uin = bp;
-    item = NULL;
+    item = nullptr;
     //	im     = bpim[bp];
     im	= IM_OTHER;
 }
 
-ITEM_MASK XBodyPart::GetProperIM()
+ITEM_MASK XBodyPart::GetProperIM() const
 {
     return bpim[bp_uin];
 }
 
 void XBodyPart::Invalidate()
 {
-    item = NULL;
-    owner = NULL;
+    item = nullptr;
+    owner = nullptr;
 
     XObject::Invalidate();
 }
 
-const char* XBodyPart::GetName()
+const char* XBodyPart::GetName() const
 {
     return bp_names[bp_uin];
 }
 
-const char* XBodyPart::XGetName(BODYPART bp)
+const char* XBodyPart::XGetName(const BODYPART bp)
 {
     return bp_names[bp];
 }
 
-int XBodyPart::Wear(XItem * new_item)
+int XBodyPart::Wear(XItem* new_item)
 {
     assert(new_item);
 
@@ -92,20 +92,20 @@ XItem* XBodyPart::UnWear()
     assert(owner && item);
     item->onUnWear(owner.get());
     XItem * tmp = item.get();
-    item = NULL;
+    item = nullptr;
     return tmp;
 }
 
-XItem* XBodyPart::Item()
+XItem* XBodyPart::Item() const
 {
     if (item) {
         return item.get();
     }
 
-    return NULL;
+    return nullptr;
 }
 
-int XBodyPart::GetPartSize()
+int XBodyPart::GetPartSize() const
 {
     switch (bp_uin) {
         case BP_HEAD :
@@ -116,11 +116,7 @@ int XBodyPart::GetPartSize()
             return 100;
             break;
 
-        //	case BP_CLOAK  : return 30; break; //the body and the cloak is the same!!!
         case BP_GLOVES :
-            return 20;
-            break;
-
         case BP_BOOTS :
             return 20;
             break;
@@ -133,23 +129,23 @@ int XBodyPart::GetPartSize()
     return 0;
 }
 
-void XBodyPart::Store(XFile * f)
+void XBodyPart::Store(XFile* f)
 {
     XObject::Store(f);
-    f->Write(&bp_uin, sizeof(BODYPART));
+    f->Write(&bp_uin);
     item.Store(f);
     owner.Store(f);
 }
 
-void XBodyPart::Restore(XFile * f)
+void XBodyPart::Restore(XFile* f)
 {
     XObject::Restore(f);
-    f->Read(&bp_uin, sizeof(BODYPART));
+    f->Read(&bp_uin);
     item.Restore(f);
     owner.Restore(f);
 }
 
-void XBodyPart::Create(XCreature * cr, const char* str)
+void XBodyPart::Create(XCreature* cr, const char* str)
 {
     int l = 0;
     int k = 0;
@@ -171,8 +167,8 @@ void XBodyPart::Create(XCreature * cr, const char* str)
         int i;
 
         for (i = 0; i < BP_EOF; i++)
-            if (strcmp(buf, XGetName((BODYPART)i)) == 0) {
-                XBodyPart * bp = new XBodyPart(cr, (BODYPART)i);
+            if (strcmp(buf, XGetName(static_cast<BODYPART>(i))) == 0) {
+                auto* bp = new XBodyPart(cr, static_cast<BODYPART>(i));
                 cr->components.Add(bp);
                 break;
             }
