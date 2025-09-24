@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "creature/deity.h"
+#include "helpers/msgwin.h"
 #include "item/item.h"
 
 XCreature* XDeity::death = nullptr;

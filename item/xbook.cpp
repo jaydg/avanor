@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "item/xbook.h"
-#include "magic/effect.h"
+#include "helpers/msgwin.h"
 
 REGISTER_CLASS(XBook);
 

@@ -20,14 +20,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <ctime>
 
-#include "engine/xdebug.h"
+#include "engine/xarchive.h"
 #include "game/game.h"
 #include "game/quest.h"
 #include "game/setting.h"
-#include "game/xtime.h"
-#include "item/item_misc.h"
-#include "item/uniquei.h"
+#include "helpers/msgwin.h"
+#include "item/xherb.h"
 #include "item/xtool.h"
+#include "map/map_objects.h"
 
 #ifndef XLINUX
     #include <conio.h>

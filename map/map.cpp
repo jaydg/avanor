@@ -19,7 +19,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/creature.h"
-#include "engine/xarchive.h"
 #include "item/item.h"
 #include "map/map.h"
 #include "map/map_objects.h"

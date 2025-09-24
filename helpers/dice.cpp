@@ -19,7 +19,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "engine/global.h"
-#include "engine/xapi.h"
 #include "engine/xfile.h"
 #include "helpers/dice.h"
 

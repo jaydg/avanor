@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/std_ai.h"
 #include "game/shop.h"
-#include "helpers/rect.h"
 
 class XCreature;
 

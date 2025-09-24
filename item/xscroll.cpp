@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/xhero.h"
+#include "helpers/msgwin.h"
 #include "item/xscroll.h"
 
 REGISTER_CLASS(XScroll);

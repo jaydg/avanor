@@ -21,17 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __GAME_H
 #define __GAME_H
 
-#include <ctime>
 
 #include "creature/xhero.h"
 #include "game/location.h"
-#include "engine/xarchive.h"
-#include "engine/xgen.h"
 #include "engine/xscheduler.h"
-#include "game/shop.h"
-#include "item/incl_i.h"
-#include "item/itemf.h"
-#include "map/map_objects.h"
 
 extern char static_buffer[];
 

@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/creature.h"
+#include "helpers/msgwin.h"
 #include "helpers/xgui.h"
 #include "magic/skill.h"
 #include "map/map_objects.h"

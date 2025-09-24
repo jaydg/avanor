@@ -21,8 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XSTRING_H__
 #define __XSTRING_H__
 
-#include <cstring>
-
 char* x_strchr(char* str, char c);
 int x_strlen(const char* str);
 int x_strsize(const char* str);

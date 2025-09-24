@@ -29,8 +29,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "engine/xlist.h"
 #include "item/incl_i.h"
-#include "item/xpotion.h"
-#include "item/xcorpse.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
 #include "magic/wskills.h"

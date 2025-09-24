@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "creature/creature.h"
+#include "helpers/msgwin.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
 #include "item/xtool.h"

@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "game/quest.h"
 #include "helpers/hiscore.h"
+#include "helpers/msgwin.h"
 
 int XHero::UseTool()
 {

@@ -22,7 +22,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __SKILL_H
 
 #include "engine/xobject.h"
-#include "helpers/dice.h"
 
 struct SKILL_DB {
     const char* name;

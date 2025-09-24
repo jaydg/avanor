@@ -22,6 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "game/game.h"
 #include "game/location.h"
+#include "helpers/msgwin.h"
+#include "item/itemf.h"
 #include "map/map.h"
 #include "map/map_objects.h"
 

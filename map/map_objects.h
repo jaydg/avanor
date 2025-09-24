@@ -22,8 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __OTHER_MISC_H
 
 #include "creature/deity.h"
+#include "item/item.h"
 #include "engine/xmapobj.h"
-#include "item/xherb.h"
 
 enum TRAP_TYPE {
     TT_UNKNOWN	= -1,

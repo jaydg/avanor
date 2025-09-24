@@ -21,11 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __DICE_H
 #define __DICE_H
 
-#include <cassert>
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-
 class XFile;
 
 // this class is represented XdY : throw Y - side cube X turns

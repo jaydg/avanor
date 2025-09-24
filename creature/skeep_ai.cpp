@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <algorithm>
 
 #include "creature/skeep_ai.h"
+#include "helpers/msgwin.h"
 #include "item/itemf.h"
 
 REGISTER_CLASS(XShopKeeperAI);

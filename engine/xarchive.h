@@ -21,10 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __XARCHIVE_H
 #define __XARCHIVE_H
 
-#include <cstdio>
-
-#include "engine/xfile.h"
-
 class XArchive
 {
     public:

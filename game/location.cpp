@@ -21,12 +21,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cctype>
 
 #include "creature/unique.h"
-#include "engine/xarchive.h"
+#include "engine/xgen.h"
 #include "game/cbuilder.h"
 #include "game/game.h"
 #include "game/location.h"
 #include "game/quest.h"
+#include "game/shop.h"
+#include "helpers/msgwin.h"
+#include "item/itemf.h"
 #include "item/item_misc.h"
+#include "item/xherb.h"
 #include "map/map_objects.h"
 
 //Location Script Support

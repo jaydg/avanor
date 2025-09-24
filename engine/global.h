@@ -41,9 +41,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
     #endif
 #endif
 
-#include <cstdlib>
-#include <cstdio>
-
 #ifdef XWIN32
     #include <conio.h>
 #endif
