@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define DUR_INFINITE 65535
 
-enum BODYPART {
+enum BODY_PART {
     BP_UNKNOWN,
     BP_HEAD,
     BP_NECK,
@@ -33,14 +33,14 @@ enum BODYPART {
     BP_RING,
     BP_GLOVES,
     BP_BOOTS,
-    BP_LIGHTSORCE,
+    BP_LIGHT_SOURCE,
     BP_TOOL,
-    BP_MISSILEWEAPON,
+    BP_MISSILE_WEAPON,
     BP_MISSILE,
     BP_EOF,
     BP_OTHER,
-    BP_ONEHANDED,
-    BP_TWOHANDED
+    BP_ONE_HANDED,
+    BP_TWO_HANDED
 };
 
 enum RBP_FLAG {
@@ -48,7 +48,7 @@ enum RBP_FLAG {
     RBP_BLOCK
 };
 
-enum STAIRWAYTYPE {
+enum STAIRWAY_TYPE {
     STW_UNKNOWN,
     STW_UP,
     STW_DOWN
@@ -63,7 +63,7 @@ enum ARTIFACT_STATE {
 enum TARGET_REASON {
     TR_NONE,
     TR_ATTACK_TARGET,
-    TR_ATTACK_POSTION,
+    TR_ATTACK_POSITION,
     TR_ATTACK_DIRECTION,
     TR_IMPROVE,
     TR_YES_NO,      // by default - no

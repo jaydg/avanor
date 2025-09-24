@@ -36,7 +36,7 @@ ITEM_MASK bpim[] = {IM_OTHER,
         IM_BOOTS, IM_LIGHTSOURCE, IM_TOOL, IM_MISSILEW, IM_MISSILE, IM_ALL
     };
 
-XBodyPart::XBodyPart(XCreature* _owner, const BODYPART bp) : owner(_owner)
+XBodyPart::XBodyPart(XCreature* _owner, const BODY_PART bp) : owner(_owner)
 {
     owner = _owner;
     bp_uin = bp;
@@ -63,7 +63,7 @@ const char* XBodyPart::GetName() const
     return bp_names[bp_uin];
 }
 
-const char* XBodyPart::XGetName(const BODYPART bp)
+const char* XBodyPart::XGetName(const BODY_PART bp)
 {
     return bp_names[bp];
 }
@@ -166,8 +166,8 @@ void XBodyPart::Create(XCreature* cr, const char* str)
         int i;
 
         for (i = 0; i < BP_EOF; i++)
-            if (strcmp(buf, XGetName(static_cast<BODYPART>(i))) == 0) {
-                auto* bp = new XBodyPart(cr, static_cast<BODYPART>(i));
+            if (strcmp(buf, XGetName(static_cast<BODY_PART>(i))) == 0) {
+                auto* bp = new XBodyPart(cr, static_cast<BODY_PART>(i));
                 cr->components.Add(bp);
                 break;
             }

@@ -1122,7 +1122,7 @@ void XHero::Equipment(FILE * f)
                 }
 
                 if (witem) {
-                    BODYPART tmpbp = witem->bp;
+                    BODY_PART tmpbp = witem->bp;
 
                     if (((XBodyPart*)xqsa[n])->bp_uin == BP_HAND) {
                         ((XBodyPart*)xqsa[n])->Wear(witem);
@@ -1551,7 +1551,7 @@ int XHero::WhichDirection(XPoint * pt, const int flag)
 int XHero::XShoot()
 {
     XItem * missile = GetItem(BP_MISSILE);
-    XMissileWeapon* missilew = dynamic_cast<XMissileWeapon *>(GetItem(BP_MISSILEWEAPON));
+    XMissileWeapon* missilew = dynamic_cast<XMissileWeapon *>(GetItem(BP_MISSILE_WEAPON));
 
     if (!missile) { //if no missile, try to load them
         for (XItemList::iterator it = contain.begin(); it != contain.end(); it++) {

@@ -1232,7 +1232,7 @@ void XCreature::MoveStairWay()
 void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
 {
     XItem * missile = GetItem(BP_MISSILE);
-    XItem * bow = GetItem(BP_MISSILEWEAPON);
+    XItem * bow = GetItem(BP_MISSILE_WEAPON);
 
     if (!missile || !XMissile::isProperWeapon(missile, bow)) {
         *range = 0;
@@ -1278,7 +1278,7 @@ int XCreature::Shoot(int tx, int ty)
         return 0; //can't do suicide!
     }
 
-    XItem * bow = GetItem(BP_MISSILEWEAPON);
+    XItem * bow = GetItem(BP_MISSILE_WEAPON);
     XItem * missile = GetItem(BP_MISSILE);
     XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
 
@@ -1384,7 +1384,7 @@ int XCreature::Shoot(int tx, int ty)
     return 1;
 }
 
-XBodyPart* XCreature::GetBodyPart(BODYPART bp, int count)
+XBodyPart* XCreature::GetBodyPart(BODY_PART bp, int count)
 {
     XBodyPart * xbp;
     XList<XBodyPart*>::iterator it;
@@ -1423,7 +1423,7 @@ int XCreature::Wear(XItem * item)
     return 0;
 }
 
-XItem* XCreature::GetItem(BODYPART bp, int count)
+XItem* XCreature::GetItem(BODY_PART bp, int count)
 {
     XBodyPart * xbp = GetBodyPart(bp, count);
 

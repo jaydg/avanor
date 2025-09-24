@@ -420,7 +420,7 @@ void XTrap::Restore(XFile * f)
 
 REGISTER_CLASS(XStairWay);
 
-XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const STAIRWAYTYPE type)
+XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const STAIRWAY_TYPE type)
 {
     nx = -1;
     ny = -1;

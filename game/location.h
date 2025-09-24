@@ -196,8 +196,8 @@ class XLocation : public XObject
         XCreature* NewCreature(CREATURE_CLASS crc);
         XCreature* NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
-        XStairWay* NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area = NULL); //creates way at random place
-        XStairWay* NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type);
+        XStairWay* NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area = NULL); //creates way at random place
+        XStairWay* NewWay(int x, int y, LOCATION target_ln, STAIRWAY_TYPE s_type);
 
         //Location Script Language
         static const char* GetToken(const char* line, const char** token, int* token_len);

@@ -418,7 +418,7 @@ void XHero::PlayerSetup()
                 case 'c' :
                     switch (race_choice) {
                         case 'a':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_CROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -430,7 +430,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'b':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -445,7 +445,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'c':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -463,7 +463,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'd':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_SLING, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -478,7 +478,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'e':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -490,7 +490,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'f':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -502,7 +502,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'g':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_LIGHTCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -529,7 +529,7 @@ void XHero::PlayerSetup()
                 case 'd' :
                     switch (race_choice) {
                         case 'a':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_CROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -541,7 +541,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'b':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -556,7 +556,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'c':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -574,7 +574,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'd':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_SLING, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -592,7 +592,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'e':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -604,7 +604,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'f':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
@@ -616,7 +616,7 @@ void XHero::PlayerSetup()
                             break;
 
                         case 'g':
-                            pbp = GetBodyPart(BP_MISSILEWEAPON, 0);
+                            pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
                             pbp->Wear(ICREATEB(IM_MISSILEW, IT_LIGHTCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);

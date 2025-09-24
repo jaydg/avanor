@@ -47,7 +47,7 @@ XMissileWeapon::XMissileWeapon(ITEM_TYPE _it)
 {
     im = IM_MISSILEW;
     BasicFill(_it, &gi_missilew);
-    bp = BP_MISSILEWEAPON;
+    bp = BP_MISSILE_WEAPON;
     _DV = 0;
     _PV = 0;
 

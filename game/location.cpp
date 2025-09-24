@@ -355,14 +355,14 @@ XCreature* XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid,
     return cr;
 }
 
-XStairWay* XLocation::NewWay(LOCATION target_ln, STAIRWAYTYPE s_type, XRect * area)
+XStairWay* XLocation::NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area)
 {
     XPoint pt;
     GetFreeXY(&pt, area);
     return NewWay(pt.x, pt.y, target_ln, s_type);
 }
 
-XStairWay* XLocation::NewWay(int x, int y, LOCATION target_ln, STAIRWAYTYPE s_type)
+XStairWay* XLocation::NewWay(int x, int y, LOCATION target_ln, STAIRWAY_TYPE s_type)
 {
     XStairWay * pWay = new XStairWay(x, y, this, target_ln, s_type);
     ways_list.push_back(pWay);
@@ -591,9 +591,9 @@ int XLocation::Way(lua_State * L)
     if (n == 4) {
         int tx = lua_tonumber(L, 3);
         int ty = lua_tonumber(L, 4);
-        current_location->NewWay(tx, ty, (LOCATION)loc_id, (STAIRWAYTYPE)type);
+        current_location->NewWay(tx, ty, (LOCATION)loc_id, (STAIRWAY_TYPE)type);
     } else {
-        current_location->NewWay((LOCATION)loc_id, (STAIRWAYTYPE)type);
+        current_location->NewWay((LOCATION)loc_id, (STAIRWAY_TYPE)type);
     }
 
     return 0;

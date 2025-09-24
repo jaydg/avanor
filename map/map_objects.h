@@ -89,7 +89,7 @@ class XStairWay final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XStairWay, XMapObject);
-        XStairWay(int _x, int _y, XLocation* loc, LOCATION _ln, STAIRWAYTYPE type);
+        XStairWay(int _x, int _y, XLocation* loc, LOCATION _ln, STAIRWAY_TYPE type);
         LOCATION ln;
         int Compare(XObject* o) override
         {

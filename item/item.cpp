@@ -460,7 +460,7 @@ void XItem::Store(XFile * f)
 {
     XBaseObject::Store(f);
 
-    f->Write(&bp, sizeof(BODYPART));
+    f->Write(&bp, sizeof(BODY_PART));
     f->Write(&brt, sizeof(BRAND_TYPE));
     f->Write(&durability, sizeof(int));
     f->Write(&identify, sizeof(int));
@@ -482,7 +482,7 @@ void XItem::Restore(XFile * f)
 {
     XBaseObject::Restore(f);
 
-    f->Read(&bp, sizeof(BODYPART));
+    f->Read(&bp, sizeof(BODY_PART));
     f->Read(&brt, sizeof(BRAND_TYPE));
     f->Read(&durability, sizeof(int));
     f->Read(&identify, sizeof(int));

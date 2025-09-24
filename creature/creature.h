@@ -267,8 +267,8 @@ class XCreature : public XBaseObject
         }
 
         int Shoot(int tx, int ty);
-        XItem* GetItem(BODYPART bp, int count = 0);
-        XBodyPart* GetBodyPart(BODYPART bp, int count = 0);
+        XItem* GetItem(BODY_PART bp, int count = 0);
+        XBodyPart* GetBodyPart(BODY_PART bp, int count = 0);
         int CanWear(XItem* item);
         int Wear(XItem* item); // if can Wear, Wear it.
 

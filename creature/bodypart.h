@@ -37,22 +37,22 @@ class XBodyPart final : public XObject
 
     public:
         DECLARE_CREATOR(XBodyPart, XObject);
-        XBodyPart(XCreature * _owner, BODYPART bp);
+        XBodyPart(XCreature * _owner, BODY_PART bp);
         void Invalidate() override;
         const char* GetName() const;
-        static const char* XGetName(BODYPART bp);
+        static const char* XGetName(BODY_PART bp);
         static void Create(XCreature* cr, const char* str);
         int Compare(XObject* o) override
         {
             return 1;
         }
 
-        int Fit(const BODYPART bp) const
+        int Fit(const BODY_PART bp) const
         {
             return (bp == bp_uin);
         }
 
-        BODYPART bp_uin;
+        BODY_PART bp_uin;
 
         XItem* Item() const;
         int Wear(XItem* new_item);

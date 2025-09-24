@@ -52,7 +52,7 @@ class XItem : public XBaseObject
 
         virtual void toString(char* buf);
 
-        BODYPART bp;    // fit to what bp???
+        BODY_PART bp;    // fit to what bp???
         ITEM_TYPE it;   // main type of item such IT_POTION
         WSK_TYPE wt;    // other type of item
         ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
