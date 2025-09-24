@@ -64,7 +64,7 @@ extern unsigned long cr_kiled;
 extern unsigned long cr_died;
 
 //global flags (users preferences)
-extern int __animation_flag; //0 - none, other - delay miliseconds
+extern int __animation_flag; // 0 - none, other - delay milliseconds
 
 #ifndef M_E
     #define M_E 2.7182818284590452354
@@ -75,8 +75,20 @@ extern int __animation_flag; //0 - none, other - delay miliseconds
 
 enum xColor {
     xBLACK = 0,
-    xBLUE, xGREEN, xCYAN, xRED, xMAGENTA, xBROWN, xLIGHTGRAY, xDARKGRAY,
-    xLIGHTBLUE, xLIGHTGREEN, xLIGHTCYAN, xLIGHTRED, xLIGHTMAGENTA, xYELLOW,
+    xBLUE,
+    xGREEN,
+    xCYAN,
+    xRED,
+    xMAGENTA,
+    xBROWN,
+    xLIGHTGRAY,
+    xDARKGRAY,
+    xLIGHTBLUE,
+    xLIGHTGREEN,
+    xLIGHTCYAN,
+    xLIGHTRED,
+    xLIGHTMAGENTA,
+    xYELLOW,
     xWHITE = 15
 };
 
