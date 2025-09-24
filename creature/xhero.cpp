@@ -626,7 +626,7 @@ void XHero::Move()
     ShowNewView();
 
     if (action_data.action == A_EAT || action_data.action == A_READ
-        || action_data.action == A_USETOOL) {
+        || action_data.action == A_USE_TOOL) {
         l->map->Center(x, y);
         l->map->Put(this);
         PutStatus();
@@ -2530,7 +2530,7 @@ void XHero::SetTactics()
                 strcat(buf, "Normal ");
                 break;
 
-            case TS_AGRESSIVE	:
+            case TS_AGGRESSIVE	:
                 strcat(buf, "Aggressive ");
                 break;
 

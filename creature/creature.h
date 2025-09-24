@@ -33,7 +33,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/skills.h"
 #include "magic/wskills.h"
 
-enum AI_TYPE {AI_HERO = 0, AI_SIMPLE = 1};
+enum AI_TYPE {
+    AI_HERO,
+    AI_SIMPLE
+};
 
 enum ACTION {
     A_UNKNOWN = 0,
@@ -43,22 +46,22 @@ enum ACTION {
     A_CAST = 4,
     A_EAT = 5,
     A_READ = 6,
-    A_USETOOL = 7,
+    A_USE_TOOL = 7,
 };
 
 enum TACTICS_STATE {
     TS_COWARD,
     TS_DEFENSIVE,
     TS_NORMAL,
-    TS_AGRESSIVE,
+    TS_AGGRESSIVE,
     TS_BERSERKER,
 };
 
 enum CR_NAME_TYPE {
-    CRN_T1, //you, the kobold, someone
-    CRN_T2, //you, he/she, it
-    CRN_T3, //your, him/her, it
-    CRN_T4, //yours, his/hers, its
+    CRN_T1, // you, the kobold, someone
+    CRN_T2, // you, he/she, it
+    CRN_T3, // your, him/her, it
+    CRN_T4, // yours, his/hers, its
 };
 
 

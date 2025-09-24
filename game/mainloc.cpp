@@ -105,7 +105,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     XRect orc_area(10, 70, 30, 80);
 
     for (i = 0; i < 20; i++) {
-        NewCreature(CR_ORC, orc_area, GID_ORCS_WARPARTY, AIF_GUARD_AREA);
+        NewCreature(CR_ORC, orc_area, GID_ORCS_WAR_PARTY, AIF_GUARD_AREA);
     }
 
     Game.Scheduler.Add(new XMainLocationGen(this));

@@ -27,33 +27,33 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 
 enum AI_FLAG {
-    AIF_NONE	= 0x00000000,
-    AIF_ALLOW_PICK_UP	= 0x00000001, //can creature pick items
+    AIF_NONE                = 0x00000000,
+    AIF_ALLOW_PICK_UP       = 0x00000001, // creature can pick items
 
-    AIF_ALLOW_MOVE_WAY_UP	= 0x00000002, //can creature move upstair
-    AIF_ALLOW_MOVE_WAY_DOWN	= 0x00000004, //can creature move downstair
-    AIF_FREE_WAY	= AIF_ALLOW_MOVE_WAY_UP | AIF_ALLOW_MOVE_WAY_DOWN,
-    AIF_ALLOW_MOVE_OUT	= 0x00000008, //can creature move to main location
-    AIF_FREE_MOVE	= AIF_FREE_WAY | AIF_ALLOW_MOVE_OUT, //can creature move were it want
+    AIF_ALLOW_MOVE_WAY_UP   = 0x00000002, // creature can move upstairs
+    AIF_ALLOW_MOVE_WAY_DOWN = 0x00000004, // creature can move downstairs
+    AIF_FREE_WAY            = AIF_ALLOW_MOVE_WAY_UP | AIF_ALLOW_MOVE_WAY_DOWN,
+    AIF_ALLOW_MOVE_OUT      = 0x00000008, // creature can move to main location
+    AIF_FREE_MOVE           = AIF_FREE_WAY | AIF_ALLOW_MOVE_OUT, // creature can move were it wants
 
-    AIF_FIND_WAY	= 0x00000010, //creature pursuit enemy in other locations..
-    AIF_PEACEFUL	= 0x00000020, //creature never attack first
-    AIF_COWARD	= 0x00000040, //creature coward strenghter creatures, Also run away when wounded to much
-    AIF_ALLOW_PACK	= 0x00000100, //creature try make a pack
-    AIF_ALLOW_WEAR_ITEM	= 0x00000200, //creature can wear items
-    AIF_GUARD_AREA	= 0x00000400, //this creature guard a area
-    AIF_PROTECT_AREA	= 0x00000800, //creature attack every who enter this area
-    AIF_RANDOM_MOVE	= 0x00001000, //creature move randomly
-    AIF_EXPLORER_MOVE	= 0x00002000, //creature explore dangeon
-    AIF_EXECUTE_SCRIPT	= 0x00004000, //if nothing to do, execute script...
-    AIF_NO_SWAP	= 0x00008000, //you can't swap place with this creature if it frendly
+    AIF_FIND_WAY            = 0x00000010, // creature pursuits enemy to other locations
+    AIF_PEACEFUL            = 0x00000020, // creature never attack first
+    AIF_COWARD              = 0x00000040, // creature fears stronger creatures, also runs away when wounded to much
+    AIF_ALLOW_PACK          = 0x00000100, // creature tries to form a pack
+    AIF_ALLOW_WEAR_ITEM     = 0x00000200, // creature can wear items
+    AIF_GUARD_AREA          = 0x00000400, // this creature guards an area
+    AIF_PROTECT_AREA        = 0x00000800, // creature attack every who enter this area
+    AIF_RANDOM_MOVE         = 0x00001000, // creature can move randomly
+    AIF_EXPLORER_MOVE       = 0x00002000, // creature explores dungeon
+    AIF_EXECUTE_SCRIPT      = 0x00004000, // if nothing to do, execute script...
+    AIF_NO_SWAP             = 0x00008000, // you can't swap place with this creature if it is friendly
 
-    AIF_INSECT	= AIF_FREE_WAY | AIF_RANDOM_MOVE,
-    AIF_LO_ANIMAL	= AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_COWARD,
-    AIF_HI_ANIMAL	= AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
-    AIF_CREATURE	= AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
-    AIF_HUMAN	= AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_MOVE | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
-    AIF_GHOST	= AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
+    AIF_INSECT              = AIF_FREE_WAY | AIF_RANDOM_MOVE,
+    AIF_LO_ANIMAL           = AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_COWARD,
+    AIF_HI_ANIMAL           = AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
+    AIF_CREATURE            = AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
+    AIF_HUMAN               = AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_MOVE | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
+    AIF_GHOST               = AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
 };
 
 

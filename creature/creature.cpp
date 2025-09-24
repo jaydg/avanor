@@ -188,7 +188,7 @@ int XCreature::onRestorePP(int _pp)
 
 int XCreature::stopAction()
 {
-    if (action_data.action == A_USETOOL) {
+    if (action_data.action == A_USE_TOOL) {
         action_data.item->onUse(UIS_STOP, this);
     } else {
         if (action_data.item) {
@@ -254,7 +254,7 @@ int XCreature::Run()
         continueEat();
     } else if (action_data.action == A_READ) {
         continueRead();
-    } else if (action_data.action == A_USETOOL) {
+    } else if (action_data.action == A_USE_TOOL) {
         continueUseItem();
     } else {
         NewMove();
@@ -497,7 +497,7 @@ void XCreature::PutStatus()
             vPutS("[eating] ");
             break;
 
-        case A_USETOOL	:
+        case A_USE_TOOL	:
             vPutS("[using tool] ");
             break;
     }
@@ -630,7 +630,7 @@ int XCreature::GetTacticsDVBonus()
             return (2 * GetStats(S_DEX)) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
-        case TS_AGRESSIVE	:
+        case TS_AGGRESSIVE	:
             return GetStats(S_DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
@@ -660,7 +660,7 @@ int XCreature::GetTacticsHITBonus()
             return GetStats(S_DEX) / 4 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
-        case TS_AGRESSIVE	:
+        case TS_AGGRESSIVE	:
             return GetStats(S_DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
@@ -690,7 +690,7 @@ int XCreature::GetTacticsDMGBonus()
             return GetStats(S_STR) / 7 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
-        case TS_AGRESSIVE	:
+        case TS_AGGRESSIVE	:
             return GetStats(S_STR) / 5 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 

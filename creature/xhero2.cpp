@@ -67,7 +67,7 @@ CUSTOM_RACE cust_race[] = {
         "St:1d4+5 Dx:1d4+12 To:1d4+4 Le:1d4+8 Wi:1d4+8 Ma:1d4+8 Pe:1d4+10 Ch:1d4+10",
         "St:1d8+15 Dx:1d8+22 To:1d8+14 Le:1d8+18 Wi:1d8+18 Ma:1d8+18 Pe:1d8+20 Ch:1d8+20",
         "0d0+1000",
-        FF_SENSETIVE
+        FF_SENSITIVE
     },
     {
         "half orc",

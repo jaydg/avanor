@@ -133,7 +133,7 @@ const char* XAnyFood::postEat(XCreature * eater)
 FOOD_TYPE XAnyFood::FoodTypeForCreature(XCreature * creature)
 {
     switch (creature->food_feeling) {
-        case FF_SENSETIVE :
+        case FF_SENSITIVE :
             if (food_type == FT_VOMIT) {
                 return FT_VOMIT;
             } else {

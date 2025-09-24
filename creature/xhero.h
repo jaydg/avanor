@@ -32,9 +32,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 extern int _exit_flag;
 
 enum INVENTORY_FLAG {
-    IF_NONE	= 0x0000,
-    IF_FIXED_MASK	= 0x0001,
-    IF_VIEW_ONLY	= 0x0002,
+    IF_NONE,
+    IF_FIXED_MASK,
+    IF_VIEW_ONLY,
 };
 
 enum SKILL_FLAG {
