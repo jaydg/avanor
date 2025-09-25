@@ -157,13 +157,13 @@ void XHero::PlayerSetup()
 
     vRefresh();
 
-    char race_choice = ' ';
+    int race_choice = ' ';
 
-    while (1) {
+    while (true) {
 #ifndef __CHOOSE_RACE
-        char ch = vGetch();
+        int ch = vGetch();
 #else
-        char ch = 'c';
+        int ch = 'c';
 #endif
         race_choice = ch;
 
@@ -209,6 +209,9 @@ void XHero::PlayerSetup()
             sk->Learn(XSkill::Skill::MINING);
             sk->Learn(XSkill::Skill::FINDWEAKNESS);
             break;
+
+        default:
+            assert(0);
     }
 
     sk->Learn(XSkill::Skill::FIRST_AID);
@@ -225,16 +228,12 @@ void XHero::PlayerSetup()
 
     vRefresh();
 
-    char gend_choice = ' ';
-
-    while (1) {
+    while (true) {
 #ifndef __CHOOSE_RACE
-        char ch = vGetch();
+        int ch = vGetch();
 #else
-        char ch = 'a';
+        int ch = 'a';
 #endif
-        gend_choice = ch;
-
         if (ch >= 97 && ch < 97 + 2) {
             stmp = new XStats(cust_gender[ch - 97].stats);
             s->Add(stmp);
@@ -263,9 +262,9 @@ void XHero::PlayerSetup()
 
     vRefresh();
 
-    while (1) {
+    while (true) {
 #ifndef __CHOOSE_RACE
-        char ch = vGetch();
+        int ch = vGetch();
 #else
         char ch = 'a';
 #endif
@@ -276,8 +275,8 @@ void XHero::PlayerSetup()
             delete stmp;
 
             for (int ii = S_STR; ii < S_EOF; ii++) {
-                if (s->Get((STATS)ii) < 1) {
-                    s->SetStat((STATS)ii, 1);
+                if (s->Get(static_cast<STATS>(ii)) < 1) {
+                    s->SetStat(static_cast<STATS>(ii), 1);
                 }
             }
 
@@ -357,6 +356,9 @@ void XHero::PlayerSetup()
                             pbp = GetBodyPart(BP_HAND, 1);
                             pbp->Wear(ICREATEB(IM_SHIELD, IT_SMALLSHIELD, 1, 100));
                             break;
+
+                        default:
+                            assert(0);
                     }
 
                     potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
@@ -403,7 +405,7 @@ void XHero::PlayerSetup()
                     book->Identify(1);
                     ContainItem(book);
 
-                    book = (XBook*)ICREATEA(IM_BOOK);
+                    book = dynamic_cast<XBook *>(ICREATEA(IM_BOOK));
                     book->Identify(1);
                     ContainItem(book);
 
@@ -512,6 +514,9 @@ void XHero::PlayerSetup()
                             pbp = GetBodyPart(BP_HAND, 0);
                             pbp->Wear(ICREATEB(IM_WEAPON, IT_WARAXE, 1, 100));
                             break;
+
+                        default:
+                            assert(0);
                     }
 
                     potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
@@ -684,6 +689,9 @@ void XHero::PlayerSetup()
                         case 'g':
                             religion.life_act = 200;
                             break;
+
+                        default:
+                            assert(0);
                     }
 
                     break;
@@ -726,6 +734,9 @@ void XHero::PlayerSetup()
                         case 'g':
                             religion.life_act = 100;
                             break;
+
+                        default:
+                            assert(0);
                     }
 
                     break;
@@ -791,6 +802,9 @@ void XHero::PlayerSetup()
 
                 }
                 break;
+
+                default:
+                    assert(0);
             }
 
             break;
@@ -828,12 +842,12 @@ void XHero::PlayerSetup()
 #endif
 }
 
-const char* XHero::GetRaceStr()
+const char* XHero::GetRaceStr() const
 {
     return cust_race[race].name;
 }
 
-const char* XHero::GetProfessionStr()
+const char* XHero::GetProfessionStr() const
 {
     return cust_profession[profession].name;
 }

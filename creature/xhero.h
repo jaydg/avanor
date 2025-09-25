@@ -69,7 +69,7 @@ class XHero final : public XCreature
         void PickItem();
         void DropItem();
         void LookAt();
-        void CreateScreenShot();
+        static void CreateScreenShot();
         static void DumpVBuffer(FILE* f);
         void ReadAll();
         int Compare(XObject* o) override
@@ -83,7 +83,7 @@ class XHero final : public XCreature
         int XShoot();
         int Targeting(int range, XPoint* pt);
         int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr) override; //Get target for a spell
-        XItem* SelectItem(ITEM_FILTR* filtr, bool isGetAll = false) override;
+        XItem* SelectItem(ITEM_FILTR* filter, bool isGetAll = false) override;
 
         int SelectPosition(XPoint * pt, int flag = 0);
         unsigned int turn_count{};
@@ -95,12 +95,12 @@ class XHero final : public XCreature
         XList<XSpell*>::iterator last_cast;
         int RepeatCast();
 
-        void MagicLevelList();
-        XSkill* SkillsList(SKILL_FLAG skill_flag, int marks_left = 0, FILE* f = nullptr);
+        void MagicLevelList() const;
+        XSkill* SkillsList(SKILL_FLAG skill_flag, int marks_left = 0, FILE* f = nullptr) const;
         int UseSkill();
         void IncLevel() override;
-        void WarSkillsList(FILE* f = nullptr);
-        void HelpScreen();
+        void WarSkillsList(FILE* f = nullptr) const;
+
         void DrinkPotion();
         void SetTactics();
         void SaveGame();
@@ -127,13 +127,13 @@ class XHero final : public XCreature
 
         void doSacrifice();
         int OrderCompanion();
-        int ExecuteScript();
+        static int ExecuteScript();
 
         int race{};
         int profession{};
 
-        const char* GetRaceStr();
-        const char* GetProfessionStr();
+        const char* GetRaceStr() const;
+        const char* GetProfessionStr() const;
 
         static void EndGame(const char* end_msg);
 

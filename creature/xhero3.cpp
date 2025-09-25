@@ -28,8 +28,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 int XHero::UseTool()
 {
-    XBodyPart * tbp = GetBodyPart(BP_TOOL);
-    XItem * tool = NULL;
+    const XBodyPart* tbp = GetBodyPart(BP_TOOL);
+    XItem* tool = nullptr;
 
     if (tbp) {
         tool = tbp->Item();
@@ -38,20 +38,19 @@ int XHero::UseTool()
     if (tool) {
         UseItem(tool);
         return 1;
-    } else {
-        msgwin.Add("You have no tool.");
-        return 0;
     }
 
-    return 1;
+    msgwin.Add("You have no tool.");
+
+    return 0;
 }
 
 void XHero::doSacrifice()
 {
-    while (1) {
-        XItem * item = NULL;
+    while (true) {
+        XItem* item = nullptr;
 
-        XItemList * tmpquae = l->map->GetItemList(x, y);
+        XItemList* tmpquae = l->map->GetItemList(x, y);
 
         if (tmpquae->empty() || l->map->GetPlace(x, y)) {
             item = Inventory(&contain);
@@ -59,13 +58,13 @@ void XHero::doSacrifice()
             item = Inventory(tmpquae);
         }
 
-        XItem * drop_item = item;
+        XItem* drop_item = item;
 
         if (item) {
             if (item->quantity > 1) {
                 XPoint pt(0, item->quantity);
                 msgwin.Add("How much?");
-                int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
+                const int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
 
                 if (res == 0) {
                     contain.Add(item);
@@ -73,25 +72,23 @@ void XHero::doSacrifice()
                 }
 
                 if (res != item->quantity) {
-                    drop_item = (XItem*)item->MakeCopy();
+                    drop_item = dynamic_cast<XItem *>(item->MakeCopy());
                     drop_item->quantity = res;
                     item->quantity -= res;
                     contain.Add(item);
                 }
             }
 
-            if (drop_item) {
-                Sacrifice(drop_item);
-            }
+            Sacrifice(drop_item);
         } else {
             break;
         }
     }
 }
 
-XItem* XHero::SelectItem(ITEM_FILTR * filtr, bool isGetAll)
+XItem* XHero::SelectItem(ITEM_FILTR* filter, const bool isGetAll)
 {
-    return Inventory(&contain, IM_UNKNOWN, IF_NONE, !isGetAll, filtr);
+    return Inventory(&contain, IM_UNKNOWN, IF_NONE, !isGetAll, filter);
 }
 
 void XHero::DumpVBuffer(FILE * f)
@@ -123,7 +120,7 @@ void XHero::CreateScreenShot()
             DumpVBuffer(f);
             fclose(f);
             char buf2[256];
-            sprintf(buf2, "Screenshot '%s' created successfuly.", buf);
+            sprintf(buf2, "Screenshot '%s' created successfully.", buf);
             msgwin.Add(buf2);
             return;
         } else {
@@ -140,9 +137,9 @@ void XHero::Pray()
     DEITY_HELP * pDeathHelp;
 
     DEITY_RELATION dr = religion.GetRelation(D_LIFE);
-    sprintf(buf, MSG_YELLOW "%s " MSG_LIGHTGRAY "(%s" MSG_LIGHTGRAY ")", religion.GetDeityName(D_LIFE), religion.GetRelationName(dr));
+    sprintf(buf, MSG_YELLOW "%s " MSG_LIGHTGRAY "(%s" MSG_LIGHTGRAY ")", XReligion::GetDeityName(D_LIFE), XReligion::GetRelationName(dr));
     list.AddItem(new XGuiItem_Text(buf, 0));
-    int life_count = religion.GetAvailHelp(D_LIFE, &pLifeHelp);
+    const int life_count = religion.GetAvailHelp(D_LIFE, &pLifeHelp);
 
     if (life_count == 0) {
         list.AddItem(new XGuiItem_Text("< No help available >", 0));
@@ -155,7 +152,7 @@ void XHero::Pray()
     list.AddItem(new XGuiItem_Text("", 0));
 
     dr = religion.GetRelation(D_DEATH);
-    sprintf(buf, MSG_YELLOW "%s " MSG_LIGHTGRAY "(%s" MSG_LIGHTGRAY ")", religion.GetDeityName(D_DEATH), religion.GetRelationName(dr));
+    sprintf(buf, MSG_YELLOW "%s " MSG_LIGHTGRAY "(%s" MSG_LIGHTGRAY ")", XReligion::GetDeityName(D_DEATH), XReligion::GetRelationName(dr));
     list.AddItem(new XGuiItem_Text(buf, 0));
     int death_count = religion.GetAvailHelp(D_DEATH, &pDeathHelp);
 
@@ -184,16 +181,22 @@ void XHero::Pray()
 
 void XHero::EndGame(const char* end_msg)
 {
-    int score = ((XHero*)main_creature)->_EXP + ((XHero*)main_creature)->MoneyOp(0);
+    unsigned long score = main_creature->_EXP + main_creature->MoneyOp(0);
 
     XGuiList list;
-
     char buf2[256];
     char tbuf[256];
-    sprintf(buf2, "%s, %s %s %s (L%d).", ((XHero*)main_creature)->name, ((XHero*)main_creature)->GetGenderStr(), ((XHero*)main_creature)->GetRaceStr(), ((XHero*)main_creature)->GetProfessionStr(), ((XHero*)main_creature)->level);
+
+    sprintf(buf2, "%s, %s %s %s (L%d).",
+        main_creature->name,
+        main_creature->GetGenderStr(),
+        dynamic_cast<XHero *>(main_creature)->GetRaceStr(),
+        dynamic_cast<XHero *>(main_creature)->GetProfessionStr(),
+        main_creature->level);
+
     list.AddItem(new XGuiItem_Text(buf2));
 
-    sprintf(tbuf, "You survived %d turns.", ((XHero*)main_creature)->turn_count);
+    sprintf(tbuf, "You survived %d turns.", dynamic_cast<XHero *>(main_creature)->turn_count);
     list.AddItem(new XGuiItem_Text(tbuf));
 
     if (XQuest::quest.hero_win) {
@@ -206,7 +209,7 @@ void XHero::EndGame(const char* end_msg)
 
             score += 30000;
         } else if (XQuest::quest.ahk_ulan_killed) {
-            list.AddItem(new XGuiItem_Text("You killed evil Ahk-Ulan and saved Kingdom of Avanor from Ahk-Ulans deadly plans."));
+            list.AddItem(new XGuiItem_Text("You killed evil Ahk-Ulan and saved the Kingdom of Avanor from Ahk-Ulan's deadly plans."));
             score += 10000;
         } else {
             list.AddItem(new XGuiItem_Text("You killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor."));
@@ -218,8 +221,8 @@ void XHero::EndGame(const char* end_msg)
 
     int place_count = 0;
 
-    for (int i = 0; i < L_EOF; i++) {
-        if (Game.locations[i] && Game.locations[i]->visited_by_hero) {
+    for (const auto & location : Game.locations) {
+        if (location && location->visited_by_hero) {
             place_count++;
         }
     }
@@ -228,19 +231,25 @@ void XHero::EndGame(const char* end_msg)
     sprintf(tbuf, "You visited %d places.", place_count);
     list.AddItem(new XGuiItem_Text(tbuf));
 
-    DEITY_RELATION dr1 = ((XHero*)main_creature)->religion.GetRelation(D_LIFE);
-    DEITY_RELATION dr2 = ((XHero*)main_creature)->religion.GetRelation(D_DEATH);
+    const DEITY_RELATION dr1 = main_creature->religion.GetRelation(D_LIFE);
+    const DEITY_RELATION dr2 = main_creature->religion.GetRelation(D_DEATH);
     int flag = 1;
 
     if (dr1 >= DR_ADEPT) {
-        sprintf(tbuf, "You were a %s of %s", XReligion::GetRelationName(dr1), XReligion::GetDeityName(D_LIFE));
+        sprintf(tbuf, "You were a %s of %s",
+            XReligion::GetRelationName(dr1),
+            XReligion::GetDeityName(D_LIFE));
+
         list.AddItem(new XGuiItem_Text(tbuf));
         flag = 0;
         score += dr1 * 300;
     }
 
     if (dr2 >= DR_ADEPT) {
-        sprintf(tbuf, "You were a %s of %s", XReligion::GetRelationName(dr2), XReligion::GetDeityName(D_DEATH));
+        sprintf(tbuf, "You were a %s of %s",
+            XReligion::GetRelationName(dr2),
+            XReligion::GetDeityName(D_DEATH));
+
         list.AddItem(new XGuiItem_Text(tbuf));
         score += dr2 * 300;
         flag = 0;
@@ -279,7 +288,7 @@ void XHero::EndGame(const char* end_msg)
         list.AddItem(new XGuiItem_Text("You tried to help to repulse an attack of orcs."));
     }
 
-    sprintf(tbuf, "You scored %d.", score);
+    sprintf(tbuf, "You scored %lu.", score);
     list.AddItem(new XGuiItem_Text(tbuf));
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Achievements " MSG_BROWN "###");
     list.Run();
@@ -289,48 +298,47 @@ void XHero::EndGame(const char* end_msg)
     msgwin.Add("Create Memory File? (Y/" MSG_CYAN "N" MSG_LIGHTGRAY ")");
 
     vRefresh();
-    int tch = vGetch();
 
-    if (tch == 'y' || tch == 'Y') {
+    if (const int tch = vGetch(); tch == 'y' || tch == 'Y') {
         msgwin.ClrMsg();
         msgwin.Add("### Screenshot ###");
 
         char tname[256];
-        strcpy(tname, ((XHero*)main_creature)->name);
+        strcpy(tname, main_creature->name);
         strcat(tname, ".mem");
         FILE * f = fopen(vMakePath(HOME_DIR, tname), "w");
-        ((XHero*)main_creature)->DumpVBuffer(f);
+        XHero::DumpVBuffer(f);
         list.Put(f);
         fprintf(f, "\n");
-        ((XHero*)main_creature)->Equipment(f);
+        dynamic_cast<XHero *>(main_creature)->Equipment(f);
         fprintf(f, "\n");
-        ((XHero*)main_creature)->WarSkillsList(f);
+        dynamic_cast<XHero *>(main_creature)->WarSkillsList(f);
         fprintf(f, "\n");
-        ((XHero*)main_creature)->SkillsList(SKF_LIST_SKILL, 0, f);
+        dynamic_cast<XHero *>(main_creature)->SkillsList(SKF_LIST_SKILL, 0, f);
         fprintf(f, "\n");
-        ((XHero*)main_creature)->XCast(f);
+        dynamic_cast<XHero *>(main_creature)->XCast(f);
         fprintf(f, "\n");
-        ((XHero*)main_creature)->ShowResistance(f);
+        dynamic_cast<XHero *>(main_creature)->ShowResistance(f);
         fprintf(f, "\n");
-        it_iterator i;
 
-        for (i = ((XHero*)main_creature)->contain.begin(); i != ((XHero*)main_creature)->contain.end(); i++) {
-            i->Identify(1);
+        for (const auto item : main_creature->contain) {
+            item->Identify(1);
         }
 
-        ((XHero*)main_creature)->Inventory(&((XHero*)main_creature)->contain, IM_ALL, IF_NONE, 0, NULL, f);
+        dynamic_cast<XHero *>(main_creature)->Inventory(
+            &main_creature->contain, IM_ALL, IF_NONE, 0, nullptr, f);
         fclose(f);
         vClrScr();
     }
 
-    std::shared_ptr<XHiScoreItem> hii(new XHiScoreItem(0, score, buf2, end_msg, XQuest::quest.hero_win, 1));
+    const std::shared_ptr<XHiScoreItem> hii(new XHiScoreItem(0, score, buf2, end_msg, XQuest::quest.hero_win, 1));
 
     XHiScore hiscore;
     hiscore.AddRecord(hii);
     hiscore.Show();
 }
 
-void XHero::ShowResistance(FILE * f)
+void XHero::ShowResistance(FILE* f)
 {
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Resistances and Intrinsics " MSG_BROWN "###");
@@ -341,10 +349,12 @@ void XHero::ShowResistance(FILE * f)
     XResistance tr;
 
     for (int i = 0; i < R_EOF; i++) {
-        tr.SetResistance((RESISTANCE)i, GetResistance((RESISTANCE)i));
+        const auto res = static_cast<RESISTANCE>(i);
 
-        if (tr.GetResistance((RESISTANCE)i) != 0) {
-            sprintf(buf, MSG_LIGHTGRAY "%-15s%s", tr.GetResistanceName((RESISTANCE)i), tr.GetResistanceLevel((RESISTANCE)i));
+        tr.SetResistance(res, GetResistance(res));
+
+        if (tr.GetResistance(res) != 0) {
+            sprintf(buf, MSG_LIGHTGRAY "%-15s%s", tr.GetResistanceName(res), tr.GetResistanceLevel(res));
             list.AddItem(new XGuiItem_Text(buf, 0), 0);
             flag = 1;
         }
@@ -362,11 +372,9 @@ void XHero::ShowResistance(FILE * f)
 }
 
 
-int XHero::LearnReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
+int XHero::LearnReception(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
 {
-    XList<XAlchemyRec*>::iterator it;
-
-    for (it = reception_list.begin(); it != reception_list.end(); it++)
+    for (const auto it : reception_list)
         if (it->pn1 == pn1 && it->pn2 == pn2) {
             return 0;
         }
@@ -401,18 +409,18 @@ void XHero::ShowReception()
 
 void XHero::MixPotions()
 {
-    XPotion * pot1 = (XPotion*)Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1);
+    auto pot1 = dynamic_cast<XPotion *>(Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1));
 
     if (pot1) {
-        XPotion * pot2 = (XPotion*)Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1);
+        auto pot2 = dynamic_cast<XPotion *>(Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1));
 
         if (pot2) {
-            POTION_NAME pn = XAlchemy::GetPotionName(pot1->pn, pot2->pn);
-            POTION_REC * pr = POTION_REC::GetRec(pot1->pn);
+            const POTION_NAME pn = XAlchemy::GetPotionName(pot1->pn, pot2->pn);
+            const POTION_REC* pr = POTION_REC::GetRec(pot1->pn);
             int val = sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
             if (pn != PN_UNKNOWN && vRand(100) < val) {
-                XPotion * pot = new XPotion(pn);
+                const auto pot = new XPotion(pn);
                 sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
                 char buf[256];
                 char buf1[256];

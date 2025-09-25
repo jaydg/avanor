@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 
 #include "creature/skeep_ai.h"
 #include "creature/xhero.h"
@@ -287,9 +288,6 @@ void XHero::NewMove()
                     break;
 
                 case '_' :
-                    doSacrifice();
-                    break;
-
                 case 's' :
                     doSacrifice();
                     break;
@@ -348,7 +346,7 @@ void XHero::NewMove()
                     break;
 
                 case '?' :
-                    HelpScreen();
+                    XManual::Run();
                     moved = 0;
                     break;
 
@@ -765,8 +763,8 @@ void XHero::InfoList()
     vGotoXY(0, 16);
     vPutS(tbuf);
 
-    XBodyPart * hand_1 = GetBodyPart(BP_HAND, 0);
-    XBodyPart * hand_2 = GetBodyPart(BP_HAND, 1);
+    const XBodyPart* hand_1 = GetBodyPart(BP_HAND, 0);
+    const XBodyPart* hand_2 = GetBodyPart(BP_HAND, 1);
 
     int free_hand = (hand_1->Item() == nullptr) | (hand_2->Item() == nullptr);
 
@@ -908,14 +906,14 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
 
         if (all_item_count == 0) {
             if ((mask == IM_ALL) || (mask == IM_UNKNOWN))
-                if ((XItemList*)&contain == item_list) {
+                if (&contain == item_list) {
                     list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "You have no such items."), 0);
                 } else {
                     list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "There are no such items."), 0);
                 } else {
                 for (int oi = 0; oi < std::size(output_items_name); oi++) {
                     if (output_items_mask[oi] & mask) {
-                        if ((XItemList*)&contain == item_list) {
+                        if (&contain == item_list) {
                             sprintf(buf, MSG_LIGHTGRAY "You have no %s.", output_items_name[oi]);
                         } else {
                             sprintf(buf, MSG_LIGHTGRAY "There are no %s.", output_items_name[oi]);
@@ -997,7 +995,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
             }
 
             assert(stop_flag == item_number);
-            XItem * ritem = item_list->Remove(selected_it);
+            XItem* ritem = item_list->Remove(selected_it);
 
             if (ret_item_count <= 0) {
                 return ritem;
@@ -1027,10 +1025,10 @@ const char* part_names[] = {"",
 
 void XHero::Equipment(FILE * f)
 {
-    XObject * xqsa[30]; //this array save us from typing hard algorithm
+    XBodyPart* xqsa[30]; //this array save us from typing hard algorithm
     first_item = 0;
 
-    while (1) {
+    while (true) {
         int was_hand = 0;
         int was_ring = 0;
         int counter = 0;
@@ -1088,16 +1086,12 @@ void XHero::Equipment(FILE * f)
             ++xbp;
         }
 
-        int ch;
-
         if (f) {
             list.Put(f);
             return;
-        } else {
-            ch = list.Run(1);
         }
 
-        if (ch == -1) {
+        if (int ch = list.Run(1); ch == -1) {
             ch = list.GetLastKey();
 
             if (ch == 0 || ch == KEY_ESC || ch == ' ' || ch == 'z' || ch == 'Z') {
@@ -1109,26 +1103,24 @@ void XHero::Equipment(FILE * f)
             }
         } else {
             const int n = ch;
-            XItem* witem = dynamic_cast<XBodyPart *>(xqsa[n])->Item();
+            XItem* witem = xqsa[n]->Item();
 
             if (witem != nullptr) {
-                dynamic_cast<XBodyPart *>(xqsa[n])->UnWear();
+                xqsa[n]->UnWear();
                 contain.Add(witem);
             } else {
-                if (dynamic_cast<XBodyPart *>(xqsa[n])->GetProperIM() == IM_MISSILE) {
-                    witem = Inventory(&contain, dynamic_cast<XBodyPart *>(xqsa[n])->GetProperIM(), IF_FIXED_MASK);
+                if (xqsa[n]->GetProperIM() == IM_MISSILE) {
+                    witem = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK);
                 } else {
-                    witem = Inventory(&contain, dynamic_cast<XBodyPart *>(xqsa[n])->GetProperIM(), IF_FIXED_MASK, 1);
+                    witem = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK, 1);
                 }
 
                 if (witem) {
-                    BODY_PART tmpbp = witem->bp;
-
-                    if (((XBodyPart*)xqsa[n])->bp_uin == BP_HAND) {
-                        ((XBodyPart*)xqsa[n])->Wear(witem);
+                    if (xqsa[n]->bp_uin == BP_HAND) {
+                        xqsa[n]->Wear(witem);
                     } else {
-                        if (((XBodyPart*)xqsa[n])->bp_uin == witem->bp) {
-                            ((XBodyPart*)xqsa[n])->Wear(witem);
+                        if (xqsa[n]->bp_uin == witem->bp) {
+                            xqsa[n]->Wear(witem);
                         } else {
                             contain.Add(witem);
                         }
@@ -1178,20 +1170,19 @@ int XHero::stopAction()
     return XCreature::stopAction();
 }
 
-
 void XHero::ReadAll()
 {
     first_item = 0;
-    XItem * i = Inventory(&contain, static_cast<ITEM_MASK>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
+    XItem* item = Inventory(&contain, static_cast<ITEM_MASK>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
 
-    if (i) {
-        if (i->im & IM_SCROLL) {
-            if (!XCreature::Read(i)) {
-                contain.Add(i);
+    if (item) {
+        if (item->im & IM_SCROLL) {
+            if (!XCreature::Read(item)) {
+                contain.Add(item);
             }
-        } else if (i->im & IM_BOOK) {
-            if (!XCreature::Read(i)) {
-                contain.Add(i);
+        } else if (item->im & IM_BOOK) {
+            if (!XCreature::Read(item)) {
+                contain.Add(item);
             }
         }
     }
@@ -1226,7 +1217,7 @@ void XHero::DropItem()
             msgwin.ClrMsg();
             XPoint pt(0, item->quantity);
             msgwin.Add("How much?");
-            int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
+            const int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
 
             if (res == 0) {
                 contain.Add(item);
@@ -1251,11 +1242,11 @@ void XHero::DropItem()
         if (!XCreature::DropItem(drop_item)) {
             contain.Add(drop_item);
             return;
-        } else {
-            msgwin.Add(name);
-            msgwin.Add("drops");
-            msgwin.Add(buf);
         }
+
+        msgwin.Add(name);
+        msgwin.Add("drops");
+        msgwin.Add(buf);
     }
 }
 
@@ -1263,15 +1254,15 @@ void XHero::PickItem()
 {
     char bufx[256];
 
-    XItemList * tmpquae = l->map->GetItemList(x, y);
+    XItemList* tmpquae = l->map->GetItemList(x, y);
 
     if (tmpquae->empty()) {
-        XMapObject * obj = l->map->GetSpecial(x, y);
+        XMapObject* obj = l->map->GetSpecial(x, y);
 
-        if (obj == 0 || !obj->isValid() || obj->im != IM_OTHER) {
+        if (obj == nullptr || !obj->isValid() || obj->im != IM_OTHER) {
             msgwin.Add("There is nothing to pick up here.");
         } else {
-            const auto tit = static_cast<XItem *>(obj->Pick(this));
+            const auto tit = dynamic_cast<XItem *>(obj->Pick(this));
             char buf[256];
             tit->toString(buf);
 
@@ -1320,7 +1311,6 @@ void XHero::PickItem()
             msgwin.Add("You pick up a heap of items.");
         }
     }
-
 }
 
 void XHero::OpenChest()
@@ -1399,13 +1389,13 @@ void XHero::OpenDoor()
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
             if (!(i == 0 && j == 0)) {
-                XMapObject* spec = l->map->GetSpecial(x + i, y + j);
+                XMapObject* door = l->map->GetSpecial(x + i, y + j);
 
-                if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
+                if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened == 0) {
                     c_door++;
                     cd_x = x + i;
                     cd_y = y + j;
-                } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 1) {
+                } else if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened == 1) {
                     o_door++;
                 }
             }
@@ -1426,30 +1416,30 @@ void XHero::OpenDoor()
 
     if (c_door == 1) {
         msgwin.Add("You have opened the door.");
-        XMapObject* spec = l->map->GetSpecial(cd_x, cd_y);
-        dynamic_cast<XDoor *>(spec)->Switch();
+        XMapObject* door = l->map->GetSpecial(cd_x, cd_y);
+        dynamic_cast<XDoor *>(door)->Switch();
         return;
     }
 
     if (c_door > 1) {
         XPoint pt;
-        XMapObject* spec;
+        XMapObject* door;
 
         if (x == nx && y == ny) {
             if (!WhichDirection(&pt)) {
                 return;
             }
 
-            spec = l->map->GetSpecial(x + pt.x, y + pt.y);
+            door = l->map->GetSpecial(x + pt.x, y + pt.y);
         } else {
-            spec = l->map->GetSpecial(nx, ny);
+            door = l->map->GetSpecial(nx, ny);
         }
 
-        if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened) {
+        if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened) {
             msgwin.Add("The door is already opened.");
-        } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
+        } else if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened == 0) {
             msgwin.Add("You have opened the door.");
-            dynamic_cast<XDoor *>(spec)->Switch();
+            dynamic_cast<XDoor *>(door)->Switch();
         } else {
             msgwin.Add("There is no door here.");
         }
@@ -1522,22 +1512,20 @@ void XHero::CloseDoor()
     }
 }
 
-int XHero::WhichDirection(XPoint * pt, const int flag)
+int XHero::WhichDirection(XPoint* pt, const int flag)
 {
     msgwin.Add("Which direction [123456789, z]?");
     vRefresh();
 
     while (true) {
         const int ch = vGetch();
-        int dx = 0;
-        int dy = 0;
 
         if (vCheckForCursorKey(ch, &pt->x, &pt->y)) {
             if (!flag && pt->x == 0 && pt->y == 0) {
                 continue;
-            } else {
-                return 1;
             }
+
+            return 1;
         }
 
         if (ch == 'z' || ch == KEY_ESC) {
@@ -1550,12 +1538,12 @@ int XHero::WhichDirection(XPoint * pt, const int flag)
 
 int XHero::XShoot()
 {
-    XItem * missile = GetItem(BP_MISSILE);
-    XMissileWeapon* missilew = dynamic_cast<XMissileWeapon *>(GetItem(BP_MISSILE_WEAPON));
+    XItem* missile = GetItem(BP_MISSILE);
+    const auto missile_w = dynamic_cast<XMissileWeapon *>(GetItem(BP_MISSILE_WEAPON));
 
     if (!missile) { //if no missile, try to load them
-        for (XItemList::iterator it = contain.begin(); it != contain.end(); it++) {
-            if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missilew)) {
+        for (XItemList::iterator it = contain.begin(); it != contain.end(); ++it) {
+            if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missile_w)) {
                 msgwin.ClrMsg();
                 msgwin.Add("Load");
                 char buf[256];
@@ -1563,7 +1551,7 @@ int XHero::XShoot()
                 msgwin.Add(buf);
                 msgwin.Add("[" MSG_CYAN "Y" MSG_LIGHTGRAY ", " MSG_CYAN "N" MSG_LIGHTGRAY ", " MSG_CYAN "Esc" MSG_LIGHTGRAY "]?");
                 vRefresh();
-                int ch = vGetch();
+                const int ch = vGetch();
 
                 if (ch == 'y' || ch == 'Y' || ch == ' ' || ch == KEY_ENTER) {
                     msgwin.ClrMsg();
@@ -1572,13 +1560,15 @@ int XHero::XShoot()
 
                     if (bp->Item()) {
                         return 0;
-                    } else {
-                        XItem * tmp = it;
-                        contain.erase(it);
-                        bp->Wear(tmp);
-                        break;
                     }
-                } else if (ch == KEY_ESC) {
+
+                    XItem * tmp = it;
+                    contain.erase(it);
+                    bp->Wear(tmp);
+                    break;
+                }
+
+                if (ch == KEY_ESC) {
                     msgwin.ClrMsg();
                     vRefresh();
                     return 0;
@@ -1592,10 +1582,10 @@ int XHero::XShoot()
 
     missile = GetItem(BP_MISSILE);
 
-    if (!missile || !XMissile::isProperWeapon(missile, missilew)) {
-        if (missilew) {
+    if (!missile || !XMissile::isProperWeapon(missile, missile_w)) {
+        if (missile_w) {
             msgwin.Add("You need a proper ammo to shoot from");
-            msgwin.AddLast(missilew->name);
+            msgwin.AddLast(missile_w->name);
         } else {
             msgwin.Add("You need something to throw.");
         }
@@ -1615,22 +1605,22 @@ int XHero::XShoot()
         if (l->map->GetMonster(pt.x, pt.y) && !(pt.x == x && pt.y == y)) {
             target = l->map->GetMonster(pt.x, pt.y);
         } else {
-            target = NULL;
+            target = nullptr;
         }
 
         return 1;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 int XHero::Targeting(int range, XPoint * pt)
 {
     if (target && !target->isValid()) {
-        target = NULL;
+        target = nullptr;
     }
 
-    XCreature * tgt = NULL;
+    const XCreature* tgt = nullptr;
     int dist = 10000;
 
     for (int i = -7; i <= 7; i++)
@@ -1653,21 +1643,21 @@ int XHero::Targeting(int range, XPoint * pt)
         ty = target->y;
     }
 
-    while (1) {
-        float xrng = (float)sqrt((float)(tx - x) * (tx - x) + (ty - y) * (ty - y));
+    while (true) {
+        auto xrng = std::sqrt(static_cast<float>((tx - x) * (tx - x) + (ty - y) * (ty - y)));
         float cos_alpha;
         float sin_alpha;
 
         if (xrng > 0) {
-            cos_alpha = (tx - x) / xrng;
-            sin_alpha = (ty - y) / xrng;
+            cos_alpha = static_cast<float>(tx - x) / xrng;
+            sin_alpha = static_cast<float>(ty - y) / xrng;
         } else {
             cos_alpha = 0;
             sin_alpha = 0;
         }
 
-        float mx = (float)x;
-        float my = (float)y;
+        auto mx = static_cast<float>(x);
+        auto my = static_cast<float>(y);
 
         l->map->Center(tx, ty);
         l->map->Put(this);
@@ -1773,7 +1763,7 @@ int XHero::SelectPosition(XPoint * pt, int flag)
             if (l->map->GetVisible(tx, ty)) {
                 XCreature * cr = l->map->GetMonster(tx, ty);
                 XMapObject * m_obj = l->map->GetSpecial(tx, ty);
-                int item_count = l->map->GetItemCount(tx, ty);
+                const unsigned int item_count = l->map->GetItemCount(tx, ty);
 
                 if (cr && cr->isVisible()) {
                     char buf[256];
@@ -1797,7 +1787,7 @@ int XHero::SelectPosition(XPoint * pt, int flag)
         }
 
         vRefresh();
-        int ch = vGetch();
+        const int ch = vGetch();
 
         if (!flag || more_info_flag) {
             if (ch == ' ' || ch == 't') {
@@ -1842,7 +1832,7 @@ int XHero::XCast(FILE * f)
     char buf[256];
     int ch = '!';
 
-    while (1) {
+    while (true) {
         XGuiList list;
         list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Cast Spell " MSG_BROWN "###");
         XList<XSpell*>::iterator it = m->spells.begin();
@@ -1853,37 +1843,37 @@ int XHero::XCast(FILE * f)
             while (it != m->spells.end()) {
                 it->toString(buf);
                 list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
-                it++;
+                ++it;
             }
         }
 
         if (f) {
             list.Put(f);
             return 0;
-        } else {
-            ch = list.Run(1);
+        }
 
-            if (ch == -1) {
-                ch = list.GetLastKey();
+        ch = list.Run(1);
 
-                if (ch == 'z' || ch == KEY_ESC || ch == 'Z' || ch == ' ') {
-                    return 0;
-                }
-            } else {
-                it = m->spells.begin();
+        if (ch == -1) {
+            ch = list.GetLastKey();
 
-                while (ch > 0) {
-                    it++;
-                    ch--;
-                }
-
-                if (m->Cast(it, this) == CONTINUE) {
-                    return 0;
-                }
-
-                last_cast = it;
-                return 1;
+            if (ch == 'z' || ch == KEY_ESC || ch == 'Z' || ch == ' ') {
+                return 0;
             }
+        } else {
+            it = m->spells.begin();
+
+            while (ch > 0) {
+                ++it;
+                ch--;
+            }
+
+            if (m->Cast(it, this) == CONTINUE) {
+                return 0;
+            }
+
+            last_cast = it;
+            return 1;
         }
     }
 
@@ -1895,15 +1885,15 @@ int XHero::RepeatCast()
     if (last_cast != m->spells.end()) {
         if (m->Cast(last_cast, this) == CONTINUE) {
             return 0;
-        } else {
-            return 1;
         }
+
+        return 1;
     }
 
     return 0;
 }
 
-int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** back)
+int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject** back)
 {
     int flag = 0;
     char buf[256];
@@ -1912,8 +1902,6 @@ int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** bac
     int cy;
     char in_buf[256];
     int value;
-    XCreature * cr;
-    XItem * item;
     int gets_flag = 0;
 
     switch (tr) {
@@ -1933,10 +1921,9 @@ int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** bac
 
             if (ch == 'Y' || ch == 'y') {
                 return 1;
-            } else {
-                return 0;
             }
 
+            return 0;
             break;
 
         case TR_NO_YES:
@@ -1947,10 +1934,9 @@ int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** bac
 
             if (ch == 'N' || ch == 'n') {
                 return 0;
-            } else {
-                return 1;
             }
 
+            return 1;
             break;
 
         case TR_HOW_MUCH:
@@ -1993,19 +1979,21 @@ int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** bac
 
             if (value < pt->x) {
                 return pt->x;
-            } else if (value > pt->y) {
-                return pt->y;
-            } else {
-                return value;
             }
 
+            if (value > pt->y) {
+                return pt->y;
+            }
+
+            return value;
             break;
 
         case TR_STEAL_ITEM:
             assert(back);
 
             if (GetTarget(TR_ATTACK_DIRECTION, pt)) {
-                cr = l->map->GetMonster(x + pt->x, y + pt->y);
+                XItem* item;
+                XCreature *cr = l->map->GetMonster(x + pt->x, y + pt->y);
 
                 if (cr) {
                     if (cr->xai->isEnemy(this)) {
@@ -2013,45 +2001,43 @@ int XHero::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** bac
                         return 0;
                     }
 
-                    item = Inventory(&cr->contain);
+                    if ((item = Inventory(&cr->contain))) {
+                        *back = item;
+                        return 1;
+                    }
+
+                    return 0;
+                }
+
+                XAnyPlace* pl = l->map->GetPlace(x + pt->x, y + pt->y);
+
+                if (pl && pl->GetOwner() && l->map->GetItemCount(x + pt->x, y + pt->y) > 0) {
+                    if ((pl->GetOwner())->xai->isEnemy(this)) {
+                        msgwin.Add("You can't.");
+                        return 0;
+                    }
+
+                    item = Inventory(l->map->GetItemList(x + pt->x, y + pt->y));
 
                     if (item) {
                         *back = item;
                         return 1;
-                    } else {
-                        return 0;
                     }
 
-                } else {
-                    XAnyPlace * pl = l->map->GetPlace(x + pt->x, y + pt->y);
-
-                    if (pl && pl->GetOwner() && l->map->GetItemCount(x + pt->x, y + pt->y) > 0) {
-                        if ((pl->GetOwner())->xai->isEnemy(this)) {
-                            msgwin.Add("You can't.");
-                            return 0;
-                        }
-
-                        item = Inventory(l->map->GetItemList(x + pt->x, y + pt->y));
-
-                        if (item) {
-                            *back = item;
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    }
+                    return 0;
                 }
             } else {
                 return 0;
             }
 
             break;
+        default: ;
     }
 
     return flag;
 }
 
-void XHero::MagicLevelList()
+void XHero::MagicLevelList() const
 {
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Magic School " MSG_BROWN "###");
@@ -2059,7 +2045,7 @@ void XHero::MagicLevelList()
     for (int i = 0; i < MS_EOF; i++) {
         char buf[256];
 
-        if (m->LevelToString((MAGIC_SCHOOL)i, buf)) {
+        if (m->LevelToString(static_cast<MAGIC_SCHOOL>(i), buf)) {
             list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
         }
     }
@@ -2067,7 +2053,7 @@ void XHero::MagicLevelList()
     list.Run();
 }
 
-XSkill* XHero::SkillsList(SKILL_FLAG skill_flag, int marks_left, FILE * f)
+XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, FILE * f) const
 {
     char buf[256];
     char footer[256];
@@ -2095,7 +2081,7 @@ XSkill* XHero::SkillsList(SKILL_FLAG skill_flag, int marks_left, FILE * f)
             strcpy(buf, MSG_LIGHTGRAY);
             strcat(buf, skill->GetName());
 
-            for (int i = strlen(buf); i < 17; i++) {
+            for (size_t i = strlen(buf); i < 17; i++) {
                 buf[i] = '.';
             }
 
@@ -2113,34 +2099,33 @@ XSkill* XHero::SkillsList(SKILL_FLAG skill_flag, int marks_left, FILE * f)
 
         if (f) {
             list.Put(f);
-            return NULL;
+            return nullptr;
+        }
+
+        if (int ch = list.Run(1); ch == -1) {
+            ch = list.GetLastKey();
+
+            if (ch == 'z' || ch == 'Z' || ch == KEY_ESC || ch == ' ') {
+                return nullptr;
+            }
         } else {
-            int ch = list.Run(1);
-
-            if (ch == -1) {
-                ch = list.GetLastKey();
-
-                if (ch == 'z' || ch == 'Z' || ch == KEY_ESC || ch == ' ') {
-                    return NULL;
-                }
-            } else {
-                if (skill_flag == SKF_IMPROVE_SKILL || skill_flag == SKF_USE_SKILL) {
-                    for (const auto& [skt, skill] : sk->skills) {
-                        if (ch > 0) {
-                            ch--;
-                        } else {
-                            return skill;
-                        }
+            if (skill_flag == SKF_IMPROVE_SKILL || skill_flag == SKF_USE_SKILL) {
+                for (const auto& [skt, skill] : sk->skills) {
+                    if (ch > 0) {
+                        ch--;
+                    } else {
+                        return skill;
                     }
                 }
             }
         }
+
     }
 }
 
 void XHero::IncLevel()
 {
-    msgwin.Add("Congratulations!  You have advanced to a new level. Press any Key.");
+    msgwin.Add("Congratulations! You have advanced to a new level. Press any key.");
     l->map->Put(this);
     vRefresh();
     vGetch();
@@ -2153,7 +2138,6 @@ void XHero::IncLevel()
     }
 
     while (counter > 0) {
-        XList<XSkill*>::iterator skill;
         int flag = 0;
 
         for (const auto& [skt, skill] : sk->skills) {
@@ -2164,7 +2148,7 @@ void XHero::IncLevel()
         }
 
         if (flag) {
-            XSkill * tskill = SkillsList(SKF_IMPROVE_SKILL, counter);
+            XSkill* tskill = SkillsList(SKF_IMPROVE_SKILL, counter);
 
             if (tskill && tskill->GetLevel() < tskill->GetMaxLevel()) {
                 tskill->IncLevel();
@@ -2185,7 +2169,7 @@ void XHero::IncLevel()
 
 int XHero::UseSkill()
 {
-    XSkill * skill = NULL;
+    XSkill* skill = nullptr;
     skill = SkillsList(SKF_USE_SKILL);
 
     if (skill) {
@@ -2205,7 +2189,7 @@ const char* wsk_levels_name[] = {
     "grand master"
 };
 
-void XHero::WarSkillsList(FILE * f)
+void XHero::WarSkillsList(FILE * f) const
 {
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Weapon Skills " MSG_BROWN "###");
@@ -2214,7 +2198,9 @@ void XHero::WarSkillsList(FILE * f)
     char buf[256];
 
     for (int i = 0; i < WSK_EOF; i++) {
-        if (i == WSK_BOW) {
+        const auto w_skill = static_cast<WSK_TYPE>(i);
+
+        if (w_skill == WSK_BOW) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
             list.AddItem(new XGuiItem_Text(MSG_BROWN "Missile Weapon       RNG HIT  DMG      Level              required marks", 0), 0);
         }
@@ -2226,16 +2212,16 @@ void XHero::WarSkillsList(FILE * f)
 
         char tbuf[256];
 
-        if (wsk->GetLevel((WSK_TYPE)i) < 15) {
-            sprintf(tbuf, "%d", wsk->GetMarks((WSK_TYPE)i));
+        if (wsk->GetLevel(w_skill) < 15) {
+            sprintf(tbuf, "%d", wsk->GetMarks(w_skill));
         } else {
             sprintf(tbuf, "NaN");
         }
 
         sprintf(buf, MSG_YELLOW "%-18s " MSG_LIGHTGRAY "%+4d %+4d %+4d      " MSG_BROWN "[" MSG_LIGHTGRAY "%d" MSG_BROWN "]" MSG_LIGHTGRAY " %-10s " MSG_LIGHTGRAY "%8s",
-            wsk->GetName((WSK_TYPE)i), wsk->GetDV((WSK_TYPE)i),
-            wsk->GetHIT((WSK_TYPE)i), wsk->GetDMG((WSK_TYPE)i),
-            wsk->GetLevel((WSK_TYPE)i), wsk_levels_name[wsk->GetLevel((WSK_TYPE)i)], tbuf);
+            wsk->GetName(w_skill), wsk->GetDV(w_skill),
+            wsk->GetHIT(w_skill), wsk->GetDMG(w_skill),
+            wsk->GetLevel(w_skill), wsk_levels_name[wsk->GetLevel(w_skill)], tbuf);
 
         list.AddItem(new XGuiItem_Text(buf, 0), 0);
     }
@@ -2248,12 +2234,6 @@ void XHero::WarSkillsList(FILE * f)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-void XHero::HelpScreen()
-{
-    XManual man;
-    man.Run();
-}
 
 void XHero::FirstStep(int _x, int _y, XLocation * _l)
 {
@@ -2275,7 +2255,7 @@ void XHero::LookAt()
         return;
     }
 
-    XCreature * xcr = l->map->GetMonster(pt.x, pt.y);
+    XCreature* xcr = l->map->GetMonster(pt.x, pt.y);
 
     XGuiList list;
 
@@ -2325,7 +2305,7 @@ void XHero::LookAt()
                 iflag = true;
             }
 
-            xbp++;
+            ++xbp;
         }
 
         list.AddItem(new XGuiItem_Text("", 0), 0);
@@ -2375,7 +2355,7 @@ XItem* XHero::onIdentifyItem()
 void XHero::ChatWithMonster()
 {
     int creature_count = 0;
-    XCreature * last_creature = NULL;
+    const XCreature* last_creature = nullptr;
 
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
@@ -2402,18 +2382,18 @@ void XHero::ChatWithMonster()
 
 int XHero::Chat(XCreature * chatter, const char* msg)
 {
-    msgwin.Add("You don't like to speak youself");
+    msgwin.Add("You don't like to speak yourself");
     return 1;
 }
 
 void XHero::QuickPay()
 {
 
-    XCreature * shopkeeper = NULL;
-    XAnyPlace * pl = l->map->GetPlace(x, y);
+    XCreature* shopkeeper = nullptr;
+    XAnyPlace* pl = l->map->GetPlace(x, y);
 
     //hack!!!
-    if (pl == NULL || (pl->GetClassName() != "XShop")) {
+    if (pl == nullptr || (pl->GetClassName() != "XShop")) {
         msgwin.Add("You can pay only in shops.");
         return;
     }
@@ -2421,18 +2401,18 @@ void XHero::QuickPay()
     shopkeeper = pl->GetOwner();
 
     if (shopkeeper) {
-        XShopKeeperAI * pai = (XShopKeeperAI*)shopkeeper->xai;
+        const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai);
         int val = 0;
 
         if (!pai->debt.item_list.empty()) {
             val += (pai->debt.item_list.begin())->GetValue() * (pai->debt.item_list.begin())->quantity;
         }
 
-        val += (int)(pai->debt.debtor_sum);
+        val += static_cast<int>(pai->debt.debtor_sum);
 
         if (val > 0) {
             if (MoneyOp(0) >= val) {
-                XMoney * money = new XMoney(val);
+                const auto money = new XMoney(val);
                 pai->onGiveItem(this, money);
             } else {
                 msgwin.Add("You don't have enough money!");
@@ -2448,7 +2428,7 @@ void XHero::QuickPay()
 void XHero::GiveItem()
 {
     int creature_count = 0;
-    XCreature * last_creature = NULL;
+    const XCreature* last_creature = nullptr;
 
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
@@ -2462,7 +2442,9 @@ void XHero::GiveItem()
     if (creature_count == 0) {
         msgwin.Add("There is no creature to give anything to.");
         return;
-    } else if (creature_count > 1) {
+    }
+
+    if (creature_count > 1) {
         XPoint pt;
         WhichDirection(&pt);
 
@@ -2471,9 +2453,7 @@ void XHero::GiveItem()
         }
     }
 
-    XItem * item = Inventory(&contain);
-
-    if (item) {
+    if (XItem* item = Inventory(&contain)) {
         if (item->im & IM_MONEY) {
             contain.Add(item);
             last_creature->xai->onGiveItem(this, item);
@@ -2489,7 +2469,7 @@ void XHero::GiveItem()
             XItem * gitem;
 
             if (res < item->quantity && res > 0) {
-                gitem = (XItem*)item->MakeCopy();
+                gitem = dynamic_cast<XItem *>(item->MakeCopy());
                 gitem->quantity = res;
                 item->quantity -= res;
                 contain.Add(item);
@@ -2512,7 +2492,7 @@ void XHero::GiveItem()
 
 void XHero::SetTactics()
 {
-    while (1) {
+    while (true) {
         msgwin.ClrMsg();
 
         char buf[256] = "Change tactics: ";
@@ -2555,7 +2535,7 @@ void XHero::SetTactics()
 
         vRefresh();
 
-        int ch = vGetch();
+        const int ch = vGetch();
 
         if (ch == 'Z' || ch == 'z' || ch == KEY_ESC) {
             msgwin.ClrMsg();
@@ -2563,11 +2543,11 @@ void XHero::SetTactics()
         }
 
         if (ch == '+' && tactics < TS_BERSERKER) {
-            ChangeTactics((TACTICS_STATE)(tactics + 1));
+            ChangeTactics(static_cast<TACTICS_STATE>(tactics + 1));
         }
 
         if (ch == '-' && tactics > TS_COWARD) {
-            ChangeTactics((TACTICS_STATE)(tactics - 1));
+            ChangeTactics(static_cast<TACTICS_STATE>(tactics - 1));
         }
     }
 }
@@ -2605,36 +2585,35 @@ void XHero::Restore(XFile * f)
     isDisturb = 0;
     last_char = '5';
     run_way_count = 0;
-    target = NULL;
+    target = nullptr;
     last_cast = m->spells.begin();
     melee_attack = &hero_melee;
 }
 
 int XHero::UseOuterObject()
 {
-    XMapObject * spec;
-    spec = l->map->GetSpecial(nx, ny);
+    XMapObject* spec = l->map->GetSpecial(nx, ny);
 
     if (spec) {
         if (!spec->onOuterUse(this)) {
             msgwin.Add("You can't use this.");
             return 0;
-        } else {
-            return 1;
         }
-    } else {
-        msgwin.Add("Nothing to use.");
+
+        return 1;
     }
+
+    msgwin.Add("Nothing to use.");
 
     return 0;
 }
 
 void XHero::ActivateTrap()
 {
-    XMapObject * obj = l->map->GetSpecial(x, y);
+    XMapObject* obj = l->map->GetSpecial(x, y);
 
     if (obj && obj->im == IM_TRAP) {
-        ((XTrap*)obj)->Activate(this);
+        dynamic_cast<XTrap *>(obj)->Activate(this);
     }
 }
 
@@ -2645,7 +2624,7 @@ int XHero::OrderCompanion()
     for (int i = -10; i < 11; i++)
         for (int j = -10; j < 11; j++) {
             if (isVisibleArea(x + i, y + j)) {
-                XCreature * cr = l->map->GetMonster(x + i, y + j);
+                XCreature* cr = l->map->GetMonster(x + i, y + j);
 
                 if (cr && cr->xai->companion && cr->xai->companion->isHero()) {
                     companions_list.push_back(cr);
@@ -2658,14 +2637,14 @@ int XHero::OrderCompanion()
         return 0;
     }
 
-    XCreature * slave = NULL;
+    XCreature* slave = nullptr;
 
     if (companions_list.size() > 1) {
         char bufx[8192] = "";
         int index = 0;
         XQList<XCreature*>::iterator it;
 
-        for (it = companions_list.begin(); it != companions_list.end(); it++) {
+        for (it = companions_list.begin(); it != companions_list.end(); ++it) {
             char buf[256];
             sprintf(buf, "[%c] %s", 64 + index, (*it)->GetNameEx(CRN_T1));
             strcat(bufx, buf);
@@ -2674,7 +2653,7 @@ int XHero::OrderCompanion()
 
         msgwin.Add(bufx);
         vRefresh();
-        int ch = vGetch();
+        const int ch = vGetch();
 
         if (ch == KEY_ESC || ch == ' ') {
             return 0;
@@ -2682,7 +2661,7 @@ int XHero::OrderCompanion()
 
         index = 96;
 
-        for (it = companions_list.begin(); it != companions_list.end(); it++) {
+        for (it = companions_list.begin(); it != companions_list.end(); ++it) {
             if (ch == index || ch == (index - 32)) {
                 slave = *it;
             }
@@ -2702,7 +2681,7 @@ int XHero::OrderCompanion()
         MSG_LIGHTGRAY "] - follow me, [" MSG_CYAN "w" MSG_LIGHTGRAY "] - wait");
 
     vRefresh();
-    int ch = vGetch();
+    const int ch = vGetch();
     msgwin.ClrMsg();
     vRefresh();
 
@@ -2735,7 +2714,7 @@ int XHero::OrderCompanion()
         msgwin.Add("You command");
         msgwin.Add(slave->GetNameEx(CRN_T1));
         msgwin.Add("to come to you.");
-        slave->xai->ordered_enemy = NULL;
+        slave->xai->ordered_enemy = nullptr;
         slave->xai->companion_command = CC_FOLLOW;
         slave->xai->ResAIFlag(AIF_GUARD_AREA);
         return 1;
@@ -2743,15 +2722,16 @@ int XHero::OrderCompanion()
         msgwin.Add("You command");
         msgwin.Add(slave->GetNameEx(CRN_T1));
         msgwin.Add("to wait.");
-        slave->xai->ordered_enemy = NULL;
+        slave->xai->ordered_enemy = nullptr;
         slave->xai->companion_command = CC_WAIT;
         XRect tr(slave->x, slave->y, slave->x + 1, slave->y + 1);
         slave->xai->SetArea(tr, slave->l->ln);
         slave->xai->SetAIFlag(AIF_GUARD_AREA);
         return 1;
-    } else {
-        return 0;
     }
+
+    return 0;
+
 }
 
 //Location Script Support
