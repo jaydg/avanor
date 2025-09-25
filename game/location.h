@@ -28,6 +28,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map.h"
 #include "map/xanyplace.h"
 
+enum STAIRWAY_TYPE {
+    STW_UNKNOWN,
+    STW_UP,
+    STW_DOWN
+};
+
 enum SHOP_DOOR {
     SHOP_DOOR_UP,
     SHOP_DOOR_LEFT,
@@ -121,7 +127,6 @@ enum PALETTE {
     PAL_EXTINCT_VOLCANO
 };
 
-enum STDMAP;
 struct PALETTE_MAP {
     char this_view;
     STDMAP	real_view;

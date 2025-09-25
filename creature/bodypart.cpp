@@ -20,7 +20,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/bodypart.h"
 #include "creature/creature.h"
-#include "engine/defs.h"
 
 REGISTER_CLASS(XBodyPart);
 

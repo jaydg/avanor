@@ -33,6 +33,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/skills.h"
 #include "magic/wskills.h"
 
+enum RBP_FLAG {
+    RBP_UNKNOWN,
+    RBP_BLOCK
+};
+
 enum AI_TYPE {
     AI_HERO,
     AI_SIMPLE
@@ -105,6 +110,20 @@ struct ACTION_DATA {
 
 typedef int (ITEM_FILTR)(XItem*);
 
+enum TARGET_REASON {
+    TR_NONE,
+    TR_ATTACK_TARGET,
+    TR_ATTACK_POSITION,
+    TR_ATTACK_DIRECTION,
+    TR_IMPROVE,
+    TR_YES_NO,      // by default - no
+    TR_NO_YES,      // by default - yes
+    TR_HOW_MUCH,    // enter a number between two numbers
+    TR_LETTER,      // enter a letter in range
+    TR_STEAL_ITEM,
+    TR_SELECT_ITEM,
+};
+
 enum MISSILE_FL_TYPE {
     MFT_ARROW,
     MFT_BALL,
@@ -160,7 +179,6 @@ struct DAMAGE_DATA_EX {
     unsigned int flags;        // see DAMAGE_FLAGS
     XItem* weapon;             // used only in melee combat (can be undefined if attack_name is defined)
 };
-
 
 struct _CREATURE;
 

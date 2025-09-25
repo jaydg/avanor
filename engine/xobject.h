@@ -26,7 +26,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <map>
 #include <string>
 
-#include "engine/defs.h"
 #include "engine/xfile.h"
 
 enum ITEM_MASK {

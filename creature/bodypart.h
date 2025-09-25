@@ -23,10 +23,29 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/xmapobj.h"
 #include "engine/xobject.h"
-#include "item/item.h"
 
 class XItem;
 class XCreature;
+
+enum BODY_PART {
+    BP_UNKNOWN,
+    BP_HEAD,
+    BP_NECK,
+    BP_BODY,
+    BP_CLOAK,
+    BP_HAND,
+    BP_RING,
+    BP_GLOVES,
+    BP_BOOTS,
+    BP_LIGHT_SOURCE,
+    BP_TOOL,
+    BP_MISSILE_WEAPON,
+    BP_MISSILE,
+    BP_EOF,
+    BP_OTHER,
+    BP_ONE_HANDED,
+    BP_TWO_HANDED
+};
 
 class XBodyPart final : public XObject
 {

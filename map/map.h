@@ -59,6 +59,37 @@ enum VISIABLE {
     VI_WALL = 80
 };
 
+enum STDMAP {
+    M_UNKNOWN,
+    M_GREENGRAS,
+    M_GREENTREE,
+    M_SAND,
+    M_WINDOW,
+    M_MAGMA,
+    M_QUARTZ,
+    M_CAVEFLOOR,
+    M_STONEFLOOR,
+    M_PATH,
+    M_WOODWALL,
+    M_STONEWALL,
+    M_WATER,
+    M_DEEPWATER,
+    M_LAVA,
+    M_HILL,
+    M_LOWMOUNTAIN,
+    M_MOUNTAIN,
+    M_HIGHMOUNTAIN,
+    M_BRIDGE,
+    M_ROAD,
+    M_OBSIDIANFLOOR,
+    M_FENCE,
+    M_GOLDENFLOOR,
+    M_MARBLEWALL,
+    M_BLACKMARBLEWALL,
+    M_GOLDENFENCE,
+    M_TELEPORTWHITE
+};
+
 struct xMAP {
     char view;
     char color;

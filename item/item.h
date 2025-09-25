@@ -21,10 +21,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef __ITEM_H
 #define __ITEM_H
 
+#include "creature/bodypart.h"
 #include "engine/xbaseobj.h"
 #include "engine/xlist.h"
 #include "item/itemdb.h"
 #include "item/itemdef.h"
+
+#define DUR_INFINITE 65535
+
+enum RESULT {
+    FAIL,
+    SUCCESS,
+    CONTINUE,
+    ABORT,
+};
 
 class XCreature;
 
