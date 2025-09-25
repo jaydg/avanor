@@ -913,7 +913,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
                 } else {
                     list.AddItem(new XGuiItem_Text(MSG_LIGHTGRAY "There are no such items."), 0);
                 } else {
-                for (int oi = 0; oi < ARRAY_SIZE(output_items_name); oi++) {
+                for (int oi = 0; oi < std::size(output_items_name); oi++) {
                     if (output_items_mask[oi] & mask) {
                         if ((XItemList*)&contain == item_list) {
                             sprintf(buf, MSG_LIGHTGRAY "You have no %s.", output_items_name[oi]);
@@ -939,7 +939,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
 
                         last_mask = it->im;
 
-                        for (int oi = 0; oi < ARRAY_SIZE(output_items_name); oi++) {
+                        for (int oi = 0; oi < std::size(output_items_name); oi++) {
                             if (output_items_mask[oi] & last_mask) {
                                 sprintf(buf, MSG_YELLOW "%s " MSG_BROWN "('" MSG_YELLOW "%c" MSG_BROWN "')", output_items_name[oi], output_items_ext[oi]);
                                 list.AddItem(new XGuiItem_Text(buf), 0);

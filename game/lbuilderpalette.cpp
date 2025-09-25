@@ -138,7 +138,7 @@ void XLocation::PutPalette(int x, int y)
                 if (q != 0 || w != 0) {
                     STDMAP tm = map->GetXY(pt.x + q, pt.y + w);
 
-                    for (int i = 0; i < ARRAY_SIZE(best_fit_terrain_table); i++) {
+                    for (int i = 0; i < std::size(best_fit_terrain_table); i++) {
                         if (best_fit_terrain_table[i] == tm && best_fit_index < i) {
                             best_fit_index = i;
                         }

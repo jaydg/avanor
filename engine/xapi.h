@@ -30,6 +30,4 @@ int vBitsCount(unsigned int number);
 
 int vCheckForCursorKey(int key, int* dx, int* dy);
 
-#define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
-
 #endif
