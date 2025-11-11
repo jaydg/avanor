@@ -20,196 +20,139 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/xhero.h"
 #include "helpers/xgui.h"
+#include "helpers/xstring.h"
 
-//////////////////////////////////////////////////////////////////////////////
-// The XGuiItem_Text::WideBuffer(char * str, int newlen) function           //
-// tries to widen input string str to size newlen. If it is impossible      //
-// (size already is equal or greater then requested), the function simply   //
-// exits and does nothing.                                                  //
-//////////////////////////////////////////////////////////////////////////////
+#include <algorithm>
 
-static char* after_next_space(char* str)
-{
-    char* p = x_strchr(str, ' ');
+// The XGuiItem_Text::WideBuffer() function tries to widen the input string
+// str to the given width. If it is impossible (size already is equal or
+// greater than requested), the function simply exits and does nothing.
+void XGuiItem_Text::WideBuffer(std::string& str, const std::string::size_type new_width) {
+    // Determine the length of the string, excluding color escape sequences
+    std::string::difference_type num_escapes = std::count(str.begin(), str.end(), 0x1F);
+    std::string::size_type len = str.size() - (num_escapes * 2);
 
-    if (p == 0) {
-        return x_strchr(str, 0);
-    }
+    // Find spaces (these may consist of one or more ' ' characters)
+    std::vector<std::string::size_type> spaces;
 
-    while (*p == ' ') {
-        p++;
-    }
+    for(std::string::size_type i = 0; i < str.size(); ++i) {
+        if (str[i] == ' ') {
+            spaces.push_back(i);
 
-    return p;
-}
-
-static char* insert_space(char* str)
-{
-    memmove(str + 1, str, x_strsize(str) + 1);
-    *str++ = ' ';
-    return str;
-}
-
-void XGuiItem_Text::WideBuffer(char* buf, int newlen)
-{
-    // Count length of string and number of blank spaces (blank space may consist
-    // of one or more ' ' characters)
-    int len = 0, spaces = 0;
-    char* p = buf;
-
-    while (*p != 0) {
-        if (*p == 0x1F) {
-            p += 2;
-            continue;
-        }
-
-        if (*p == ' ') {
-            spaces++;
-            p++;
-            len++;
-
-            while (*p == ' ') {
-                p++;
-                len++;
+            while (str[i]== ' ') {
+                ++i;
             }
 
-            if (*p == 0) {
-                spaces--;
+            if (i == str.size()) {
+               break;
             }
-        } else {
-            p++;
-            len++;
         }
     }
 
-    while (p >= buf + 2 && *(p - 1) == ' ' && *(p - 2) != 0x1F) {
-        p--;
-        len--;
-        *p = 0;
-    }
-
-    if (len >= newlen || spaces == 0) {
+    if (len >= new_width || spaces.empty()) {
         return;
     }
 
-    int new_spaces = newlen - len;
+    std::string::size_type missing_spaces = new_width - len;
+    std::string::size_type spaces_per_space = std::max(static_cast<std::string::size_type>(1), missing_spaces / spaces.size());
 
-    int count1 = spaces;
-    int count2 = new_spaces * 2;
+    while (!spaces.empty() && missing_spaces > 0) {
+        const auto position = spaces.back();
+        str.insert(position, spaces_per_space, ' ');
 
-    int subtract = new_spaces < spaces ? new_spaces * 2 : spaces * 2;
-
-    p = after_next_space(buf);
-
-    int counter = new_spaces;
-
-    while (true) {
-        count1 -= subtract;
-        count2 -= subtract;
-
-        if (count1 <= 0) {
-            p = insert_space(p);
-            count1 += spaces * 2;
-
-            if (--counter <= 0) {
-                break;
-            }
-        }
-
-        if (count2 <= 0) {
-            p = after_next_space(p);
-            count2 += new_spaces * 2;
-        }
+        spaces.pop_back();
+        missing_spaces -= spaces_per_space;
     }
 }
 
-bool XGuiItem_Text::SetWidth(int new_width)
-{
-    int color = xLIGHTGRAY;
-    const char* str = text;
+bool XGuiItem_Text::SetWidth(const std::string::size_type new_width) {
+    char color = xLIGHTGRAY;
+    std::size_t start = 0;
 
-    while (lines_count > 0) {
-        delete[] lines[--lines_count];
-    }
+    Clear();
 
     while (true) {
         bool is_last_line = false, is_line_break = false;
 
-        if (x_strlen(str) == 0) {
+        if (start == text.size()) {
             break;
         }
 
-        int last_space = -1, size = 0, len = 0;
+        std::size_t last_space = 0;
+        std::size_t size = 0; // count of characters, including color codes
+        std::size_t len = 0;  // count of visible characters
 
         while (len <= new_width) {
-            if (str[size] == 0x1F) {
+            if (text[size + start] == 0x1F) {
                 size += 2;
                 continue;
             }
 
-            if (str[size] == 0) {
+            if ((size + start) == text.size()) {
                 is_last_line = true;
-                last_space = size;
+                last_space = size + start;
                 break;
             }
 
-            if (str[size] == '\n') {
+            if (text[size + start] == '\n') {
                 is_line_break = true;
-                last_space = size;
+                last_space = size + start;
                 break;
             }
 
-            if (str[size] == ' ') {
-                last_space = size;
+            if (text[size + start] == ' ') {
+                last_space = size + start;
             }
 
             size++;
             len++;
         }
 
-        if (last_space == -1) {
+        if (last_space == 0) {
             return false;
         }
 
-        char* tmp = new char[2 + new_width - len + size + 1];
-
-        while (last_space >= 2 && str[last_space - 1] == ' ' && str[last_space - 2] != 0x1F) {
+        // handle trailing spaces
+        while (last_space >= 2 && text[last_space - 1] == ' ') {
             last_space--;
         }
 
-        if (str[0] != 0x1F) {
-            tmp[0] = 0x1F;
-            tmp[1] = color;
-            memmove(tmp + 2, str, last_space);
-            tmp[last_space + 2] = 0;
-        } else {
-            memmove(tmp, str, last_space);
-            tmp[last_space] = 0;
+        std::string tmp;
+        tmp.reserve(new_width + 2);
+
+        if (text[start] != 0x1F) {
+            tmp = {0x1F, color};
         }
 
-        char* p = tmp;
+        tmp += text.substr(start, last_space - start);
 
-        while (*p != 0)
-            if (*p++ == 0x1F) {
-                color = *p++;
+        // memorize active color
+        for(std::string::size_type i = 0; i < tmp.size(); ++i) {
+            if (tmp[i] == 0x1F) {
+                color = tmp[i + 1];
             }
+        }
 
+        // justify line
         if (!is_last_line && !is_line_break) {
             WideBuffer(tmp, new_width);
         }
 
-        lines[lines_count++] = tmp;
-        str += last_space;
+        lines.emplace_back(tmp);
 
-        if (is_line_break && *str == '\n') {
-            str++;
-        } else
-            while (*str == ' ') {
-                str++;
-            }
+        // move forward string reference
+        start = last_space;
+
+        // step over whitespace
+        if (is_line_break && text[start] == '\n') {
+            start++;
+        } else while (std::isspace(text[start])) {
+            start++;
+        }
     }
 
-    this->width = new_width;
+    this->width = static_cast<int>(new_width);
+
     return true;
 }
 

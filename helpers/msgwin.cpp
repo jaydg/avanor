@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/msgwin.h"
 #include "helpers/xgui.h"
+#include "helpers/xstring.h"
 
 XMsgWin msgwin;
 

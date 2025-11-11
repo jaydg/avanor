@@ -22,10 +22,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __XGUI_H
 
 #include <cstdio>
+#include <string>
+#include <vector>
 
 #include "engine/global.h"
-#include "helpers/xstring.h"
-#include "helpers/xvector.h"
 
 class XGuiItem
 {
@@ -39,7 +39,7 @@ class XGuiItem
         virtual int isSelectable() = 0;
         virtual int isTitle() = 0;
 
-        virtual bool SetWidth(int new_width)
+        virtual bool SetWidth(std::string::size_type new_width)
         {
             return false;
         }
@@ -74,7 +74,7 @@ class XGuiItem_SimpleSelect final : public XGuiItem
             return 0;
         }
 
-        bool SetWidth(int new_width) override
+        bool SetWidth(std::string::size_type new_width) override
         {
             return true;
         }
@@ -93,25 +93,21 @@ class XGuiItem_SimpleSelect final : public XGuiItem
 
 class XGuiItem_Text final : public XGuiItem
 {
-        char* text;
-        XSimpleVector<char*> lines;
-        int lines_count;
+        std::string text;
+        std::vector<std::string> lines;
         int width{};
         int select_flag;
 
-        static void WideBuffer(char* buf, int new_width);
+        static void WideBuffer(std::string& str, std::string::size_type new_width);
 
     public:
-        XGuiItem_Text() : XGuiItem(), text(nullptr), select_flag(0)
+        XGuiItem_Text() : select_flag(0)
         {
-            lines_count = 0;
             SetText("");
         }
 
-        explicit XGuiItem_Text(const char* _text, const int sf = 0) : XGuiItem(), text(nullptr), select_flag(sf)
+        explicit XGuiItem_Text(const char* _text, const int sf = 0) :select_flag(sf)
         {
-            lines_count = 0;
-
             if (*_text == 0) {
                 SetText("\n");
             } else {
@@ -121,25 +117,13 @@ class XGuiItem_Text final : public XGuiItem
 
         void SetText(const char* _text)
         {
-            while (lines_count > 0) {
-                delete[] lines[--lines_count];
-            }
-
-            delete[] text;
-
-            int textsize = x_strsize(_text);
-            text = new char[textsize + 1];
-            x_strcpy(text, _text);
-            SetWidth(x_strlen(text));
+            text = _text;
+            SetWidth(text.length());
         }
 
         ~XGuiItem_Text() override
         {
-            while (lines_count > 0) {
-                delete[] lines[--lines_count];
-            }
-
-            delete[] text;
+            Clear();
         }
 
         int isSelectable() override
@@ -152,16 +136,24 @@ class XGuiItem_Text final : public XGuiItem
             return 0;
         }
 
-        bool SetWidth(int new_width) override;
         int GetHeight() override
         {
-            return lines_count;
+            // FIXME
+            return static_cast<int>(lines.size());
         }
 
         const char* operator[](const int index) override
         {
-            return lines[index];
+            return lines[index].c_str();
         }
+
+protected:
+    void Clear() {
+        for (auto line = lines.begin(); line != lines.end();)
+            line = lines.erase(line);
+    }
+
+    bool SetWidth(std::string::size_type new_width) override;
 };
 
 #define XGUI_LIST_HEADER 3

@@ -20,24 +20,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/xstring.h"
 
-char* x_strchr(char* str, char c)
-{
-    while (true) {
-        if (*str == 0x1F) {
-            str += 2;
-            continue;
-        }
-
-        if (*str == c) {
-            return str;
-        }
-
-        if (*str++ == 0) {
-            return nullptr;
-        }
-    }
-}
-
 int x_strlen(const char* str)
 {
     int count = 0;
@@ -53,31 +35,4 @@ int x_strlen(const char* str)
     }
 
     return count;
-}
-
-int x_strsize(const char* str)
-{
-    int count = 0;
-
-    while (str[count] != 0)
-        if (str[count++] == 0x1F) {
-            count++;
-        }
-
-    return count;
-}
-
-void x_strcpy(char* dst, const char* src)
-{
-    while (true) {
-        if (*src == 0x1F) {
-            *dst++ = *src++;
-            *dst++ = *src++;
-            continue;
-        }
-
-        if ((*dst++ = *src++) == 0) {
-            return;
-        }
-    }
 }

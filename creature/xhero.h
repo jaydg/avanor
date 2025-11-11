@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "engine/global.h"
 #include "helpers/xgui.h"
+#include "helpers/xstring.h"
 #include "item/incl_i.h"
 
 extern int _exit_flag;
@@ -173,7 +174,7 @@ class XGuiItem_Inventory final : public XGuiItem
             return 0;
         }
 
-        bool SetWidth(int new_width) override
+        bool SetWidth(std::string::size_type new_width) override
         {
             return true;
         }
