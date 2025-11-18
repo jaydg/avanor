@@ -1612,7 +1612,7 @@ yy197:
 #line 199
         {
             if (!out.empty()) {
-                AddItem(new XGuiItem_Text(out.c_str(), is_ref));
+                AddItem(new XGuiItem_Text(out, is_ref));
                 out = "";
             }
 
@@ -2514,7 +2514,7 @@ yy266:
 
             if (!ref_name.empty()) {
                 if (!out.empty()) {
-                    AddItem(new XGuiItem_Text(out.c_str(), is_ref));
+                    AddItem(new XGuiItem_Text(out, is_ref));
                     out = "";
                 }
 
@@ -2575,7 +2575,7 @@ yy274:
 #line 159
         {
             if (!out.empty()) {
-                AddItem(new XGuiItem_Text(out.c_str(), is_ref));
+                AddItem(new XGuiItem_Text(out, is_ref));
                 out = "";
             }
 

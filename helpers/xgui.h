@@ -115,7 +115,18 @@ class XGuiItem_Text final : public XGuiItem
             }
         }
 
+        explicit XGuiItem_Text(const std::string& _text, const int sf = 0) :select_flag(sf)
+        {
+            SetText(_text);
+        }
+
         void SetText(const char* _text)
+        {
+            text = _text;
+            SetWidth(text.length());
+        }
+
+        void SetText(const std::string& _text)
         {
             text = _text;
             SetWidth(text.length());
