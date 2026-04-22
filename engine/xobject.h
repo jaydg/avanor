@@ -130,7 +130,7 @@ extern XGUID guid;
 
 typedef std::map<XGUID, class XObject*> XObjectMap;
 
-// this class is a base class for most important part's of cernel
+// The base class for most important parts of the game
 class XObject
 {
     private:
@@ -145,7 +145,7 @@ class XObject
         // used during saving
         bool bAlreadyStored;
 
-        // all objects have a global unique inditifer
+        // all objects have a global unique identifier
         // (it has no sense to store pointers)
         XGUID xguid;
 
@@ -276,8 +276,8 @@ class XObject
         virtual void Store(XFile * f);// = 0;
         virtual void Restore(XFile * f);// = 0;
 
-        // Runable object...
-        // If It returns zero, than object must be removed from scheduler
+        // Runnable object.
+        // If it returns zero, then the object must be removed from scheduler
         virtual int Run()
         {
             return 1;
