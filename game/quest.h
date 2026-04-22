@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __QUEST_H
-#define __QUEST_H
+#ifndef QUEST_H
+#define QUEST_H
 
 #include <string>
 

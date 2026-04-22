@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __MANUAL_H
-#define __MANUAL_H
+#ifndef MANUAL_H
+#define MANUAL_H
 
 #include "helpers/xgui.h"
 

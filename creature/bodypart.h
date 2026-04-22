@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __BODYPART_H
-#define __BODYPART_H
+#ifndef BODYPART_H
+#define BODYPART_H
 
 #include "engine/xmapobj.h"
 #include "engine/xobject.h"

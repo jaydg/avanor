@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __STRPROC_H
-#define __STRPROC_H
+#ifndef STRPROC_H
+#define STRPROC_H
 
 #include "engine/xlist.h"
 #include "helpers/dice.h"

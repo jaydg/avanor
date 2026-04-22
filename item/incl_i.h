@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __INCL_I_H
-#define __INCL_I_H
+#ifndef INCL_I_H
+#define INCL_I_H
 
 #include "item/itemdef.h"
 #include "item/xamulet.h"

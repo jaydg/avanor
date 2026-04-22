@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ITEMDB_H
-#define __ITEMDB_H
+#ifndef ITEMDB_H
+#define ITEMDB_H
 
 #include "item/itemdef.h"
 

@@ -18,16 +18,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XDEBUG_H
-#define __XDEBUG_H
+#ifndef XDEBUG_H
+#define XDEBUG_H
 
 #ifdef _DEBUG
     /*#      define __NOHERO__
     #      define __XDEBUG_00__*/
-    #define __XDEBUG_01
+    #define XDEBUG_01
     /*#      define NOT_SET_RND_SEED*/
-    #define __CHOOSE_RACE
-    #define __ENTER_NAME
+    #define CHOOSE_RACE
+    #define ENTER_NAME
 #endif
 
 #endif

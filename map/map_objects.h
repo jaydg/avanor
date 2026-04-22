@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __OTHER_MISC_H
-#define __OTHER_MISC_H
+#ifndef OTHER_MISC_H
+#define OTHER_MISC_H
 
 #include "creature/deity.h"
 #include "item/item.h"

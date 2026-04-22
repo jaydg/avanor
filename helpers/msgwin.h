@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __MSGWIN_H
-#define __MSGWIN_H
+#ifndef MSGWIN_H_
+#define MSGWIN_H_
 
 #define MSGWIN_X 0
 #define MSGWIN_Y 0

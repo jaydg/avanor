@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __MODIFERS_H
-#define __MODIFERS_H
+#ifndef MODIFERS_H
+#define MODIFERS_H
 
 #include <algorithm>
 

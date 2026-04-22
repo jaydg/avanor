@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XBASEOBJ_H__
-#define __XBASEOBJ_H__
+#ifndef XBASEOBJ_H
+#define XBASEOBJ_H
 
 #include "xobject.h"
 #include "engine/xmapobj.h"

@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __SPELLDEF_H
-#define __SPELLDEF_H
+#ifndef SPELLDEF_H
+#define SPELLDEF_H
 
 enum SPELL_NAME {
     SPELL_CURE_LIGHT_WOUNDS,

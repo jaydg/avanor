@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ANY_CR_H
-#define __ANY_CR_H
+#ifndef ANY_CR_H
+#define ANY_CR_H
 
 #include <string>
 

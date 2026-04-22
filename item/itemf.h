@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ITEM_FACTORY_H
-#define __ITEM_FACTORY_H
+#ifndef ITEM_FACTORY_H
+#define ITEM_FACTORY_H
 
 #include "item/incl_i.h"
 

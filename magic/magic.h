@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __MAGIC_H
-#define __MAGIC_H
+#ifndef MAGIC_H
+#define MAGIC_H
 
 #include "creature/creature.h"
 #include "engine/xlist.h"

@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __GLOVES_H
-#define __GLOVES_H
+#ifndef GLOVES_H
+#define GLOVES_H
 
 #include "item/xclothe.h"
 

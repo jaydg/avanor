@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XMAPOBJECT_H
-#define __XMAPOBJECT_H
+#ifndef XMAPOBJECT_H
+#define XMAPOBJECT_H
 
 #include "engine/xobject.h"
 #include "game/location.h"

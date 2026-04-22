@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XGEN_H
-#define __XGEN_H
+#ifndef XGEN_H
+#define XGEN_H
 
 #include "engine/xmapobj.h"
 #include "map/map.h"

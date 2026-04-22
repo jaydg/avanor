@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __MODIFER_H
-#define __MODIFER_H
+#ifndef MODIFER_H
+#define MODIFER_H
 
 #include "engine/xlist.h"
 #include "engine/xobject.h"

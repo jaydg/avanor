@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XSTRING_H__
-#define __XSTRING_H__
+#ifndef XSTRING_H
+#define XSTRING_H
 
 int x_strlen(const char* str);
 

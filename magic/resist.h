@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __RESIST_H
-#define __RESIST_H
+#ifndef RESIST_H
+#define RESIST_H
 
 #include "helpers/strproc.h"
 #include "helpers/dice.h"

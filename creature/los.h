@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __LOS_H__
-#define __LOS_H__
+#ifndef LOS_H
+#define LOS_H
 
 void LineOfSight(
     int x,

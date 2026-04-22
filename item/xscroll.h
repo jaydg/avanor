@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XSCROLL_H
-#define __XSCROLL_H
+#ifndef XSCROLL_H
+#define XSCROLL_H
 
 #include "item/item.h"
 #include "magic/effect.h"

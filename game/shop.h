@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XSHOP_H
-#define __XSHOP_H
+#ifndef XSHOP_H
+#define XSHOP_H
 
 #include "game/location.h"
 #include "map/xanyplace.h"

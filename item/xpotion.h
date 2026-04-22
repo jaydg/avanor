@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XPOTION_H
-#define __XPOTION_H
+#ifndef XPOTION_H
+#define XPOTION_H
 
 #include "item/item.h"
 #include "magic/effect.h"

@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XBOOK_H
-#define __XBOOK_H
+#ifndef XBOOK_H
+#define XBOOK_H
 
 #include "item/item.h"
 #include "magic/spelldef.h"

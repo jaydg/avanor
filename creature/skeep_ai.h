@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __SKEEP_AI_H
-#define __SKEEP_AI_H
+#ifndef SKEEP_AI_H
+#define SKEEP_AI_H
 
 #include "creature/std_ai.h"
 #include "game/shop.h"

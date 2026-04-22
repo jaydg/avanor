@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XHERB_H
-#define __XHERB_H
+#ifndef XHERB_H
+#define XHERB_H
 
 #include "item/xanyfood.h"
 #include "item/xpotion.h"

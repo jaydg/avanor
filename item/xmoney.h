@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XMONEY_H
-#define __XMONEY_H
+#ifndef XMONEY_H
+#define XMONEY_H
 
 #include "item/item.h"
 

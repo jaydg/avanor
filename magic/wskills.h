@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __WSKILLS_H
-#define __WSKILLS_H
+#ifndef WSKILLS_H
+#define WSKILLS_H
 
 #include "item/itemdef.h"
 

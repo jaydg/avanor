@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XANYPLACE_H
-#define __XANYPLACE_H
+#ifndef XANYPLACE_H
+#define XANYPLACE_H
 
 #include "engine/xobject.h"
 #include "helpers/rect.h"

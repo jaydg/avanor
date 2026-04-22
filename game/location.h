@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __LOCATION_H
-#define __LOCATION_H
+#ifndef LOCATION_H
+#define LOCATION_H
 
 #include <string>
 

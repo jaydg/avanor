@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XLIST_H
-#define __XLIST_H
+#ifndef XLIST_H
+#define XLIST_H
 
 #include "engine/xobject.h"
 

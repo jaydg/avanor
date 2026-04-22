@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __HISCORE_H
-#define __HISCORE_H
+#ifndef HISCORE_H
+#define HISCORE_H
 
 #include <memory>
 #include <cereal/cereal.hpp>

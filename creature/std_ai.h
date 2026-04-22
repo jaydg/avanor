@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __STD_AI_H
-#define __STD_AI_H
+#ifndef STD_AI_H
+#define STD_AI_H
 
 #include "creature/creature.h"
 #include "creature/cr_defs.h"

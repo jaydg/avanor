@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __EFFECT_H
-#define __EFFECT_H
+#ifndef EFFECT_H
+#define EFFECT_H
 
 #include "engine/global.h"
 #include "item/itemdef.h"

@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __XOBJECT_H
-#define __XOBJECT_H
+#ifndef XOBJECT_H
+#define XOBJECT_H
 
 #include <cassert>
 #include <cstdlib>

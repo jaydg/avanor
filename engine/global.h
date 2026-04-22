@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __GLOBAL_H
-#define __GLOBAL_H
+#ifndef GLOBAL_H
+#define GLOBAL_H
 
 #ifdef WIN32
     #define XWIN32

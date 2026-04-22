@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __SKILL_H
-#define __SKILL_H
+#ifndef SKILL_H
+#define SKILL_H
 
 #include "engine/xobject.h"
 
