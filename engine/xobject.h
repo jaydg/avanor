@@ -119,10 +119,7 @@ class XClassFactory
         static XObject* Create(const std::string& name);
         static XObject* CreateNew(const std::string &name);
 };
-
-#define DYNCREATE(x) XClassFactory::Create(x)
 // end
-
 
 
 typedef unsigned long XGUID;

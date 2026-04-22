@@ -156,7 +156,7 @@ void XObject::RestoreAllObjects(XFile * f)
         const auto buf = new char[name_size + 1];
         f->Read(buf, sizeof(char), name_size);
         buf[name_size] = 0;
-        DYNCREATE(buf);
+        XClassFactory::Create(buf);
         fprintf(tmp, "[%d] %s\n", i, buf);
         delete[] buf;
     }
