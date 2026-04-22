@@ -30,7 +30,7 @@ class XGenerator : public XMapObject
         XGenerator() {}
 
     public:
-        explicit DECLARE_CREATOR(XGenerator, XMapObject);
+        DECLARE_CREATOR(XGenerator, XMapObject);
         explicit XGenerator(const int run_time)
         {
             ttmb = run_time;
@@ -59,7 +59,7 @@ class XUniversalGen final : public XGenerator
         }
 
     public:
-        explicit DECLARE_CREATOR(XUniversalGen, XGenerator);
+        DECLARE_CREATOR(XUniversalGen, XGenerator);
         XUniversalGen(XLocation * loc, CREATURE_CLASS _crc, CREATURE_LEVEL _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
         {
             l = loc;
@@ -80,7 +80,7 @@ class XUniversalGen final : public XGenerator
 class XMainLocationGen final : public XGenerator
 {
     public:
-        explicit DECLARE_CREATOR(XMainLocationGen, XGenerator);
+        DECLARE_CREATOR(XMainLocationGen, XGenerator);
         explicit XMainLocationGen(XLocation * loc) : XGenerator(1000)
         {
             l = loc;

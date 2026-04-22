@@ -87,10 +87,10 @@ struct DUMMY_STRUCT {
 };
 
 #define DECLARE_CREATOR(__xClass, __xBaseClass) \
-    __xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
+    explicit __xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
     static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
     static __xClass * MakeNew() { return new __xClass(); } \
-    virtual const std::string GetClassName() {return #__xClass;}
+    virtual const std::string GetClassName() override {return #__xClass;}
 
 class XClassInfo
 {
