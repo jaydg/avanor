@@ -34,9 +34,9 @@ int XClassFactory::counter = 0;
 XClassFactory::XClassFactory(const std::string& name, const CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
 {
     if (!first_class) {
-        XClassFactory::first_class = new XClassInfo(name, pClassCreator, pClassNew);
+        first_class = new XClassInfo(name, pClassCreator, pClassNew);
     } else {
-        XClassInfo * tmp = XClassFactory::first_class;
+        XClassInfo * tmp = first_class;
 
         while (tmp->next) {
             tmp = tmp->next;
@@ -45,13 +45,13 @@ XClassFactory::XClassFactory(const std::string& name, const CLASS_CREATOR pClass
         tmp->next = new XClassInfo(name, pClassCreator, pClassNew);
     }
 
-    XClassFactory::counter++;
+    counter++;
 }
 
 XClassFactory::~XClassFactory()
 {
-    if (--XClassFactory::counter <= 0) {
-        const XClassInfo* tmp = XClassFactory::first_class;
+    if (--counter <= 0) {
+        const XClassInfo* tmp = first_class;
 
         while (tmp) {
             const XClassInfo * del = tmp;
@@ -59,13 +59,13 @@ XClassFactory::~XClassFactory()
             delete del;
         }
 
-        XClassFactory::first_class = nullptr;
+        first_class = nullptr;
     }
 }
 
 XObject* XClassFactory::Create(const std::string& name)
 {
-    const XClassInfo * tmp = XClassFactory::first_class;
+    const XClassInfo * tmp = first_class;
 
     while (tmp) {
         if (tmp->name == name) {
@@ -81,7 +81,7 @@ XObject* XClassFactory::Create(const std::string& name)
 
 XObject* XClassFactory::CreateNew(const std::string& name)
 {
-    const XClassInfo* tmp = XClassFactory::first_class;
+    const XClassInfo* tmp = first_class;
 
     while (tmp) {
         if (tmp->name == name) {
