@@ -33,7 +33,8 @@ struct CREATURE_SET_REC {
         count = 0;
     }
 
-    CREATURE_NAME cn[256]{}; //up to 256 creature of one type
+    // up to 256 creature of one type
+    CREATURE_NAME cn[256]{};
     int count;
 };
 
@@ -47,7 +48,7 @@ struct SKILL_REC {
 struct EQUIP_REC {
     unsigned int mask;
     int count;
-    int probability; //0-100
+    int probability; // 0-100
     ITEM_TYPE it;
 };
 
@@ -92,21 +93,6 @@ struct _CREATURE {
     int equip_probability;
     unsigned int generation_flags;
 };
-
-#define XVW XCreatureStorage::View
-#define XBA XCreatureStorage::Basic
-#define XBO XCreatureStorage::Body
-#define XA XCreatureStorage::SetAI
-#define XS XCreatureStorage::S
-#define XR XCreatureStorage::R
-#define XM XCreatureStorage::Main
-#define XD XCreatureStorage::D
-#define XC XCreatureStorage::Combat
-#define XAT XCreatureStorage::Melee
-#define XL XCreatureStorage::Learn
-#define EQ XCreatureStorage::Equip
-#define COE XCreatureStorage::CorpseEffects
-#define COD XCreatureStorage::Corpse
 
 class XCreatureStorage
 {
