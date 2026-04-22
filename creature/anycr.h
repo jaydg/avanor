@@ -59,20 +59,20 @@ enum GENERATION_FLAGS {
 
 struct _CREATURE {
     //view
-    std::string name; //"kobold"
-    char view; //'k'
-    int color; //xGREEN
+    std::string name;               // "kobold"
+    char view;                      // 'k'
+    int color;                      // xGREEN
 
-    //main params
-    XDice speed; //"2d5+50"
-    XDice move_energy; //1000
-    XDice attack_energy; //1000
-    CREATURE_SIZE creature_size; //CS_SMALL (bonus for DV)
-    XDice creature_weight; //how much corpse weight for example
+    // main params
+    XDice speed;                    // "2d5+50"
+    XDice move_energy;              // 1000
+    XDice attack_energy;            // 1000
+    CREATURE_SIZE creature_size;    // CS_SMALL (bonus for DV)
+    XDice creature_weight;          // how much corpse weight for example
 
     std::string body;
     XStatsGenerator stats_gen;
-    XResistGenerator r_gen; //resistances
+    XResistGenerator r_gen;         // resistances
     XDice dv;
     XDice pv;
     XDice hit;
@@ -84,7 +84,7 @@ struct _CREATURE {
     std::string creature_description;
     CORPSE_DATA pCorpseData;
     unsigned int ai_flags;
-    CREATURE_CLASS cr_class; //class of creature
+    CREATURE_CLASS cr_class;        // class of creature
     XQList<SKILL_REC> skills;
     XQList<SPELL_NAME> spells;
     XQList<EQUIP_REC> equipment;

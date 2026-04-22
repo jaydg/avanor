@@ -30,14 +30,13 @@ REGISTER_CLASS(XAnyCreature);
 _CREATURE XCreatureStorage::creature_storage[CN_EOF];
 CREATURE_SET_REC XCreatureStorage::creature_set[32];
 
-XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
+XAnyCreature::XAnyCreature(_CREATURE * cr)
 {
     view = cr->view;
     color = cr->color;
     strcpy(name, cr->name.c_str());
 
     creature_class = cr->cr_class;
-
 
     dice.Setup(cr->dice);
 
@@ -48,12 +47,12 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 
     XBodyPart::Create(this, cr->body.c_str());
 
-    ttmb	= cr->move_energy.Throw();
+    ttmb = cr->move_energy.Throw();
     ttm	= ttmb;
-    weight	= cr->creature_weight.Throw();
-    attack_energy	= cr->attack_energy.Throw();
-    move_energy	= cr->move_energy.Throw();
-    base_speed	= cr->speed.Throw();
+    weight = cr->creature_weight.Throw();
+    attack_energy = cr->attack_energy.Throw();
+    move_energy = cr->move_energy.Throw();
+    base_speed = cr->speed.Throw();
 
     creature_size	= cr->creature_size;
 
@@ -72,10 +71,10 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 
     melee_attack = &cr->melee_attack;
 
-    //Setup AI
+    // Setup AI
     xai->SetAIFlag(static_cast<AI_FLAG>(cr->ai_flags));
 
-    //EQUIP CREATURE
+    // EQUIP CREATURE
     for (auto [mask, count, probability, it] : cr->equipment) {
         for (int i = 0; i < count; i++)
             if (vRand(100) < probability) {
@@ -95,7 +94,8 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
                 }
 
                 if (CanWear(item)) {
-                    if (item->im & IM_MISSILEW) { //if it is missile weapon we need to create proper ammo
+                    // Create proper ammo for missile weapons
+                    if (item->im & IM_MISSILEW) {
                         XItem * missile = ICREATEB(IM_MISSILE, IT_ARROW, 0, 10000000);
                         ContainItem(missile);
                     }
@@ -107,7 +107,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
             }
     }
 
-    //wear random items if it wasn't worn before.
+    // wear random items if it wasn't worn before.
     XBodyPart * hand_1 = nullptr;
     XBodyPart * hand_2 = nullptr;
 
@@ -129,7 +129,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
 
     if (hand_1) {
         XItem * weapon = ICREATE(IM_WEAPON, 0, 10000000);
-        wsk->SetLevel(weapon->wt, 2); //just basic weapon level
+        wsk->SetLevel(weapon->wt, 2); // just basic weapon level
         hand_1->Wear(weapon);
     }
 
@@ -179,7 +179,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
         }
     }
 
-    //Create Money if components more than 2
+    // Create money if components more than 2
     if (components.size() > 2 && vRand(3) == 0) {
         for (int i = 0; i < vGetHighBitNum(cr->crl) + 1; i++) {
             XItem * it = ICREATEA(IM_MONEY);
@@ -187,12 +187,12 @@ XAnyCreature::XAnyCreature(_CREATURE * cr) : XCreature()
         }
     }
 
-    //Learn skill
+    // Learn skills
     for (auto [skt, level] : cr->skills) {
         sk->Learn(skt, level);
     }
 
-    //Learns spells
+    // Learn spells
     for (auto spell : cr->spells) {
         m->Learn(spell);
     }
@@ -225,7 +225,7 @@ void XAnyCreature::Die(XCreature * killer)
         }
     }
 
-    if (vRand(5) == 0/*MAX_HP + _HP > 0*/ && !(creature_class & CR_UNDEAD)) {
+    if (vRand(5) == 0 && !(creature_class & CR_UNDEAD)) {
         DropItem(new XCorpse(this, &super_info->pCorpseData));
     }
 
@@ -374,10 +374,10 @@ _CREATURE* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 void XCreatureStorage::CreateQuickBase()
 {
     for (int i = 0; i < CN_EOF; i++) {
-        if (!XCreatureStorage::creature_storage[i].name.empty()) {
-            const CREATURE_CLASS crc = XCreatureStorage::creature_storage[i].cr_class;
-            XCreatureStorage::creature_set[vGetBitNumber(crc)].cn[XCreatureStorage::creature_set[vGetBitNumber(crc)].count] = (CREATURE_NAME)i;
-            XCreatureStorage::creature_set[vGetBitNumber(crc)].count++;
+        if (!creature_storage[i].name.empty()) {
+            const CREATURE_CLASS crc = creature_storage[i].cr_class;
+            creature_set[vGetBitNumber(crc)].cn[creature_set[vGetBitNumber(crc)].count] = (CREATURE_NAME)i;
+            creature_set[vGetBitNumber(crc)].count++;
         }
     }
 }
