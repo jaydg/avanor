@@ -25,7 +25,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "engine/xobject.h"
-#include "magic/modifier.h"
+
+enum MODIFIER_TYPE {
+    MOD_UNKNOWN = -1,
+    MOD_WOUND,
+    MOD_POISON,
+    MOD_CONFUSE,
+    MOD_STUN,
+    MOD_HEROISM,
+    MOD_DISEASE,
+    MOD_SEE_INVISIBLE,
+    MOD_ACID_RESISTANCE,
+    MOD_FIRE_RESISTANCE,
+    MOD_COLD_RESISTANCE,
+    MOD_POISON_RESISTANCE,
+
+    MOD_PARALYSE,
+    MOD_WEAK,
+    MOD_RESISTANCE,
+    MOD_BOOST_STATS,
+    MOD_BOOST_SPEED,
+    MOD_SLOWNESS,
+
+    MOD_DELAYED, // start modifier (poison, wound, weak) after some time
+    MOD_EOF
+};
 
 enum MODIFIER_RESULT {
     MR_OK = 0,
