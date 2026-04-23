@@ -109,26 +109,26 @@ RESULT XCorpse::onEat(XCreature * eater)
                     break;
 
                 case CET_POISON: {
-                    XModDelayed * mod = new XModDelayed(MOD_POISON, (*it).value, vRand(100), eater);
-                    eater->md->Add(mod, eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_POISON, (*it).value, vRand(100), eater);
+                    eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
                 case CET_DISEASE: {
-                    XModDelayed * mod = new XModDelayed(MOD_DISEASE, (*it).value, vRand(100), eater);
-                    eater->md->Add(mod, eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_DISEASE, (*it).value, vRand(100), eater);
+                    eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
                 case CET_PARALYSE: {
-                    XModDelayed * mod = new XModDelayed(MOD_PARALYSE, (*it).value, vRand(100), eater);
-                    eater->md->Add(mod, eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_PARALYSE, (*it).value, vRand(100), eater);
+                    eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
                 case CET_CONFUSE: {
-                    XModDelayed * mod = new XModDelayed(MOD_CONFUSE, (*it).value, vRand(100), eater);
-                    eater->md->Add(mod, eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_CONFUSE, (*it).value, vRand(100), eater);
+                    eater->md->Add(std::move(mod), eater);
                 }
                 break;
 

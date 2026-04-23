@@ -22,36 +22,21 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
-XModifier::XModifier()
+int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
 {
-}
-
-XModifier::~XModifier()
-{
-    ml.KillAll();
-}
-
-XModifier::XModifier(XModifier * m)
-{
-    assert(m);
-    assert(0);
-}
-
-int XModifier::Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
-{
-    if (_val > 0) {
-        XBasicModifier * xbm;
+    if (val > 0) {
+        std::unique_ptr<XBasicModifier> xbm;
 
         switch (mt) {
             case MOD_WOUND :
-                xbm = new XModWound(_val, _cr);
+                xbm = std::make_unique<XModWound>(val, cr);
                 break;
 
             case MOD_POISON :
-                _val = owner->onMagicDamage(_val, R_POISON);
+                val = owner->onMagicDamage(val, R_POISON);
 
-                if (_val > 0) {
-                    xbm = new XModPoison(_val, _cr);
+                if (val > 0) {
+                    xbm = std::make_unique<XModPoison>(val, cr);
                 } else {
                     return 0;
                 }
@@ -59,10 +44,10 @@ int XModifier::Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _c
                 break;
 
             case MOD_CONFUSE :
-                _val = owner->onMagicDamage(_val, R_CONFUSE);
+                val = owner->onMagicDamage(val, R_CONFUSE);
 
-                if (_val > 0) {
-                    xbm = new XModConfuse(_val, _cr);
+                if (val > 0) {
+                    xbm = std::make_unique<XModConfuse>(val, cr);
                 } else {
                     return 0;
                 }
@@ -70,10 +55,10 @@ int XModifier::Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _c
                 break;
 
             case MOD_STUN :
-                _val = owner->onMagicDamage(_val, R_STUN);
+                val = owner->onMagicDamage(val, R_STUN);
 
-                if (_val > 0) {
-                    xbm = new XModStun(_val, _cr);
+                if (val > 0) {
+                    xbm = std::make_unique<XModStun>(val, cr);
                 } else {
                     return 0;
                 }
@@ -81,147 +66,135 @@ int XModifier::Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _c
                 break;
 
             case MOD_HEROISM :
-                xbm = new XModHeroism(_val, _cr);
+                xbm = std::make_unique<XModHeroism>(val, cr);
                 break;
 
             case MOD_DISEASE :
-                xbm = new XModDisease(_val, _cr);
+                xbm = std::make_unique<XModDisease>(val, cr);
                 break;
 
             case MOD_PARALYSE :
-                xbm = new XModParalyse(_val, _cr);
+                xbm = std::make_unique<XModParalyse>(val, cr);
                 break;
 
             case MOD_WEAK :
-                xbm = new XModWeak(_val, _cr);
+                xbm = std::make_unique<XModWeak>(val, cr);
                 break;
 
             case MOD_SEE_INVISIBLE :
-                xbm = new XModSeeInvisible(_val, _cr);
+                xbm = std::make_unique<XModSeeInvisible>(val, cr);
                 break;
 
             case MOD_BOOST_SPEED :
-                xbm = new XModBoostSpeed(_val, _cr);
+                xbm = std::make_unique<XModBoostSpeed>(val, cr);
                 break;
 
             case MOD_SLOWNESS :
-                xbm = new XModSlowness(_val, _cr);
+                xbm = std::make_unique<XModSlowness>(val, cr);
                 break;
 
             case MOD_ACID_RESISTANCE :
-                xbm = new XModAcidResistance(_val, _cr);
+                xbm = std::make_unique<XModAcidResistance>(val, cr);
                 break;
 
             case MOD_FIRE_RESISTANCE :
-                xbm = new XModFireResistance(_val, _cr);
+                xbm = std::make_unique<XModFireResistance>(val, cr);
                 break;
 
             case MOD_COLD_RESISTANCE :
-                xbm = new XModColdResistance(_val, _cr);
+                xbm = std::make_unique<XModColdResistance>(val, cr);
                 break;
 
             case MOD_POISON_RESISTANCE :
-                xbm = new XModPoisonResistance(_val, _cr);
+                xbm = std::make_unique<XModPoisonResistance>(val, cr);
                 break;
 
             default :
                 assert(0);
         };
 
-        Add(xbm, owner);
-
-        return 1;
+        return Add(std::move(xbm), owner);
     } else {
-        XList<XBasicModifier*>::iterator mfr = ml.begin();
         int flag = 0;
 
-        while (mfr != ml.end()) {
-            if (mfr->mdt == mt)
-                if (mfr->val + _val > 0) {
-                    if (owner->isHero()) {
-                        msgwin.Add(mfr->ChangeMsg(_val));
-                    }
+        for (auto it = ml.begin(); it != ml.end(); )
+        {
+            auto& mfr = *it;
 
-                    mfr->val += _val; //_val always negative
+            if (mfr->mdt == mt) {
+                if (mfr->val + val > 0) {
+                    if (owner->isHero())
+                        msgwin.Add(mfr->ChangeMsg(val));
+
+                    mfr->val += val;
                     return 1;
                 } else {
-                    int tmp = mfr->val + _val;
+                    int tmp = mfr->val + val;
                     mfr->val = 0;
-                    _val = tmp;
+                    val = tmp;
 
-                    if (owner->isHero()) {
-                        if (_val > 0) {
-                            msgwin.Add(mfr->ChangeMsg(_val));
-                        } else {
-                            msgwin.Add(mfr->RemoveMsg());
-                        }
-                    }
+                    if (owner->isHero())
+                        msgwin.Add(mfr->RemoveMsg());
 
-                    flag = 1;
                     mfr->onRemove(owner);
-                    XBasicModifier * xtmp = mfr;
-                    mfr = ml.erase(mfr);
-                    xtmp->Invalidate();
+                    it = ml.erase(it);
+                    flag = 1;
+
                     continue;
                 }
+            }
 
-            mfr++;
+            ++it;
         }
 
         return flag;
     }
 }
 
-int XModifier::Add(XBasicModifier * mod, XCreature * owner)
+int XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
 {
-    int flag = 1;
-
-    for (XList<XBasicModifier*>::iterator it = ml.begin(); it != ml.end(); it++) {
-        XBasicModifier * tmod = static_cast<XBasicModifier*>(static_cast<XObject*>(it));
-
-        if (tmod->Compare(mod) == 0) {
-            if (owner->isHero()) {
+    for (auto& existing : ml)
+    {
+        if (existing->Compare(mod.get()) == 0)
+        {
+            if (owner->isHero())
                 msgwin.Add(mod->ChangeMsg(mod->val));
-            }
 
-            tmod->Concat(mod);
-            flag = 0;
-            break;
+            existing->Concat(mod.get());
+
+            return 1;
         }
     }
 
-    if (flag) {
-        if (owner->isHero()) {
-            msgwin.Add(mod->SetMsg());
-        }
+    if (owner->isHero())
+        msgwin.Add(mod->SetMsg());
 
-        mod->onSet(owner);
-        ml.Add(mod);
-    }
+    mod->onSet(owner);
+    ml.push_back(std::move(mod));
 
     return 1;
 }
 
-int XModifier::Remove(MODIFIER_TYPE mdt, XCreature * owner)
+int XModifier::Remove(MODIFIER_TYPE mdt, XCreature* owner)
 {
-    int flag = 1;
-    XList<XBasicModifier*>::iterator it = ml.begin();
+    bool first = true;
 
-    while (it != ml.end()) {
-        XBasicModifier * tmod = static_cast<XBasicModifier*>(static_cast<XObject*>(it));
-        it++;
+    for (auto it = ml.begin(); it != ml.end();) {
+        auto& tmod = *it;
 
         if (tmod->mdt == mdt) {
-            if (flag) {
-                if (owner->isHero()) {
+            if (first) {
+                if (owner->isHero())
                     msgwin.Add(tmod->RemoveMsg());
-                }
 
                 tmod->onRemove(owner);
-                flag = 0;
+                first = false;
             }
 
-            tmod->Invalidate();
+            // gone for real
+            it = ml.erase(it);
+        } else {
+            ++it;
         }
     }
 
@@ -286,21 +259,18 @@ void XModifier::toString(char* buf)
     }
 }
 
-int XModifier::Run(XCreature * cr)
+int XModifier::Run(XCreature* cr)
 {
-    XList<XBasicModifier*>::iterator mfr = ml.begin();
-
-    while (mfr != ml.end()) {
+    for (auto it = ml.begin(); it != ml.end(); )
+    {
+        auto& mfr = *it;
         MODIFIER_RESULT mr = mfr->Run(cr);
 
         if (mr == MR_REMOVE) {
             mfr->onRemove(cr);
-            XBasicModifier * tmp = mfr;
-            mfr = ml.erase(mfr);
-            tmp->Invalidate();
-            continue;
+            it = ml.erase(it);
         } else if (mr == MR_OK) {
-            mfr++;
+            ++it;
         } else {
             return 0;
         }
@@ -312,15 +282,12 @@ int XModifier::Run(XCreature * cr)
 // warning! this function return val
 int XModifier::Get(MODIFIER_TYPE mt)
 {
-    XList<XBasicModifier*>::iterator mfr = ml.begin();
     int val = 0;
 
-    while (mfr != ml.end()) {
-        if (mfr->mdt == mt) {
+    for (const auto& mfr : ml)
+    {
+        if (mfr->mdt == mt)
             val += mfr->val;
-        }
-
-        mfr++;
     }
 
     return val;
@@ -328,11 +295,13 @@ int XModifier::Get(MODIFIER_TYPE mt)
 
 void XModifier::Store(XFile * f)
 {
-    ml.StoreList(f);
+    // FIXME: Implement when porting saving/restoring to cereal
+    // ml.StoreList(f);
 }
 
 void XModifier::Restore(XFile * f, XCreature * owner)
 {
     assert(ml.empty());
-    ml.RestoreList(f);
+    // FIXME: Implement when porting saving/restoring to cereal
+    // ml.RestoreList(f);
 }

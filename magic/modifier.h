@@ -21,7 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MODIFIER_H
 #define MODIFIER_H
 
-#include "engine/xlist.h"
+#include <memory>
+#include <vector>
+
 #include "engine/xobject.h"
 #include "magic/modifiers.h"
 
@@ -30,21 +32,19 @@ class XCreature;
 class XModifier
 {
     public:
-        XModifier();
-        ~XModifier();
-        XModifier(XModifier * m);
-        int Add(XBasicModifier * mod, XCreature * owner);
-        int Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _cr = NULL);
-        int Remove(MODIFIER_TYPE mdt, XCreature * owner);
+        XModifier() = default;
+        int Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner);
+        int Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr = nullptr);
+        int Remove(MODIFIER_TYPE mdt, XCreature* owner);
         int Get(MODIFIER_TYPE mt); //return val
-        int Run(XCreature * cr);
+        int Run(XCreature* cr);
         void toString(char* buf);
 
-        void Store(XFile * f);
-        void Restore(XFile * f, XCreature * owner);
+        void Store(XFile* f);
+        void Restore(XFile* f, XCreature* owner);
 
     protected:
-        XList<XBasicModifier*> ml;
+        std::vector<std::unique_ptr<XBasicModifier>> ml;
 };
 
 #endif
