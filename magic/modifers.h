@@ -33,8 +33,6 @@ enum MODIFER_RESULT {
     MR_DIE = 2,
 };
 
-class XCreature;
-
 class XBasicModifer : public XObject
 {
     protected:
