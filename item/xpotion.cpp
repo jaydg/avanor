@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "item/xpotion.h"
-#include "magic/modifer.h"
+#include "magic/modifier.h"
 
 REGISTER_CLASS(XPotion);
 

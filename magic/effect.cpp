@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
 #include "magic/effect.h"
-#include "magic/modifer.h"
+#include "magic/modifier.h"
 
 EFFECT_REQ XEffect::GetReq(EFFECT effect)
 {

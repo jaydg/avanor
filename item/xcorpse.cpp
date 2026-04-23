@@ -23,8 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "item/xcorpse.h"
-#include "magic/modifer.h"
-#include "magic/modifers.h"
+#include "magic/modifier.h"
+#include "magic/modifiers.h"
 
 REGISTER_CLASS(XCorpse);
 

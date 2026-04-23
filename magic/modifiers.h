@@ -18,14 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef MODIFERS_H
-#define MODIFERS_H
+#ifndef MODIFIERS_H
+#define MODIFIERS_H
 
 #include <algorithm>
 
 #include "creature/creature.h"
 #include "engine/xobject.h"
-#include "magic/modifer.h"
+#include "magic/modifier.h"
 
 enum MODIFER_RESULT {
     MR_OK = 0,

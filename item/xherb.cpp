@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
-#include "magic/modifer.h"
+#include "magic/modifier.h"
 
 #define HERBS_COUNT 18
 

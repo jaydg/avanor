@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/los.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
-#include "magic/modifer.h"
+#include "magic/modifier.h"
 #include "map/map_objects.h"
 
 extern "C"

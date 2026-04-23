@@ -19,8 +19,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "helpers/msgwin.h"
-#include "magic/modifer.h"
-#include "magic/modifers.h"
+#include "magic/modifier.h"
+#include "magic/modifiers.h"
 
 XBasicModifer::XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr)
 {
