@@ -74,7 +74,7 @@ XCreature::XCreature()
 
     im = IM_CREATURE;
     xai = new XStandardAI(this);
-    md = new XModifer();
+    md = new XModifier();
     m = new XMagic();
     sk = new XSkills();
     wsk = new XWarSkills();
@@ -1619,7 +1619,7 @@ void XCreature::Restore(XFile * f)
 
     m = new XMagic();
     m->Restore(f);
-    md = new XModifer();
+    md = new XModifier();
     md->Restore(f, this);
     f->Read(&nutrio);
     f->Read(&nutrio_speed);

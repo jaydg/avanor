@@ -22,25 +22,25 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
-XModifer::XModifer()
+XModifier::XModifier()
 {
 }
 
-XModifer::~XModifer()
+XModifier::~XModifier()
 {
     ml.KillAll();
 }
 
-XModifer::XModifer(XModifer * m)
+XModifier::XModifier(XModifier * m)
 {
     assert(m);
     assert(0);
 }
 
-int XModifer::Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
+int XModifier::Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
 {
     if (_val > 0) {
-        XBasicModifer * xbm;
+        XBasicModifier * xbm;
 
         switch (mt) {
             case MOD_WOUND :
@@ -132,7 +132,7 @@ int XModifer::Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
 
         return 1;
     } else {
-        XList<XBasicModifer*>::iterator mfr = ml.begin();
+        XList<XBasicModifier*>::iterator mfr = ml.begin();
         int flag = 0;
 
         while (mfr != ml.end()) {
@@ -159,7 +159,7 @@ int XModifer::Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
 
                     flag = 1;
                     mfr->onRemove(owner);
-                    XBasicModifer * xtmp = mfr;
+                    XBasicModifier * xtmp = mfr;
                     mfr = ml.erase(mfr);
                     xtmp->Invalidate();
                     continue;
@@ -172,12 +172,12 @@ int XModifer::Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr)
     }
 }
 
-int XModifer::Add(XBasicModifer * mod, XCreature * owner)
+int XModifier::Add(XBasicModifier * mod, XCreature * owner)
 {
     int flag = 1;
 
-    for (XList<XBasicModifer*>::iterator it = ml.begin(); it != ml.end(); it++) {
-        XBasicModifer * tmod = static_cast<XBasicModifer*>(static_cast<XObject*>(it));
+    for (XList<XBasicModifier*>::iterator it = ml.begin(); it != ml.end(); it++) {
+        XBasicModifier * tmod = static_cast<XBasicModifier*>(static_cast<XObject*>(it));
 
         if (tmod->Compare(mod) == 0) {
             if (owner->isHero()) {
@@ -202,13 +202,13 @@ int XModifer::Add(XBasicModifer * mod, XCreature * owner)
     return 1;
 }
 
-int XModifer::Remove(MODIFER_TYPE mdt, XCreature * owner)
+int XModifier::Remove(MODIFIER_TYPE mdt, XCreature * owner)
 {
     int flag = 1;
-    XList<XBasicModifer*>::iterator it = ml.begin();
+    XList<XBasicModifier*>::iterator it = ml.begin();
 
     while (it != ml.end()) {
-        XBasicModifer * tmod = static_cast<XBasicModifer*>(static_cast<XObject*>(it));
+        XBasicModifier * tmod = static_cast<XBasicModifier*>(static_cast<XObject*>(it));
         it++;
 
         if (tmod->mdt == mdt) {
@@ -228,7 +228,7 @@ int XModifer::Remove(MODIFER_TYPE mdt, XCreature * owner)
     return 1;
 }
 
-void XModifer::toString(char* buf)
+void XModifier::toString(char* buf)
 {
     strcpy(buf, "");
 
@@ -286,16 +286,16 @@ void XModifer::toString(char* buf)
     }
 }
 
-int XModifer::Run(XCreature * cr)
+int XModifier::Run(XCreature * cr)
 {
-    XList<XBasicModifer*>::iterator mfr = ml.begin();
+    XList<XBasicModifier*>::iterator mfr = ml.begin();
 
     while (mfr != ml.end()) {
-        MODIFER_RESULT mr = mfr->Run(cr);
+        MODIFIER_RESULT mr = mfr->Run(cr);
 
         if (mr == MR_REMOVE) {
             mfr->onRemove(cr);
-            XBasicModifer * tmp = mfr;
+            XBasicModifier * tmp = mfr;
             mfr = ml.erase(mfr);
             tmp->Invalidate();
             continue;
@@ -310,9 +310,9 @@ int XModifer::Run(XCreature * cr)
 }
 
 // warning! this function return val
-int XModifer::Get(MODIFER_TYPE mt)
+int XModifier::Get(MODIFIER_TYPE mt)
 {
-    XList<XBasicModifer*>::iterator mfr = ml.begin();
+    XList<XBasicModifier*>::iterator mfr = ml.begin();
     int val = 0;
 
     while (mfr != ml.end()) {
@@ -326,12 +326,12 @@ int XModifer::Get(MODIFER_TYPE mt)
     return val;
 }
 
-void XModifer::Store(XFile * f)
+void XModifier::Store(XFile * f)
 {
     ml.StoreList(f);
 }
 
-void XModifer::Restore(XFile * f, XCreature * owner)
+void XModifier::Restore(XFile * f, XCreature * owner)
 {
     assert(ml.empty());
     ml.RestoreList(f);

@@ -24,10 +24,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xlist.h"
 #include "engine/xobject.h"
 
-class XBasicModifer;
+class XBasicModifier;
 class XCreature;
 
-enum MODIFER_TYPE {MOD_UNKNOWN = -1,
+enum MODIFIER_TYPE {MOD_UNKNOWN = -1,
     MOD_WOUND,
     MOD_POISON,
     MOD_CONFUSE,
@@ -47,20 +47,20 @@ enum MODIFER_TYPE {MOD_UNKNOWN = -1,
     MOD_BOOST_SPEED,
     MOD_SLOWNESS,
 
-    MOD_DELAYED, // start modifer (poison, wound, weak) after some time
+    MOD_DELAYED, // start modifier (poison, wound, weak) after some time
     MOD_EOF
 };
 
-class XModifer
+class XModifier
 {
     public:
-        XModifer();
-        ~XModifer();
-        XModifer(XModifer * m);
-        int Add(XBasicModifer * mod, XCreature * owner);
-        int Add(MODIFER_TYPE mt, int _val, XCreature * owner, XCreature * _cr = NULL);
-        int Remove(MODIFER_TYPE mdt, XCreature * owner);
-        int Get(MODIFER_TYPE mt); //return val
+        XModifier();
+        ~XModifier();
+        XModifier(XModifier * m);
+        int Add(XBasicModifier * mod, XCreature * owner);
+        int Add(MODIFIER_TYPE mt, int _val, XCreature * owner, XCreature * _cr = NULL);
+        int Remove(MODIFIER_TYPE mdt, XCreature * owner);
+        int Get(MODIFIER_TYPE mt); //return val
         int Run(XCreature * cr);
         void toString(char* buf);
 
@@ -68,7 +68,7 @@ class XModifer
         void Restore(XFile * f, XCreature * owner);
 
     protected:
-        XList<XBasicModifer*> ml;
+        XList<XBasicModifier*> ml;
 };
 
 #endif

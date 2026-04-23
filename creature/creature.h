@@ -92,7 +92,7 @@ struct MELEE_ATTACK {
 
 class XAI;
 class XStandardAI;
-class XModifer;
+class XModifier;
 class XMagic;
 class XPotion;
 class XBook;
@@ -290,7 +290,7 @@ class XCreature : public XBaseObject
         int CanWear(XItem* item);
         int Wear(XItem* item); // if can Wear, Wear it.
 
-        XModifer* md;
+        XModifier* md;
         XMagic* m;
         XSkills* sk;
         XWarSkills* wsk;

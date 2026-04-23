@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
-XBasicModifer::XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr)
+XBasicModifier::XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr)
 {
     mdt = mt;
     val = _val;
@@ -30,31 +30,31 @@ XBasicModifer::XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr)
     im = IM_OTHER;
 }
 
-void XBasicModifer::Invalidate()
+void XBasicModifier::Invalidate()
 {
     setter = NULL;
     XObject::Invalidate();
 }
 
-void XBasicModifer::Store(XFile * f)
+void XBasicModifier::Store(XFile * f)
 {
     XObject::Store(f);
     f->Write(&val, sizeof(int));
-    f->Write(&mdt, sizeof(MODIFER_TYPE));
+    f->Write(&mdt, sizeof(MODIFIER_TYPE));
     setter.Store(f);
 }
 
-void XBasicModifer::Restore(XFile * f)
+void XBasicModifier::Restore(XFile * f)
 {
     XObject::Restore(f);
     f->Read(&val, sizeof(int));
-    f->Read(&mdt, sizeof(MODIFER_TYPE));
+    f->Read(&mdt, sizeof(MODIFIER_TYPE));
     setter.Restore(f);
 }
 
 REGISTER_CLASS(XModWound);
 
-MODIFER_RESULT XModWound::Run(XCreature * owner)
+MODIFIER_RESULT XModWound::Run(XCreature * owner)
 {
     val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(XSkill::Skill::FIRST_AID));
     owner->sk->UseSkill(XSkill::Skill::FIRST_AID);
@@ -67,11 +67,11 @@ MODIFER_RESULT XModWound::Run(XCreature * owner)
         }
     }
 
-    return XBasicModifer::Run(owner);
+    return XBasicModifier::Run(owner);
 }
 
 REGISTER_CLASS(XModPoison);
-MODIFER_RESULT XModPoison::Run(XCreature * owner)
+MODIFIER_RESULT XModPoison::Run(XCreature * owner)
 {
     if (vRand() % 3 == 0) {
         int rnd = vRand() % 4;
@@ -83,11 +83,11 @@ MODIFER_RESULT XModPoison::Run(XCreature * owner)
     }
 
     val -= owner->sk->GetLevel(XSkill::Skill::FIRST_AID);
-    return XBasicModifer::Run(owner);
+    return XBasicModifier::Run(owner);
 }
 
 REGISTER_CLASS(XModConfuse);
-MODIFER_RESULT XModConfuse::Run(XCreature * owner)
+MODIFIER_RESULT XModConfuse::Run(XCreature * owner)
 {
     owner->nx = owner->x + vRand() % 3 - 1;
     owner->ny = owner->y + vRand() % 3 - 1;
@@ -96,7 +96,7 @@ MODIFER_RESULT XModConfuse::Run(XCreature * owner)
         msgwin.Add(ApplyMsg());
     }
 
-    return XBasicModifer::Run(owner);
+    return XBasicModifier::Run(owner);
 }
 
 REGISTER_CLASS(XModStun);
@@ -150,7 +150,7 @@ int XModDisease::onRemove(XCreature * owner)
     return 1;
 }
 
-MODIFER_RESULT XModDisease::Run(XCreature * owner)
+MODIFIER_RESULT XModDisease::Run(XCreature * owner)
 {
     switch (vRand(300)) {
         case 0:
@@ -166,7 +166,7 @@ MODIFER_RESULT XModDisease::Run(XCreature * owner)
             break;
     }
 
-    return XBasicModifer::Run(owner);
+    return XBasicModifier::Run(owner);
 }
 
 REGISTER_CLASS(XModWeak);
@@ -182,7 +182,7 @@ int XModWeak::onRemove(XCreature * owner)
     return 1;
 }
 
-MODIFER_RESULT XModWeak::Run(XCreature * owner)
+MODIFIER_RESULT XModWeak::Run(XCreature * owner)
 {
     switch (vRand(100)) {
         case 0:
@@ -190,22 +190,22 @@ MODIFER_RESULT XModWeak::Run(XCreature * owner)
             break;
     }
 
-    return XBasicModifer::Run(owner);
+    return XBasicModifier::Run(owner);
 }
 
 REGISTER_CLASS(XModParalyse);
-MODIFER_RESULT XModParalyse::Run(XCreature * owner)
+MODIFIER_RESULT XModParalyse::Run(XCreature * owner)
 {
     owner->nx = owner->x;
     owner->ny = owner->y;
-    return XBasicModifer::Run(owner);
+    return XBasicModifier::Run(owner);
 }
 
 
 REGISTER_CLASS(XModDelayed);
-MODIFER_RESULT XModDelayed::Run(XCreature * owner)
+MODIFIER_RESULT XModDelayed::Run(XCreature * owner)
 {
-    MODIFER_RESULT mr = XBasicModifer::Run(owner);
+    MODIFIER_RESULT mr = XBasicModifier::Run(owner);
 
     if (mr == MR_REMOVE) {
         owner->md->Add(set_mt, set_val, owner);
@@ -216,15 +216,15 @@ MODIFER_RESULT XModDelayed::Run(XCreature * owner)
 
 void XModDelayed::Store(XFile * f)
 {
-    XBasicModifer::Store(f);
-    f->Write(&set_mt, sizeof(MODIFER_TYPE));
+    XBasicModifier::Store(f);
+    f->Write(&set_mt, sizeof(MODIFIER_TYPE));
     f->Write(&set_val, sizeof(int));
 }
 
 void XModDelayed::Restore(XFile * f)
 {
-    XBasicModifer::Restore(f);
-    f->Read(&set_mt, sizeof(MODIFER_TYPE));
+    XBasicModifier::Restore(f);
+    f->Read(&set_mt, sizeof(MODIFIER_TYPE));
     f->Read(&set_val, sizeof(int));
 }
 

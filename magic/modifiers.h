@@ -27,27 +27,27 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xobject.h"
 #include "magic/modifier.h"
 
-enum MODIFER_RESULT {
+enum MODIFIER_RESULT {
     MR_OK = 0,
     MR_REMOVE = 1,
     MR_DIE = 2,
 };
 
-class XBasicModifer : public XObject
+class XBasicModifier : public XObject
 {
     protected:
-        XBasicModifer() {}
+        XBasicModifier() {}
 
     public:
-        DECLARE_CREATOR(XBasicModifer, XObject);
-        XBasicModifer(MODIFER_TYPE mt, int _val, XCreature * _cr = NULL);
+        DECLARE_CREATOR(XBasicModifier, XObject);
+        XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = NULL);
 
         virtual void Invalidate();
 
         virtual int Compare(XObject * o)
         {
-            assert(dynamic_cast<XBasicModifer*>(o));
-            XBasicModifer * mod = static_cast<XBasicModifer*>(o);
+            assert(dynamic_cast<XBasicModifier*>(o));
+            XBasicModifier * mod = static_cast<XBasicModifier*>(o);
 
             if (mod->mdt == mdt && mod->setter == setter) {
                 return 0;
@@ -58,11 +58,11 @@ class XBasicModifer : public XObject
 
         virtual void Concat(XObject * o)
         {
-            val += ((XBasicModifer*)o)->val;
+            val += ((XBasicModifier*)o)->val;
             XObject::Concat(o);
         }
 
-        virtual MODIFER_RESULT Run(XCreature * owner)
+        virtual MODIFIER_RESULT Run(XCreature * owner)
         {
             if (owner->_HP <= 0) {
                 owner->Die(setter);
@@ -112,17 +112,17 @@ class XBasicModifer : public XObject
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
 
-        MODIFER_TYPE mdt;
-        int val; // value of modifer;
+        MODIFIER_TYPE mdt;
+        int val; // value of modifier;
         XPtr<XCreature> setter;
     protected:
 };
 
-class XModWound : public XBasicModifer
+class XModWound : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModWound, XBasicModifer);
-        XModWound(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_WOUND, _val, _cr) {}
+        DECLARE_CREATOR(XModWound, XBasicModifier);
+        XModWound(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_WOUND, _val, _cr) {}
 
         XModWound()
         {
@@ -172,16 +172,16 @@ class XModWound : public XBasicModifer
             return "You lose blood!";
         }
 
-        virtual MODIFER_RESULT Run(XCreature * owner);
+        virtual MODIFIER_RESULT Run(XCreature * owner);
 
 };
 
 
-class XModPoison : public XBasicModifer
+class XModPoison : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModPoison, XBasicModifer);
-        XModPoison(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_POISON, _val * 10, _cr) {}
+        DECLARE_CREATOR(XModPoison, XBasicModifier);
+        XModPoison(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_POISON, _val * 10, _cr) {}
 
         XModPoison()
         {
@@ -213,15 +213,15 @@ class XModPoison : public XBasicModifer
             return "You feel the poison coursing through your body.";
         }
 
-        MODIFER_RESULT Run(XCreature * owner);
+        MODIFIER_RESULT Run(XCreature * owner);
 };
 
 
-class XModConfuse : public XBasicModifer
+class XModConfuse : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModConfuse, XBasicModifer);
-        XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_CONFUSE, _val, _cr) {}
+        DECLARE_CREATOR(XModConfuse, XBasicModifier);
+        XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_CONFUSE, _val, _cr) {}
 
         XModConfuse()
         {
@@ -253,14 +253,14 @@ class XModConfuse : public XBasicModifer
             return "You stagger.";
         }
 
-        virtual MODIFER_RESULT Run(XCreature * owner);
+        virtual MODIFIER_RESULT Run(XCreature * owner);
 };
 
-class XModStun : public XBasicModifer
+class XModStun : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModStun, XBasicModifer);
-        XModStun(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_STUN, _val, _cr) {}
+        DECLARE_CREATOR(XModStun, XBasicModifier);
+        XModStun(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_STUN, _val, _cr) {}
 
         XModStun()
         {
@@ -296,11 +296,11 @@ class XModStun : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModHeroism : public XBasicModifer
+class XModHeroism : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModHeroism, XBasicModifer);
-        XModHeroism(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_HEROISM, _val, _cr) {}
+        DECLARE_CREATOR(XModHeroism, XBasicModifier);
+        XModHeroism(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_HEROISM, _val, _cr) {}
 
         XModHeroism()
         {
@@ -336,11 +336,11 @@ class XModHeroism : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModDisease : public XBasicModifer
+class XModDisease : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModDisease, XBasicModifer);
-        XModDisease(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_DISEASE, _val, _cr) {}
+        DECLARE_CREATOR(XModDisease, XBasicModifier);
+        XModDisease(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_DISEASE, _val, _cr) {}
 
         XModDisease()
         {
@@ -374,15 +374,15 @@ class XModDisease : public XBasicModifer
 
         virtual int onSet(XCreature * owner);
         virtual int onRemove(XCreature * owner);
-        virtual MODIFER_RESULT Run(XCreature * owner);
+        virtual MODIFIER_RESULT Run(XCreature * owner);
 };
 
 
-class XModWeak : public XBasicModifer
+class XModWeak : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModWeak, XBasicModifer);
-        XModWeak(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_WEAK, _val, _cr) {}
+        DECLARE_CREATOR(XModWeak, XBasicModifier);
+        XModWeak(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_WEAK, _val, _cr) {}
 
         XModWeak()
         {
@@ -416,15 +416,15 @@ class XModWeak : public XBasicModifer
 
         virtual int onSet(XCreature * owner);
         virtual int onRemove(XCreature * owner);
-        virtual MODIFER_RESULT Run(XCreature * owner);
+        virtual MODIFIER_RESULT Run(XCreature * owner);
 };
 
 
-class XModParalyse : public XBasicModifer
+class XModParalyse : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModParalyse, XBasicModifer);
-        XModParalyse(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_PARALYSE, _val, _cr) {}
+        DECLARE_CREATOR(XModParalyse, XBasicModifier);
+        XModParalyse(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_PARALYSE, _val, _cr) {}
 
         XModParalyse()
         {
@@ -456,15 +456,15 @@ class XModParalyse : public XBasicModifer
             return "";
         }
 
-        virtual MODIFER_RESULT Run(XCreature * owner);
+        virtual MODIFIER_RESULT Run(XCreature * owner);
 };
 
-class XModDelayed : public XBasicModifer
+class XModDelayed : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModDelayed, XBasicModifer);
-        XModDelayed(MODIFER_TYPE _mt, int value, int delay,
-            XCreature * _cr = NULL) : XBasicModifer(MOD_DELAYED, delay, _cr),
+        DECLARE_CREATOR(XModDelayed, XBasicModifier);
+        XModDelayed(MODIFIER_TYPE _mt, int value, int delay,
+            XCreature * _cr = NULL) : XBasicModifier(MOD_DELAYED, delay, _cr),
             set_mt(_mt), set_val(value)
         {}
 
@@ -473,13 +473,13 @@ class XModDelayed : public XBasicModifer
             assert(0);
         }
 
-        virtual MODIFER_RESULT Run(XCreature * owner);
+        virtual MODIFIER_RESULT Run(XCreature * owner);
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
 
         virtual int Compare(XObject * o)
         {
-            if (XBasicModifer::Compare(o) == 0 && set_mt == ((XModDelayed*)o)->set_mt) {
+            if (XBasicModifier::Compare(o) == 0 && set_mt == ((XModDelayed*)o)->set_mt) {
                 return 0;
             } else {
                 return -1;
@@ -496,15 +496,15 @@ class XModDelayed : public XBasicModifer
         }
 
     protected:
-        MODIFER_TYPE set_mt;
+        MODIFIER_TYPE set_mt;
         int set_val;
 };
 
-class XModSeeInvisible : public XBasicModifer
+class XModSeeInvisible : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModSeeInvisible, XBasicModifer);
-        XModSeeInvisible(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_SEE_INVISIBLE, _val, _cr) {}
+        DECLARE_CREATOR(XModSeeInvisible, XBasicModifier);
+        XModSeeInvisible(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_SEE_INVISIBLE, _val, _cr) {}
 
         XModSeeInvisible()
         {
@@ -540,11 +540,11 @@ class XModSeeInvisible : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModBoostSpeed : public XBasicModifer
+class XModBoostSpeed : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModBoostSpeed, XBasicModifer);
-        XModBoostSpeed(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_BOOST_SPEED, _val, _cr) {}
+        DECLARE_CREATOR(XModBoostSpeed, XBasicModifier);
+        XModBoostSpeed(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_BOOST_SPEED, _val, _cr) {}
 
         XModBoostSpeed()
         {
@@ -581,11 +581,11 @@ class XModBoostSpeed : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModSlowness : public XBasicModifer
+class XModSlowness : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModSlowness, XBasicModifer);
-        XModSlowness(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_SLOWNESS, _val, _cr) {}
+        DECLARE_CREATOR(XModSlowness, XBasicModifier);
+        XModSlowness(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_SLOWNESS, _val, _cr) {}
 
         XModSlowness()
         {
@@ -621,11 +621,11 @@ class XModSlowness : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModAcidResistance : public XBasicModifer
+class XModAcidResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModAcidResistance, XBasicModifer);
-        XModAcidResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_ACID_RESISTANCE, _val, _cr) {}
+        DECLARE_CREATOR(XModAcidResistance, XBasicModifier);
+        XModAcidResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_ACID_RESISTANCE, _val, _cr) {}
 
         XModAcidResistance()
         {
@@ -661,11 +661,11 @@ class XModAcidResistance : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModFireResistance : public XBasicModifer
+class XModFireResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModFireResistance, XBasicModifer);
-        XModFireResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_FIRE_RESISTANCE, _val, _cr) {}
+        DECLARE_CREATOR(XModFireResistance, XBasicModifier);
+        XModFireResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_FIRE_RESISTANCE, _val, _cr) {}
 
         XModFireResistance()
         {
@@ -701,11 +701,11 @@ class XModFireResistance : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModColdResistance : public XBasicModifer
+class XModColdResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModColdResistance, XBasicModifer);
-        XModColdResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_COLD_RESISTANCE, _val, _cr) {}
+        DECLARE_CREATOR(XModColdResistance, XBasicModifier);
+        XModColdResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_COLD_RESISTANCE, _val, _cr) {}
 
         XModColdResistance()
         {
@@ -741,11 +741,11 @@ class XModColdResistance : public XBasicModifer
         virtual int onRemove(XCreature * owner);
 };
 
-class XModPoisonResistance : public XBasicModifer
+class XModPoisonResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModPoisonResistance, XBasicModifer);
-        XModPoisonResistance(int _val, XCreature * _cr = NULL) : XBasicModifer(MOD_POISON_RESISTANCE, _val, _cr) {}
+        DECLARE_CREATOR(XModPoisonResistance, XBasicModifier);
+        XModPoisonResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_POISON_RESISTANCE, _val, _cr) {}
 
         XModPoisonResistance()
         {
