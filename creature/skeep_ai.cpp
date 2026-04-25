@@ -64,7 +64,10 @@ void XShopKeeperAI::Invalidate()
 {
     shop = NULL;
     debt.debtor = NULL;
-    debt.item_list.KillAll();
+
+    for (auto item: debt.unpaid_items)
+        item->Invalidate();
+
     XStandardAI::Invalidate();
 }
 
@@ -93,17 +96,17 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
         return 1;
     }
 
-    if (debt.item_list.size() > 0) {
+    if (!debt.unpaid_items.empty()) {
         msgwin.Add("Pay for what you've picked up already before you take anything else!");
         return 0;
     }
 
-    //hack!!!
-    XItem * titem = (XItem*)(item->MakeCopy());
+    // hack!!!
+    auto titem = dynamic_cast<XItem *>(item->MakeCopy());
     titem->x = -1;
     titem->y = -1;
 
-    debt.item_list.Add(titem);
+    debt.unpaid_items.push_back(titem);
 
     if (debt.debtor_leave_shop == 0) {
         return 1;
@@ -129,28 +132,28 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
     }
 
     //	Return taken and unpaid items back to the shop (only for HERO)
-    if ((customer->im & IM_HERO)) {
-        XList<XItem*>::iterator it = debt.item_list.begin();
+    if (customer->im & IM_HERO) {
+        auto it = debt.unpaid_items.begin();
 
-        while (it != debt.item_list.end()) {
-            if (item->im != it->im || item->Compare(it) != 0) {
+        while (it != debt.unpaid_items.end()) {
+            if (item->im != (*it)->im || item->Compare(*it) != 0) {
                 it++;
                 continue;
             }
 
-            if (it->quantity > item->quantity) {
-                it->quantity -= item->quantity;
+            if ((*it)->quantity > item->quantity) {
+                (*it)->quantity -= item->quantity;
                 return 1;
             }
 
-            if (it->quantity == item->quantity) {
-                debt.item_list.Remove(it);
+            if ((*it)->quantity == item->quantity) {
+                debt.unpaid_items.erase(it);
                 return 1;
             }
 
-            item->quantity -= it->quantity;
-            XItem * t = it;
-            it = debt.item_list.erase(it);
+            item->quantity -= (*it)->quantity;
+            XItem* t = *it;
+            it = debt.unpaid_items.erase(it);
             t->Invalidate();
         }
     }
@@ -211,21 +214,21 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 
     //	Giving the money to the shopkeeper results in reducing or
     //	completely clearing off a debt
-    if (debt.debtor_sum == 0 && debt.item_list.empty()) {
+    if (debt.debtor_sum == 0 && debt.unpaid_items.empty()) {
         msgwin.Add(GMSG_SHOPKEEPER_REJECT_MONEY);
         return 0;
     }
 
     item->AddRef(); // prevent money object from destroying
 
-    if (!debt.item_list.empty()) {
+    if (!debt.unpaid_items.empty()) {
 
-        XList<XItem*>::iterator it = debt.item_list.begin();
+        auto it = debt.unpaid_items.begin();
 
-        while (it != debt.item_list.end() && item->quantity > 0) {
+        while (it != debt.unpaid_items.end() && item->quantity > 0) {
             char buf[256];
             char buf1[256];
-            XItem * titem = it;
+            XItem* titem = *it;
 
             titem->toString(buf1);
             sprintf(buf, GMSG_SHOPKEEPER_ASK_FOR_PAY, titem->GetValue() * titem->quantity, buf1);
@@ -239,8 +242,8 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 
             giver->MoneyOp(-res);
             debt.debtor_sum += titem->GetValue() * titem->quantity - res;
-            XItem * t = it;
-            it = debt.item_list.erase(it);
+            XItem* t = *it;
+            it = debt.unpaid_items.erase(it);
             t->Invalidate();
             msgwin.Add(GMSG_SHOPKEEPER_THANKS);
         }
@@ -298,12 +301,14 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
         return;
     }
 
-    XItem * item;
+    for (auto it = debt.unpaid_items.begin(); debt.unpaid_items.end() != it;) {
+        auto item = *it;
 
-    while ((item = static_cast<XItem*>(debt.item_list.RemoveFirst())) != NULL) {
         debt.debtor = customer;
         debt.debtor_sum += item->GetValue() * item->quantity;
         item->Invalidate();
+
+        debt.unpaid_items.erase(it);
     }
 
     debt.debtor_add_value = debt.debtor_sum * 0.001;
@@ -336,7 +341,9 @@ void XShopKeeperAI::Store(XFile * f)
     debt.debtor.Store(f);
     f->Write(&debt.debtor_leave_shop, sizeof(int));
     f->Write(&debt.debtor_sum, sizeof(double));
-    debt.item_list.StoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // debt.unpaid_items.StoreList(f);
     f->Write(&debt.turn_count, sizeof(int));
     shop.Store(f);
 }
@@ -348,7 +355,9 @@ void XShopKeeperAI::Restore(XFile * f)
     debt.debtor.Restore(f);
     f->Read(&debt.debtor_leave_shop, sizeof(int));
     f->Read(&debt.debtor_sum, sizeof(double));
-    debt.item_list.RestoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // debt.unpaid_items.RestoreList(f);
     f->Read(&debt.turn_count, sizeof(int));
     shop.Restore(f);
 }

@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef SKEEP_AI_H
 #define SKEEP_AI_H
 
+#include <vector>
+
 #include "creature/std_ai.h"
 #include "game/shop.h"
 
@@ -32,7 +34,8 @@ struct SHOP_DEBT {
     double debtor_add_value;
     int turn_count; //after some turns after debtor leave a shop - debtors can't by nothing
     int debtor_leave_shop;
-    XList<XItem*> item_list; //picked but not payed items;
+    // picked but unpaid items;
+    std::vector<XItem*> unpaid_items;
 };
 
 class XShopKeeperAI : public XStandardAI

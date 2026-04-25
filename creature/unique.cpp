@@ -437,7 +437,7 @@ const char* XShopkeeper::StdAnswer()
     assert(xai && dynamic_cast<XShopKeeperAI*>(xai));
     XShopKeeperAI * ai = static_cast<XShopKeeperAI*>(xai);
 
-    if (!ai->debt.item_list.empty()) {
+    if (!ai->debt.unpaid_items.empty()) {
         sprintf(static_buffer, "Don't forget to pay for the items you have taken!", ai->debt.debtor_sum);
         return static_buffer;
     }

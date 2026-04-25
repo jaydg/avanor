@@ -2402,9 +2402,8 @@ void XHero::QuickPay()
         const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai);
         int val = 0;
 
-        if (!pai->debt.item_list.empty()) {
-            val += (pai->debt.item_list.begin())->GetValue() * (pai->debt.item_list.begin())->quantity;
-        }
+        for (const auto item: pai->debt.unpaid_items)
+            val += item->GetValue() * item->quantity;
 
         val += static_cast<int>(pai->debt.debtor_sum);
 
