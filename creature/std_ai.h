@@ -158,7 +158,7 @@ class XStandardAI : public XObject
 
         int FindPath(XPoint * target, XPoint * direction);
         int AttackEnemy(int x, int y);
-        int CastSpell();
+        int CastSpell() const;
         int Shoot();
         int ReadScroll();
         int DrinkPotion();

@@ -93,7 +93,7 @@ class XHero final : public XCreature
         void CloseDoor();
         void Die(XCreature* killer) override;
         int XCast(FILE* f = nullptr);
-        XList<XSpell*>::iterator last_cast;
+        XSpell* last_cast;
         int RepeatCast();
 
         void MagicLevelList() const;

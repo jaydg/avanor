@@ -781,19 +781,15 @@ int XStandardAI::AttackEnemy(int ex, int ey)
 
 }
 
-int XStandardAI::CastSpell()
-{
+int XStandardAI::CastSpell() const {
     if (ai_owner->m->spells.empty()) {
         return 0;
     }
 
-    int flag = 0;
-
     //	try to heal self
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
-        XList<XSpell*>::iterator spell = ai_owner->m->spells.begin();
 
-        for (; spell != ai_owner->m->spells.end(); spell++) {
+        for (const auto spell: ai_owner->m->spells) {
             if ((spell->spell_name == SPELL_CURE_LIGHT_WOUNDS ||
                 spell->spell_name == SPELL_CURE_SERIOUS_WOUNDS ||
                 spell->spell_name == SPELL_CURE_CRITICAL_WOUNDS ||
@@ -801,21 +797,20 @@ int XStandardAI::CastSpell()
                 spell->spell_name == SPELL_HEAL) &&
                 spell->GetManaCost() <= ai_owner->_PP) {
                 ai_owner->m->Cast(spell, ai_owner);
-                flag = 1;
-                break;
+
+                return 1;
             }
         }
     }
 
     // try to attack
-    if (flag == 0 && enemy) {
+    if (enemy) {
         int r_enemy = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) +
             (enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
 
         assert(r_enemy > 0);
-        XList<XSpell*>::iterator spell = ai_owner->m->spells.begin();
 
-        for (; spell != ai_owner->m->spells.end(); spell++) {
+        for (const auto spell: ai_owner->m->spells) {
             if ((spell->spell_name == SPELL_MAGIC_ARROW ||
                 spell->spell_name == SPELL_FIRE_BOLT ||
                 spell->spell_name == SPELL_ICE_BOLT ||
@@ -823,13 +818,13 @@ int XStandardAI::CastSpell()
                 spell->spell_name == SPELL_ACID_BOLT)
                 && spell->GetManaCost() <= ai_owner->_PP) {
                 ai_owner->m->Cast(spell, ai_owner);
-                flag = 1;
-                break;
+
+                return 1;
             }
         }
     }
 
-    return flag;
+    return 0;
 }
 
 int XStandardAI::ReadScroll()

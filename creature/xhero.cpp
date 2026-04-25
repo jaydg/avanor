@@ -48,7 +48,7 @@ XHero::XHero(int flag)
 
     creature_person_type = CPT_YOU;
     turn_count = 0;
-    last_cast = m->spells.begin();
+    last_cast = nullptr;
 
     x = 5;
     y = 5;
@@ -1835,15 +1835,12 @@ int XHero::XCast(FILE * f)
     while (true) {
         XGuiList list;
         list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Cast Spell " MSG_BROWN "###");
-        XList<XSpell*>::iterator it = m->spells.begin();
-
-        if (it == m->spells.end()) {
+        if (m->spells.empty()) {
             list.AddItem(new XGuiItem_Text("You do not know any spells", 0));
         } else {
-            while (it != m->spells.end()) {
-                it->toString(buf);
+            for (auto spell : m->spells) {
+                spell->toString(buf);
                 list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
-                ++it;
             }
         }
 
@@ -1861,18 +1858,19 @@ int XHero::XCast(FILE * f)
                 return 0;
             }
         } else {
-            it = m->spells.begin();
+            for(auto spell : m->spells) {
+                if (ch == 0) {
+                    if (m->Cast(spell, this) == CONTINUE) {
+                        return 0;
+                    }
 
-            while (ch > 0) {
-                ++it;
+                    last_cast = spell;
+                    break;
+                }
+
                 ch--;
             }
 
-            if (m->Cast(it, this) == CONTINUE) {
-                return 0;
-            }
-
-            last_cast = it;
             return 1;
         }
     }
@@ -1882,7 +1880,7 @@ int XHero::XCast(FILE * f)
 
 int XHero::RepeatCast()
 {
-    if (last_cast != m->spells.end()) {
+    if (last_cast) {
         if (m->Cast(last_cast, this) == CONTINUE) {
             return 0;
         }
@@ -2586,7 +2584,7 @@ void XHero::Restore(XFile * f)
     last_char = '5';
     run_way_count = 0;
     target = nullptr;
-    last_cast = m->spells.begin();
+    last_cast = nullptr;
     melee_attack = &hero_melee;
 }
 

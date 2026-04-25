@@ -21,8 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MAGIC_H
 #define MAGIC_H
 
+#include <vector>
+
 #include "creature/creature.h"
-#include "engine/xlist.h"
 #include "magic/effect.h"
 #include "magic/spelldef.h"
 
@@ -70,7 +71,7 @@ class XMagic
 {
     public:
         XMagic();
-        XMagic(XMagic * mag);
+        explicit XMagic(XMagic*) = delete;
         ~XMagic();
 
         RESULT Cast(XSpell * spell, XCreature * caster);
@@ -85,7 +86,7 @@ class XMagic
             return magic_level[ms];
         }
 
-        XList<XSpell*> spells;
+        std::vector<XSpell*> spells;
 
         void Store(XFile * f);
         void Restore(XFile * f);

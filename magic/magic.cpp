@@ -233,14 +233,10 @@ XMagic::XMagic()
     }
 }
 
-XMagic::XMagic(XMagic * mag)
-{
-    assert(0);
-}
-
 XMagic::~XMagic()
 {
-    spells.KillAll();
+    for (auto spell: spells)
+        spell->Invalidate();
 }
 
 int will_div[10] = {50, 25, 20, 15, 10, 8, 6, 3, 2, 1};
@@ -317,32 +313,29 @@ int XMagic::GainLevel(MAGIC_SCHOOL school, int n)
     return 0;
 }
 
-void XMagic::Learn(SPELL_NAME spell)
+void XMagic::Learn(const SPELL_NAME spell)
 {
-    bool flag = true;
-
-    for (XList<XSpell*>::iterator tsp = spells.begin(); tsp != spells.end(); tsp++)
+    for (const auto tsp : spells) {
         if (tsp->GetSpellName() == spell) {
             tsp->GainLevel();
-            flag = false;
+
             return;
         }
-
-    if (flag) {
-        spells.Add(new XSpell(spell));
     }
+
+    spells.push_back(new XSpell(spell));
 }
 
 XSpell* XMagic::GetSpell(SPELL_NAME spell)
 {
-    for (XList<XSpell*>::iterator tsp = spells.begin(); tsp != spells.end(); tsp++)
+    for (const auto tsp : spells) {
         if (tsp->GetSpellName() == spell) {
             return tsp;
         }
+    }
 
-    return NULL;
+    return nullptr;
 }
-
 
 const char* mg_name_str[] = {
     "Elemental",
@@ -378,14 +371,20 @@ int XMagic::LevelToString(MAGIC_SCHOOL school, char* buf)
 
 void XMagic::Store(XFile * f)
 {
+    // FIXME: Implement when porting saving/restoring to Cereal
+    /*
     f->Write(magic_level, sizeof(int), MS_EOF);
     f->Write(magic_count, sizeof(int), MS_EOF);
     spells.StoreList(f);
+    */
 }
 
 void XMagic::Restore(XFile * f)
 {
+    // FIXME: Implement when porting saving/restoring to Cereal
+    /*
     f->Read(magic_level, sizeof(int), MS_EOF);
     f->Read(magic_count, sizeof(int), MS_EOF);
     spells.RestoreList(f);
+    */
 }
