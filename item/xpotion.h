@@ -21,9 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XPOTION_H
 #define XPOTION_H
 
+#include <vector>
+
 #include "item/item.h"
 #include "magic/effect.h"
-
 
 enum POTION_COLOR {
     PNC_CLEAR,
@@ -203,7 +204,7 @@ class XAlchemy
 {
         void BuildReception(int al_lvl);
         int GetPotionCount(int al_lvl, POTION_NAME** pTable);
-        XList<XAlchemyRec*> reception;
+        std::vector<XAlchemyRec*> reception;
     public:
         XAlchemy();
         ~XAlchemy();

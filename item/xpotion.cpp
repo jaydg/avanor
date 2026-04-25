@@ -538,14 +538,13 @@ void XAlchemy::Init()
     }
 
     FILE * f = fopen(vMakePath(HOME_DIR, "recipies.txt"), "w");
-    XList<XAlchemyRec*>::iterator it = alchemy.reception.begin();
 
-    while (it != alchemy.reception.end()) {
-        const char* c1 = potion_descr[it->pn1].name;
-        const char* c2 = potion_descr[it->pn2].name;
-        const char* c3 = potion_descr[it->result].name;
-        fprintf(f, "%s + %s = %s\n", c1, c2, c3);
-        it++;
+    for (auto it: alchemy.reception) {
+        fprintf(f, "%s + %s = %s\n",
+            potion_descr[it->pn1].name,
+            potion_descr[it->pn2].name,
+            potion_descr[it->result].name
+        );
     }
 
     fclose(f);
@@ -578,7 +577,7 @@ void XAlchemy::BuildReception(int al_lvl)
             if (pos1 != pos2 && tbl[tbl_src * pos1 + pos2] == -1) {
                 tbl[tbl_src * pos1 + pos2] = j;
                 XAlchemyRec * alrec = new XAlchemyRec(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]);
-                reception.Add(alrec);
+                reception.push_back(alrec);
                 break;
             }
         }
@@ -620,30 +619,17 @@ int XAlchemy::GetReceptionCount()
 
 XAlchemyRec* XAlchemy::GetReception(int num)
 {
-    XList<XAlchemyRec*>::iterator it = alchemy.reception.begin();
+    if (num > alchemy.reception.size())
+        return nullptr;
 
-    while (num > 0 && it != alchemy.reception.end()) {
-        it++;
-        num--;
-    }
-
-    if (it != alchemy.reception.end()) {
-        return it;
-    } else {
-        return NULL;
-    }
+    return alchemy.reception[num - 1];
 }
 
 int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
 {
-    XList<XAlchemyRec*>::iterator it = alchemy.reception.begin();
-
-    while (it != alchemy.reception.end()) {
-        if (it->pn1 == pn1 && it->pn2 == pn2 && it->result == pn3) {
+    for (auto rec: alchemy.reception) {
+        if (rec->pn1 == pn1 && rec->pn2 == pn2 && rec->result == pn3)
             return 1;
-        }
-
-        it++;
     }
 
     return 0;
@@ -651,14 +637,9 @@ int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3
 
 POTION_NAME XAlchemy::GetPotionName(POTION_NAME pn1, POTION_NAME pn2)
 {
-    XList<XAlchemyRec*>::iterator it = alchemy.reception.begin();
-
-    while (it != alchemy.reception.end()) {
-        if (it->pn1 == pn1 && it->pn2 == pn2 || it->pn2 == pn1 && it->pn1 == pn2) {
-            return it->result;
-        }
-
-        it++;
+    for (auto rec: alchemy.reception) {
+        if (rec->pn1 == pn1 && rec->pn2 == pn2 || rec->pn2 == pn1 && rec->pn1 == pn2)
+            return rec->result;
     }
 
     return PN_UNKNOWN;
@@ -666,10 +647,12 @@ POTION_NAME XAlchemy::GetPotionName(POTION_NAME pn1, POTION_NAME pn2)
 
 void XAlchemy::Store(XFile * f)
 {
-    alchemy.reception.StoreList(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // alchemy.reception.StoreList(f);
 }
 
 void XAlchemy::Restore(XFile * f)
 {
-    alchemy.reception.RestoreList(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // alchemy.reception.RestoreList(f);
 }
