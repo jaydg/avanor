@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
+
 #include "creature/std_ai.h"
 #include "engine/xapi.h"
 #include "game/game.h"
@@ -1093,7 +1095,9 @@ void XStandardAI::Store(XFile * f)
     ai_owner.Store(f);
     guard_area.Store(f);
     f->Write(&guard_area_location, sizeof(LOCATION));
-    known_traps.StoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // known_traps.StoreList(f);
 }
 
 void XStandardAI::Restore(XFile * f)
@@ -1117,7 +1121,9 @@ void XStandardAI::Restore(XFile * f)
     ai_owner.Restore(f);
     guard_area.Restore(f);
     f->Read(&guard_area_location, sizeof(LOCATION));
-    known_traps.RestoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // known_traps.RestoreList(f);
 }
 
 /////////////// scripting support
@@ -1216,13 +1222,10 @@ void XStandardAI::LearnTraps()
         }
 }
 
-bool XStandardAI::isKnowThisTrap(XMapObject * trap)
+bool XStandardAI::isKnowThisTrap(const XMapObject* trap)
 {
-    for (XList<XMapObject*>::iterator it = known_traps.begin(); it != known_traps.end(); it++) {
-        if (it == trap) {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(
+        known_traps.begin(),
+        known_traps.end(),
+        [trap](XMapObject* t) { return trap == t; });
 }

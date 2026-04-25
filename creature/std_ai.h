@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef STD_AI_H
 #define STD_AI_H
 
+#include <vector>
+
 #include "creature/creature.h"
 #include "creature/cr_defs.h"
 #include "helpers/rect.h"
@@ -145,11 +147,11 @@ class XStandardAI : public XObject
         void ExecuteScript(XQList<SCRIPT_CMD>* scr);
         void RunScript();
 
-        // the create who know trap can't activate it
+        // the creature who knows a trap can't activate it
         // used for random rooms guardians.
-        XList<XMapObject*> known_traps;
+        std::vector<XMapObject*> known_traps;
         void LearnTraps();
-        bool isKnowThisTrap(XMapObject * trap);
+        bool isKnowThisTrap(const XMapObject* trap);
 
         int sleep_well;
     protected:
