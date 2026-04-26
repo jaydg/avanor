@@ -2619,7 +2619,7 @@ void XHero::ActivateTrap()
 
 int XHero::OrderCompanion()
 {
-    XQList<XCreature*> companions_list;
+    std::vector<XCreature*> companions_list;
 
     for (int i = -10; i < 11; i++)
         for (int j = -10; j < 11; j++) {
@@ -2642,11 +2642,10 @@ int XHero::OrderCompanion()
     if (companions_list.size() > 1) {
         char bufx[8192] = "";
         int index = 0;
-        XQList<XCreature*>::iterator it;
 
-        for (it = companions_list.begin(); it != companions_list.end(); ++it) {
+        for (auto it: companions_list) {
             char buf[256];
-            sprintf(buf, "[%c] %s", 64 + index, (*it)->GetNameEx(CRN_T1));
+            sprintf(buf, "[%c] %s", 64 + index, it->GetNameEx(CRN_T1));
             strcat(bufx, buf);
             index++;
         }
@@ -2661,9 +2660,9 @@ int XHero::OrderCompanion()
 
         index = 96;
 
-        for (it = companions_list.begin(); it != companions_list.end(); ++it) {
+        for (auto it: companions_list) {
             if (ch == index || ch == (index - 32)) {
-                slave = *it;
+                slave = it;
             }
 
             index++;

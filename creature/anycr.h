@@ -87,9 +87,9 @@ struct _CREATURE {
     CORPSE_DATA pCorpseData;
     unsigned int ai_flags;
     CREATURE_CLASS cr_class;        // class of creature
-    XQList<SKILL_REC> skills;
-    XQList<SPELL_NAME> spells;
-    XQList<EQUIP_REC> equipment;
+    std::vector<SKILL_REC> skills;
+    std::vector<SPELL_NAME> spells;
+    std::vector<EQUIP_REC> equipment;
     std::vector<MELEE_ATTACK> melee_attack;
     int equip_probability;
     unsigned int generation_flags;
