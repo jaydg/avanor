@@ -75,24 +75,28 @@ XObject* XScheduler::Get()
             XTime::RunTime();
         }
 
-        XObject * p = data[head].begin();
-        assert(dynamic_cast<XObject*>(p));
+        auto it = data[head].begin();
+        auto p = *it;
 
         if (p->ttm < 0) {
             return p;
         }
 
-        data[head].pop_front();
+        data[head].erase(it);
         Place(p);
     }
 }
 
 XObject* XScheduler::Remove()
 {
-    assert(!data[head].empty() && data[head].begin()->isValid());
-    assert(data[head].begin()->ttm < 0);
-    XObject * p = data[head].begin();
-    data[head].pop_front();
+    assert(!data[head].empty());
+    auto it = data[head].begin();
+    auto p = *it;
+
+    assert(p->isValid());
+    assert(p->ttm < 0);
+
+    data[head].erase(it);
     return p;
 }
 
@@ -101,10 +105,9 @@ void XScheduler::Store(XFile * f)
     f->Write(&_time, sizeof(_time));
     f->Write(&head, sizeof(head));
 
-    XList<XObject*>::iterator it;
-
     for (auto & i : data) {
-        i.StoreList(f);
+        // FIXME: Implement when porting saving/restoring to Cereal
+        // i.StoreList(f);
     }
 }
 
@@ -114,6 +117,7 @@ void XScheduler::Restore(XFile * f)
     f->Read(&head, sizeof(head));
 
     for (auto & i : data) {
-        i.RestoreList(f);
+        // FIXME: Implement when porting saving/restoring to Cereal
+        // i.RestoreList(f);
     }
 }

@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSCHEDULER_H
 #define XSCHEDULER_H
 
-#include "engine/xlist.h"
+#include <vector>
 
 constexpr int XSCHEDULER_TIME_SLICE = 100;
 constexpr int XSCHEDULER_STEPS_AHEAD = 100;
@@ -31,7 +31,7 @@ class XMapObject;
 class XScheduler
 {
         long _time, head;
-        XList<XObject*> data[XSCHEDULER_STEPS_AHEAD];
+        std::vector<XObject*> data[XSCHEDULER_STEPS_AHEAD];
         void Place(XObject * p);
     public:
         XScheduler() : _time(0), head(0) { }
