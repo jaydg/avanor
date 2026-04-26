@@ -310,15 +310,16 @@ bool XCave::GetFreeExit(XPoint * pt)
 
     while (attempt-- > 0) {
         int n = vRand(exits.size());
-        XQList<XPoint>::iterator it = exits.begin();
+        auto it = exits.begin();
 
         while (n > 0) {
-            it++;
+            ++it;
             n--;
         }
 
         *pt = *it;
         exits.erase(it);
+
         return true;
     }
 

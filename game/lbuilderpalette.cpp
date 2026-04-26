@@ -53,7 +53,7 @@ extern "C"
 
 void XLocation::PutPalette(int x, int y)
 {
-    XQList<XPoint> points_to_resolve;
+    std::vector<XPoint> points_to_resolve;
 
     for (int i = 0; i < current_pattern.h; i++) {
         for (int j = 0; j < current_pattern.w; j++) {
@@ -62,7 +62,7 @@ void XLocation::PutPalette(int x, int y)
             for (auto [this_view, real_view, lua_str]: pattern_translation) {
                 if (this_view == current_pattern.pattern[i * current_pattern.w + j]) {
                     if (lua_str[0]) {
-                        points_to_resolve.push_back(XPoint(x + j, y + i));
+                        points_to_resolve.emplace_back(x + j, y + i);
                     } else {
                         map->SetXY(x + j, y + i, real_view);
                     }
@@ -76,17 +76,17 @@ void XLocation::PutPalette(int x, int y)
                 switch (current_pattern.pattern[i * current_pattern.w + j]) {
                     case '+':
                         new XDoor(x + j, y + i, 0, this);
-                        points_to_resolve.push_back(XPoint(x + j, y + i));
+                        points_to_resolve.emplace_back(x + j, y + i);
                         break;
 
                     case '/':
                         new XDoor(x + j, y + i, 1, this);
-                        points_to_resolve.push_back(XPoint(x + j, y + i));
+                        points_to_resolve.emplace_back(x + j, y + i);
                         break;
 
                     case '^':
                         new XTrap(x + j, y + i, this);
-                        points_to_resolve.push_back(XPoint(x + j, y + i));
+                        points_to_resolve.emplace_back(x + j, y + i);
                         break;
 
                     case '.':
@@ -121,15 +121,14 @@ void XLocation::PutPalette(int x, int y)
                         break;
 
                     default:
-                        points_to_resolve.push_back(XPoint(x + j, y + i));
+                        points_to_resolve.emplace_back(x + j, y + i);
                         break;
                 }
             }
         }
     }
 
-    for (XQList<XPoint>::iterator it = points_to_resolve.begin(); it != points_to_resolve.end(); it++) {
-        XPoint pt = *it;
+    for (const auto pt: points_to_resolve) {
         int best_fit_index = 0;
 
         for (int q = -1; q <= 1; q++) {

@@ -60,7 +60,7 @@ class XCave
         int map_hgt;
     public:
         XRect r;
-        XQList<XPoint> exits;
+        std::vector<XPoint> exits;
         XCave(int len, int hgt, bool isAllowSpecialRooms);
         int Intersect(XCave * xc, int dist);
         void Draw(XLocation * l);

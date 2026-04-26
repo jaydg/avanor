@@ -1075,7 +1075,7 @@ int XLocation::AskQuestion(lua_State * L)
     char key_value[20];
     int index = 0;
 
-    XQList<ASK_QUESTION_REC> keys;
+    std::vector<ASK_QUESTION_REC> keys;
 
     while (sscanf(key + offs, "%s10%n", key_value, &offs) > 0) {
         ASK_QUESTION_REC aqr;
@@ -1122,9 +1122,9 @@ int XLocation::AskQuestion(lua_State * L)
     int ch = vGetch();
     msgwin.ClrMsg();
 
-    for (XQList<ASK_QUESTION_REC>::iterator it = keys.begin(); it != keys.end(); it++) {
-        if (ch == (*it).key) {
-            lua_pushstring(L, (*it).val.c_str());
+    for (auto it: keys) {
+        if (ch == it.key) {
+            lua_pushstring(L, it.val.c_str());
             return 1;
         }
     }
