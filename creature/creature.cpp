@@ -95,9 +95,6 @@ void XCreature::Invalidate()
         item->Invalidate();
     }
 
-    for (auto component: components)
-        component->Invalidate();
-
     delete sk;
     sk = NULL;
 

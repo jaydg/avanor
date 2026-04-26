@@ -21,8 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/bodypart.h"
 #include "creature/creature.h"
 
-REGISTER_CLASS(XBodyPart);
-
 const char* bp_names[] = {
     "",
     "head",
@@ -57,25 +55,16 @@ ITEM_MASK bpim[] = {
     IM_ALL
 };
 
-XBodyPart::XBodyPart(XCreature* _owner, const BODY_PART bp) : owner(_owner)
+XBodyPart::XBodyPart(XCreature* o, const BODY_PART bp) : owner(o)
 {
-    owner = _owner;
+    owner = o;
     bp_uin = bp;
     item = nullptr;
-    im	= IM_OTHER;
 }
 
 ITEM_MASK XBodyPart::GetProperIM() const
 {
     return bpim[bp_uin];
-}
-
-void XBodyPart::Invalidate()
-{
-    item = nullptr;
-    owner = nullptr;
-
-    XObject::Invalidate();
 }
 
 const char* XBodyPart::GetName() const
@@ -142,22 +131,6 @@ int XBodyPart::GetPartSize() const
         default :
             return 0;
     }
-}
-
-void XBodyPart::Store(XFile* f)
-{
-    XObject::Store(f);
-    f->Write(&bp_uin);
-    item.Store(f);
-    owner.Store(f);
-}
-
-void XBodyPart::Restore(XFile* f)
-{
-    XObject::Restore(f);
-    f->Read(&bp_uin);
-    item.Restore(f);
-    owner.Restore(f);
 }
 
 void XBodyPart::Create(XCreature* cr, const char* str)

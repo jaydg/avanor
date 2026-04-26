@@ -47,23 +47,18 @@ enum BODY_PART {
     BP_TWO_HANDED
 };
 
-class XBodyPart final : public XObject
+class XBodyPart
 {
         XPtr<XItem> item;	//main item for this body part;
         XPtr<XCreature> owner;
         XBodyPart() : bp_uin() {}
 
     public:
-        DECLARE_CREATOR(XBodyPart, XObject);
-        XBodyPart(XCreature * _owner, BODY_PART bp);
-        void Invalidate() override;
-        const char* GetName() const;
+        XBodyPart(XCreature* o, BODY_PART bp);
+
+    const char* GetName() const;
         static const char* XGetName(BODY_PART bp);
         static void Create(XCreature* cr, const char* str);
-        int Compare(XObject* o) override
-        {
-            return 1;
-        }
 
         int Fit(const BODY_PART bp) const
         {
@@ -78,9 +73,6 @@ class XBodyPart final : public XObject
 
         int GetPartSize() const;
         ITEM_MASK GetProperIM() const;
-
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
 };
 
 #endif
