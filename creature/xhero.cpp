@@ -40,7 +40,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XHero);
 int _exit_flag = 0;
 
-static XQList<MELEE_ATTACK> hero_melee;
+static std::vector<MELEE_ATTACK> hero_melee;
 
 XHero::XHero(int flag)
 {

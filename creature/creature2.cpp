@@ -74,9 +74,9 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         tdam = dice.Throw() + GetDMG() + wsk->GetDMG(WSK_UNARMED);
         brt = BR_NONE;
 
-        for (XQList<MELEE_ATTACK>::iterator tit = melee_attack->begin(); tit != melee_attack->end(); tit++) {
-            if (vRand(100) < (*tit).prob) {
-                brt = brt | (*tit).br_attack;
+        for (const auto tit: *melee_attack) {
+            if (vRand(100) < tit.prob) {
+                brt = brt | tit.br_attack;
             }
         }
     }

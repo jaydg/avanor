@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define ANY_CR_H
 
 #include <string>
+#include <vector>
 
 #include "creature/cr_defs.h"
 #include "creature/creature.h"
@@ -89,7 +90,7 @@ struct _CREATURE {
     XQList<SKILL_REC> skills;
     XQList<SPELL_NAME> spells;
     XQList<EQUIP_REC> equipment;
-    XQList<MELEE_ATTACK> melee_attack;
+    std::vector<MELEE_ATTACK> melee_attack;
     int equip_probability;
     unsigned int generation_flags;
 };

@@ -369,7 +369,7 @@ class XCreature : public XBaseObject
         int move_energy;
         int base_speed;
         int MeleeAttack(XCreature* target, XItem* weapon);
-        XQList<MELEE_ATTACK>* melee_attack;
+        std::vector<MELEE_ATTACK>* melee_attack;
 
         void Sacrifice(XItem* item);
         XReligion religion;
