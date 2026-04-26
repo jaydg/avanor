@@ -21,7 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef STRPROC_H
 #define STRPROC_H
 
-#include "engine/xlist.h"
+
+#include <vector>
+
 #include "helpers/dice.h"
 
 // warning!!! this class don't do a copy of string content, so
@@ -61,12 +63,12 @@ struct KEYWORD_DICE_PAIR {
 
 class XStringProcEx
 {
-        XQList<KEYWORD_DICE_PAIR> pairs;
+        std::vector<KEYWORD_DICE_PAIR> pairs;
     public:
         explicit XStringProcEx(const char* str);
-        XQList<KEYWORD_DICE_PAIR>* GetPairsList()
+        std::vector<KEYWORD_DICE_PAIR>& GetPairsList()
         {
-            return &pairs;
+            return pairs;
         }
 };
 

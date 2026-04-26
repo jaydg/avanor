@@ -54,10 +54,9 @@ XStats::XStats(const char* str)
 void XStats::Set(const char* str)
 {
     XStringProcEx xsp(str);
-    XQList<KEYWORD_DICE_PAIR>* lst = xsp.GetPairsList();
 
-    for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++) {
-        stats[(*it).keyword_index] += (*it).dice.Throw() * 100;
+    for (auto [keyword_index, dice]: xsp.GetPairsList()) {
+        stats[keyword_index] += dice.Throw() * 100;
     }
 }
 
@@ -117,10 +116,9 @@ XStatsGenerator::XStatsGenerator()
 void XStatsGenerator::Init(const char* str)
 {
     XStringProcEx xsp(str);
-    XQList<KEYWORD_DICE_PAIR>* lst = xsp.GetPairsList();
 
-    for (XQList<KEYWORD_DICE_PAIR>::iterator it = lst->begin(); it != lst->end(); it++) {
-        stats[(*it).keyword_index].Setup((*it).dice);
+    for (auto [keyword_index, dice]: xsp.GetPairsList()) {
+        stats[keyword_index].Setup(dice);
     }
 }
 
