@@ -640,8 +640,8 @@ XStairWay* RecursiveWayFound(XLocation * tl, XLocation * tgt_l)
 {
     tl->way_found_flag = false;
 
-    for (XQList<XObject* >::iterator it = tl->ways_list.begin(); it != tl->ways_list.end(); it++) {
-        XStairWay * way = (XStairWay*)(*it);
+    for (const auto it: tl->ways_list) {
+        const auto way = dynamic_cast<XStairWay*>(it);
 
         if (way->ln == tgt_l->ln) {
             return way;

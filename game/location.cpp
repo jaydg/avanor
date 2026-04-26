@@ -486,7 +486,7 @@ int XLocation::pat_offs_x = 0;
 int XLocation::pat_offs_y = 0;
 
 LOCATION_PATTERN XLocation::current_pattern = {NULL, 0, 0};
-XQList<PALETTE_MAP> XLocation::pattern_translation;
+std::vector<PALETTE_MAP> XLocation::pattern_translation;
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
 int XLocation::CreateLocation(lua_State * L)

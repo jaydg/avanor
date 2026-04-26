@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define LOCATION_H
 
 #include <string>
+#include <vector>
 
 #include "creature/cr_defs.h"
 #include "helpers/point.h"
@@ -155,7 +156,8 @@ class XLocation : public XObject
 
         bool way_found_flag; //used for recursive way found alg...
 
-        XQList<XObject*> ways_list; //ways list used for AI...
+        // ways list used for the AI.
+        std::vector<XObject*> ways_list;
         LOCATION ln;
 
         static int rand_location_count;
@@ -216,7 +218,7 @@ class XLocation : public XObject
         static XCreature* last_creature;
         static lua_State* L;
         static LOCATION_PATTERN current_pattern;
-        static XQList<PALETTE_MAP> pattern_translation;
+        static std::vector<PALETTE_MAP> pattern_translation;
         static int pat_offs_x;
         static int pat_offs_y;
 

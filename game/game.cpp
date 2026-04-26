@@ -355,12 +355,12 @@ void XGame::CreateLocations()
     //	Bind ways
     for (int i = 0; i < L_EOF; i++) {
         if (locations[i]) {
-            for (XQList<XObject* >::iterator it1 = locations[i]->ways_list.begin(); it1 != locations[i]->ways_list.end(); it1++) {
-                XStairWay * way = (XStairWay*)(*it1);
+            for (const auto it1: locations[i]->ways_list) {
+                auto way = dynamic_cast<XStairWay*>(it1);
 
                 if (way->nx < 0 && way->ny < 0 && locations[way->ln]) {
-                    for (XQList<XObject* >::iterator it2 = locations[way->ln]->ways_list.begin(); it2 != locations[way->ln]->ways_list.end(); it2++) {
-                        XStairWay * tmp_way = (XStairWay*)(*it2);
+                    for (const auto it2: locations[way->ln]->ways_list) {
+                        auto tmp_way = dynamic_cast<XStairWay*>(it2);
 
                         if (tmp_way->nx < 0 && tmp_way->ny < 0 && tmp_way->ln == (LOCATION)i) {
                             way->Bind(tmp_way);

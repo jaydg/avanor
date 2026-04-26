@@ -18,7 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "engine/xapi.h"
 #include "game/location.h"
 #include "map/map_objects.h"
 
@@ -60,12 +59,12 @@ void XLocation::PutPalette(int x, int y)
         for (int j = 0; j < current_pattern.w; j++) {
             bool found_it = false;
 
-            for (XQList<PALETTE_MAP>::iterator it = pattern_translation.begin(); it != pattern_translation.end(); it++) {
-                if ((*it).this_view == current_pattern.pattern[i * current_pattern.w + j]) {
-                    if ((*it).lua_str[0]) {
+            for (auto [this_view, real_view, lua_str]: pattern_translation) {
+                if (this_view == current_pattern.pattern[i * current_pattern.w + j]) {
+                    if (lua_str[0]) {
                         points_to_resolve.push_back(XPoint(x + j, y + i));
                     } else {
-                        map->SetXY(x + j, y + i, (*it).real_view);
+                        map->SetXY(x + j, y + i, real_view);
                     }
 
                     found_it = true;
@@ -149,10 +148,10 @@ void XLocation::PutPalette(int x, int y)
 
         map->SetXY(pt.x, pt.y, best_fit_terrain_table[best_fit_index]);
 
-        for (XQList<PALETTE_MAP>::iterator tit = pattern_translation.begin(); tit != pattern_translation.end(); tit++) {
-            if ((*tit).this_view == current_pattern.pattern[(pt.y - y) * current_pattern.w + pt.x - x]) {
+        for (auto tit: pattern_translation) {
+            if (tit.this_view == current_pattern.pattern[(pt.y - y) * current_pattern.w + pt.x - x]) {
                 char buf[1024];
-                sprintf(buf, "local x, y = %d, %d\n %s", pt.x, pt.y, (*tit).lua_str);
+                sprintf(buf, "local x, y = %d, %d\n %s", pt.x, pt.y, tit.lua_str);
                 luaL_dostring(L, buf);
             }
         }
