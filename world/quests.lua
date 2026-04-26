@@ -14,12 +14,12 @@ function CreateAllQuests()
 		"")
 
 	Quest(QUEST_TORIN, Q_UNKNOWN, 
-		"Torin, the Dwarven King asked you to switch on gas pump at the bottom of gold mine.", 
+		"Torin, the Dwarven King asked you to switch on the gas pump at the bottom of gold mine.",
 		"", 
 		"")
 
 	Quest(QUEST_OZORIK, Q_UNKNOWN, 
-		"Ozorick, the royal guard captain, have problems with an orc-party.", 
+		"Ozorick, the royal guard captain, has problems with an orcish war-party.",
 		"", 
 		"")
 

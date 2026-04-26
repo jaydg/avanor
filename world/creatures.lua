@@ -1150,7 +1150,7 @@ function InitAllCreatures()
 	CRR("see_invisible:0d0+70");
 	CRC("0d0+10", "3d15");
 	CRM("0d0-10", "0d0+15", "5d5+100", "5d5+100");
-	CRD("How he got to the mushroom caves is anyones guess but it is commonly believed that some kobold shaman got a little carried away with his magic and summoned Beelzevile from the netherworld.  Standing 10 feet high and carrying a reek of sulphur about him, he strides around the cavern, furious at being trapped in this cold place.  His massive claws can shred flesh and steel alike.  You catch a glimpse of a magnificent ring on one of his hands as he noisely chews on the haunch of a kobold who wandered a little too close.");
+	CRD("How he got to the mushroom caves is anyones guess but it is commonly believed that some kobold shaman got a little carried away with his magic and summoned Beelzevile from the netherworld.  Standing 10 feet high and carrying a reek of sulphur about him, he strides around the cavern, furious at being trapped in this cold place.  His massive claws can shred flesh and steel alike.  You catch a glimpse of a magnificent ring on one of his hands as he noisily chews on the haunch of a kobold who wandered a little too close.");
 	CRAT(BR_POISON, 80);
 	CRAT(BR_FIRE, 100);
 	CRAT(BR_COLD, 100);

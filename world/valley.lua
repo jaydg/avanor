@@ -375,7 +375,7 @@ function JorgusHandler(e, t, p, v)
 						AddMessage("You're welcome, sister!")
 					end
 				else
-					AddMessage("You haven't enough money!")
+					AddMessage("You don't have enough money!")
 				end
 			else
 				AddMessage("Don't waste my time!")
@@ -414,7 +414,7 @@ function OzorikHandler(e, t, p, v)
 				end
 				QuestModify(QUEST_OZORIK, Q_KNOWN)
 			else
-				AddMessage("'Sorry, but I'm really busy now. The orc war-party will be here soon!'")
+				AddMessage("'Sorry, but I'm really busy right now. The orc war-party will be here soon!'")
 			end
 		else
 			if (qs < Q_CLOSED) then
@@ -430,7 +430,7 @@ function OzorikHandler(e, t, p, v)
 	elseif (e == LE_GIVE_ITEM) then		
 		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(im, IM_WEAPON) and BinaryAND(brt, BR_ORCSLAYER) and wt == WSK_SWORD) then
-			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, than return to me!'")
+			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
 		else
 			AddMessage("'We are not looking for this.'")
 			return 0
@@ -455,7 +455,7 @@ end
 
 function RoyalGuardHandler(e, t, p, v)
 	if (e == LE_CHAT) then
-		AddMessage("'Don't bothering me!'")
+		AddMessage("'Don't bother me!'")
 	elseif (e == LE_GIVE_ITEM) then
 		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(im, IM_WEAPON) and BinaryAND(brt, BR_ORCSLAYER) and wt == WSK_SWORD) then
@@ -528,10 +528,10 @@ function YohjiHandler(e, t, p, v)
 		if (result == 'q') then
 			if (QuestStatus(QUEST_YOHJI_BAT) ~= Q_KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= Q_KNOWN) then
 				if (Rand(2) == 1) then
-					AddMessage("'I can identify all your inventory, if you bring me a bat wing.'")
+					AddMessage("'I can identify all items in your inventory, if you bring me a bat wing.'")
 					QuestModify(QUEST_YOHJI_BAT, Q_KNOWN)
 				else
-					AddMessage("'I can identify all your inventory, if you bring me a rat tail.'")
+					AddMessage("'I can identify all items in your inventory, if you bring me a rat tail.'")
 					QuestModify(QUEST_YOHJI_RAT, Q_KNOWN)
 				end
 			else
@@ -544,7 +544,7 @@ function YohjiHandler(e, t, p, v)
 					MoneyOperation(t, 500)
 					AddMessage("Yohjishiro touches you. You feel more educated.")
 				else
-					AddMessage("'You haven't enough money!'")
+					AddMessage("'You don't have enough money!'")
 				end
 			else
 				AddMessage("'As you wish.'")
@@ -554,7 +554,7 @@ function YohjiHandler(e, t, p, v)
 		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (it == IT_RATTAIL or it == IT_BATWING) then
 			if (it == IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == Q_KNOWN) then
-				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about your inventory.")
+				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory.")
 				QuestModify(QUEST_YOHJI_RAT, Q_UNKNOWN)
 			elseif (it == IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == Q_KNOWN) then
 				AddMessage("'Oh, thank you!'")
@@ -565,11 +565,11 @@ function YohjiHandler(e, t, p, v)
 					AddMessage(string.format("'I hope %d gp will be enough for this.'", 50 * count))
 					MoneyOperation(p, 50 * count)
 				else
-					AddMessage("Sorry, I haven't enough money to by this.")
+					AddMessage("Sorry, I don't have enough money to buy this.")
 				end
 			end
 		else
-			AddMessage("'It is of no interest to me.'")
+			AddMessage("'It is not of interest for me.'")
 			return 0
 		end
 	end

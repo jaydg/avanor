@@ -292,7 +292,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
     } else {
         if (XQuest::quest.rotmoth_status == 0) {
             if (XQuest::quest.kidnapped_girl.get() && isCreatureVisible(XQuest::quest.kidnapped_girl)) {
-                msgwin.Add("I hope you've brings 100 gold coins, otherwise this girl will die.");
+                msgwin.Add("I hope you'll bring 100 gold coins, otherwise this girl will die.");
 
                 if (chatter->MoneyOp(0) >= 100) {
                     msgwin.Add("Pay him?");
@@ -315,7 +315,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
                 msgwin.Add("I dont know what you are asking about.");
             }
         } else {
-            msgwin.Add("Run away quickly before I changed my mind!");
+            msgwin.Add("Run away quickly before I change my mind!");
         }
     }
 
@@ -460,7 +460,7 @@ const char* XShopkeeper::StdAnswer()
                 return "Don't even try to steal anything.";
 
             default:
-                return "Please buy an item!";
+                return "Please buy something!";
         }
     }
 }
