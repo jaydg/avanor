@@ -74,60 +74,60 @@ RESULT XCorpse::onEat(XCreature * eater)
     RESULT flag = XAnyFood::onEat(eater);
 
     if (flag == SUCCESS) {
-        for (XQList<CORPSE_EFFECT>::iterator it = pCorpseData->effect.begin(); it != pCorpseData->effect.end(); it++) {
-            switch ((*it).type) {
+        for (auto it: pCorpseData->effect) {
+            switch (it.type) {
                 case CET_MODIFY_ST:
-                    eater->GainAttr(S_STR, (*it).value);
+                    eater->GainAttr(S_STR, it.value);
                     break;
 
                 case CET_MODIFY_TO:
-                    eater->GainAttr(S_TOU, (*it).value);
+                    eater->GainAttr(S_TOU, it.value);
                     break;
 
                 case CET_MODIFY_MA:
-                    eater->GainAttr(S_MAN, (*it).value);
+                    eater->GainAttr(S_MAN, it.value);
                     break;
 
                 case CET_MODIFY_R_FIRE:
-                    eater->GainResist(R_FIRE, (*it).value);
+                    eater->GainResist(R_FIRE, it.value);
                     break;
 
                 case CET_MODIFY_R_COLD:
-                    eater->GainResist(R_COLD, (*it).value);
+                    eater->GainResist(R_COLD, it.value);
                     break;
 
                 case CET_MODIFY_R_ACID:
-                    eater->GainResist(R_ACID, (*it).value);
+                    eater->GainResist(R_ACID, it.value);
                     break;
 
                 case CET_MODIFY_R_POISON:
-                    eater->GainResist(R_POISON, (*it).value);
+                    eater->GainResist(R_POISON, it.value);
                     break;
 
                 case CET_MODIFY_R_PARALYSE:
-                    eater->GainResist(R_PARALYSE, (*it).value);
+                    eater->GainResist(R_PARALYSE, it.value);
                     break;
 
                 case CET_POISON: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_POISON, (*it).value, vRand(100), eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_POISON, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
                 case CET_DISEASE: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_DISEASE, (*it).value, vRand(100), eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_DISEASE, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
                 case CET_PARALYSE: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_PARALYSE, (*it).value, vRand(100), eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_PARALYSE, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
                 case CET_CONFUSE: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_CONFUSE, (*it).value, vRand(100), eater);
+                    auto mod = std::make_unique<XModDelayed>(MOD_CONFUSE, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
@@ -145,7 +145,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 
                 case CET_MODIFY_STOMACH:
                     if (eater->isHero()) {
-                        if ((*it).value < 0) {
+                        if (it.value < 0) {
                             msgwin.Add("You stomach shrinks from pain!");
                             eater->nutrio_speed++;
                         } else {

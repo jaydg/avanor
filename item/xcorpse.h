@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XCORPSE_H
 #define XCORPSE_H
 
+#include <vector>
+
 #include "item/xanyfood.h"
 
 enum CORPSE_CONDITION {
@@ -67,7 +69,7 @@ struct CORPSE_DATA {
 
     int roating_time;
     FOOD_TYPE ft;
-    XQList<CORPSE_EFFECT> effect;
+    std::vector<CORPSE_EFFECT> effect;
 };
 
 class XCorpse : public XAnyFood
