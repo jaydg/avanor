@@ -2567,7 +2567,9 @@ void XHero::Store(XFile * f)
     f->Write(&race, sizeof(int), 1);
     f->Write(&profession, sizeof(int), 1);
     f->Write(&turn_count);
-    reception_list.StoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // reception_list.StoreList(f);
 }
 
 void XHero::Restore(XFile * f)
@@ -2576,7 +2578,10 @@ void XHero::Restore(XFile * f)
     f->Read(&race, sizeof(int), 1);
     f->Read(&profession, sizeof(int), 1);
     f->Read(&turn_count);
-    reception_list.RestoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // reception_list.RestoreList(f);
+
     isDisturb = 0;
     last_char = '5';
     run_way_count = 0;

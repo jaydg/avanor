@@ -387,17 +387,14 @@ int XHero::LearnReception(const POTION_NAME pn1, const POTION_NAME pn2, const PO
     return 1;
 }
 
-void XHero::ShowReception()
-{
+void XHero::ShowReception() const {
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Recipes " MSG_BROWN "###");
 
     if (reception_list.empty()) {
         list.AddItem(new XGuiItem_Text("You don't know any recipes yet.", 0), 0);
     } else {
-        XList<XAlchemyRec*>::iterator it;
-
-        for (it = reception_list.begin(); it != reception_list.end(); it++) {
+        for (auto it: reception_list) {
             char buf[256];
             XAlchemy::GetReceptionName(buf, it->pn1, it->pn2, it->result);
             list.AddItem(new XGuiItem_Text(buf, 0), 0);
