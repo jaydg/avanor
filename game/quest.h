@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define QUEST_H
 
 #include <string>
+#include <vector>
 
 #include "creature/creature.h"
 #include "item/itemdef.h"
@@ -69,7 +70,7 @@ class XQuest
             rotmoth_status = 0;
         };
 
-        XQList<QUEST_REC*> quests;
+        std::vector<QUEST_REC*> quests;
 
         void ShowQuests();
 

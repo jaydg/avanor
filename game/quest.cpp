@@ -30,14 +30,14 @@ void XQuest::Store(XFile * f)
     int sz = quests.size();
     f->Write(&sz);
 
-    for (XQList<QUEST_REC*>::iterator it = quests.begin(); it != quests.end(); it++) {
-        int idx = (*it)->quest_id;
+    for (auto quest: quests) {
+        int idx = quest->quest_id;
         f->Write(&idx);
-        int status = (*it)->status;
+        int status = quest->status;
         f->Write(&status);
-        f->WriteStr((*it)->know);
-        f->WriteStr((*it)->closed);
-        f->WriteStr((*it)->complete);
+        f->WriteStr(quest->know);
+        f->WriteStr(quest->closed);
+        f->WriteStr(quest->complete);
     }
 
     f->Write(&beelzvile_killed);
@@ -105,9 +105,9 @@ void XQuest::ShowQuests()
     list.SetCaption(MSG_BROWN "### " MSG_YELLOW "Current Quests" MSG_BROWN " ###");
     int flag = 1;
 
-    for (XQList<QUEST_REC*>::iterator it = quests.begin(); it != quests.end(); it++) {
-        if ((*it)->status == Q_KNOWN) {
-            list.AddItem(new XGuiItem_Text((*it)->know.c_str()));
+    for (auto quest: quests) {
+        if (quest->status == Q_KNOWN) {
+            list.AddItem(new XGuiItem_Text(quest->know.c_str()));
             flag = 0;
         }
     }
@@ -185,13 +185,13 @@ QUEST XQuest::Status(int id)
     return qr->status;
 }
 
-QUEST_REC* XQuest::Find(int id)
+QUEST_REC* XQuest::Find(const int id)
 {
-    for (XQList<QUEST_REC*>::iterator it = XQuest::quest.quests.begin(); it != XQuest::quest.quests.end(); it++) {
-        if ((*it)->quest_id == id) {
-            return (*it);
+    for (const auto it: XQuest::quest.quests) {
+        if (it->quest_id == id) {
+            return it;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
