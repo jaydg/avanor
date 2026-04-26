@@ -111,18 +111,18 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     XBodyPart * hand_1 = nullptr;
     XBodyPart * hand_2 = nullptr;
 
-    for (XList<XBodyPart*>::iterator bp_it = components.begin(); bp_it != components.end(); ++bp_it) {
-        if (!(*bp_it)->Item() && vRand(100) < cr->equip_probability) {
-            if (bp_it->bp_uin == BP_HAND) {
+    for (auto bp: components) {
+        if (!bp->Item() && vRand(100) < cr->equip_probability) {
+            if (bp->bp_uin == BP_HAND) {
                 if (hand_1 == nullptr) {
-                    hand_1 = bp_it;
+                    hand_1 = bp;
                 } else {
-                    hand_2 = bp_it;
+                    hand_2 = bp;
                 }
-            } else if (bp_it->bp_uin == BP_MISSILE) {
+            } else if (bp->bp_uin == BP_MISSILE) {
                 continue;
             } else {
-                bp_it->Wear(ICREATE(bp_it->GetProperIM(), 0, 1000000));
+                bp->Wear(ICREATE(bp->GetProperIM(), 0, 1000000));
             }
         }
     }

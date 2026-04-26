@@ -92,7 +92,9 @@ XCreature::XCreature()
 void XCreature::Invalidate()
 {
     contain.KillAll();
-    components.KillAll();
+
+    for (auto component: components)
+        component->Invalidate();
 
     delete sk;
     sk = NULL;
@@ -586,10 +588,9 @@ int XCreature::GetDV(XCreature * attacker)
 
 int XCreature::GetShieldDVBonus()
 {
-    XList<XBodyPart*>::iterator xbp = components.begin();
-
-    while (xbp != components.end()) {
-        XItem * i = xbp->Item();
+    for (auto xbp: components)
+    {
+        XItem* i = xbp->Item();
 
         if (i && i->im == IM_SHIELD) {
             int shld_skl = wsk->GetDV(WSK_SHIELD);
@@ -601,8 +602,6 @@ int XCreature::GetShieldDVBonus()
                 return shld_skl + shield_dv;
             }
         }
-
-        xbp++;
     }
 
     return 0;
@@ -890,12 +889,10 @@ void XCreature::Die(XCreature * killer)
         lua_pop(XLocation::L, 1);
     }
 
-    // Drop all inventory to the ground
-    XList<XBodyPart*>::iterator it;
-
-    for (it = components.begin(); it != components.end(); it++) {
-        if (it->Item()) {
-            it->UnWear()->Drop(l, x, y);
+    // Drop inventory to the ground
+    for (auto bp: components) {
+        if (bp->Item()) {
+            bp->UnWear()->Drop(l, x, y);
         }
     }
 
@@ -1067,81 +1064,59 @@ int XCreature::GetDMGFHBonus(XItem* weapon)
 
 XBodyPart* XCreature::GetRNDBodyPart()
 {
-    XList<XBodyPart*>::iterator tmpbp = components.begin();
     int value = 0;
-
-    for (; tmpbp != components.end(); tmpbp++) {
-        value += tmpbp->GetPartSize();
+    for (auto bp: components) {
+        value += bp->GetPartSize();
     }
 
     int v = value > 0 ? vRand() % value : 0;
 
-    tmpbp = components.begin();
+    for (auto bp: components) {
+        v -= bp->GetPartSize();
 
-    while (v > 0) {
-        v -= tmpbp->GetPartSize();
-
-        if (v <= 0) {
-            return tmpbp;
-        }
-
-        tmpbp++;
+        if (v <= 0)
+            return bp;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
 {
     if (rbpf == RBP_BLOCK && xim & IM_SHIELD) {
-        XList<XBodyPart*>::iterator tmpxbp = components.begin();
-        XItem * xsh = NULL;
+        auto bpi = std::find_if(
+            components.begin(),
+            components.end(),
+            [](XBodyPart* xbp) { return xbp->Item() && xbp->Item()->im & IM_SHIELD; }
+        );
 
-        while (tmpxbp != components.end()) {
-            if (tmpxbp->Item() && tmpxbp->Item()->im & IM_SHIELD) {
-                xsh = tmpxbp->Item();
-                break;
-            }
-
-            tmpxbp++;
-        }
-
-        if (xsh && (vRand() % 100 < 5 * wsk->GetLevel(WSK_SHIELD) + 5)) {
-            return tmpxbp;
+        if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(WSK_SHIELD) + 5)) {
+            return bpi[0];
         }
     }
 
-
-    XList<XBodyPart*>::iterator tmpxbp = components.begin();
     int count = 0;
-
-    while (tmpxbp != components.end()) {
-        if (tmpxbp->GetProperIM() & xim) {
+    for (auto xbp: components) {
+        if (xbp->GetProperIM() & xim) {
             count++;
         }
-
-        tmpxbp++;
     }
 
     if (count == 0) {
-        return NULL;
+        return nullptr;
     }
 
     int n = vRand() % count;
 
     count = 0;
-    tmpxbp = components.begin();
-
-    while (tmpxbp != components.end()) {
-        if (tmpxbp->GetProperIM() & xim) {
+    for (const auto xbp: components) {
+        if (xbp->GetProperIM() & xim) {
             if (n == count) {
-                return tmpxbp;
-            } else {
-                count++;
+                return xbp;
             }
-        }
 
-        tmpxbp++;
+            count++;
+        }
     }
 
     assert(0);
@@ -1386,41 +1361,33 @@ int XCreature::Shoot(int tx, int ty)
 
 XBodyPart* XCreature::GetBodyPart(BODY_PART bp, int count)
 {
-    XBodyPart * xbp;
-    XList<XBodyPart*>::iterator it;
-
-    for (it = components.begin(); it != components.end(); it++) {
-        xbp = static_cast<XBodyPart*>(static_cast<XObject*>(it));
-
+    for (auto xbp: components) {
         if (xbp->bp_uin == bp && count-- == 0) {
             return xbp;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
-int XCreature::CanWear(XItem * item)
+bool XCreature::CanWear(const XItem* item)
 {
-    for (XList<XBodyPart*>::iterator it = components.begin(); it != components.end(); it++) {
-        if ((*it)->Fit(item->bp) && (*it)->Item() == NULL) {
-            return 1;
+    return std::any_of(
+        components.begin(),
+        components.end(),
+        [item](XBodyPart* bp){ return bp->Fit(item->bp) && !bp->Item(); }
+    );
+}
+
+bool XCreature::Wear(XItem* item) const {
+    for (const auto bp: components) {
+        if (bp->Fit(item->bp) && !bp->Item()) {
+            bp->Wear(item);
+            return true;
         }
     }
 
-    return 0;
-}
-
-int XCreature::Wear(XItem * item)
-{
-    for (XList<XBodyPart*>::iterator it = components.begin(); it != components.end(); it++) {
-        if ((*it)->Fit(item->bp) && (*it)->Item() == NULL) {
-            (*it)->Wear(item);
-            return 1;
-        }
-    }
-
-    return 0;
+    return false;
 }
 
 XItem* XCreature::GetItem(BODY_PART bp, int count)
@@ -1533,7 +1500,9 @@ void XCreature::Store(XFile * f)
     f->Write(&base_exp);
     f->Write(&base_nutrio);
     f->Write(&carried_weight);
-    components.StoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // components.StoreList(f);
 
     f->Write(&creature_class, sizeof(CREATURE_CLASS));
     f->Write(&creature_size, sizeof(CREATURE_SIZE));
@@ -1608,7 +1577,8 @@ void XCreature::Restore(XFile * f)
     f->Read(&carried_weight);
 
     assert(components.empty());
-    components.RestoreList(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // components.RestoreList(f);
 
     f->Read(&creature_class, sizeof(CREATURE_CLASS));
     f->Read(&creature_size, sizeof(CREATURE_SIZE));

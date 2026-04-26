@@ -1234,7 +1234,7 @@ int XLocation::GiveAward(lua_State * L)
     if (it) {
         owner->contain.Remove(it->guid());
     } else {
-        for (XList<XBodyPart*>::iterator bp = owner->components.begin(); bp != owner->components.end(); bp++) {
+        for (const auto bp: owner->components) {
             if (bp->Item() && bp->Item()->guid() == object) {
                 it = bp->UnWear();
                 break;

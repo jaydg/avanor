@@ -21,13 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CREATURE_H
 #define CREATURE_H
 
-#include <cmath>
+#include <vector>
 
 #include "creature/bodypart.h"
 #include "creature/cr_defs.h"
 #include "creature/deity.h"
 #include "creature/std_ai.h"
-#include "engine/xlist.h"
 #include "item/incl_i.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
@@ -186,7 +185,7 @@ class XCreature : public XBaseObject
 {
     public:
         XItemList contain;
-        XList<XBodyPart*> components;
+        std::vector<XBodyPart*> components;
         CR_PERSON_TYPE creature_person_type;
         const char* creature_description;
         CREATURE_NAME creature_name; // allow to store less info into save file
@@ -287,8 +286,8 @@ class XCreature : public XBaseObject
         int Shoot(int tx, int ty);
         XItem* GetItem(BODY_PART bp, int count = 0);
         XBodyPart* GetBodyPart(BODY_PART bp, int count = 0);
-        int CanWear(XItem* item);
-        int Wear(XItem* item); // if can Wear, Wear it.
+        bool CanWear(const XItem* item);
+        bool Wear(XItem* item) const; // if can Wear, Wear it.
 
         XModifier* md;
         XMagic* m;

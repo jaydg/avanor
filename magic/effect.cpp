@@ -402,15 +402,13 @@ int XEffect::Make(EFFECT_DATA * pData)
         break;
 
         case E_GREAT_IDENTIFY: {
-            for (it_iterator i = pData->target->contain.begin(); i != pData->target->contain.end(); ++i) {
+            for (auto i : pData->target->contain) {
                 i->Identify(1);
             }
 
-            XList<XBodyPart*>::iterator it;
-
-            for (it = pData->target->components.begin(); it != pData->target->components.end(); it++) {
-                if ((*it)->Item()) {
-                    (*it)->Item()->Identify(1);
+            for (auto bp: pData->target->components) {
+                if (bp->Item()) {
+                    bp->Item()->Identify(1);
                 }
             }
 

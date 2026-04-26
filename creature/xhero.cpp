@@ -1033,14 +1033,13 @@ void XHero::Equipment(FILE * f)
         int was_ring = 0;
         int counter = 0;
         char buf[256];
-        XList<XBodyPart*>::iterator xbp = components.begin();
 
         XGuiList list;
 
         list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Equipment " MSG_BROWN "###");
         list.SetFooter(MSG_BROWN "[" MSG_YELLOW "V" MSG_BROWN "]" MSG_LIGHTGRAY " - show inventory.");
 
-        while (xbp != components.end()) {
+        for (auto xbp: components) {
             xqsa[counter] = xbp;
 
             for (int i = 0; i < 128; i++) {
@@ -2280,10 +2279,9 @@ void XHero::LookAt()
         buf[2] = toupper(buf[2]);
         list.AddItem(new XGuiItem_Text(buf, 0), 0);
 
-        XList<XBodyPart*>::iterator xbp = xcr->components.begin();
         bool iflag = false;
 
-        while (xbp != xcr->components.end()) {
+        for (auto xbp: xcr->components) {
             if (xbp->Item()) {
                 char xbuf[512];
                 xbp->Item()->toString(xbuf);

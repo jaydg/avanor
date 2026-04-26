@@ -167,7 +167,7 @@ void XBodyPart::Create(XCreature* cr, const char* str)
         for (i = 0; i < BP_EOF; i++)
             if (strcmp(buf, XGetName(static_cast<BODY_PART>(i))) == 0) {
                 auto* bp = new XBodyPart(cr, static_cast<BODY_PART>(i));
-                cr->components.Add(bp);
+                cr->components.push_back(bp);
                 break;
             }
 
