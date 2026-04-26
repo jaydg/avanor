@@ -182,6 +182,13 @@ class XObject
         static void StoreAllObjects(XFile * f);
         static void RestoreAllObjects(XFile * f);
         static void InvalidateAllObjects();
+        static XObject* GetObject(XGUID guid) {
+            if (const auto it = objects.find(guid); it != objects.end()) {
+                return objects[guid];
+            }
+
+            return nullptr;
+        }
 
         XObject(DUMMY_STRUCT * ds) : is_valid(1)
         {

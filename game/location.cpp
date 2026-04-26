@@ -1225,30 +1225,30 @@ int XLocation::GiveObjectToCreature(lua_State * L)
 
 int XLocation::GiveAward(lua_State * L)
 {
-    XCreature * owner = (XCreature*)lua_topointer(L, 1);
-    XGUID object = lua_tonumber(L, 2);
-    XCreature * target = (XCreature*)lua_topointer(L, 3);
+    const auto owner = (XCreature*)lua_topointer(L, 1);
+    const XGUID aguid = lua_tonumber(L, 2);
+    const auto target = (XCreature*)lua_topointer(L, 3);
+    auto item = dynamic_cast<XItem *>(GetObject(aguid));
 
-    XItem * it = owner->contain.Find(object);
-
-    if (it) {
-        owner->contain.Remove(it->guid());
+    const auto it = owner->contain.find(item);
+    if (it != owner->contain.end()) {
+        owner->contain.erase(it);
     } else {
         for (const auto bp: owner->components) {
-            if (bp->Item() && bp->Item()->guid() == object) {
-                it = bp->UnWear();
+            if (bp->Item() && bp->Item() == item) {
+                item = bp->UnWear();
                 break;
             }
         }
     }
 
-    if (it) {
-        owner->UnCarryItem(it);
+    if (item) {
+        owner->UnCarryItem(item);
 
-        if (target->CarryItem(it)) {
-            target->contain.Add(it);
+        if (target->CarryItem(item)) {
+            target->contain.insert(item);
         } else {
-            owner->DropItem(it);
+            owner->DropItem(item);
         }
 
         lua_pushboolean(L, true);

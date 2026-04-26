@@ -610,7 +610,7 @@ XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 
 void XGrave::HideItem(XItem* item)
 {
-    hiden_items.push_back(item);
+    hiden_items.insert(item);
 }
 
 int XGrave::onOuterUse(XCreature* cr)
@@ -623,9 +623,9 @@ int XGrave::onOuterUse(XCreature* cr)
         }
     }
 
-    while (!hiden_items.empty()) {
-        hiden_items.begin()->Drop(l, x, y);
-        hiden_items.pop_front();
+    for (const auto item: hiden_items) {
+        item->Drop(l, x, y);
+        hiden_items.erase(item);
     }
 
     isOpened = 1;
@@ -636,14 +636,18 @@ void XGrave::Store(XFile* f)
 {
     XMapObject::Store(f);
     f->Write(&isOpened);
-    hiden_items.StoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // hiden_items.StoreList(f);
 }
 
 void XGrave::Restore(XFile* f)
 {
     XMapObject::Restore(f);
     f->Read(&isOpened);
-    hiden_items.RestoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // hiden_items.RestoreList(f);
 }
 
 REGISTER_CLASS(XFurniture);

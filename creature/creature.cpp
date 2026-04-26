@@ -91,7 +91,9 @@ XCreature::XCreature()
 
 void XCreature::Invalidate()
 {
-    contain.KillAll();
+    for (auto item: contain) {
+        item->Invalidate();
+    }
 
     for (auto component: components)
         component->Invalidate();
@@ -194,7 +196,7 @@ int XCreature::stopAction()
         action_data.item->onUse(UIS_STOP, this);
     } else {
         if (action_data.item) {
-            contain.Add(action_data.item.get());
+            contain.insert(action_data.item.get());
         }
     }
 
@@ -896,9 +898,7 @@ void XCreature::Die(XCreature * killer)
         }
     }
 
-    XItem * item;
-
-    while ((item = contain.RemoveFirst()) != NULL) {
+    for (auto item: contain) {
         item->Drop(l, x, y);
     }
 
@@ -952,7 +952,7 @@ int XCreature::PickUpItem(XItem * i)
             if (xbp && xbp->Item() && xbp->Item()->Compare(i) == 0 && i->GetRef() == 0) {
                 xbp->Item()->Concat(i);
             } else {
-                contain.Add(i);
+                contain.insert(i);
             }
 
             return 1;
@@ -1522,7 +1522,9 @@ void XCreature::Store(XFile * f)
 
     action_data.Store(f);
 
-    contain.StoreList(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // contain.StoreList(f);
+
     religion.Store(f);
     max_stats.Store(f);
     f->Write(&creature_person_type, sizeof(creature_person_type));
@@ -1604,7 +1606,9 @@ void XCreature::Restore(XFile * f)
     action_data.Restore(f);
 
     assert(contain.empty());
-    contain.RestoreList(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // contain.RestoreList(f);
+
     religion.Restore(f);
     max_stats.Restore(f);
     f->Read(&creature_person_type, sizeof(creature_person_type));
@@ -1702,7 +1706,7 @@ int XCreature::Chat(XCreature * chatter, const char* msg)
 bool XCreature::ContainItem(XItem * item)
 {
     if (CarryItem(item)) {
-        contain.Add(item);
+        contain.insert(item);
         return true;
     } else {
         return false;
@@ -1823,49 +1827,51 @@ int XCreature::onGiveItem(XCreature * giver, XItem * item)
 
 int XCreature::MoneyOp(int money_count)
 {
-    it_iterator it = contain.begin();
+    XItem* money = nullptr;
 
-    while (it != contain.end()) {
+    for (auto it: contain) {
         if (it->im & IM_MONEY) {
+            money = it;
             break;
         }
-
-        it++;
     }
 
-    if (it != contain.end()) {
-        XItem * money = it;
-
+    if (money) {
         if (money_count >= 0) {
             carried_weight -= money->quantity / 10;
             money->quantity += money_count;
             carried_weight += money->quantity / 10;
+
             return money->quantity;
-        } else {
-            if (money->quantity + money_count > 0) {
-                carried_weight -= money->quantity / 10;
-                money->quantity += money_count;
-                carried_weight += money->quantity / 10;
-                return money->quantity;
-            } else if (money->quantity + money_count == 0) {
-                carried_weight -= money->quantity / 10;
-                contain.Remove(it)->Invalidate();
-                return 0;
-            } else {
-                return money->quantity + money_count;
-            }
         }
-    } else {
-        if (money_count > 0) {
-            carried_weight += money_count / 10;
-            contain.Add(new XMoney(money_count));
-            return money_count;
-        } else {
-            return money_count;
+
+        if (money->quantity + money_count > 0) {
+            carried_weight -= money->quantity / 10;
+            money->quantity += money_count;
+            carried_weight += money->quantity / 10;
+
+            return money->quantity;
         }
+
+        if (money->quantity + money_count == 0) {
+            carried_weight -= money->quantity / 10;
+            money->Invalidate();
+            contain.erase(money);
+
+            return 0;
+        }
+
+        return money->quantity + money_count;
     }
 
-    return 0;
+    if (money_count > 0) {
+        carried_weight += money_count / 10;
+        contain.insert(new XMoney(money_count));
+
+        return money_count;
+    }
+
+    return money_count;
 }
 
 const char* XCreature::GetGenderStr()

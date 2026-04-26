@@ -604,15 +604,15 @@ void XHero::Move()
             msgwin.Add("There is a heap of items here.");
         } else if (l->map->GetItemCount(nx, ny) == 1) {
             XItemList* ilist = (l->map->GetItemList(nx, ny));
-            XItem * ite = ilist->begin();
+            XItem* item = *(ilist->begin());
             char buf[256];
             msgwin.Add("There is a");
             XAnyPlace* place = l->map->GetPlace(nx, ny);
 
             if (place) {
-                place->onShowItem(ite, buf);
+                place->onShowItem(item, buf);
             } else {
-                ite->toString(buf);
+                item->toString(buf);
             }
 
             msgwin.Add(buf);
@@ -894,13 +894,13 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
         list.SetFooter(MSG_LIGHTGRAY "filtr: " MSG_BROWN "[" MSG_YELLOW "[|{}'=!?\"\\%]$X" MSG_BROWN "]");
 
         //count items for show
-        it_iterator it;
         int all_item_count = 0;
 
-        for (it = item_list->begin(); it != item_list->end(); ++it)
-            if ((ifiltr && ifiltr(it)) || (it->im & mask)) {
+        for (const auto it : *item_list) {
+            if ((ifiltr && ifiltr(it)) || it->im & mask) {
                 all_item_count++;
             }
+        }
 
         char buf[256];
 
@@ -926,16 +926,16 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
         } else {
             ITEM_MASK last_mask = IM_UNKNOWN;
 
-            for (it = item_list->begin(); it != item_list->end(); ++it) {
-                if ((ifiltr && ifiltr(it)) || (it->im & mask)) {
+            for (const auto item: *item_list) {
+                if ((ifiltr && ifiltr(item)) || (item->im & mask)) {
                     // we need to show item group name (e.g. boots, weapons etc.)
-                    if (it->im != last_mask) {
+                    if (item->im != last_mask) {
                         // skip output empty string for first item in inventory
                         if (last_mask != IM_UNKNOWN) {
                             list.AddItem(new XGuiItem_Text(""), 0);
                         }
 
-                        last_mask = it->im;
+                        last_mask = item->im;
 
                         for (int oi = 0; oi < std::size(output_items_name); oi++) {
                             if (output_items_mask[oi] & last_mask) {
@@ -946,7 +946,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
                     }
 
                     //output item
-                    list.AddItem(new XGuiItem_Inventory(it), 0);
+                    list.AddItem(new XGuiItem_Inventory(item), 0);
                 }
             }
         }
@@ -979,11 +979,11 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
                 break;
             }
         } else {
-            it_iterator selected_it = item_list->begin();
+            auto selected_it = item_list->begin();
             int stop_flag = -1;
 
             while (true) {
-                if ((ifiltr && ifiltr(selected_it)) || (selected_it->im & mask)) {
+                if ((ifiltr && ifiltr(*selected_it)) || ((*selected_it)->im & mask)) {
                     stop_flag++;
                 }
 
@@ -995,7 +995,9 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
             }
 
             assert(stop_flag == item_number);
-            XItem* ritem = item_list->Remove(selected_it);
+
+            XItem* ritem = *selected_it;
+            item_list->erase(selected_it);
 
             if (ret_item_count <= 0) {
                 return ritem;
@@ -1003,13 +1005,15 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
 
             if (ritem->quantity <= ret_item_count) {
                 return ritem;
-            } else {
-                auto sitem = dynamic_cast<XItem *>(ritem->MakeCopy());
-                sitem->quantity = ret_item_count;
-                ritem->quantity -= ret_item_count;
-                item_list->Add(ritem);
-                return sitem;
             }
+
+            auto sitem = dynamic_cast<XItem *>(ritem->MakeCopy());
+            sitem->quantity = ret_item_count;
+            ritem->quantity -= ret_item_count;
+            item_list->insert(ritem);
+
+            return sitem;
+
         }
     }
 
@@ -1106,7 +1110,7 @@ void XHero::Equipment(FILE * f)
 
             if (witem != nullptr) {
                 xqsa[n]->UnWear();
-                contain.Add(witem);
+                contain.insert(witem);
             } else {
                 if (xqsa[n]->GetProperIM() == IM_MISSILE) {
                     witem = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK);
@@ -1121,7 +1125,7 @@ void XHero::Equipment(FILE * f)
                         if (xqsa[n]->bp_uin == witem->bp) {
                             xqsa[n]->Wear(witem);
                         } else {
-                            contain.Add(witem);
+                            contain.insert(witem);
                         }
                     }
                 }
@@ -1177,11 +1181,11 @@ void XHero::ReadAll()
     if (item) {
         if (item->im & IM_SCROLL) {
             if (!XCreature::Read(item)) {
-                contain.Add(item);
+                contain.insert(item);
             }
         } else if (item->im & IM_BOOK) {
             if (!XCreature::Read(item)) {
-                contain.Add(item);
+                contain.insert(item);
             }
         }
     }
@@ -1219,7 +1223,7 @@ void XHero::DropItem()
             const int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
 
             if (res == 0) {
-                contain.Add(item);
+                contain.insert(item);
                 break;
             }
 
@@ -1227,7 +1231,7 @@ void XHero::DropItem()
                 drop_item = dynamic_cast<XItem *>(item->MakeCopy());
                 drop_item->quantity = res;
                 item->quantity -= res;
-                contain.Add(item);
+                contain.insert(item);
             }
         }
 
@@ -1239,7 +1243,7 @@ void XHero::DropItem()
         }
 
         if (!XCreature::DropItem(drop_item)) {
-            contain.Add(drop_item);
+            contain.insert(drop_item);
             return;
         }
 
@@ -1274,7 +1278,9 @@ void XHero::PickItem()
             }
         }
     } else if (tmpquae->size() == 1) {
-        XItem * tit = tmpquae->RemoveFirst();
+        XItem* tit = *(tmpquae->begin());
+        tmpquae->erase(tit);
+
         char buf[256];
         tit->toString(buf);
 
@@ -1282,7 +1288,7 @@ void XHero::PickItem()
             sprintf(bufx, "You pick up a %s.", buf);
             msgwin.Add(bufx);
         } else {
-            tmpquae->Add(tit);
+            tmpquae->insert(tit);
         }
     } else {
         XItem * tit;
@@ -1296,7 +1302,7 @@ void XHero::PickItem()
             if (PickUpItem(tit)) {
                 nitem++;
             } else { //we can't pick item, so return it back
-                tmpquae->Add(tit);
+                tmpquae->insert(tit);
                 vRefresh();
                 vGetch();
             }
@@ -1346,7 +1352,7 @@ void XHero::OpenChest()
             }
         } while (it);
 
-        tq->Add(last_chest);
+        tq->insert(last_chest);
     } else if (chest_count == 1) {
         msgwin.Add("Do you wish to open the chest?");
 
@@ -1540,8 +1546,9 @@ int XHero::XShoot()
     XItem* missile = GetItem(BP_MISSILE);
     const auto missile_w = dynamic_cast<XMissileWeapon *>(GetItem(BP_MISSILE_WEAPON));
 
-    if (!missile) { //if no missile, try to load them
-        for (XItemList::iterator it = contain.begin(); it != contain.end(); ++it) {
+    // if no missile, try to load them
+    if (!missile) {
+        for (auto it: contain) {
             if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missile_w)) {
                 msgwin.ClrMsg();
                 msgwin.Add("Load");
@@ -2341,7 +2348,7 @@ XItem* XHero::onIdentifyItem()
     XItem * it = Inventory(&contain);
 
     if (it) {
-        contain.Add(it);
+        contain.insert(it);
     }
 
     return it;
@@ -2450,7 +2457,7 @@ void XHero::GiveItem()
 
     if (XItem* item = Inventory(&contain)) {
         if (item->im & IM_MONEY) {
-            contain.Add(item);
+            contain.insert(item);
             last_creature->xai->onGiveItem(this, item);
         } else {
             int res = item->quantity;
@@ -2467,7 +2474,7 @@ void XHero::GiveItem()
                 gitem = dynamic_cast<XItem *>(item->MakeCopy());
                 gitem->quantity = res;
                 item->quantity -= res;
-                contain.Add(item);
+                contain.insert(item);
             } else {
                 gitem = item;
             }
@@ -2479,7 +2486,7 @@ void XHero::GiveItem()
 
             if (!flag || res == 0) {
                 carried_weight += gitem->weight;
-                contain.Add(gitem);
+                contain.insert(gitem);
             }
         }
     }

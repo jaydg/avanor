@@ -68,7 +68,9 @@ MAP::MAP()
 
 MAP::~MAP()
 {
-    item_list.KillAll();
+    for (const auto item : item_list) {
+        item->Invalidate();
+    }
 
     if (pSpecialObject) {
         pSpecialObject->Invalidate();
@@ -79,7 +81,10 @@ MAP::~MAP()
 void MAP::Store(XFile * f)
 {
     f->Write(&color, sizeof(char));
-    item_list.StoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // item_list.StoreList(f);
+
     f->Write(&known, sizeof(char));
     f->Write(&n, sizeof(STDMAP));
 
@@ -93,7 +98,10 @@ void MAP::Store(XFile * f)
 void MAP::Restore(XFile * f)
 {
     f->Read(&color, sizeof(char));
-    item_list.RestoreList(f);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // item_list.RestoreList(f);
+
     f->Read(&known, sizeof(char));
     f->Read(&n, sizeof(STDMAP));
 
@@ -276,7 +284,7 @@ void XMap::PutItem(const int x, const int y, XItem* item) const
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         item->x = x;
         item->y = y;
-        map[x + y * len].item_list.Add(item);
+        map[x + y * len].item_list.insert(item);
     } else {
         assert(0);
     }
@@ -348,7 +356,8 @@ void XMap::Put(XCreature * cr) const
                     tmap->color = tmap->pSpecialObject->color;
                     tmap->known = tmap->pSpecialObject->view;
                 } else if (!tmap->item_list.empty()) {
-                    XItem * item = tmap->item_list.begin();
+                    const XItem* item = *(tmap->item_list.begin());
+
                     vPutCh(j + SCR_X, i + SCR_Y, item->view, item->color);
                     tmap->color = item->color;
                     tmap->known = item->view;
@@ -487,7 +496,8 @@ void XMap::Dump(FILE* f) const
             }
 
             if (!tmap->item_list.empty()) {
-                vch = tmap->item_list.begin()->view;
+                const auto item = *(tmap->item_list.begin());
+                vch = item->view;
             }
 
             if (tmap->pMonster) {

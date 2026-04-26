@@ -93,12 +93,10 @@ int XShop::onCreatureEnter(XCreature * cr)
     if (cr->isHero()) {
         for (int i = area.left + 1; i < area.right - 1; i++)
             for (int j = area.top + 1; j < area.bottom - 1; j++) {
-                XItemList * ilist = location->map->GetItemList(i, j);
-                it_iterator it;
+                XItemList* ilist = location->map->GetItemList(i, j);
 
-                for (it = ilist->begin(); it != ilist->end(); it++) {
-                    XItem * tit = static_cast<XItem*>(static_cast<XObject*>(it));
-                    tit->Identify(1);
+                for (auto it: *ilist) {
+                    it->Identify(1);
                 }
             }
     }

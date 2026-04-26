@@ -110,7 +110,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
         case UIS_STOP:
             XCorpse * corpse = (XCorpse*)cooked_item.get();
             corpse->roating_stopped = 0;
-            cr->contain.Add(corpse);
+            cr->contain.insert(corpse);
             cooked_item = NULL;
             break;
     }
@@ -259,7 +259,7 @@ RESULT XAlchemySet::onUse(USE_ITEM_STATE uis, XCreature * cr)
         sprintf(buf1, "managed to create a %s.", buf);
         msgwin.Add(buf1);
         cr->CarryItem(pot);
-        cr->contain.Add(pot);
+        cr->contain.insert(pot);
         cr->sk->UseSkill(XSkill::Skill::ALCHEMY);
     } else {
         msgwin.Add(cr->name);

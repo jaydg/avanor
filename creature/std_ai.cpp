@@ -535,11 +535,8 @@ void XStandardAI::SetEnemyClass(CREATURE_CLASS cr_class)
 
 int XStandardAI::Wear()
 {
-    it_iterator it;
 
-    for (it = ai_owner->contain.begin(); it != ai_owner->contain.end(); it++) {
-        XItem * item = static_cast<XItem*>(static_cast<XObject*>(it));
-
+    for (auto item: ai_owner->contain) {
         XBodyPart * xbp = ai_owner->GetBodyPart(item->bp);
 
         if (!xbp) {
@@ -572,11 +569,11 @@ int XStandardAI::Wear()
         }
 
         if (old_item) {
-            ai_owner->contain.Add(xbp->UnWear());
+            ai_owner->contain.insert(xbp->UnWear());
         }
 
         xbp->Wear(item);
-        ai_owner->contain.Remove(it);
+        ai_owner->contain.erase(item);
 
         if (ai_owner->isVisible()) {
             char xbuf[256];
@@ -607,11 +604,7 @@ int XStandardAI::Wear()
     // Sacrifice useless items
     int s_flag = 0;
 
-    it = ai_owner->contain.begin();
-
-    while (it != ai_owner->contain.end()) {
-        XItem * item = it;
-        it++;
+    for (const auto item: ai_owner->contain) {
         assert(item->isValid());
 
         if (item->GetValue() > 800) {
@@ -626,8 +619,7 @@ int XStandardAI::Wear()
             continue;
         }
 
-        it--;
-        it = ai_owner->contain.erase(it);
+        ai_owner->contain.erase(item);
         ai_owner->Sacrifice(item);
         s_flag = 1;
         break;
@@ -831,12 +823,12 @@ int XStandardAI::CastSpell() const {
 
 int XStandardAI::ReadScroll()
 {
-    for (it_iterator it = ai_owner->contain.begin(); it != ai_owner->contain.end(); it++) {
-        if (!(it->im & IM_SCROLL)) {
+    for (auto item: ai_owner->contain) {
+        if (!(item->im & IM_SCROLL)) {
             continue;
         }
 
-        XScroll * scroll = static_cast<XScroll*>(static_cast<XObject*>(it));
+        XScroll* scroll = static_cast<XScroll*>(item);
 
         if (scroll->sc_name == SCROLL_MAGIC_ARROW ||
             scroll->sc_name == SCROLL_FIRE_BOLT ||
@@ -859,25 +851,23 @@ int XStandardAI::ReadScroll()
 int XStandardAI::DrinkPotion()
 {
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
-        for (it_iterator i = ai_owner->contain.begin(); i != ai_owner->contain.end(); i++) {
-            XItem * it = i;
-
+        for (const auto it: ai_owner->contain) {
             if (it->im & IM_POTION) {
-                XPotion * pot = (XPotion*)it;
+                auto pot = static_cast<XPotion *>(it);
 
                 if (pot->pn == PN_HEALING ||
                     pot->pn == PN_CURE_LIGHT_WOUNDS ||
                     pot->pn == PN_CURE_SERIOUS_WOUNDS ||
                     pot->pn == PN_CURE_CRITICAL_WOUNDS ||
                     pot->pn == PN_CURE_MORTAL_WOUNDS) {
-                    XPotion * np = (XPotion*)pot->MakeCopy();
+                    // FIXME: why the copy?
+                    XPotion * np = static_cast<XPotion *>(pot->MakeCopy());
                     np->onDrink(ai_owner);
 
                     if (pot->quantity > 1) {
                         pot->quantity--;
                     } else {
-                        XObject * obj = ai_owner->contain.Remove(i);
-                        assert(obj->guid() == pot->guid());
+                        ai_owner->contain.erase(it);
                         pot->Invalidate();
                     }
 
@@ -916,21 +906,17 @@ int XStandardAI::PickUpItems()
     XItemList * item_list = ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y);
     bool item_picked = false;
 
-    it_iterator it = item_list->begin();
-
-    while (it != item_list->end()) {
+    for (auto it: *item_list) {
         if (it->im & IM_CHEST) {
             break;
         }
 
-        XItem * tit = it;
-        it = item_list->erase(it);
+        item_list->erase(it);
 
-        if (ai_owner->PickUpItem(tit)) {
+        if (ai_owner->PickUpItem(it)) {
             item_picked = true;
-            continue;
         } else {
-            item_list->Add(tit);
+            item_list->insert(it);
             break;
         }
     }
@@ -1187,15 +1173,10 @@ void XStandardAI::RunScript()
         break;
 
         case SCC_DROP_ITEM: {
-            XItemList::iterator it = ai_owner->contain.begin();
-
-            while (it != ai_owner->contain.end()) {
-                if (it->im & cmd.im) {
-                    XItem * item = it;
-                    it = ai_owner->contain.erase(it);
+            for (auto item: ai_owner->contain) {
+                if (item->im & cmd.im) {
+                    ai_owner->contain.erase(item);
                     ai_owner->DropItem(item);
-                } else {
-                    it++;
                 }
             }
 

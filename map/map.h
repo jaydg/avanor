@@ -21,8 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MAP_H
 #define MAP_H
 
+#include <set>
+
 #include "engine/global.h"
-#include "engine/xlist.h"
 #include "helpers/rect.h"
 #include "map/xanyplace.h"
 
@@ -100,8 +101,15 @@ struct xMAP {
 
 extern xMAP stdmap[];
 
+/* Forward declarations */
 class XMapObject;
 class XItem;
+
+struct compare {
+    bool operator()(const XItem* lhs, const XItem* rhs) const;
+};
+
+typedef std::set<XItem*, compare> XItemList;
 
 struct MAP {
     MAP();
@@ -111,7 +119,7 @@ struct MAP {
 
     STDMAP n;
     XPtr<XCreature> pMonster;        // if null then no monster here
-    XSortedList<XItem*> item_list;   // list of item in this cell of map. Automatic construct/destruct
+    XItemList item_list;             // list of item in this cell of map. Automatic construct/destruct
     XPtr<XMapObject> pSpecialObject; // door, way, trap door.
     bool visible;                    // visible for HERO!!!
     char known;                      // for hero memory
@@ -152,7 +160,7 @@ class XMap
 
         void PutItem(int x, int y, XItem* item) const;
         [[nodiscard]] unsigned int GetItemCount(int x, int y) const;
-        [[nodiscard]] XSortedList<XItem*>* GetItemList(int x, int y) const;
+        [[nodiscard]] XItemList* GetItemList(int x, int y) const;
 
         void SetMonster(int x, int y, XCreature* monst) const;
         void ResMonster(int x, int y) const;

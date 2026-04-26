@@ -67,7 +67,7 @@ void XHero::doSacrifice()
                 const int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
 
                 if (res == 0) {
-                    contain.Add(item);
+                    contain.insert(item);
                     break;
                 }
 
@@ -75,7 +75,7 @@ void XHero::doSacrifice()
                     drop_item = dynamic_cast<XItem *>(item->MakeCopy());
                     drop_item->quantity = res;
                     item->quantity -= res;
-                    contain.Add(item);
+                    contain.insert(item);
                 }
             }
 
@@ -425,7 +425,7 @@ void XHero::MixPotions()
                 sprintf(buf1, "You have mixed %s.", buf);
                 msgwin.Add(buf1);
                 CarryItem(pot);
-                contain.Add(pot);
+                contain.insert(pot);
             } else {
                 msgwin.Add("You failed to mix a new potion.");
             }

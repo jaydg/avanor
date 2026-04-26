@@ -210,7 +210,7 @@ int XSkill::UseSteal(XCreature * user)
     if (user->GetTarget(TR_STEAL_ITEM, &pt, 0, (XObject**)&object)) {
         if (pt.x == 0 && pt.y == 0) {
             msgwin.Add("Stealing from yourself? You are successful!");
-            user->contain.Add(object);
+            user->contain.insert(object);
         } else {
             XCreature * cr = user->l->map->GetMonster(user->x + pt.x, user->y + pt.y);
             int flag = 0;
@@ -239,9 +239,9 @@ int XSkill::UseSteal(XCreature * user)
                     msgwin.Add(buf2);
                 }
 
-                cr->UnCarryItem((XItem*)object);
-                user->CarryItem((XItem*)object);
-                user->contain.Add(object);
+                cr->UnCarryItem(object);
+                user->CarryItem(object);
+                user->contain.insert(object);
                 UseSkill(6);
             } else {
                 if (user->isVisible()) {
@@ -252,9 +252,9 @@ int XSkill::UseSteal(XCreature * user)
                 cr->xai->onSteal(user);
 
                 if (flag) {
-                    (user->l->map->GetItemList(user->x + pt.x, user->y + pt.y))->Add(object);
+                    (user->l->map->GetItemList(user->x + pt.x, user->y + pt.y))->insert(object);
                 } else {
-                    cr->contain.Add(object);
+                    cr->contain.insert(object);
                 }
             }
         }

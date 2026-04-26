@@ -21,9 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEM_H
 #define ITEM_H
 
+#include <set>
+
 #include "creature/bodypart.h"
 #include "engine/xbaseobj.h"
-#include "engine/xlist.h"
 #include "item/itemdb.h"
 #include "item/itemdef.h"
 
@@ -126,7 +127,10 @@ class XItem : public XBaseObject
         void GetArtifactName(char* buf, const char* real_name);
 };
 
-typedef XSortedList<XItem*>::iterator it_iterator;
-typedef XSortedList<XItem*> XItemList;
+inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {
+    return lhs->im < rhs->im;
+}
+
+typedef std::set<XItem*, compare> XItemList;
 
 #endif
