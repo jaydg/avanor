@@ -1346,7 +1346,7 @@ int XLocation::BinaryAND(lua_State * L)
 
 int XLocation::ExecuteAIScript(lua_State * L)
 {
-    XQList<SCRIPT_CMD> script;
+    std::vector<SCRIPT_CMD> script;
     SCRIPT_CMD cmd;
 
     XPoint pt;
@@ -1372,8 +1372,13 @@ int XLocation::ExecuteAIScript(lua_State * L)
     script.push_back(cmd);
 
     for (const auto& [key, obj] : objects) {
-        if ((obj->im & IM_CREATURE) && ((XCreature*)obj)->group_id == GID_SMALL_VILLAGE_FARMER) {
-            ((XCreature*)(obj))->xai->ExecuteScript(&script);
+        if (!(obj->im & IM_CREATURE))
+            continue;
+
+        auto creature = dynamic_cast<XCreature *>(obj);
+
+        if (creature->group_id == GID_SMALL_VILLAGE_FARMER) {
+            creature->xai->ExecuteScript(script);
         }
     }
 

@@ -1127,12 +1127,12 @@ void XStandardAI::Restore(XFile * f)
 }
 
 /////////////// scripting support
-void XStandardAI::ExecuteScript(XQList<SCRIPT_CMD>* scr)
+void XStandardAI::ExecuteScript(std::vector<SCRIPT_CMD> &scr)
 {
     script.clear();
 
-    for (XQList<SCRIPT_CMD>::iterator it = scr->begin(); it != scr->end(); it++) {
-        script.push_back(*it);
+    for (auto it: scr) {
+        script.push_back(it);
     }
 
     SetAIFlag(AIF_EXECUTE_SCRIPT);

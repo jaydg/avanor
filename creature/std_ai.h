@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef STD_AI_H
 #define STD_AI_H
 
+#include <deque>
 #include <vector>
 
 #include "creature/creature.h"
@@ -143,8 +144,8 @@ class XStandardAI : public XObject
         COMPANION_COMMAND companion_command;
         XPtr<XCreature> ordered_enemy;
 
-        XQList<SCRIPT_CMD> script;
-        void ExecuteScript(XQList<SCRIPT_CMD>* scr);
+        std::deque<SCRIPT_CMD> script;
+        void ExecuteScript(std::vector<SCRIPT_CMD> &scr);
         void RunScript();
 
         // the creature who knows a trap can't activate it
