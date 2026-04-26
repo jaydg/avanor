@@ -51,8 +51,7 @@ class XBodyPart final : public XObject
 {
         XPtr<XItem> item;	//main item for this body part;
         XPtr<XCreature> owner;
-        XBodyPart() : bp_uin() {
-        }
+        XBodyPart() : bp_uin() {}
 
     public:
         DECLARE_CREATOR(XBodyPart, XObject);
@@ -68,7 +67,7 @@ class XBodyPart final : public XObject
 
         int Fit(const BODY_PART bp) const
         {
-            return (bp == bp_uin);
+            return bp == bp_uin;
         }
 
         BODY_PART bp_uin;

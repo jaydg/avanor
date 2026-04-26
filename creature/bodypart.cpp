@@ -23,24 +23,45 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XBodyPart);
 
-const char* bp_names[] = {"",
-        "head", "neck", "body", "cloak",
-        "hand", "ring", "gloves",
-        "boots", "light_source", "tool", "missile_weapon", "missile", "eof"
-    };
+const char* bp_names[] = {
+    "",
+    "head",
+    "neck",
+    "body",
+    "cloak",
+    "hand",
+    "ring",
+    "gloves",
+    "boots",
+    "light_source",
+    "tool",
+    "missile_weapon",
+    "missile",
+    "eof"
+};
 
-ITEM_MASK bpim[] = {IM_OTHER,
-        IM_HAT, IM_NECK, IM_BODY, IM_CLOAK,
-        IM_HAND, IM_RING, IM_GLOVES,
-        IM_BOOTS, IM_LIGHTSOURCE, IM_TOOL, IM_MISSILEW, IM_MISSILE, IM_ALL
-    };
+ITEM_MASK bpim[] = {
+    IM_OTHER,
+    IM_HAT,
+    IM_NECK,
+    IM_BODY,
+    IM_CLOAK,
+    IM_HAND,
+    IM_RING,
+    IM_GLOVES,
+    IM_BOOTS,
+    IM_LIGHTSOURCE,
+    IM_TOOL,
+    IM_MISSILEW,
+    IM_MISSILE,
+    IM_ALL
+};
 
 XBodyPart::XBodyPart(XCreature* _owner, const BODY_PART bp) : owner(_owner)
 {
     owner = _owner;
     bp_uin = bp;
     item = nullptr;
-    //	im     = bpim[bp];
     im	= IM_OTHER;
 }
 
@@ -79,10 +100,11 @@ int XBodyPart::Wear(XItem* new_item)
         item = new_item;
         owner->CarryItem(item.get());
         item->onWear(owner.get());
+
         return 0;
-    } else {
-        return 2;
     }
+
+    return 2;
 }
 
 XItem* XBodyPart::UnWear()
@@ -91,6 +113,7 @@ XItem* XBodyPart::UnWear()
     item->onUnWear(owner.get());
     XItem * tmp = item.get();
     item = nullptr;
+
     return tmp;
 }
 
@@ -108,23 +131,17 @@ int XBodyPart::GetPartSize() const
     switch (bp_uin) {
         case BP_HEAD :
             return 10;
-            break;
 
         case BP_BODY :
             return 100;
-            break;
 
         case BP_GLOVES :
         case BP_BOOTS :
             return 20;
-            break;
 
         default :
             return 0;
-            break;
     }
-
-    return 0;
 }
 
 void XBodyPart::Store(XFile* f)
