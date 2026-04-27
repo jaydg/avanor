@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/deity.h"
 #include "creature/std_ai.h"
 #include "item/incl_i.h"
+#include "item/xanyfood.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
 #include "magic/wskills.h"
@@ -92,11 +93,9 @@ struct MELEE_ATTACK {
 class XAI;
 class XStandardAI;
 class XModifier;
-class XMagic;
 class XPotion;
 class XBook;
 class XScroll;
-enum MAGIC_SCHOOL;
 
 struct ACTION_DATA {
     ACTION_DATA() : item(nullptr), action(A_MOVE) {}

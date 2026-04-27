@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/magic.h"
 
@@ -164,14 +165,14 @@ SPELL_REC::SPELL_REC()
     spell_db[SPELL_POISON_RESISTANCE].name	= "poison resistance";
 }
 
-XSpell::XSpell(SPELL_NAME spn)
+XSpell::XSpell(const SPELL_NAME spn)
 {
     spell_name = spn;
     eff_level = 1;
     cast_count = 0;
 }
 
-const char* XSpell::GetName(SPELL_NAME spn)
+const char* XSpell::GetName(const SPELL_NAME spn)
 {
     return spell_db[spn].name;
 }
@@ -184,22 +185,22 @@ void XSpell::Cast()
     }
 }
 
-EFFECT XSpell::GetEffect()
+EFFECT XSpell::GetEffect() const
 {
     return spell_db[spell_name].effect;
 }
 
-int XSpell::GetManaCost()
+int XSpell::GetManaCost() const
 {
     return (spell_db[spell_name].cost * 15) / (14 + eff_level);
 }
 
-MAGIC_SCHOOL XSpell::GetSchool()
+MAGIC_SCHOOL XSpell::GetSchool() const
 {
     return spell_db[spell_name].school;
 }
 
-void XSpell::toString(char* buf)
+void XSpell::toString(char* buf) const
 {
     sprintf(buf, MSG_YELLOW "%-21s " MSG_LIGHTGRAY ": " MSG_YELLOW "%d" MSG_LIGHTGRAY "pp  {Eff - %d} (to next level: %d)",
         spell_db[spell_name].name,
@@ -210,22 +211,22 @@ void XSpell::toString(char* buf)
 
 XMagic::XMagic()
 {
-    for (int i = 0; i < MS_EOF; i++) {
-        magic_level[i] = 1;
+    for (int & i : magic_level) {
+        i = 1;
     }
 }
 
 int will_div[10] = {50, 25, 20, 15, 10, 8, 6, 3, 2, 1};
 
-int XMagic::GetSpellRange(XSpell * spell, XCreature * caster)
+int XMagic::GetSpellRange(const XSpell* spell, XCreature* caster)
 {
     int power = caster->GetStats(S_WIL) + spell->GetEffectivity();
     return XEffect::GetRange(spell->GetEffect(), power);
 }
 
-RESULT XMagic::Cast(XSpell * spell, XCreature * caster)
+RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
 {
-    int power = caster->GetStats(S_WIL) + spell->GetEffectivity();
+    const int power = caster->GetStats(S_WIL) + spell->GetEffectivity();
 
     if (caster->_PP - spell->GetManaCost() >= 0) {
         if (caster->isInVisibleArea() && !caster->isHero()) {
@@ -234,7 +235,7 @@ RESULT XMagic::Cast(XSpell * spell, XCreature * caster)
             msgwin.AddLast(spell->GetName());
         }
 
-        int res = XEffect::Make(caster, spell->GetEffect(), power);
+        const int res = XEffect::Make(caster, spell->GetEffect(), power);
 
         if (res != ABORT) {
             caster->_PP -= spell->GetManaCost();
@@ -243,8 +244,11 @@ RESULT XMagic::Cast(XSpell * spell, XCreature * caster)
         if (res == SUCCESS) {
             spell->Cast(); //increase effectivity of spell
             Train(spell->GetSchool(), 1);
+
             return SUCCESS;
-        } else if (res == FAIL) {
+        }
+
+        if (res == FAIL) {
             if (caster->isVisible()) {
                 msgwin.Add(caster->GetNameEx(CRN_T1));
                 msgwin.Add(caster->GetVerb("waste"));
@@ -302,7 +306,7 @@ void XMagic::Learn(const SPELL_NAME spell)
     spells.push_back(new XSpell(spell));
 }
 
-XSpell* XMagic::GetSpell(SPELL_NAME spell)
+XSpell* XMagic::GetSpell(const SPELL_NAME spell) const
 {
     for (const auto tsp : spells) {
         if (tsp->GetSpellName() == spell) {
@@ -335,7 +339,7 @@ const char* mg_level_str[] = {
     MSG_DARKGRAY	"Grand Master"
 };
 
-int XMagic::LevelToString(MAGIC_SCHOOL school, char* buf)
+int XMagic::LevelToString(const MAGIC_SCHOOL school, char* buf) const
 {
     if (GetLevel(school) > 0) {
         sprintf(buf, MSG_YELLOW "%-30s %s", mg_name_str[school], mg_level_str[magic_level[school]]);

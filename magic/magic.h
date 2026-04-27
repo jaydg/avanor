@@ -23,41 +23,90 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <vector>
 
-#include "creature/creature.h"
 #include "magic/effect.h"
-#include "magic/spelldef.h"
+
+/* Forward declaration */
+class XCreature;
+
+enum SPELL_NAME {
+    SPELL_CURE_LIGHT_WOUNDS,
+    SPELL_CURE_SERIOUS_WOUNDS,
+    SPELL_CURE_CRITICAL_WOUNDS,
+    SPELL_CURE_MORTAL_WOUNDS,
+    SPELL_HEAL,
+    SPELL_BURNING_HANDS,
+    SPELL_ICE_TOUCH,
+    SPELL_HEROISM,
+    SPELL_DRAIN_LIFE,
+    SPELL_IDENTIFY,
+    SPELL_MAGIC_ARROW,
+    SPELL_FIRE_BOLT,
+    SPELL_ICE_BOLT,
+    SPELL_LIGHTNING_BOLT,
+    SPELL_ACID_BOLT,
+    SPELL_SUMMON_MONSTER,
+    SPELL_CREATE_ITEM,
+    SPELL_CURE_POISON,
+    SPELL_CURE_DISEASE,
+    SPELL_BLINK,
+    SPELL_SELF_KNOWLEDGE,
+    SPELL_SEE_INVISIBLE,
+    SPELL_ACID_RESISTANCE,
+    SPELL_FIRE_RESISTANCE,
+    SPELL_COLD_RESISTANCE,
+    SPELL_POISON_RESISTANCE,
+    SPELL_EOF
+};
+
+enum MAGIC_SCHOOL {
+    MS_UNKNOWN = -1,
+    MS_ELEMENTAL,
+    MS_BODY,
+    MS_PROTECTION,
+    MS_DEATH,
+    MS_SURVIVING,
+    MS_POWER,
+    MS_EOF
+};
+
 
 class XSpell
 {
-        XSpell() {}
-
         int cast_count;
         int eff_level;
-    public:
         SPELL_NAME spell_name;
-        XSpell(SPELL_NAME spn);
-        SPELL_NAME GetSpellName()
+   public:
+        XSpell() = delete;
+
+        explicit XSpell(SPELL_NAME spn);
+
+        [[nodiscard]] SPELL_NAME GetSpellName() const
         {
             return spell_name;
         }
 
-        EFFECT GetEffect();
-        void Cast(); //calling after successful casting of spell
-        int GetManaCost();
-        int GetEffectivity()
+        [[nodiscard]] EFFECT GetEffect() const;
+
+        // called after successful casting of spell
+        void Cast();
+
+        [[nodiscard]] int GetManaCost() const;
+
+        [[nodiscard]] int GetEffectivity() const
         {
             return eff_level;
         }
 
-        MAGIC_SCHOOL GetSchool();
-        void GainLevel(int n = 1)
+        [[nodiscard]] MAGIC_SCHOOL GetSchool() const;
+
+        void GainLevel(const int n = 1)
         {
             eff_level += n;
         }
 
-        void toString(char* buf);
+        void toString(char* buf) const;
         static const char* GetName(SPELL_NAME spn);
-        const char* GetName()
+        [[nodiscard]] const char* GetName() const
         {
             return GetName(spell_name);
         }
@@ -65,19 +114,23 @@ class XSpell
 
 class XMagic
 {
+    protected:
+        int magic_level[MS_EOF]{};
+        int magic_count[MS_EOF]{};
+
     public:
         XMagic();
         explicit XMagic(XMagic*) = delete;
 
-        RESULT Cast(XSpell * spell, XCreature * caster);
-        int GetSpellRange(XSpell * spell, XCreature * caster);
+        RESULT Cast(XSpell* spell, XCreature* caster);
+        static int GetSpellRange(const XSpell* spell, XCreature* caster);
         int Train(MAGIC_SCHOOL school, int count);
         int GainLevel(MAGIC_SCHOOL school, int n = 1);
-        int LevelToString(MAGIC_SCHOOL school, char* buf);
+        int LevelToString(MAGIC_SCHOOL school, char* buf) const;
         void Learn(SPELL_NAME spell);
-        XSpell* GetSpell(SPELL_NAME spell);
-        int GetLevel(MAGIC_SCHOOL ms)
-        {
+        [[nodiscard]] XSpell* GetSpell(SPELL_NAME spell) const;
+
+        [[nodiscard]] int GetLevel(const MAGIC_SCHOOL ms) const {
             return magic_level[ms];
         }
 
@@ -85,9 +138,6 @@ class XMagic
 
         void Store(XFile * f);
         void Restore(XFile * f);
-    protected:
-        int magic_level[MS_EOF];
-        int magic_count[MS_EOF];
 };
 
 #endif

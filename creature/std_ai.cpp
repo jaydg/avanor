@@ -784,11 +784,11 @@ int XStandardAI::CastSpell() const {
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
 
         for (const auto spell: ai_owner->m->spells) {
-            if ((spell->spell_name == SPELL_CURE_LIGHT_WOUNDS ||
-                spell->spell_name == SPELL_CURE_SERIOUS_WOUNDS ||
-                spell->spell_name == SPELL_CURE_CRITICAL_WOUNDS ||
-                spell->spell_name == SPELL_CURE_MORTAL_WOUNDS ||
-                spell->spell_name == SPELL_HEAL) &&
+            if ((spell->GetSpellName() == SPELL_CURE_LIGHT_WOUNDS ||
+                spell->GetSpellName() == SPELL_CURE_SERIOUS_WOUNDS ||
+                spell->GetSpellName() == SPELL_CURE_CRITICAL_WOUNDS ||
+                spell->GetSpellName() == SPELL_CURE_MORTAL_WOUNDS ||
+                spell->GetSpellName() == SPELL_HEAL) &&
                 spell->GetManaCost() <= ai_owner->_PP) {
                 ai_owner->m->Cast(spell, ai_owner);
 
@@ -805,11 +805,11 @@ int XStandardAI::CastSpell() const {
         assert(r_enemy > 0);
 
         for (const auto spell: ai_owner->m->spells) {
-            if ((spell->spell_name == SPELL_MAGIC_ARROW ||
-                spell->spell_name == SPELL_FIRE_BOLT ||
-                spell->spell_name == SPELL_ICE_BOLT ||
-                spell->spell_name == SPELL_LIGHTNING_BOLT ||
-                spell->spell_name == SPELL_ACID_BOLT)
+            if ((spell->GetSpellName() == SPELL_MAGIC_ARROW ||
+                spell->GetSpellName() == SPELL_FIRE_BOLT ||
+                spell->GetSpellName() == SPELL_ICE_BOLT ||
+                spell->GetSpellName() == SPELL_LIGHTNING_BOLT ||
+                spell->GetSpellName() == SPELL_ACID_BOLT)
                 && spell->GetManaCost() <= ai_owner->_PP) {
                 ai_owner->m->Cast(spell, ai_owner);
 

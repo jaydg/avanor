@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define XBOOK_H
 
 #include "item/item.h"
-#include "magic/spelldef.h"
+#include "magic/magic.h"
 
 enum BOOK_NAME {
     BOOK_BURNING_HANDS,
