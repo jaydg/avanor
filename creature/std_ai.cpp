@@ -26,8 +26,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "map/map_objects.h"
 
-REGISTER_CLASS(XStandardAI);
-
 XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
 {
     ai_owner = _cr;
@@ -43,15 +41,13 @@ XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
     sleep_well = 0;
 }
 
-void XStandardAI::Invalidate()
+XStandardAI::~XStandardAI()
 {
     ai_owner = NULL;
 
     for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
         personal_enemy[i] = NULL;
     }
-
-    XObject::Invalidate();
 }
 
 void XStandardAI::AnalyzeGrid(int j, int i, int w)
@@ -754,9 +750,7 @@ int XStandardAI::TryToRunAway() // from enemy
 
 int XStandardAI::AttackEnemy(int ex, int ey)
 {
-    assert(isValid());
-
-    //try to run away if we must or can
+    // try to run away if we must or can
     if (ai_flag & AIF_COWARD && enemy &&
         (enemy->GetExp() / 10 > ai_owner->GetExp() * friends_count // creature is more powerfull
         || ai_owner->GetMaxHP() / ai_owner->_HP > 4) // less than 25% of _HP
@@ -776,7 +770,6 @@ int XStandardAI::AttackEnemy(int ex, int ey)
         ai_owner->ny = ai_owner->y + direction_point.y;
     }
 
-    assert(isValid());
     return 1;
 
 }
@@ -1064,7 +1057,7 @@ bool XStandardAI::CanMoveHere(int px, int py)
 
 void XStandardAI::Store(XFile * f)
 {
-    XObject::Store(f);
+    // XObject::Store(f);
     f->Write(&ai_flag, sizeof(AI_FLAG));
     f->Write(&enemy_class, sizeof(CREATURE_CLASS));
     f->Write(&invisible_x, sizeof(int));
@@ -1091,13 +1084,15 @@ void XStandardAI::Store(XFile * f)
 
 void XStandardAI::Restore(XFile * f)
 {
-    XObject::Restore(f);
+    // XObject::Restore(f);
     f->Read(&ai_flag, sizeof(AI_FLAG));
     f->Read(&enemy_class, sizeof(CREATURE_CLASS));
     f->Read(&invisible_x, sizeof(int));
     f->Read(&invisible_y, sizeof(int));
     f->Read(&invisible_hunting_mode, sizeof(int));
-    last_moved_way = (XMapObject*)RestorePointer(f, this);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // last_moved_way = (XMapObject*)RestorePointer(f, this);
     last_enemy.Restore(f);
     companion.Restore(f);
     ordered_enemy.Restore(f);

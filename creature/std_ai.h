@@ -87,15 +87,14 @@ struct SCRIPT_CMD {
 
 #define ENEMY_LIST_SIZE	5
 class XCreature;
-class XStandardAI : public XObject
-{
-    protected:
-        XStandardAI() {}
 
+class XStandardAI
+{
     public:
-        DECLARE_CREATOR(XStandardAI, XObject);
+        XStandardAI() = delete;
         XStandardAI(XCreature * _cr);
-        virtual void Invalidate();
+
+        virtual ~XStandardAI();
 
         void SetArea(XRect& area, LOCATION ln);
         void SetOwner(XCreature * cr)
@@ -158,7 +157,6 @@ class XStandardAI : public XObject
     protected:
         XPtr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
 
-
         int FindPath(XPoint * target, XPoint * direction);
         int AttackEnemy(int x, int y);
         int CastSpell() const;
@@ -168,7 +166,6 @@ class XStandardAI : public XObject
         int PickUpItems();
 
         int MoveTo(int x, int y, XLocation * l = NULL);
-
 
 
         int TryToRunAway(); //creature tryes to run away from attacker... if can

@@ -40,11 +40,8 @@ struct SHOP_DEBT {
 
 class XShopKeeperAI : public XStandardAI
 {
-    protected:
-        XShopKeeperAI() {}
-
     public:
-        DECLARE_CREATOR(XShopKeeperAI, XStandardAI);
+        XShopKeeperAI() = delete;
         XShopKeeperAI(XCreature * shoopkeeper, XShop * _shop);
         virtual void Invalidate();
         virtual void Move();

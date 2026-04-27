@@ -104,11 +104,8 @@ class XRotmoth : public XAnyCreature
 
 class XRotmothAI : public XStandardAI
 {
-    protected:
-        XRotmothAI() {}
-
     public:
-        DECLARE_CREATOR(XRotmothAI, XStandardAI);
+        XRotmothAI() = delete;
         XRotmothAI(XCreature * cr) : XStandardAI(cr) {}
 
         void onWasAttacked(XCreature * attacker);
@@ -137,11 +134,8 @@ class XBandit : public XAnyCreature
 
 class XBanditAI : public XStandardAI
 {
-    protected:
-        XBanditAI() {}
-
     public:
-        DECLARE_CREATOR(XBanditAI, XStandardAI);
+        XBanditAI() = delete;
         XBanditAI(XCreature * cr) : XStandardAI(cr) {}
 
         virtual bool isEnemy(XCreature *cr);

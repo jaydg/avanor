@@ -941,7 +941,6 @@ void XCreature::Die(XCreature * killer)
         killer->AddExp(GetExp());
     }
 
-    xai->Invalidate();
     Invalidate();
 }
 
@@ -1552,7 +1551,9 @@ void XCreature::Store(XFile * f)
 
     f->Write(&tactics, sizeof(TACTICS_STATE));
     wsk->Store(f);
-    XObject::StorePointer(f, xai);
+
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // XObject::StorePointer(f, xai);
 
     action_data.Store(f);
 

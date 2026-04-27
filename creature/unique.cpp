@@ -275,10 +275,9 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XRotmoth);
-REGISTER_CLASS(XRotmothAI);
 XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
 {
-    xai->Invalidate();
+    delete xai;
     xai = new XRotmothAI(this);
     xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
     xai->SetAIFlag(AIF_RANDOM_MOVE);
@@ -362,11 +361,11 @@ int XGiana::Chat(XCreature * chatter, const char* msg)
 // BANDIT
 ///////////////////////////////////////////////////////////////////////
 REGISTER_CLASS(XBandit);
-REGISTER_CLASS(XBanditAI);
 
 XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
 {
-    xai->Invalidate();
+    delete xai;
+
     xai = new XBanditAI(this);
     xai->SetAIFlag(AIF_GUARD_AREA);
     xai->SetAIFlag(AIF_PROTECT_AREA);
@@ -422,7 +421,8 @@ XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
 void XShopkeeper::SetShop(char* _name, XShop * shop)
 {
     strcpy(name, _name);
-    xai->Invalidate();
+    delete xai;
+
     xai = new XShopKeeperAI(this, shop);
 }
 

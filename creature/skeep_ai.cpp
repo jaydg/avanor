@@ -24,8 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
 
-REGISTER_CLASS(XShopKeeperAI);
-
 const char* GMSG_SHOPKEEPER_ATTACK = "'You were warned! Prepare to die!'";
 const char* GMSG_SHOPKEEPER_ATTACK2 = "'I'll kill you, you bastard!'";
 const char* GMSG_SHOPKEEPER_ASK_PRICE = "'I can give you " MSG_YELLOW "%d" MSG_YELLOW " gp for %s. Do you agree?'";
@@ -67,8 +65,6 @@ void XShopKeeperAI::Invalidate()
 
     for (auto item: debt.unpaid_items)
         item->Invalidate();
-
-    XStandardAI::Invalidate();
 }
 
 void XShopKeeperAI::Move()
