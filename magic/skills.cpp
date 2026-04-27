@@ -56,13 +56,3 @@ void XSkills::Learn(XSkill::Skill skt, int level)
 {
     skills[skt] = new XSkill(skt, level);
 }
-
-void XSkills::Store(XFile* f)
-{
-    XObject::StoreObjectMap(f, skills);
-}
-
-void XSkills::Restore(XFile* f)
-{
-    XObject::RestoreObjectMap(f, skills);
-}

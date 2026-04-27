@@ -1512,7 +1512,10 @@ void XCreature::Store(XFile * f)
     md->Store(f);
     f->Write(&nutrio);
     f->Write(&nutrio_speed);
-    sk->Store(f);
+
+    // FIXME: implement when saving with Cereal
+    // sk->Store(f);
+
     f->Write(&tactics, sizeof(TACTICS_STATE));
     wsk->Store(f);
     XObject::StorePointer(f, xai);
@@ -1593,7 +1596,10 @@ void XCreature::Restore(XFile * f)
     f->Read(&nutrio);
     f->Read(&nutrio_speed);
     sk = new XSkills();
-    sk->Restore(f);
+
+    // FIXME: Implement when saving with Cereal
+    // sk->Restore(f);
+
     f->Read(&tactics, sizeof(TACTICS_STATE));
     wsk = new XWarSkills();
     wsk->Restore(f);

@@ -43,9 +43,6 @@ class XSkills
         void UseSkill(XSkill::Skill skt, int n = 1);
         XSkill* GetSkill(XSkill::Skill skt);
         void Learn(XSkill::Skill skt, int level = 1);
-
-        void Store(XFile * f);
-        void Restore(XFile * f);
 };
 
 #endif

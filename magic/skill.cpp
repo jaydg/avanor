@@ -24,8 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/skill.h"
 #include "map/map_objects.h"
 
-REGISTER_CLASS(XSkill);
-
 SKILL_DB skill_db[] = {
     {"Archery", 1},
     {"Find Weakness", 1},
@@ -75,7 +73,6 @@ XSkill::XSkill(XSkill::Skill _skt, int _level)
 {
     skt = _skt;
     level = _level;
-    im = IM_OTHER;
 
     if (_level < 4) {
         used_time = skill_db[skt].use_per_level * (4 * 4 - 1) * 2;
@@ -165,41 +162,13 @@ int XSkill::Use(XCreature * user)
     return 1;
 }
 
-int XSkill::isUseable()
+int XSkill::isUseable() const
 {
     if (skt == XSkill::Skill::STEALING || skt == XSkill::Skill::DISARMTRAP || skt == XSkill::Skill::CREATETRAP) {
         return 1;
     } else {
         return 0;
     }
-}
-
-void XSkill::UseSkill(int n)
-{
-    used_time += n;
-}
-
-void XSkill::Store(XFile * f)
-{
-    XObject::Store(f);
-
-    f->Write(&level, sizeof(int));
-    f->Write(&skt, sizeof(XSkill::Skill));
-    f->Write(&used_time, sizeof(int));
-}
-
-void XSkill::Restore(XFile * f)
-{
-    XObject::Restore(f);
-
-    f->Read(&level, sizeof(int));
-    f->Read(&skt, sizeof(XSkill::Skill));
-    f->Read(&used_time, sizeof(int));
-}
-
-int XSkill::Compare(XObject * o)
-{
-    return strcmp(GetName(), ((XSkill*)o)->GetName());
 }
 
 int XSkill::UseSteal(XCreature * user)

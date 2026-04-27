@@ -21,8 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef SKILL_H
 #define SKILL_H
 
-#include "engine/xobject.h"
-
 struct SKILL_DB {
     const char* name;
     int use_per_level;
@@ -41,7 +39,7 @@ enum SKILL_MASTERY {
     SM_GRANDMASTER	= 5,
 };
 
-class XSkill : public XObject
+class XSkill
 {
         int UseSteal(XCreature * user);
         int UseDisarm(XCreature * user);
@@ -73,25 +71,27 @@ class XSkill : public XObject
             CLIMBING,      // at this time from pits only...
         };
 
-        DECLARE_CREATOR(XSkill, XObject);
-        XSkill()
-        {
-            assert(0);
-        }
+        XSkill() = delete;
 
-        XSkill(Skill _skt, int _level = 1);
-        Skill GetSkill()
+        explicit XSkill(Skill _skt, int _level = 1);
+        [[nodiscard]] Skill GetSkill() const
         {
             return skt;
         }
 
         const char* GetName();
         const char* GetSkillLevel();
-        void UseSkill(int n = 1); // called by monster when this skill was used succesfuly
+
+        // called by monster when this skill was used successfully
+        void UseSkill(int n = 1)
+        {
+            used_time += n;
+        }
+
         int Use(XCreature * user);
-        int isUseable();
+        int isUseable() const;
         int IncLevel();
-        int GetLevel()
+        int GetLevel() const
         {
             return level;
         }
@@ -100,10 +100,6 @@ class XSkill : public XObject
         SKILL_MASTERY GetMastery();
 
         Skill skt;
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-
-        int Compare(XObject * o); // need for alphabetic sorting
 
     protected:
         int used_time;
