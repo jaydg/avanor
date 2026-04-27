@@ -164,8 +164,6 @@ SPELL_REC::SPELL_REC()
     spell_db[SPELL_POISON_RESISTANCE].name	= "poison resistance";
 }
 
-REGISTER_CLASS(XSpell);
-
 XSpell::XSpell(SPELL_NAME spn)
 {
     spell_name = spn;
@@ -210,33 +208,11 @@ void XSpell::toString(char* buf)
         eff_level - cast_count);
 }
 
-void XSpell::Store(XFile * f)
-{
-    XObject::Store(f);
-    f->Write(&spell_name, sizeof(SPELL_NAME));
-    f->Write(&eff_level, sizeof(int));
-    f->Write(&cast_count, sizeof(int));
-}
-
-void XSpell::Restore(XFile * f)
-{
-    XObject::Restore(f);
-    f->Read(&spell_name, sizeof(SPELL_NAME));
-    f->Read(&eff_level, sizeof(int));
-    f->Read(&cast_count, sizeof(int));
-}
-
 XMagic::XMagic()
 {
     for (int i = 0; i < MS_EOF; i++) {
         magic_level[i] = 1;
     }
-}
-
-XMagic::~XMagic()
-{
-    for (auto spell: spells)
-        spell->Invalidate();
 }
 
 int will_div[10] = {50, 25, 20, 15, 10, 8, 6, 3, 2, 1};

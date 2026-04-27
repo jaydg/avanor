@@ -27,7 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/effect.h"
 #include "magic/spelldef.h"
 
-class XSpell : public XObject
+class XSpell
 {
         XSpell() {}
 
@@ -35,7 +35,6 @@ class XSpell : public XObject
         int eff_level;
     public:
         SPELL_NAME spell_name;
-        DECLARE_CREATOR(XSpell, XObject);
         XSpell(SPELL_NAME spn);
         SPELL_NAME GetSpellName()
         {
@@ -62,9 +61,6 @@ class XSpell : public XObject
         {
             return GetName(spell_name);
         }
-
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
 };
 
 class XMagic
@@ -72,7 +68,6 @@ class XMagic
     public:
         XMagic();
         explicit XMagic(XMagic*) = delete;
-        ~XMagic();
 
         RESULT Cast(XSpell * spell, XCreature * caster);
         int GetSpellRange(XSpell * spell, XCreature * caster);
