@@ -90,7 +90,6 @@ struct MELEE_ATTACK {
     int prob; // 0..100
 };
 
-class XAI;
 class XStandardAI;
 class XModifier;
 class XPotion;
