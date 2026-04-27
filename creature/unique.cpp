@@ -380,16 +380,16 @@ XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
     cloak->Wear(new XForestBrotherCloak());
 }
 
-int XBanditAI::isEnemy(XCreature * cr)
+bool XBanditAI::isEnemy(XCreature *cr)
 {
     if (isPersonalEnemy(cr)) {
-        return 1;
+        return true;
     }
 
-    XBodyPart * bp = cr->GetBodyPart(BP_CLOAK);
+    XBodyPart* bp = cr->GetBodyPart(BP_CLOAK);
 
     if (bp && bp->Item() && bp->Item()->it == IT_FORESTBROTHERCLOAK) {
-        return 0;
+        return false;
     }
 
     return XStandardAI::isEnemy(cr);

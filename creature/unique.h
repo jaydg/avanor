@@ -144,7 +144,7 @@ class XBanditAI : public XStandardAI
         DECLARE_CREATOR(XBanditAI, XStandardAI);
         XBanditAI(XCreature * cr) : XStandardAI(cr) {}
 
-        virtual int isEnemy(XCreature * cr);
+        virtual bool isEnemy(XCreature *cr);
 };
 
 class XShopkeeper : public XAnyCreature

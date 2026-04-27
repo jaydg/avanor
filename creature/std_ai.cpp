@@ -491,31 +491,37 @@ void XStandardAI::GetExactDirection(XPoint * target, XPoint * direction)
     direction->y = sgn(target->y - ai_owner->y);
 }
 
-int XStandardAI::isEnemy(XCreature * cr)
+bool XStandardAI::isEnemy(XCreature *cr)
 {
-    if (cr == companion || (ai_flag & AIF_GUARD_AREA && cr->group_id == ai_owner->group_id)) {
-        return 0;
+    if (cr == companion
+        || (ai_flag & AIF_GUARD_AREA && cr->group_id == ai_owner->group_id)) {
+        return false;
     }
 
     if (enemy_class & cr->creature_class && ai_owner->view != cr->view) {
-        return 1;
+        return true;
     }
 
-    if (ai_flag & AIF_PROTECT_AREA && cr->group_id != ai_owner->group_id && cr->x >= guard_area.left && cr->x < guard_area.right && cr->y >= guard_area.top && cr->y < guard_area.bottom) {
-        return 1;
+    if (ai_flag & AIF_PROTECT_AREA
+        && cr->group_id != ai_owner->group_id
+        && cr->x >= guard_area.left
+        && cr->x < guard_area.right
+        && cr->y >= guard_area.top
+        && cr->y < guard_area.bottom) {
+        return true;
     }
 
     return isPersonalEnemy(cr);
 }
 
-int XStandardAI::isPersonalEnemy(XCreature * cr)
+bool XStandardAI::isPersonalEnemy(XCreature *cr)
 {
     for (int i = 0; i < ENEMY_LIST_SIZE; i++)
         if (personal_enemy[i] == cr) {
-            return 1;
+            return true;
         }
 
-    return 0;
+    return false;
 }
 
 void XStandardAI::SetAIFlag(AI_FLAG aif)

@@ -106,8 +106,8 @@ class XStandardAI : public XObject
         virtual void AnalyzeGrid(int j, int i, int w);
         virtual void AnalyzeView(int radius);
         virtual void Move();
-        virtual int isPersonalEnemy(XCreature * cr);
-        virtual int isEnemy(XCreature * cr);
+        virtual bool isPersonalEnemy(XCreature *cr);
+        virtual bool isEnemy(XCreature *cr);
         virtual void onWasAttacked(XCreature * attacker);
         virtual void onDie(XCreature * killer);
         virtual void onSteal(XCreature * rogue);
