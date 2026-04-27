@@ -289,7 +289,7 @@ void XLocation::CreateChests()
 XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
 {
     XCreature * cr = XCreatureStorage::Create(cn);
-    cr->group_id = gid;
+    cr->setGroupID(gid);
 
     if (cr->xai->GetAIFlag() & AIF_PEACEFUL) {
         cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
@@ -338,7 +338,7 @@ XCreature* XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid,
     XPoint pt;
     GetFreeXY(&pt, &rect);
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
-    cr->group_id = gid;
+    cr->setGroupID(gid);
 
     if (cr->xai->GetAIFlag() & AIF_PEACEFUL) {
         cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
@@ -980,9 +980,9 @@ int XLocation::FindCreature(lua_State * L)
 
     for (int i = rect.left; i < rect.right; i++)
         for (int j = rect.top; j < rect.bottom; j++) {
-            XCreature * cr = Game.locations[l_id]->map->GetMonster(i, j);
+            XCreature* cr = Game.locations[l_id]->map->GetMonster(i, j);
 
-            if (cr && cr->group_id == gid) {
+            if (cr && cr->groupID() == gid) {
                 lua_pushlightuserdata(L, cr);
                 return 1;
             }
@@ -1377,7 +1377,7 @@ int XLocation::ExecuteAIScript(lua_State * L)
 
         auto creature = dynamic_cast<XCreature *>(obj);
 
-        if (creature->group_id == GID_SMALL_VILLAGE_FARMER) {
+        if (creature->groupID() == GID_SMALL_VILLAGE_FARMER) {
             creature->xai->ExecuteScript(script);
         }
     }

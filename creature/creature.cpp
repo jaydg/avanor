@@ -48,6 +48,8 @@ void ACTION_DATA::Restore(XFile * f)
     item.Restore(f);
 }
 
+XCreatureGroupMap XCreature::group_members = XCreatureGroupMap();
+
 XCreature::XCreature()
 {
     total_cr++;
@@ -111,6 +113,16 @@ void XCreature::Invalidate()
 
     if (event_handler) {
         delete[] event_handler;
+    }
+
+    // remove perished creature from the group members list
+    if (group_id != GID_NONE) {
+        auto group = group_members.equal_range(group_id);
+        for (auto el = group.first; el != group.second; el++) {
+            if (el->second == this) {
+                group_members.erase(el);
+            }
+        }
     }
 
     total_cr--;
@@ -185,6 +197,28 @@ int XCreature::onRestorePP(int _pp)
     }
 
     return last_PP >= max_PP ? 0 : 1;
+}
+
+void XCreature::setGroupID(GROUP_ID gid)
+{
+    if (gid == GID_NONE) return;
+
+    group_id = gid;
+    group_members.insert(std::make_pair(gid, this));
+}
+
+std::vector<XCreature*> XCreature::getGroupMembers() const
+{
+    std::vector<XCreature*> result{};
+
+    if (group_id != GID_NONE) {
+        auto [begin, end] = group_members.equal_range(group_id);
+        for (auto it = begin; it != end; ++it) {
+            result.push_back(it->second);
+        }
+    }
+
+    return result;
 }
 
 int XCreature::stopAction()

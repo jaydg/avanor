@@ -179,8 +179,17 @@ struct DAMAGE_DATA_EX {
 
 struct _CREATURE;
 
+typedef std::map<GROUP_ID, XCreature*> XCreatureGroupMap;
+
 class XCreature : public XBaseObject
 {
+    private:
+        // orc war party has id 1, bandits - id 2, etc
+        GROUP_ID group_id;
+
+        // all group members
+        static XCreatureGroupMap group_members;
+
     public:
         XItemList contain;
         std::vector<XBodyPart*> components;
@@ -224,6 +233,14 @@ class XCreature : public XBaseObject
 
         int lttm;      // long doing time to move
         int isDisturb; // is creature disturbed during lttm
+
+        void setGroupID(GROUP_ID gid);
+
+        GROUP_ID groupID() {
+            return group_id;
+        }
+
+        std::vector<XCreature*> getGroupMembers() const;
 
         ACTION_DATA action_data;
         virtual int stopAction();
@@ -341,7 +358,6 @@ class XCreature : public XBaseObject
         void Restore(XFile* f) override;
 
         CREATURE_CLASS creature_class;
-        GROUP_ID group_id; // orc war party has id 1, bandits - id 2, etc
 
         virtual const char* StdAnswer()
         {

@@ -494,7 +494,7 @@ void XStandardAI::GetExactDirection(XPoint * target, XPoint * direction)
 bool XStandardAI::isEnemy(XCreature *cr)
 {
     if (cr == companion
-        || (ai_flag & AIF_GUARD_AREA && cr->group_id == ai_owner->group_id)) {
+        || (ai_flag & AIF_GUARD_AREA && cr->groupID() == ai_owner->groupID())) {
         return false;
     }
 
@@ -503,7 +503,7 @@ bool XStandardAI::isEnemy(XCreature *cr)
     }
 
     if (ai_flag & AIF_PROTECT_AREA
-        && cr->group_id != ai_owner->group_id
+        && cr->groupID() != ai_owner->groupID()
         && cr->x >= guard_area.left
         && cr->x < guard_area.right
         && cr->y >= guard_area.top
@@ -953,7 +953,7 @@ void XStandardAI::onWasAttacked(XCreature * attacker)
     assert(attacker != ai_owner.get());
     AddPersonalEnemy(attacker);
 
-    if (ai_owner->group_id != GID_NONE) {
+    if (ai_owner->groupID() != GID_NONE) {
         SetGroupEnemy(attacker);
     }
 
@@ -973,16 +973,13 @@ void XStandardAI::onDie(XCreature * killer)
     }
 }
 
-void XStandardAI::SetGroupEnemy(XCreature * enemy)
+void XStandardAI::SetGroupEnemy(XCreature* enemy)
 {
-    if (ai_owner->group_id != GID_NONE && enemy) {
-        for (const auto& [key, obj] : objects) {
-            if (obj->im & IM_CREATURE && ((XCreature*)obj)->group_id == ai_owner->group_id) {
-                ((XCreature*)obj)->xai->AddPersonalEnemy(enemy);
-                //((XCreature *)obj)->xai->SetLastEnemy(enemy->x, enemy->y);
-                ((XCreature*)obj)->xai->ResAIFlag(AIF_GUARD_AREA);
-                ((XCreature*)obj)->xai->enemy = (XCreature*)obj;
-            }
+    if (ai_owner->groupID() != GID_NONE && enemy) {
+        for (const auto& buddy : ai_owner->getGroupMembers()) {
+            buddy->xai->AddPersonalEnemy(enemy);
+            buddy->xai->ResAIFlag(AIF_GUARD_AREA);
+            buddy->xai->enemy = enemy;
         }
     }
 }
