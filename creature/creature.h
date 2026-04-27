@@ -105,7 +105,7 @@ struct ACTION_DATA {
     void Restore(XFile * f);
 };
 
-typedef int (ITEM_FILTR)(XItem*);
+typedef int (XItemFilter)(XItem*);
 
 enum TARGET_REASON {
     TR_NONE,
@@ -276,7 +276,7 @@ class XCreature : public XBaseObject
             return nullptr;
         }
 
-        virtual XItem* SelectItem(ITEM_FILTR* filtr, bool isGetAll = false)
+        virtual XItem* SelectItem(XItemFilter* filtr, bool isGetAll = false)
         {
             return nullptr;
         }

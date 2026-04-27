@@ -880,7 +880,7 @@ const char* output_items_name[] = {
 static int first_item = 0;
 static XItemList* pLastList = nullptr;
 
-XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count, ITEM_FILTR* ifiltr, FILE* f)
+XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count, XItemFilter* ifiltr, FILE* f)
 {
     while (true) {
         XGuiList list;

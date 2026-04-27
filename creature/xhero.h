@@ -65,7 +65,7 @@ class XHero final : public XCreature
         void PlayerSetup();
         void NewMove() override;
         void Move() override;
-        XItem* Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE, int ret_item_count = 0, ITEM_FILTR* ifiltr = nullptr, FILE* f = nullptr);
+        XItem* Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE, int ret_item_count = 0, XItemFilter* ifiltr = nullptr, FILE* f = nullptr);
         void Equipment(FILE* f = nullptr);
         void PickItem();
         void DropItem();
@@ -84,7 +84,7 @@ class XHero final : public XCreature
         int XShoot();
         int Targeting(int range, XPoint* pt);
         int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr) override; //Get target for a spell
-        XItem* SelectItem(ITEM_FILTR* filter, bool isGetAll = false) override;
+        XItem* SelectItem(XItemFilter* filter, bool isGetAll = false) override;
 
         int SelectPosition(XPoint * pt, int flag = 0);
         unsigned int turn_count{};

@@ -86,7 +86,7 @@ void XHero::doSacrifice()
     }
 }
 
-XItem* XHero::SelectItem(ITEM_FILTR* filter, const bool isGetAll)
+XItem* XHero::SelectItem(XItemFilter* filter, const bool isGetAll)
 {
     return Inventory(&contain, IM_UNKNOWN, IF_NONE, !isGetAll, filter);
 }
