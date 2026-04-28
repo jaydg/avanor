@@ -124,7 +124,6 @@ XMap::XMap()
 XMap::XMap(const int l, const int h)
 {
     map = new MAP[l * h];
-    assert(map);
 
     hgt = h;
     len = l;
@@ -157,9 +156,9 @@ bool XMap::GetVisible(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].visible;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 void XMap::SetPlace(const int x, const int y, XAnyPlace* place) const
@@ -192,9 +191,9 @@ int XMap::GetKnown(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].known;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
@@ -208,9 +207,9 @@ XMapObject* XMap::GetSpecial(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].pSpecialObject.get();
-    } else {
-        return nullptr;
     }
+
+    return nullptr;
 }
 
 int XMap::GetVisibility(const int x, const int y) const
@@ -224,27 +223,27 @@ int XMap::GetVisibility(const int x, const int y) const
 
         if (stdmap[map[x + y * len].n].visiable == VI_WALL) {
             return 0;
-        } else {
-            return 1;
         }
-    } else {
-        return 0;
+
+        return 1;
     }
+
+    return 0;
 }
 
 const char* XMap::GetDescription(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return stdmap[map[x + y * len].n].name;
-    } else {
-        return "";
     }
+
+    return "";
 }
 
 int XMap::GetMovability(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        MAP& _map = map[x + y * len];
+        const MAP& _map = map[x + y * len];
 
         if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
             dynamic_cast<XDoor *>(_map.pSpecialObject.get())->isOpened == 0) {
@@ -252,9 +251,9 @@ int XMap::GetMovability(const int x, const int y) const
         }
 
         return stdmap[_map.n].moveable;
-    } else {
-        return MO_WALL;
     }
+
+    return MO_WALL;
 }
 
 int XMap::XGetMovability(const int x, const int y) const
@@ -271,12 +270,12 @@ int XMap::XGetMovability(const int x, const int y) const
         if (stdmap[m->n].moveable < MO_UNWALKABLE
             && !(spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0)) {
             return 0;
-        } else {
-            return 1;
         }
-    } else {
+
         return 1;
     }
+
+    return 1;
 }
 
 void XMap::PutItem(const int x, const int y, XItem* item) const
@@ -285,18 +284,18 @@ void XMap::PutItem(const int x, const int y, XItem* item) const
         item->x = x;
         item->y = y;
         map[x + y * len].item_list.insert(item);
-    } else {
-        assert(0);
     }
+
+    assert(0);
 }
 
 XItemList* XMap::GetItemList(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return &map[x + y * len].item_list;
-    } else {
-        assert(0);
     }
+
+    assert(0);
 
     return nullptr;
 }
@@ -305,9 +304,9 @@ unsigned int XMap::GetItemCount(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].item_list.size();
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 void XMap::SetMonster(const int x, const int y, XCreature* monst) const
@@ -332,9 +331,9 @@ XCreature* XMap::GetMonster(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         return map[x + y * len].pMonster.get();
-    } else {
-        return nullptr;
     }
+
+    return nullptr;
 }
 
 void XMap::PutChar(const int x, const int y, const char c, const int color) const
@@ -351,7 +350,7 @@ void XMap::Put(XCreature * cr) const
             MAP * tmap = &map[(i + wy) * len + j + wx];
 
             if (tmap->visible) {
-                if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !dynamic_cast<XTrap *>(tmap->pSpecialObject.get())->isVisible(NULL))) {
+                if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !dynamic_cast<XTrap *>(tmap->pSpecialObject.get())->isVisible(nullptr))) {
                     vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
                     tmap->color = tmap->pSpecialObject->color;
                     tmap->known = tmap->pSpecialObject->view;

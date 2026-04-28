@@ -69,7 +69,7 @@ class XAnyPlace : public XObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
         void Setup(XLocation* _map);
-        XPtr<XLocation> location;
+        XPtr<XLocation> location{};
 
     protected:
         XRect area;

@@ -65,9 +65,9 @@ int XAnyPlace::onCreatureMove(XCreature* cr)
         lua_pop(XLocation::L, 1);
 
         return res;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 int XAnyPlace::onCreatureEnter(XCreature* cr)
@@ -82,9 +82,9 @@ int XAnyPlace::onCreatureEnter(XCreature* cr)
         lua_pop(XLocation::L, 1);
 
         return res;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 int XAnyPlace::onCreatureLeave(XCreature* cr)
@@ -99,9 +99,9 @@ int XAnyPlace::onCreatureLeave(XCreature* cr)
         lua_pop(XLocation::L, 1);
 
         return res;
-    } else {
-        return 0;
     }
+
+    return 0;
 }
 
 
@@ -151,7 +151,7 @@ void XAnyPlace::Store(XFile* f)
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
         lua_pushnumber(XLocation::L, LE_SAVE);
         lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        lua_tonumber(XLocation::L, 2);
         lua_pop(XLocation::L, 1);
     }
 }
@@ -178,7 +178,7 @@ void XAnyPlace::Restore(XFile* f)
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
         lua_pushnumber(XLocation::L, LE_LOAD);
         lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        lua_tonumber(XLocation::L, 2);
         lua_pop(XLocation::L, 1);
     }
 }

@@ -54,33 +54,44 @@ class XLocation;
 /////////////////////////////////////////////////////////////////////
 class XTrap final : public XMapObject
 {
-        TRAP_TYPE trap_type;
+        TRAP_TYPE trap_type = TT_UNKNOWN;
         TRAP_LEVEL trap_level;
-        XPtr<XCreature> owner; //owner to get exp...
-        int isVisibleForHero;
-        XPtr<XItem> trap_item;
-        bool isMagic;
-        XGUID last_activator{}; //need for a pits
+
+        // owner to get exp.
+        XPtr<XCreature> owner{};
+
+        int isVisibleForHero = 0;
+
+        XPtr<XItem> trap_item = nullptr;
+
+        bool isMagic = false;
+
+        // required for pits
+        XGUID last_activator{};
     public:
-        int activation_count;
+        int activation_count = 0;
         DECLARE_CREATOR(XTrap, XMapObject);
-        XTrap() : trap_type(), trap_level(), isVisibleForHero(0), isMagic(false), last_activator(0),
-                  activation_count(0) {
+        XTrap() : trap_type(), trap_level()
+        {
             assert(0);
         }
 
         XTrap(int _x, int _y, XLocation* _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature* _owner = nullptr, XItem* items = nullptr);
-        virtual int MoveIn(XCreature * cr);
-        virtual int MoveOut(XCreature * cr);
-        virtual int Activate(XCreature * cr);
-        virtual int Check(XCreature * cr);
-        virtual int isVisible(XCreature * cr);
-        virtual int Disarm(XCreature * cr);
+
+        int MoveIn(XCreature * cr);
+
+        int MoveOut(XCreature * cr);
+
+        int Activate(XCreature * cr);
+
+        int Check(XCreature * cr);
+
+        int isVisible(XCreature * cr) const;
+
+        int Disarm(XCreature * cr);
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 };
-
-class XLocation;
 
 //////////////////////////////////////////////////////////////////////
 //XStairWay
@@ -123,7 +134,7 @@ class XTeleport final : public XMapObject
             return -1;
         }
 
-        virtual int MoveIn(XCreature* cr);
+        int MoveIn(XCreature* cr);
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
@@ -190,10 +201,10 @@ class XAltar final : public XMapObject
 class XGrave: public XMapObject
 {
         int isOpened;
-        XItemList hiden_items;
+        XItemList hidden_items;
     public:
         DECLARE_CREATOR(XGrave, XMapObject);
-        XGrave(int _x, int _y, char* subscr, XLocation * _l);
+        XGrave(int _x, int _y, char* subscr, XLocation* _l);
         void HideItem(XItem* item);
         int onOuterUse(XCreature* cr) override;
         void Store(XFile* f) override;

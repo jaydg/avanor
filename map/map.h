@@ -124,11 +124,16 @@ struct MAP {
     bool visible;                    // visible for HERO!!!
     char known;                      // for hero memory
     char color;                      // for hero memory
-    XPtr<XAnyPlace> place;  //pointer to an object which describe this place... it can be NULL, Shop, special room etc.
-    // it will be usefully to mark all rooms in cave (to create good links between rooms or to create unique rooms description)
+
+    // Pointer to an object which describes this place. It can be NULL, Shop,
+    // special room etc. It will be useful to mark all rooms in cave (to create
+    // good links between rooms or to create unique room descriptions).
+    XPtr<XAnyPlace> place;
+
     // 0 - no room
-    // 1, 2, ... - room id
-    // at this time used to indicate "special" rooms, which should be not crossed by passages
+    // 1, 2, ... - room ID
+    // Currently used to indicate "special" rooms which should not be crossed
+    // by passages.
     int room_id;
 };
 

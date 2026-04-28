@@ -107,7 +107,6 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
         default:
             color = xBROWN;
             isMagic = true;
-            tt = TT_MAGICARROW;
             break;
     }
 
@@ -151,7 +150,7 @@ int XTrap::MoveIn(XCreature* cr)
 int XTrap::MoveOut(XCreature* cr)
 {
     if (last_activator == cr->guid() && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
-        //to climb out from some pits you should be lucky!
+        // to climb out pits you should be lucky!
         if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(S_DEX) * 2) {
             cr->sk->UseSkill(XSkill::Skill::CLIMBING);
 
@@ -162,17 +161,18 @@ int XTrap::MoveOut(XCreature* cr)
 
             last_activator = 0;
             return 1;
-        } else {
-            if (vRand(100) < 70) {
-                cr->sk->UseSkill(XSkill::Skill::CLIMBING);
+        }
 
-                if (cr->isVisible()) {
-                    msgwin.Add(cr->GetNameEx(CRN_T1));
-                    msgwin.Add("can not to climb out from the pit.");
-                }
-            } else { //no luck!
-                Activate(cr);
+        if (vRand(100) < 70) {
+            cr->sk->UseSkill(XSkill::Skill::CLIMBING);
+
+            if (cr->isVisible()) {
+                msgwin.Add(cr->GetNameEx(CRN_T1));
+                msgwin.Add("can not to climb out from the pit.");
             }
+        } else {
+            // no luck!
+            Activate(cr);
         }
 
         return 0;
@@ -236,7 +236,6 @@ int XTrap::Activate(XCreature* cr)
 
         XEffect::Make(&ed);
     } else {
-        int dmg = 0;
         XItem* drop_item = nullptr;
         DAMAGE_DATA_EX dd{};
 
@@ -359,14 +358,14 @@ int XTrap::Check(XCreature* cr)
     return 0;
 }
 
-int XTrap::isVisible(XCreature * cr)
+int XTrap::isVisible(XCreature * cr) const
 {
     return isVisibleForHero;
 }
 
 int XTrap::Disarm(XCreature * cr)
 {
-    XSkill * skill = cr->sk->GetSkill(XSkill::Skill::DISARMTRAP);
+    const XSkill* skill = cr->sk->GetSkill(XSkill::Skill::DISARMTRAP);
     int chance = 10;
 
     if (skill) {
@@ -382,8 +381,11 @@ int XTrap::Disarm(XCreature * cr)
         msgwin.Add("a trap successfully.");
         l->map->SetSpecial(x, y, nullptr);
         Invalidate();
+
         return 1;
-    } else if (val < static_cast<int>(chance * 1.3)) {
+    }
+
+    if (val < static_cast<int>(chance * 1.3)) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
         msgwin.Add("doesn't manage to disarm a trap.");
     } else {
@@ -610,7 +612,7 @@ XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 
 void XGrave::HideItem(XItem* item)
 {
-    hiden_items.insert(item);
+    hidden_items.insert(item);
 }
 
 int XGrave::onOuterUse(XCreature* cr)
@@ -623,9 +625,9 @@ int XGrave::onOuterUse(XCreature* cr)
         }
     }
 
-    for (const auto item: hiden_items) {
+    for (const auto item: hidden_items) {
         item->Drop(l, x, y);
-        hiden_items.erase(item);
+        hidden_items.erase(item);
     }
 
     isOpened = 1;
@@ -638,7 +640,7 @@ void XGrave::Store(XFile* f)
     f->Write(&isOpened);
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    // hiden_items.StoreList(f);
+    // hidden_items.StoreList(f);
 }
 
 void XGrave::Restore(XFile* f)
@@ -647,7 +649,7 @@ void XGrave::Restore(XFile* f)
     f->Read(&isOpened);
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    // hiden_items.RestoreList(f);
+    // hidden_items.RestoreList(f);
 }
 
 REGISTER_CLASS(XFurniture);
@@ -688,9 +690,7 @@ XOuterObject::XOuterObject(const int _x, const int _y, const int _c, const char 
 
 XOuterObject::~XOuterObject()
 {
-    if (onEventLua) {
-        delete[] onEventLua;
-    }
+    delete[] onEventLua;
 }
 
 int XOuterObject::onOuterUse(XCreature* cr)
@@ -706,9 +706,9 @@ int XOuterObject::onOuterUse(XCreature* cr)
         lua_pop(XLocation::L, 1);
 
         return res;
-    } else {
-        return XMapObject::onOuterUse(cr);
     }
+
+    return XMapObject::onOuterUse(cr);
 }
 
 void XOuterObject::Store(XFile* f)
@@ -731,7 +731,7 @@ void XOuterObject::Store(XFile* f)
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
         lua_pushnumber(XLocation::L, LE_SAVE);
         lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        lua_tonumber(XLocation::L, 2);
         lua_pop(XLocation::L, 1);
     }
 }
@@ -755,7 +755,7 @@ void XOuterObject::Restore(XFile* f)
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
         lua_pushnumber(XLocation::L, LE_LOAD);
         lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
+        lua_tonumber(XLocation::L, 2);
         lua_pop(XLocation::L, 1);
     }
 }
