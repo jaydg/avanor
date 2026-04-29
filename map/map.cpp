@@ -163,116 +163,117 @@ bool XMap::GetVisible(const int x, const int y) const
 
 void XMap::SetPlace(const int x, const int y, XAnyPlace* place) const
 {
-    assert(x >= 0 && x < len && y >= 0 && y < hgt);
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
     map[x + y * len].place = place;
 }
 
 XAnyPlace* XMap::GetPlace(const int x, const int y) const
 {
-    assert(x >= 0 && x < len && y >= 0 && y < hgt);
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
     return map[x + y * len].place.get();
 }
 
 void XMap::ResKnown(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].known = 0;
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
+    map[x + y * len].known = 0;
 }
 
 void XMap::SetKnown(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].known = 1;
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
+    map[x + y * len].known = 1;
 }
 
 int XMap::GetKnown(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return map[x + y * len].known;
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    return 0;
+    return map[x + y * len].known;
 }
 
 void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].pSpecialObject = spec;
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
+    map[x + y * len].pSpecialObject = spec;
 }
 
 XMapObject* XMap::GetSpecial(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return map[x + y * len].pSpecialObject.get();
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    return nullptr;
+    return map[x + y * len].pSpecialObject.get();
 }
 
 int XMap::GetVisibility(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        XMapObject* spec = map[x + y * len].pSpecialObject.get();
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-        if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
-            return 0;
-        }
+    XMapObject* spec = map[x + y * len].pSpecialObject.get();
 
-        if (std_tile_data[map[x + y * len].n].visibility == VI_WALL) {
-            return 0;
-        }
-
-        return 1;
+    if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
+        return 0;
     }
 
-    return 0;
+    if (std_tile_data[map[x + y * len].n].visibility == VI_WALL) {
+        return 0;
+    }
+
+    return 1;
 }
 
 const char* XMap::GetDescription(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return std_tile_data[map[x + y * len].n].name;
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    return "";
+    return std_tile_data[map[x + y * len].n].name;
 }
 
 int XMap::GetMovability(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        const MAP& _map = map[x + y * len];
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-        if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
-            dynamic_cast<XDoor *>(_map.pSpecialObject.get())->isOpened == 0) {
-            return MO_WALL;
-        }
+    const MAP& _map = map[x + y * len];
 
-        return std_tile_data[_map.n].movability;
+    if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
+        dynamic_cast<XDoor *>(_map.pSpecialObject.get())->isOpened == 0) {
+        return MO_WALL;
     }
 
-    return MO_WALL;
+    return std_tile_data[_map.n].movability;
 }
 
 int XMap::XGetMovability(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        const MAP* m = &map[x + y * len];
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-        if (m->pMonster) {
-            return 2;
-        }
+    const MAP* m = &map[x + y * len];
 
-        XMapObject* spec = map[x + y * len].pSpecialObject.get();
+    if (m->pMonster) {
+        return 2;
+    }
 
-        if (std_tile_data[m->n].movability < MO_UNWALKABLE
-            && !(spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0)) {
-            return 0;
-        }
+    XMapObject* spec = map[x + y * len].pSpecialObject.get();
 
-        return 1;
+    if (std_tile_data[m->n].movability < MO_UNWALKABLE
+        && !(spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0)) {
+        return 0;
     }
 
     return 1;
@@ -280,60 +281,52 @@ int XMap::XGetMovability(const int x, const int y) const
 
 void XMap::PutItem(const int x, const int y, XItem* item) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        item->x = x;
-        item->y = y;
-        map[x + y * len].item_list.insert(item);
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    assert(0);
+    item->x = x;
+    item->y = y;
+    map[x + y * len].item_list.insert(item);
 }
 
 XItemList* XMap::GetItemList(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return &map[x + y * len].item_list;
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    assert(0);
-
-    return nullptr;
+    return &map[x + y * len].item_list;
 }
 
 unsigned int XMap::GetItemCount(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return map[x + y * len].item_list.size();
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    return 0;
+    return map[x + y * len].item_list.size();
 }
 
 void XMap::SetMonster(const int x, const int y, XCreature* monst) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].pMonster = monst;
-    } else {
-        assert(0);
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
+    map[x + y * len].pMonster = monst;
 }
 
 void XMap::ResMonster(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].pMonster = nullptr;
-    } else {
-        assert(0);
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
+
+    map[x + y * len].pMonster = nullptr;
 }
 
 XCreature* XMap::GetMonster(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return map[x + y * len].pMonster.get();
-    }
+    assert(x >= 0 && x < len);
+    assert(y >= 0 && y < hgt);
 
-    return nullptr;
+    return map[x + y * len].pMonster.get();
 }
 
 void XMap::PutChar(const int x, const int y, const char c, const int color) const
