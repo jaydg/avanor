@@ -154,7 +154,8 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
                     tgt_x = cr->x + pt.x;
                     tgt_y = cr->y + pt.y;
 
-                    if (cr->l->map->GetXY(tgt_x, tgt_y) == M_STONEWALL || cr->l->map->GetXY(tgt_x, tgt_y) == M_MAGMA) {
+                    if (cr->l->map->GetXY(tgt_x, tgt_y) == XTileType::STONE_WALL
+                        || cr->l->map->GetXY(tgt_x, tgt_y) == XTileType::MAGMA) {
                         rock_resist = 1000;
                         char buf[256];
                         sprintf(buf, "%s starts to dig.", cr->name);
@@ -176,7 +177,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
                     msgwin.Add(cr->GetNameEx(CRN_T1));
                     msgwin.Add(cr->GetVerb("smash"));
                     msgwin.Add("the stone to pieces.");
-                    cr->l->map->SetXY(tgt_x, tgt_y, M_STONEFLOOR);
+                    cr->l->map->SetXY(tgt_x, tgt_y, XTileType::STONE_FLOOR);
                     cr->sk->UseSkill(XSkill::Skill::MINING);
 
                     if (vRand(3) == 0) {

@@ -34,15 +34,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // '/' - OPENED DOOR
 // '^' - TRAP DOOR
 
-STDMAP best_fit_terrain_table[] = {
-    M_GREENGRAS,
-    M_SAND,
-    M_PATH,
-    M_ROAD,
-    M_CAVEFLOOR,
-    M_STONEFLOOR,
-    M_OBSIDIANFLOOR,
-    M_GOLDENFLOOR,
+XTileType::Type best_fit_terrain_table[] = {
+    XTileType::GREEN_GRAS,
+    XTileType::SAND,
+    XTileType::PATH,
+    XTileType::ROAD,
+    XTileType::CAVE_FLOOR,
+    XTileType::STONE_FLOOR,
+    XTileType::OBSIDIAN_FLOOR,
+    XTileType::GOLDEN_FLOOR,
 };
 
 //Location Script Support
@@ -90,31 +90,31 @@ void XLocation::PutPalette(int x, int y)
                         break;
 
                     case '.':
-                        map->SetXY(x + j, y + i, M_GREENGRAS);
+                        map->SetXY(x + j, y + i, XTileType::GREEN_GRAS);
                         break;
 
                     case ',':
-                        map->SetXY(x + j, y + i, M_CAVEFLOOR);
+                        map->SetXY(x + j, y + i, XTileType::CAVE_FLOOR);
                         break;
 
                     case ';':
-                        map->SetXY(x + j, y + i, M_STONEFLOOR);
+                        map->SetXY(x + j, y + i, XTileType::STONE_FLOOR);
                         break;
 
                     case '#':
-                        map->SetXY(x + j, y + i, M_STONEWALL);
+                        map->SetXY(x + j, y + i, XTileType::STONE_WALL);
                         break;
 
                     case '=':
-                        map->SetXY(x + j, y + i, M_WATER);
+                        map->SetXY(x + j, y + i, XTileType::WATER);
                         break;
 
                     case '&':
-                        map->SetXY(x + j, y + i, M_GREENTREE);
+                        map->SetXY(x + j, y + i, XTileType::TREE);
                         break;
 
                     case 'X':
-                        map->SetXY(x + j, y + i, M_FENCE);
+                        map->SetXY(x + j, y + i, XTileType::FENCE);
                         break;
 
                     case ' ':
@@ -134,7 +134,7 @@ void XLocation::PutPalette(int x, int y)
         for (int q = -1; q <= 1; q++) {
             for (int w = -1; w <= 1; w++) {
                 if (q != 0 || w != 0) {
-                    STDMAP tm = map->GetXY(pt.x + q, pt.y + w);
+                    XTileType::Type tm = map->GetXY(pt.x + q, pt.y + w);
 
                     for (int i = 0; i < std::size(best_fit_terrain_table); i++) {
                         if (best_fit_terrain_table[i] == tm && best_fit_index < i) {

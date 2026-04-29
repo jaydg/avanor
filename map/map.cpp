@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map.h"
 #include "map/map_objects.h"
 
-xMAP stdmap[] = {
+XTileType std_tile_data[] = {
     {' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},
     {'.', xGREEN, "green grass", MO_NORMAL, VI_NORMAL},
     {'T', xGREEN, "large tree", MO_HARD, VI_HARD},
@@ -56,7 +56,7 @@ xMAP stdmap[] = {
 
 MAP::MAP()
 {
-    n = M_GREENGRAS;
+    n = XTileType::GREEN_GRAS;
     pMonster = nullptr;
     pSpecialObject = nullptr;
     visible = false;
@@ -86,7 +86,7 @@ void MAP::Store(XFile * f)
     // item_list.StoreList(f);
 
     f->Write(&known, sizeof(char));
-    f->Write(&n, sizeof(STDMAP));
+    f->Write(&n, sizeof(XTileType::Type));
 
     place.Store(f);
     pSpecialObject.Store(f);
@@ -103,7 +103,7 @@ void MAP::Restore(XFile * f)
     // item_list.RestoreList(f);
 
     f->Read(&known, sizeof(char));
-    f->Read(&n, sizeof(STDMAP));
+    f->Read(&n, sizeof(XTileType::Type));
 
     place.Restore(f);
     pSpecialObject.Restore(f);
@@ -147,8 +147,8 @@ void XMap::SetVisible(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
         map[x + y * len].visible = true;
-        map[x + y * len].color = stdmap[map[x + y * len].n].color;
-        map[x + y * len].known = stdmap[map[x + y * len].n].view;
+        map[x + y * len].color = std_tile_data[map[x + y * len].n].color;
+        map[x + y * len].known = std_tile_data[map[x + y * len].n].view;
     }
 }
 
@@ -221,7 +221,7 @@ int XMap::GetVisibility(const int x, const int y) const
             return 0;
         }
 
-        if (stdmap[map[x + y * len].n].visiable == VI_WALL) {
+        if (std_tile_data[map[x + y * len].n].visibility == VI_WALL) {
             return 0;
         }
 
@@ -234,7 +234,7 @@ int XMap::GetVisibility(const int x, const int y) const
 const char* XMap::GetDescription(const int x, const int y) const
 {
     if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return stdmap[map[x + y * len].n].name;
+        return std_tile_data[map[x + y * len].n].name;
     }
 
     return "";
@@ -250,7 +250,7 @@ int XMap::GetMovability(const int x, const int y) const
             return MO_WALL;
         }
 
-        return stdmap[_map.n].moveable;
+        return std_tile_data[_map.n].movability;
     }
 
     return MO_WALL;
@@ -267,7 +267,7 @@ int XMap::XGetMovability(const int x, const int y) const
 
         XMapObject* spec = map[x + y * len].pSpecialObject.get();
 
-        if (stdmap[m->n].moveable < MO_UNWALKABLE
+        if (std_tile_data[m->n].movability < MO_UNWALKABLE
             && !(spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0)) {
             return 0;
         }
@@ -363,7 +363,7 @@ void XMap::Put(XCreature * cr) const
                 } else {
                     //int tn = (i + wy) * len + j + wx;
                     int n = tmap->n;
-                    vPutCh(j + SCR_X, i + SCR_Y, stdmap[n].view, stdmap[n].color);
+                    vPutCh(j + SCR_X, i + SCR_Y, std_tile_data[n].view, std_tile_data[n].color);
                 }
 
                 if (tmap->pMonster && cr->isCreatureVisible(tmap->pMonster)) {
@@ -407,7 +407,7 @@ void XMap::Center(const int x, const int y)
     }
 }
 
-void XMap::SetXY(const int x, const int y, const STDMAP std_map) const
+void XMap::SetXY(const int x, const int y, const XTileType::Type std_map) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
@@ -415,7 +415,7 @@ void XMap::SetXY(const int x, const int y, const STDMAP std_map) const
     map[x + y * len].n = std_map;
 }
 
-STDMAP XMap::GetXY(const int x, const int y) const
+XTileType::Type XMap::GetXY(const int x, const int y) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
@@ -440,13 +440,13 @@ int XMap::GetRoom(const int x, const int y) const
     return map[x + y * len].room_id;
 }
 
-void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const STDMAP m1, const STDMAP m2) const
+void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const XTileType::Type m1, const XTileType::Type m2) const
 {
     CreateRoom(x, y, l, h, m1, m2);
     SetXY(px, py, m1);
 }
 
-void XMap::CreateRoom(const int x, const int y, const int l, const int h, const STDMAP m1, const STDMAP m2) const
+void XMap::CreateRoom(const int x, const int y, const int l, const int h, const XTileType::Type m1, const XTileType::Type m2) const
 {
     for (int i = 0; i < l; i++) {
         for (int j = 0; j < h; j++) {
@@ -488,7 +488,7 @@ void XMap::Dump(FILE* f) const
         for (int j = 0; j < len; j++) {
             MAP * tmap = &map[i * len + j];
             int n = tmap->n;
-            char vch = stdmap[n].view;
+            char vch = std_tile_data[n].view;
 
             if (tmap->pSpecialObject) {
                 vch = tmap->pSpecialObject->view;

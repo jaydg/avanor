@@ -130,7 +130,7 @@ enum PALETTE {
 
 struct PALETTE_MAP {
     char this_view;
-    STDMAP	real_view;
+    XTileType::Type real_view;
     char lua_str[512];
 };
 

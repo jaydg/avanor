@@ -57,9 +57,9 @@ function MakeDwarvenCity()
 		"#,,,,<,,,,#,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,#,,,,,+,#,,,,,#" ..
 		"##,,A,A,,,#,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,#,,,,,#,#,,,,,#" ..
 		"################################################################################")
-		AddTranslation("1", M_GOLDENFLOOR)
-		AddTranslation(";", M_OBSIDIANFLOOR)
-		AddTranslation(":", M_BRIDGE)
+		AddTranslation("1", GOLDEN_FLOOR)
+		AddTranslation(";", OBSIDIAN_FLOOR)
+		AddTranslation(":", BRIDGE)
 		AddTranslation("<", "Way(UP, L_DWARFCITYCAVE6, x, y)")
 		AddTranslation("A", "Guardian(CN_DWARF_GUARD, GID_DWARVEN_GUARDIAN, x, y)")
 		AddTranslation("S", "BuildShop(x, y, 9, 3, IM_ARMOUR + IM_WEAPON + IM_POTION + IM_BOOK + IM_SCROLL + IM_NECK + IM_MISSILE + IM_MISSILEW, 'Toberin, the dwarwen shopkeeper')")
@@ -97,7 +97,7 @@ function MakeDwarvenCity()
 		"################################################################################" ..
 		"################################################################################" ..
 		"################################################################################")
-		AddTranslation(".", M_GOLDENFLOOR)
+		AddTranslation(".", GOLDEN_FLOOR)
 		AddTranslation("<", "Way(UP, L_DWARFCITY, x, y)")
 		AddTranslation("$", "Treasure(x, y, 500)")
 		AddTranslation("~", "Chest(x, y)")
@@ -507,7 +507,7 @@ function MakeVulcano()
 		"####,################################,,,,,,,,,,,,,,,#######################,,,,#" ..
 		"################################################################################")
 		AddTranslation("<", "Way(UP, L_MAIN, x, y)")
-		AddTranslation("=", M_LAVA)
+		AddTranslation("=", LAVA)
 		DrawPattern(0, 0)
 		GiveObjectToCreature(CreateObject('XBlackClub'), Creature(CN_XSHEE_VOO))
 end

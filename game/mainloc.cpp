@@ -39,9 +39,9 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
             if (vRand() % 3) {
-                map->SetXY(j, i, M_GREENGRAS);
+                map->SetXY(j, i, XTileType::GREEN_GRAS);
             } else {
-                map->SetXY(j, i, M_GREENTREE);
+                map->SetXY(j, i, XTileType::TREE);
             }
         }
 
@@ -51,11 +51,11 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
         int z2 = vRand() % ((i & 3) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
-            map->SetXY(i, tm + j, M_HIGHMOUNTAIN);
+            map->SetXY(i, tm + j, XTileType::HIGH_MOUNTAIN);
         }
 
         for (j = 0; j < z2; j++) {
-            map->SetXY(i, bm - j - 1, M_HIGHMOUNTAIN);
+            map->SetXY(i, bm - j - 1, XTileType::HIGH_MOUNTAIN);
         }
     }
 
@@ -64,11 +64,11 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
         int z2 = vRand() % ((i & 3) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
-            map->SetXY(lm + j, i, M_HIGHMOUNTAIN);
+            map->SetXY(lm + j, i, XTileType::HIGH_MOUNTAIN);
         }
 
         for (j = 0; j < z2; j++) {
-            map->SetXY(rm - j - 1, i, M_HIGHMOUNTAIN);
+            map->SetXY(rm - j - 1, i, XTileType::HIGH_MOUNTAIN);
         }
     }
 
@@ -77,7 +77,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
         for (j = 0; j < map->len; j++) {
             int m = map->GetXY(j, i);
 
-            if (m > M_HILL && m <= M_HIGHMOUNTAIN) {
+            if (m > XTileType::HILL && m <= XTileType::HIGH_MOUNTAIN) {
                 for (int q = -2; q < 3; q++)
                     for (int w = -2; w < 3; w++) {
                         int nm;
@@ -88,14 +88,14 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
                             nm = m - abs(w);
                         }
 
-                        if (nm < M_HILL) {
-                            nm = M_HILL;
+                        if (nm < XTileType::HILL) {
+                            nm = XTileType::HILL;
                         }
 
                         if (j + q >= 0 && i + w >= 0
                             && j + q < map->len && i + w < map->hgt
                             && map->GetXY(j + q, i + w) < nm) {
-                            map->SetXY(j + q, i + w, (STDMAP)nm);
+                            map->SetXY(j + q, i + w, (XTileType::Type)nm);
                         }
                     }
             }
@@ -117,7 +117,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     for (i = 0; i < map->hgt; i++) {
         for (j = 0; j < map->len; j++) {
             if (vRand(18) == 0) {
-                if (map->GetXY(j, i) == M_GREENGRAS && map->GetSpecial(j, i) == NULL) {
+                if (map->GetXY(j, i) == XTileType::GREEN_GRAS && map->GetSpecial(j, i) == NULL) {
                     new XHerbBush(j, i, this);
                 }
             }

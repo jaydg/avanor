@@ -151,9 +151,9 @@ void XLocation::BuildPlain(int w, int h)
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
             if (vRand() % 3) {
-                map->SetXY(j, i, M_GREENGRAS);
+                map->SetXY(j, i, XTileType::GREEN_GRAS);
             } else {
-                map->SetXY(j, i, M_GREENTREE);
+                map->SetXY(j, i, XTileType::TREE);
             }
         }
 
@@ -163,11 +163,11 @@ void XLocation::BuildPlain(int w, int h)
         int z2 = vRand() % ((i & 3) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
-            map->SetXY(i, tm + j, M_HIGHMOUNTAIN);
+            map->SetXY(i, tm + j, XTileType::HIGH_MOUNTAIN);
         }
 
         for (j = 0; j < z2; j++) {
-            map->SetXY(i, bm - j - 1, M_HIGHMOUNTAIN);
+            map->SetXY(i, bm - j - 1, XTileType::HIGH_MOUNTAIN);
         }
     }
 
@@ -176,11 +176,11 @@ void XLocation::BuildPlain(int w, int h)
         int z2 = vRand() % ((i & 3) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
-            map->SetXY(lm + j, i, M_HIGHMOUNTAIN);
+            map->SetXY(lm + j, i, XTileType::HIGH_MOUNTAIN);
         }
 
         for (j = 0; j < z2; j++) {
-            map->SetXY(rm - j - 1, i, M_HIGHMOUNTAIN);
+            map->SetXY(rm - j - 1, i, XTileType::HIGH_MOUNTAIN);
         }
     }
 
@@ -189,7 +189,7 @@ void XLocation::BuildPlain(int w, int h)
         for (j = 0; j < map->len; j++) {
             int m = map->GetXY(j, i);
 
-            if (m > M_HILL && m <= M_HIGHMOUNTAIN) {
+            if (m > XTileType::HILL && m <= XTileType::HIGH_MOUNTAIN) {
                 for (int q = -2; q < 3; q++)
                     for (int w = -2; w < 3; w++) {
                         int nm;
@@ -200,14 +200,14 @@ void XLocation::BuildPlain(int w, int h)
                             nm = m - abs(w);
                         }
 
-                        if (nm < M_HILL) {
-                            nm = M_HILL;
+                        if (nm < XTileType::HILL) {
+                            nm = XTileType::HILL;
                         }
 
                         if (j + q >= 0 && i + w >= 0
                             && j + q < map->len && i + w < map->hgt
                             && map->GetXY(j + q, i + w) < nm) {
-                            map->SetXY(j + q, i + w, (STDMAP)nm);
+                            map->SetXY(j + q, i + w, (XTileType::Type)nm);
                         }
                     }
             }
@@ -228,7 +228,7 @@ void XLocation::BuildCave()
 
     for (int i = 0; i < map->hgt; i++) {
         for (int j = 0; j < map->len; j++) {
-            map->SetXY(j, i, M_MAGMA);
+            map->SetXY(j, i, XTileType::MAGMA);
         }
     }
 
@@ -242,7 +242,7 @@ void XLocation::BuildCave()
                 int ty = qy + (int)(w * sin(q * M_PI / 180.0));
 
                 if (tx > 0 && ty > 0 && tx < 79 && ty < 19) {
-                    map->SetXY(tx, ty, M_CAVEFLOOR);
+                    map->SetXY(tx, ty, XTileType::CAVE_FLOOR);
                 }
             }
         }
@@ -674,18 +674,18 @@ int XLocation::SetPattern(lua_State * L)
     return 0;
 }
 
-//AddTranslation("1", M_GOLDENFLOOR)
+//AddTranslation("1", GOLDEN_FLOOR)
 int XLocation::AddTranslation(lua_State * L)
 {
     PALETTE_MAP pm;
     pm.this_view = (lua_tostring(L, 1))[0];
 
     if (lua_isnumber(L, 2)) {
-        pm.real_view = (STDMAP)lua_tonumber(L, 2);
+        pm.real_view = (XTileType::Type)lua_tonumber(L, 2);
         pm.lua_str[0] = 0;
     } else {
         strcpy(pm.lua_str, lua_tostring(L, 2));
-        pm.real_view = M_UNKNOWN;
+        pm.real_view = XTileType::UNKNOWN;
     }
 
     pattern_translation.push_back(pm);
@@ -1625,33 +1625,33 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(CRL_AH);
     LUA_REG(CRL_HVH);
 
-    LUA_REG(M_GREENGRAS);
-    LUA_REG(M_GREENTREE);
-    LUA_REG(M_SAND);
-    LUA_REG(M_WINDOW);
-    LUA_REG(M_MAGMA);
-    LUA_REG(M_QUARTZ);
-    LUA_REG(M_CAVEFLOOR);
-    LUA_REG(M_STONEFLOOR);
-    LUA_REG(M_PATH);
-    LUA_REG(M_WOODWALL);
-    LUA_REG(M_STONEWALL);
-    LUA_REG(M_WATER);
-    LUA_REG(M_DEEPWATER);
-    LUA_REG(M_LAVA);
-    LUA_REG(M_HILL);
-    LUA_REG(M_LOWMOUNTAIN);
-    LUA_REG(M_MOUNTAIN);
-    LUA_REG(M_HIGHMOUNTAIN);
-    LUA_REG(M_BRIDGE);
-    LUA_REG(M_ROAD);
-    LUA_REG(M_OBSIDIANFLOOR);
-    LUA_REG(M_FENCE);
-    LUA_REG(M_GOLDENFLOOR);
-    LUA_REG(M_MARBLEWALL);
-    LUA_REG(M_BLACKMARBLEWALL);
-    LUA_REG(M_GOLDENFENCE);
-    LUA_REG(M_TELEPORTWHITE);
+    LUA_REG_ALTNAME(GREEN_GRASS, XTileType::GREEN_GRAS);
+    LUA_REG_ALTNAME(TREE, XTileType::TREE);
+    LUA_REG_ALTNAME(SAND, XTileType::SAND);
+    LUA_REG_ALTNAME(WINDOW, XTileType::WINDOW);
+    LUA_REG_ALTNAME(MAGMA, XTileType::MAGMA);
+    LUA_REG_ALTNAME(QUARTZ, XTileType::QUARTZ);
+    LUA_REG_ALTNAME(CAVE_FLOOR, XTileType::CAVE_FLOOR);
+    LUA_REG_ALTNAME(STONE_FLOOR, XTileType::STONE_FLOOR);
+    LUA_REG_ALTNAME(PATH, XTileType::PATH);
+    LUA_REG_ALTNAME(WOOD_WALL, XTileType::WOOD_WALL);
+    LUA_REG_ALTNAME(STONE_WALL, XTileType::STONE_WALL);
+    LUA_REG_ALTNAME(WATER, XTileType::WATER);
+    LUA_REG_ALTNAME(DEEP_WATER, XTileType::DEEP_WATER);
+    LUA_REG_ALTNAME(LAVA, XTileType::LAVA);
+    LUA_REG_ALTNAME(HILL, XTileType::HILL);
+    LUA_REG_ALTNAME(LOW_MOUNTAIN, XTileType::LOW_MOUNTAIN);
+    LUA_REG_ALTNAME(MOUNTAIN, XTileType::MOUNTAIN);
+    LUA_REG_ALTNAME(HIGH_MOUNTAIN, XTileType::HIGH_MOUNTAIN);
+    LUA_REG_ALTNAME(BRIDGE, XTileType::BRIDGE);
+    LUA_REG_ALTNAME(ROAD, XTileType::ROAD);
+    LUA_REG_ALTNAME(OBSIDIAN_FLOOR, XTileType::OBSIDIAN_FLOOR);
+    LUA_REG_ALTNAME(FENCE, XTileType::FENCE);
+    LUA_REG_ALTNAME(GOLDEN_FLOOR, XTileType::GOLDEN_FLOOR);
+    LUA_REG_ALTNAME(MARBLE_WALL, XTileType::MARBLE_WALL);
+    LUA_REG_ALTNAME(BLACK_MARBLE_WALL, XTileType::BLACK_MARBLE_WALL);
+    LUA_REG_ALTNAME(GOLDEN_FENCE, XTileType::GOLDEN_FENCE);
+    LUA_REG_ALTNAME(TELEPORT_WHITE, XTileType::TELEPORT_WHITE);
 
     LUA_REG(GID_ORCS_WAR_PARTY);
     LUA_REG(GID_FOREST_BROTHER);

@@ -36,7 +36,7 @@ void XCaveBuilder::Build()
 
     for (i = 0; i < m->hgt; i++)
         for (int j = 0; j < m->len; j++) {
-            m->SetXY(j, i, M_MAGMA);
+            m->SetXY(j, i, XTileType::MAGMA);
         }
 
     std::vector<XCave*> quae;
@@ -201,7 +201,7 @@ bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)
 
     while (stp > 1) {
         stp = tbl[px + py * m->len];
-        m->SetXY(px, py, M_CAVEFLOOR);
+        m->SetXY(px, py, XTileType::CAVE_FLOOR);
 
         if (tbl[px + 1 + py * m->len] == stp - 1) {
             px++;
@@ -214,7 +214,7 @@ bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)
         }
     }
 
-    m->SetXY(p1->x, p1->y, M_CAVEFLOOR);
+    m->SetXY(p1->x, p1->y, XTileType::CAVE_FLOOR);
 
     return true;
 }

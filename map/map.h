@@ -36,7 +36,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SCR_X    0
 #define SCR_Y    2
 
-enum MOVEABLE {
+enum MOVABILITY {
     MO_UNKNOWN,
     MO_NORMAL,
     MO_SHARD,
@@ -50,7 +50,7 @@ enum MOVEABLE {
     MO_MOUNTAIN
 };
 
-enum VISIABLE {
+enum VISIBILITY {
     VI_UNKNOWN,
     VI_NORMAL,
     VI_SHARD,
@@ -60,46 +60,47 @@ enum VISIABLE {
     VI_WALL = 80
 };
 
-enum STDMAP {
-    M_UNKNOWN,
-    M_GREENGRAS,
-    M_GREENTREE,
-    M_SAND,
-    M_WINDOW,
-    M_MAGMA,
-    M_QUARTZ,
-    M_CAVEFLOOR,
-    M_STONEFLOOR,
-    M_PATH,
-    M_WOODWALL,
-    M_STONEWALL,
-    M_WATER,
-    M_DEEPWATER,
-    M_LAVA,
-    M_HILL,
-    M_LOWMOUNTAIN,
-    M_MOUNTAIN,
-    M_HIGHMOUNTAIN,
-    M_BRIDGE,
-    M_ROAD,
-    M_OBSIDIANFLOOR,
-    M_FENCE,
-    M_GOLDENFLOOR,
-    M_MARBLEWALL,
-    M_BLACKMARBLEWALL,
-    M_GOLDENFENCE,
-    M_TELEPORTWHITE
-};
 
-struct xMAP {
+struct XTileType {
+    enum Type {
+        UNKNOWN,
+        GREEN_GRAS,
+        TREE,
+        SAND,
+        WINDOW,
+        MAGMA,
+        QUARTZ,
+        CAVE_FLOOR,
+        STONE_FLOOR,
+        PATH,
+        WOOD_WALL,
+        STONE_WALL,
+        WATER,
+        DEEP_WATER,
+        LAVA,
+        HILL,
+        LOW_MOUNTAIN,
+        MOUNTAIN,
+        HIGH_MOUNTAIN,
+        BRIDGE,
+        ROAD,
+        OBSIDIAN_FLOOR,
+        FENCE,
+        GOLDEN_FLOOR,
+        MARBLE_WALL,
+        BLACK_MARBLE_WALL,
+        GOLDEN_FENCE,
+        TELEPORT_WHITE
+    };
+
     char view;
     char color;
     const char* name;
-    MOVEABLE moveable; // 0 - normal, 1 -little hard, 80 - UNMOVEABLE
-    VISIABLE visiable; // 0 - normal, 1 ... 80 - wall
+    MOVABILITY movability; // 0 - normal, 1 -little hard, 80 - UNMOVEABLE
+    VISIBILITY visibility; // 0 - normal, 1 ... 80 - wall
 };
 
-extern xMAP stdmap[];
+extern XTileType std_tile_data[];
 
 /* Forward declarations */
 class XMapObject;
@@ -117,7 +118,7 @@ struct MAP {
     void Store(XFile* f);
     void Restore(XFile* f);
 
-    STDMAP n;
+    XTileType::Type n;
     XPtr<XCreature> pMonster;        // if null then no monster here
     XItemList item_list;             // list of item in this cell of map. Automatic construct/destruct
     XPtr<XMapObject> pSpecialObject; // door, way, trap door.
@@ -154,8 +155,8 @@ class XMap
         [[nodiscard]] int GetMovability(int x, int y) const;
         [[nodiscard]] int XGetMovability(int x, int y) const;
         [[nodiscard]] int GetVisibility(int x, int y) const;
-        void SetXY(int x, int y, STDMAP std_map) const;
-        [[nodiscard]] STDMAP GetXY(int x, int y) const;
+        void SetXY(int x, int y, XTileType::Type std_map) const;
+        [[nodiscard]] XTileType::Type GetXY(int x, int y) const;
         void SetRoom(int x, int y, int room_id) const;
         [[nodiscard]] int GetRoom(int x, int y) const;
 
@@ -183,8 +184,8 @@ class XMap
         void SetSpecial(int x, int y, XMapObject* spec) const;
         [[nodiscard]] XMapObject* GetSpecial(int x, int y) const;
 
-        void CreateRoom(int x, int y, int l, int h, STDMAP m1, STDMAP m2) const;
-        void CreateRoom(int x, int y, int l, int h, int px, int py, STDMAP m1, STDMAP m2) const;
+        void CreateRoom(int x, int y, int l, int h, XTileType::Type m1, XTileType::Type m2) const;
+        void CreateRoom(int x, int y, int l, int h, int px, int py, XTileType::Type m1, XTileType::Type m2) const;
 
         void Store(XFile* f) const;
         void Restore(XFile* f);

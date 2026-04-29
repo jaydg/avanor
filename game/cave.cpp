@@ -225,7 +225,7 @@ void XCave::Draw(XLocation * l)
     if (rct == RCT_USUAL) {
         for (int i = r.top; i < r.bottom; i++)
             for (int j = r.left; j < r.right; j++) {
-                l->map->SetXY(j, i, M_CAVEFLOOR);
+                l->map->SetXY(j, i, XTileType::CAVE_FLOOR);
             }
 
         if (vRand(10) == 0) {
@@ -238,7 +238,7 @@ void XCave::Draw(XLocation * l)
             }
         }
     } else {
-        STDMAP sm = M_CAVEFLOOR;
+        XTileType::Type sm = XTileType::CAVE_FLOOR;
 
         for (int i = r.top; i < r.bottom; i++) {
             for (int j = r.left; j < r.right; j++) {
@@ -246,20 +246,20 @@ void XCave::Draw(XLocation * l)
 
                 switch (ch) {
                     case '#':
-                        sm = M_MAGMA;
+                        sm = XTileType::MAGMA;
                         break;
 
                     case '.':
-                        sm = M_CAVEFLOOR;
+                        sm = XTileType::CAVE_FLOOR;
                         break;
 
                     case '+':
-                        sm = M_CAVEFLOOR;
+                        sm = XTileType::CAVE_FLOOR;
                         new XDoor(j, i, 0, l);
                         break;
 
                     case '~': {
-                        sm = M_CAVEFLOOR;
+                        sm = XTileType::CAVE_FLOOR;
                         XChest * ch1 = new XChest(vRand(6) + 1, IM_ITEM, 1, 5000);
                         ch1->Drop(l, j, i);
 
@@ -271,7 +271,7 @@ void XCave::Draw(XLocation * l)
                     break;
 
                     default:
-                        sm = M_CAVEFLOOR;
+                        sm = XTileType::CAVE_FLOOR;
                         break;
                 }
 

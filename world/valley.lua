@@ -35,10 +35,10 @@ function MakeAvanorValley()
 		"             =======================                   " ..
 		"                   ============                        " ..
 		"                                                       ")
-		AddTranslation("@", M_WOODWALL)
-		AddTranslation("1", M_ROAD)
-		AddTranslation("2", M_BRIDGE)
-		AddTranslation("3", M_SAND)
+		AddTranslation("@", WOOD_WALL)
+		AddTranslation("1", ROAD)
+		AddTranslation("2", BRIDGE)
+		AddTranslation("3", SAND)
 		AddTranslation("A", "Furniture(x, y, xBROWN, '~', 'plain bed')")
 		AddTranslation("S", "BuildShop(x, y, 8, 2, IM_FOOD, 'Nobel, the human shopkeeper')")
 		AddTranslation("P", "for i = 1, 4 do SetEventHandler(Guardian(CN_FARMER, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian(CN_GOODWIFE, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end")
@@ -68,7 +68,7 @@ function MakeAvanorValley()
 		".###########.................................." ..
 		"..............................................")
 		
-		AddTranslation("1", M_ROAD)
+		AddTranslation("1", ROAD)
 		AddTranslation("A", "Furniture(x, y, xBROWN, '~', 'plain bed')")
 		AddTranslation("B", "Furniture(x, y, xBROWN, '~', 'table')")
 		AddTranslation("C", "Furniture(y, y, xBROWN, '~', 'desk')")
@@ -115,12 +115,12 @@ function MakeAvanorValley()
 		"   ==##2##  ===========111====         =============================" ..
 		"    ==========         ;;;=================    ==           =====   ")
 
-		AddTranslation("1", M_BRIDGE)
-		AddTranslation("2", M_WINDOW)
-		AddTranslation("3", M_GOLDENFLOOR)
-		AddTranslation("M", M_MOUNTAIN)
-		AddTranslation("W", M_MARBLEWALL)
-		AddTranslation("X", M_GOLDENFENCE)
+		AddTranslation("1", BRIDGE)
+		AddTranslation("2", WINDOW)
+		AddTranslation("3", GOLDEN_FLOOR)
+		AddTranslation("M", MOUNTAIN)
+		AddTranslation("W", MARBLE_WALL)
+		AddTranslation("X", GOLDEN_FENCE)
 		
 		AddTranslation("A", "Furniture(x, y, xLIGHTRED, '~', 'eternal flame')")
 		AddTranslation("B", "CreateGefeon(x, y)")
@@ -154,10 +154,10 @@ function MakeAvanorValley()
 		" ,,,:;^::  :::::" ..
 		"   ,,:;:::::    " ..
 		"      :,,,      " )
-		AddTranslation(",", M_HILL)
-		AddTranslation(":", M_LOWMOUNTAIN)
-		AddTranslation(";", M_MOUNTAIN)
-		AddTranslation("^", M_HIGHMOUNTAIN)
+		AddTranslation(",", HILL)
+		AddTranslation(":", LOW_MOUNTAIN)
+		AddTranslation(";", MOUNTAIN)
+		AddTranslation("^", HIGH_MOUNTAIN)
 		AddTranslation(">", "Way(DOWN, L_EXTINCT_VOLCANO, x, y)")
 		DrawPattern(46, 75)
 
@@ -173,7 +173,7 @@ function MakeAvanorValley()
 		"    #,,,,,,,,,,,,,,,##" ..
 		"    ###########,,,,,,#" ..
 		"              ########")
-		AddTranslation(".", M_CAVEFLOOR)
+		AddTranslation(".", CAVE_FLOOR)
 		AddTranslation(">", "Way(DOWN, L_UNDEADS_TOMB1, x, y)")
 		AddTranslation("U", "for i = 1, 20 do Creature(CN_SKELETON, x, y, 14, 4) end")
 		DrawPattern(100, 50)
@@ -193,7 +193,7 @@ function MakeAvanorValley()
 		"X...................." ..
 		"X...................X" ..
 		"....XX..X...X.....X..")
-		AddTranslation("#", M_BLACKMARBLEWALL)
+		AddTranslation("#", BLACK_MARBLE_WALL)
 		AddTranslation(">", "Way(DOWN, L_WIZARD_DUNGEON1, x, y)")
 		DrawPattern(155, 44)
 
@@ -212,9 +212,9 @@ function MakeAvanorValley()
 		"X......###/###......X" ..
 		"X........111........X" ..
 		"XXXXXXXXX111XXXXXXXXX")
-		AddTranslation("1", M_ROAD)
-		AddTranslation("2", M_GOLDENFLOOR)
-		AddTranslation("#", M_MARBLEWALL)
+		AddTranslation("1", ROAD)
+		AddTranslation("2", GOLDEN_FLOOR)
+		AddTranslation("#", MARBLE_WALL)
 		AddTranslation("<", "Way(UP, L_WIZTOWER_TOP, x, y)")
 		DrawPattern(45, 25)
 
@@ -254,10 +254,10 @@ function MakeAvanorValley()
 		"X.....###222###.....X" ..
 		"X......##333##......X" ..
 		"XXXXXXXXX111XXXXXXXXX")
-		AddTranslation("1", M_ROAD)
-		AddTranslation("2", M_GOLDENFLOOR)
-		AddTranslation("3", M_WINDOW)
-		AddTranslation("#", M_MARBLEWALL)
+		AddTranslation("1", ROAD)
+		AddTranslation("2", GOLDEN_FLOOR)
+		AddTranslation("3", WINDOW)
+		AddTranslation("#", MARBLE_WALL)
 		AddTranslation(">", "Way(DOWN, L_MAIN, x, y)")
 		AddTranslation("W", "CreateYohji(x, y)")
 		AddTranslation("B", "Furniture(x, y, xLIGHTRED, '~', 'nice bed')")
