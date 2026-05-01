@@ -57,22 +57,20 @@ enum MODIFIER_RESULT {
     MR_DIE = 2,
 };
 
-class XBasicModifier : public XObject
+class XBasicModifier
 {
     protected:
         XBasicModifier() {}
 
     public:
-        DECLARE_CREATOR(XBasicModifier, XObject);
         XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = NULL);
 
-        virtual void Invalidate();
+        ~XBasicModifier() {
+            setter = nullptr;
+        }
 
-        virtual int Compare(XObject * o)
+        virtual int Compare(XBasicModifier *mod)
         {
-            assert(dynamic_cast<XBasicModifier*>(o));
-            XBasicModifier * mod = static_cast<XBasicModifier*>(o);
-
             if (mod->mdt == mdt && mod->setter == setter) {
                 return 0;
             } else {
@@ -80,10 +78,9 @@ class XBasicModifier : public XObject
             }
         }
 
-        virtual void Concat(XObject * o)
+        virtual void Concat(XBasicModifier* o)
         {
-            val += ((XBasicModifier*)o)->val;
-            XObject::Concat(o);
+            val += (o)->val;
         }
 
         virtual MODIFIER_RESULT Run(XCreature * owner)
@@ -145,7 +142,6 @@ class XBasicModifier : public XObject
 class XModWound : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModWound, XBasicModifier);
         XModWound(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_WOUND, _val, _cr) {}
 
         XModWound()
@@ -204,7 +200,6 @@ class XModWound : public XBasicModifier
 class XModPoison : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModPoison, XBasicModifier);
         XModPoison(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_POISON, _val * 10, _cr) {}
 
         XModPoison()
@@ -244,7 +239,6 @@ class XModPoison : public XBasicModifier
 class XModConfuse : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModConfuse, XBasicModifier);
         XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_CONFUSE, _val, _cr) {}
 
         XModConfuse()
@@ -283,7 +277,6 @@ class XModConfuse : public XBasicModifier
 class XModStun : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModStun, XBasicModifier);
         XModStun(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_STUN, _val, _cr) {}
 
         XModStun()
@@ -323,7 +316,6 @@ class XModStun : public XBasicModifier
 class XModHeroism : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModHeroism, XBasicModifier);
         XModHeroism(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_HEROISM, _val, _cr) {}
 
         XModHeroism()
@@ -363,7 +355,6 @@ class XModHeroism : public XBasicModifier
 class XModDisease : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModDisease, XBasicModifier);
         XModDisease(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_DISEASE, _val, _cr) {}
 
         XModDisease()
@@ -405,7 +396,6 @@ class XModDisease : public XBasicModifier
 class XModWeak : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModWeak, XBasicModifier);
         XModWeak(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_WEAK, _val, _cr) {}
 
         XModWeak()
@@ -447,7 +437,6 @@ class XModWeak : public XBasicModifier
 class XModParalyse : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModParalyse, XBasicModifier);
         XModParalyse(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_PARALYSE, _val, _cr) {}
 
         XModParalyse()
@@ -486,7 +475,6 @@ class XModParalyse : public XBasicModifier
 class XModDelayed : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModDelayed, XBasicModifier);
         XModDelayed(MODIFIER_TYPE _mt, int value, int delay,
             XCreature * _cr = NULL) : XBasicModifier(MOD_DELAYED, delay, _cr),
             set_mt(_mt), set_val(value)
@@ -501,7 +489,7 @@ class XModDelayed : public XBasicModifier
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
 
-        virtual int Compare(XObject * o)
+        virtual int Compare(XBasicModifier *o)
         {
             if (XBasicModifier::Compare(o) == 0 && set_mt == ((XModDelayed*)o)->set_mt) {
                 return 0;
@@ -511,12 +499,11 @@ class XModDelayed : public XBasicModifier
 
         }
 
-        virtual void Concat(XObject * object)
+        virtual void Concat(XModDelayed* mod)
         {
-            XModDelayed * mod = (XModDelayed*)object;
             val = std::min(val, mod->val);
             set_val += mod->set_val;
-            XObject::Concat(object); //hack
+            XBasicModifier::Concat(mod); //hack
         }
 
     protected:
@@ -527,7 +514,6 @@ class XModDelayed : public XBasicModifier
 class XModSeeInvisible : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModSeeInvisible, XBasicModifier);
         XModSeeInvisible(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_SEE_INVISIBLE, _val, _cr) {}
 
         XModSeeInvisible()
@@ -567,7 +553,6 @@ class XModSeeInvisible : public XBasicModifier
 class XModBoostSpeed : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModBoostSpeed, XBasicModifier);
         XModBoostSpeed(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_BOOST_SPEED, _val, _cr) {}
 
         XModBoostSpeed()
@@ -608,7 +593,6 @@ class XModBoostSpeed : public XBasicModifier
 class XModSlowness : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModSlowness, XBasicModifier);
         XModSlowness(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_SLOWNESS, _val, _cr) {}
 
         XModSlowness()
@@ -648,7 +632,6 @@ class XModSlowness : public XBasicModifier
 class XModAcidResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModAcidResistance, XBasicModifier);
         XModAcidResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_ACID_RESISTANCE, _val, _cr) {}
 
         XModAcidResistance()
@@ -688,7 +671,6 @@ class XModAcidResistance : public XBasicModifier
 class XModFireResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModFireResistance, XBasicModifier);
         XModFireResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_FIRE_RESISTANCE, _val, _cr) {}
 
         XModFireResistance()
@@ -728,7 +710,6 @@ class XModFireResistance : public XBasicModifier
 class XModColdResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModColdResistance, XBasicModifier);
         XModColdResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_COLD_RESISTANCE, _val, _cr) {}
 
         XModColdResistance()
@@ -768,7 +749,6 @@ class XModColdResistance : public XBasicModifier
 class XModPoisonResistance : public XBasicModifier
 {
     public:
-        DECLARE_CREATOR(XModPoisonResistance, XBasicModifier);
         XModPoisonResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_POISON_RESISTANCE, _val, _cr) {}
 
         XModPoisonResistance()

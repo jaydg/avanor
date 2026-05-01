@@ -211,14 +211,16 @@ void XModifier::toString(char* buf)
         XModWound * tmp = new XModWound(0, NULL);
         strcat(buf, tmp->GetDisplayName(xval));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 
     if (Get(MOD_POISON) > 0) {
         XModPoison * tmp = new XModPoison(0, NULL);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 
     xval = Get(MOD_STUN);
@@ -227,35 +229,40 @@ void XModifier::toString(char* buf)
         XModStun * tmp = new XModStun(0, NULL);
         strcat(buf, tmp->GetDisplayName(xval));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 
     if (Get(MOD_CONFUSE) > 0) {
         XModConfuse * tmp = new XModConfuse(0, NULL);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 
     if (Get(MOD_DISEASE) > 0) {
         XModDisease * tmp = new XModDisease(0, NULL);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 
     if (Get(MOD_PARALYSE) > 0) {
         XModParalyse * tmp = new XModParalyse(0, NULL);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 
     if (Get(MOD_SEE_INVISIBLE) > 0) {
         XModSeeInvisible * tmp = new XModSeeInvisible(0, NULL);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
-        tmp->Invalidate();
+
+        delete tmp;
     }
 }
 
