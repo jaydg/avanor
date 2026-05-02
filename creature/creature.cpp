@@ -397,36 +397,51 @@ struct opaque_info {
     XMap* map;
 };
 
-static int is_grid_viewable(void* opaque, int x, int y)
+static int is_grid_viewable(void* opaque, const int x, const int y)
 {
-    opaque_info * info = (opaque_info*)opaque;
-    XCreature * mover = info->mover;
-    XCreature * tcr = mover->l->map->GetMonster(x, y);
+    const auto info = static_cast<opaque_info *>(opaque);
 
-    if ((tcr && tcr != mover && mover->isCreatureVisible(tcr) && tcr->xai->isEnemy(mover))) {
-        mover->isDisturb = 0;
+    if (x < 0 || x >= info->map->len) return false;
+    if (y < 0 || y >= info->map->hgt) return false;
+
+    XCreature* tcr = info->mover->l->map->GetMonster(x, y);
+
+    if (tcr
+        && tcr != info->mover
+        && info->mover->isCreatureVisible(tcr)
+        && tcr->xai->isEnemy(info->mover))
+    {
+        info->mover->isDisturb = 0;
     }
 
-    return (mover->l->map->GetVisibility(x, y) != 0);
+    return (info->mover->l->map->GetVisibility(x, y) != 0);
 }
 
 static int set_grid_visible(void* opaque, int x, int y, int radius, int see_center)
 {
-    opaque_info * info = (opaque_info*)opaque;
-    XMap * map = info->map;
+    const auto info = static_cast<opaque_info *>(opaque);
 
-    if (!see_center && (map->GetVisibility(x, y) != 0)) {
+    if (x < 0 || x >= info->map->len) return false;
+    if (y < 0 || y >= info->map->hgt) return false;
+
+    if (!see_center && (info->map->GetVisibility(x, y) != 0)) {
         return is_grid_viewable(opaque, x, y);
     }
 
-    map->SetVisible(x, y);
+    info->map->SetVisible(x, y);
+
     return is_grid_viewable(opaque, x, y);
 }
 
 static int set_grid_invisible(void* opaque, int x, int y, int radius, int see_center)
 {
-    opaque_info * info = (opaque_info*)opaque;
+    const auto info = static_cast<opaque_info *>(opaque);
+
+    if (x < 0 || x >= info->map->len) return false;
+    if (y < 0 || y >= info->map->hgt) return false;
+
     info->map->ResVisible(x, y);
+
     return is_grid_viewable(opaque, x, y);
 }
 
