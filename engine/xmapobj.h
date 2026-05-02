@@ -34,7 +34,9 @@ class XMapObject : public XObject
         char name[50];
 
         DECLARE_CREATOR(XMapObject, XObject);
-        XMapObject();
+
+        XMapObject() : l(nullptr), name{}, x(-1), y(-1), nx(-1), ny(-1), view(0), color(0) {}
+
         explicit XMapObject(XMapObject * copy);
         virtual XObject* MakeCopy()
         {
@@ -49,15 +51,17 @@ class XMapObject : public XObject
         char view; //char-represent view of object
         int color;
 
-
         int Compare(XObject * o) override;
-
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
         virtual void toString(char* buf) {};
 
-        bool SetLocation(XLocation * new_l);
+        bool SetLocation(XLocation* new_l)
+        {
+            l = new_l;
+            return true;
+        }
 
         virtual bool isVisible()
         {

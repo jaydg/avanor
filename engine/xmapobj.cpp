@@ -20,10 +20,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/xmapobj.h"
 
-XMapObject::XMapObject() : l(NULL), x(-1), y(-1)
-{
-}
-
 XMapObject::XMapObject(XMapObject * copy) :
     XObject((XObject*)copy),
     x(copy->x),
@@ -88,10 +84,4 @@ int XMapObject::Compare(XObject * o)
     } else {
         return 1;
     }
-}
-
-bool XMapObject::SetLocation(XLocation * new_l)
-{
-    l = new_l;
-    return true;
 }
