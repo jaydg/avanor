@@ -2404,7 +2404,7 @@ void XHero::QuickPay()
     shopkeeper = pl->GetOwner();
 
     if (shopkeeper) {
-        const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai);
+        const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai.get());
         int val = 0;
 
         for (const auto item: pai->debt.unpaid_items)

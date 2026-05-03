@@ -75,7 +75,7 @@ XCreature::XCreature()
     creature_person_type = CPT_HE;
 
     im = IM_CREATURE;
-    xai = new XStandardAI(this);
+    xai = std::make_unique<XStandardAI>(this);
     md = new XModifier();
     m = new XMagic();
     sk = new XSkills();
@@ -116,8 +116,7 @@ void XCreature::Invalidate()
     delete wsk;
     wsk = NULL;
 
-    delete xai;
-    xai = nullptr;
+    delete xai.release();
 
     if (event_handler) {
         delete[] event_handler;
@@ -1662,7 +1661,8 @@ void XCreature::Restore(XFile * f)
     wsk = new XWarSkills();
     wsk->Restore(f);
 
-    xai = (XStandardAI*)XObject::RestorePointer(f, this);
+    // FIXME: Implement when porting saving/restoring to Cereal
+    // xai = (XStandardAI*)XObject::RestorePointer(f, this);
 
     action_data.Restore(f);
 

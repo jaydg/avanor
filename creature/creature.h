@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CREATURE_H
 #define CREATURE_H
 
+#include <memory>
 #include <vector>
 
 #include "creature/bodypart.h"
@@ -218,7 +219,7 @@ class XCreature : public XBaseObject
         virtual void DoMove();
         int Run() override;
 
-        XStandardAI* xai;
+        std::unique_ptr<XStandardAI> xai;
 
         unsigned long _EXP;
         int level;

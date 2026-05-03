@@ -277,8 +277,7 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 REGISTER_CLASS(XRotmoth);
 XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
 {
-    delete xai;
-    xai = new XRotmothAI(this);
+    xai = std::make_unique<XRotmothAI>(this);
     xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
     xai->SetAIFlag(AIF_RANDOM_MOVE);
 
@@ -364,9 +363,7 @@ REGISTER_CLASS(XBandit);
 
 XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
 {
-    delete xai;
-
-    xai = new XBanditAI(this);
+    xai = std::make_unique<XBanditAI>(this);
     xai->SetAIFlag(AIF_GUARD_AREA);
     xai->SetAIFlag(AIF_PROTECT_AREA);
     xai->SetEnemyClass(CR_NONE);
@@ -421,21 +418,18 @@ XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
 void XShopkeeper::SetShop(char* _name, XShop * shop)
 {
     strcpy(name, _name);
-    delete xai;
-
-    xai = new XShopKeeperAI(this, shop);
+    xai = std::make_unique<XShopKeeperAI>(this, shop);
 }
 
 void XShopkeeper::Die(XCreature * killer)
 {
-    (((XShopKeeperAI*)xai)->GetShop())->SetShopkeeper(NULL);
+    dynamic_cast<XShopKeeperAI*>(xai.get())->GetShop()->SetShopkeeper(NULL);
     XAnyCreature::Die(killer);
 }
 
 const char* XShopkeeper::StdAnswer()
 {
-    assert(xai && dynamic_cast<XShopKeeperAI*>(xai));
-    XShopKeeperAI * ai = static_cast<XShopKeeperAI*>(xai);
+    auto ai = dynamic_cast<XShopKeeperAI*>(xai.get());
 
     if (!ai->debt.unpaid_items.empty()) {
         sprintf(static_buffer, "Don't forget to pay for the items you have taken!", ai->debt.debtor_sum);

@@ -81,7 +81,7 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
 {
     if (owner) {
-        return ((XShopKeeperAI*)(owner->xai))->onAnyonePickItem(cr, item);
+        return dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onAnyonePickItem(cr, item);
     }
 
     return 1;
@@ -102,7 +102,7 @@ int XShop::onCreatureEnter(XCreature * cr)
     }
 
     if (owner) {
-        ((XShopKeeperAI*)(owner->xai))->onCreatureEnterShop(cr);
+        dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onCreatureEnterShop(cr);
     }
 
     return 1;
@@ -111,7 +111,7 @@ int XShop::onCreatureEnter(XCreature * cr)
 int XShop::onCreatureLeave(XCreature * cr)
 {
     if (owner) {
-        ((XShopKeeperAI*)(owner->xai))->onCreatureLeaveShop(cr);
+        dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onCreatureLeaveShop(cr);
     }
 
     return 1;
@@ -120,7 +120,7 @@ int XShop::onCreatureLeave(XCreature * cr)
 int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
 {
     if (owner) {
-        return ((XShopKeeperAI*)(owner->xai))->onAnyoneDropItem(cr, item);
+        return dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onAnyoneDropItem(cr, item);
     }
 
     return 1;
