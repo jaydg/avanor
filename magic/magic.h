@@ -122,6 +122,11 @@ class XMagic
         XMagic();
         explicit XMagic(XMagic*) = delete;
 
+        ~XMagic() {
+            for (auto spell: spells)
+                delete spell;
+        }
+
         RESULT Cast(XSpell* spell, XCreature* caster);
         static int GetSpellRange(const XSpell* spell, XCreature* caster);
         int Train(MAGIC_SCHOOL school, int count);

@@ -93,6 +93,11 @@ XCreature::XCreature()
 
 void XCreature::Invalidate()
 {
+    for (auto it = components.begin(); it != components.end(); it++) {
+        delete *it;
+        components.erase(it);
+    }
+
     for (auto item: contain) {
         item->Invalidate();
     }
@@ -110,6 +115,9 @@ void XCreature::Invalidate()
 
     delete wsk;
     wsk = NULL;
+
+    delete xai;
+    xai = nullptr;
 
     if (event_handler) {
         delete[] event_handler;

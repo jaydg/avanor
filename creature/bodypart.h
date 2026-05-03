@@ -55,8 +55,12 @@ class XBodyPart
 
     public:
         XBodyPart(XCreature* o, BODY_PART bp);
+        ~XBodyPart() {
+            item = nullptr;
+            owner = nullptr;
+        }
 
-    const char* GetName() const;
+        const char* GetName() const;
         static const char* XGetName(BODY_PART bp);
         static void Create(XCreature* cr, const char* str);
 
