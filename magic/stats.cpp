@@ -19,12 +19,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "engine/xfile.h"
+#include "helpers/strproc.h"
 #include "magic/stats.h"
 
-const char* stats_str[] = {"St", "Dx", "To", "Le", "Wi", "Ma", "Pe", "Ch", "EOF"};
+const char* stats_str[] = {
+    "St",
+    "Dx",
+    "To",
+    "Le",
+    "Wi",
+    "Ma",
+    "Pe",
+    "Ch",
+    "EOF"
+};
+
 const char* stats_full_str[] = {
-    "Strength", "Dexterity", "Toughness", "Learning", "Willpower",
-    "Mana", "Perception", "Charisma", "EOF"
+    "Strength",
+    "Dexterity",
+    "Toughness",
+    "Learning",
+    "Willpower",
+    "Mana",
+    "Perception",
+    "Charisma",
+    "EOF"
 };
 
 XStats::XStats()
@@ -34,11 +53,11 @@ XStats::XStats()
     }
 }
 
-XStats::XStats(XStats * xs)
+XStats::XStats(const XStats* xs)
 {
     if (xs)
         for (int i = S_STR; i < S_EOF; i++) {
-            stats[i] = xs->Get((STATS)i);
+            stats[i] = xs->Get(static_cast<STATS>(i));
         }
 }
 
@@ -65,28 +84,28 @@ const char* XStats::GetFullName(STATS s)
     return stats_full_str[s];
 }
 
-void XStats::Add(XStats * s)
+void XStats::Add(const XStats* s)
 {
     for (int i = S_STR; i < S_EOF; i++) {
         stats[i] += s->stats[i];
     }
 }
 
-void XStats::Sub(XStats * s)
+void XStats::Sub(const XStats* s)
 {
     for (int i = S_STR; i < S_EOF; i++) {
         stats[i] -= s->stats[i];
     }
 }
 
-void XStats::Set(XStats * s)
+void XStats::Set(const XStats* s)
 {
     for (int i = S_STR; i < S_EOF; i++) {
         stats[i] = s->stats[i];
     }
 }
 
-bool XStats::isEqual(XStats * s)
+bool XStats::isEqual(const XStats* s) const
 {
     for (int i = S_STR; i < S_EOF; i++)
         if (stats[i] != s->stats[i]) {
@@ -127,7 +146,7 @@ XStats* XStatsGenerator::Generate()
     XStats * s = new XStats();
 
     for (int i = S_STR; i < S_EOF; i++) {
-        s->SetStat((STATS)i, stats[i].Throw());
+        s->SetStat(static_cast<STATS>(i), stats[i].Throw());
     }
 
     return s;

@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/global.h"
 #include "helpers/dice.h"
-#include "helpers/strproc.h"
 
 enum STATS {S_UNKNOWN = -1, S_STR, S_DEX, S_TOU, S_LEN, S_WIL, S_MAN, S_PER, S_CHR, S_EOF};
 
@@ -32,51 +31,57 @@ extern const char* stats_str[];
 class XStats
 {
     public:
-        XStats(const char* str); // must be the same! "St:1d2 Dx:1d4 To:2d5"
-        XStats(XStats * xs);
-        XStats(); // all stats == 0 by default
-        int Get(STATS s)
+        // must be the same! "St:1d2 Dx:1d4 To:2d5"
+        explicit XStats(const char* str);
+
+        explicit XStats(const XStats* xs);
+
+        // all stats == 0 by default
+        XStats();
+
+        [[nodiscard]] int Get(const STATS s) const
         {
             return stats[s] / 100;
         }
 
-        const char* GetName(STATS s)
+        static const char* GetName(const STATS s)
         {
             return stats_str[s];
         }
 
-        const char* GetFullName(STATS s);
-        void SetStat(STATS s, int val)
+        static const char* GetFullName(STATS s);
+
+        void SetStat(const STATS s, const int val)
         {
             stats[s] = val * 100;
         }
 
-        void Modify(STATS s, int val)
+        void Modify(const STATS s, const int val)
         {
             stats[s] += val * 100;
         }
 
-        void AddFract(STATS s, int val)
+        void AddFract(const STATS s, const int val)
         {
             stats[s] += val;
         }
 
-        void Set(XStats * s);
+        void Set(const XStats * s);
         void Set(const char* str);
-        void Add(XStats * s);
-        void Sub(XStats * s);
-        bool isEqual(XStats * s);
+        void Add(const XStats * s);
+        void Sub(const XStats * s);
+        bool isEqual(const XStats * s) const;
 
         void Store(XFile * f);
         void Restore(XFile * f);
 
         static STATS Random()
         {
-            return (STATS)(vRand(S_EOF));
+            return static_cast<STATS>(vRand(S_EOF));
         }
 
     protected:
-        int stats[S_EOF];
+        int stats[S_EOF]{};
 };
 
 class XStatsGenerator
