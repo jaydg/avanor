@@ -345,7 +345,7 @@ int XCreature::isCreatureVisible(XCreature * cr)
 {
     assert(isValid());
 
-    if ((cr->GetResistance(R_INVISIBLE) <= GetResistance(R_SEEINVISIBLE)) || cr == this) {
+    if ((cr->GetResistance(R_INVISIBLE) <= GetResistance(R_SEE_INVISIBLE)) || cr == this) {
         return 1;
     } else {
         return 0;

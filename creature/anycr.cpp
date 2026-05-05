@@ -158,15 +158,15 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
 
     if (cr->generation_flags & GFS_SEE_INVIS) {
         while (true) {
-            if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_SEEINVISIBLE)) {
+            if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_SEE_INVISIBLE)) {
                 break;
             }
 
-            if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_SEEINVISIBLE)) {
+            if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_SEE_INVISIBLE)) {
                 break;
             }
 
-            if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_SEEINVISIBLE)) {
+            if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_SEE_INVISIBLE)) {
                 break;
             }
 

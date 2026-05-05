@@ -1781,7 +1781,7 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(R_LIGHT);
     LUA_REG(R_DARKNESS);
     LUA_REG(R_INVISIBLE);
-    LUA_REG(R_SEEINVISIBLE);
+    LUA_REG(R_SEE_INVISIBLE);
 
     LUA_REG(xBLACK);
     LUA_REG(xBLUE);

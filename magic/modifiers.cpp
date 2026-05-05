@@ -212,13 +212,13 @@ void XModDelayed::Restore(XFile * f)
 
 int XModSeeInvisible::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_SEEINVISIBLE, 10);
+    owner->added_resists.ChangeResistance(R_SEE_INVISIBLE, 10);
     return 1;
 }
 
 int XModSeeInvisible::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_SEEINVISIBLE, -10);
+    owner->added_resists.ChangeResistance(R_SEE_INVISIBLE, -10);
     return 1;
 }
 

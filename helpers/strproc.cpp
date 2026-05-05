@@ -120,7 +120,7 @@ KEYWORD keywords[] = {
     {"light",	R_LIGHT},
     {"darkness",	R_DARKNESS},
     {"invisible",	R_INVISIBLE},
-    {"see_invisible", R_SEEINVISIBLE},
+    {"see_invisible", R_SEE_INVISIBLE},
     {nullptr, -1}
 };
 

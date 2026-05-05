@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/global.h"
 #include "engine/xfile.h"
+#include "helpers/strproc.h"
 #include "magic/resist.h"
 
 RESIST_REC resists_data[] = {
@@ -45,7 +46,7 @@ RESIST_REC resists_data[] = {
     "eof",	FLU_NONE
 };
 
-XResistance::XResistance(XResistance * xr)
+XResistance::XResistance(const XResistance* xr)
 {
     Set(xr);
 }
@@ -53,7 +54,7 @@ XResistance::XResistance(XResistance * xr)
 XResistance::XResistance()
 {
     for (int i = R_WHITE; i < R_EOF; i++) {
-        SetResistance((RESISTANCE)i, 0);
+        SetResistance(static_cast<RESISTANCE>(i), 0);
     }
 }
 
@@ -66,22 +67,22 @@ XResistance::XResistance(const char* str1)
     for (int i = R_WHITE; i < R_EOF; i++) {
         if (xsp1.GetParam(buf, resists_data[i + 1].name)) {
             d.Setup(buf);
-            SetResistance((RESISTANCE)i, d.Throw());
+            SetResistance(static_cast<RESISTANCE>(i), d.Throw());
         } else {
-            SetResistance((RESISTANCE)i, 0);
+            SetResistance(static_cast<RESISTANCE>(i), 0);
         }
     }
 }
 
-void XResistance::Set(XResistance * r)
+void XResistance::Set(const XResistance* r)
 {
     if (r)
         for (int i = R_WHITE; i < R_EOF; i++) {
-            SetResistance((RESISTANCE)i, r->GetResistance((RESISTANCE)i));
+            SetResistance(static_cast<RESISTANCE>(i), r->GetResistance(static_cast<RESISTANCE>(i)));
         }
 }
 
-void XResistance::Add(XResistance * r)
+void XResistance::Add(const XResistance* r)
 {
     if (r)
         for (int i = R_WHITE; i < R_EOF; i++) {
@@ -89,7 +90,7 @@ void XResistance::Add(XResistance * r)
         }
 }
 
-void XResistance::Sub(XResistance * r)
+void XResistance::Sub(const XResistance* r)
 {
     if (r)
         for (int i = R_WHITE; i < R_EOF; i++) {
@@ -97,7 +98,7 @@ void XResistance::Sub(XResistance * r)
         }
 };
 
-bool XResistance::isEqual(XResistance * xr)
+bool XResistance::isEqual(const XResistance* xr) const
 {
     for (int i = R_WHITE; i < R_EOF; i++)
         if (resistances[i] != xr->resistances[i]) {
@@ -119,24 +120,43 @@ void XResistance::Restore(XFile * f)
 
 
 const char* resist_name[] = {
-    "White magic", "Black magic", "Fire magic", "Water magic", "Air magic", "Earth magic",
-    "Acid", "Cold", "Poison", "Disease", "Paralyzation",
-    "Stun", "Confusion", "Blindness",
-    "Light", "Darkness", "Invisible", "See Invisible"
+    "White magic",
+    "Black magic",
+    "Fire magic",
+    "Water magic",
+    "Air magic",
+    "Earth magic",
+    "Acid",
+    "Cold",
+    "Poison",
+    "Disease",
+    "Paralyzation",
+    "Stun",
+    "Confusion",
+    "Blindness",
+    "Light",
+    "Darkness",
+    "Invisible",
+    "See Invisible"
 };
 
-const char* XResistance::GetResistanceName(RESISTANCE r)
+const char* XResistance::GetResistanceName(const RESISTANCE r)
 {
     return resist_name[r];
 }
 
 const char* resist_level[] = {
-    MSG_LIGHTRED "awful", MSG_LIGHTRED "bad",
-    MSG_LIGHTGRAY "none", MSG_LIGHTGREEN "mediocre", MSG_LIGHTGREEN "fair",
-    MSG_LIGHTGREEN "good", MSG_YELLOW "excellent", MSG_WHITE "complete"
+    MSG_LIGHTRED "awful",
+    MSG_LIGHTRED "bad",
+    MSG_LIGHTGRAY "none",
+    MSG_LIGHTGREEN "mediocre",
+    MSG_LIGHTGREEN "fair",
+    MSG_LIGHTGREEN "good",
+    MSG_YELLOW "excellent",
+    MSG_WHITE "complete"
 };
 
-const char* XResistance::GetResistanceLevel(RESISTANCE r)
+const char* XResistance::GetResistanceLevel(const RESISTANCE r) const
 {
     if (resistances[r] < -50) {
         return resist_level[0];
@@ -175,10 +195,10 @@ void XResistGenerator::Init(const char* str)
 
 XResistance* XResistGenerator::Generate()
 {
-    XResistance * r = new XResistance();
+    auto r = new XResistance();
 
     for (int i = R_WHITE; i < R_EOF; i++) {
-        r->SetResistance((RESISTANCE)i, resist[i].Throw());
+        r->SetResistance(static_cast<RESISTANCE>(i), resist[i].Throw());
     }
 
     return r;

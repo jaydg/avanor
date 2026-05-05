@@ -21,57 +21,86 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef RESIST_H
 #define RESIST_H
 
-#include "helpers/strproc.h"
 #include "helpers/dice.h"
 
-enum RESISTANCE {R_NONE = -1,
-    R_WHITE, R_BLACK, R_FIRE, R_WATER, R_AIR, R_EARTH,
-    R_ACID, R_COLD, R_POISON, R_DISEASE, R_PARALYSE,
-    R_STUN, R_CONFUSE, R_BLIND,
-    R_LIGHT, R_DARKNESS, R_INVISIBLE, R_SEEINVISIBLE,
+enum RESISTANCE {
+    R_NONE = -1,
+    R_WHITE,
+    R_BLACK,
+    R_FIRE,
+    R_WATER,
+    R_AIR,
+    R_EARTH,
+    R_ACID,
+    R_COLD,
+    R_POISON,
+    R_DISEASE,
+    R_PARALYSE,
+    R_STUN,
+    R_CONFUSE,
+    R_BLIND,
+    R_LIGHT,
+    R_DARKNESS,
+    R_INVISIBLE,
+    R_SEE_INVISIBLE,
     R_EOF
 };
 
-enum FLUENCE {FLU_NONE = 0, FLU_CREATURE = 1, FLU_ITEM = 2, FLU_ALL = 3};
+enum FLUENCE {
+    FLU_NONE = 0,
+    FLU_CREATURE = 1,
+    FLU_ITEM = 2,
+    FLU_ALL = 3
+};
 
 struct RESIST_REC {
-    const char* name; //life, fire, death etc.
+    // life, fire, death etc.
+    const char* name;
     FLUENCE flag;
 };
 
 class XResistance
 {
     public:
-        XResistance(XResistance * xr);
+        explicit XResistance(const XResistance* xr);
+
         XResistance();
-        XResistance(const char* str1); //format fire:3d6+N water:2d2+3
-        //	~XResistance() {}
-        int GetResistance(RESISTANCE r)
+
+        // format fire:3d6+N water:2d2+3
+        explicit XResistance(const char* str1);
+
+        [[nodiscard]] int GetResistance(const RESISTANCE r) const
         {
             return resistances[r];
         }
 
-        void SetResistance(RESISTANCE r, int val)
+        void SetResistance(const RESISTANCE r, const int val)
         {
             resistances[r] = val;
         }
 
-        void ChangeResistance(RESISTANCE r, int val)
+        void ChangeResistance(const RESISTANCE r, const int val)
         {
             resistances[r] += val;
         }
 
-        void Add(XResistance * r);
-        void Sub(XResistance * r);
-        void Set(XResistance * r);
-        const char* GetResistanceName(RESISTANCE r);
-        const char* GetResistanceLevel(RESISTANCE r);
-        bool isEqual(XResistance * xr);
+        void Add(const XResistance* r);
+
+        void Sub(const XResistance* r);
+
+        void Set(const XResistance* r);
+
+        static const char* GetResistanceName(RESISTANCE r);
+
+        [[nodiscard]] const char* GetResistanceLevel(RESISTANCE r) const;
+
+        bool isEqual(const XResistance* xr) const;
 
         void Store(XFile * f);
         void Restore(XFile * f);
+
     protected:
-        int resistances[R_EOF];
+        int resistances[R_EOF]{};
 };
 
 class XResistGenerator
