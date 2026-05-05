@@ -43,7 +43,7 @@ XBaseObject::~XBaseObject()
 
     if (resistances != nullptr) {
         delete resistances;
-        stats = nullptr;
+        resistances = nullptr;
     }
 }
 
@@ -168,4 +168,3 @@ void XBaseObject::Restore(XFile * f)
         stats = nullptr;
     }
 }
-
