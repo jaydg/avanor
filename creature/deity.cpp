@@ -133,7 +133,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     }
 
     if (!cr->isHero() && vRand(5) == 0) {
-        cr->s->Modify(XStats::Random(), 1);
+        cr->stats->Modify(XStats::Random(), 1);
 
         if (cr->isVisible()) {
             msgwin.Add(cr->name);

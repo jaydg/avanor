@@ -197,8 +197,8 @@ XEnhance::XEnhance(ENHANCE enh)
     d->Setup(is->rng);
     RNG = d->Throw();
     delete d;
-    s = new XStats(is->s);
-    r = new XResistance(is->r);
+    stats = new XStats(is->s);
+    resistances = new XResistance(is->r);
 
     weight = 3;
 }

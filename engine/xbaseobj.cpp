@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "xobject.h"
 
 XBaseObject::XBaseObject() :
-    RNG(0), weight(0), r(nullptr), s(nullptr)
+    RNG(0), weight(0), resistances(nullptr), stats(nullptr)
 {
 }
 
@@ -36,14 +36,14 @@ void XBaseObject::Invalidate()
 
 XBaseObject::~XBaseObject()
 {
-    if (s != nullptr) {
-        delete s;
-        s = nullptr;
+    if (stats != nullptr) {
+        delete stats;
+        stats = nullptr;
     }
 
-    if (r != nullptr) {
-        delete r;
-        s = nullptr;
+    if (resistances != nullptr) {
+        delete resistances;
+        stats = nullptr;
     }
 }
 
@@ -60,16 +60,16 @@ XBaseObject::XBaseObject(XBaseObject * copy) :
     weight(copy->weight),
     dice(copy->dice)
 {
-    if (copy->r) {
-        r = new XResistance(copy->r);
+    if (copy->resistances) {
+        resistances = new XResistance(copy->resistances);
     } else {
-        r = nullptr;
+        resistances = nullptr;
     }
 
-    if (copy->s) {
-        s = new XStats(copy->s);
+    if (copy->stats) {
+        stats = new XStats(copy->stats);
     } else {
-        s = nullptr;
+        stats = nullptr;
     }
 }
 
@@ -83,7 +83,7 @@ int XBaseObject::Compare(XObject * o)
         && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
         && _HIT == tit->_HIT && dice.X == tit->dice.X
         && dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
-        && r->isEqual(tit->r) && s->isEqual(tit->s)) {
+        && resistances->isEqual(tit->resistances) && stats->isEqual(tit->stats)) {
         return 0;
     } else {
         return 1;
@@ -108,26 +108,26 @@ void XBaseObject::Store(XFile* f)
 
     int flag = 0;
 
-    if (r) {
+    if (resistances) {
         flag = 1;
     }
 
     f->Write(&flag, sizeof(int));
 
     if (flag) {
-        r->Store(f);
+        resistances->Store(f);
     }
 
     flag = 0;
 
-    if (s) {
+    if (stats) {
         flag = 1;
     }
 
     f->Write(&flag, sizeof(int));
 
     if (flag) {
-        s->Store(f);
+        stats->Store(f);
     }
 }
 
@@ -152,20 +152,20 @@ void XBaseObject::Restore(XFile * f)
     f->Read(&flag, sizeof(int));
 
     if (flag) {
-        r = new XResistance();
-        r->Restore(f);
+        resistances = new XResistance();
+        resistances->Restore(f);
     } else {
-        r = nullptr;
+        resistances = nullptr;
     }
 
     flag = 0;
     f->Read(&flag, sizeof(int));
 
     if (flag) {
-        s = new XStats();
-        s->Restore(f);
+        stats = new XStats();
+        stats->Restore(f);
     } else {
-        s = nullptr;
+        stats = nullptr;
     }
 }
 

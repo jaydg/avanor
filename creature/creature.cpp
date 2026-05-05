@@ -603,7 +603,7 @@ int XCreature::GetSpeed()
         speed = (int)(speed * 1.1);
     }
 
-    int str = s->Get(S_STR);
+    int str = stats->Get(S_STR);
 
     if (carried_weight >= str * 120 && carried_weight < str * 200) {
         speed = (int)(speed * 1.1);
@@ -762,7 +762,7 @@ int XCreature::GetPV()
 
 int XCreature::GainAttr(STATS st, int val)
 {
-    int cur = s->Get(st);
+    int cur = stats->Get(st);
     int max = max_stats.Get(st);
 
     if (val > 0) {
@@ -771,7 +771,7 @@ int XCreature::GainAttr(STATS st, int val)
                 val = max - cur;
             }
 
-            s->Modify(st, val);
+            stats->Modify(st, val);
 
             if (isHero()) {
                 switch (st) {
@@ -813,7 +813,7 @@ int XCreature::GainAttr(STATS st, int val)
         }
     } else {
         if (cur - val > 1) {
-            s->Modify(st, val);
+            stats->Modify(st, val);
 
             if (isHero()) {
                 switch (st) {
@@ -860,7 +860,7 @@ int XCreature::GainAttr(STATS st, int val)
 
 int XCreature::GainResist(RESISTANCE rs, int val)
 {
-    r->ChangeResistance(rs, val);
+    resistances->ChangeResistance(rs, val);
 
     if (val > 0) {
         switch (rs) {
@@ -915,14 +915,14 @@ int XCreature::GetStats(STATS st)
 {
     assert(st > S_UNKNOWN && st < S_EOF);
 
-    int res = s->Get(st) + added_stats.Get(st);
+    int res = stats->Get(st) + added_stats.Get(st);
     return res > 0 ? res : 1;
 }
 
 int XCreature::GetResistance(RESISTANCE tr)
 {
-    assert(r);
-    return r->GetResistance(tr) + added_resists.GetResistance(tr);
+    assert(resistances);
+    return resistances->GetResistance(tr) + added_resists.GetResistance(tr);
 
 }
 
@@ -1266,8 +1266,8 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
 
     XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
 
-    int str = s->Get(S_STR);
-    int dex = s->Get(S_DEX);
+    int str = stats->Get(S_STR);
+    int dex = stats->Get(S_DEX);
 
     *range = missile->RNG;
     *hit = dex / 2 + missile->_HIT;
@@ -1799,7 +1799,7 @@ void XCreature::UnCarryItem(XItem * item)
 
 int XCreature::CarryValue(CARRY_STATE cs)
 {
-    int str = s->Get(S_STR) + added_stats.Get(S_STR);
+    int str = stats->Get(S_STR) + added_stats.Get(S_STR);
 
     switch (cs) {
         case CSTATE_NORMAL :
@@ -1847,7 +1847,7 @@ CARRY_STATE XCreature::GetCarryState()
 
 int XCreature::GetVisibleRadius()
 {
-    int perception = s->Get(S_PER);
+    int perception = stats->Get(S_PER);
 
     if (perception < 5) {
         return 3;

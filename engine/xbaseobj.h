@@ -45,8 +45,8 @@ class XBaseObject : public XMapObject
         XDice dice;
         int Compare(XObject * o) override;
 
-        XResistance* r;
-        XStats* s;
+        XResistance* resistances;
+        XStats* stats;
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;

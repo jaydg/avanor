@@ -77,15 +77,15 @@ XHero::XHero(int flag)
 
     PlayerSetup();
 
-    MAX_HP = s->Get(S_TOU) / 2 + 3 + (XGame::isGodMode ? 1000 : 0);
+    MAX_HP = stats->Get(S_TOU) / 2 + 3 + (XGame::isGodMode ? 1000 : 0);
     _HP = GetMaxHP();
 
-    MAX_PP = s->Get(S_MAN) / 2 + 1 + (XGame::isGodMode ? 1000 : 0);
+    MAX_PP = stats->Get(S_MAN) / 2 + 1 + (XGame::isGodMode ? 1000 : 0);
     _PP = GetMaxPP();
 
     base_exp = static_cast<int>(GetCreatureStrength() * 0.6);
 
-    r = new XResistance();
+    resistances = new XResistance();
 
     isDisturb = 0;
     last_char = '5';
@@ -655,8 +655,8 @@ void XHero::InfoList()
         char stat[256];
         vGotoXY(0, i + 3);
         vSetAttr(xBROWN);
-        vPutS(s->GetFullName(static_cast<STATS>(i)));
-        sprintf(stat, "%d", s->Get(static_cast<STATS>(i)));
+        vPutS(stats->GetFullName(static_cast<STATS>(i)));
+        sprintf(stat, "%d", stats->Get(static_cast<STATS>(i)));
         vSetAttr(xLIGHTGRAY);
         vGotoXY(15 - strlen(stat), 3 + i);
         vPutS(stat);
@@ -680,7 +680,7 @@ void XHero::InfoList()
             vPutS(stat);
         }
 
-        tres = s->Get(static_cast<STATS>(i)) + added_stats.Get(static_cast<STATS>(i));
+        tres = stats->Get(static_cast<STATS>(i)) + added_stats.Get(static_cast<STATS>(i));
 
         if (tres <= 0) {
             tres = 1;
@@ -2135,7 +2135,7 @@ void XHero::IncLevel()
     vGetch();
     msgwin.ClrMsg();
 
-    int counter = s->Get(S_LEN) / 5 + 1;
+    int counter = stats->Get(S_LEN) / 5 + 1;
 
     if (counter < 3) {
         counter = 3;

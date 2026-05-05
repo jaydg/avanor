@@ -63,8 +63,8 @@ XMissile::XMissile(ITEM_TYPE _it)
         RNG = 0;
     }
 
-    r->Sub(r);
-    s->Sub(s);
+    resistances->Sub(resistances);
+    stats->Sub(stats);
 
     int rcount = 20;
 

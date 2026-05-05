@@ -40,10 +40,10 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
 
     dice.Setup(cr->dice);
 
-    s = cr->stats_gen.Generate();
-    r = cr->r_gen.Generate();
+    stats = cr->stats_gen.Generate();
+    resistances = cr->r_gen.Generate();
 
-    max_stats.Set(s);
+    max_stats.Set(stats);
 
     XBodyPart::Create(this, cr->body.c_str());
 
@@ -143,30 +143,30 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     XBodyPart * ring2 = GetBodyPart(BP_RING, 1);
 
     if (cr->generation_flags & GFS_SUPRESS_INVIS) {
-        if (neck && neck->Item() && neck->Item()->r->GetResistance(R_INVISIBLE) > 0) {
+        if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
             neck->UnWear()->Invalidate();
         }
 
-        if (ring1 && ring1->Item() && ring1->Item()->r->GetResistance(R_INVISIBLE) > 0) {
+        if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
             ring1->UnWear()->Invalidate();
         }
 
-        if (ring2 && ring2->Item() && ring2->Item()->r->GetResistance(R_INVISIBLE) > 0) {
+        if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
             ring2->UnWear()->Invalidate();
         }
     }
 
     if (cr->generation_flags & GFS_SEE_INVIS) {
         while (true) {
-            if (neck && neck->Item() && neck->Item()->r->GetResistance(R_SEEINVISIBLE)) {
+            if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_SEEINVISIBLE)) {
                 break;
             }
 
-            if (ring1 && ring1->Item() && ring1->Item()->r->GetResistance(R_SEEINVISIBLE)) {
+            if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_SEEINVISIBLE)) {
                 break;
             }
 
-            if (ring2 && ring2->Item() && ring2->Item()->r->GetResistance(R_SEEINVISIBLE)) {
+            if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_SEEINVISIBLE)) {
                 break;
             }
 

@@ -179,10 +179,10 @@ void XItem::PropFill(ITEM_SET is, int val)
     dice.Setup(tx, ty, dice.Z + d.NThrow());
 
     quality = (ITEM_QUALITY)(quality + item_prop[r_val].iq);
-    assert(r == NULL);
-    r = new XResistance(item_prop[r_val].resistance);
-    assert(s == NULL);
-    s = new XStats();
+    assert(resistances == NULL);
+    resistances = new XResistance(item_prop[r_val].resistance);
+    assert(stats == NULL);
+    stats = new XStats();
 }
 
 void XItem::SpecialFill()
@@ -225,8 +225,8 @@ void XItem::SpecialFill()
 
     XResistance xres(ienh_db[r_val].r);
     XStats xst(ienh_db[r_val].s);
-    r->Add(&xres);
-    s->Add(&xst);
+    resistances->Add(&xres);
+    stats->Add(&xst);
 
     brt = ienh_db[r_val].brt;
 }
@@ -308,16 +308,16 @@ int XItem::GetValue()
     int xstats = 0;
     int i;
 
-    if (s)
+    if (stats)
         for (i = S_STR; i < S_EOF; i++) {
-            xstats += s->Get((STATS)i);
+            xstats += stats->Get((STATS)i);
         }
 
     int xresist = 0;
 
-    if (r)
+    if (resistances)
         for (i = R_WHITE; i < R_EOF; i++) {
-            int tr = r->GetResistance((RESISTANCE)i);
+            int tr = resistances->GetResistance((RESISTANCE)i);
 
             if (tr < 10) {
                 xresist += tr * 2;
@@ -368,20 +368,20 @@ void XItem::StatsToString(char* buf)
     char tb[256];
     strcpy(buf, "");
 
-    if (s) {
+    if (stats) {
         strcpy(tb, "{");
         int flag = 0;
 
         for (int i = S_STR; i < S_EOF; i++)
-            if (s->Get((STATS)i) != 0) {
+            if (stats->Get((STATS)i) != 0) {
                 if (flag) {
                     strcat(tb, " ");
                 }
 
-                strcat(tb, s->GetName((STATS)i));
+                strcat(tb, stats->GetName((STATS)i));
                 strcat(tb, ":");
                 char tmpbuf[20];
-                sprintf(tmpbuf, "%d", s->Get((STATS)i));
+                sprintf(tmpbuf, "%d", stats->Get((STATS)i));
                 strcat(tb, tmpbuf);
                 flag++;
             }
@@ -503,8 +503,8 @@ void XItem::Restore(XFile * f)
 
 int XItem::onWear(XCreature * cr)
 {
-    cr->added_stats.Add(s); // modify stats
-    cr->added_resists.Add(r); // modify resist
+    cr->added_stats.Add(stats); // modify stats
+    cr->added_resists.Add(resistances); // modify resist
 
     if (im != IM_SHIELD) {
         cr->added_DV	+= _DV;
@@ -530,8 +530,8 @@ int XItem::onWear(XCreature * cr)
 
 int XItem::onUnWear(XCreature * cr)
 {
-    cr->added_stats.Sub(s); //modify stats;
-    cr->added_resists.Sub(r); //modify resist;
+    cr->added_stats.Sub(stats); //modify stats;
+    cr->added_resists.Sub(resistances); //modify resist;
 
     if (im != IM_SHIELD) {
         cr->added_DV	-= _DV;

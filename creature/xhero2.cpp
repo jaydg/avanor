@@ -172,7 +172,7 @@ void XHero::PlayerSetup()
             ttmb = d.Throw();
             ttm = ttmb;
 
-            s = new XStats(cust_race[ch - 97].stats);
+            stats = new XStats(cust_race[ch - 97].stats);
             max_stats.Set(cust_race[ch - 97].max_stats);
             food_feeling = cust_race[ch - 97].ff;
 
@@ -236,7 +236,7 @@ void XHero::PlayerSetup()
 #endif
         if (ch >= 97 && ch < 97 + 2) {
             stmp = new XStats(cust_gender[ch - 97].stats);
-            s->Add(stmp);
+            stats->Add(stmp);
             delete stmp;
 
             if (ch == 'a') {
@@ -271,12 +271,12 @@ void XHero::PlayerSetup()
 
         if (ch >= 97 && ch < 97 + 8) {
             stmp = new XStats(cust_profession[ch - 97].stats);
-            s->Add(stmp);
+            stats->Add(stmp);
             delete stmp;
 
             for (int ii = S_STR; ii < S_EOF; ii++) {
-                if (s->Get(static_cast<STATS>(ii)) < 1) {
-                    s->SetStat(static_cast<STATS>(ii), 1);
+                if (stats->Get(static_cast<STATS>(ii)) < 1) {
+                    stats->SetStat(static_cast<STATS>(ii), 1);
                 }
             }
 
