@@ -64,7 +64,7 @@ XMissile::XMissile(ITEM_TYPE _it)
     }
 
     resistances->Sub(resistances);
-    stats->Sub(stats);
+    stats->Sub(stats.get());
 
     int rcount = 20;
 

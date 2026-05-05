@@ -36,11 +36,6 @@ void XBaseObject::Invalidate()
 
 XBaseObject::~XBaseObject()
 {
-    if (stats != nullptr) {
-        delete stats;
-        stats = nullptr;
-    }
-
     if (resistances != nullptr) {
         delete resistances;
         resistances = nullptr;
@@ -67,7 +62,7 @@ XBaseObject::XBaseObject(XBaseObject * copy) :
     }
 
     if (copy->stats) {
-        stats = new XStats(copy->stats);
+        stats = std::make_unique<XStats>(copy->stats.get());
     } else {
         stats = nullptr;
     }
@@ -83,7 +78,7 @@ int XBaseObject::Compare(XObject * o)
         && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
         && _HIT == tit->_HIT && dice.X == tit->dice.X
         && dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
-        && resistances->isEqual(tit->resistances) && stats->isEqual(tit->stats)) {
+        && resistances->isEqual(tit->resistances) && stats->isEqual(tit->stats.get())) {
         return 0;
     } else {
         return 1;
@@ -162,7 +157,7 @@ void XBaseObject::Restore(XFile * f)
     f->Read(&flag, sizeof(int));
 
     if (flag) {
-        stats = new XStats();
+        stats = std::make_unique<XStats>();
         stats->Restore(f);
     } else {
         stats = nullptr;

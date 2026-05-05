@@ -46,7 +46,7 @@ class XBaseObject : public XMapObject
         int Compare(XObject * o) override;
 
         XResistance* resistances;
-        XStats* stats;
+        std::unique_ptr<XStats> stats;
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;

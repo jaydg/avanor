@@ -43,7 +43,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     stats = cr->stats_gen.Generate();
     resistances = cr->r_gen.Generate();
 
-    max_stats.Set(stats);
+    max_stats.Set(stats.get());
 
     XBodyPart::Create(this, cr->body.c_str());
 

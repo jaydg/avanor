@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef STATS_H
 #define STATS_H
 
+#include <memory>
+
 #include "engine/global.h"
 #include "helpers/dice.h"
 
@@ -90,7 +92,7 @@ class XStatsGenerator
     public:
         XStatsGenerator();
         void Init(const char* str);
-        XStats* Generate();
+        std::unique_ptr<XStats> Generate();
 };
 
 #endif

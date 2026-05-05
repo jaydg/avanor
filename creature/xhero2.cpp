@@ -172,7 +172,7 @@ void XHero::PlayerSetup()
             ttmb = d.Throw();
             ttm = ttmb;
 
-            stats = new XStats(cust_race[ch - 97].stats);
+            stats = std::make_unique<XStats>(cust_race[ch - 97].stats);
             max_stats.Set(cust_race[ch - 97].max_stats);
             food_feeling = cust_race[ch - 97].ff;
 

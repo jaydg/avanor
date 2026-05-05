@@ -141,9 +141,9 @@ void XStatsGenerator::Init(const char* str)
     }
 }
 
-XStats* XStatsGenerator::Generate()
+std::unique_ptr<XStats> XStatsGenerator::Generate()
 {
-    XStats * s = new XStats();
+    auto s = std::make_unique<XStats>();
 
     for (int i = S_STR; i < S_EOF; i++) {
         s->SetStat(static_cast<STATS>(i), stats[i].Throw());

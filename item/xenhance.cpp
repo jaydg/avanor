@@ -197,7 +197,7 @@ XEnhance::XEnhance(ENHANCE enh)
     d->Setup(is->rng);
     RNG = d->Throw();
     delete d;
-    stats = new XStats(is->s);
+    stats = std::make_unique<XStats>(is->s);
     resistances = new XResistance(is->r);
 
     weight = 3;

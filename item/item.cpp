@@ -182,7 +182,7 @@ void XItem::PropFill(ITEM_SET is, int val)
     assert(resistances == NULL);
     resistances = new XResistance(item_prop[r_val].resistance);
     assert(stats == NULL);
-    stats = new XStats();
+    stats = std::make_unique<XStats>();
 }
 
 void XItem::SpecialFill()
@@ -503,7 +503,7 @@ void XItem::Restore(XFile * f)
 
 int XItem::onWear(XCreature * cr)
 {
-    cr->added_stats.Add(stats); // modify stats
+    cr->added_stats.Add(stats.get()); // modify stats
     cr->added_resists.Add(resistances); // modify resist
 
     if (im != IM_SHIELD) {
@@ -530,7 +530,7 @@ int XItem::onWear(XCreature * cr)
 
 int XItem::onUnWear(XCreature * cr)
 {
-    cr->added_stats.Sub(stats); //modify stats;
+    cr->added_stats.Sub(stats.get()); //modify stats;
     cr->added_resists.Sub(resistances); //modify resist;
 
     if (im != IM_SHIELD) {

@@ -38,12 +38,8 @@ XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("poison:1d1+99 stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99");
-    stats = new XStats("St:1d1+9 Dx:1d1+9 To:1d1+9");
+    stats = std::make_unique<XStats>("St:1d1+9 Dx:1d1+9 To:1d1+9");
     brt = (BRAND_TYPE)(BR_FIRE | BR_COLD | BR_DEMONSLAYER);
     special_property = SPP_NONE;
 }
@@ -70,12 +66,8 @@ XDeathHack::XDeathHack() : XWeapon(IT_LONGDAGGER)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("");
-    stats = new XStats("");
+    stats = std::make_unique<XStats>("");
     brt = (BRAND_TYPE)(BR_COLD | BR_DEMONSLAYER);
     special_property = SPP_NONE;
 }
@@ -103,12 +95,8 @@ XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("poison:0d0+100 stun:0d0+100 confuse:0d0+100 fire:0d0+100 cold:0d0+100");
-    stats = new XStats("St:0d0+10 To:0d0+10");
+    stats = std::make_unique<XStats>("St:0d0+10 To:0d0+10");
     brt = (BRAND_TYPE)(BR_COLD | BR_FIRE | BR_DEMONSLAYER);
     special_property = SPP_NONE;
     avanordefender_guid = guid();
@@ -143,12 +131,8 @@ XForestBrotherCloak::XForestBrotherCloak() : XCloak(IT_CLOAK)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("poison:0d0+20 stun:0d0+20");
-    stats = new XStats("");
+    stats = std::make_unique<XStats>("");
     brt = BR_NONE;
     special_property = SPP_NONE;
 }
@@ -165,12 +149,8 @@ XGreatElementalRing::XGreatElementalRing() : XRing()
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("fire:1d1+79 cold:1d1+79 acid:1d1+79 see_invisible:0d0+20");
-    stats = new XStats("Wi:1d1+4");
+    stats = std::make_unique<XStats>("Wi:1d1+4");
     strcpy(name, "Great Elemental Ring");
 }
 
@@ -193,12 +173,8 @@ XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 see_invisible:0d0+20");
-    stats = new XStats("St:1d1+15");
+    stats = std::make_unique<XStats>("St:1d1+15");
     brt = (BRAND_TYPE)(BR_FIRE | BR_COLD | BR_DEMONSLAYER);
     special_property = SPP_NONE;
 }
@@ -227,12 +203,8 @@ XAvanorCrown::XAvanorCrown() : XCap(IT_CAP)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
-    stats = new XStats("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
+    stats = std::make_unique<XStats>("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
     special_property = SPP_NONE;
 }
 
@@ -260,12 +232,8 @@ XAvanorMitre::XAvanorMitre() : XCap(IT_CAP)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
-    stats = new XStats("Wi:0d0+10");
+    stats = std::make_unique<XStats>("Wi:0d0+10");
     special_property = SPP_NONE;
 }
 
@@ -292,12 +260,8 @@ XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20");
-    stats = new XStats("To:1d1+10");
+    stats = std::make_unique<XStats>("To:1d1+10");
     brt = (BRAND_TYPE)(BR_COLD);
     special_property = SPP_NONE;
 }
@@ -325,12 +289,8 @@ XTorinShield::XTorinShield() : XShield(IT_MEDIUMSHIELD)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
-    stats = new XStats("To:0d0+5");
+    stats = std::make_unique<XStats>("To:0d0+5");
     special_property = SPP_NONE;
 }
 
@@ -358,12 +318,8 @@ XDwarfCrown::XDwarfCrown() : XCap(IT_CAP)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
-    stats = new XStats("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
+    stats = std::make_unique<XStats>("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
     special_property = SPP_NONE;
 }
 
@@ -391,12 +347,8 @@ XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
         delete resistances;
     }
 
-    if (stats) {
-        delete stats;
-    }
-
     resistances = new XResistance("fire:0d0+50");
-    stats = new XStats("");
+    stats = std::make_unique<XStats>("");
     brt = (BRAND_TYPE)(BR_FIRE);
     special_property = SPP_NONE;
 }
