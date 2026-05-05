@@ -34,11 +34,7 @@ XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)
     dice.Setup(4, 5, 10);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("poison:1d1+99 stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99");
+    resistances = std::make_unique<XResistance>("poison:1d1+99 stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99");
     stats = std::make_unique<XStats>("St:1d1+9 Dx:1d1+9 To:1d1+9");
     brt = (BRAND_TYPE)(BR_FIRE | BR_COLD | BR_DEMONSLAYER);
     special_property = SPP_NONE;
@@ -62,11 +58,7 @@ XDeathHack::XDeathHack() : XWeapon(IT_LONGDAGGER)
     dice.Setup(2, 3, 12);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("");
+    resistances = std::make_unique<XResistance>("");
     stats = std::make_unique<XStats>("");
     brt = (BRAND_TYPE)(BR_COLD | BR_DEMONSLAYER);
     special_property = SPP_NONE;
@@ -91,11 +83,7 @@ XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
     dice.Setup(4, 4, 15);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("poison:0d0+100 stun:0d0+100 confuse:0d0+100 fire:0d0+100 cold:0d0+100");
+    resistances = std::make_unique<XResistance>("poison:0d0+100 stun:0d0+100 confuse:0d0+100 fire:0d0+100 cold:0d0+100");
     stats = std::make_unique<XStats>("St:0d0+10 To:0d0+10");
     brt = (BRAND_TYPE)(BR_COLD | BR_FIRE | BR_DEMONSLAYER);
     special_property = SPP_NONE;
@@ -127,11 +115,7 @@ XForestBrotherCloak::XForestBrotherCloak() : XCloak(IT_CLOAK)
     dice.Setup(1, 2, 0);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("poison:0d0+20 stun:0d0+20");
+    resistances = std::make_unique<XResistance>("poison:0d0+20 stun:0d0+20");
     stats = std::make_unique<XStats>("");
     brt = BR_NONE;
     special_property = SPP_NONE;
@@ -145,11 +129,7 @@ void XForestBrotherCloak::toString(char* buf)
 REGISTER_CLASS(XGreatElementalRing);
 XGreatElementalRing::XGreatElementalRing() : XRing()
 {
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("fire:1d1+79 cold:1d1+79 acid:1d1+79 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("fire:1d1+79 cold:1d1+79 acid:1d1+79 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("Wi:1d1+4");
     strcpy(name, "Great Elemental Ring");
 }
@@ -169,11 +149,7 @@ XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
     dice.Setup(1, 12, 10);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("St:1d1+15");
     brt = (BRAND_TYPE)(BR_FIRE | BR_COLD | BR_DEMONSLAYER);
     special_property = SPP_NONE;
@@ -199,11 +175,7 @@ XAvanorCrown::XAvanorCrown() : XCap(IT_CAP)
     dice.Setup(0, 0, 0);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
     special_property = SPP_NONE;
 }
@@ -228,11 +200,7 @@ XAvanorMitre::XAvanorMitre() : XCap(IT_CAP)
     dice.Setup(0, 0, 0);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("Wi:0d0+10");
     special_property = SPP_NONE;
 }
@@ -256,11 +224,7 @@ XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
     dice.Setup(2, 8, 5);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("To:1d1+10");
     brt = (BRAND_TYPE)(BR_COLD);
     special_property = SPP_NONE;
@@ -285,11 +249,7 @@ XTorinShield::XTorinShield() : XShield(IT_MEDIUMSHIELD)
     dice.Setup(0, 0, 0);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("To:0d0+5");
     special_property = SPP_NONE;
 }
@@ -314,11 +274,7 @@ XDwarfCrown::XDwarfCrown() : XCap(IT_CAP)
     dice.Setup(0, 0, 0);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
+    resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5");
     special_property = SPP_NONE;
 }
@@ -343,11 +299,7 @@ XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
     dice.Setup(2, 20, 0);
     RNG = 0;
 
-    if (resistances) {
-        delete resistances;
-    }
-
-    resistances = new XResistance("fire:0d0+50");
+    resistances = std::make_unique<XResistance>("fire:0d0+50");
     stats = std::make_unique<XStats>("");
     brt = (BRAND_TYPE)(BR_FIRE);
     special_property = SPP_NONE;

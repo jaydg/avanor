@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef RESIST_H
 #define RESIST_H
 
+#include <memory>
+
 #include "helpers/dice.h"
 
 enum RESISTANCE {
@@ -109,7 +111,7 @@ class XResistGenerator
     public:
         XResistGenerator();
         void Init(const char* str);
-        XResistance* Generate();
+        std::unique_ptr<XResistance> Generate();
 };
 
 #endif

@@ -39,7 +39,7 @@ class XCookingSet : public XItem
             cooked_item = NULL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
-            resistances = new XResistance();
+            resistances = std::make_unique<XResistance>();
         }
 
         XCookingSet(XCookingSet * copy) : XItem(copy)
@@ -92,7 +92,7 @@ class XPickAxe : public XItem
             im = IM_TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
-            resistances = new XResistance();
+            resistances = std::make_unique<XResistance>();
             dice.Setup(1, 10, 0);
         }
 
@@ -125,7 +125,7 @@ class XEyeOfRaa : public XItem
             im = IM_TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>("Ma:0d0+10 Wi:0d0+10");
-            resistances = new XResistance("air:100");
+            resistances = std::make_unique<XResistance>("air:100");
             dice.Setup(1, 10, 0);
         }
 
@@ -158,7 +158,7 @@ class XAlchemySet : public XItem
             im = IM_TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
-            resistances = new XResistance();
+            resistances = std::make_unique<XResistance>();
         }
 
         XAlchemySet(XAlchemySet * copy) : XItem(copy) {}

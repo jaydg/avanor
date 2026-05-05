@@ -34,14 +34,6 @@ void XBaseObject::Invalidate()
     XMapObject::Invalidate();
 }
 
-XBaseObject::~XBaseObject()
-{
-    if (resistances != nullptr) {
-        delete resistances;
-        resistances = nullptr;
-    }
-}
-
 XBaseObject::XBaseObject(XBaseObject * copy) :
     XMapObject(static_cast<XMapObject *>(copy)),
     _DV(copy->_DV),
@@ -56,7 +48,7 @@ XBaseObject::XBaseObject(XBaseObject * copy) :
     dice(copy->dice)
 {
     if (copy->resistances) {
-        resistances = new XResistance(copy->resistances);
+        resistances = std::make_unique<XResistance>(copy->resistances.get());
     } else {
         resistances = nullptr;
     }
@@ -78,7 +70,7 @@ int XBaseObject::Compare(XObject * o)
         && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
         && _HIT == tit->_HIT && dice.X == tit->dice.X
         && dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
-        && resistances->isEqual(tit->resistances) && stats->isEqual(tit->stats.get())) {
+        && resistances->isEqual(tit->resistances.get()) && stats->isEqual(tit->stats.get())) {
         return 0;
     } else {
         return 1;
@@ -147,7 +139,7 @@ void XBaseObject::Restore(XFile * f)
     f->Read(&flag, sizeof(int));
 
     if (flag) {
-        resistances = new XResistance();
+        resistances = std::make_unique<XResistance>();
         resistances->Restore(f);
     } else {
         resistances = nullptr;

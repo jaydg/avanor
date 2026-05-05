@@ -193,9 +193,9 @@ void XResistGenerator::Init(const char* str)
     }
 }
 
-XResistance* XResistGenerator::Generate()
+std::unique_ptr<XResistance> XResistGenerator::Generate()
 {
-    auto r = new XResistance();
+    auto r = std::make_unique<XResistance>();
 
     for (int i = R_WHITE; i < R_EOF; i++) {
         r->SetResistance(static_cast<RESISTANCE>(i), resist[i].Throw());

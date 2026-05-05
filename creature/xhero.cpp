@@ -85,7 +85,7 @@ XHero::XHero(int flag)
 
     base_exp = static_cast<int>(GetCreatureStrength() * 0.6);
 
-    resistances = new XResistance();
+    resistances = std::make_unique<XResistance>();
 
     isDisturb = 0;
     last_char = '5';

@@ -34,7 +34,6 @@ class XBaseObject : public XMapObject
         XBaseObject();
         void Invalidate() override;
         explicit XBaseObject(XBaseObject * copy);
-        ~XBaseObject() override;
 
         int _DV{}, _PV{}, _HIT{}, RNG;
         int _HP{}, _PP{};
@@ -45,7 +44,7 @@ class XBaseObject : public XMapObject
         XDice dice;
         int Compare(XObject * o) override;
 
-        XResistance* resistances;
+        std::unique_ptr<XResistance> resistances;
         std::unique_ptr<XStats> stats;
 
         void Store(XFile * f) override;
