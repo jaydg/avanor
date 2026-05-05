@@ -290,8 +290,6 @@ int XCreature::DecNutrio()
 
 int XCreature::Run()
 {
-    AddRef();
-
     if (action_data.action == A_EAT) {
         continueEat();
     } else if (action_data.action == A_READ) {
@@ -321,8 +319,6 @@ int XCreature::Run()
     if (ttm <= 0 && isValid()) {
         ttm += GetSpeed();
     }
-
-    Release();
 
     return 1;
 }
