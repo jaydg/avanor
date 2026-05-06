@@ -153,7 +153,7 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
 
 int XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
 {
-    for (auto& existing : ml)
+    for (const auto& existing : ml)
     {
         if (existing->Compare(mod.get()) == 0)
         {
@@ -175,7 +175,7 @@ int XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
     return 1;
 }
 
-int XModifier::Remove(MODIFIER_TYPE mdt, XCreature* owner)
+int XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
 {
     bool first = true;
 
@@ -201,14 +201,14 @@ int XModifier::Remove(MODIFIER_TYPE mdt, XCreature* owner)
     return 1;
 }
 
-void XModifier::toString(char* buf)
+void XModifier::toString(char* buf) const
 {
     strcpy(buf, "");
 
     int xval = Get(MOD_WOUND);
 
     if (xval > 0) {
-        XModWound * tmp = new XModWound(0, nullptr);
+        const auto tmp = new XModWound(0, nullptr);
         strcat(buf, tmp->GetDisplayName(xval));
         strcat(buf, " ");
 
@@ -216,7 +216,7 @@ void XModifier::toString(char* buf)
     }
 
     if (Get(MOD_POISON) > 0) {
-        XModPoison * tmp = new XModPoison(0, nullptr);
+        const auto tmp = new XModPoison(0, nullptr);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
 
@@ -226,7 +226,7 @@ void XModifier::toString(char* buf)
     xval = Get(MOD_STUN);
 
     if (xval > 0) {
-        XModStun * tmp = new XModStun(0, nullptr);
+        const auto tmp = new XModStun(0, nullptr);
         strcat(buf, tmp->GetDisplayName(xval));
         strcat(buf, " ");
 
@@ -234,7 +234,7 @@ void XModifier::toString(char* buf)
     }
 
     if (Get(MOD_CONFUSE) > 0) {
-        XModConfuse * tmp = new XModConfuse(0, nullptr);
+        const auto tmp = new XModConfuse(0, nullptr);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
 
@@ -242,7 +242,7 @@ void XModifier::toString(char* buf)
     }
 
     if (Get(MOD_DISEASE) > 0) {
-        XModDisease * tmp = new XModDisease(0, nullptr);
+        const auto tmp = new XModDisease(0, nullptr);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
 
@@ -250,7 +250,7 @@ void XModifier::toString(char* buf)
     }
 
     if (Get(MOD_PARALYSE) > 0) {
-        XModParalyse * tmp = new XModParalyse(0, nullptr);
+        const auto tmp = new XModParalyse(0, nullptr);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
 
@@ -258,7 +258,7 @@ void XModifier::toString(char* buf)
     }
 
     if (Get(MOD_SEE_INVISIBLE) > 0) {
-        XModSeeInvisible * tmp = new XModSeeInvisible(0, nullptr);
+        auto tmp = new XModSeeInvisible(0, nullptr);
         strcat(buf, tmp->GetDisplayName(1));
         strcat(buf, " ");
 
@@ -287,7 +287,7 @@ int XModifier::Run(XCreature* cr)
 }
 
 // warning! this function return val
-int XModifier::Get(MODIFIER_TYPE mt)
+int XModifier::Get(const MODIFIER_TYPE mt) const
 {
     int val = 0;
 

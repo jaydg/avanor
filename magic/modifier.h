@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
-#include "engine/xobject.h"
 #include "magic/modifiers.h"
 
 class XCreature;
@@ -33,12 +32,19 @@ class XModifier
 {
     public:
         XModifier() = default;
+
         int Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner);
+
         int Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr = nullptr);
+
         int Remove(MODIFIER_TYPE mdt, XCreature* owner);
-        int Get(MODIFIER_TYPE mt); //return val
+
+        // return val
+        [[nodiscard]] int Get(MODIFIER_TYPE mt) const;
+
         int Run(XCreature* cr);
-        void toString(char* buf);
+
+        void toString(char* buf) const;
 
         void Store(XFile* f);
         void Restore(XFile* f, XCreature* owner);
