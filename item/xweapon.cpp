@@ -162,7 +162,7 @@ void XWeapon::toString(char* buf)
         }
     }
 
-    const char* brand_templ = NULL;
+    const char* brand_templ = nullptr;
 
     char zbuf[256] = "%s";
 
@@ -229,7 +229,7 @@ void XWeapon::toString(char* buf)
 
 const char* XWeapon::GetTemplate(unsigned int mask, int isRight)
 {
-    const char* brand_templ = NULL;
+    const char* brand_templ = nullptr;
 
     for (int j = 0; j < weapon_brand_name_db_size; j++) {
         if ((weapon_brand_name_db[j].brt ^ mask) == 0) {

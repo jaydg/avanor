@@ -48,7 +48,7 @@ XSkill* XSkills::GetSkill(XSkill::Skill skt)
     try {
         return skills.at(skt);
     } catch (const std::out_of_range& ex) {
-        return NULL;
+        return nullptr;
     }
 }
 

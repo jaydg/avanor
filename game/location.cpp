@@ -47,13 +47,13 @@ REGISTER_CLASS(XLocation);
 XLocation::XLocation(LOCATION location)
 {
     visited_by_hero = 0;
-    map = NULL;	//map will created by XBuilder...
+    map = nullptr;	//map will created by XBuilder...
 
     for (int i = 0; i < MAX_PLACES; i++) {
-        places[i] = NULL;
+        places[i] = nullptr;
     }
 
-    assert(Game.locations[location] == NULL);
+    assert(Game.locations[location] == nullptr);
     ln = location;
     Game.locations[location] = this;
 
@@ -67,7 +67,7 @@ void XLocation::Invalidate()
     for (int i = 0; i < MAX_PLACES; i++)
         if (places[i]) {
             places[i]->Invalidate();
-            places[i] = NULL;
+            places[i] = nullptr;
         }
 
     delete map; // map must be the last!!!!!
@@ -94,7 +94,7 @@ int XLocation::Run()
 void XLocation::AddPlace(XAnyPlace * pl)
 {
     for (int i = 0; i < MAX_PLACES; i++)
-        if (places[i] == NULL) {
+        if (places[i] == nullptr) {
             places[i] = pl;
             return;
         }
@@ -125,7 +125,7 @@ void XLocation::GetFreeXY(XPoint * pt, XRect * area)
         tx = vRand() % dx + bx;
         ty = vRand() % dy + by;
 
-        if (map->XGetMovability(tx, ty) == 0 && map->GetSpecial(tx, ty) == NULL) {
+        if (map->XGetMovability(tx, ty) == 0 && map->GetSpecial(tx, ty) == nullptr) {
             pt->x = tx;
             pt->y = ty;
             return;
@@ -302,7 +302,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
 XCreature* XLocation::NewCreature(CREATURE_NAME cn)
 {
     XPoint pt;
-    GetFreeXY(&pt, NULL);
+    GetFreeXY(&pt, nullptr);
     return NewCreature(cn, pt.x, pt.y);
 }
 
@@ -325,7 +325,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, u
 XCreature* XLocation::NewCreature(CREATURE_CLASS crc)
 {
     XPoint pt;
-    GetFreeXY(&pt, NULL);
+    GetFreeXY(&pt, nullptr);
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
 
     Game.NewCreature(cr, pt.x, pt.y, this);
@@ -470,22 +470,22 @@ XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, i
     XPoint pt;
 
     if (way_up) {
-        NewWay((LOCATION)way_up, STW_UP, NULL);
+        NewWay((LOCATION)way_up, STW_UP, nullptr);
     }
 
     if (way_down) {
-        NewWay((LOCATION)way_down, STW_DOWN, NULL);
+        NewWay((LOCATION)way_down, STW_DOWN, nullptr);
     }
 
     Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
 }
 
-XLocation* XLocation::current_location = NULL;
-XCreature* XLocation::last_creature = NULL;
+XLocation* XLocation::current_location = nullptr;
+XCreature* XLocation::last_creature = nullptr;
 int XLocation::pat_offs_x = 0;
 int XLocation::pat_offs_y = 0;
 
-LOCATION_PATTERN XLocation::current_pattern = {NULL, 0, 0};
+LOCATION_PATTERN XLocation::current_pattern = {nullptr, 0, 0};
 std::vector<PALETTE_MAP> XLocation::pattern_translation;
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
@@ -526,7 +526,7 @@ int XLocation::Creature(lua_State * L)
 {
     int crn = lua_tonumber(L, 1);
     int n = lua_gettop(L);
-    XCreature * cr = NULL;
+    XCreature * cr = nullptr;
 
     if (n == 1) {
         cr = current_location->NewCreature((CREATURE_NAME)crn);
@@ -740,7 +740,7 @@ int XLocation::OuterObject(lua_State * L)
     int tc;
     const char* tv;
     const char* subscr;
-    const char* event = NULL;
+    const char* event = nullptr;
 
     if (n < 5) {
         XPoint pt;
@@ -834,7 +834,7 @@ int XLocation::EventPlace(lua_State * L)
 {
     int n = lua_gettop(L);
     XRect area(0, 0, current_location->map->len, current_location->map->hgt);
-    const char* event = NULL;
+    const char* event = nullptr;
 
     if (n > 1) {
         area.left = lua_tonumber(L, 1);
@@ -988,7 +988,7 @@ int XLocation::FindCreature(lua_State * L)
             }
         }
 
-    lua_pushlightuserdata(L, NULL);
+    lua_pushlightuserdata(L, nullptr);
     return 1;
 }
 
@@ -1207,7 +1207,7 @@ int XLocation::SetCompanion(lua_State * L)
         slave->xai->companion = owner;
         slave->xai->companion_command = CC_FOLLOW;
     } else {
-        slave->xai->companion = NULL;
+        slave->xai->companion = nullptr;
     }
 
     return 0;
@@ -1300,7 +1300,7 @@ int XLocation::QuestStatus(lua_State * L)
 }
 
 
-XFile* XLocation::svg_file = NULL;
+XFile* XLocation::svg_file = nullptr;
 int XLocation::StoreInt(lua_State * L)
 {
     int tx = lua_tonumber(L, 1);
@@ -1329,7 +1329,7 @@ int XLocation::StoreObject(lua_State * L)
 
 int XLocation::RestoreObject(lua_State * L)
 {
-    XObject * p = RestorePointer(svg_file, NULL);
+    XObject * p = RestorePointer(svg_file, nullptr);
     lua_pushlightuserdata(L, p);
 
     return 1;
@@ -1553,7 +1553,7 @@ int XLocation::CRCOD(lua_State * L)
 #define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); luaL_dostring(L, buf); }
 #define LUA_REG_ALTNAME(name, value) { char buf[256]; sprintf(buf, #name "=%d", value); luaL_dostring(L, buf); }
 
-lua_State* XLocation::L = NULL;
+lua_State* XLocation::L = nullptr;
 
 void XLocation::CommonLuaInitialization()
 {

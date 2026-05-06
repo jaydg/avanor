@@ -747,7 +747,7 @@ void XOuterObject::Restore(XFile* f)
         onEventLua = new char [sz];
         f->Read(onEventLua, sz);
     } else {
-        onEventLua = NULL;
+        onEventLua = nullptr;
     }
 
     if (onEventLua) {

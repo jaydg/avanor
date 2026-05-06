@@ -174,7 +174,7 @@ class XLocation : public XObject
         }
 
         XMap* map;
-        void GetFreeXY(XPoint * pt, XRect * area = NULL);
+        void GetFreeXY(XPoint * pt, XRect * area = nullptr);
         void AddPlace(XAnyPlace * pl);
 
         virtual void Store(XFile * f);
@@ -203,7 +203,7 @@ class XLocation : public XObject
         XCreature* NewCreature(CREATURE_CLASS crc);
         XCreature* NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
-        XStairWay* NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area = NULL); //creates way at random place
+        XStairWay* NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
         XStairWay* NewWay(int x, int y, LOCATION target_ln, STAIRWAY_TYPE s_type);
 
         //Location Script Language

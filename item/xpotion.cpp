@@ -176,7 +176,7 @@ POTION_REC* POTION_REC::GetRec(POTION_NAME pn)
             return &potion_descr[i];
         }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -188,7 +188,7 @@ XPotion::XPotion(POTION_NAME _pn)
         pn = _pn;
     }
 
-    pdescr = NULL;
+    pdescr = nullptr;
 
     for (int i = 0; i < PN_RANDOM; i++)
         if (potion_descr[i].pn == pn) {
@@ -495,7 +495,7 @@ void XPotion::Restore(XFile * f)
     XItem::Restore(f);
     f->Read(&pn, sizeof(POTION_NAME));
 
-    pdescr = NULL;
+    pdescr = nullptr;
 
     for (int i = 0; i < PN_RANDOM; i++)
         if (potion_descr[i].pn == pn) {
@@ -560,10 +560,10 @@ void XAlchemy::GetReceptionName(char* buf, POTION_NAME pn1, POTION_NAME pn2, POT
 
 void XAlchemy::BuildReception(int al_lvl)
 {
-    POTION_NAME * pTableSrc = NULL;
+    POTION_NAME * pTableSrc = nullptr;
     int tbl_src = GetPotionCount(al_lvl, &pTableSrc);
 
-    POTION_NAME * pTableDest = NULL;
+    POTION_NAME * pTableDest = nullptr;
     int tbl_dest = GetPotionCount(al_lvl + 1, &pTableDest);
 
     int* tbl = new int[tbl_src * tbl_src];

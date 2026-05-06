@@ -111,7 +111,7 @@ class XStandardAI
         virtual void onDie(XCreature * killer);
         virtual void onSteal(XCreature * rogue);
 
-        virtual int Chat(XCreature * chatter = NULL, const char* msg = NULL);
+        virtual int Chat(XCreature * chatter = nullptr, const char* msg = nullptr);
         virtual int onGiveItem(XCreature * giver, XItem * item);
         virtual int GetTargetPos(XPoint * pt);
 
@@ -165,7 +165,7 @@ class XStandardAI
         int DrinkPotion();
         int PickUpItems();
 
-        int MoveTo(int x, int y, XLocation * l = NULL);
+        int MoveTo(int x, int y, XLocation * l = nullptr);
 
 
         int TryToRunAway(); //creature tryes to run away from attacker... if can

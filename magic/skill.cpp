@@ -184,7 +184,7 @@ int XSkill::UseSteal(XCreature * user)
             XCreature * cr = user->l->map->GetMonster(user->x + pt.x, user->y + pt.y);
             int flag = 0;
 
-            if (cr == NULL) {
+            if (cr == nullptr) {
                 XAnyPlace * pl = user->l->map->GetPlace(user->x + pt.x, user->y + pt.y);
 
                 if (pl) {
@@ -262,7 +262,7 @@ struct TRAP_CREATE_REC {
     {"Pit",	false,	8, 0,	IT_PICKAXE},
     {"Acid Bolt trap",	true,	10, SPELL_ACID_BOLT,	0},
     {"Spear Pit",	false,	12, IT_SHORTSPEAR,	IT_PICKAXE},
-    {NULL, false, 1000, 0, 0}
+    {nullptr, false, 1000, 0, 0}
 };
 
 
@@ -334,7 +334,7 @@ int XSkill::UseCreate(XCreature * user)
         }
     } else {
         // this trap created from items...
-        XItem * item = NULL;
+        XItem * item = nullptr;
 
         if (trap_create_rec[ch].var == IT_ARROW) {
             item = user->SelectItem(&TrapArrowsFiltr, true);
@@ -349,7 +349,7 @@ int XSkill::UseCreate(XCreature * user)
                     user->sk->UseSkill(XSkill::Skill::CREATETRAP, 20);
                     msgwin.Add("You have successfuly created a trap!");
                 } else if (trap_create_rec[ch].var == 0) {
-                    new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_PIT, user, NULL);
+                    new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_PIT, user, nullptr);
                     user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
                     msgwin.Add("You have successfuly created a trap!");
                 }

@@ -308,7 +308,7 @@ int XCreature::continueUseItem()
 
     if (res != CONTINUE) {
         action_data.action = A_MOVE;
-        action_data.item = NULL;
+        action_data.item = nullptr;
     }
 
     return 1;

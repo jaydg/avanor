@@ -52,7 +52,7 @@ class XItem : public XBaseObject
         virtual XObject* MakeCopy()
         {
             assert(0);
-            return NULL;
+            return nullptr;
         }
 
         virtual void Invalidate();
@@ -123,7 +123,7 @@ class XItem : public XBaseObject
         void UnCarry();
 
     protected:
-        void GetFullName(char* buf, const char* templ = NULL);
+        void GetFullName(char* buf, const char* templ = nullptr);
         void GetArtifactName(char* buf, const char* real_name);
 };
 

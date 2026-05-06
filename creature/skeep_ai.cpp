@@ -43,7 +43,7 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
     SetShop(_shop);
     _shop->SetShopkeeper(shopkeeper);
 
-    debt.debtor = NULL;
+    debt.debtor = nullptr;
     debt.debtor_sum = 0;
     debt.turn_count = 0;
     debt.debtor_leave_shop = 0;
@@ -60,8 +60,8 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
 
 void XShopKeeperAI::Invalidate()
 {
-    shop = NULL;
-    debt.debtor = NULL;
+    shop = nullptr;
+    debt.debtor = nullptr;
 
     for (auto item: debt.unpaid_items)
         item->Invalidate();
@@ -177,7 +177,7 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
                 money_to_add = price - (int)debt.debtor_sum;
                 RemovePersonalEnemy(debt.debtor);
                 debt.debtor_sum = 0;
-                debt.debtor = NULL;
+                debt.debtor = nullptr;
                 debt.debtor_leave_shop = 0;
 
                 if (money_to_add == 0) {
@@ -257,7 +257,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 
             if (debt.debtor_sum < 1) {
                 RemovePersonalEnemy(debt.debtor);
-                debt.debtor = NULL;
+                debt.debtor = nullptr;
                 debt.debtor_sum = 0;
                 debt.debtor_leave_shop = 0;
                 debt.debtor_add_value = 0;

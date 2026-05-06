@@ -179,7 +179,7 @@ void XObject::InvalidateAllObjects()
 void XObject::StorePointer(XFile * f, XObject * p)
 {
     // Default to storing -1 to show that we later
-    // need to restore this pointer value as NULL
+    // need to restore this pointer value as nullptr
     long guid = -1;
 
     if (p != nullptr) {

@@ -35,7 +35,7 @@ XMapObject::XMapObject(XMapObject * copy) :
 
 void XMapObject::Invalidate()
 {
-    SetLocation(NULL);
+    SetLocation(nullptr);
     XObject::Invalidate();
 }
 

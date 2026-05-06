@@ -32,7 +32,7 @@ XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
     ai_flag = AIF_NONE; //(AI_FLAG)(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP);
 
     enemy_class = CR_ALL;
-    last_moved_way = NULL;
+    last_moved_way = nullptr;
 
     companion_command = CC_NONE;
     invisible_hunting_mode = 0;
@@ -43,10 +43,10 @@ XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
 
 XStandardAI::~XStandardAI()
 {
-    ai_owner = NULL;
+    ai_owner = nullptr;
 
     for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
-        personal_enemy[i] = NULL;
+        personal_enemy[i] = nullptr;
     }
 }
 
@@ -56,7 +56,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
     XCreature * tgt = ai_owner->l->map->GetMonster(j, i);
 
     if (tgt && !ai_owner->isCreatureVisible(tgt)) {
-        tgt = NULL;
+        tgt = nullptr;
     }
 
     if (tgt && w < enemy_dist && w > 0 && isEnemy(tgt)) {
@@ -106,7 +106,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
 void XStandardAI::Move()
 {
     // initializing variables
-    enemy = NULL;
+    enemy = nullptr;
     enemy_dist = 10000;
     item_dist = 10000;
     item_x = 0;
@@ -153,7 +153,7 @@ void XStandardAI::Move()
         if (ordered_enemy && ordered_enemy->isValid()) {
             enemy = ordered_enemy;
         } else {
-            ordered_enemy = NULL;
+            ordered_enemy = nullptr;
             companion_command = CC_NONE;
         }
     }
@@ -181,7 +181,7 @@ void XStandardAI::Move()
         //do nothing....
     } else if (last_enemy) {
         if (!MoveTo(last_enemy->x, last_enemy->y, last_enemy->l)) {
-            last_enemy = NULL;
+            last_enemy = nullptr;
         }
     } else if (ai_flag & AIF_EXECUTE_SCRIPT) {
         //execute script when nothing to do
@@ -651,7 +651,7 @@ XStairWay* RecursiveWayFound(XLocation * tl, XLocation * tgt_l)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 XStairWay* RWayFound(XLocation * tl, XLocation * tgt_l)
@@ -1005,7 +1005,7 @@ void XStandardAI::RemovePersonalEnemy(XCreature * cr)
 {
     for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
         if (personal_enemy[i].get() == cr) {
-            personal_enemy[i] = NULL;
+            personal_enemy[i] = nullptr;
             return;
         }
     }

@@ -100,7 +100,7 @@ class XClassInfo
             name = _name;
             pClassCreator = p;
             pClassNew = n;
-            next = NULL;
+            next = nullptr;
         }
 
         std::string name;
@@ -313,7 +313,7 @@ class XObject
                 key_type key;
 
                 read += f->Read(&key, sizeof(key_type));
-                map[key] = static_cast<val_type>(RestorePointer(f, NULL));
+                map[key] = static_cast<val_type>(RestorePointer(f, nullptr));
             }
 
             return read;
@@ -327,11 +327,11 @@ template<class TYPE> class XPtr
         XPtr(const XPtr<TYPE> &);
         TYPE* get_with_check() const;
     public:
-        XPtr() : p(NULL) { }
+        XPtr() : p(nullptr) { }
 
         XPtr(TYPE * _p) : p(_p)
         {
-            if (p != NULL) {
+            if (p != nullptr) {
                 p->AddRef();
             }
         }
@@ -347,7 +347,7 @@ template<class TYPE> class XPtr
 
         operator TYPE * () const
         {
-            return (p == NULL) ? NULL : get_with_check();
+            return (p == nullptr) ? nullptr : get_with_check();
         }
 
         TYPE* get() const
@@ -366,7 +366,7 @@ template<class TYPE> class XPtr
 
 template<class TYPE> XPtr<TYPE>::~XPtr()
 {
-    if (p != NULL) {
+    if (p != nullptr) {
         p->Release();
     }
 }
@@ -377,13 +377,13 @@ template<class TYPE> void XPtr<TYPE>::operator=(TYPE * _p)
         return;
     }
 
-    if (p != NULL) {
+    if (p != nullptr) {
         p->Release();
     }
 
     p = (XObject*)_p;
 
-    if (p != NULL) {
+    if (p != nullptr) {
         p->AddRef();
     }
 }
@@ -395,8 +395,8 @@ template<class TYPE> TYPE* XPtr<TYPE>::get_with_check() const
     }
 
     p->Release();
-    p = NULL;
-    return NULL;
+    p = nullptr;
+    return nullptr;
 }
 
 template<class TYPE> void XPtr<TYPE>::Store(XFile * f) const
@@ -406,14 +406,14 @@ template<class TYPE> void XPtr<TYPE>::Store(XFile * f) const
 
 template<class TYPE> void XPtr<TYPE>::Restore(XFile * f)
 {
-    assert(p == NULL);
+    assert(p == nullptr);
     p = XObject::RestorePointer(f, this);
 
-    if (p != NULL) {
+    if (p != nullptr) {
         p->AddRef();
     }
 
-    assert(p == NULL || dynamic_cast<TYPE*>(p));
+    assert(p == nullptr || dynamic_cast<TYPE*>(p));
 }
 
 #endif

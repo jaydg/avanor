@@ -42,7 +42,7 @@ XItem::XItem()
     dice.Setup("0d0");
     special_number = -1;
     brt = BR_NONE;
-    owner = NULL;
+    owner = nullptr;
 }
 
 void XItem::Invalidate()
@@ -179,9 +179,9 @@ void XItem::PropFill(ITEM_SET is, int val)
     dice.Setup(tx, ty, dice.Z + d.NThrow());
 
     quality = (ITEM_QUALITY)(quality + item_prop[r_val].iq);
-    assert(resistances == NULL);
+    assert(resistances == nullptr);
     resistances = std::make_unique<XResistance>(item_prop[r_val].resistance);
-    assert(stats == NULL);
+    assert(stats == nullptr);
     stats = std::make_unique<XStats>();
 }
 
@@ -581,7 +581,7 @@ _ITEMPROP* XItem::GetMaterial(int index)
 
 void XItem::Drop(XLocation * location, int _x, int _y)
 {
-    SetOwner(NULL);
+    SetOwner(nullptr);
     SetLocation(location);
     l->map->PutItem(_x, _y, this);
 }
@@ -591,7 +591,7 @@ bool XItem::SetOwner(XCreature * new_owner)
     owner = new_owner;
 
     if (owner) {
-        SetLocation(NULL);
+        SetLocation(nullptr);
     }
 
     return true;

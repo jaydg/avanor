@@ -169,7 +169,7 @@ enum DAMAGE_FLAGS {
 };
 
 struct DAMAGE_DATA_EX {
-    XCreature* attacker;       // who is inflicting damage (to increase exp). can be NULL
+    XCreature* attacker;       // who is inflicting damage (to increase exp). can be nullptr
     const char* attack_name;   // Attacking item (e.g. Arrow, Bolt of Fire)
     int damage;                // supposed damage
     int attack_HIT;            // the target can avoid attack.

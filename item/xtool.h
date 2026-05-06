@@ -36,7 +36,7 @@ class XCookingSet : public XItem
             value = 150;
             weight = 100;
             im = IM_TOOL;
-            cooked_item = NULL;
+            cooked_item = nullptr;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
             resistances = std::make_unique<XResistance>();
@@ -44,7 +44,7 @@ class XCookingSet : public XItem
 
         XCookingSet(XCookingSet * copy) : XItem(copy)
         {
-            assert(cooked_item == NULL);
+            assert(cooked_item == nullptr);
         }
 
         virtual XObject* MakeCopy()

@@ -34,7 +34,7 @@ extern "C"
 }
 
 // a creature which is currently being displayed
-XCreature* XCreature::main_creature = NULL;
+XCreature* XCreature::main_creature = nullptr;
 
 void ACTION_DATA::Store(XFile * f)
 {
@@ -88,7 +88,7 @@ XCreature::XCreature()
     tactics = TS_NORMAL;
     group_id = GID_NONE;
     food_feeling = FF_NORMAL;
-    event_handler = NULL;
+    event_handler = nullptr;
 }
 
 void XCreature::Invalidate()
@@ -103,18 +103,18 @@ void XCreature::Invalidate()
     }
 
     delete sk;
-    sk = NULL;
+    sk = nullptr;
 
     if (md) {
         delete md;
-        md = NULL;
+        md = nullptr;
     }
 
     delete m;
-    m = NULL;
+    m = nullptr;
 
     delete wsk;
-    wsk = NULL;
+    wsk = nullptr;
 
     delete xai.release();
 
@@ -239,7 +239,7 @@ int XCreature::stopAction()
     }
 
     action_data.action = A_MOVE;
-    action_data.item = NULL;
+    action_data.item = nullptr;
     isDisturb = 0; //prevents hero to continue automove when attaked by ghosts...
     return 1;
 }
@@ -252,7 +252,7 @@ int XCreature::continueEat()
 
     if (res != 2) {
         action_data.action = A_MOVE;
-        action_data.item = NULL;
+        action_data.item = nullptr;
     }
 
     return 1;
@@ -281,7 +281,7 @@ int XCreature::DecNutrio()
     nutrio -= nutrio_speed;
 
     if (nutrio < 0) {
-        Die(NULL);
+        Die(nullptr);
         return 0;
     }
 
@@ -1168,7 +1168,7 @@ XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
     }
 
     assert(0);
-    return NULL;
+    return nullptr;
 }
 
 const char* XCreature::GetWoundMsg(int flag)
@@ -1445,7 +1445,7 @@ XItem* XCreature::GetItem(BODY_PART bp, int count)
     if (xbp) {
         return xbp->Item();
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -1475,7 +1475,7 @@ int XCreature::continueRead()
         book->UnCarry();
         book->Invalidate();
         action_data.action = A_MOVE;
-        action_data.item = NULL;
+        action_data.item = nullptr;
 
         if (vRand(5) == 0) {
             GainAttr(S_LEN, 1);
@@ -1682,7 +1682,7 @@ void XCreature::Restore(XFile * f)
         event_handler = new char [sz];
         f->Read(event_handler, sz);
     } else {
-        event_handler = NULL;
+        event_handler = nullptr;
     }
 
     if (event_handler && strlen(event_handler)) {
@@ -1794,7 +1794,7 @@ void XCreature::UnCarryItem(XItem * item)
         carried_weight -= item->weight * item->quantity;
     }
 
-    item->SetOwner(NULL);
+    item->SetOwner(nullptr);
 }
 
 int XCreature::CarryValue(CARRY_STATE cs)

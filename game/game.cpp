@@ -48,7 +48,7 @@ int XGame::current_location = 0;
 XGame::XGame()
 {
     for (int i = 0; i < L_EOF; i++)	{
-        locations[i] = NULL;
+        locations[i] = nullptr;
     }
 }
 
@@ -57,7 +57,7 @@ XGame::~XGame()
     for (int i = 0; i < L_EOF; i++) {
         if (locations[i]) {
             locations[i]->Invalidate();
-            locations[i] = NULL;
+            locations[i] = nullptr;
         }
     }
 }

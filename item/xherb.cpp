@@ -185,7 +185,7 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
     color = herbs[herb_index].color;
 
     strcpy(name, herbs[herb_index].herb_name);
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     Game.Scheduler.Add(this);
 }
@@ -257,7 +257,7 @@ int XHerbBush::Run()
 
     if (N < 2 || N > 3) {
         if (--herb_strength <= 0) {
-            l->map->SetSpecial(x, y, NULL);
+            l->map->SetSpecial(x, y, nullptr);
             Invalidate();
             return 0;
         }
@@ -308,7 +308,7 @@ XObject* XHerbBush::Pick(XCreature * picker)
     picker->sk->UseSkill(XSkill::Skill::HERBALISM);
 
     if (--herb_strength <= 0) {
-        l->map->SetSpecial(x, y, NULL);
+        l->map->SetSpecial(x, y, nullptr);
         Invalidate();
     }
 
@@ -337,7 +337,7 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
     color = herbs[mush_index].color;
 
     strcpy(name, herbs[mush_index].herb_name);
-    assert(l->map->GetSpecial(x, y) == NULL);
+    assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     Game.Scheduler.Add(this);
 }
@@ -357,7 +357,7 @@ int XMushSpawn::Run()
             msgwin.Add("Suddenly mushroom dissapered in the small cloud of spores.");
         }
 
-        l->map->SetSpecial(x, y, NULL);
+        l->map->SetSpecial(x, y, nullptr);
         Invalidate();
         return 0;
     }
@@ -380,7 +380,7 @@ void XMushSpawn::Restore(XFile * f)
 XObject* XMushSpawn::Pick(XCreature * picker)
 {
     picker->sk->UseSkill(XSkill::Skill::HERBALISM);
-    l->map->SetSpecial(x, y, NULL);
+    l->map->SetSpecial(x, y, nullptr);
     Invalidate();
     XHerb * it = new XHerb(mush_index);
     it->Identify(1);

@@ -50,7 +50,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
             if (cr->isHero()) {
                 XItem * corpse = cr->SelectItem(CorpseFiltr);
 
-                if (corpse == NULL) {
+                if (corpse == nullptr) {
                     return FAIL;
                 }
 
@@ -99,7 +99,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
                     }
                 }
 
-                cooked_item = NULL;
+                cooked_item = nullptr;
                 return SUCCESS;
             } else {
                 return CONTINUE;
@@ -111,7 +111,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
             XCorpse * corpse = (XCorpse*)cooked_item.get();
             corpse->roating_stopped = 0;
             cr->contain.insert(corpse);
-            cooked_item = NULL;
+            cooked_item = nullptr;
             break;
     }
 
@@ -132,7 +132,7 @@ void XCookingSet::Restore(XFile * f)
 
 void XCookingSet::Invalidate()
 {
-    cooked_item = NULL;
+    cooked_item = nullptr;
     XItem::Invalidate();
 }
 
@@ -243,7 +243,7 @@ RESULT XAlchemySet::onUse(USE_ITEM_STATE uis, XCreature * cr)
 {
     XHerb * herb = (XHerb*)cr->SelectItem(RootsFiltr);
 
-    if (herb == NULL) {
+    if (herb == nullptr) {
         return FAIL;
     }
 

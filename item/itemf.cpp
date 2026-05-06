@@ -117,5 +117,5 @@ XItem* XItemFactory::CreateItem(ITEM_MASK im, ITEM_TYPE it)
     }
 
     assert(0);
-    return NULL;
+    return nullptr;
 }

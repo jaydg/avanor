@@ -44,7 +44,7 @@ _SIMPLE_RATION rations_db[ration_db_sz] = {
 
 XRation::XRation(ITEM_TYPE _it) : XAnyFood()
 {
-    _SIMPLE_RATION * ration = NULL;
+    _SIMPLE_RATION * ration = nullptr;
 
     if (_it == IT_RANDOM) {
         int rn = vRand() % ration_db_sz;

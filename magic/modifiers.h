@@ -63,7 +63,7 @@ class XBasicModifier
         XBasicModifier() {}
 
     public:
-        XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = NULL);
+        XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = nullptr);
 
         ~XBasicModifier() {
             setter = nullptr;
@@ -142,7 +142,7 @@ class XBasicModifier
 class XModWound : public XBasicModifier
 {
     public:
-        XModWound(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_WOUND, _val, _cr) {}
+        XModWound(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_WOUND, _val, _cr) {}
 
         XModWound()
         {
@@ -200,7 +200,7 @@ class XModWound : public XBasicModifier
 class XModPoison : public XBasicModifier
 {
     public:
-        XModPoison(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_POISON, _val * 10, _cr) {}
+        XModPoison(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_POISON, _val * 10, _cr) {}
 
         XModPoison()
         {
@@ -239,7 +239,7 @@ class XModPoison : public XBasicModifier
 class XModConfuse : public XBasicModifier
 {
     public:
-        XModConfuse(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_CONFUSE, _val, _cr) {}
+        XModConfuse(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_CONFUSE, _val, _cr) {}
 
         XModConfuse()
         {
@@ -277,7 +277,7 @@ class XModConfuse : public XBasicModifier
 class XModStun : public XBasicModifier
 {
     public:
-        XModStun(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_STUN, _val, _cr) {}
+        XModStun(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_STUN, _val, _cr) {}
 
         XModStun()
         {
@@ -316,7 +316,7 @@ class XModStun : public XBasicModifier
 class XModHeroism : public XBasicModifier
 {
     public:
-        XModHeroism(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_HEROISM, _val, _cr) {}
+        XModHeroism(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_HEROISM, _val, _cr) {}
 
         XModHeroism()
         {
@@ -355,7 +355,7 @@ class XModHeroism : public XBasicModifier
 class XModDisease : public XBasicModifier
 {
     public:
-        XModDisease(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_DISEASE, _val, _cr) {}
+        XModDisease(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_DISEASE, _val, _cr) {}
 
         XModDisease()
         {
@@ -396,7 +396,7 @@ class XModDisease : public XBasicModifier
 class XModWeak : public XBasicModifier
 {
     public:
-        XModWeak(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_WEAK, _val, _cr) {}
+        XModWeak(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_WEAK, _val, _cr) {}
 
         XModWeak()
         {
@@ -437,7 +437,7 @@ class XModWeak : public XBasicModifier
 class XModParalyse : public XBasicModifier
 {
     public:
-        XModParalyse(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_PARALYSE, _val, _cr) {}
+        XModParalyse(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_PARALYSE, _val, _cr) {}
 
         XModParalyse()
         {
@@ -476,7 +476,7 @@ class XModDelayed : public XBasicModifier
 {
     public:
         XModDelayed(MODIFIER_TYPE _mt, int value, int delay,
-            XCreature * _cr = NULL) : XBasicModifier(MOD_DELAYED, delay, _cr),
+            XCreature * _cr = nullptr) : XBasicModifier(MOD_DELAYED, delay, _cr),
             set_mt(_mt), set_val(value)
         {}
 
@@ -514,7 +514,7 @@ class XModDelayed : public XBasicModifier
 class XModSeeInvisible : public XBasicModifier
 {
     public:
-        XModSeeInvisible(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_SEE_INVISIBLE, _val, _cr) {}
+        XModSeeInvisible(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_SEE_INVISIBLE, _val, _cr) {}
 
         XModSeeInvisible()
         {
@@ -553,7 +553,7 @@ class XModSeeInvisible : public XBasicModifier
 class XModBoostSpeed : public XBasicModifier
 {
     public:
-        XModBoostSpeed(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_BOOST_SPEED, _val, _cr) {}
+        XModBoostSpeed(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_BOOST_SPEED, _val, _cr) {}
 
         XModBoostSpeed()
         {
@@ -593,7 +593,7 @@ class XModBoostSpeed : public XBasicModifier
 class XModSlowness : public XBasicModifier
 {
     public:
-        XModSlowness(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_SLOWNESS, _val, _cr) {}
+        XModSlowness(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_SLOWNESS, _val, _cr) {}
 
         XModSlowness()
         {
@@ -632,7 +632,7 @@ class XModSlowness : public XBasicModifier
 class XModAcidResistance : public XBasicModifier
 {
     public:
-        XModAcidResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_ACID_RESISTANCE, _val, _cr) {}
+        XModAcidResistance(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_ACID_RESISTANCE, _val, _cr) {}
 
         XModAcidResistance()
         {
@@ -671,7 +671,7 @@ class XModAcidResistance : public XBasicModifier
 class XModFireResistance : public XBasicModifier
 {
     public:
-        XModFireResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_FIRE_RESISTANCE, _val, _cr) {}
+        XModFireResistance(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_FIRE_RESISTANCE, _val, _cr) {}
 
         XModFireResistance()
         {
@@ -710,7 +710,7 @@ class XModFireResistance : public XBasicModifier
 class XModColdResistance : public XBasicModifier
 {
     public:
-        XModColdResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_COLD_RESISTANCE, _val, _cr) {}
+        XModColdResistance(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_COLD_RESISTANCE, _val, _cr) {}
 
         XModColdResistance()
         {
@@ -749,7 +749,7 @@ class XModColdResistance : public XBasicModifier
 class XModPoisonResistance : public XBasicModifier
 {
     public:
-        XModPoisonResistance(int _val, XCreature * _cr = NULL) : XBasicModifier(MOD_POISON_RESISTANCE, _val, _cr) {}
+        XModPoisonResistance(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_POISON_RESISTANCE, _val, _cr) {}
 
         XModPoisonResistance()
         {

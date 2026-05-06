@@ -423,7 +423,7 @@ void XShopkeeper::SetShop(char* _name, XShop * shop)
 
 void XShopkeeper::Die(XCreature * killer)
 {
-    dynamic_cast<XShopKeeperAI*>(xai.get())->GetShop()->SetShopkeeper(NULL);
+    dynamic_cast<XShopKeeperAI*>(xai.get())->GetShop()->SetShopkeeper(nullptr);
     XAnyCreature::Die(killer);
 }
 

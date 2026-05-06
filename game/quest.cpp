@@ -95,7 +95,7 @@ void XQuest::Restore(XFile * f)
     f->Read(&roderick_quest2);
     f->Read(&torin_quest);
     f->Read(&rotmoth_status);
-    kidnapped_girl = (XCreature*)(XObject::RestorePointer(f, NULL));
+    kidnapped_girl = (XCreature*)(XObject::RestorePointer(f, nullptr));
 }
 
 void XQuest::ShowQuests()

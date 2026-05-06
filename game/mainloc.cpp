@@ -117,7 +117,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     for (i = 0; i < map->hgt; i++) {
         for (j = 0; j < map->len; j++) {
             if (vRand(18) == 0) {
-                if (map->GetXY(j, i) == XTileType::GREEN_GRAS && map->GetSpecial(j, i) == NULL) {
+                if (map->GetXY(j, i) == XTileType::GREEN_GRAS && map->GetSpecial(j, i) == nullptr) {
                     new XHerbBush(j, i, this);
                 }
             }
