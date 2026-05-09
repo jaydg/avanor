@@ -28,22 +28,24 @@ class XRation : public XAnyFood
 {
     public:
         DECLARE_CREATOR(XRation, XAnyFood);
-        XRation(ITEM_TYPE it = IT_RANDOM);
-        XRation(XRation * copy) : XAnyFood((XAnyFood*)copy) {}
 
-        virtual XObject* MakeCopy()
+        explicit XRation(ITEM_TYPE it = IT_RANDOM);
+
+        explicit XRation(XRation* copy) : XAnyFood(static_cast<XAnyFood*>(copy)) {}
+
+        XObject* MakeCopy() override
         {
             return new XRation(this);
         }
 
-        virtual RESULT onEat(XCreature * eater);
+        RESULT onEat(XCreature * eater) override;
 
-        virtual void Store(XFile * f)
+        void Store(XFile * f) override
         {
             XAnyFood::Store(f);
         }
 
-        virtual void Restore(XFile * f)
+        void Restore(XFile * f) override
         {
             XAnyFood::Restore(f);
         }
