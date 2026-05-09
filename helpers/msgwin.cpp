@@ -19,6 +19,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <cctype>
+#include <string>
+#include <string_view>
+
+#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include "helpers/msgwin.h"
 #include "helpers/xgui.h"
@@ -32,7 +37,7 @@ XMsgWin::XMsgWin()
     index_x = 0;
     index_y = 0;
     history_list->AddItem(new XGuiItem_Text("Welcome!"));
-    strcpy(sent_buf, "");
+    sent_buf.clear();
 }
 
 XMsgWin::~XMsgWin()
@@ -40,45 +45,47 @@ XMsgWin::~XMsgWin()
     delete history_list;
 }
 
-void XMsgWin::AddLast(const char* str)
+void XMsgWin::AddLast(std::string_view str)
 {
-    static char buf[8192];
-    sprintf(buf, "%s.", str);
-    Add(buf);
-};
+    Add(fmt::format("{}.", str));
+}
 
-void XMsgWin::Add(const char* tstr, int flag)
+void XMsgWin::Add(std::string_view tstr, int flag)
 {
-    char str[8192];
-    strcpy(str, tstr);
+    // Local copy as std::string, as we need to write str[0]
+    std::string str(tstr);
     static bool end_sent = true;
-    char xbuf[100];
-    int word = 1;
 
     if (end_sent) {
         end_sent = false;
-        str[0] = toupper(str[0]);
+        str[0] = static_cast<char>(toupper(static_cast<unsigned char>(str[0])));
     }
 
-    // addding part of sentence to a buffer
-    strcat(sent_buf, str);
-    strcat(sent_buf, " ");
-    int tindex = 0;
+    // Fill sentence buffer
+    fmt::format_to(std::back_inserter(sent_buf), "{} ", str);
 
-    while (str[tindex]) {
-        if (str[tindex] == '.' || str[tindex] == '!' || str[tindex] == '?') {
-            end_sent = true;
-            sent_buf[0] = toupper(sent_buf[0]);
-            history_list->AddItem(new XGuiItem_Text(sent_buf), 1);
-            strcpy(sent_buf, "");
+    // Find the end of the sentence
+    const auto sentence_end = str.find_first_of(".!?");
+
+    if (sentence_end != std::string::npos) {
+        end_sent = true;
+        sent_buf[0] = static_cast<char>(toupper(static_cast<unsigned char>(sent_buf[0])));
+        history_list->AddItem(new XGuiItem_Text(sent_buf.c_str()), 1);
+        sent_buf.clear();
+    }
+
+    std::string_view view(str);
+    while (!view.empty()) {
+        // skip leading spaces
+        const auto word_start = view.find_first_not_of(' ');
+        if (word_start == std::string_view::npos)
             break;
-        }
+        view.remove_prefix(word_start);
 
-        tindex++;
-    }
-
-    while (GetWord(str, word, xbuf)) {
-        int wlen = x_strlen(xbuf);
+        // find end of word
+        const auto word_end = view.find(' ');
+        const auto word = view.substr(0, word_end);
+        const int wlen = static_cast<int>(word.size());
 
         if (index_y == 0) {
             if (index_x + wlen >= size_x) {
@@ -99,10 +106,18 @@ void XMsgWin::Add(const char* tstr, int flag)
 
         vGotoXY(index_x, index_y);
         vSetAttr(xLIGHTGRAY);
-        vPutS(xbuf);
+
+        // vPutS expects a null terminated string
+        // convert once per word
+        const std::string word_str(word);
+        vPutS(word_str.c_str());
         index_x++;
         index_x += wlen;
-        word++;
+
+        if (word_end == std::string_view::npos)
+            break;
+
+        view.remove_prefix(word_end);
     }
 }
 
@@ -114,38 +129,6 @@ void XMsgWin::ClrMsg(int flag)
     vClrEol();
     index_x = 0;
     index_y = 0;
-}
-
-int XMsgWin::GetWord(const char* str, int n, char* buf)
-{
-    int k = 0;
-    int j = 0;
-
-    while (n > 0) {
-        while (str[k] && str[k] == ' ') {
-            k++;
-        }
-
-        j = k;
-
-        while (str[j] && str[j] != ' ') {
-            j++;
-        }
-
-        if (j - k < 1) {
-            return 0;
-        }
-
-        n--;
-
-        if (n) {
-            k = j;
-        }
-    }
-
-    strncpy(buf, &str[k], j - k);
-    buf[j - k] = 0;
-    return 1;
 }
 
 void XMsgWin::ShowHistory() const

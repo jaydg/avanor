@@ -1117,7 +1117,7 @@ int XLocation::AskQuestion(lua_State * L)
 
     out += "]";
 
-    msgwin.Add(out.c_str());
+    msgwin.Add(out);
     vRefresh();
     int ch = vGetch();
     msgwin.ClrMsg();
