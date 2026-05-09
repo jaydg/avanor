@@ -31,7 +31,7 @@ class XMapObject : public XObject
 {
     public:
         XPtr<XLocation> l;
-        char name[50];
+        char name[50]{};
 
         DECLARE_CREATOR(XMapObject, XObject);
 
@@ -45,10 +45,15 @@ class XMapObject : public XObject
 
         void Invalidate() override;
 
-        int x, y; //co-ordinates of any object
-        int nx, ny; //used for new turn;
+        // Coordinates of any object
+        int x, y;
 
-        char view; //char-represent view of object
+        // Used for the next turn
+        int nx, ny;
+
+        // character representation view of object
+        char view;
+
         int color;
 
         int Compare(XObject * o) override;
@@ -89,19 +94,22 @@ class XMapObject : public XObject
             return name;
         }
 
+        // Check if object is in visible area to write "Someone hits your" etc.
         int isInVisibleArea() const
         {
-            return l->map->GetVisible(x, y); //check if object is in visible are to write Someone hits your etc.
+            return l->map->GetVisible(x, y);
         }
 
-        int isVisibleArea(int x, int y) const
+        // Checks if this area is visible
+        int isVisibleArea(int px, int py) const
         {
-            return l->map->GetVisible(x, y); //cheks, if this area is visible
+            return l->map->GetVisible(px, py);
         }
 
+        // Some objects (e.g. herbs) can be picked up.
         virtual XObject* Pick(XCreature * picker)
         {
-            return nullptr; //some objects (eg. Herbs) can be picked up.
+            return nullptr;
         }
 
 };

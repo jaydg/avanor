@@ -20,8 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/xmapobj.h"
 
-XMapObject::XMapObject(XMapObject * copy) :
-    XObject((XObject*)copy),
+XMapObject::XMapObject(XMapObject* copy) :
+    XObject(static_cast<XObject *>(copy)),
     x(copy->x),
     y(copy->y),
     nx(copy->nx),
@@ -77,7 +77,7 @@ int XMapObject::Compare(XObject * o)
         return 1;
     }
 
-    XMapObject * tit = (XMapObject*)o;
+    auto tit = dynamic_cast<XMapObject *>(o);
 
     if (tit->x == x && tit->y == y && tit->view == view) {
         return 0;
