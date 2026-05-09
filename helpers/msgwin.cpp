@@ -110,7 +110,7 @@ void XMsgWin::Add(std::string_view tstr, int flag)
         // vPutS expects a null terminated string
         // convert once per word
         const std::string word_str(word);
-        vPutS(word_str.c_str());
+        vPutS(word_str);
         index_x++;
         index_x += wlen;
 

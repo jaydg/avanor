@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <string_view>
+
 #ifdef WIN32
     #define XWIN32
 #else
@@ -172,6 +174,12 @@ void vPutCh(int x, int y, char ch);
 void vPutCh(int x, int y, char ch, int attr);
 char vTestCh(int x, int y);
 void vPutS(const char* s);
+
+// std::string migration helper
+inline void vPutS(std::string_view s) {
+    vPutS(s.data());
+}
+
 void vFPutS(FILE * f, const char* s);
 int vGetS(char* s, int buffer_size);
 void vClrEol();
