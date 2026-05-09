@@ -33,7 +33,7 @@ class XFile;
 class XHiScoreItem
 {
     public:
-        XHiScoreItem(int place, unsigned int score, const char* _name, const char* _msg, int flg, int last_record = 0);
+        XHiScoreItem(int place, unsigned int score, std::string _name, std::string _msg, int flg, int last_record = 0);
         XHiScoreItem() : isLastRecord(0) {}
 
         XGuiItem_Text* toGuiItem();
@@ -60,8 +60,8 @@ class XHiScoreItem
         int year{};
         int day{};
         int month{};
-        char name[80]{};
-        char msg[160]{};
+        std::string name;
+        std::string msg;
         int isLastRecord;
         int flag{}; // win or death
 };

@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 #include <ctime>
+#include <fmt/format.h>
 #include <fstream>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
@@ -30,26 +31,22 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XGuiItem_Text* XHiScoreItem::toGuiItem()
 {
-    char buf[256];
-    char dbuf[256];
+    auto color = isLastRecord ? MSG_WHITE : MSG_CYAN;
 
-    if (flag == 0) {
-        sprintf(dbuf, "Died");
-    } else {
-        sprintf(dbuf, "Won");
-    }
+    auto text = fmt::format(
+        "{}{:3d} {} {:7d}  {} {} {} on {}/{}/{}.\n               {}\n\n",
+        color, place,
+        color, score,
+        color, name,
+        flag == 0 ? "Died" : "Won",
+        day, month, year,
+        msg
+    );
 
-    if (isLastRecord)
-        sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n",
-            MSG_WHITE, place, MSG_WHITE, score, MSG_WHITE, name, dbuf, day, month, year, msg);
-    else
-        sprintf(buf, "%s%3d %s %7d  %s %s %s on %d/%d/%d.\n               %s\n\n",
-            MSG_CYAN, place, MSG_CYAN, score, MSG_CYAN, name, dbuf, day, month, year, msg);
-
-    return new XGuiItem_Text(buf);
+    return new XGuiItem_Text(text.c_str());
 }
 
-XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, const char* _name, const char* _msg, const int flg, const int last_record)
+XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, std::string _name, std::string _msg, const int flg, const int last_record)
 {
     const time_t t = time(nullptr);
     const tm* _tm = gmtime(&t);
@@ -59,8 +56,8 @@ XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, const ch
     day = _tm->tm_mday;
     score = _score;
     place = _place;
-    strcpy(name, _name);
-    strcpy(msg, _msg);
+    name = _name;
+    msg = _msg;
     isLastRecord = last_record;
     flag = flg;
 }

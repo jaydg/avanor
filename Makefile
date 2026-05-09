@@ -48,7 +48,7 @@ OBJDIR = obj
 NAME = avanor
 
 CFLAGS += -I.
-CFLAGS += $(shell pkg-config --cflags luajit)
+CFLAGS += $(shell pkg-config --cflags fmt luajit)
 
 VPATH = creature engine game global helpers item magic map other lua
 
@@ -71,7 +71,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xshield.cpp                \
        bodypart.cpp anycr.cpp ai_view.cpp
 
 LIBS = -lncurses
-LIBS += $(shell pkg-config --libs luajit)
+LIBS += $(shell pkg-config --libs fmt luajit)
 
 ifdef debug
 	CFLAGS += -g
