@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <algorithm>
 #include <cctype>
 #include <cmath>
+#include <fmt/format.h>
 
 #include "creature/skeep_ai.h"
 #include "creature/xhero.h"
@@ -54,7 +55,7 @@ XHero::XHero(int flag)
     y = 5;
     view = '@';
     color = xWHITE;
-    strcpy(name, "-=RET=-");
+    name = "-=RET=-";
     RNG = 5;
     target = nullptr;
     im = IM_HERO;
@@ -484,9 +485,7 @@ void XHero::NewMove()
         XCreature* cr = l->map->GetMonster(nx, ny);
 
         if (!cr->xai->isEnemy(this)) {
-            char buf[256];
-            sprintf(buf, "Are you sure you want to attack %s", cr->name);
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("Are you sure you want to attack {}", cr->name));
 
             if (!GetTarget(TR_YES_NO)) {
                 if ((cr->xai->GetAIFlag() & AIF_NO_SWAP)) { //we can't swap with some guardians
@@ -567,19 +566,19 @@ void XHero::Die(XCreature * killer)
     vRefresh();
 
     vGetch();
-    char buf[256] = "";
+    std::string str;
 
     if (killer == this) {
-        sprintf(buf, "Killed himself at %s.", l->GetFullName());
+        str = fmt::format("Killed himself at {}.", l->GetFullName());
     } else if (killer) {
-        sprintf(buf, "Killed by %s at %s.", killer->name, l->GetFullName());
+        str = fmt::format("Killed by {} at {}.", killer->name, l->GetFullName());
     } else {
-        sprintf(buf, "Died at %s.", l->GetFullName());
+        str = fmt::format("Died at {}.", l->GetFullName());
     }
 
     XQuest::quest.hero_die = 1;
 
-    EndGame(buf);
+    EndGame(str.c_str());
     vClrScr();
     XCreature::Die(killer);
 }
@@ -595,9 +594,7 @@ void XHero::Move()
 
         if (l->map->GetSpecial(nx, ny)) {
             XMapObject *spec = l->map->GetSpecial(nx, ny);
-            char buf[256];
-            sprintf(buf, "There is %s here.", spec->GetName(this));
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("There is {} here.", spec->GetName(this)));
         }
 
         if (l->map->GetItemCount(nx, ny) > 1) {
@@ -1772,10 +1769,9 @@ int XHero::SelectPosition(XPoint * pt, int flag)
                 const unsigned int item_count = l->map->GetItemCount(tx, ty);
 
                 if (cr && cr->isVisible()) {
-                    char buf[256];
-                    sprintf(buf, "%s (%s) [" MSG_CYAN "space" MSG_LIGHTGRAY "] - more.", cr->name, cr->GetWoundMsg());
                     more_info_flag = 1;
-                    vPutS(buf);
+                    vPutS(fmt::format("{} ({}) [" MSG_CYAN "space" MSG_LIGHTGRAY "] - more.",
+                        cr->name, cr->GetWoundMsg()));
                 } else if (item_count == 1) {
                     vPutS("item");
                 } else if (item_count > 1) {
@@ -2059,22 +2055,18 @@ void XHero::MagicLevelList() const
 
 XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, FILE * f) const
 {
-    char buf[256];
-    char footer[256];
-
     while (1) {
         XGuiList list;
 
         if (skill_flag == SKF_IMPROVE_SKILL) {
             list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Improve Skill " MSG_BROWN "###");
 
-            if (marks_left > 1) {
-                sprintf(footer, MSG_LIGHTGRAY "You have " MSG_YELLOW "%d" MSG_LIGHTGRAY " improvements left.", marks_left);
-            } else {
-                sprintf(footer, MSG_LIGHTGRAY "You have " MSG_YELLOW "%d" MSG_LIGHTGRAY " improvement left.", marks_left);
-            }
+            const std::string footer = fmt::format(
+                MSG_LIGHTGRAY "You have " MSG_YELLOW "{}" MSG_LIGHTGRAY " {} left.",
+                marks_left,
+                marks_left > 1 ? "improvements" : "improvement");
 
-            list.SetFooter(footer);
+            list.SetFooter(footer.c_str());
         } else if (skill_flag == SKF_LIST_SKILL) {
             list.SetCaption(MSG_BROWN "###" MSG_YELLOW " Skills List " MSG_BROWN "###");
         } else if (skill_flag == SKF_USE_SKILL) {
@@ -2082,23 +2074,24 @@ XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, FIL
         }
 
         for (const auto& [skt, skill] : sk->skills) {
-            strcpy(buf, MSG_LIGHTGRAY);
-            strcat(buf, skill->GetName());
+            // Fill name up to 17 characters (excluding ANSI prefix) with '.'.
+            // MSG_LIGHTGRAY is an ANSI escape prefix, and does not add to the visual width.
+            const std::string_view raw_name = skill->GetName();
+            const size_t visible_len = raw_name.size();
+            const size_t pad = visible_len < 17 ? 17 - visible_len : 0;
 
-            for (size_t i = strlen(buf); i < 17; i++) {
-                buf[i] = '.';
-            }
+            const std::string name_col = fmt::format(
+                MSG_LIGHTGRAY "{}{}", raw_name, std::string(pad, '.'));
 
-            buf[17] = 0;
+            // Skill level column: colorful when still improvable, grey when maxed
+            const std::string level_col = skill->GetLevel() < skill->GetMaxLevel()
+                ? fmt::format(MSG_BROWN "[" MSG_LIGHTGRAY " {:2} " MSG_BROWN "from" MSG_LIGHTGRAY " {:2} " MSG_BROWN "] ",
+                              skill->GetLevel(), skill->GetMaxLevel())
+                : fmt::format(MSG_BROWN "[ {:2} from {:2} ] ",
+                              skill->GetLevel(), skill->GetMaxLevel());
 
-            if (skill->GetLevel() < skill->GetMaxLevel()) {
-                sprintf(buf + 17, MSG_BROWN "[" MSG_LIGHTGRAY " %2d " MSG_BROWN "from" MSG_LIGHTGRAY " %2d " MSG_BROWN "] ", skill->GetLevel(), skill->GetMaxLevel());
-            } else {
-                sprintf(buf + 17, MSG_BROWN "[ %2d from %2d ] ", skill->GetLevel(), skill->GetMaxLevel());
-            }
-
-            strcat(buf, skill->GetSkillLevel());
-            list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
+            const std::string buf = name_col + level_col + skill->GetSkillLevel();
+            list.AddItem(new XGuiItem_SimpleSelect(buf.c_str()), 0);
         }
 
         if (f) {
@@ -2264,27 +2257,31 @@ void XHero::LookAt()
     XGuiList list;
 
     if (xcr) {
-        char capt[256];
-        char buf[256];
-
+        std::string str;
         if (xcr->isHero()) {
-            sprintf(capt,
-                MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s, the %s %s %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->name, GetGenderStr(), GetRaceStr(), GetProfessionStr());
+            str = fmt::format(
+                MSG_BROWN "### " MSG_LIGHTGRAY "'{}{}" MSG_LIGHTGRAY "' {}, the {} {} {}" MSG_BROWN " ###",
+                SCOLOR(xcr->color), xcr->view, xcr->name, GetGenderStr(), GetRaceStr(), GetProfessionStr());
         } else {
-            sprintf(capt,
-                MSG_BROWN "### " MSG_LIGHTGRAY "'%s%c" MSG_LIGHTGRAY "' %s" MSG_BROWN " ###", SCOLOR(xcr->color), xcr->view, xcr->GetNameEx(CRN_T1));
+            str = fmt::format(
+                MSG_BROWN "### " MSG_LIGHTGRAY "'{}{}" MSG_LIGHTGRAY "' {}" MSG_BROWN " ###",
+                SCOLOR(xcr->color), xcr->view, xcr->GetNameEx(CRN_T1));
         }
 
-        list.SetCaption(capt);
+        list.SetCaption(str.c_str());
 
         if (xcr->isHero()) {
-            sprintf(buf, MSG_YELLOW "You are %s.", xcr->GetWoundMsg());
+            str = fmt::format(MSG_YELLOW "You are {}.",
+                xcr->GetWoundMsg());
         } else {
-            sprintf(buf, MSG_YELLOW "%s is %s.", xcr->GetNameEx(CRN_T2), xcr->GetWoundMsg());
+            str = fmt::format(MSG_YELLOW "{} is {}.",
+                xcr->GetNameEx(CRN_T2),
+                xcr->GetWoundMsg());
+
+            str[2] = toupper(str[2]);
         }
 
-        buf[2] = toupper(buf[2]);
-        list.AddItem(new XGuiItem_Text(buf, 0), 0);
+        list.AddItem(new XGuiItem_Text(str, 0), 0);
 
         bool iflag = false;
 
@@ -2295,13 +2292,13 @@ void XHero::LookAt()
 
                 if (!iflag) {
                     if (xcr->isHero()) {
-                        sprintf(buf, MSG_YELLOW "You are wearing the following items:");
+                        str = MSG_YELLOW "You are wearing the following items:";
                     } else {
-                        sprintf(buf, MSG_YELLOW "%s is wearing the following items:", xcr->GetNameEx(CRN_T2));
+                        str = fmt::format(MSG_YELLOW "{} is wearing the following items:", xcr->GetNameEx(CRN_T2));
+                        str[2] = toupper(str[2]);
                     }
 
-                    buf[2] = toupper(buf[2]);
-                    list.AddItem(new XGuiItem_Text(buf, 0), 0);
+                    list.AddItem(new XGuiItem_Text(str, 0), 0);
                 }
 
                 list.AddItem(new XGuiItem_Text(xbuf, 0), 0);
@@ -2420,9 +2417,7 @@ void XHero::QuickPay()
                 msgwin.Add("You don't have enough money!");
             }
         } else {
-            char buf[256];
-            sprintf(buf, "You owe nothing to %s.", shopkeeper->name);
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("You owe nothing to {}.", shopkeeper->name));
         }
     }
 }
@@ -2647,17 +2642,16 @@ int XHero::OrderCompanion()
     XCreature* slave = nullptr;
 
     if (companions_list.size() > 1) {
-        char bufx[8192] = "";
+        std::string list;
         int index = 0;
 
         for (auto it: companions_list) {
-            char buf[256];
-            sprintf(buf, "[%c] %s", 64 + index, it->GetNameEx(CRN_T1));
-            strcat(bufx, buf);
+            list.append(fmt::format("[{c}] {}\n",
+                64 + index, it->GetNameEx(CRN_T1)));
             index++;
         }
 
-        msgwin.Add(bufx);
+        msgwin.Add(list);
         vRefresh();
         const int ch = vGetch();
 

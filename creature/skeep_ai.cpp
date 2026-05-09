@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include <fmt/format.h>
 
 #include "creature/skeep_ai.h"
 #include "helpers/msgwin.h"
@@ -32,10 +33,10 @@ const char* GMSG_SHOPKEEPER_REJECT_MONEY = "'Thank you, but you don't owe me any
 const char* GMSG_SHOPKEEPER_ASK_FOR_PAY = "'You must pay me %d gp for %s";
 const char* GMSG_SHOPKEEPER_ASK_FOR_PAY2 = "'You owe me %d gp, How much you would like to pay?'";
 const char* GMSG_SHOPKEEPER_THANKS = "'Thank you for paying!'";
-const char* GMSG_SHOPKEEPER_TO_CUSTOMER0 = "%s says 'You owe me %d gp. Don't try to take anything without paying!'";
-const char* GMSG_SHOPKEEPER_TO_CUSTOMER1 = "%s says 'Welcome to my shop, %s!'";
-const char* GMSG_SHOPKEEPER_TO_CUSTOMER2 = "%s says 'You forgot to pay me %d gp!'";
-const char* GMSG_SHOPKEEPER_TO_CUSTOMER3 = "%s says 'Have a nice expedition, %s!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER0 = "{} says 'You owe me {} gp. Don't try to take anything without paying!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER1 = "{} says 'Welcome to my shop, {}!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER2 = "{} says 'You forgot to pay me {} gp!'";
+const char* GMSG_SHOPKEEPER_TO_CUSTOMER3 = "{} says 'Have a nice expedition, {}!'";
 
 XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
     : XStandardAI(shopkeeper)
@@ -278,15 +279,15 @@ void XShopKeeperAI::onCreatureEnterShop(XCreature * customer)
         if (isEnemy(customer)) {
             msgwin.Add("Prepare to die!");
         } else {
-            char buf[256];
+            std::string str;
 
             if (debt.debtor_sum > 0) {
-                sprintf(buf, GMSG_SHOPKEEPER_TO_CUSTOMER0, ai_owner->name, (int)debt.debtor_sum);
+                str = fmt::format(GMSG_SHOPKEEPER_TO_CUSTOMER0, ai_owner->name, (int)debt.debtor_sum);
             } else {
-                sprintf(buf, GMSG_SHOPKEEPER_TO_CUSTOMER1, ai_owner->name, customer->name);
+                str = fmt::format(GMSG_SHOPKEEPER_TO_CUSTOMER1, ai_owner->name, customer->name);
             }
 
-            msgwin.Add(buf);
+            msgwin.Add(str);
         }
     }
 }
@@ -312,10 +313,10 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
     if (isEnemy(customer)) {
         msgwin.Add("You will be dead soon!");
     } else {
-        char buf[256];
+        std::string str;
 
         if (debt.debtor_sum > 0) {
-            sprintf(buf, GMSG_SHOPKEEPER_TO_CUSTOMER2, ai_owner->name, (int)debt.debtor_sum);
+            str = fmt::format(GMSG_SHOPKEEPER_TO_CUSTOMER2, ai_owner->name, (int)debt.debtor_sum);
             debt.debtor_leave_shop = 1;
             debt.debtor = customer;
 
@@ -323,10 +324,10 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
                 AddPersonalEnemy(customer);
             }
         } else {
-            sprintf(buf, GMSG_SHOPKEEPER_TO_CUSTOMER3, ai_owner->name, customer->name);
+            str = fmt::format(GMSG_SHOPKEEPER_TO_CUSTOMER3, ai_owner->name, customer->name);
         }
 
-        msgwin.Add(buf);
+        msgwin.Add(str);
     }
 }
 

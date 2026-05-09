@@ -158,9 +158,9 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
 
     if (caster->onRestorePP(d.S)) {
         if (caster->isVisible()) {
-            char buf[256];
-            sprintf(buf, "The power flows through %s body.", caster->GetNameEx(CRN_T4));
-            msgwin.Add(buf);
+            std::string str;
+            str = fmt::format("The power flows through {} body.", caster->GetNameEx(CRN_T4));
+            msgwin.Add(str);
         }
 
         return 1;

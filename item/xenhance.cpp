@@ -220,18 +220,18 @@ void XEnhance::toString(char* buf)
 {
     if (!isIdentifed()) {
         if (quantity == 1) {
-            sprintf(buf, "%s %s", ect[descr].color_name, name);
+            sprintf(buf, "%s %s", ect[descr].color_name, name.c_str());
         } else {
-            sprintf(buf, "heap of (%d) %s %ss", quantity, ect[descr].color_name, name);
+            sprintf(buf, "heap of (%d) %s %ss", quantity, ect[descr].color_name, name.c_str());
         }
 
         return;
     }
 
     if (quantity == 1) {
-        sprintf(buf, "%s %s", name, enh_db[descr].name);
+        sprintf(buf, "%s %s", name.c_str(), enh_db[descr].name);
     } else {
-        sprintf(buf, "heap of (%d) %ss %s", quantity, name, enh_db[descr].name);
+        sprintf(buf, "heap of (%d) %ss %s", quantity, name.c_str(), enh_db[descr].name);
     }
 
     char tbuf[256];

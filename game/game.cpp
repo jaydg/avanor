@@ -256,7 +256,7 @@ void XGame::RunWithoutHero()
         char tname[256] = "";
 
         if (best_creature) {
-            sprintf(tname, "%s", best_creature->name);
+            sprintf(tname, "%s", best_creature->name.c_str());
         }
 
         sprintf(static_buffer,

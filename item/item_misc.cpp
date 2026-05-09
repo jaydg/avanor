@@ -32,7 +32,7 @@ XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
     color = xLIGHTGRAY;
     view = '~';
     it = IT_CHEST;
-    strcpy(name, "chest");
+    name = "chest";
     value = 50;
     weight = 100;
     im = IM_CHEST;
@@ -47,7 +47,7 @@ XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
 
 void XChest::toString(char* buf)
 {
-    sprintf(buf, name);
+    sprintf(buf, name.c_str());
 
     if (contain.empty()) {
         strcat(buf, "{empty}");

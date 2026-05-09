@@ -114,7 +114,7 @@ XHerb::XHerb(int _herb_index) : herb_index(_herb_index), XAnyFood()
 {
     weight = 3;
     food_nutrio = 15;
-    strcpy(name, herbs[herb_index].herb_name);
+    name = herbs[herb_index].herb_name;
     it = IT_HERB;
 }
 
@@ -140,12 +140,12 @@ const char* XHerb::postEat(XCreature * eater)
 void XHerb::toString(char* buf)
 {
     if (herbs[herb_index].identify) {
-        strcpy(name, herbs[herb_index].herb_name);
+        name = herbs[herb_index].herb_name;
     } else {
         if (herbs[herb_index].herb_type == HT_HERB) {
-            strcpy(name, "unknown herb");
+            name = "unknown herb";
         } else {
-            strcpy(name, "unknown mushroom");
+            name = "unknown mushroom";
         }
     }
 
@@ -184,13 +184,13 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
     view = '"';
     color = herbs[herb_index].color;
 
-    strcpy(name, herbs[herb_index].herb_name);
+    name = herbs[herb_index].herb_name;
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     Game.Scheduler.Add(this);
 }
 
-const char* XHerbBush::GetName(XCreature * viewer)
+const std::string XHerbBush::GetName(XCreature *viewer)
 {
     XSkill * xsk = viewer->sk->GetSkill(XSkill::Skill::HERBALISM);
     int val = 0;
@@ -336,13 +336,13 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
     view = '`';
     color = herbs[mush_index].color;
 
-    strcpy(name, herbs[mush_index].herb_name);
+    name = herbs[mush_index].herb_name;
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     Game.Scheduler.Add(this);
 }
 
-const char* XMushSpawn::GetName(XCreature * viewer)
+const std::string XMushSpawn::GetName(XCreature *viewer)
 {
     _HERBS * herb_data = &herbs[mush_index];
     return herb_data->bush_name;

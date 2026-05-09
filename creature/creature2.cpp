@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
@@ -605,9 +607,11 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 } else {
                     msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
                     msgwin.Add(pData->attacker->GetVerb("attack"));
-                    char xxbuf[256];
-                    sprintf(xxbuf, "%s, but %s.", GetNameEx(CRN_T1), pData->attacker->GetVerb("miss"));
-                    msgwin.Add(xxbuf);
+                    std::string str;
+                    str = fmt::format("{}, but {}.",
+                        GetNameEx(CRN_T1),
+                        pData->attacker->GetVerb("miss"));
+                    msgwin.Add(str);
                 }
             }
         }

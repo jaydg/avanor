@@ -110,7 +110,8 @@ class XStairWay final : public XMapObject
         void Bind(XStairWay* way);
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
-        const char* GetName(XCreature* viewer) override
+
+        const std::string GetName(XCreature *viewer) override
         {
             return "a stairway";
         }
@@ -138,7 +139,7 @@ class XTeleport final : public XMapObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
-        const char* GetName(XCreature* viewer) override
+        const std::string GetName(XCreature *viewer) override
         {
             return "a magic circle";
         }
@@ -161,7 +162,8 @@ class XDoor final : public XMapObject
 
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
-        const char* GetName(XCreature* viewer) override
+
+        const std::string GetName(XCreature *viewer) override
         {
             return "a door";
         }
@@ -183,7 +185,7 @@ class XAltar final : public XMapObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
-        const char* GetName(XCreature* viewer) override
+        const std::string GetName(XCreature *viewer) override
         {
             return color == xWHITE ? "an altar of white granite" : "an altar of black granite";
         }

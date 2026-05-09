@@ -60,7 +60,7 @@ XRation::XRation(ITEM_TYPE _it) : XAnyFood()
 
     assert(ration);
     it = ration->it;
-    strcpy(name, ration->name);
+    name = ration->name;
     XDice d(ration->nutrio);
     food_nutrio = d.S;
     value = ration->value;

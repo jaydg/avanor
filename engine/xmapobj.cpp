@@ -30,7 +30,7 @@ XMapObject::XMapObject(XMapObject* copy) :
     color(copy->color)
 {
     l = copy->l.get();
-    strcpy(name, copy->name);
+    name = copy->name;
 }
 
 void XMapObject::Invalidate()
@@ -49,7 +49,7 @@ void XMapObject::Store(XFile * f)
     f->Write(&ny, sizeof(int));
     f->Write(&view, sizeof(char));
     f->Write(&color, sizeof(int));
-    f->Write(name, sizeof(char), 50);
+    f->WriteStr(name);
     l.Store(f);
 }
 
@@ -64,7 +64,7 @@ void XMapObject::Restore(XFile * f)
     f->Read(&ny, sizeof(int));
     f->Read(&view, sizeof(char));
     f->Read(&color, sizeof(int));
-    f->Read(name, sizeof(char), 50);
+    f->ReadStr(name);
 
     l.Restore(f);;
 }

@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 #include <cmath>
+#include <fmt/format.h>
 
 #include "creature/creature.h"
 #include "creature/los.h"
@@ -1377,7 +1378,7 @@ int XCreature::Shoot(int tx, int ty)
                 break;
 
             default:
-                dd.attack_name = missile->name;
+                dd.attack_name = missile->name.c_str();
                 break;
         }
 
@@ -1944,10 +1945,8 @@ const char* XCreature::GetGenderStr()
     }
 }
 
-const char* XCreature::GetNameEx(CR_NAME_TYPE crn)
+const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
 {
-    static char cool_buf[1024]; //hope the name will never larger than
-
     if (isVisible()) {
         switch (creature_person_type) {
             case CPT_YOU:
@@ -2016,8 +2015,7 @@ const char* XCreature::GetNameEx(CR_NAME_TYPE crn)
             case CPT_HE:
                 switch (crn) {
                     case CRN_T1:
-                        sprintf(cool_buf, "the %s", name);
-                        return cool_buf;
+                        return fmt::format("the {}", name);
 
                     case CRN_T2:
                         return "he";
@@ -2032,8 +2030,7 @@ const char* XCreature::GetNameEx(CR_NAME_TYPE crn)
             case CPT_SHE:
                 switch (crn) {
                     case CRN_T1:
-                        sprintf(cool_buf, "the female %s", name);
-                        return cool_buf;
+                        return fmt::format("the female {]", name);
 
                     case CRN_T2:
                         return "she";
@@ -2048,8 +2045,7 @@ const char* XCreature::GetNameEx(CR_NAME_TYPE crn)
             case CPT_IT:
                 switch (crn) {
                     case CRN_T1:
-                        sprintf(cool_buf, "the %s", name);
-                        return cool_buf;
+                        return fmt::format("the {}", name);
 
                     case CRN_T2:
                         return "it";

@@ -43,7 +43,7 @@ XAmulet::XAmulet(ENHANCE enh) : XEnhance(enh)
 {
     im = IM_NECK;
     bp = BP_NECK;
-    strcpy(name, "amulet");
+    name = "amulet";
     it = IT_AMULET;
     view = '\'';
 }

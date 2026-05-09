@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/skeep_ai.h"
 #include "creature/unique.h"
 #include "creature/xhero.h"
@@ -224,13 +226,13 @@ int XHighPriest::Chat(XCreature * chatter, const char* msg)
 
 void XHighPriest::Die(XCreature * killer)
 {
-    char buf[80];
+    std::string buf;
 
     if (killer->isHero()) {
-        sprintf(buf, "%s will not be pleased about this...", religion.GetDeityName(D_LIFE));
+        buf = fmt::format("{} will not be pleased about this...", religion.GetDeityName(D_LIFE));
         msgwin.Add(buf);
     } else {
-        sprintf(buf, "%s seems to be trying to anger %s...", killer->name, religion.GetDeityName(D_LIFE));
+        buf = fmt::format("{} seems to be trying to anger {}...", killer->name, religion.GetDeityName(D_LIFE));
         msgwin.Add(buf);
     }
 
@@ -241,13 +243,12 @@ void XHighPriest::Die(XCreature * killer)
 int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 {
     int val = giver->sk->GetLevel(XSkill::Skill::RELIGION);
-    char buf[120];
 
     msgwin.Add("Thank you for your charitable donation!");
-    sprintf(buf, "%s prays to %s.", name, religion.GetDeityName(D_LIFE));
-    msgwin.Add(buf);
+    msgwin.Add(fmt::format("{} prays to {}.", name, XReligion::GetDeityName(D_LIFE)));
 
     if (1 /*TODO if hero can see...*/) {
+        char buf[120];
         item->toString(buf);
         msgwin.Add(buf);
         msgwin.Add("disappears in a bright light.");
@@ -417,7 +418,7 @@ XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
 
 void XShopkeeper::SetShop(char* _name, XShop * shop)
 {
-    strcpy(name, _name);
+    name = _name;
     xai = std::make_unique<XShopKeeperAI>(this, shop);
 }
 

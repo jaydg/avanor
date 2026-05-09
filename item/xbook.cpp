@@ -124,7 +124,7 @@ XBook::XBook(BOOK_NAME bn)
     assert(descr > -1 && descr < BOOK_RANDOM);
 
     value = 20000 / book_descr[descr].rarity;
-    strcpy(name, XSpell::GetName(book_descr[descr].spell_name));
+    name = XSpell::GetName(book_descr[descr].spell_name);
 
     im = IM_BOOK;
     bp = BP_OTHER;
@@ -174,9 +174,9 @@ void XBook::toString(char* buf)
         }
     } else {
         if (quantity == 1) {
-            sprintf(buf, "book of %s", name);
+            sprintf(buf, "book of %s", name.c_str());
         } else {
-            sprintf(buf, "heap of (%d) books of %s", quantity, name);
+            sprintf(buf, "heap of (%d) books of %s", quantity, name.c_str());
         }
     }
 }

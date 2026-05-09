@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include <fmt/format.h>
 
 #include "creature/std_ai.h"
 #include "engine/xapi.h"
@@ -578,26 +579,26 @@ int XStandardAI::Wear()
         ai_owner->contain.erase(item);
 
         if (ai_owner->isVisible()) {
-            char xbuf[256];
+            std::string str;
             char tbuf[256];
             item->toString(tbuf);
 
             switch (item->im) {
                 case IM_WEAPON :
                 case IM_MISSILEW :
-                    sprintf(xbuf, "%s has wielded %s.", ai_owner->name, tbuf);
+                    str = fmt::format("{} has wielded {}.", ai_owner->name, tbuf);
                     break;
 
                 case IM_MISSILE :
-                    sprintf(xbuf, "%s has armed %s.", ai_owner->name, tbuf);
+                    str = fmt::format("{} has armed {}.", ai_owner->name, tbuf);
                     break;
 
                 default :
-                    sprintf(xbuf, "%s puts on %s.", ai_owner->name, tbuf);
+                    str = fmt::format("{} puts on {}.", ai_owner->name, tbuf);
                     break;
             }
 
-            msgwin.Add(xbuf);
+            msgwin.Add(str);
         }
 
         return 1;
@@ -1148,13 +1149,12 @@ void XStandardAI::RunScript()
             if (obj && obj->isValid() && obj->im == IM_OTHER) {
                 XItem * tit = (XItem*)(obj->Pick(ai_owner));
                 char buf[256];
-                char buf2[256];
                 tit->toString(buf);
 
                 if (ai_owner->PickUpItem(tit)) {
                     if (ai_owner->isVisible()) {
-                        sprintf(buf2, "%s collects %s.", ai_owner->GetNameEx(CRN_T1), buf);
-                        msgwin.Add(buf2);
+                        msgwin.Add(fmt::format("{} collects {}.",
+                            ai_owner->GetNameEx(CRN_T1), buf));
                     }
 
                     if (vRand(2) == 0) {

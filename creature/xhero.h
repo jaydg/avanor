@@ -21,7 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XHERO_H
 #define XHERO_H
 
+#include <string>
 #include <vector>
+#include <fmt/format.h>
 
 #include "creature/anycr.h"
 #include "creature/creature.h"
@@ -148,20 +150,33 @@ class XHero final : public XCreature
 class XGuiItem_Inventory final : public XGuiItem
 {
         XItem* pItem;
-        char buf[256]{};
+        std::string str;
     public:
-        explicit XGuiItem_Inventory(XItem* item) : XGuiItem(), pItem(item)
+        explicit XGuiItem_Inventory(XItem* item) : pItem(item)
         {
-            char tbuf[256];
-            strcpy(buf, MSG_LIGHTGRAY);
-            item->toString(buf + strlen(buf));
+            // Construct the item string (toString writes to a char array;
+            // we pass a temporary buffer and store the result)
+            char tmp[256];
+            item->toString(tmp);
+            str = fmt::format(MSG_LIGHTGRAY "{}", tmp);
 
-            for (size_t i = strlen(buf); i < size_x; i++) {
-                buf[i] = ' ';
-            }
+            // Pad to size_x characters using spaces. str may contain ANSI
+            // escape codes that do not count toward the visible width.
+            // x_strlen returns the visible length. The padding is based on this.
+            const size_t visible = static_cast<size_t>(x_strlen(str.c_str()));
+            if (visible < size_x)
+                str.append(size_x - visible, ' ');
 
-            sprintf(tbuf, MSG_BROWN "[" MSG_LIGHTGRAY "%d" MSG_BROWN "]", item->weight * item->quantity);
-            strcpy(buf + size_x - 5 - x_strlen(tbuf), tbuf);
+            // Align the weight badge to the right. x_strlen measures
+            // the visible width of the badge (excluding ANSI characters).
+            const std::string badge = fmt::format(
+                MSG_BROWN "[" MSG_LIGHTGRAY "{}" MSG_BROWN "]",
+                item->weight * item->quantity);
+            const size_t badge_visible = static_cast<size_t>(x_strlen(badge.c_str()));
+
+            // Insertion position in str
+            const size_t insert_pos = size_x - 5 - badge_visible;
+            str.replace(insert_pos, badge.size(), badge);
         }
 
         int isSelectable() override
@@ -186,7 +201,7 @@ class XGuiItem_Inventory final : public XGuiItem
 
         const char* operator[](int index) override
         {
-            return buf;
+            return str.c_str();
         }
 };
 

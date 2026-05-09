@@ -45,7 +45,7 @@ XRing::XRing(ENHANCE enh) : XEnhance(enh)
     im = IM_RING;
     bp = BP_RING;
     it = IT_RING;
-    strcpy(name, "ring");
+    name = "ring";
     view = '=';
 }
 

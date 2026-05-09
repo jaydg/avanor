@@ -188,7 +188,7 @@ void XHero::EndGame(const char* end_msg)
     char tbuf[256];
 
     sprintf(buf2, "%s, %s %s %s (L%d).",
-        main_creature->name,
+        main_creature->name.c_str(),
         main_creature->GetGenderStr(),
         dynamic_cast<XHero *>(main_creature)->GetRaceStr(),
         dynamic_cast<XHero *>(main_creature)->GetProfessionStr(),
@@ -304,7 +304,7 @@ void XHero::EndGame(const char* end_msg)
         msgwin.Add("### Screenshot ###");
 
         char tname[256];
-        strcpy(tname, main_creature->name);
+        strcpy(tname, main_creature->name.c_str());
         strcat(tname, ".mem");
         FILE * f = fopen(vMakePath(HOME_DIR, tname), "w");
         XHero::DumpVBuffer(f);

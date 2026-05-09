@@ -40,7 +40,7 @@ void XMoney::toString(char* buf)
     if (quantity == 1) {
         sprintf(buf, "one golden coin");
     } else {
-        sprintf(buf, "%d golden coins", quantity, name);
+        sprintf(buf, "%d golden coins", quantity);
     }
 }
 

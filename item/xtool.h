@@ -32,7 +32,7 @@ class XCookingSet : public XItem
             color = xLIGHTGRAY;
             view = '[';
             it = IT_COOKINGSET;
-            strcpy(name, "cooking set");
+            name = "cooking set";
             value = 150;
             weight = 100;
             im = IM_TOOL;
@@ -55,7 +55,7 @@ class XCookingSet : public XItem
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
         virtual void toString(char* buf)
         {
-            strcpy(buf, name);
+            strcpy(buf, name.c_str());
         }
 
         virtual void Store(XFile * f);
@@ -86,7 +86,7 @@ class XPickAxe : public XItem
             color = xLIGHTGRAY;
             view = '\\';
             it = IT_PICKAXE;
-            strcpy(name, "pickaxe");
+            name = "pickaxe";
             value = 150;
             weight = 100;
             im = IM_TOOL;
@@ -106,7 +106,7 @@ class XPickAxe : public XItem
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
         virtual void toString(char* buf)
         {
-            strcpy(buf, name);
+            strcpy(buf, name.c_str());
         }
 };
 
@@ -119,7 +119,7 @@ class XEyeOfRaa : public XItem
             color = xCYAN;
             view = '*';
             it = IT_EYEOFRAA;
-            strcpy(name, "Eye of Raa");
+            name = "Eye of Raa";
             value = 150;
             weight = 100;
             im = IM_TOOL;
@@ -139,7 +139,7 @@ class XEyeOfRaa : public XItem
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
         virtual void toString(char* buf)
         {
-            strcpy(buf, name);
+            strcpy(buf, name.c_str());
         }
 };
 
@@ -152,7 +152,7 @@ class XAlchemySet : public XItem
             color = xLIGHTGRAY;
             view = '[';
             it = IT_ALCHEMYSET;
-            strcpy(name, "alchemy set");
+            name = "alchemy set";
             value = 150;
             weight = 100;
             im = IM_TOOL;
@@ -171,7 +171,7 @@ class XAlchemySet : public XItem
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
         virtual void toString(char* buf)
         {
-            strcpy(buf, name);
+            strcpy(buf, name.c_str());
         }
 };
 

@@ -27,6 +27,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map.h"
 #include "map/map_objects.h"
 
+#include <fmt/format.h>
+
 extern "C"
 {
 #include "lauxlib.h"
@@ -120,7 +122,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
 
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
-    strcpy(name, "trap");
+    name = "trap";
 }
 
 int XTrap::MoveIn(XCreature* cr)
@@ -440,13 +442,13 @@ XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const LOCATION 
         case STW_UP:
             view = '<';
             loc->map->SetSpecial(x, y, this);
-            strcpy(name, "way up");
+            name = "way up";
             break;
 
         case STW_DOWN:
             view = '>';
             loc->map->SetSpecial(x, y, this);
-            strcpy(name, "way down");
+            name = "way down";
             break;
 
         default:
@@ -492,7 +494,7 @@ XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const LOCATION 
 
     view = '0';
     loc->map->SetSpecial(x, y, this);
-    strcpy(name, "magic circle");
+    name = "magic circle";
 }
 
 void XTeleport::Store(XFile* f)
@@ -535,7 +537,7 @@ XDoor::XDoor(const int _x, const int _y, const int flg, XLocation* _l)
 
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
-    strcpy(name, "door");
+    name = "door";
 }
 
 void XDoor::Switch()
@@ -581,7 +583,7 @@ XAltar::XAltar(const int _x, const int _y, const DEITY deity, XLocation* _l)
 
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
-    strcpy(name, "altar");
+    name = "altar";
 }
 
 void XAltar::Store(XFile * f)
@@ -606,7 +608,7 @@ XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
     view = '+';
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
-    sprintf(name, "the grave signed '%s'", subscr);
+    name = fmt::format("the grave signed '{}'", subscr);
     isOpened = 0;
 }
 
@@ -664,7 +666,7 @@ XFurniture::XFurniture(const int _x, const int _y, const int _c, const char _v, 
     view = _v;
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
-    strcpy(name, subscr);
+    name = subscr;
 }
 
 REGISTER_CLASS(XOuterObject);

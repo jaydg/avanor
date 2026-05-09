@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XGlamdring);
 XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)
 {
-    strcpy(name, "rune-covered broadsword");
+    name = "rune-covered broadsword";
     it = IT_BROADSWORD;
     view = '|';
     weight = 700;
@@ -48,7 +48,7 @@ void XGlamdring::toString(char* buf)
 REGISTER_CLASS(XDeathHack);
 XDeathHack::XDeathHack() : XWeapon(IT_LONGDAGGER)
 {
-    strcpy(name, "rune-covered long dagger");
+    name = "rune-covered long dagger";
     it = IT_LONGDAGGER;
     weight = 70;
     value = 500;
@@ -73,7 +73,7 @@ REGISTER_CLASS(XAvanorDefender);
 XGUID XAvanorDefender::avanordefender_guid = 0;
 XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
 {
-    strcpy(name, "rune-covered long sword");
+    name = "rune-covered long sword";
     it = IT_LONGSWORD;
     weight = 110;
     value = 3000;
@@ -104,7 +104,7 @@ void XAvanorDefender::Restore(XFile * f)
 REGISTER_CLASS(XForestBrotherCloak);
 XForestBrotherCloak::XForestBrotherCloak() : XCloak(IT_CLOAK)
 {
-    strcpy(name, "forest brother's cloak");
+    name = "forest brother's cloak";
     it = IT_FORESTBROTHERCLOAK;
     color = xGREEN;
     weight = 20;
@@ -131,13 +131,13 @@ XGreatElementalRing::XGreatElementalRing() : XRing()
 {
     resistances = std::make_unique<XResistance>("fire:1d1+79 cold:1d1+79 acid:1d1+79 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("Wi:1d1+4");
-    strcpy(name, "Great Elemental Ring");
+    name = "Great Elemental Ring";
 }
 
 REGISTER_CLASS(XAvanorScepter);
 XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
 {
-    strcpy(name, "ancient scepter");
+    name = "ancient scepter";
     it = IT_CLUB;
     view = '|';
     color = xYELLOW;
@@ -163,7 +163,7 @@ void XAvanorScepter::toString(char* buf)
 REGISTER_CLASS(XAvanorCrown);
 XAvanorCrown::XAvanorCrown() : XCap(IT_CAP)
 {
-    strcpy(name, "golden crown");
+    name = "golden crown";
     it = IT_CAP;
     view = '[';
     color = xYELLOW;
@@ -188,7 +188,7 @@ void XAvanorCrown::toString(char* buf)
 REGISTER_CLASS(XAvanorMitre);
 XAvanorMitre::XAvanorMitre() : XCap(IT_CAP)
 {
-    strcpy(name, "holy mitre");
+    name = "holy mitre";
     it = IT_CAP;
     view = '[';
     color = xWHITE;
@@ -213,7 +213,7 @@ void XAvanorMitre::toString(char* buf)
 REGISTER_CLASS(XTorinAxe);
 XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
 {
-    strcpy(name, "ancient axe");
+    name = "ancient axe";
     it = IT_GREATAXE;
     view = '\\';
     weight = 1200;
@@ -238,7 +238,7 @@ void XTorinAxe::toString(char* buf)
 REGISTER_CLASS(XTorinShield);
 XTorinShield::XTorinShield() : XShield(IT_MEDIUMSHIELD)
 {
-    strcpy(name, "ancient shield");
+    name = "ancient shield";
     it = IT_MEDIUMSHIELD;
     view = ')';
     weight = 100;
@@ -262,7 +262,7 @@ void XTorinShield::toString(char* buf)
 REGISTER_CLASS(XDwarfCrown);
 XDwarfCrown::XDwarfCrown() : XCap(IT_CAP)
 {
-    strcpy(name, "mithril crown");
+    name = "mithril crown";
     it = IT_CAP;
     view = '[';
     color = xLIGHTCYAN;
@@ -287,7 +287,7 @@ void XDwarfCrown::toString(char* buf)
 REGISTER_CLASS(XBlackClub);
 XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
 {
-    strcpy(name, "black club");
+    name = "black club";
     it = IT_CLUB;
     view = '/';
     color = xDARKGRAY;

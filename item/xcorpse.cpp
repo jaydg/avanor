@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/anycr.h"
 #include "creature/creature.h"
 #include "game/game.h"
@@ -48,7 +50,7 @@ XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLA
     ttmb = 1000;
     ttm = 1000;
     it = IT_CORPSE;
-    sprintf(name, "%s corpse", corpse_owner->name);
+    name = fmt::format("{} corpse", corpse_owner->name);
 
     corpse_flag = cf;
     time_of_roating = 0;
@@ -252,8 +254,8 @@ void XCorpse::Restore(XFile * f)
 void XCorpse::toString(char* buf)
 {
     if (corpse_flag & CF_COOKED) {
-        sprintf(buf, "cooked %s", name);
+        sprintf(buf, "cooked %s", name.c_str());
     } else {
-        strcpy(buf, name);
+        strcpy(buf, name.c_str());
     }
 }

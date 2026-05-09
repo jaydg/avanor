@@ -33,7 +33,7 @@ class XBatWing : public XAnyFood
             it = IT_BATWING;
             food_nutrio = 10;
             consume_nutrio = 10;
-            strcpy(name, "bat wing");
+            name = "bat wing";
             value = 100;
             weight = 2;
 
@@ -57,7 +57,7 @@ class XRatTail : public XAnyFood
             it = IT_RATTAIL;
             food_nutrio = 10;
             consume_nutrio = 10;
-            strcpy(name, "rat tail");
+            name = "rat tail";
             value = 100;
             weight = 3;
 
@@ -81,7 +81,7 @@ class XBone : public XAnyFood
             it = IT_BONE;
             food_nutrio = 10;
             consume_nutrio = 10;
-            strcpy(name, "bone");
+            name = "bone";
             value = 1;
             weight = 5;
         }
@@ -134,7 +134,7 @@ class XAncientMachinePart : public XItem
         {
             color = xDARKGRAY;
             view = ']';
-            strcpy(name, "ancient machine part");
+            name = "ancient machine part";
             value = 1000;
             weight = 15;
             im = IM_TOOL;

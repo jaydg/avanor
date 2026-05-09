@@ -110,7 +110,8 @@ class XHerbBush: public XMapObject
 
     protected:
         long grownth_rate;
-        const char* GetName(XCreature * viewer);
+
+        const std::string GetName(XCreature *viewer);
         XHerbBush() { }
 
     public:
@@ -129,7 +130,8 @@ class XMushSpawn: public XMapObject
 {
         int mush_index;
         long grownth_rate;
-        const char* GetName(XCreature * viewer);
+
+        const std::string GetName(XCreature *viewer);
         XMushSpawn() { }
 
     public:

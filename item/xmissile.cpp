@@ -51,7 +51,7 @@ XMissile::XMissile(ITEM_TYPE _it)
     BasicFill(_it, &gi_missile);
 
     if (it == IT_ROCK) {
-        strcpy(name, "rock");
+        name = "rock";
         view = '*';
         color = xDARKGRAY;
         XDice d(1, 3);
@@ -100,37 +100,37 @@ XMissile::XMissile(ITEM_TYPE _it)
             if (it == IT_ARROW) {
                 dice.Add(2, 2, 0);
                 RNG += 1;
-                strcpy(name, "seeker arrow");
+                name = "seeker arrow";
             }
 
             if (it == IT_QUARREL) {
                 dice.Add(2, 2, 0);
                 RNG += 1;
-                strcpy(name, "seeker quarrel");
+                name = "seeker quarrel";
             }
         } else if (xr == 1) {
             if (it == IT_ARROW) {
                 _HIT += 10;
                 RNG += 2;
-                strcpy(name, "hunter arrow");
+                name = "hunter arrow";
             }
 
             if (it == IT_QUARREL) {
                 _HIT += 10;
                 RNG += 2;
-                strcpy(name, "hunter quarrel");
+                name = "hunter quarrel";
             }
         } else if (xr == 2) {
             if (it == IT_ARROW) {
                 dice.Add(1, 1, 10);
                 RNG += 2;
-                strcpy(name, "sharp arrow");
+                name = "sharp arrow";
             }
 
             if (it == IT_QUARREL) {
                 dice.Add(1, 1, 10);
                 RNG += 2;
-                strcpy(name, "sharp quarrel");
+                name = "sharp quarrel";
             }
         }
     }
@@ -145,7 +145,7 @@ void XMissile::toString(char* buf)
         sprintf(buf, "%s%s%s <%+d>(%+d, %dd%d%+d)%s",
             brt & BR_POISON ? "poisoned " : "",
             brt & BR_UNDEADSLAYER ? "holy " : "",
-            name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+            name.c_str(), RNG, _HIT, dice.X, dice.Y, dice.Z,
             brt & BR_FIRE ? " of fire" : ""
         );
     else {
@@ -153,7 +153,7 @@ void XMissile::toString(char* buf)
             quantity,
             brt & BR_POISON ? "poisoned " : "",
             brt & BR_UNDEADSLAYER ? "holy " : "",
-            name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+            name.c_str(), RNG, _HIT, dice.X, dice.Y, dice.Z,
             brt & BR_FIRE ? " of fire" : ""
         );
     }

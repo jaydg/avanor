@@ -31,7 +31,7 @@ class XMapObject : public XObject
 {
     public:
         XPtr<XLocation> l;
-        char name[50]{};
+        std::string name;
 
         DECLARE_CREATOR(XMapObject, XObject);
 
@@ -78,9 +78,9 @@ class XMapObject : public XObject
             return 0;
         }
 
-        void SetName(const char* _name)
+        void SetName(std::string_view _name)
         {
-            strcpy(name, _name);
+            name = _name;
         }
 
         void SetView(char v, int c)
@@ -89,7 +89,7 @@ class XMapObject : public XObject
             color = c;
         }
 
-        virtual const char* GetName(XCreature * viewer)
+        virtual const std::string GetName(XCreature *viewer)
         {
             return name;
         }

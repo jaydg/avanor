@@ -1158,7 +1158,7 @@ int XLocation::GetItemParam(lua_State * L)
     lua_pushnumber(L, p->wt);
     lua_pushnumber(L, p->it);
     lua_pushnumber(L, p->quantity);
-    lua_pushstring(L, p->name);
+    lua_pushstring(L, p->name.c_str());
 
     return 6;
 }

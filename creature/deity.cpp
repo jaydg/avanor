@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <cmath>
+#include <fmt/format.h>
 
 #include "creature/creature.h"
 #include "creature/deity.h"
@@ -98,9 +99,11 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     }
 
     if (cr->isVisible()) {
+        std::string str;
+        str = fmt::format("{} prays to {}.", cr->name, GetDeityName(deity));
+        msgwin.Add(str);
+
         char buf[256];
-        sprintf(buf, "%s prays to %s.", cr->name, GetDeityName(deity));
-        msgwin.Add(buf);
         item->toString(buf);
         msgwin.Add(buf);
         msgwin.Add("disappears in a bright light.");

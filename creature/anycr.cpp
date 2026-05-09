@@ -34,7 +34,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
 {
     view = cr->view;
     color = cr->color;
-    strcpy(name, cr->name.c_str());
+    name = cr->name.c_str();
 
     creature_class = cr->cr_class;
 
@@ -90,7 +90,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
                     && GetGender() == GEN_MALE) {
                     // This is a kludge to prevent a "Roderick in a dress" scenario.
                     item->it = IT_CLOTHES;
-                    strcpy(item->name, "clothes");
+                    item->name = "clothes";
                 }
 
                 if (CanWear(item)) {

@@ -24,6 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xpotion.h"
 #include "item/xtool.h"
 
+#include <fmt/format.h>
+
 //////////////////////////////////////////////////////////////////////
 // XCookingSet
 //////////////////////////////////////////////////////////////////////
@@ -157,8 +159,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
                     if (cr->l->map->GetXY(tgt_x, tgt_y) == XTileType::STONE_WALL
                         || cr->l->map->GetXY(tgt_x, tgt_y) == XTileType::MAGMA) {
                         rock_resist = 1000;
-                        char buf[256];
-                        sprintf(buf, "%s starts to dig.", cr->name);
+                        auto buf = fmt::format("{} starts to dig.", cr->name);
                         msgwin.Add(buf);
                         return CONTINUE;
                     } else {

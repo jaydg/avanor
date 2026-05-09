@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "item/item.h"
 
@@ -91,7 +93,7 @@ int XItem::BasicFill(ITEM_TYPE it, XItemBasicStructure * pData)
 
 void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
 {
-    strcpy(name, is->name);
+    name = is->name;
     it = is->it;
     view = is->view;
     weight = is->valume;
@@ -149,9 +151,7 @@ void XItem::PropFill(ITEM_SET is, int val)
     }
 
     material_index = r_val;
-    char buf[100];
-    sprintf(buf, "%s %s", item_prop[r_val].propname, name);
-    strcpy(name, buf);
+    name = fmt::format("{} {}", item_prop[r_val].propname, name);
 
     color = item_prop[r_val].color;
     weight *= item_prop[r_val].density;
@@ -397,17 +397,17 @@ void XItem::GetFullName(char* buf, const char* templ)
 {
     if (special_number >= 0) {
         if (quantity == 1) {
-            sprintf(buf, ienh_db[special_number].name, name);
+            sprintf(buf, ienh_db[special_number].name, name.c_str());
         } else {
             char tbuf[128];
             sprintf(buf, "heap of (%d)", quantity);
 
             if (im & (IM_BOOTS | IM_GLOVES)) {
-                sprintf(tbuf, ienh_db[special_number].name, name);
+                sprintf(tbuf, ienh_db[special_number].name, name.c_str());
                 strcat(buf, tbuf);
             } else {
                 char rbuf[128];
-                strcpy(rbuf, name);
+                strcpy(rbuf, name.c_str());
                 strcat(rbuf, "s");
                 sprintf(tbuf, ienh_db[special_number].name, rbuf);
                 strcat(buf, tbuf);
@@ -417,12 +417,12 @@ void XItem::GetFullName(char* buf, const char* templ)
         strcat(buf, " ");
     } else {
         if (quantity == 1) {
-            sprintf(buf, "%s ", name);
+            sprintf(buf, "%s ", name.c_str());
         } else {
             if (im & (IM_BOOTS | IM_GLOVES)) {
-                sprintf(buf, "heap of (%d) %s ", quantity, name);
+                sprintf(buf, "heap of (%d) %s ", quantity, name.c_str());
             } else {
-                sprintf(buf, "heap of (%d) %ss ", quantity, name);
+                sprintf(buf, "heap of (%d) %ss ", quantity, name.c_str());
             }
         }
     }
@@ -452,7 +452,7 @@ void XItem::GetArtifactName(char* buf, const char* real_name)
         StatsToString(tbuf);
         strcat(buf, tbuf);
     } else {
-        strcpy(buf, name);
+        strcpy(buf, name.c_str());
     }
 }
 

@@ -398,7 +398,7 @@ class XCreature : public XBaseObject
             return (im & IM_HERO) > 0;
         }
 
-        const char* GetNameEx(CR_NAME_TYPE crn);
+        const std::string GetNameEx(CR_NAME_TYPE crn);
         const char* GetVerb(const char* verb);
 };
 
@@ -406,9 +406,9 @@ class XCreature : public XBaseObject
 class XFakeCreature final : public XCreature
 {
     public:
-        explicit XFakeCreature(const char* fake_name)
+        explicit XFakeCreature(std::string_view fake_name)
         {
-            strcpy(name, fake_name);
+            name = fake_name;
         }
 };
 

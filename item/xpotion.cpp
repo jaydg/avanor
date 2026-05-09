@@ -204,7 +204,7 @@ XPotion::XPotion(POTION_NAME _pn)
     view = '!';
     color =	pnc_table[pdescr->force_color].color;
 
-    strcpy(name, pdescr->name);
+    name = pdescr->name;
 
     weight = 3;
     value = pdescr->value;
@@ -237,9 +237,9 @@ void XPotion::toString(char* buf)
 {
     if (isIdentifed()) {
         if (quantity == 1) {
-            sprintf(buf, "potion of %s", name);
+            sprintf(buf, "potion of %s", name.c_str());
         } else {
-            sprintf(buf, "heap of %d potions of %s", quantity, name);
+            sprintf(buf, "heap of %d potions of %s", quantity, name.c_str());
         }
     } else {
         if (quantity == 1) {

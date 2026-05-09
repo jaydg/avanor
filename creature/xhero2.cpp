@@ -836,7 +836,7 @@ void XHero::PlayerSetup()
     vRefresh();
     char char_name[20];
     vGetS(char_name, 15);
-    strcpy(name, char_name);
+    name = char_name;
 #else
     strcpy(name, "-=RET=-");
 #endif

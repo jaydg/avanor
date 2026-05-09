@@ -91,7 +91,7 @@ XScroll::XScroll(SCROLL_NAME scrn)
     descr = SCROLL_REC::GetRandomDescription(scrn);
     assert(descr > -1 && descr < SCROLL_RANDOM);
     sc_name = scroll_descr[descr].scroll_name;
-    strcpy(name, scroll_descr[descr].real_name);
+    name = scroll_descr[descr].real_name;
     value = scroll_descr[descr].value;
     im = IM_SCROLL;
     bp = BP_OTHER;
@@ -138,9 +138,9 @@ void XScroll::toString(char* buf)
         }
     } else {
         if (quantity == 1) {
-            sprintf(buf, "scroll of %s", name);
+            sprintf(buf, "scroll of %s", name.c_str());
         } else {
-            sprintf(buf, "heap of (%d) scrolls of %s", quantity, name);
+            sprintf(buf, "heap of (%d) scrolls of %s", quantity, name.c_str());
         }
     }
 }

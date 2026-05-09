@@ -51,9 +51,9 @@ int XAnyFood::Compare(XObject * o)
 void XAnyFood::toString(char* buf)
 {
     if (quantity == 1) {
-        sprintf(buf, "%s", name);
+        sprintf(buf, "%s", name.c_str());
     } else {
-        sprintf(buf, "heap of (%d) %ss", quantity, name);
+        sprintf(buf, "heap of (%d) %ss", quantity, name.c_str());
     }
 
     double rel = (double)consumed_food / food_nutrio;
