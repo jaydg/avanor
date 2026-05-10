@@ -30,8 +30,8 @@ class XBeelzvile : public XAnyCreature
     public:
         DECLARE_CREATOR(XBeelzvile, XAnyCreature);
         XBeelzvile(_CREATURE * cr);
-        virtual void NewMove();
-        virtual void Move();
+        void NewMove() override;
+        void Move() override;
 };
 
 class XGefeon : public XAnyCreature
@@ -42,7 +42,7 @@ class XGefeon : public XAnyCreature
     public:
         DECLARE_CREATOR(XGefeon, XAnyCreature);
         XGefeon(_CREATURE * cr);
-        virtual int Chat(XCreature * chatter, const char* msg);
+        int Chat(XCreature * chatter, const char* msg) override;
 };
 
 class XAhkUlan : public XAnyCreature
@@ -53,9 +53,9 @@ class XAhkUlan : public XAnyCreature
     public:
         DECLARE_CREATOR(XAhkUlan, XAnyCreature);
         XAhkUlan(_CREATURE * cr);
-        virtual int Chat(XCreature * chatter, const char* msg);
-        virtual void Die(XCreature * killer);
-        virtual int onGiveItem(XCreature * giver, XItem * item);
+        int Chat(XCreature * chatter, const char* msg) override;
+        void Die(XCreature * killer) override;
+        int onGiveItem(XCreature * giver, XItem * item) override;
 };
 
 class XShop;
@@ -68,9 +68,9 @@ class XRoderick : public XAnyCreature
     public:
         DECLARE_CREATOR(XRoderick, XAnyCreature);
         XRoderick(_CREATURE * cr);
-        virtual int Chat(XCreature * chatter, const char* msg);
-        virtual void Die(XCreature * killer);
-        virtual int onGiveItem(XCreature * giver, XItem * item);
+        int Chat(XCreature * chatter, const char* msg) override;
+        void Die(XCreature * killer) override;
+        int onGiveItem(XCreature * giver, XItem * item) override;
 };
 
 class XRandomMonster : public XAnyCreature
@@ -86,9 +86,9 @@ class XHighPriest : public XAnyCreature
     public:
         DECLARE_CREATOR(XHighPriest, XAnyCreature);
         XHighPriest(_CREATURE * cr);
-        virtual int Chat(XCreature * chatter, const char* msg);
-        virtual void Die(XCreature * killer);
-        virtual int onGiveItem(XCreature * giver, XItem * item);
+        int Chat(XCreature * chatter, const char* msg) override;
+        void Die(XCreature * killer) override;
+        int onGiveItem(XCreature * giver, XItem * item) override;
 };
 
 class XRotmoth : public XAnyCreature
@@ -99,7 +99,7 @@ class XRotmoth : public XAnyCreature
     public:
         DECLARE_CREATOR(XRotmoth, XAnyCreature);
         XRotmoth(_CREATURE * cr);
-        virtual int Chat(XCreature * chatter, const char* msg);
+        int Chat(XCreature * chatter, const char* msg) override;
 };
 
 class XRotmothAI : public XStandardAI
@@ -108,7 +108,7 @@ class XRotmothAI : public XStandardAI
         XRotmothAI() = delete;
         XRotmothAI(XCreature * cr) : XStandardAI(cr) {}
 
-        void onWasAttacked(XCreature * attacker);
+        void onWasAttacked(XCreature * attacker) override;
 };
 
 class XGiana : public XAnyCreature
@@ -119,7 +119,7 @@ class XGiana : public XAnyCreature
     public:
         DECLARE_CREATOR(XGiana, XAnyCreature);
         XGiana(_CREATURE * cr);
-        virtual int Chat(XCreature * chatter, const char* msg);
+        int Chat(XCreature * chatter, const char* msg) override;
 };
 
 class XBandit : public XAnyCreature
@@ -138,7 +138,7 @@ class XBanditAI : public XStandardAI
         XBanditAI() = delete;
         XBanditAI(XCreature * cr) : XStandardAI(cr) {}
 
-        virtual bool isEnemy(XCreature *cr);
+        bool isEnemy(XCreature *cr) override;
 };
 
 class XShopkeeper : public XAnyCreature
@@ -151,8 +151,8 @@ class XShopkeeper : public XAnyCreature
         XShopkeeper(_CREATURE *cr);
         XShopkeeper(char* _name, XShop * shop, CREATURE_LEVEL crl, CREATURE_EXP cre) {}
 
-        virtual const char* StdAnswer();
-        virtual void Die(XCreature * killer);
+        const char* StdAnswer() override;
+        void Die(XCreature * killer) override;
         void SetShop(char* _name, XShop * shop);
 };
 

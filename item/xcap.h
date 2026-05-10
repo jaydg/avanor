@@ -29,7 +29,7 @@ class XCap : public XClothe
         DECLARE_CREATOR(XCap, XClothe);
         XCap(ITEM_TYPE it = IT_RANDOM);
         XCap(XCap * cap);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XCap(this);
         }

@@ -83,9 +83,9 @@ class XEnhance : public XItem
 
         std::string toString() override;
         int descr;
-        virtual int Compare(XObject * o);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        int Compare(XObject * o) override;
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 };
 
 #endif

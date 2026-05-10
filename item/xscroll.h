@@ -112,18 +112,18 @@ class XScroll : public XItem
             sc_name = copy->sc_name;
         }
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XScroll(this);
         }
 
-        virtual int isIdentifed();
-        virtual void Identify(int level);
+        int isIdentifed() override;
+        void Identify(int level) override;
         std::string toString() override;
-        virtual int Compare(XObject * o);
+        int Compare(XObject * o) override;
         virtual int onRead(XCreature * cr);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
         SCROLL_NAME sc_name;

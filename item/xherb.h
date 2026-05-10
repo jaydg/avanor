@@ -56,16 +56,16 @@ class XHerb : public XAnyFood
             assert(0);
         }
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XHerb(this);
         }
 
-        virtual RESULT onEat(XCreature * eater);
+        RESULT onEat(XCreature * eater) override;
 
-        [[nodiscard]] virtual std::string postEat(XCreature *eater);
+        [[nodiscard]] std::string postEat(XCreature *eater) override;
 
-        virtual int Compare(XObject * o)
+        int Compare(XObject* o) override
         {
             if (herb_index == ((XHerb*)o)->herb_index) {
                 return 0;
@@ -78,17 +78,17 @@ class XHerb : public XAnyFood
 
         POTION_NAME GetTargetPotion();
 
-        virtual void Identify(int level);
-        virtual int isIdentifed();
+        void Identify(int level) override;
+        int isIdentifed() override;
 
         std::string toString() override;
-        virtual void Store(XFile * f)
+        void Store(XFile * f) override
         {
             XAnyFood::Store(f);
             f->Write(&herb_index, sizeof(herb_index));
         }
 
-        virtual void Restore(XFile * f)
+        void Restore(XFile * f) override
         {
             XAnyFood::Restore(f);
             f->Read(&herb_index, sizeof(herb_index));
@@ -112,17 +112,17 @@ class XHerbBush: public XMapObject
     protected:
         long grownth_rate;
 
-        const std::string GetName(XCreature *viewer);
+        const std::string GetName(XCreature *viewer) override;
         XHerbBush() { }
 
     public:
         DECLARE_CREATOR(XHerbBush, XMapObject);
         XHerbBush(int _x, int _y, XLocation * _l);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        int Run();
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
+        int Run() override;
 
-        XObject* Pick(XCreature * picker);
+        XObject* Pick(XCreature * picker) override;
 };
 
 #define BASE_MUSH_REFRESH 1000000
@@ -132,17 +132,17 @@ class XMushSpawn: public XMapObject
         int mush_index;
         long grownth_rate;
 
-        const std::string GetName(XCreature *viewer);
+        const std::string GetName(XCreature *viewer) override;
         XMushSpawn() { }
 
     public:
         DECLARE_CREATOR(XMushSpawn, XMapObject);
         XMushSpawn(int _x, int _y, XLocation * _l);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        int Run();
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
+        int Run() override;
 
-        XObject* Pick(XCreature * picker);
+        XObject* Pick(XCreature * picker) override;
 };
 
 

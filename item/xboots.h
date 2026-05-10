@@ -29,7 +29,7 @@ class XBoots: public XClothe
         DECLARE_CREATOR(XBoots, XClothe);
         XBoots(ITEM_TYPE it = IT_RANDOM);
         XBoots(XBoots * boots);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XBoots(this);
         }

@@ -28,7 +28,7 @@ class XGlamdring : public XWeapon
     public:
         XGlamdring();
         DECLARE_CREATOR(XGlamdring, XWeapon);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -41,7 +41,7 @@ class XDeathHack : public XWeapon
     public:
         XDeathHack();
         DECLARE_CREATOR(XDeathHack, XWeapon);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -54,14 +54,14 @@ class XAvanorDefender : public XWeapon
     public:
         XAvanorDefender();
         DECLARE_CREATOR(XAvanorDefender, XWeapon);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
 
         std::string toString() override;
         static XGUID avanordefender_guid;
-        void Restore(XFile * f);
+        void Restore(XFile * f) override;
 };
 
 class XForestBrotherCloak : public XCloak
@@ -70,7 +70,7 @@ class XForestBrotherCloak : public XCloak
         XForestBrotherCloak();
         std::string toString() override;
         DECLARE_CREATOR(XForestBrotherCloak, XCloak);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -81,7 +81,7 @@ class XGreatElementalRing : public XRing
     public:
         XGreatElementalRing();
         DECLARE_CREATOR(XGreatElementalRing, XRing);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -92,7 +92,7 @@ class XAvanorScepter : public XWeapon
     public:
         XAvanorScepter();
         DECLARE_CREATOR(XAvanorScepter, XWeapon);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -105,7 +105,7 @@ class XAvanorCrown : public XCap
     public:
         XAvanorCrown();
         DECLARE_CREATOR(XAvanorCrown, XCap);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -118,7 +118,7 @@ class XAvanorMitre : public XCap
     public:
         XAvanorMitre();
         DECLARE_CREATOR(XAvanorMitre, XCap);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -131,7 +131,7 @@ class XTorinAxe : public XWeapon
     public:
         XTorinAxe();
         DECLARE_CREATOR(XTorinAxe, XWeapon);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -144,7 +144,7 @@ class XTorinShield : public XShield
     public:
         XTorinShield();
         DECLARE_CREATOR(XTorinShield, XShield);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -157,7 +157,7 @@ class XDwarfCrown : public XCap
     public:
         XDwarfCrown();
         DECLARE_CREATOR(XDwarfCrown, XCap);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
@@ -170,7 +170,7 @@ class XBlackClub : public XWeapon
     public:
         XBlackClub();
         DECLARE_CREATOR(XBlackClub, XWeapon);
-        virtual int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }

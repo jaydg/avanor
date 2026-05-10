@@ -152,7 +152,7 @@ class XLocation : public XObject
 {
         std::string event;
     public:
-        int Run();
+        int Run() override;
 
         bool way_found_flag; //used for recursive way found alg...
 
@@ -177,9 +177,9 @@ class XLocation : public XObject
         void GetFreeXY(XPoint * pt, XRect * area = nullptr);
         void AddPlace(XAnyPlace * pl);
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        virtual void Invalidate();
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
+        void Invalidate() override;
         const char* GetBriefName()
         {
             return brief_name;

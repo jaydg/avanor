@@ -31,8 +31,8 @@ class XMoney : public XItem
         XMoney(XMoney * copy) : XItem((XItem*)copy) {}
 
         std::string toString() override;
-        virtual int Compare(XObject * o);
-        virtual XObject* MakeCopy()
+        int Compare(XObject * o) override;
+        XObject* MakeCopy() override
         {
             return new XMoney(this);
         }

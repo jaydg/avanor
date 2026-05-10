@@ -30,9 +30,9 @@ class XRing : public XEnhance
         XRing(ENHANCE enh = ENH_EOF);
         XRing(XRing * copy) : XEnhance((XEnhance*)copy) {}
 
-        virtual int isIdentifed();
-        virtual void Identify(int level);
-        virtual XObject* MakeCopy()
+        int isIdentifed() override;
+        void Identify(int level) override;
+        XObject* MakeCopy() override
         {
             return new XRing(this);
         }

@@ -1053,7 +1053,6 @@ bool XStandardAI::CanMoveHere(int px, int py)
     }
 }
 
-
 void XStandardAI::Store(XFile * f)
 {
     // XObject::Store(f);

@@ -47,20 +47,20 @@ class XCookingSet : public XItem
             assert(cooked_item == nullptr);
         }
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XCookingSet(this);
         }
 
-        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
+        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
         std::string toString() override
         {
             return name;
         }
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-        virtual void Invalidate();
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
+        void Invalidate() override;
     protected:
         XPtr<XItem> cooked_item;
         int use_time;
@@ -98,13 +98,13 @@ class XPickAxe : public XItem
 
         XPickAxe(XPickAxe * copy) : XItem(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XPickAxe(this);
         }
 
-        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual std::string toString()
+        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        std::string toString() override
         {
             return name;
         }
@@ -131,13 +131,13 @@ class XEyeOfRaa : public XItem
 
         XEyeOfRaa(XEyeOfRaa * copy) : XItem(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XEyeOfRaa(this);
         }
 
-        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual std::string toString()
+        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        std::string toString() override
         {
             return name;
         }
@@ -163,13 +163,13 @@ class XAlchemySet : public XItem
 
         XAlchemySet(XAlchemySet * copy) : XItem(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XAlchemySet(this);
         }
 
-        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual std::string toString()
+        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        std::string toString() override
         {
             return name;
         }

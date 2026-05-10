@@ -30,7 +30,7 @@ class XShield : public XItem
         XShield(ITEM_TYPE it = IT_RANDOM);
         XShield(XShield * copy) : XItem((XItem*)copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XShield(this);
         }

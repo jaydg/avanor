@@ -29,7 +29,7 @@ class XGloves : public XClothe
         DECLARE_CREATOR(XGloves, XClothe);
         XGloves(ITEM_TYPE it = IT_RANDOM);
         XGloves(XGloves * gloves);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XGloves(this);
         }

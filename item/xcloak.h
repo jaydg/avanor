@@ -29,7 +29,7 @@ class XCloak : public XClothe
         DECLARE_CREATOR(XCloak, XClothe);
         XCloak(ITEM_TYPE it = IT_RANDOM);
         XCloak(XCloak * cap);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XCloak(this);
         }

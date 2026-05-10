@@ -143,24 +143,24 @@ class XPotion : public XItem
         DECLARE_CREATOR(XPotion, XItem);
         XPotion(POTION_NAME _pn = PN_RANDOM);
         XPotion(XPotion * copy);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XPotion(this);
         }
 
-        virtual int isIdentifed();
-        virtual void Identify(int level);
+        int isIdentifed() override;
+        void Identify(int level) override;
         std::string toString() override;
-        virtual int Compare(XObject * o);
-        virtual int GetValue()
+        int Compare(XObject * o) override;
+        int GetValue() override
         {
             return value;
         }
 
         POTION_NAME pn;
         int onDrink(XCreature * cr);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
     protected:
@@ -183,7 +183,7 @@ class XAlchemyRec : public XObject
         XAlchemyRec(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
             pn1(p1), pn2(p2), result(res) {}
 
-        virtual void Store(XFile * f)
+        void Store(XFile * f) override
         {
             XObject::Store(f);
             f->Write(&pn1, sizeof(POTION_NAME));
@@ -191,7 +191,7 @@ class XAlchemyRec : public XObject
             f->Write(&result, sizeof(POTION_NAME));
         }
 
-        virtual void Restore(XFile * f)
+        void Restore(XFile * f) override
         {
             XObject::Restore(f);
             f->Read(&pn1, sizeof(POTION_NAME));

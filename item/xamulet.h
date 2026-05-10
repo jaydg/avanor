@@ -30,13 +30,13 @@ class XAmulet : public XEnhance
         XAmulet(ENHANCE enh = ENH_EOF);
         XAmulet(XAmulet * copy) : XEnhance((XEnhance*)copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XAmulet(this);
         }
 
-        virtual int isIdentifed();
-        virtual void Identify(int level);
+        int isIdentifed() override;
+        void Identify(int level) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
 };

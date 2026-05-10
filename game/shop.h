@@ -33,19 +33,19 @@ class XShop : public XAnyPlace
         DECLARE_CREATOR(XShop, XAnyPlace);
         XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
 
-        virtual int onCreatureEnter(XCreature * cr);
-        virtual int onCreatureLeave(XCreature * cr);
-        virtual int onCreaturePickItem(XCreature * cr, XItem * item);
-        virtual int onCreatureDropItem(XCreature * cr, XItem * item);
-        virtual int onCreatureMove(XCreature * cr);
+        int onCreatureEnter(XCreature * cr) override;
+        int onCreatureLeave(XCreature * cr) override;
+        int onCreaturePickItem(XCreature * cr, XItem * item) override;
+        int onCreatureDropItem(XCreature * cr, XItem * item) override;
+        int onCreatureMove(XCreature * cr) override;
         std::string onShowItem(XItem* item) override;
         void SetShopkeeper(XCreature * shopkeeper)
         {
             owner = shopkeeper;
         }
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 
         ITEM_MASK shop_mask;
     protected:

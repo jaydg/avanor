@@ -87,23 +87,23 @@ class XCorpse : public XAnyFood
             assert(0);
         }
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XCorpse(this);
         }
 
-        virtual RESULT onEat(XCreature * eater);
-        int Run();
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        RESULT onEat(XCreature * eater) override;
+        int Run() override;
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 
-        [[nodiscard]] virtual std::string postEat(XCreature *eater);
-        virtual int Compare(XObject * o)
+        [[nodiscard]] std::string postEat(XCreature *eater) override;
+        int Compare(XObject * o) override
         {
             return -1;
         }
 
-        virtual int GetValue();
+        int GetValue() override;
         std::string toString() override;
         CORPSE_CONDITION GetCondition();
         void Cook()

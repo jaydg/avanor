@@ -71,20 +71,20 @@ class XBook: public XItem
             left_to_read = copy->left_to_read;
         }
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XBook(this);
         }
 
-        virtual int isIdentifed();
-        virtual void Identify(int level);
+        int isIdentifed() override;
+        void Identify(int level) override;
         std::string toString() override;
-        virtual int Compare(XObject * o);
+        int Compare(XObject * o) override;
         virtual int onRead(XCreature * reader);
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
         int left_to_read;
     protected:
         int descr;

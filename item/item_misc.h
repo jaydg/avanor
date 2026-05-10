@@ -41,7 +41,7 @@ class XBatWing : public XAnyFood
 
         XBatWing(XBatWing * copy) : XAnyFood(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XBatWing(this);
         }
@@ -65,7 +65,7 @@ class XRatTail : public XAnyFood
 
         XRatTail(XRatTail * copy) : XAnyFood(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XRatTail(this);
         }
@@ -88,7 +88,7 @@ class XBone : public XAnyFood
 
         XBone(XBone * copy) : XAnyFood(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XBone(this);
         }
@@ -110,19 +110,19 @@ class XChest : public XItem
             assert(0);
         }
 
-        int Compare(XObject * o)
+        int Compare(XObject * o) override
         {
             return -1;
         }
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XChest(this);
         }
 
         std::string toString() override;
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 };
 
 class XAncientMachinePart : public XItem
@@ -143,7 +143,7 @@ class XAncientMachinePart : public XItem
 
         XAncientMachinePart(XAncientMachinePart * copy) : XItem(copy) {}
 
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XAncientMachinePart(this);
         }

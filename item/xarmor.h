@@ -29,7 +29,7 @@ class XArmor: public XClothe
         DECLARE_CREATOR(XArmor, XClothe);
         XArmor(ITEM_TYPE it = IT_RANDOM);
         XArmor(XArmor * armor);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             return new XArmor(this);
         }

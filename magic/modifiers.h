@@ -65,7 +65,7 @@ class XBasicModifier
     public:
         XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = nullptr);
 
-        ~XBasicModifier() {
+        virtual ~XBasicModifier() {
             setter = nullptr;
         }
 
@@ -149,7 +149,7 @@ class XModWound : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             if (xval > 0) {
                 if (xval < 3) {
@@ -172,28 +172,27 @@ class XModWound : public XBasicModifier
             }
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You've been wounded.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "Your wounds heal.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You are wounded again." : "Your bleeding slows.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "You lose blood!";
         }
 
-        virtual MODIFIER_RESULT Run(XCreature * owner);
-
+        MODIFIER_RESULT Run(XCreature * owner) override;
 };
 
 
@@ -207,32 +206,32 @@ class XModPoison : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_GREEN "poisoned";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You are poisoned!";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel relieved.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You are poisoned again!" : "You feel somewhat relieved.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "You feel the poison coursing through your body.";
         }
 
-        MODIFIER_RESULT Run(XCreature * owner);
+        MODIFIER_RESULT Run(XCreature * owner) override;
 };
 
 
@@ -246,32 +245,32 @@ class XModConfuse : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_LIGHTGRAY "confused";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You are confused.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "Your thoughts clear.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "Your confusion grows." : "You feel a little clearer.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "You stagger.";
         }
 
-        virtual MODIFIER_RESULT Run(XCreature * owner);
+        MODIFIER_RESULT Run(XCreature * owner) override;
 };
 
 class XModStun : public XBasicModifier
@@ -284,33 +283,33 @@ class XModStun : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return xval < 10 ? MSG_LIGHTGRAY "stunned " : MSG_YELLOW "heavily stunned ";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You are stunned.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel steady again.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You're stunned again." : "You feel a bit clearer.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "You stagger.";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModHeroism : public XBasicModifier
@@ -323,33 +322,33 @@ class XModHeroism : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_LIGHTGRAY "hero";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel like a hero.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "Your courage fades.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "Your resolve weakens." : "Your courage grows.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModDisease : public XBasicModifier
@@ -362,34 +361,34 @@ class XModDisease : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_GREEN "disease";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel ill.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "Your health returns.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You become more diseased." : "You start to feel better.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
-        virtual MODIFIER_RESULT Run(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
+        MODIFIER_RESULT Run(XCreature * owner) override;
 };
 
 
@@ -403,34 +402,34 @@ class XModWeak : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_CYAN "weakness";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel very weak.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "Your strength returns.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You feel a little stronger." : "Your weakness grows.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
-        virtual MODIFIER_RESULT Run(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
+        MODIFIER_RESULT Run(XCreature * owner) override;
 };
 
 
@@ -444,32 +443,32 @@ class XModParalyse : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_WHITE "paralyzed!";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You've been paralyzed!";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You can move again.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "Your muscles start to loosen." : "Your muscles tighten.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual MODIFIER_RESULT Run(XCreature * owner);
+        MODIFIER_RESULT Run(XCreature * owner) override;
 };
 
 class XModDelayed : public XBasicModifier
@@ -485,11 +484,11 @@ class XModDelayed : public XBasicModifier
             assert(0);
         }
 
-        virtual MODIFIER_RESULT Run(XCreature * owner);
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        MODIFIER_RESULT Run(XCreature * owner) override;
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 
-        virtual int Compare(XBasicModifier *o)
+        int Compare(XBasicModifier *o) override
         {
             if (XBasicModifier::Compare(o) == 0 && set_mt == ((XModDelayed*)o)->set_mt) {
                 return 0;
@@ -521,33 +520,33 @@ class XModSeeInvisible : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return MSG_LIGHTGRAY "perceptive";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel more perceptive.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel less perceptive.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You feel less perceptive." : "You feel more preceptive.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModBoostSpeed : public XBasicModifier
@@ -560,34 +559,33 @@ class XModBoostSpeed : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return "";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel very quick.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You slow down to normal.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You feel quicker." : "You feel slower.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModSlowness : public XBasicModifier
@@ -600,33 +598,33 @@ class XModSlowness : public XBasicModifier
             assert(0);
         }
 
-        const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return "";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel very slow.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel your speed return.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "You feel slower." : "You feel quicker.";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModAcidResistance : public XBasicModifier
@@ -639,33 +637,33 @@ class XModAcidResistance : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return "";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel safer.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel less safe.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "." : ".";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModFireResistance : public XBasicModifier
@@ -678,33 +676,33 @@ class XModFireResistance : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return "";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel safer.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel less safe.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "." : ".";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModColdResistance : public XBasicModifier
@@ -717,33 +715,33 @@ class XModColdResistance : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return "";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel safer.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel less safe.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "." : ".";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 class XModPoisonResistance : public XBasicModifier
@@ -756,33 +754,33 @@ class XModPoisonResistance : public XBasicModifier
             assert(0);
         }
 
-        virtual const char* GetDisplayName(int xval)
+        const char* GetDisplayName(int xval) override
         {
             return "";
         }
 
-        const char* SetMsg()
+        const char* SetMsg() override
         {
             return "You feel safer.";
         }
 
-        const char* RemoveMsg()
+        const char* RemoveMsg() override
         {
             return "You feel less safe.";
         }
 
-        const char* ChangeMsg(int val)
+        const char* ChangeMsg(int val) override
         {
             return val > 0 ? "." : ".";
         }
 
-        const char* ApplyMsg()
+        const char* ApplyMsg() override
         {
             return "";
         }
 
-        virtual int onSet(XCreature * owner);
-        virtual int onRemove(XCreature * owner);
+        int onSet(XCreature * owner) override;
+        int onRemove(XCreature * owner) override;
 };
 
 #endif

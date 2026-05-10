@@ -50,13 +50,13 @@ class XItem : public XBaseObject
         void MainFill(_MAIN_ITEM_STRUCT * is);
         XItem();
         XItem(XItem * copy);
-        virtual XObject* MakeCopy()
+        XObject* MakeCopy() override
         {
             assert(0);
             return nullptr;
         }
 
-        virtual void Invalidate();
+        void Invalidate() override;
 
         int BasicFill(ITEM_TYPE it, XItemBasicStructure * pData);
         void PropFill(ITEM_SET is, int val = 1000);
@@ -75,7 +75,7 @@ class XItem : public XBaseObject
         int identify;    // 0 - not identifed, 1 - identifed
         int is_selected; // it is need to user interface....
 
-        virtual int Compare(XObject * o); // compare objects
+        int Compare(XObject * o) override; // compare objects
         virtual int isIdentifed()
         {
             return identify; // object can be indetifed or not
@@ -112,8 +112,8 @@ class XItem : public XBaseObject
             return FAIL;
         }
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
+        void Store(XFile * f) override;
+        void Restore(XFile * f) override;
 
         bool SetOwner(XCreature * new_owner);
         XPtr<XCreature> &GetOwner()
