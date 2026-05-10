@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "item/xpotion.h"
@@ -233,21 +236,21 @@ int XPotion::Compare(XObject * o)
     }
 }
 
-void XPotion::toString(char* buf)
+std::string XPotion::toString()
 {
     if (isIdentifed()) {
         if (quantity == 1) {
-            sprintf(buf, "potion of %s", name.c_str());
-        } else {
-            sprintf(buf, "heap of %d potions of %s", quantity, name.c_str());
+            return fmt::format("potion of {}", name);
         }
-    } else {
-        if (quantity == 1) {
-            sprintf(buf, "%s potion", pnc_table[pdescr->force_color].name);
-        } else {
-            sprintf(buf, "heap of %d %s potions", quantity, pnc_table[pdescr->force_color].name);
-        }
+
+        return fmt::format("heap of {} potions of {}", quantity, name);
     }
+
+    if (quantity == 1) {
+        return fmt::format("{} potion", pnc_table[pdescr->force_color].name);
+    }
+
+    return fmt::format("heap of {} {} potions", quantity, pnc_table[pdescr->force_color].name);
 }
 
 int XPotion::isIdentifed()
@@ -263,18 +266,9 @@ void XPotion::Identify(int level)
 int XPotion::onDrink(XCreature * cr)
 {
     if (cr->isHero()) {
-        msgwin.Add("You drink a ");
-        char buf[256];
-        toString(buf);
-        strcat(buf, ".");
-        msgwin.Add(buf);
+        msgwin.Add(fmt::format("You drink a {}.", toString()));
     } else if (cr->isVisible()) {
-        msgwin.Add(cr->name);
-        msgwin.Add("drinks a ");
-        char buf[256];
-        toString(buf);
-        strcat(buf, ".");
-        msgwin.Add(buf);
+        msgwin.Add(fmt::format("{} drinks a {}.", cr->name, toString()));
     }
 
     int flag;
@@ -468,17 +462,11 @@ int XPotion::onDrink(XCreature * cr)
         if (cr->isHero()) {
             msgwin.Add("You feel nothing special!");
         } else {
-            msgwin.Add("Nothing special happens to ");
-            msgwin.Add(cr->name);
-            msgwin.Add(".");
+            msgwin.Add(fmt::format("Nothing special happens to {}.", cr->name));
         }
     } else if (!isIdentifed() && cr->isHero()) {
-        char buf[256];
         Identify(1);
-        msgwin.Add("It was");
-        toString(buf);
-        strcat(buf, ".");
-        msgwin.Add(buf);
+        msgwin.Add(fmt::format("It was {}.", toString()));
     }
 
     return 0;

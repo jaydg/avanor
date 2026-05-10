@@ -128,21 +128,23 @@ int XScroll::Compare(XObject * o)
     }
 }
 
-void XScroll::toString(char* buf)
+std::string XScroll::toString()
 {
     if (!isIdentifed()) {
         if (quantity == 1) {
-            sprintf(buf, "scroll labeled \"%s\"", scroll_descr[descr].name);
-        } else {
-            sprintf(buf, "heap of (%d) scrolls labeled \"%s\"", quantity, scroll_descr[descr].name);
+            return fmt::format("scroll labeled \"{}\"", scroll_descr[descr].name);
         }
-    } else {
-        if (quantity == 1) {
-            sprintf(buf, "scroll of %s", name.c_str());
-        } else {
-            sprintf(buf, "heap of (%d) scrolls of %s", quantity, name.c_str());
-        }
+
+        return fmt::format("heap of ({}) scrolls labeled \"{}\"",
+            quantity, scroll_descr[descr].name);
     }
+
+    if (quantity == 1) {
+        return fmt::format("scroll of {}", name);
+    }
+
+    return fmt::format("heap of ({}) scrolls of {}",
+        quantity, name);
 }
 
 int XScroll::onRead(XCreature * cr)
@@ -154,16 +156,9 @@ int XScroll::onRead(XCreature * cr)
 
     if (scroll_descr[descr].effect != E_NONE) {
         if (cr->isHero()) {
-            msgwin.Add("You read the");
-            toString(buf);
-            strcat(buf, ".");
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("You read the {}.", toString()));
         } else if (cr->isVisible()) {
-            msgwin.Add(cr->name);
-            msgwin.Add("reads the");
-            toString(buf);
-            strcat(buf, ".");
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("{} reads the {}.", cr->name, toString()));
         }
 
         EFFECT_DATA ed;
@@ -219,10 +214,7 @@ int XScroll::onRead(XCreature * cr)
     } else {
         if (!isIdentifed() && cr->isHero()) {
             Identify(1);
-            msgwin.Add("It was");
-            toString(buf);
-            strcat(buf, ".");
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("It was {}.", toString()));
         }
     }
 

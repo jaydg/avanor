@@ -251,11 +251,11 @@ void XCorpse::Restore(XFile * f)
     pCorpseData = &XCreatureStorage::GetCreatureData(cn)->pCorpseData;
 }
 
-void XCorpse::toString(char* buf)
+std::string XCorpse::toString()
 {
     if (corpse_flag & CF_COOKED) {
-        sprintf(buf, "cooked %s", name.c_str());
-    } else {
-        strcpy(buf, name.c_str());
+        return fmt::format("cooked %s", name);
     }
+
+    return name;
 }

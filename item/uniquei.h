@@ -33,7 +33,7 @@ class XGlamdring : public XWeapon
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XDeathHack : public XWeapon
@@ -46,7 +46,7 @@ class XDeathHack : public XWeapon
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XAvanorDefender : public XWeapon
@@ -59,7 +59,7 @@ class XAvanorDefender : public XWeapon
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
         static XGUID avanordefender_guid;
         void Restore(XFile * f);
 };
@@ -68,7 +68,7 @@ class XForestBrotherCloak : public XCloak
 {
     public:
         XForestBrotherCloak();
-        virtual void toString(char* buf);
+        std::string toString() override;
         DECLARE_CREATOR(XForestBrotherCloak, XCloak);
         virtual int Compare(XObject * o)
         {
@@ -97,7 +97,7 @@ class XAvanorScepter : public XWeapon
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XAvanorCrown : public XCap
@@ -110,7 +110,7 @@ class XAvanorCrown : public XCap
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XAvanorMitre : public XCap
@@ -123,7 +123,7 @@ class XAvanorMitre : public XCap
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XTorinAxe : public XWeapon
@@ -136,7 +136,7 @@ class XTorinAxe : public XWeapon
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XTorinShield : public XShield
@@ -149,7 +149,7 @@ class XTorinShield : public XShield
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XDwarfCrown : public XCap
@@ -162,7 +162,7 @@ class XDwarfCrown : public XCap
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 class XBlackClub : public XWeapon
@@ -175,7 +175,7 @@ class XBlackClub : public XWeapon
             return -1;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 #endif

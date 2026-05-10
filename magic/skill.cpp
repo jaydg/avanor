@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "helpers/xgui.h"
@@ -200,12 +202,7 @@ int XSkill::UseSteal(XCreature * user)
 
             if (vRand() % 100 < p || !user->isVisible()) {
                 if (user->isVisible()) {
-                    char buf[256];
-                    XItem * it = (XItem*)object;
-                    it->toString(buf);
-                    char buf2[256];
-                    sprintf(buf2, "You steal %s.", buf);
-                    msgwin.Add(buf2);
+                    msgwin.Add(fmt::format("You steal {}.", object->toString()));
                 }
 
                 cr->UnCarryItem(object);

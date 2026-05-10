@@ -602,18 +602,10 @@ void XHero::Move()
         } else if (l->map->GetItemCount(nx, ny) == 1) {
             XItemList* ilist = (l->map->GetItemList(nx, ny));
             XItem* item = *(ilist->begin());
-            char buf[256];
-            msgwin.Add("There is a");
             XAnyPlace* place = l->map->GetPlace(nx, ny);
 
-            if (place) {
-                place->onShowItem(item, buf);
-            } else {
-                item->toString(buf);
-            }
-
-            msgwin.Add(buf);
-            msgwin.Add("here.");
+            msgwin.Add(fmt::format("There is a {} here.",
+                place ? place->onShowItem(item) : item->toString()));
         }
     }
 
@@ -1073,10 +1065,8 @@ void XHero::Equipment(FILE * f)
             strcpy(buf + 20, MSG_BROWN ": ");
 
             if (xbp->Item()) {
-                char buf2[256];
-                xbp->Item()->toString(buf2);
                 strcat(buf, MSG_LIGHTGRAY);
-                strcat(buf, buf2);
+                strcat(buf, xbp->Item()->toString().c_str());
             } else {
                 strcat(buf, MSG_BROWN "-");
             }
@@ -1232,21 +1222,12 @@ void XHero::DropItem()
             }
         }
 
-        char buf[256];
-
-        if (drop_item) {
-            drop_item->toString(buf);
-            strcat(buf, ".");
-        }
-
         if (!XCreature::DropItem(drop_item)) {
             contain.insert(drop_item);
             return;
         }
 
-        msgwin.Add(name);
-        msgwin.Add("drops");
-        msgwin.Add(buf);
+        msgwin.Add(fmt::format("{] drops {}.", name, drop_item->toString()));
     }
 }
 
@@ -1263,13 +1244,10 @@ void XHero::PickItem()
             msgwin.Add("There is nothing to pick up here.");
         } else {
             const auto tit = dynamic_cast<XItem *>(obj->Pick(this));
-            char buf[256];
-            tit->toString(buf);
 
+            auto desc = tit->toString();
             if (PickUpItem(tit)) {
-                strcpy(bufx, "You pick a ");
-                strcat(bufx, buf);
-                msgwin.AddLast(bufx);
+                msgwin.Add(fmt::format("You pick a {}.", desc));
             } else {
                 tit->Invalidate();
             }
@@ -1278,27 +1256,20 @@ void XHero::PickItem()
         XItem* tit = *(tmpquae->begin());
         tmpquae->erase(tit);
 
-        char buf[256];
-        tit->toString(buf);
-
         if (PickUpItem(tit)) {
-            sprintf(bufx, "You pick up a %s.", buf);
-            msgwin.Add(bufx);
+            msgwin.Add(fmt::format("You pick up a {}.", tit->toString()));
         } else {
             tmpquae->insert(tit);
         }
     } else {
-        XItem * tit;
+        XItem* tit;
         int nitem = 0;
 
-        char buf[256];
-
         while (!tmpquae->empty() && (tit = Inventory(tmpquae))) {
-            tit->toString(buf);
-
             if (PickUpItem(tit)) {
                 nitem++;
-            } else { //we can't pick item, so return it back
+            } else {
+                // we can't pick item, so return it back
                 tmpquae->insert(tit);
                 vRefresh();
                 vGetch();
@@ -1306,9 +1277,7 @@ void XHero::PickItem()
         }
 
         if (nitem == 1) {
-            strcpy(bufx, "You pick up a ");
-            strcat(bufx, buf);
-            msgwin.AddLast(bufx);
+            msgwin.Add(fmt::format("You pick up a {}.", tit->toString()));
         } else if (nitem > 1) {
             msgwin.Add("You pick up a heap of items.");
         }
@@ -1548,10 +1517,7 @@ int XHero::XShoot()
         for (auto it: contain) {
             if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missile_w)) {
                 msgwin.ClrMsg();
-                msgwin.Add("Load");
-                char buf[256];
-                it->toString(buf);
-                msgwin.Add(buf);
+                msgwin.Add(fmt::format("Load {}", it->toString()));
                 msgwin.Add("[" MSG_CYAN "Y" MSG_LIGHTGRAY ", " MSG_CYAN "N" MSG_LIGHTGRAY ", " MSG_CYAN "Esc" MSG_LIGHTGRAY "]?");
                 vRefresh();
                 const int ch = vGetch();
@@ -1841,8 +1807,7 @@ int XHero::XCast(FILE * f)
             list.AddItem(new XGuiItem_Text("You do not know any spells", 0));
         } else {
             for (auto spell : m->spells) {
-                spell->toString(buf);
-                list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
+                list.AddItem(new XGuiItem_SimpleSelect(spell->toString().c_str()), 0);
             }
         }
 
@@ -2287,9 +2252,6 @@ void XHero::LookAt()
 
         for (auto xbp: xcr->components) {
             if (xbp->Item()) {
-                char xbuf[512];
-                xbp->Item()->toString(xbuf);
-
                 if (!iflag) {
                     if (xcr->isHero()) {
                         str = MSG_YELLOW "You are wearing the following items:";
@@ -2301,7 +2263,7 @@ void XHero::LookAt()
                     list.AddItem(new XGuiItem_Text(str, 0), 0);
                 }
 
-                list.AddItem(new XGuiItem_Text(xbuf, 0), 0);
+                list.AddItem(new XGuiItem_Text(xbp->Item()->toString(), 0), 0);
                 iflag = true;
             }
 

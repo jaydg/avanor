@@ -150,7 +150,7 @@ class XPotion : public XItem
 
         virtual int isIdentifed();
         virtual void Identify(int level);
-        virtual void toString(char* buf);
+        std::string toString() override;
         virtual int Compare(XObject * o);
         virtual int GetValue()
         {

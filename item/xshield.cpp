@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "item/xshield.h"
 
 REGISTER_CLASS(XShield);
@@ -44,14 +46,12 @@ XShield::XShield(ITEM_TYPE _it)
     _HIT = 0;
 }
 
-void XShield::toString(char* buf)
+std::string XShield::toString()
 {
-    GetFullName(buf);
-    char tbuf[256];
+    auto fullname = GetFullName();
 
-    sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-    strcat(buf, tbuf);
+    fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+    fullname.append(StatsToString());
 
-    StatsToString(tbuf);
-    strcat(buf, tbuf);
+    return fullname;
 }

@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "engine/xapi.h"
 #include "item/xweapon.h"
 
@@ -100,31 +102,31 @@ _WEAPON_BIND wbind[weapon_db_size] = {
 
 struct WEAPON_BRAND_TYPE_NAME {
     BRAND_TYPE brt;
-    const char* templ;
+    std::string templ;
 };
 
 const int weapon_brand_name_db_size = 17;
 
 WEAPON_BRAND_TYPE_NAME weapon_brand_name_db[weapon_brand_name_db_size] = {
-    {BR_FIRE,	"%s of Fire",	},
-    {BR_HELLFIRE,	"%s of Hell Fire",	},
-    {BR_COLD,	"%s of Cold"	},
-    {BR_ULTIMATECOLD,	"%s of Ultimate Cold"	},
-    {BR_LIGHTNING,	"%s of Lightning"	},
+    {BR_FIRE,	"{} of Fire",	},
+    {BR_HELLFIRE,	"{} of Hell Fire",	},
+    {BR_COLD,	"{} of Cold"	},
+    {BR_ULTIMATECOLD,	"{} of Ultimate Cold"	},
+    {BR_LIGHTNING,	"{} of Lightning"	},
 
-    {BR_ACID,	"%s of Acid"	},
-    {BR_POISON,	"%s of Poison"	},
-    {BR_DEATH,	"%s of Death"	},
+    {BR_ACID,	"{} of Acid"	},
+    {BR_POISON,	"{} of Poison"	},
+    {BR_DEATH,	"{} of Death"	},
 
-    {BR_UNDEADSLAYER,	"%s of Slay Undead"	},
-    {BR_HUMANOIDSLAYER,	"%s of Slay Humanoids"	},
-    {BR_ANIMALSLAYER,	"%s of Slay Animals"	},
-    {BR_DRAGONSLAYER,	"%s of Dragon Slaying"	},
-    {BR_GIANTSLAYER,	"%s of Giant Slaying"	},
-    {BR_ORCSLAYER,	"%s of Slay Orcs"	},
-    {BR_TROLLSLAYER,	"%s of Slay Trolls"	},
-    {BR_TROLLSLAYER,	"%s of Slay Trolls"	},
-    {BR_DEMONSLAYER,	"%s of Slay Demons"	},
+    {BR_UNDEADSLAYER,	"{} of Slay Undead"	},
+    {BR_HUMANOIDSLAYER,	"{} of Slay Humanoids"	},
+    {BR_ANIMALSLAYER,	"{} of Slay Animals"	},
+    {BR_DRAGONSLAYER,	"{} of Dragon Slaying"	},
+    {BR_GIANTSLAYER,	"{} of Giant Slaying"	},
+    {BR_ORCSLAYER,	"{} of Slay Orcs"	},
+    {BR_TROLLSLAYER,	"{} of Slay Trolls"	},
+    {BR_TROLLSLAYER,	"{} of Slay Trolls"	},
+    {BR_DEMONSLAYER,	"{} of Slay Demons"	},
 };
 
 XWeapon::XWeapon(ITEM_TYPE _it)
@@ -148,23 +150,20 @@ int XWeapon::BindWeapon()
     return 0;
 }
 
-void XWeapon::toString(char* buf)
+std::string XWeapon::toString()
 {
-    char w_name[256];
-    _ITEMPROP * prop = GetMaterial(material_index);
-    strcpy(w_name, prop->propname);
+    _ITEMPROP* prop = GetMaterial(material_index);
+    std::string w_name = prop->propname;
 
     for (int i = 0; i < weapon_db_size; i++) {
         if (it == weapon_db[i].it) {
-            strcat(w_name, " ");
-            strcat(w_name, weapon_db[i].name);
+            w_name.append(" ");
+            w_name.append(weapon_db[i].name);
             break;
         }
     }
 
-    const char* brand_templ = nullptr;
-
-    char zbuf[256] = "%s";
+    std::string brand_templ;
 
     if (brt) {
         int ec = vBitsCount(brt & BR_ELEMENTAL_MASK);
@@ -176,60 +175,52 @@ void XWeapon::toString(char* buf)
         } else if (ec == 0 && bc == 0 && sc == 1) {
             brand_templ = GetTemplate(brt & BR_SLAYER_MASK);
         } else if (ec >= 1 && bc == 0 && sc == 1) {
-            strcpy(zbuf, "Elemental ");
-            strcat(zbuf, GetTemplate(brt & BR_SLAYER_MASK));
-            brand_templ = zbuf;
+            brand_templ = fmt::format("Elemental {}", GetTemplate(brt & BR_SLAYER_MASK));
         } else if (ec >= 1 && bc == 0 && sc > 1) {
-            brand_templ = "Elemental %s of Slaying";
+            brand_templ = "Elemental {} of Slaying";
         } else if (ec == 0 && bc == 0 && sc > 1) {
-            brand_templ = "%s of Slaying";
+            brand_templ = "{} of Slaying";
         } else if (ec > 1 && bc == 0 && sc == 0) {
-            brand_templ = "Elemental %s";
+            brand_templ = "Elemental {}";
         }
     }
 
+    std::string fullname;
     if (quantity == 1) {
-        if (brand_templ) {
-            sprintf(buf, brand_templ, w_name);
+        if (!brand_templ.empty()) {
+            fullname = fmt::format(brand_templ, w_name);
         } else {
-            sprintf(buf, "%s", w_name);
+            fullname = w_name;
         }
     } else {
-        if (brand_templ) {
-            char xbuf[256];
-            strcpy(xbuf, "heap of (%d)");
-            strcat(xbuf, brand_templ);
-            sprintf(buf, xbuf, quantity, w_name);
+        if (!brand_templ.empty()) {
+            fullname = fmt::format("heap of ({})" + brand_templ,
+                quantity, w_name);
         } else {
-            sprintf(buf, "heap of (%d) %ss", quantity, w_name);
+            fullname = fmt::format("heap of ({}) {}s", quantity, w_name);
         }
     }
 
     if (isIdentifed()) {
-        strcat(buf, " ");
-        char tbuf[256];
-
         if (RNG != 0) {
-            sprintf(tbuf, "<%+d>", RNG);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" <{:+}>", RNG));
         }
 
         if (_DV != 0 || _PV != 0) {
-            sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
         }
 
-        sprintf(tbuf, "(%+d, %dd%d%+d)", _HIT, dice.X, dice.Y, dice.Z);
-        strcat(buf, tbuf);
+        fullname.append(fmt::format(" ({:+}, {}d{}{:+})", _HIT, dice.X, dice.Y, dice.Z));
 
-        StatsToString(tbuf);
-        strcat(buf, tbuf);
+        fullname.append(StatsToString());
     }
+
+    return fullname;
 }
 
-const char* XWeapon::GetTemplate(unsigned int mask, int isRight)
+std::string XWeapon::GetTemplate(unsigned int mask, int isRight)
 {
-    const char* brand_templ = nullptr;
+    std::string brand_templ = nullptr;
 
     for (int j = 0; j < weapon_brand_name_db_size; j++) {
         if ((weapon_brand_name_db[j].brt ^ mask) == 0) {

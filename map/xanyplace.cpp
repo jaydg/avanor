@@ -112,9 +112,9 @@ void XAnyPlace::Invalidate()
     XObject::Invalidate();
 }
 
-void XAnyPlace::onShowItem(XItem* item, char* buf)
+std::string XAnyPlace::onShowItem(XItem* item)
 {
-    item->toString(buf);
+    return item->toString();
 }
 
 void XAnyPlace::Setup(XLocation* _map)

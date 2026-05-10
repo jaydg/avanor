@@ -46,7 +46,7 @@ class XAnyFood : public XItem
             return new XAnyFood(this);
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
         virtual RESULT onEat(XCreature * eater); // eat a peace from food
         virtual const char* postEat(XCreature * eater);
         virtual int Compare(XObject * o);

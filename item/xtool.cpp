@@ -253,13 +253,10 @@ RESULT XAlchemySet::onUse(USE_ITEM_STATE uis, XCreature * cr)
     int val = cr->sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
     if (vRand(100) < val) {
-        XPotion * pot = new XPotion(pr->pn);
-        char buf[256];
-        pot->toString(buf);
-        msgwin.Add(cr->name);
-        char buf1[256];
-        sprintf(buf1, "managed to create a %s.", buf);
-        msgwin.Add(buf1);
+        XPotion* pot = new XPotion(pr->pn);
+        msgwin.Add(fmt::format("{} managed to create a {}.",
+            cr->name, pot->toString()));
+
         cr->CarryItem(pot);
         cr->contain.insert(pot);
         cr->sk->UseSkill(XSkill::Skill::ALCHEMY);

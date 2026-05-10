@@ -38,7 +38,7 @@ class XShop : public XAnyPlace
         virtual int onCreaturePickItem(XCreature * cr, XItem * item);
         virtual int onCreatureDropItem(XCreature * cr, XItem * item);
         virtual int onCreatureMove(XCreature * cr);
-        virtual void onShowItem(XItem * item, char* buf);
+        std::string onShowItem(XItem* item) override;
         void SetShopkeeper(XCreature * shopkeeper)
         {
             owner = shopkeeper;

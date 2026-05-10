@@ -1007,12 +1007,8 @@ int XCreature::PickUpItem(XItem * i)
             return 1;
         } else { //if we can't pick item, then drop it
             if (im & IM_HERO) {
-                char bufx[256];
-                char buf[256];
-                i->toString(buf);
-                sprintf(bufx, "%s is to heavy for you!", buf);
                 msgwin.ClrMsg();
-                msgwin.Add(bufx);
+                msgwin.Add(fmt::format("{} is to heavy for you!", i->toString()));
             }
 
             int tx = i->x;

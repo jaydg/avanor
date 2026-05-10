@@ -580,21 +580,19 @@ int XStandardAI::Wear()
 
         if (ai_owner->isVisible()) {
             std::string str;
-            char tbuf[256];
-            item->toString(tbuf);
 
             switch (item->im) {
                 case IM_WEAPON :
                 case IM_MISSILEW :
-                    str = fmt::format("{} has wielded {}.", ai_owner->name, tbuf);
+                    str = fmt::format("{} has wielded {}.", ai_owner->name, item->toString());
                     break;
 
                 case IM_MISSILE :
-                    str = fmt::format("{} has armed {}.", ai_owner->name, tbuf);
+                    str = fmt::format("{} has armed {}.", ai_owner->name, item->toString());
                     break;
 
                 default :
-                    str = fmt::format("{} puts on {}.", ai_owner->name, tbuf);
+                    str = fmt::format("{} puts on {}.", ai_owner->name, item->toString());
                     break;
             }
 
@@ -1148,13 +1146,11 @@ void XStandardAI::RunScript()
 
             if (obj && obj->isValid() && obj->im == IM_OTHER) {
                 XItem * tit = (XItem*)(obj->Pick(ai_owner));
-                char buf[256];
-                tit->toString(buf);
 
                 if (ai_owner->PickUpItem(tit)) {
                     if (ai_owner->isVisible()) {
                         msgwin.Add(fmt::format("{} collects {}.",
-                            ai_owner->GetNameEx(CRN_T1), buf));
+                            ai_owner->GetNameEx(CRN_T1), tit->toString()));
                     }
 
                     if (vRand(2) == 0) {

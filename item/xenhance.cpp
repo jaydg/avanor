@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "item/xenhance.h"
 
 REGISTER_CLASS(XEnhance);
@@ -216,63 +218,57 @@ int XEnhance::Compare(XObject * o)
     }
 }
 
-void XEnhance::toString(char* buf)
+std::string XEnhance::toString()
 {
     if (!isIdentifed()) {
         if (quantity == 1) {
-            sprintf(buf, "%s %s", ect[descr].color_name, name.c_str());
-        } else {
-            sprintf(buf, "heap of (%d) %s %ss", quantity, ect[descr].color_name, name.c_str());
+            return fmt::format("{} {}", ect[descr].color_name, name);
         }
 
-        return;
+        return fmt::format("heap of ({}) {} {}s",
+            quantity, ect[descr].color_name, name);
     }
+
+    std::string fullname;
 
     if (quantity == 1) {
-        sprintf(buf, "%s %s", name.c_str(), enh_db[descr].name);
+        fullname = fmt::format("{} {}", name, enh_db[descr].name);
     } else {
-        sprintf(buf, "heap of (%d) %ss %s", quantity, name.c_str(), enh_db[descr].name);
+        fullname = fmt::format("heap of ({}) {}s {}",
+            quantity, name, enh_db[descr].name);
     }
 
-    char tbuf[256];
-
     if (RNG != 0) {
-        sprintf(tbuf, "<%+d>", RNG);
-        strcat(buf, tbuf);
+        fullname.append(fmt::format(" <{:+}>", RNG));
     }
 
     if (dice.Z != 0 && _HIT != 0) {
-        sprintf(tbuf, "(%+d, %+d)", _HIT, dice.Z);
-        strcat(buf, tbuf);
+        fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.Z));
     } else {
         if (_HIT != 0) {
-            sprintf(tbuf, "(%+d)", _HIT);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" ({:+})", _HIT));
         }
 
         if (dice.Z != 0) {
-            sprintf(tbuf, "(%+d)", dice.Z);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" ({:+})", dice.Z));
         }
     }
 
     if (_DV != 0 && _PV != 0) {
-        sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-        strcat(buf, tbuf);
+        fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
     } else {
         if (_DV != 0) {
-            sprintf(tbuf, "[%+d]", _DV);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" [{:+}]", _DV));
         }
 
         if (_PV != 0) {
-            sprintf(tbuf, "[%+d]", _PV);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" [{:+}]", _PV));
         }
     }
 
-    StatsToString(tbuf);
-    strcat(buf, tbuf);
+    fullname.append(StatsToString());
+
+    return fullname;
 }
 
 void XEnhance::Store(XFile * f)

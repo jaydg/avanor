@@ -121,7 +121,7 @@ class XChest : public XItem
         }
 
         int Add(XItem * item);
-        virtual void toString(char* buf);
+        std::string toString() override;
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
 };
@@ -149,9 +149,9 @@ class XAncientMachinePart : public XItem
             return new XAncientMachinePart(this);
         }
 
-        virtual void toString(char* buf)
+        std::string toString() override
         {
-            GetFullName(buf);
+            return GetFullName();
         }
 
 };

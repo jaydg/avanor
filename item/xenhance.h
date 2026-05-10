@@ -81,7 +81,7 @@ class XEnhance : public XItem
             descr = copy->descr;
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
         int descr;
         virtual int Compare(XObject * o);
         virtual void Store(XFile * f);

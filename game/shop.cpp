@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/skeep_ai.h"
 #include "game/shop.h"
 #include "item/itemf.h"
@@ -146,13 +148,13 @@ void XShop::Restore(XFile * f)
     f->Read(&shop_mask, sizeof(ITEM_MASK));
 }
 
-void XShop::onShowItem(XItem * item, char* buf)
+std::string XShop::onShowItem(XItem* item)
 {
-    item->toString(buf);
+    auto desc = item->toString();
 
     if (owner) {
-        char buf2[256];
-        sprintf(buf2, "{%dgp}", item->quantity * item->GetValue());
-        strcat(buf, buf2);
+        desc.append(fmt::format("{{{}gp}}", item->quantity * item->GetValue()));
     }
+
+    return desc;
 }

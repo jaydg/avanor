@@ -41,9 +41,9 @@ class XWeapon : public XItem
         }
 
         int BindWeapon();
-        virtual void toString(char* buf);
+        std::string toString() override;
     protected:
-        const char* GetTemplate(unsigned int mask, int isRight = 1);
+        std::string GetTemplate(unsigned int mask, int isRight = 1);
 };
 
 #endif

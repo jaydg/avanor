@@ -103,7 +103,7 @@ class XCorpse : public XAnyFood
         }
 
         virtual int GetValue();
-        virtual void toString(char* buf);
+        std::string toString() override;
         CORPSE_CONDITION GetCondition();
         void Cook()
         {

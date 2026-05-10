@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "item/xbook.h"
 #include "helpers/msgwin.h"
@@ -164,21 +166,27 @@ int XBook::Compare(XObject * o)
     }
 }
 
-void XBook::toString(char* buf)
+std::string XBook::toString()
 {
+    std::string str;
+
     if (!isIdentifed()) {
         if (quantity == 1) {
-            sprintf(buf, "%s", books_descr[book_descr[descr].name_index]);
+            str = books_descr[book_descr[descr].name_index];
         } else {
-            sprintf(buf, "heap of (%d) %ss", quantity, books_descr[book_descr[descr].name_index]);
+            str = fmt::format("heap of ({}) {}s",
+                quantity, books_descr[book_descr[descr].name_index]);
         }
     } else {
         if (quantity == 1) {
-            sprintf(buf, "book of %s", name.c_str());
+            str = fmt::format("book of {}", name);
         } else {
-            sprintf(buf, "heap of (%d) books of %s", quantity, name.c_str());
+            str = fmt::format("heap of ({}) books of {}",
+                quantity, name);
         }
     }
+
+    return str;
 }
 
 int XBook::onRead(XCreature * reader)
@@ -196,29 +204,21 @@ int XBook::onRead(XCreature * reader)
         skill->UseSkill(10);
 
         if (reader->isHero()) {
-            char buf[256];
-            toString(buf);
-            msgwin.Add("You read the");
-            msgwin.AddLast(buf);
+            msgwin.Add(fmt::format("You read the {}.", toString()));
 
             if (!isIdentifed()) {
                 Identify(1);
-                msgwin.Add("It was");
-                toString(buf);
-                msgwin.AddLast(buf);
+                msgwin.Add(fmt::format("It was {}.", toString()));
             }
         } else if (reader->isVisible()) {
-            char buf[256];
-            toString(buf);
-            msgwin.Add(reader->GetNameEx(CRN_T1));
-            msgwin.Add(reader->GetVerb("read"));
-            msgwin.AddLast(buf);
+            msgwin.Add(fmt::format("{} {} {}.",
+                reader->GetNameEx(CRN_T1),
+                reader->GetVerb("read"),
+                toString()));
 
             if (!isIdentifed()) {
                 Identify(1);
-                msgwin.Add("It was");
-                toString(buf);
-                msgwin.AddLast(buf);
+                msgwin.Add(fmt::format("It was {}.", toString()));
             }
         }
     }

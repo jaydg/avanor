@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "item/xmissile.h"
 #include "item/xweapon.h"
 
@@ -139,24 +141,23 @@ XMissile::XMissile(ITEM_TYPE _it)
     weight = (weight / 5 + 1);
 }
 
-void XMissile::toString(char* buf)
+std::string XMissile::toString()
 {
     if (quantity == 1)
-        sprintf(buf, "%s%s%s <%+d>(%+d, %dd%d%+d)%s",
+        return fmt::format("{}{}{} <{:+}>({:+}, {}d{}{:+}){}",
             brt & BR_POISON ? "poisoned " : "",
             brt & BR_UNDEADSLAYER ? "holy " : "",
-            name.c_str(), RNG, _HIT, dice.X, dice.Y, dice.Z,
+            name, RNG, _HIT, dice.X, dice.Y, dice.Z,
             brt & BR_FIRE ? " of fire" : ""
         );
-    else {
-        sprintf(buf, "heap of (%d) %s%s%ss <%+d>(%+d, %dd%d%+d)%s",
-            quantity,
-            brt & BR_POISON ? "poisoned " : "",
-            brt & BR_UNDEADSLAYER ? "holy " : "",
-            name.c_str(), RNG, _HIT, dice.X, dice.Y, dice.Z,
-            brt & BR_FIRE ? " of fire" : ""
-        );
-    }
+
+    return fmt::format("heap of ({}) {}{}{}s <{:+}>({:+}, {}d{}{:+}){}",
+        quantity,
+        brt & BR_POISON ? "poisoned " : "",
+        brt & BR_UNDEADSLAYER ? "holy " : "",
+        name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+        brt & BR_FIRE ? " of fire" : ""
+    );
 }
 
 bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)

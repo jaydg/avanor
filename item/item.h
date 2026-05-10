@@ -45,7 +45,8 @@ class XItem : public XBaseObject
         XPtr<XCreature> owner;
     public:
         DECLARE_CREATOR(XItem, XBaseObject);
-        void StatsToString(char* buf);
+
+        std::string StatsToString();
         void MainFill(_MAIN_ITEM_STRUCT * is);
         XItem();
         XItem(XItem * copy);
@@ -61,7 +62,7 @@ class XItem : public XBaseObject
         void PropFill(ITEM_SET is, int val = 1000);
         void SpecialFill();
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 
         BODY_PART bp;    // fit to what bp???
         ITEM_TYPE it;   // main type of item such IT_POTION
@@ -123,8 +124,9 @@ class XItem : public XBaseObject
         void UnCarry();
 
     protected:
-        void GetFullName(char* buf, const char* templ = nullptr);
-        void GetArtifactName(char* buf, const char* real_name);
+        [[nodiscard]] std::string GetFullName(std::string_view templ = nullptr);
+
+        [[nodiscard]] std::string GetArtifactName(std::string real_name);
 };
 
 inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {

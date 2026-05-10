@@ -99,14 +99,8 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     }
 
     if (cr->isVisible()) {
-        std::string str;
-        str = fmt::format("{} prays to {}.", cr->name, GetDeityName(deity));
-        msgwin.Add(str);
-
-        char buf[256];
-        item->toString(buf);
-        msgwin.Add(buf);
-        msgwin.Add("disappears in a bright light.");
+        msgwin.Add(fmt::format("{} prays to {}.", cr->name, GetDeityName(deity)));
+        msgwin.Add(fmt::format("{} disappears in a bright light.", item->toString()));
     }
 
     int sacrifice_value;

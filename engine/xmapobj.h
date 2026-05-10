@@ -60,7 +60,10 @@ class XMapObject : public XObject
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
-        virtual void toString(char* buf) {};
+        virtual std::string toString()
+        {
+            return "";
+        }
 
         bool SetLocation(XLocation* new_l)
         {

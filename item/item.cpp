@@ -261,7 +261,7 @@ int XItem::Compare(XObject * o)
     }
 }
 
-void XItem::toString(char* buf)
+std::string XItem::toString()
 {
     assert(0);
 }
@@ -363,97 +363,93 @@ int XItem::GetValue()
     }
 }
 
-void XItem::StatsToString(char* buf)
+std::string XItem::StatsToString()
 {
-    char tb[256];
-    strcpy(buf, "");
+    std::string str = "{";
+    int flag = 0;
 
     if (stats) {
-        strcpy(tb, "{");
-        int flag = 0;
-
-        for (int i = S_STR; i < S_EOF; i++)
-            if (stats->Get((STATS)i) != 0) {
+        for (int stat = S_STR; stat < S_EOF; stat++) {
+            if (stats->Get(static_cast<STATS>(stat)) != 0) {
                 if (flag) {
-                    strcat(tb, " ");
+                    str.append(" ");
                 }
 
-                strcat(tb, stats->GetName((STATS)i));
-                strcat(tb, ":");
-                char tmpbuf[20];
-                sprintf(tmpbuf, "%d", stats->Get((STATS)i));
-                strcat(tb, tmpbuf);
+                str.append(fmt::format("{}: {}",
+                    stats->GetName(static_cast<STATS>(stat)),
+                    stats->Get(static_cast<STATS>(stat))));
+
                 flag++;
             }
-
-        if (flag) {
-            strcat(tb, "}");
-            strcpy(buf, tb);
         }
+
+        str.append("}");
     }
+
+    return flag ? str : "";
 }
 
-void XItem::GetFullName(char* buf, const char* templ)
+std::string XItem::GetFullName(std::string_view templ)
 {
+    std::string fullname;
+
     if (special_number >= 0) {
         if (quantity == 1) {
-            sprintf(buf, ienh_db[special_number].name, name.c_str());
+            fullname = fmt::format(ienh_db[special_number].name, name);
         } else {
-            char tbuf[128];
-            sprintf(buf, "heap of (%d)", quantity);
+            fullname = fmt::format("heap of ({})", quantity);
 
             if (im & (IM_BOOTS | IM_GLOVES)) {
-                sprintf(tbuf, ienh_db[special_number].name, name.c_str());
-                strcat(buf, tbuf);
+                fullname.append(fmt::format(ienh_db[special_number].name, name));
             } else {
-                char rbuf[128];
-                strcpy(rbuf, name.c_str());
-                strcat(rbuf, "s");
-                sprintf(tbuf, ienh_db[special_number].name, rbuf);
-                strcat(buf, tbuf);
+                fullname.append(fmt::format(ienh_db[special_number].name,
+                    name.append("s")));
             }
         }
 
-        strcat(buf, " ");
+        fullname.append(" ");
     } else {
         if (quantity == 1) {
-            sprintf(buf, "%s ", name.c_str());
+            fullname = name;
         } else {
             if (im & (IM_BOOTS | IM_GLOVES)) {
-                sprintf(buf, "heap of (%d) %s ", quantity, name.c_str());
+                fullname = fmt::format("heap of ({}) {} ", quantity, name);
             } else {
-                sprintf(buf, "heap of (%d) %ss ", quantity, name.c_str());
+                fullname = fmt::format("heap of ({}) {}s ", quantity, name);
             }
         }
     }
+
+    return fullname;
 }
 
-void XItem::GetArtifactName(char* buf, const char* real_name)
+std::string XItem::GetArtifactName(std::string real_name)
 {
+    std::string str;
+
     if (isIdentifed()) {
-        char tbuf[256];
-        strcpy(buf, real_name);
+        str = real_name;
 
         if (RNG != 0) {
-            sprintf(tbuf, "<%+d>", RNG);
-            strcat(buf, tbuf);
+            str.append(fmt::format(" <{:+}>", RNG));
         }
 
         if (_DV != 0 || _PV != 0) {
-            sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-            strcat(buf, tbuf);
+            str.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
         }
 
         if (im & IM_WEAPON) {
-            sprintf(tbuf, "(%+d, %dd%d%+d)", _HIT, dice.X, dice.Y, dice.Z);
-            strcat(buf, tbuf);
+            str.append(fmt::format(
+                " ({:+}, {}d{}{:+})",
+                _HIT, dice.X, dice.Y, dice.Z));
         }
 
-        StatsToString(tbuf);
-        strcat(buf, tbuf);
+        str.append(StatsToString());
     } else {
-        strcpy(buf, name.c_str());
+        str = name;
     }
+
+    return str;
 }
 
 void XItem::Store(XFile * f)

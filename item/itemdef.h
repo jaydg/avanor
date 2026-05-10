@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEMDEF_H
 #define ITEMDEF_H
 
+#include <string>
+
 enum BRAND_TYPE {
     BR_NONE	= 0x00000000,
     BR_FIRE	= 0x00000001,
@@ -102,7 +104,7 @@ enum ITEM_QUALITY {
 };
 
 struct _ITEMPROP {
-    const char* propname; //wooden, metall,
+    std::string propname; //wooden, metall,
     int color;
     const char* dv; //modifers....
     const char* pv;

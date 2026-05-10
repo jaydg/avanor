@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "item/xclothe.h"
 
 REGISTER_CLASS(XClothe);
@@ -27,29 +29,24 @@ XClothe::XClothe()
 
 }
 
-void XClothe::toString(char* buf)
+std::string XClothe::toString()
 {
-    GetFullName(buf);
+    auto fullname = GetFullName();
 
     if (isIdentifed()) {
-        char tbuf[256];
-
         if (RNG != 0) {
-            sprintf(tbuf, "<%+d>", RNG);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" <{:+}>", RNG));
         }
 
         if (dice.Z != 0) {
-            sprintf(tbuf, "(%+d, %+d)", _HIT, dice.Z);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.Z));
         } else if (_HIT != 0) {
-            sprintf(tbuf, "(%+d)", _HIT, dice.Z);
-            strcat(buf, tbuf);
+            fullname.append(fmt::format(" ({:+})", _HIT, dice.Z));
         }
 
-        sprintf(tbuf, "[%+d, %+d]", _DV, _PV);
-        strcat(buf, tbuf);
-        StatsToString(tbuf);
-        strcat(buf, tbuf);
+        fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+        fullname.append(StatsToString());
     }
+
+    return fullname;
 }

@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "item/xmoney.h"
 
 REGISTER_CLASS(XMoney);
@@ -34,14 +36,14 @@ XMoney::XMoney(int _quantity)
     value = 1;
 }
 
-void XMoney::toString(char* buf)
+std::string XMoney::toString()
 {
 
     if (quantity == 1) {
-        sprintf(buf, "one golden coin");
-    } else {
-        sprintf(buf, "%d golden coins", quantity);
+        return "one golden coin";
     }
+
+    return fmt::format("{} golden coins", quantity);
 }
 
 int XMoney::Compare(XObject * o)

@@ -53,9 +53,9 @@ class XCookingSet : public XItem
         }
 
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual void toString(char* buf)
+        std::string toString() override
         {
-            strcpy(buf, name.c_str());
+            return name;
         }
 
         virtual void Store(XFile * f);
@@ -104,9 +104,9 @@ class XPickAxe : public XItem
         }
 
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual void toString(char* buf)
+        virtual std::string toString()
         {
-            strcpy(buf, name.c_str());
+            return name;
         }
 };
 
@@ -137,9 +137,9 @@ class XEyeOfRaa : public XItem
         }
 
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual void toString(char* buf)
+        virtual std::string toString()
         {
-            strcpy(buf, name.c_str());
+            return name;
         }
 };
 
@@ -169,9 +169,9 @@ class XAlchemySet : public XItem
         }
 
         virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr);
-        virtual void toString(char* buf)
+        virtual std::string toString()
         {
-            strcpy(buf, name.c_str());
+            return name;
         }
 };
 

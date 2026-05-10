@@ -137,7 +137,7 @@ const char* XHerb::postEat(XCreature * eater)
     return herbs[herb_index].post_eat;
 }
 
-void XHerb::toString(char* buf)
+std::string XHerb::toString()
 {
     if (herbs[herb_index].identify) {
         name = herbs[herb_index].herb_name;
@@ -149,7 +149,7 @@ void XHerb::toString(char* buf)
         }
     }
 
-    XAnyFood::toString(buf);
+    return XAnyFood::toString();
 }
 
 void XHerb::Identify(int level)

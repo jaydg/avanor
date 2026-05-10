@@ -27,10 +27,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 const char* GMSG_SHOPKEEPER_ATTACK = "'You were warned! Prepare to die!'";
 const char* GMSG_SHOPKEEPER_ATTACK2 = "'I'll kill you, you bastard!'";
-const char* GMSG_SHOPKEEPER_ASK_PRICE = "'I can give you " MSG_YELLOW "%d" MSG_YELLOW " gp for %s. Do you agree?'";
+const char* GMSG_SHOPKEEPER_ASK_PRICE = "'I can give you " MSG_YELLOW "{}" MSG_YELLOW " gp for {}. Do you agree?'";
 const char* GMSG_SHOPKEEPER_REJECT_ITEM = "'Sorry, I can't buy this!'";
 const char* GMSG_SHOPKEEPER_REJECT_MONEY = "'Thank you, but you don't owe me anything!'";
-const char* GMSG_SHOPKEEPER_ASK_FOR_PAY = "'You must pay me %d gp for %s";
+const char* GMSG_SHOPKEEPER_ASK_FOR_PAY = "'You must pay me {} gp for {}";
 const char* GMSG_SHOPKEEPER_ASK_FOR_PAY2 = "'You owe me %d gp, How much you would like to pay?'";
 const char* GMSG_SHOPKEEPER_THANKS = "'Thank you for paying!'";
 const char* GMSG_SHOPKEEPER_TO_CUSTOMER0 = "{} says 'You owe me {} gp. Don't try to take anything without paying!'";
@@ -156,14 +156,11 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
     }
 
     //	Sell the remaining items to the shopkeeper
-    char buf[256];
-    char buf1[256];
-    item->toString(buf);
+    ;
     int price = (item->GetValue() / 4 + 1) * item->quantity;
 
     if ((customer->im & IM_HERO)) {
-        sprintf(buf1, GMSG_SHOPKEEPER_ASK_PRICE, price, buf);
-        msgwin.Add(buf1);
+        msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_PRICE, price, item->toString()));
     }
 
     //if it is NPC or Hero asked YES
@@ -223,13 +220,10 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
         auto it = debt.unpaid_items.begin();
 
         while (it != debt.unpaid_items.end() && item->quantity > 0) {
-            char buf[256];
-            char buf1[256];
             XItem* titem = *it;
 
-            titem->toString(buf1);
-            sprintf(buf, GMSG_SHOPKEEPER_ASK_FOR_PAY, titem->GetValue() * titem->quantity, buf1);
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_FOR_PAY,
+                titem->GetValue() * titem->quantity, titem->toString()));
             XPoint pt(0, std::min(titem->GetValue() * titem->quantity, item->quantity));
             int res = giver->GetTarget(TR_HOW_MUCH, &pt, titem->GetValue() * titem->quantity);
 

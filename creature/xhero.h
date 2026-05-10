@@ -154,11 +154,7 @@ class XGuiItem_Inventory final : public XGuiItem
     public:
         explicit XGuiItem_Inventory(XItem* item) : pItem(item)
         {
-            // Construct the item string (toString writes to a char array;
-            // we pass a temporary buffer and store the result)
-            char tmp[256];
-            item->toString(tmp);
-            str = fmt::format(MSG_LIGHTGRAY "{}", tmp);
+            str = MSG_LIGHTGRAY + item->toString();
 
             // Pad to size_x characters using spaces. str may contain ANSI
             // escape codes that do not count toward the visible width.

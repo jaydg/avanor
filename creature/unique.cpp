@@ -248,10 +248,8 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
     msgwin.Add(fmt::format("{} prays to {}.", name, XReligion::GetDeityName(D_LIFE)));
 
     if (1 /*TODO if hero can see...*/) {
-        char buf[120];
-        item->toString(buf);
-        msgwin.Add(buf);
-        msgwin.Add("disappears in a bright light.");
+        msgwin.Add(fmt::format("{} disappears in a bright light.",
+            item->toString()));
     }
 
     int sacrifice_value;

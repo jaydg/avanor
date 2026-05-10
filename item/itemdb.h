@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 struct _MAIN_ITEM_STRUCT {
     ITEM_TYPE it;
-    const char* name;
+    std::string name;
     char view;
     const char* dv;
     const char* pv;

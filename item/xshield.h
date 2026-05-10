@@ -35,7 +35,7 @@ class XShield : public XItem
             return new XShield(this);
         }
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 #endif

@@ -54,7 +54,7 @@ class XAnyPlace : public XObject
             return 1;
         }
 
-        virtual void onShowItem(XItem * item, char* buf);
+        virtual std::string onShowItem(XItem * item);
 
         XRect &GetArea()
         {

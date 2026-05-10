@@ -238,11 +238,9 @@ void XGame::RunWithoutHero()
 
                 for (int k = 0; k < count; k++) {
                     if (ia[k].pI->im & (IM_VALUEDICE | IM_ARMOUR)) {
-                        char buf[256];
                         char buf2[256];
                         ia[k].pI->Identify(1);
-                        ia[k].pI->toString(buf);
-                        sprintf(buf2, "%-70s%d", buf, ia[k].val);
+                        sprintf(buf2, "%-70s%d", (ia[k].pI->toString()).c_str(), ia[k].val);
                         fprintf(f, "%s\n", buf2);
                     }
                 }

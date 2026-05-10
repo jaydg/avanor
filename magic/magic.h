@@ -104,7 +104,7 @@ class XSpell
             eff_level += n;
         }
 
-        void toString(char* buf) const;
+        std::string toString() const;
         static const char* GetName(SPELL_NAME spn);
         [[nodiscard]] const char* GetName() const
         {

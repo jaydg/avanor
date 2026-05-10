@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "item/xanyfood.h"
@@ -48,27 +50,30 @@ int XAnyFood::Compare(XObject * o)
     }
 }
 
-void XAnyFood::toString(char* buf)
+std::string XAnyFood::toString()
 {
+    std::string str;
+
     if (quantity == 1) {
-        sprintf(buf, "%s", name.c_str());
+        str = name;
     } else {
-        sprintf(buf, "heap of (%d) %ss", quantity, name.c_str());
+        str = fmt::format("heap of ({}) {}s", quantity, name);
     }
 
-    double rel = (double)consumed_food / food_nutrio;
+    double rel = static_cast<double>(consumed_food) / food_nutrio;
 
     if (rel == 0) {
-        strcat(buf, "");
     } else if (rel < 0.25) {
-        strcat(buf, "{3/4}");
+        str.append(" {3/4}");
     } else if (rel < 0.50) {
-        strcat(buf, "{1/2}");
+        str.append(" {1/2}");
     } else if (rel < 0.75) {
-        strcat(buf, "{1/4}");
+        str.append(" {1/4}");
     } else {
-        strcat(buf, "{less than 1/4}");
+        str.append(" {less than 1/4}");
     }
+
+    return str;
 }
 
 RESULT XAnyFood::onEat(XCreature * eater)

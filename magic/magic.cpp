@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/magic.h"
@@ -26,7 +28,7 @@ struct SPELL_REC {
     EFFECT effect;
     MAGIC_SCHOOL school;
     int cost;
-    const char* name;
+    std::string name;
     SPELL_REC();
 };
 
@@ -174,7 +176,7 @@ XSpell::XSpell(const SPELL_NAME spn)
 
 const char* XSpell::GetName(const SPELL_NAME spn)
 {
-    return spell_db[spn].name;
+    return spell_db[spn].name.c_str();
 }
 
 void XSpell::Cast()
@@ -200,9 +202,9 @@ MAGIC_SCHOOL XSpell::GetSchool() const
     return spell_db[spell_name].school;
 }
 
-void XSpell::toString(char* buf) const
+std::string XSpell::toString() const
 {
-    sprintf(buf, MSG_YELLOW "%-21s " MSG_LIGHTGRAY ": " MSG_YELLOW "%d" MSG_LIGHTGRAY "pp  {Eff - %d} (to next level: %d)",
+    return fmt::format(MSG_YELLOW "{<21s} " MSG_LIGHTGRAY ": " MSG_YELLOW "{}" MSG_LIGHTGRAY "pp  {Eff - {}} (to next level: {})",
         spell_db[spell_name].name,
         GetManaCost(),
         GetEffectivity(),

@@ -40,9 +40,9 @@ XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)
     special_property = SPP_NONE;
 }
 
-void XGlamdring::toString(char* buf)
+std::string XGlamdring::toString()
 {
-    GetArtifactName(buf, "broadsword named \"Glamdring\"");
+    return GetArtifactName("broadsword named \"Glamdring\"");
 }
 
 REGISTER_CLASS(XDeathHack);
@@ -64,9 +64,9 @@ XDeathHack::XDeathHack() : XWeapon(IT_LONGDAGGER)
     special_property = SPP_NONE;
 }
 
-void XDeathHack::toString(char* buf)
+std::string XDeathHack::toString()
 {
-    GetArtifactName(buf, "long dagger named \"Death Hack\"");
+    return GetArtifactName("long dagger named \"Death Hack\"");
 }
 
 REGISTER_CLASS(XAvanorDefender);
@@ -90,9 +90,9 @@ XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
     avanordefender_guid = guid();
 }
 
-void XAvanorDefender::toString(char* buf)
+std::string XAvanorDefender::toString()
 {
-    GetArtifactName(buf, "long sword named \"Avanor's Defender\"");
+    return GetArtifactName("long sword named \"Avanor's Defender\"");
 }
 
 void XAvanorDefender::Restore(XFile * f)
@@ -121,9 +121,9 @@ XForestBrotherCloak::XForestBrotherCloak() : XCloak(IT_CLOAK)
     special_property = SPP_NONE;
 }
 
-void XForestBrotherCloak::toString(char* buf)
+std::string XForestBrotherCloak::toString()
 {
-    XCloak::toString(buf);
+    return XCloak::toString();
 }
 
 REGISTER_CLASS(XGreatElementalRing);
@@ -155,9 +155,9 @@ XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
     special_property = SPP_NONE;
 }
 
-void XAvanorScepter::toString(char* buf)
+std::string XAvanorScepter::toString()
 {
-    GetArtifactName(buf, "scepter of Avanor");
+    return GetArtifactName("scepter of Avanor");
 }
 
 REGISTER_CLASS(XAvanorCrown);
@@ -180,9 +180,9 @@ XAvanorCrown::XAvanorCrown() : XCap(IT_CAP)
     special_property = SPP_NONE;
 }
 
-void XAvanorCrown::toString(char* buf)
+std::string XAvanorCrown::toString()
 {
-    GetArtifactName(buf, "crown of Avanor");
+    return GetArtifactName("crown of Avanor");
 }
 
 REGISTER_CLASS(XAvanorMitre);
@@ -205,9 +205,9 @@ XAvanorMitre::XAvanorMitre() : XCap(IT_CAP)
     special_property = SPP_NONE;
 }
 
-void XAvanorMitre::toString(char* buf)
+std::string XAvanorMitre::toString()
 {
-    GetArtifactName(buf, "holy mitre of Avanor");
+    return GetArtifactName("holy mitre of Avanor");
 }
 
 REGISTER_CLASS(XTorinAxe);
@@ -230,9 +230,9 @@ XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
     special_property = SPP_NONE;
 }
 
-void XTorinAxe::toString(char* buf)
+std::string XTorinAxe::toString()
 {
-    GetArtifactName(buf, "Axe of Torin");
+    return GetArtifactName("Axe of Torin");
 }
 
 REGISTER_CLASS(XTorinShield);
@@ -254,9 +254,9 @@ XTorinShield::XTorinShield() : XShield(IT_MEDIUMSHIELD)
     special_property = SPP_NONE;
 }
 
-void XTorinShield::toString(char* buf)
+std::string XTorinShield::toString()
 {
-    GetArtifactName(buf, "Shield of Torin");
+    return GetArtifactName("Shield of Torin");
 }
 
 REGISTER_CLASS(XDwarfCrown);
@@ -279,9 +279,9 @@ XDwarfCrown::XDwarfCrown() : XCap(IT_CAP)
     special_property = SPP_NONE;
 }
 
-void XDwarfCrown::toString(char* buf)
+std::string XDwarfCrown::toString()
 {
-    GetArtifactName(buf, "dwarven crown");
+    return GetArtifactName("dwarven crown");
 }
 
 REGISTER_CLASS(XBlackClub);
@@ -305,7 +305,7 @@ XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
     special_property = SPP_NONE;
 }
 
-void XBlackClub::toString(char* buf)
+std::string XBlackClub::toString()
 {
-    GetArtifactName(buf, "club of black obsidian");
+    return GetArtifactName("club of black obsidian");
 }

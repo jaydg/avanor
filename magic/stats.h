@@ -46,7 +46,7 @@ class XStats
             return stats[s] / 100;
         }
 
-        static const char* GetName(const STATS s)
+        static std::string GetName(const STATS s)
         {
             return stats_str[s];
         }

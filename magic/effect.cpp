@@ -384,13 +384,8 @@ int XEffect::Make(EFFECT_DATA * pData)
                     it->Identify(1);
 
                     if (pData->caller->isVisible()) {
-                        msgwin.Add(pData->caller->name);
-                        msgwin.Add("identifies item.");
-                        char buf1[256];
-                        it->toString(buf1);
-                        char buf2[256];
-                        sprintf(buf2, "It was %s.", buf1);
-                        msgwin.Add(buf2);
+                        msgwin.Add(fmt::format("{} identifies item.", pData->caller->name));
+                        msgwin.Add(fmt::format("It was {}.", it->toString()));
                     }
                 }
 

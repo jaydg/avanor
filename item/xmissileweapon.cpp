@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "item/xmissileweapon.h"
 #include "item/xweapon.h"
 
@@ -58,18 +60,14 @@ XMissileWeapon::XMissileWeapon(ITEM_TYPE _it)
         }
 }
 
-void XMissileWeapon::toString(char* buf)
+std::string XMissileWeapon::toString()
 {
-    GetFullName(buf);
+    auto fullname = GetFullName();
 
-    char tbuf[256];
+    fullname.append(fmt::format(" <{:+}>", RNG));
+    fullname.append(fmt::format(" ({:+}, {}d{}{:+})",
+        _HIT, dice.X, dice.Y, dice.Z));
+    fullname.append(StatsToString());
 
-    sprintf(tbuf, "<%+d>", RNG);
-    strcat(buf, tbuf);
-
-    sprintf(tbuf, "(%+d, %dd%d%+d)", _HIT, dice.X, dice.Y, dice.Z);
-    strcat(buf, tbuf);
-
-    StatsToString(tbuf);
-    strcat(buf, tbuf);
+    return fullname;
 }

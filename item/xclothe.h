@@ -30,8 +30,7 @@ class XClothe : public XItem
         XClothe();
         XClothe(XClothe * copy) : XItem((XItem*)copy) {}
 
-        virtual void toString(char* buf);
+        std::string toString() override;
 };
 
 #endif
-

@@ -419,11 +419,7 @@ void XHero::MixPotions()
             if (pn != PN_UNKNOWN && vRand(100) < val) {
                 const auto pot = new XPotion(pn);
                 sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
-                char buf[256];
-                char buf1[256];
-                pot->toString(buf);
-                sprintf(buf1, "You have mixed %s.", buf);
-                msgwin.Add(buf1);
+                msgwin.Add(fmt::format("You have mixed {}.", pot->toString()));
                 CarryItem(pot);
                 contain.insert(pot);
             } else {

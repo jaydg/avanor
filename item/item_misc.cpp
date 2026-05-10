@@ -45,13 +45,15 @@ XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
     }
 }
 
-void XChest::toString(char* buf)
+std::string XChest::toString()
 {
-    sprintf(buf, name.c_str());
+    auto str = name;
 
     if (contain.empty()) {
-        strcat(buf, "{empty}");
+        str.append("{{empty}}");
     }
+
+    return str;
 }
 
 void XChest::Store(XFile * f)

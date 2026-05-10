@@ -30,7 +30,7 @@ class XMoney : public XItem
         XMoney(int _quantity = 1);
         XMoney(XMoney * copy) : XItem((XItem*)copy) {}
 
-        virtual void toString(char* buf);
+        std::string toString() override;
         virtual int Compare(XObject * o);
         virtual XObject* MakeCopy()
         {

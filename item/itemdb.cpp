@@ -138,7 +138,7 @@ _ITEMPROP item_prop[DB_PROP_SZ] = {
 // ENH_DB_SZ - very important var, it used with ring, amulets too
 ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
-        "%s of fire resistance",	xRED,
+        "{} of fire resistance",	xRED,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -148,7 +148,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "fire:5d5+25"
     },
     {
-        "%s of cold resistance",	xWHITE,
+        "{} of cold resistance",	xWHITE,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -158,7 +158,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "cold:5d5+25"
     },
     {
-        "%s of air resistance",	xLIGHTBLUE,
+        "{} of air resistance",	xLIGHTBLUE,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -168,7 +168,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "air:5d5+25"
     },
     {
-        "%s of acid resistance",	xDARKGRAY,
+        "{} of acid resistance",	xDARKGRAY,
         "",	"",	"",	"",	"",	"",	5,
         IM_ARMOUR,
         BR_NONE,
@@ -178,7 +178,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "acid:5d5+25"
     },
     {
-        "%s of poison resistance",	0,
+        "{} of poison resistance",	0,
         "",	"",	"",	"",	"",	"",	2,
         IM_ARMOUR,
         BR_NONE,
@@ -188,7 +188,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "poison:5d5+25"
     },
     {
-        "%s of Resistance",	xDARKGRAY,
+        "{} of Resistance",	xDARKGRAY,
         "",	"",	"",	"",	"",	"",	80,
         IM_ARMOUR,
         BR_NONE,
@@ -198,7 +198,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "poison:5d5+25 fire:5d5+25 cold:5d5+25 water:5d5+25 acid:5d5+25 earth:5d5+25"
     },
     {
-        "%s of the Magi",	0,
+        "{} of the Magi",	0,
         "",	"",	"",	"",	"",	"",	50,
         IM_ARMOUR,
         BR_NONE,
@@ -208,7 +208,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "fire:5d5+25 cold:5d5+25"
     },
     {
-        "%s of free action",	0,
+        "{} of free action",	0,
         "",	"",	"",	"",	"",	"",	50,
         IM_ARMOUR,
         BR_NONE,
@@ -218,7 +218,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         "confuse:5d5+25 stun:5d5+25"
     },
     {
-        "%s of slow digestion",	0,
+        "{} of slow digestion",	0,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -228,7 +228,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of Strength",	0,
+        "{} of Strength",	0,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -238,7 +238,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of Swiftness",	0,
+        "{} of Swiftness",	0,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -248,7 +248,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of Toughness",	0,
+        "{} of Toughness",	0,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,
@@ -258,7 +258,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the Giants",	0,
+        "{} of the Giants",	0,
         "",	"",	"",	"",	"",	"",	30,
         IM_ARMOUR,
         BR_NONE,
@@ -268,7 +268,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the Titans",	xCYAN,
+        "{} of the Titans",	xCYAN,
         "",	"",	"",	"",	"",	"",	60,
         IM_ARMOUR,
         BR_NONE,
@@ -278,7 +278,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the High Kings",	xWHITE,
+        "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
         IM_ARMOUR,
         BR_NONE,
@@ -288,7 +288,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the High Kings",	xWHITE,
+        "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
         IM_ARMOUR,
         BR_NONE,
@@ -298,7 +298,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the High Kings",	xWHITE,
+        "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
         IM_ARMOUR,
         BR_NONE,
@@ -308,7 +308,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the High Kings",	xWHITE,
+        "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
         IM_ARMOUR,
         BR_NONE,
@@ -318,7 +318,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "%s of the Elven Kings",	xWHITE,
+        "{} of the Elven Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
         IM_ARMOUR,
         BR_NONE,
@@ -328,7 +328,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
     {
-        "clean %s",	0,
+        "clean {}",	0,
         "",	"",	"",	"",	"",	"",	1,
         IM_ARMOUR,
         BR_NONE,

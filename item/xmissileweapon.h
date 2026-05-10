@@ -30,7 +30,7 @@ class XMissileWeapon : public XItem
     public:
         DECLARE_CREATOR(XMissileWeapon, XItem);
         XMissileWeapon(ITEM_TYPE it = IT_RANDOM);
-        virtual void toString(char* buf);
+        std::string toString() override;
         XMissileWeapon(XMissileWeapon * copy) : XItem((XItem*)copy) {}
 
         virtual XObject* MakeCopy()

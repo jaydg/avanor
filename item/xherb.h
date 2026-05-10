@@ -80,7 +80,7 @@ class XHerb : public XAnyFood
         virtual void Identify(int level);
         virtual int isIdentifed();
 
-        virtual void toString(char* buf);
+        std::string toString() override;
         virtual void Store(XFile * f)
         {
             XAnyFood::Store(f);
