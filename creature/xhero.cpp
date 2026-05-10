@@ -1553,8 +1553,8 @@ int XHero::XShoot()
 
     if (!missile || !XMissile::isProperWeapon(missile, missile_w)) {
         if (missile_w) {
-            msgwin.Add("You need a proper ammo to shoot from");
-            msgwin.AddLast(missile_w->name);
+            msgwin.Add(fmt::format("You need a proper ammo to shoot from {}.",
+                missile_w->name));
         } else {
             msgwin.Add("You need something to throw.");
         }

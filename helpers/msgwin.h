@@ -51,7 +51,6 @@ class XMsgWin
             Add(std::string_view(str), flag);
         }
 
-        void AddLast(std::string_view str);
         void ClrMsg(int flag = 0);
         void ShowHistory() const;
 };

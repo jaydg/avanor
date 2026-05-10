@@ -45,11 +45,6 @@ XMsgWin::~XMsgWin()
     delete history_list;
 }
 
-void XMsgWin::AddLast(std::string_view str)
-{
-    Add(fmt::format("{}.", str));
-}
-
 void XMsgWin::Add(std::string_view tstr, int flag)
 {
     // Local copy as std::string, as we need to write str[0]

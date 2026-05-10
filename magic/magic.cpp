@@ -232,9 +232,10 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
 
     if (caster->_PP - spell->GetManaCost() >= 0) {
         if (caster->isInVisibleArea() && !caster->isHero()) {
-            msgwin.Add(caster->GetNameEx(CRN_T1));
-            msgwin.Add(caster->GetVerb("cast"));
-            msgwin.AddLast(spell->GetName());
+            msgwin.Add(fmt::format("{} {} {}.",
+                caster->GetNameEx(CRN_T1),
+                caster->GetVerb("cast"),
+                spell->GetName()));
         }
 
         const int res = XEffect::Make(caster, spell->GetEffect(), power);

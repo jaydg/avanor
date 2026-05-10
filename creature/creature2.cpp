@@ -480,39 +480,15 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         }
 
         if (vis1 || vis2) {
-            if (pData->attack_name) {
-                msgwin.Add(pData->attack_name);
+            auto str = fmt::format("{}{} {} {}{}.",
+                pData->attack_name ? pData->attack_name : pData->attacker->GetNameEx(CRN_T1),
+                critical_hit ? " exactly" : "",
+                pData->attack_name ? "hits" : pData->attacker->GetVerb(GetMeleeAttackMsg(pData->weapon)),
+                GetNameEx(CRN_T1),
+                ignore_armour ? ", penetrating a piece of armour" : ""
+                );
 
-                if (critical_hit) {
-                    msgwin.Add("exactly");
-                }
-
-                msgwin.Add("hits");
-            } else {
-                msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
-
-                if (critical_hit) {
-                    msgwin.Add("exactly");
-                }
-
-                msgwin.Add(pData->attacker->GetVerb(GetMeleeAttackMsg(pData->weapon)));
-            }
-
-            if (ignore_armour) {
-                msgwin.Add(GetNameEx(CRN_T1));
-
-                if (isHero()) {
-                    msgwin.Add("penetrating a piece of armour.");
-                } else {
-                    msgwin.Add("penetrating a piece of armour");
-                }
-            } else {
-                if (isHero()) {
-                    msgwin.AddLast(GetNameEx(CRN_T1));
-                } else {
-                    msgwin.Add(GetNameEx(CRN_T1));
-                }
-            }
+            msgwin.Add(str);
         }
 
         if (dmg <= 0) {
@@ -525,40 +501,31 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
                 msgwin.Add("does not manage to harm you.");
             } else if (isVisible()) {
-                msgwin.Add("but does not manage to harm");
-                msgwin.AddLast(GetNameEx(CRN_T3));
+                msgwin.Add(fmt::format("but does not manage to harm {}.",
+                    GetNameEx(CRN_T3)));
             }
         } else {
             _HP -= dmg;
 
             if (_HP > 0) {
                 if ((vis1 || vis2) && !isHero()) {
-                    msgwin.Add("and");
-                    msgwin.Add(GetWoundMsg(1));
-                    msgwin.AddLast(GetNameEx(CRN_T3));
+                    msgwin.Add(fmt::format("and {} {}.",
+                        GetWoundMsg(1),
+                        GetNameEx(CRN_T3)));
                 }
 
                 CausePostEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
             } else {
                 // and kill IT!!!
                 if ((vis1 || vis2) && !isHero()) {
-                    msgwin.Add("and");
+                    auto str = fmt::format("and {} {}.",
+                        creature_class & CR_UNDEAD
+                            ? (pData->attack_name ? pData->attacker->GetVerb("destroy") : "destroys")
+                            : (pData->attack_name ? pData->attacker->GetVerb("kill") : "kills"),
+                        GetNameEx(CRN_T3)
+                    );
 
-                    if (creature_class & CR_UNDEAD) {
-                        if (pData->attack_name) {
-                            msgwin.Add("destroys");
-                        } else {
-                            msgwin.Add(pData->attacker->GetVerb("destroy"));
-                        }
-                    } else {
-                        if (pData->attack_name) {
-                            msgwin.Add("kills");
-                        } else {
-                            msgwin.Add(pData->attacker->GetVerb("kill"));
-                        }
-                    }
-
-                    msgwin.AddLast(GetNameEx(CRN_T3));
+                    msgwin.Add(str);
                 }
 
                 Die(pData->attacker);
@@ -583,35 +550,35 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                     msgwin.Add(GetNameEx(CRN_T4));
                     msgwin.Add("shield.");
                 } else {
-                    //Kobold attacks you.
-                    //You blok kobold with your shiled
-                    msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
-                    msgwin.Add(pData->attacker->GetVerb("attack"));
-                    msgwin.AddLast(GetNameEx(CRN_T1));
-                    msgwin.Add(GetNameEx(CRN_T1));
-                    msgwin.Add(GetVerb("block"));
-                    msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
-                    msgwin.Add("with");
-                    msgwin.Add(GetNameEx(CRN_T4));
-                    msgwin.Add("shield.");
+                    // Kobold attacks you.
+                    // You block kobold with your shield.
+                    msgwin.Add(fmt::format("{} {} {}.",
+                        pData->attacker->GetNameEx(CRN_T1),
+                        pData->attacker->GetVerb("attack"),
+                        GetNameEx(CRN_T1)));
+
+                    msgwin.Add(fmt::format("{} {} {} with {} shield.",
+                        GetNameEx(CRN_T1),
+                        GetVerb("block"),
+                        pData->attacker->GetNameEx(CRN_T1),
+                        GetNameEx(CRN_T4)));
                 }
             }
 
             wsk->UseSkill(WSK_SHIELD);
-        } else { //it was not shield (miss or avoid)
+        } else { // It was not shield (miss or avoid)
             if (vis1 || vis2) {
                 if (pData->attack_name) {
-                    msgwin.Add(GetNameEx(CRN_T1));
-                    msgwin.Add(GetVerb("avoid"));
-                    msgwin.AddLast(pData->attack_name);
-                } else {
-                    msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
-                    msgwin.Add(pData->attacker->GetVerb("attack"));
-                    std::string str;
-                    str = fmt::format("{}, but {}.",
+                    msgwin.Add(fmt::format("{} {} {}.",
                         GetNameEx(CRN_T1),
-                        pData->attacker->GetVerb("miss"));
-                    msgwin.Add(str);
+                        GetVerb("avoid"),
+                        pData->attack_name));
+                } else {
+                    msgwin.Add(fmt::format("{} {} {}, but {}.",
+                        pData->attacker->GetNameEx(CRN_T1),
+                        pData->attacker->GetVerb("attack"),
+                        GetNameEx(CRN_T1),
+                        pData->attacker->GetVerb("miss")));
                 }
             }
         }

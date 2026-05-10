@@ -61,10 +61,10 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
                 use_time = 50 - cr->sk->GetLevel(XSkill::Skill::COOKING) * 2;
 
                 if (cr->isVisible()) {
-                    msgwin.Add(cr->GetNameEx(CRN_T1));
-                    msgwin.Add(cr->GetVerb("start"));
-                    msgwin.Add("to cook");
-                    msgwin.AddLast(corpse->name);
+                    msgwin.Add(fmt::format("{} {} to cook {}.",
+                        cr->GetNameEx(CRN_T1),
+                        cr->GetVerb("start"),
+                        corpse->name));
                 }
 
                 return CONTINUE;
@@ -88,16 +88,17 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
                     cr->sk->UseSkill(XSkill::Skill::COOKING, 3);
 
                     if (cr->isVisible()) {
-                        msgwin.Add(cr->GetNameEx(CRN_T1));
-                        msgwin.Add(cr->GetVerb("cook"));
-                        msgwin.AddLast(corpse->name);
+                        msgwin.Add(fmt::format("{} {} {}.",
+                            cr->GetNameEx(CRN_T1),
+                            cr->GetVerb("cook"),
+                            corpse->name));
                     }
                 } else {
                     if (cr->isVisible()) {
-                        msgwin.Add(cr->GetNameEx(CRN_T1));
-                        msgwin.Add(cr->GetVerb("fail"));
-                        msgwin.Add("to cook");
-                        msgwin.AddLast(corpse->name);
+                        msgwin.Add(fmt::format("{} {} to cook {}.",
+                            cr->GetNameEx(CRN_T1),
+                            cr->GetVerb("fail"),
+                            corpse->name));
                     }
                 }
 

@@ -88,27 +88,24 @@ RESULT XAnyFood::onEat(XCreature * eater)
     consumed_food += eated_peace;
 
     if (eater->isHero()) {
-        msgwin.Add("You eat the");
-        msgwin.AddLast(name);
+        msgwin.Add(fmt::format("You eat the {}.",name));
     } else if (eater->isVisible()) {
-        msgwin.Add(eater->GetNameEx(CRN_T1));
-        msgwin.Add(eater->GetVerb("eat"));
-        msgwin.AddLast(name);
+        msgwin.Add(fmt::format("{} {} {}.",
+            eater->GetNameEx(CRN_T1),
+            eater->GetVerb("eat"),
+            name));
     }
 
     if (consumed_food >= food_nutrio) {
         if (eater->isHero()) {
-            msgwin.Add("You find that the");
-            msgwin.Add(name);
-            msgwin.Add("is");
-            msgwin.AddLast(postEat(eater));
+            msgwin.Add(fmt::format("You find that the {} is {}.",
+                name, postEat(eater)));
         } else if (eater->isVisible()) {
-            msgwin.Add(eater->GetNameEx(CRN_T1));
-            msgwin.Add(eater->GetVerb("find"));
-            msgwin.Add("that");
-            msgwin.Add(name);
-            msgwin.Add("is");
-            msgwin.AddLast(postEat(eater));
+            msgwin.Add(fmt::format("{} {} that {} is {}.",
+                eater->GetNameEx(CRN_T1),
+                eater->GetVerb("find"),
+                name,
+                postEat(eater)));
         }
 
         UnCarry();

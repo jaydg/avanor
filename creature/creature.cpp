@@ -1317,12 +1317,11 @@ int XCreature::Shoot(int tx, int ty)
         msgwin.Add(GetNameEx(CRN_T1));
 
         if (bow) {
-            msgwin.Add(GetVerb("shoot"));
-            msgwin.Add("from");
-            msgwin.AddLast(bow->name);
+            msgwin.Add(fmt::format("{} from {}.",
+                GetVerb("shoot"), bow->name));
         } else {
-            msgwin.Add(GetVerb("throw"));
-            msgwin.AddLast(missile->name);
+            msgwin.Add(fmt::format("{} {}.",
+                GetVerb("throw"), missile->name));
         }
     }
 
