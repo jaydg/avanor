@@ -38,9 +38,7 @@ class XGame
         void Run();
         void RunWithoutHero();
         void RunDemo();
-        void CreateRatCellar();
         void Create(char type_of_start);
-        int MoveToStairway(XLocation * xl, XCreature * tc);
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
         XPtr<XLocation> locations[L_EOF];
         XScheduler Scheduler;

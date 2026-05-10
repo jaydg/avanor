@@ -120,7 +120,6 @@ class XChest : public XItem
             return new XChest(this);
         }
 
-        int Add(XItem * item);
         std::string toString() override;
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);

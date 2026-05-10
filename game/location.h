@@ -206,11 +206,6 @@ class XLocation : public XObject
         XStairWay* NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
         XStairWay* NewWay(int x, int y, LOCATION target_ln, STAIRWAY_TYPE s_type);
 
-        //Location Script Language
-        static const char* GetToken(const char* line, const char** token, int* token_len);
-        static const char* GetNumber(const char* line, int* num);
-        static const char* GetString(const char* line, char* buf);
-
         static void CreateNewGame();
         static void Restoration();
         static void CommonLuaInitialization();
