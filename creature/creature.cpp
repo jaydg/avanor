@@ -2073,21 +2073,17 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
     return "";
 }
 
-const char* XCreature::GetVerb(const char* verb)
+std::string XCreature::GetVerb(std::string verb) const
 {
-    static char cool_buf[1024]; //hope the name will never larger than
-
     if (creature_person_type & CPT_YOU) {
-        sprintf(cool_buf, "%s", verb);
-    } else {
-        char lch = verb[strlen(verb) - 1];
-
-        if (lch == 's' || lch == 'h') {
-            sprintf(cool_buf, "%ses", verb);
-        } else {
-            sprintf(cool_buf, "%ss", verb);
-        }
+        return verb;
     }
 
-    return cool_buf;
+    char last_char = verb.back();
+
+    if (last_char == 's' || last_char == 'h') {
+        return verb.append("es");
+    }
+
+    return verb.append("s");
 }

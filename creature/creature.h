@@ -399,7 +399,8 @@ class XCreature : public XBaseObject
         }
 
         const std::string GetNameEx(CR_NAME_TYPE crn);
-        const char* GetVerb(const char* verb);
+
+        [[nodiscard]] std::string GetVerb(std::string verb) const;
 };
 
 // Fake creature is need
