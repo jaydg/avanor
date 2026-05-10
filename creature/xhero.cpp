@@ -1025,7 +1025,6 @@ void XHero::Equipment(FILE * f)
         int was_hand = 0;
         int was_ring = 0;
         int counter = 0;
-        char buf[256];
 
         XGuiList list;
 
@@ -1035,43 +1034,38 @@ void XHero::Equipment(FILE * f)
         for (auto xbp: components) {
             xqsa[counter] = xbp;
 
-            for (int i = 0; i < 128; i++) {
-                buf[i] = ' ';
-            }
-
-            strcpy(buf, MSG_LIGHTGRAY);
-
+            // Determine name of body part
+            std::string_view part_name;
             if (xbp->Fit(BP_HAND) || xbp->Fit(BP_RING)) {
-                if (xbp->Fit(BP_HAND) && was_hand == 0) {
-                    strcat(buf, part_names[xbp->bp_uin]);
-                    was_hand++;
-                } else if (xbp->Fit(BP_HAND)) {
-                    strcat(buf, "Right hand");
+                if (xbp->Fit(BP_HAND)) {
+                    part_name = (was_hand == 0) ? part_names[xbp->bp_uin] : "Right hand";
                     was_hand++;
                 }
-
-                if (xbp->Fit(BP_RING) && was_ring == 0) {
-                    strcat(buf, part_names[xbp->bp_uin]);
-                    was_ring++;
-                } else if (xbp->Fit(BP_RING)) {
-                    strcat(buf, "Right ring");
+                if (xbp->Fit(BP_RING)) {
+                    part_name = (was_ring == 0) ? part_names[xbp->bp_uin] : "Right ring";
                     was_ring++;
                 }
             } else {
-                strcat(buf, part_names[xbp->bp_uin]);
+                part_name = part_names[xbp->bp_uin];
             }
 
-            buf[strlen(buf)] = ' ';
-            strcpy(buf + 20, MSG_BROWN ": ");
+            // Left column
+            std::string left = fmt::format(MSG_LIGHTGRAY "{}", part_name);
+            const auto visible = static_cast<size_t>(x_strlen(left.c_str()));
+            if (visible < 20)
+                left.append(20 - visible, ' ');
 
+            // Right column
+            std::string right;
             if (xbp->Item()) {
-                strcat(buf, MSG_LIGHTGRAY);
-                strcat(buf, xbp->Item()->toString().c_str());
+                right = fmt::format(MSG_BROWN ": " MSG_LIGHTGRAY "{}",
+                                    xbp->Item()->toString());
             } else {
-                strcat(buf, MSG_BROWN "-");
+                right = MSG_BROWN ": " MSG_BROWN "-";
             }
 
-            list.AddItem(new XGuiItem_SimpleSelect(buf));
+            const std::string buf = left + right;
+            list.AddItem(new XGuiItem_SimpleSelect(buf.c_str()));
             counter++;
             ++xbp;
         }
