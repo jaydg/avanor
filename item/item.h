@@ -124,7 +124,7 @@ class XItem : public XBaseObject
         void UnCarry();
 
     protected:
-        [[nodiscard]] std::string GetFullName(std::string_view templ = nullptr);
+        [[nodiscard]] std::string GetFullName();
 
         [[nodiscard]] std::string GetArtifactName(std::string real_name);
 };

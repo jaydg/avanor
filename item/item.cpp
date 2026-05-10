@@ -389,7 +389,7 @@ std::string XItem::StatsToString()
     return flag ? str : "";
 }
 
-std::string XItem::GetFullName(std::string_view templ)
+std::string XItem::GetFullName()
 {
     std::string fullname;
 
