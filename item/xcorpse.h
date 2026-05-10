@@ -96,7 +96,8 @@ class XCorpse : public XAnyFood
         int Run();
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
-        virtual const char* postEat(XCreature * eater);
+
+        [[nodiscard]] virtual std::string postEat(XCreature *eater);
         virtual int Compare(XObject * o)
         {
             return -1;

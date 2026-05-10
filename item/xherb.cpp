@@ -132,7 +132,7 @@ POTION_NAME XHerb::GetTargetPotion()
     return herbs[herb_index].pn;
 }
 
-const char* XHerb::postEat(XCreature * eater)
+std::string XHerb::postEat(XCreature *eater)
 {
     return herbs[herb_index].post_eat;
 }

@@ -62,7 +62,8 @@ class XHerb : public XAnyFood
         }
 
         virtual RESULT onEat(XCreature * eater);
-        virtual const char* postEat(XCreature * eater);
+
+        [[nodiscard]] virtual std::string postEat(XCreature *eater);
 
         virtual int Compare(XObject * o)
         {

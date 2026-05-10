@@ -116,12 +116,16 @@ RESULT XAnyFood::onEat(XCreature * eater)
     }
 }
 
-const char* food_type_feeling[] = {
-    "delicious", "very tasty", "tasty",
-    "tasteless", "taste like a slops", "vomit"
+std::string food_type_feeling[] = {
+    "delicious",
+    "very tasty",
+    "tasty",
+    "tasteless",
+    "taste like a slops",
+    "vomit"
 };
 
-const char* XAnyFood::postEat(XCreature * eater)
+std::string XAnyFood::postEat(XCreature *eater)
 {
     FOOD_TYPE ft = FoodTypeForCreature(eater);
 
