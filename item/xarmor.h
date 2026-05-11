@@ -21,12 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XARMOR_H
 #define XARMOR_H
 
-#include "item/xclothe.h"
+#include "item/xclothes.h"
 
-class XArmor: public XClothe
+class XArmor: public XClothes
 {
     public:
-        DECLARE_CREATOR(XArmor, XClothe);
+        DECLARE_CREATOR(XArmor, XClothes);
         XArmor(ITEM_TYPE it = IT_RANDOM);
         XArmor(XArmor * armor);
         XObject* MakeCopy() override

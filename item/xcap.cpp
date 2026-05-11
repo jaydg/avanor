@@ -40,7 +40,7 @@ XCap::XCap(ITEM_TYPE _it)
     RNG = 0;
 }
 
-XCap::XCap(XCap * copy) : XClothe((XClothe*)copy)
+XCap::XCap(XCap * copy) : XClothes((XClothes*)copy)
 {
 }
 

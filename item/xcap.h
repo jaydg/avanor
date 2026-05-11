@@ -21,12 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XCAP_H
 #define XCAP_H
 
-#include "item/xclothe.h"
+#include "item/xclothes.h"
 
-class XCap : public XClothe
+class XCap : public XClothes
 {
     public:
-        DECLARE_CREATOR(XCap, XClothe);
+        DECLARE_CREATOR(XCap, XClothes);
         XCap(ITEM_TYPE it = IT_RANDOM);
         XCap(XCap * cap);
         XObject* MakeCopy() override

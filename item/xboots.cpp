@@ -41,7 +41,7 @@ XBoots::XBoots(ITEM_TYPE _it)
     _HIT = -(weight / 500);
 }
 
-XBoots::XBoots(XBoots * copy) : XClothe((XClothe*)copy)
+XBoots::XBoots(XBoots * copy) : XClothes((XClothes*)copy)
 {
 }
 

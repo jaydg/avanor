@@ -40,7 +40,7 @@ XGloves::XGloves(ITEM_TYPE it)
     RNG = 0;
 }
 
-XGloves::XGloves(XGloves * gloves) : XClothe((XClothe*)gloves)
+XGloves::XGloves(XGloves * gloves) : XClothes((XClothes*)gloves)
 {
 }
 

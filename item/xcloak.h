@@ -21,12 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CLOAK_H
 #define CLOAK_H
 
-#include "item/xclothe.h"
+#include "item/xclothes.h"
 
-class XCloak : public XClothe
+class XCloak : public XClothes
 {
     public:
-        DECLARE_CREATOR(XCloak, XClothe);
+        DECLARE_CREATOR(XCloak, XClothes);
         XCloak(ITEM_TYPE it = IT_RANDOM);
         XCloak(XCloak * cap);
         XObject* MakeCopy() override

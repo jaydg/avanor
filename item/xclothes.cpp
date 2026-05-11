@@ -18,20 +18,30 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef	XCLOTHE_H
-#define	XCLOTHE_H
+#include <fmt/format.h>
 
-#include "item/item.h"
+#include "item/xclothes.h"
 
-class XClothe : public XItem
+REGISTER_CLASS(XClothes);
+
+std::string XClothes::toString()
 {
-    public:
-        DECLARE_CREATOR(XClothe, XItem);
-        XClothe() = default;
+    auto fullname = GetFullName();
 
-        explicit XClothe(XClothe* copy) : XItem(static_cast<XItem *>(copy)) {}
+    if (isIdentifed()) {
+        if (RNG != 0) {
+            fullname.append(fmt::format(" <{:+}>", RNG));
+        }
 
-        std::string toString() override;
-};
+        if (dice.Z != 0) {
+            fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.Z));
+        } else if (_HIT != 0) {
+            fullname.append(fmt::format(" ({:+})", _HIT, dice.Z));
+        }
 
-#endif
+        fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+        fullname.append(StatsToString());
+    }
+
+    return fullname;
+}

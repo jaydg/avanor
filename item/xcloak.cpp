@@ -43,6 +43,6 @@ XCloak::XCloak(ITEM_TYPE _it)
     _HIT = 0;
 }
 
-XCloak::XCloak(XCloak * copy) : XClothe((XClothe*)copy)
+XCloak::XCloak(XCloak * copy) : XClothes((XClothes*)copy)
 {
 }

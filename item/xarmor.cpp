@@ -46,6 +46,6 @@ XArmor::XArmor(ITEM_TYPE _it)
     _HIT = -(weight / 500);
 }
 
-XArmor::XArmor(XArmor * armor) : XClothe((XClothe*)armor)
+XArmor::XArmor(XArmor * armor) : XClothes((XClothes*)armor)
 {
 }
