@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef	__XENHANCE_H
-#define	__XENHANCE_H
+#ifndef	XENHANCE_H
+#define	XENHANCE_H
 
 #include "item/item.h"
 
