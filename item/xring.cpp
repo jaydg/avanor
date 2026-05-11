@@ -40,7 +40,7 @@ void XRing::RestoreTable(XFile * f)
     f->Read(ridentify_db, sizeof(int), 20);
 }
 
-XRing::XRing(ENHANCE enh) : XEnhance(enh)
+XRing::XRing(Type enh) : XEnhance(enh)
 {
     im = IM_RING;
     bp = BP_RING;

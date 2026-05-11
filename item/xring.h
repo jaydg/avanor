@@ -27,7 +27,7 @@ class XRing : public XEnhance
 {
     public:
         DECLARE_CREATOR(XRing, XEnhance);
-        XRing(ENHANCE enh = ENH_EOF);
+        XRing(Type enh = RANDOM);
         XRing(XRing * copy) : XEnhance((XEnhance*)copy) {}
 
         int isIdentifed() override;

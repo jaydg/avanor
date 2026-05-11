@@ -39,7 +39,7 @@ void XAmulet::RestoreTable(XFile * f)
     f->Read(aidentify_db, sizeof(int), 20);
 }
 
-XAmulet::XAmulet(ENHANCE enh) : XEnhance(enh)
+XAmulet::XAmulet(Type enh) : XEnhance(enh)
 {
     im = IM_NECK;
     bp = BP_NECK;

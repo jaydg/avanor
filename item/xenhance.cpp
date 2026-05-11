@@ -24,25 +24,154 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XEnhance);
 
-_ENH_COLOR_TABLE ect[] = {
-    {/*EC_WHITE,*/	xWHITE,	"white"},
-    {/*EC_BLUE,*/	xBLUE,	"blue"},
-    {/*EC_BLACK,*/	xDARKGRAY,	"black"},
-    {/*EC_GOLDEN,*/	xYELLOW,	"golden"},
-    {/*EC_COPPER,*/	xRED,	"copper"},
-    {/*EC_WOODEN,*/	xBROWN,	"wooden"},
-    {/*EC_RED,*/	xRED,	"red"},
-    {/*EC_MARBLE,*/ xWHITE,	"marble"},
-    {/*EC_PERAL,*/	xYELLOW,	"pearl"},
-    {/*EC_SAPHIRE,*/xLIGHTGREEN, "sapphire"},
-    {/*EC_DIAMOND*/ xCYAN,	"diamond"},
-    {/*EC_RUBY,*/	xRED,	"ruby"},
-    {/*EC_STEEL,*/	xBLUE,	"steel"},
-    {/*EC_GLASS,*/	xLIGHTGRAY,	"glass"},
-    {/*EC_OBSIDIAN*/xDARKGRAY,	"obsidian"},
+enum ENH_COLOR {
+    EC_WHITE,
+    EC_BLUE,
+    EC_BLACK,
+    EC_GOLDEN,
+    EC_COPPER,
+    EC_WOODEN,
+    EC_RED,
+    EC_MARBLE,
+    EC_PEARL,
+    EC_SAPPHIRE,
+    EC_DIAMOND,
+    EC_RUBY,
+    EC_STEEL,
+    EC_GLASS,
+    EC_OBSIDIAN,
+    EC_RANDOM,
 };
 
-ENH_COLOR ENH_REC::SelectColor(ENH_COLOR ec)
+struct ENH_COLOR_TABLE {
+    int color;
+    const char* color_name;
+    int is_used;
+} ect[] = {
+    {/* EC_WHITE */     xWHITE,      "white"},
+    {/* EC_BLUE */      xBLUE,       "blue"},
+    {/* EC_BLACK */     xDARKGRAY,   "black"},
+    {/* EC_GOLDEN */    xYELLOW,     "golden"},
+    {/* EC_COPPER */    xRED,        "copper"},
+    {/* EC_WOODEN */    xBROWN,      "wooden"},
+    {/* EC_RED */       xRED,        "red"},
+    {/* EC_MARBLE */    xWHITE,      "marble"},
+    {/* EC_PEARL */     xYELLOW,     "pearl"},
+    {/* EC_SAPPHIRE */  xLIGHTGREEN, "sapphire"},
+    {/* EC_DIAMOND */   xCYAN,       "diamond"},
+    {/* EC_RUBY */      xRED,        "ruby"},
+    {/* EC_STEEL */     xBLUE,       "steel"},
+    {/* EC_GLASS */     xLIGHTGRAY,  "glass"},
+    {/* EC_OBSIDIAN */  xDARKGRAY,   "obsidian"},
+};
+
+struct ENH_REC {
+    XEnhance::Type enh;
+    const char* name;
+    const char* dv;     // modifiers
+    const char* pv;
+    const char* hit;
+    const char* dice;
+    const char* z;      // random z to dice;
+    const char* rng;    // rng
+    const char* r;      // resists
+    const char* s;      // stats
+    int value;
+    ENH_COLOR color;
+    int identify;
+    static ENH_COLOR SelectColor(ENH_COLOR ec);
+} enh_db[] = {
+    {
+        XEnhance::PROTECTION, "of protection",
+        "", "1d6-2",
+        "", "", "", "",
+        "",
+        "",
+        150, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::DAMAGE, "of damage",
+        "", "",
+        "", "", "1d6-2", "",
+        "",
+        "",
+        150, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::SLAYING, "of slaying",
+        "", "",
+        "1d6-2", "", "1d6-2", "",
+        "",
+        "",
+        300, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::FREEACTION, "of free action",
+        "", "",
+        "", "", "", "",
+        "stun:8d5+50 confuse:8d5+50",
+        "",
+        200, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::INVISIBILITY, "of invisibility",
+        "", "",
+        "", "", "", "",
+        "invisible:0d0+10",
+        "",
+        500, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::SEEINVISIBLE, "of see invisible",
+        "", "",
+        "", "", "", "",
+        "see_invisible:0d0+10",
+        "",
+        300, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::FIRERESIST, "of fire resistance",
+        "", "",
+        "", "", "", "",
+        "fire:8d5+30",
+        "",
+        250, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::ACIDRESIST, "of acid resistance",
+        "", "",
+        "", "", "", "",
+        "fire:8d5+25",
+        "",
+        300, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::POISONRESIST, "of poison resistance",
+        "", "",
+        "", "", "", "",
+        "fire:8d5+25",
+        "",
+        300, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::STRENGTH, "of Strength",
+        "", "",
+        "", "", "", "",
+        "",
+        "St:1d4",
+        400, ENH_REC::SelectColor(EC_RANDOM), 0
+    },
+    {
+        XEnhance::POWER, "of Power",
+        "", "",
+        "", "", "", "",
+        "",
+        "Wi:1d4",
+        400, ENH_REC::SelectColor(EC_RANDOM), 0
+    }
+};
+
+ENH_COLOR ENH_REC::SelectColor(const ENH_COLOR ec)
 {
     if (ec == EC_RANDOM) {
         int count = 1000;
@@ -52,117 +181,27 @@ ENH_COLOR ENH_REC::SelectColor(ENH_COLOR ec)
 
             if (ect[rp].is_used == 0) {
                 ect[rp].is_used = 1;
-                return (ENH_COLOR)rp;
+                return static_cast<ENH_COLOR>(rp);
             }
         }
 
         assert(0);
         return EC_WHITE;
-    } else {
-        assert(ect[ec].is_used == 0);
-        ect[ec].is_used = 1;
-        return ec;
     }
+
+    assert(ect[ec].is_used == 0);
+    ect[ec].is_used = 1;
+
+    return ec;
 }
 
-ENH_REC enh_db[] = {
-    {
-        ENH_PROTECTION, "of protection",
-        "", "1d6-2",
-        "", "", "", "",
-        "",
-        "",
-        150, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_DAMAGE, "of damage",
-        "", "",
-        "", "", "1d6-2", "",
-        "",
-        "",
-        150, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_SLAYING, "of slaying",
-        "", "",
-        "1d6-2", "", "1d6-2", "",
-        "",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_FREEACTION, "of free action",
-        "", "",
-        "", "", "", "",
-        "stun:8d5+50 confuse:8d5+50",
-        "",
-        200, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_INVISIBILITY, "of invisibility",
-        "", "",
-        "", "", "", "",
-        "invisible:0d0+10",
-        "",
-        500, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_SEEINVISIBLE, "of see invisible",
-        "", "",
-        "", "", "", "",
-        "see_invisible:0d0+10",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_FIRERESIST, "of fire resistance",
-        "", "",
-        "", "", "", "",
-        "fire:8d5+30",
-        "",
-        250, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_ACIDRESIST, "of acid resistance",
-        "", "",
-        "", "", "", "",
-        "fire:8d5+25",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_POISONRESIST, "of poison resistance",
-        "", "",
-        "", "", "", "",
-        "fire:8d5+25",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_STR, "of Strength",
-        "", "",
-        "", "", "", "",
-        "",
-        "St:1d4",
-        400, ENH_REC::SelectColor(EC_RANDOM), 0
-    },
-    {
-        ENH_POWER, "of Power",
-        "", "",
-        "", "", "", "",
-        "",
-        "Wi:1d4",
-        400, ENH_REC::SelectColor(EC_RANDOM), 0
-    }
-};
+constexpr int enh_db_sz = 11;
 
-const int enh_db_sz = 11;
-
-XEnhance::XEnhance(ENHANCE enh)
+XEnhance::XEnhance(const Type enh)
 {
     descr = -1;
 
-    if (enh == ENH_EOF) {
+    if (enh == RANDOM) {
         descr =	vRand(enh_db_sz);
     } else {
         for (int i = 0; i < enh_db_sz; i++)
@@ -179,8 +218,7 @@ XEnhance::XEnhance(ENHANCE enh)
     color =	ect[is->color].color;
     value =	is->value;
     weight = 1;
-    XDice * d;
-    d = new XDice(is->dv);
+    auto d = new XDice(is->dv);
     _DV = d->Throw();
 
     d->Setup(is->pv);
@@ -205,17 +243,15 @@ XEnhance::XEnhance(ENHANCE enh)
     weight = 3;
 }
 
-int XEnhance::Compare(XObject * o)
+int XEnhance::Compare(XObject* o)
 {
-    assert(dynamic_cast<XEnhance*>(o));
-
-    XEnhance * tit = (XEnhance*)o;
+    auto tit = dynamic_cast<XEnhance *>(o);
 
     if (descr == tit->descr && XItem::Compare(o) == 0) {
         return 0;
-    } else {
-        return 1;
     }
+
+    return 1;
 }
 
 std::string XEnhance::toString()

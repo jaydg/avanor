@@ -172,7 +172,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
 
             if (ring1 && ring1->Item()) {
                 ring1->UnWear()->Invalidate();
-                ring1->Wear(new XRing(ENH_SEEINVISIBLE));
+                ring1->Wear(new XRing(XEnhance::SEEINVISIBLE));
             }
 
             break;

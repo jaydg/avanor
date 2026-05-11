@@ -398,17 +398,17 @@ REGISTER_CLASS(XShopkeeper);
 
 XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
 {
-    XAmulet * am = new XAmulet(ENH_SEEINVISIBLE);
+    auto am = new XAmulet(XEnhance::SEEINVISIBLE);
     CarryItem(am);
     XBodyPart * bp = GetBodyPart(BP_NECK);
     bp->Wear(am);
 
-    XRing * rn = new XRing(ENH_ACIDRESIST);
+    auto rn = new XRing(XEnhance::ACIDRESIST);
     CarryItem(rn);
     bp = GetBodyPart(BP_RING, 0);
     bp->Wear(rn);
 
-    rn = new XRing(ENH_SLAYING);
+    rn = new XRing(XEnhance::SLAYING);
     CarryItem(rn);
     bp = GetBodyPart(BP_RING, 1);
     bp->Wear(rn);
