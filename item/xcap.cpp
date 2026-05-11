@@ -39,8 +39,3 @@ XCap::XCap(ITEM_TYPE _it)
     dice.Z = 0;
     RNG = 0;
 }
-
-XCap::XCap(XCap * copy) : XClothes((XClothes*)copy)
-{
-}
-

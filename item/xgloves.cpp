@@ -39,8 +39,3 @@ XGloves::XGloves(ITEM_TYPE it)
     dice.Z = 0;
     RNG = 0;
 }
-
-XGloves::XGloves(XGloves * gloves) : XClothes((XClothes*)gloves)
-{
-}
-

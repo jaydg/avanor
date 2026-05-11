@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XArmor);
 
 _MAIN_ITEM_STRUCT ARMOR_STRUCT[] = {
-
     {IT_CLOTHES,	"clothes",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	3,	5,	100,	IQ_POOR,	""},
     {IT_DRESS,	"dress",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	3,	5,	100,	IQ_POOR,	""},
     {IT_ROBE,	"robe",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	5,	9,	150,	IQ_POOR,	""},
@@ -36,16 +35,12 @@ _MAIN_ITEM_STRUCT ARMOR_STRUCT[] = {
 
 XItemBasicStructure gi_armour(ARMOR_STRUCT, 8);
 
-XArmor::XArmor(ITEM_TYPE _it)
+XArmor::XArmor(const ITEM_TYPE it)
 {
-    BasicFill(_it, &gi_armour);
+    BasicFill(it, &gi_armour);
     bp = BP_BODY;
     im = IM_BODY;
     dice.Z = 0;
     RNG = 0;
     _HIT = -(weight / 500);
-}
-
-XArmor::XArmor(XArmor * armor) : XClothes((XClothes*)armor)
-{
 }

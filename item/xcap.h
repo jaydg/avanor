@@ -27,8 +27,11 @@ class XCap : public XClothes
 {
     public:
         DECLARE_CREATOR(XCap, XClothes);
-        XCap(ITEM_TYPE it = IT_RANDOM);
-        XCap(XCap * cap);
+
+        explicit XCap(ITEM_TYPE it = IT_RANDOM);
+
+        explicit XCap(XCap * cap) : XClothes(static_cast<XClothes *>(cap)) {}
+
         XObject* MakeCopy() override
         {
             return new XCap(this);

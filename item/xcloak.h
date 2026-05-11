@@ -27,8 +27,11 @@ class XCloak : public XClothes
 {
     public:
         DECLARE_CREATOR(XCloak, XClothes);
-        XCloak(ITEM_TYPE it = IT_RANDOM);
-        XCloak(XCloak * cap);
+
+        explicit XCloak(ITEM_TYPE it = IT_RANDOM);
+
+        explicit XCloak(XCloak* copy) : XClothes(static_cast<XClothes *>(copy)) {}
+
         XObject* MakeCopy() override
         {
             return new XCloak(this);

@@ -27,8 +27,13 @@ class XBoots: public XClothes
 {
     public:
         DECLARE_CREATOR(XBoots, XClothes);
-        XBoots(ITEM_TYPE it = IT_RANDOM);
-        XBoots(XBoots * boots);
+
+        explicit XBoots(ITEM_TYPE it = IT_RANDOM);
+
+        explicit XBoots(XBoots* boots) : XClothes(static_cast<XClothes *>(boots))
+        {
+        }
+
         XObject* MakeCopy() override
         {
             return new XBoots(this);

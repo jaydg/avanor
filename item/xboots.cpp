@@ -31,17 +31,12 @@ _MAIN_ITEM_STRUCT BOOTS_STRUCT[] = {
 
 XItemBasicStructure gi_boots(BOOTS_STRUCT, 4);
 
-XBoots::XBoots(ITEM_TYPE _it)
+XBoots::XBoots(const ITEM_TYPE it)
 {
     im = IM_BOOTS;
-    BasicFill(_it, &gi_boots);
+    BasicFill(it, &gi_boots);
     bp = BP_BOOTS;
     dice.Z = 0;
     RNG = 0;
     _HIT = -(weight / 500);
 }
-
-XBoots::XBoots(XBoots * copy) : XClothes((XClothes*)copy)
-{
-}
-

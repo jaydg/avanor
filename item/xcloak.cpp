@@ -20,9 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/xcloak.h"
 
-
 _MAIN_ITEM_STRUCT CLOAK_STRUCT[] = {
-
     {IT_LIGHTCLOAK,	"light cloak",	'(',	"1d2+1",	"1d2",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	1,	2,	100,	IQ_AVG,	""},
     {IT_CLOAK,	"cloak",	'(',	"1d2",	"1d2+1",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	2,	3,	60,	IQ_AVG,	""},
     {IT_SHADOWCLOAK, "shadow cloak",	'(',	"1d2+2",	"1d5+3",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	15,	8,	10,	IQ_FAIR,	""},
@@ -33,16 +31,12 @@ XItemBasicStructure gi_cloaks(CLOAK_STRUCT, 4);
 
 REGISTER_CLASS(XCloak);
 
-XCloak::XCloak(ITEM_TYPE _it)
+XCloak::XCloak(const ITEM_TYPE it)
 {
-    BasicFill(_it, &gi_cloaks);
+    BasicFill(it, &gi_cloaks);
     bp = BP_CLOAK;
     im = IM_CLOAK;
     dice.Z = 0;
     RNG = 0;
     _HIT = 0;
-}
-
-XCloak::XCloak(XCloak * copy) : XClothes((XClothes*)copy)
-{
 }

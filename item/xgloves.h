@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef GLOVES_H
-#define GLOVES_H
+#ifndef XGLOVES_H
+#define XGLOVES_H
 
 #include "item/xclothes.h"
 
@@ -27,8 +27,11 @@ class XGloves : public XClothes
 {
     public:
         DECLARE_CREATOR(XGloves, XClothes);
-        XGloves(ITEM_TYPE it = IT_RANDOM);
-        XGloves(XGloves * gloves);
+
+        explicit XGloves(ITEM_TYPE it = IT_RANDOM);
+
+        explicit XGloves(XGloves* gloves) : XClothes(static_cast<XClothes *>(gloves)) {}
+
         XObject* MakeCopy() override
         {
             return new XGloves(this);
