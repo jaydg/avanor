@@ -22,12 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XAmulet);
 
-int aidentify_db[20] = {
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0
-};
+int aidentify_db[20] = {};
 
 void XAmulet::StoreTable(XFile * f)
 {
@@ -53,7 +48,7 @@ int XAmulet::isIdentifed()
     return aidentify_db[descr];
 }
 
-void XAmulet::Identify(int level)
+void XAmulet::Identify(const int level)
 {
     aidentify_db[descr] = level;
 }

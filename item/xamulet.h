@@ -27,8 +27,10 @@ class XAmulet : public XEnhance
 {
     public:
         DECLARE_CREATOR(XAmulet, XEnhance);
-        XAmulet(Type enh = RANDOM);
-        XAmulet(XAmulet * copy) : XEnhance((XEnhance*)copy) {}
+
+        explicit XAmulet(Type enh = RANDOM);
+
+        explicit XAmulet(XAmulet* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
 
         XObject* MakeCopy() override
         {

@@ -27,8 +27,10 @@ class XRing : public XEnhance
 {
     public:
         DECLARE_CREATOR(XRing, XEnhance);
-        XRing(Type enh = RANDOM);
-        XRing(XRing * copy) : XEnhance((XEnhance*)copy) {}
+
+        explicit XRing(Type enh = RANDOM);
+
+        explicit XRing(XRing* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
 
         int isIdentifed() override;
         void Identify(int level) override;

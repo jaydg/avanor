@@ -22,18 +22,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XRing);
 
-int ridentify_db[20] = {
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0
-};
+int ridentify_db[20] = {};
 
 void XRing::StoreTable(XFile * f)
 {
     f->Write(ridentify_db, sizeof(int), 20);
 }
-
 
 void XRing::RestoreTable(XFile * f)
 {
@@ -54,7 +48,7 @@ int XRing::isIdentifed()
     return ridentify_db[descr];
 }
 
-void XRing::Identify(int level)
+void XRing::Identify(const int level)
 {
     ridentify_db[descr] = level;
 }
