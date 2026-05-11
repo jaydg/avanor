@@ -71,9 +71,9 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetDMGFHBonus(weapon) + GetDMG();
         brt = weapon->brt;
     } else {
-        res += (wsk->GetUseTime(WSK_UNARMED) * GetSpeed()) / 1000;
-        tohit = GetHIT() + wsk->GetHIT(WSK_UNARMED);
-        tdam = dice.Throw() + GetDMG() + wsk->GetDMG(WSK_UNARMED);
+        res += (wsk->GetUseTime(XWarSkills::UNARMED) * GetSpeed()) / 1000;
+        tohit = GetHIT() + wsk->GetHIT(XWarSkills::UNARMED);
+        tdam = dice.Throw() + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED);
         brt = BR_NONE;
 
         for (const auto tit: *melee_attack) {
@@ -96,7 +96,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         if (weapon) {
             wsk->UseSkill(weapon->wt);
         } else {
-            wsk->UseSkill(WSK_UNARMED);
+            wsk->UseSkill(XWarSkills::UNARMED);
         }
     }
 
@@ -565,7 +565,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 }
             }
 
-            wsk->UseSkill(WSK_SHIELD);
+            wsk->UseSkill(XWarSkills::SHIELD);
         } else { // It was not shield (miss or avoid)
             if (vis1 || vis2) {
                 if (pData->attack_name) {

@@ -37,12 +37,12 @@ _MAIN_ITEM_STRUCT MWEAPON_STRUCT[] = {
 XItemBasicStructure gi_missilew(MWEAPON_STRUCT, 6);
 
 _WEAPON_BIND mwbind[] = {
-    {IT_LONGBOW,	WSK_BOW},
-    {IT_SHORTBOW,	WSK_BOW},
-    {IT_LIGHTCROSSBOW,	WSK_CROSSBOW},
-    {IT_CROSSBOW,	WSK_CROSSBOW},
-    {IT_HEAVYCROSSBOW,	WSK_CROSSBOW},
-    {IT_SLING,	WSK_SLING}
+    {IT_LONGBOW,       XWarSkills::BOW},
+    {IT_SHORTBOW,      XWarSkills::BOW},
+    {IT_LIGHTCROSSBOW, XWarSkills::CROSSBOW},
+    {IT_CROSSBOW,      XWarSkills::CROSSBOW},
+    {IT_HEAVYCROSSBOW, XWarSkills::CROSSBOW},
+    {IT_SLING,         XWarSkills::SLING}
 };
 
 XMissileWeapon::XMissileWeapon(ITEM_TYPE _it)

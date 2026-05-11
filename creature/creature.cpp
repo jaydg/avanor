@@ -645,7 +645,7 @@ int XCreature::GetShieldDVBonus()
         XItem* i = xbp->Item();
 
         if (i && i->im == IM_SHIELD) {
-            int shld_skl = wsk->GetDV(WSK_SHIELD);
+            int shld_skl = wsk->GetDV(XWarSkills::SHIELD);
             int shield_dv = i->_DV;
 
             if (i->_DV < shld_skl) {
@@ -1135,7 +1135,7 @@ XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
             [](XBodyPart* xbp) { return xbp->Item() && xbp->Item()->im & IM_SHIELD; }
         );
 
-        if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(WSK_SHIELD) + 5)) {
+        if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(XWarSkills::SHIELD) + 5)) {
             return bpi[0];
         }
     }
@@ -1279,9 +1279,9 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     } else {
         *range += RNG + str / 25;
         dmg->Z += str / 10;
-        *range += wsk->GetDV(WSK_THROW);
-        dmg->Z += wsk->GetDMG(WSK_THROW);
-        *hit += wsk->GetHIT(WSK_THROW);
+        *range += wsk->GetDV(XWarSkills::THROW);
+        dmg->Z += wsk->GetDMG(XWarSkills::THROW);
+        *hit += wsk->GetHIT(XWarSkills::THROW);
     }
 
     if (skill) {
@@ -1386,7 +1386,7 @@ int XCreature::Shoot(int tx, int ty)
         if (bow) {
             wsk->UseSkill(bow->wt);
         } else {
-            wsk->UseSkill(WSK_THROW);
+            wsk->UseSkill(XWarSkills::THROW);
         }
 
     } else {

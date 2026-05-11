@@ -1714,22 +1714,8 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(IM_ARMOUR);
     LUA_REG(IM_ITEM);
 
-    LUA_REG(WSK_UNKNOWN);
-    LUA_REG(WSK_UNARMED);
-    LUA_REG(WSK_DAGGER);
-    LUA_REG(WSK_SWORD);
-    LUA_REG(WSK_CLUB);
-    LUA_REG(WSK_MACE);
-    LUA_REG(WSK_POLEARM);
-    LUA_REG(WSK_AXE);
-    LUA_REG(WSK_STAVE);
-    LUA_REG(WSK_SHIELD);
-    LUA_REG(WSK_BOW);
-    LUA_REG(WSK_CROSSBOW);
-    LUA_REG(WSK_SLING);
-    LUA_REG(WSK_THROW);
-    LUA_REG(WSK_EOF);
-    LUA_REG(WSK_OTHER);
+    // WSK_SWORD is the only weapon skill used
+    LUA_REG_ALTNAME(WSK_SWORD, XWarSkills::SWORD);
 
     LUA_REG(BR_NONE);
     LUA_REG(BR_FIRE);

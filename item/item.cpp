@@ -37,7 +37,7 @@ XItem::XItem()
     color = xBLUE;
     it = IT_OTHER;
     im = IM_OTHER;
-    wt = WSK_OTHER;
+    wt = XWarSkills::OTHER;
     bp = BP_OTHER;
     identify = 1;
     _DV = _PV = _HIT = RNG = 0;
@@ -469,7 +469,7 @@ void XItem::Store(XFile * f)
     f->Write(&special_property, sizeof(SPECIAL_PROPERTY));
 
     f->Write(&value, sizeof(int));
-    f->Write(&wt, sizeof(WSK_TYPE));
+    f->Write(&wt, sizeof(XWarSkills::Type));
     f->Write(&quality, sizeof(ITEM_QUALITY));
     owner.Store(f);
 }
@@ -491,7 +491,7 @@ void XItem::Restore(XFile * f)
     f->Read(&special_property, sizeof(SPECIAL_PROPERTY));
 
     f->Read(&value, sizeof(int));
-    f->Read(&wt, sizeof(WSK_TYPE));
+    f->Read(&wt, sizeof(XWarSkills::Type));
     f->Read(&quality, sizeof(ITEM_QUALITY));
 
     owner.Restore(f);

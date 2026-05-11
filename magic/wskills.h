@@ -21,8 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef WSKILLS_H
 #define WSKILLS_H
 
-#include "item/itemdef.h"
-
 struct _SKILL_DB {
     const char* name;
     int base_dv[16];
@@ -35,28 +33,47 @@ class XFile;
 class XWarSkills
 {
     public:
+        enum Type {
+            UNKNOWN = -1,
+            UNARMED = 0,
+            DAGGER,  // knives, daggers
+            SWORD,   // all swords
+            CLUB,    // all clubs, hammers
+            MACE,    // all maces, flails
+            POLEARM, // all pole arm, spears, pike etc.
+            AXE,     // all axes
+            STAVE,   // staves, staffs
+            SHIELD,  // shields
+            BOW,
+            CROSSBOW,
+            SLING,
+            THROW,
+            ALL,
+            OTHER
+        };
+
         XWarSkills();
-        int GetLevel(WSK_TYPE wt);
+        int GetLevel(Type wt);
         int GetN(int level);
-        int GetDV(WSK_TYPE wt);
-        int GetHIT(WSK_TYPE wt);
-        int GetDMG(WSK_TYPE wt);
-        int GetUseTime(WSK_TYPE wt);
-        const char* GetName(WSK_TYPE wt);
-        int GetMarks(WSK_TYPE wt)
+        int GetDV(Type wt);
+        int GetHIT(Type wt);
+        int GetDMG(Type wt);
+        int GetUseTime(Type wt);
+        const char* GetName(Type wt);
+        int GetMarks(Type wt)
         {
             return marks_counter[wt] / 10;
         }
 
-        void UseSkill(WSK_TYPE wt, int time = 1);
+        void UseSkill(Type wt, int time = 1);
 
-        void SetLevel(WSK_TYPE wt, int level);
+        void SetLevel(Type wt, int level);
 
         void Store(XFile * f);
         void Restore(XFile * f);
 
-        int marks_counter[WSK_EOF];
-        int levels[WSK_EOF];
+        int marks_counter[ALL];
+        int levels[ALL];
 };
 
 #endif

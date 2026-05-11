@@ -747,8 +747,8 @@ void XHero::InfoList()
 
     sprintf(tbuf, MSG_BROWN "Unarmed:    (" MSG_YELLOW "%+d" MSG_BROWN ", "
         MSG_YELLOW"%d" MSG_BROWN "d" MSG_YELLOW "%d %+d" MSG_BROWN ")",
-        GetHIT() + wsk->GetHIT(WSK_UNARMED),
-        dice.X, dice.Y, dice.Z + GetDMG() + wsk->GetDMG(WSK_UNARMED));
+        GetHIT() + wsk->GetHIT(XWarSkills::UNARMED),
+        dice.X, dice.Y, dice.Z + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED));
     vGotoXY(0, 16);
     vPutS(tbuf);
 
@@ -2153,15 +2153,15 @@ void XHero::WarSkillsList(FILE * f) const
     list.AddItem(new XGuiItem_Text(MSG_BROWN "Melee Weapon         DV  HIT  DMG      Level              required marks", 0), 0);
     char buf[256];
 
-    for (int i = 0; i < WSK_EOF; i++) {
-        const auto w_skill = static_cast<WSK_TYPE>(i);
+    for (int i = 0; i < XWarSkills::ALL; i++) {
+        const auto w_skill = static_cast<XWarSkills::Type>(i);
 
-        if (w_skill == WSK_BOW) {
+        if (w_skill == XWarSkills::BOW) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
             list.AddItem(new XGuiItem_Text(MSG_BROWN "Missile Weapon       RNG HIT  DMG      Level              required marks", 0), 0);
         }
 
-        if (i == WSK_SHIELD) {
+        if (i == XWarSkills::SHIELD) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
             list.AddItem(new XGuiItem_Text(MSG_BROWN "Shields              DV                Level              required marks", 0), 0);
         }

@@ -40,10 +40,10 @@ XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 // Rock is special b/c it can be used with or without a launcher...
 
  _WEAPON_BIND mbind[] = {
-{IT_LONGBOW,		WSK_BOW},
-{IT_LIGHTCROSSBOW,	WSK_CROSSBOW},
-{IT_SLING,			WSK_SLING},
-{IT_SLING,			WSK_THROW}
+{IT_LONGBOW,        XWarSkills::BOW},
+{IT_LIGHTCROSSBOW,  XWarSkills::CROSSBOW},
+{IT_SLING,          XWarSkills::SLING},
+{IT_SLING,          XWarSkills::THROW}
 };*/
 
 XMissile::XMissile(ITEM_TYPE _it)
@@ -164,7 +164,7 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
 {
     if (weapon) {
         switch (weapon->wt) {
-            case WSK_BOW:
+            case XWarSkills::BOW:
                 if (missile->it == IT_ARROW) {
                     return true;
                 } else {
@@ -173,7 +173,7 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
 
                 break;
 
-            case WSK_CROSSBOW:
+            case XWarSkills::CROSSBOW:
                 if (missile->it == IT_QUARREL) {
                     return true;
                 } else {
@@ -182,7 +182,7 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
 
                 break;
 
-            case WSK_SLING:
+            case XWarSkills::SLING:
                 if (missile->it == IT_ROCK || missile->it == IT_SLINGBULLET) {
                     return true;
                 } else {

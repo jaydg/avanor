@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 struct _WEAPON_BIND {
     ITEM_TYPE it;
-    WSK_TYPE ws;
+    XWarSkills::Type ws;
 };
 
 class XWeapon : public XItem

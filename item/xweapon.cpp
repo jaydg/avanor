@@ -65,38 +65,38 @@ const int weapon_db_size = 26;
 XItemBasicStructure gi_weapon(weapon_db, weapon_db_size);
 
 _WEAPON_BIND wbind[weapon_db_size] = {
-    {IT_CLUB,	WSK_CLUB},
-    {IT_WARHAMMER,	WSK_CLUB},
+    {IT_CLUB,           XWarSkills::CLUB},
+    {IT_WARHAMMER,      XWarSkills::CLUB},
 
-    {IT_DAGGER,	WSK_DAGGER},
-    {IT_KNIFE,	WSK_DAGGER},
-    {IT_ORCISHDAGGER,	WSK_DAGGER},
-    {IT_LONGDAGGER,	WSK_DAGGER},
+    {IT_DAGGER,         XWarSkills::DAGGER},
+    {IT_KNIFE,          XWarSkills::DAGGER},
+    {IT_ORCISHDAGGER,   XWarSkills::DAGGER},
+    {IT_LONGDAGGER,     XWarSkills::DAGGER},
 
-    {IT_SHORTSWORD,	WSK_SWORD},
-    {IT_LONGSWORD,	WSK_SWORD},
-    {IT_BROADSWORD,	WSK_SWORD},
-    {IT_RAPIER,	WSK_SWORD},
-    {IT_SCIMITAR,	WSK_SWORD},
-    {IT_KATANA,	WSK_SWORD},
-    {IT_WAKIZASHI,	WSK_SWORD},
+    {IT_SHORTSWORD, XWarSkills::SWORD},
+    {IT_LONGSWORD,  XWarSkills::SWORD},
+    {IT_BROADSWORD, XWarSkills::SWORD},
+    {IT_RAPIER,     XWarSkills::SWORD},
+    {IT_SCIMITAR,   XWarSkills::SWORD},
+    {IT_KATANA,     XWarSkills::SWORD},
+    {IT_WAKIZASHI,  XWarSkills::SWORD},
 
-    {IT_SMALLAXE,	WSK_AXE},
-    {IT_WARAXE,	WSK_AXE},
-    {IT_BATTLEAXE,	WSK_AXE},
-    {IT_GREATAXE,	WSK_AXE},
-    {IT_ORCISHAXE,	WSK_AXE},
+    {IT_SMALLAXE,   XWarSkills::AXE},
+    {IT_WARAXE,     XWarSkills::AXE},
+    {IT_BATTLEAXE,  XWarSkills::AXE},
+    {IT_GREATAXE,   XWarSkills::AXE},
+    {IT_ORCISHAXE,  XWarSkills::AXE},
 
-    {IT_MACE,	WSK_MACE},
-    {IT_FLAIL,	WSK_MACE},
+    {IT_MACE,       XWarSkills::MACE},
+    {IT_FLAIL,      XWarSkills::MACE},
 
-    {IT_SHORTSPEAR,	WSK_POLEARM},
-    {IT_LONGSPEAR,	WSK_POLEARM},
-    {IT_PITCHFORK,	WSK_POLEARM},
-    {IT_PIKE,	WSK_POLEARM},
-    {IT_HALBERD,	WSK_POLEARM},
+    {IT_SHORTSPEAR, XWarSkills::POLEARM},
+    {IT_LONGSPEAR,  XWarSkills::POLEARM},
+    {IT_PITCHFORK,  XWarSkills::POLEARM},
+    {IT_PIKE,       XWarSkills::POLEARM},
+    {IT_HALBERD,    XWarSkills::POLEARM},
 
-    {IT_STAFF,	WSK_STAVE},
+    {IT_STAFF,      XWarSkills::STAVE},
 };
 
 

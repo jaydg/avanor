@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xfile.h"
 #include "magic/wskills.h"
 
-_SKILL_DB _skill_db[WSK_EOF] = {
+_SKILL_DB _skill_db[XWarSkills::ALL] = {
     // dv  hit dmg
     // r   hit dmg
     {
@@ -108,18 +108,18 @@ _SKILL_DB _skill_db[WSK_EOF] = {
 
 XWarSkills::XWarSkills()
 {
-    for (int i = 0; i < WSK_EOF; i++) {
+    for (int i = 0; i < XWarSkills::ALL; i++) {
         marks_counter[i] = GetN(1);
         levels[i] = 0;
     }
 }
 
-const char* XWarSkills::GetName(WSK_TYPE wt)
+const char* XWarSkills::GetName(Type wt)
 {
     return _skill_db[wt].name;
 }
 
-int XWarSkills::GetLevel(WSK_TYPE wt)
+int XWarSkills::GetLevel(Type wt)
 {
     return levels[wt];
 }
@@ -130,13 +130,13 @@ int XWarSkills::GetN(int level)
     return 10 * std::lround((float)(25.0 * (pow(M_E, level / 4.0) - 1)));
 }
 
-void XWarSkills::SetLevel(WSK_TYPE wt, int level)
+void XWarSkills::SetLevel(Type wt, int level)
 {
     marks_counter[wt] = GetN(level + 1);
     levels[wt] = level;
 }
 
-void XWarSkills::UseSkill(WSK_TYPE wt, int time)
+void XWarSkills::UseSkill(Type wt, int time)
 {
     marks_counter[wt] -= time * 10;
 
@@ -148,34 +148,34 @@ void XWarSkills::UseSkill(WSK_TYPE wt, int time)
     }
 }
 
-int XWarSkills::GetDV(WSK_TYPE wt)
+int XWarSkills::GetDV(Type wt)
 {
     return _skill_db[wt].base_dv[levels[wt]];
 }
 
-int XWarSkills::GetHIT(WSK_TYPE wt)
+int XWarSkills::GetHIT(Type wt)
 {
     return _skill_db[wt].base_hit[levels[wt]];
 }
 
-int XWarSkills::GetDMG(WSK_TYPE wt)
+int XWarSkills::GetDMG(Type wt)
 {
     return _skill_db[wt].base_dmg[levels[wt]];
 }
 
-int XWarSkills::GetUseTime(WSK_TYPE wt)
+int XWarSkills::GetUseTime(Type wt)
 {
     return 1000 - GetLevel(wt) * 30;
 }
 
 void XWarSkills::Store(XFile * f)
 {
-    f->Write(marks_counter, sizeof(int), WSK_EOF);
-    f->Write(levels, sizeof(int), WSK_EOF);
+    f->Write(marks_counter, sizeof(int), ALL);
+    f->Write(levels, sizeof(int), ALL);
 }
 
 void XWarSkills::Restore(XFile * f)
 {
-    f->Read(marks_counter, sizeof(int), WSK_EOF);
-    f->Read(levels, sizeof(int), WSK_EOF);
+    f->Read(marks_counter, sizeof(int), ALL);
+    f->Read(levels, sizeof(int), ALL);
 }

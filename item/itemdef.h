@@ -160,24 +160,6 @@ enum ITEM_SET {
     ISET_ALL	= 0x00000fff | ISET_MITHRIL | ISET_ADAMANTIUM,
 };
 
-enum WSK_TYPE {WSK_UNKNOWN = -1,
-    WSK_UNARMED = 0,
-    WSK_DAGGER, //knife, daggers
-    WSK_SWORD, //all swords
-    WSK_CLUB, //all clubs, hummers
-    WSK_MACE, //all maces, flails
-    WSK_POLEARM, //all pole arm, spere, pike etc.
-    WSK_AXE, //all axes
-    WSK_STAVE, //staves, staffs
-    WSK_SHIELD, //shields
-    WSK_BOW,
-    WSK_CROSSBOW,
-    WSK_SLING,
-    WSK_THROW,
-    WSK_EOF,
-    WSK_OTHER
-};
-
 enum ITEM_TYPE {
     IT_UNKNOWN = 0,
     IT_HAT, IT_CAP, IT_HELMET,

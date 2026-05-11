@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xbaseobj.h"
 #include "item/itemdb.h"
 #include "item/itemdef.h"
+#include "magic/wskills.h"
 
 #define DUR_INFINITE 65535
 
@@ -66,7 +67,7 @@ class XItem : public XBaseObject
 
         BODY_PART bp;    // fit to what bp???
         ITEM_TYPE it;   // main type of item such IT_POTION
-        WSK_TYPE wt;    // other type of item
+        XWarSkills::Type wt;  // weapon skill of item
         ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
 
         int durability; // DUR_INFINITE - infinite, Other - finite 1Dur == 1000 turn
