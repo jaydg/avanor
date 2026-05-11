@@ -24,11 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XClothe);
 
-XClothe::XClothe()
-{
-
-}
-
 std::string XClothe::toString()
 {
     auto fullname = GetFullName();

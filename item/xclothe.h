@@ -27,8 +27,9 @@ class XClothe : public XItem
 {
     public:
         DECLARE_CREATOR(XClothe, XItem);
-        XClothe();
-        XClothe(XClothe * copy) : XItem((XItem*)copy) {}
+        XClothe() = default;
+
+        explicit XClothe(XClothe* copy) : XItem(static_cast<XItem *>(copy)) {}
 
         std::string toString() override;
 };
