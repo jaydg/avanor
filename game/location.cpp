@@ -1923,7 +1923,6 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(IT_CHEST);
     LUA_REG(IT_MONEY);
     LUA_REG(IT_GEM);
-    LUA_REG(IT_OTHER);
     LUA_REG(IT_RANDOM);
     LUA_REG(IT_EOF);
 

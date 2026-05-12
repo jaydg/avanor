@@ -189,7 +189,6 @@ enum ITEM_TYPE {
     IT_CHEST,
     IT_MONEY,
     IT_GEM,
-    IT_OTHER,
     IT_RANDOM,
     IT_EOF
 };
