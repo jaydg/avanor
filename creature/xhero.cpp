@@ -34,7 +34,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "helpers/manual.h"
 #include "item/item_misc.h"
-#include "item/xtool.h"
 #include "magic/modifier.h"
 #include "map/map_objects.h"
 

@@ -232,7 +232,7 @@ std::vector<XCreature*> XCreature::getGroupMembers() const
 int XCreature::stopAction()
 {
     if (action_data.action == A_USE_TOOL) {
-        action_data.item->onUse(UIS_STOP, this);
+        dynamic_cast<XTool *>(action_data.item.get())->onUse(XTool::FINISH, this);
     } else {
         if (action_data.item) {
             contain.insert(action_data.item.get());

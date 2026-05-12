@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "item/incl_i.h"
 #include "item/xanyfood.h"
+#include "item/xtool.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
 #include "magic/wskills.h"
@@ -258,7 +259,7 @@ class XCreature : public XBaseObject
         virtual int Eat(XAnyFood* food);
         int continueEat();
 
-        virtual int UseItem(XItem* item);
+        virtual int UseItem(XTool* tool);
         int continueUseItem();
 
         int base_nutrio;  // stomach size for normal satiation

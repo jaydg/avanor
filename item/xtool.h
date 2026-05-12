@@ -23,10 +23,28 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item.h"
 
-class XCookingSet : public XItem
+class XTool : public XItem {
+    public:
+        DECLARE_CREATOR(XTool, XItem);
+        XTool() {};
+        XTool(XTool* copy) : XItem(copy) {};
+
+        enum ItemUsageState {
+            START,
+            PROGRESS,
+            FINISH,
+        };
+
+        virtual RESULT onUse(ItemUsageState uis, XCreature* cr)
+        {
+            return FAIL;
+        }
+};
+
+class XCookingSet : public XTool
 {
     public:
-        DECLARE_CREATOR(XCookingSet, XItem);
+        DECLARE_CREATOR(XCookingSet, XTool);
         XCookingSet()
         {
             color = xLIGHTGRAY;
@@ -42,7 +60,7 @@ class XCookingSet : public XItem
             resistances = std::make_unique<XResistance>();
         }
 
-        XCookingSet(XCookingSet * copy) : XItem(copy)
+        XCookingSet(XCookingSet * copy) : XTool(copy)
         {
             assert(cooked_item == nullptr);
         }
@@ -52,7 +70,7 @@ class XCookingSet : public XItem
             return new XCookingSet(this);
         }
 
-        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
         std::string toString() override
         {
             return name;
@@ -75,12 +93,12 @@ class XCookingSet : public XItem
 //then we remove rock_resist till, untill complete diging the rock
 //also str gives +1 for each to points of str
 
-class XPickAxe : public XItem
+class XPickAxe : public XTool
 {
         int tgt_x, tgt_y;
         int rock_resist;
     public:
-        DECLARE_CREATOR(XPickAxe, XItem);
+        DECLARE_CREATOR(XPickAxe, XTool);
         XPickAxe()
         {
             color = xLIGHTGRAY;
@@ -96,24 +114,24 @@ class XPickAxe : public XItem
             dice.Setup(1, 10, 0);
         }
 
-        XPickAxe(XPickAxe * copy) : XItem(copy) {}
+        XPickAxe(XPickAxe* copy) : XTool(copy) {}
 
         XObject* MakeCopy() override
         {
             return new XPickAxe(this);
         }
 
-        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
         std::string toString() override
         {
             return name;
         }
 };
 
-class XEyeOfRaa : public XItem
+class XEyeOfRaa : public XTool
 {
     public:
-        DECLARE_CREATOR(XEyeOfRaa, XItem);
+        DECLARE_CREATOR(XEyeOfRaa, XTool);
         XEyeOfRaa()
         {
             color = xCYAN;
@@ -129,24 +147,24 @@ class XEyeOfRaa : public XItem
             dice.Setup(1, 10, 0);
         }
 
-        XEyeOfRaa(XEyeOfRaa * copy) : XItem(copy) {}
+        XEyeOfRaa(XEyeOfRaa* copy) : XTool(copy) {}
 
         XObject* MakeCopy() override
         {
             return new XEyeOfRaa(this);
         }
 
-        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
         std::string toString() override
         {
             return name;
         }
 };
 
-class XAlchemySet : public XItem
+class XAlchemySet : public XTool
 {
     public:
-        DECLARE_CREATOR(XAlchemySet, XItem);
+        DECLARE_CREATOR(XAlchemySet, XTool);
         XAlchemySet()
         {
             color = xLIGHTGRAY;
@@ -161,14 +179,14 @@ class XAlchemySet : public XItem
             resistances = std::make_unique<XResistance>();
         }
 
-        XAlchemySet(XAlchemySet * copy) : XItem(copy) {}
+        XAlchemySet(XAlchemySet* copy) : XTool(copy) {}
 
         XObject* MakeCopy() override
         {
             return new XAlchemySet(this);
         }
 
-        RESULT onUse(USE_ITEM_STATE uis, XCreature * cr) override;
+        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
         std::string toString() override
         {
             return name;

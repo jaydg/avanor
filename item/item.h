@@ -108,11 +108,6 @@ class XItem : public XBaseObject
 
         virtual int onHit(XCreature * user, XCreature * target);
 
-        virtual RESULT onUse(USE_ITEM_STATE uis, XCreature * cr)
-        {
-            return FAIL;
-        }
-
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
 

@@ -45,10 +45,10 @@ int CorpseFiltr(XItem * item)
     }
 }
 
-RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
+RESULT XCookingSet::onUse(ItemUsageState uis, XCreature * cr)
 {
     switch (uis) {
-        case UIS_BEGIN:
+        case START:
             if (cr->isHero()) {
                 XItem * corpse = cr->SelectItem(CorpseFiltr);
 
@@ -72,7 +72,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
             break;
 
-        case UIS_CONTINUE:
+        case PROGRESS:
             use_time--;
 
             if (use_time <= 0) {
@@ -110,7 +110,7 @@ RESULT XCookingSet::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
             break;
 
-        case UIS_STOP:
+        case FINISH:
             XCorpse * corpse = (XCorpse*)cooked_item.get();
             corpse->roating_stopped = 0;
             cr->contain.insert(corpse);
@@ -146,10 +146,10 @@ void XCookingSet::Invalidate()
 
 REGISTER_CLASS(XPickAxe);
 
-RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
+RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
 {
     switch (uis) {
-        case UIS_BEGIN:
+        case START:
             if (cr->isHero()) {
                 XPoint pt;
 
@@ -171,7 +171,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
             break;
 
-        case UIS_CONTINUE:
+        case PROGRESS:
             rock_resist -= (dice.Throw() + cr->sk->GetLevel(XSkill::Skill::MINING) * 5 + cr->GetStats(S_STR) / 2);
 
             if (rock_resist < 0) {
@@ -196,7 +196,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
             break;
 
-        case UIS_STOP:
+        case FINISH:
             break;
 
     }
@@ -213,7 +213,7 @@ RESULT XPickAxe::onUse(USE_ITEM_STATE uis, XCreature * cr)
 
 REGISTER_CLASS(XEyeOfRaa);
 
-RESULT XEyeOfRaa::onUse(USE_ITEM_STATE uis, XCreature * cr)
+RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature * cr)
 {
     if (cr->isHero()) {
         RESULT res = XEffect::Make(cr, E_LIGHTNING_BOLT, 30);
@@ -241,7 +241,7 @@ int RootsFiltr(XItem * item)
     }
 }
 
-RESULT XAlchemySet::onUse(USE_ITEM_STATE uis, XCreature * cr)
+RESULT XAlchemySet::onUse(ItemUsageState uis, XCreature * cr)
 {
     XHerb * herb = (XHerb*)cr->SelectItem(RootsFiltr);
 

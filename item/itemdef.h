@@ -193,11 +193,4 @@ enum ITEM_TYPE {
     IT_EOF
 };
 
-enum USE_ITEM_STATE {
-    UIS_BEGIN,
-    UIS_CONTINUE,
-    UIS_STOP,
-};
-
-
 #endif

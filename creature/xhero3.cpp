@@ -28,15 +28,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 int XHero::UseTool()
 {
-    const XBodyPart* tbp = GetBodyPart(BP_TOOL);
-    XItem* tool = nullptr;
-
-    if (tbp) {
-        tool = tbp->Item();
-    }
-
-    if (tool) {
+    if (const XBodyPart* tbp = GetBodyPart(BP_TOOL))
+    {
+        auto tool = dynamic_cast<XTool *>(tbp->Item());
         UseItem(tool);
+
         return 1;
     }
 
