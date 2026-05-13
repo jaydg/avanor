@@ -19,6 +19,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include <fstream>
+#include <string>
+#include <fmt/format.h>
 
 #include "engine/global.h"
 #include "engine/xobject.h"
@@ -123,18 +126,17 @@ void XObject::StoreAllObjects(XFile * f)
     const size_t size = objects.size();
     f->Write(&size, sizeof(size_t), 1);
 
-    FILE * tmp = fopen("dmp.txt", "wt");
+    std::ofstream tmp("dmp.txt");
 
     long i = 0;
     for (const auto& [key, obj] : objects) {
-        unsigned char name_size = obj->GetClassName().size();
+        const std::string& class_name = obj->GetClassName();
+        auto name_size = static_cast<unsigned char>(class_name.size());
         f->Write(&name_size, sizeof(name_size));
-        f->Write(obj->GetClassName().c_str(), sizeof(char), name_size);
+        f->Write(class_name.c_str(), sizeof(char), name_size);
         obj->bAlreadyStored = false;
-        fprintf(tmp, "[%ld] %s\n", i++, obj->GetClassName().c_str());
+        tmp << fmt::format("[{:04}] {}\n", i++, class_name);
     }
-
-    fclose(tmp);
 
     for (const auto& [key, obj] : objects) {
         obj->Store(f);
@@ -148,20 +150,16 @@ void XObject::RestoreAllObjects(XFile * f)
     long read_count = 0;
     f->Read(&read_count, sizeof(read_count));
 
-    FILE * tmp = fopen("dmp2.txt", "wt");
+    std::ofstream tmp("dmp2.txt");
 
     for (long i = 0; i < read_count; i++) {
         unsigned char name_size;
         f->Read(&name_size, sizeof(name_size));
-        const auto buf = new char[name_size + 1];
-        f->Read(buf, sizeof(char), name_size);
-        buf[name_size] = 0;
-        XClassFactory::Create(buf);
-        fprintf(tmp, "[%d] %s\n", i, buf);
-        delete[] buf;
+        std::string class_name(name_size, '\0');
+        f->Read(class_name.data(), sizeof(char), name_size);
+        XClassFactory::Create(class_name);
+        tmp << fmt::format("[{:04}] {}\n", i, class_name);
     }
-
-    fclose(tmp);
 
     for (auto& [key, obj] : objects) {
         obj->Restore(f);
