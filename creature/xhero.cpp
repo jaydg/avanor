@@ -1511,7 +1511,10 @@ int XHero::XShoot()
             if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missile_w)) {
                 msgwin.ClrMsg();
                 msgwin.Add(fmt::format("Load {}", it->toString()));
-                msgwin.Add("[" MSG_CYAN "Y" MSG_LIGHTGRAY ", " MSG_CYAN "N" MSG_LIGHTGRAY ", " MSG_CYAN "Esc" MSG_LIGHTGRAY "]?");
+                msgwin.Add("["
+                    MSG_CYAN "Y" MSG_LIGHTGRAY ", "
+                    MSG_CYAN "N" MSG_LIGHTGRAY ", "
+                    MSG_CYAN "Esc" MSG_LIGHTGRAY "]?");
                 vRefresh();
                 const int ch = vGetch();
 
@@ -2632,8 +2635,10 @@ int XHero::OrderCompanion()
     }
 
     msgwin.ClrMsg();
-    msgwin.Add("[" MSG_CYAN "a" MSG_LIGHTGRAY "] - attack, [" MSG_CYAN "f"
-        MSG_LIGHTGRAY "] - follow me, [" MSG_CYAN "w" MSG_LIGHTGRAY "] - wait");
+    msgwin.Add(
+        "[" MSG_CYAN "a" MSG_LIGHTGRAY "] - attack, "
+        "[" MSG_CYAN "f" MSG_LIGHTGRAY "] - follow me, "
+        "[" MSG_CYAN "w" MSG_LIGHTGRAY "] - wait");
 
     vRefresh();
     const int ch = vGetch();
