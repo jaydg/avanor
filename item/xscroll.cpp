@@ -24,6 +24,59 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XScroll);
 
+struct SCROLL_REC {
+    SCROLL_REC(const char* rn, EFFECT eff, SCROLL_NAME scrn, int val, int rar) //generate scroll name
+    {
+        real_name = rn;
+        effect = eff;
+        scroll_name = scrn;
+        identify = 0;
+        value = val;
+        total_value += rar;
+        rarity = rar;
+
+        const int words = vRand() % 2 + 1;
+
+        for (int i = 0; i < words; i++) {
+            const int word_len = vRand() % (5 - words) + 3;
+
+            for (int j = 0; j < word_len; j++) {
+                char letter = 'X'; //default letter;
+
+                if (j % 2 == 0) {
+                    constexpr char vowels[] = "euioa";
+                    letter = vowels[vRand() % sizeof(vowels)];
+                } else {
+                    letter = static_cast<char>(vRand() % 26 + 'a');
+                }
+
+                name.append(&letter);
+            }
+
+            if (i < words - 1) {
+                if (vRand() % 4 == 1) {
+                    name.append("-");
+                } else {
+                    name.append(" ");
+                }
+            }
+        }
+    };
+
+    EFFECT effect;
+    SCROLL_NAME scroll_name;
+    int identify;
+    std::string name;
+    std::string_view real_name;
+    int value;
+    int rarity;
+
+    void Store(XFile * f);
+    void Restore(XFile * f);
+    static int total_value;
+    static int GetRandomDescription(SCROLL_NAME scrn);
+};
+
 int SCROLL_REC::total_value = 0;
 
 SCROLL_REC scroll_descr[] = {
