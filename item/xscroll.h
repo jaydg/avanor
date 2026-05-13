@@ -58,22 +58,22 @@ struct SCROLL_REC {
         total_value += rar;
         rarity = rar;
 
-        const char* tmp = "euioa";
-        int words = vRand() % 2 + 1;
+        const int words = vRand() % 2 + 1;
 
         for (int i = 0; i < words; i++) {
-            int word_len = vRand() % (5 - words) + 3;
+            const int word_len = vRand() % (5 - words) + 3;
 
             for (int j = 0; j < word_len; j++) {
-                char let[2] = "X"; //default letter;
+                char letter = 'X'; //default letter;
 
                 if (j % 2 == 0) {
-                    let[0] = tmp[vRand() % 5];
+                    constexpr char vowels[] = "euioa";
+                    letter = vowels[vRand() % sizeof(vowels)];
                 } else {
-                    let[0] = (char)(vRand() % 26 + 'a');
+                    letter = static_cast<char>(vRand() % 26 + 'a');
                 }
 
-                name.append(let);
+                name.append(&letter);
             }
 
             if (i < words - 1) {
