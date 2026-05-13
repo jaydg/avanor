@@ -133,8 +133,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
         cr->stats->Modify(XStats::Random(), 1);
 
         if (cr->isVisible()) {
-            msgwin.Add(cr->name);
-            msgwin.Add("looks more powerful!");
+            msgwin.Add(fmt::format("{} looks more powerful!", cr->name));
         }
     }
 

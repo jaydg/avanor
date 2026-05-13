@@ -426,7 +426,7 @@ void XShopkeeper::Die(XCreature * killer)
     XAnyCreature::Die(killer);
 }
 
-const char* XShopkeeper::StdAnswer()
+std::string XShopkeeper::StdAnswer()
 {
     auto ai = dynamic_cast<XShopKeeperAI*>(xai.get());
 

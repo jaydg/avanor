@@ -176,9 +176,10 @@ RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
 
             if (rock_resist < 0) {
                 if (cr->isHero()) {
-                    msgwin.Add(cr->GetNameEx(CRN_T1));
-                    msgwin.Add(cr->GetVerb("smash"));
-                    msgwin.Add("the stone to pieces.");
+                    msgwin.Add(fmt::format(
+                        "{} {} the stone to pieces.",
+                        cr->GetNameEx(CRN_T1),
+                        cr->GetVerb("smash")));
                     cr->l->map->SetXY(tgt_x, tgt_y, XTileType::STONE_FLOOR);
                     cr->sk->UseSkill(XSkill::Skill::MINING);
 
@@ -262,8 +263,7 @@ RESULT XAlchemySet::onUse(ItemUsageState uis, XCreature * cr)
         cr->contain.insert(pot);
         cr->sk->UseSkill(XSkill::Skill::ALCHEMY);
     } else {
-        msgwin.Add(cr->name);
-        msgwin.Add("failed to create a potion.");
+        msgwin.Add(fmt::format("{} failed to create a potion.", cr->name));
     }
 
     herb->Invalidate();

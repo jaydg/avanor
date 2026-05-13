@@ -31,7 +31,7 @@ const char* GMSG_SHOPKEEPER_ASK_PRICE = "'I can give you " MSG_YELLOW "{}" MSG_Y
 const char* GMSG_SHOPKEEPER_REJECT_ITEM = "'Sorry, I can't buy this!'";
 const char* GMSG_SHOPKEEPER_REJECT_MONEY = "'Thank you, but you don't owe me anything!'";
 const char* GMSG_SHOPKEEPER_ASK_FOR_PAY = "'You must pay me {} gp for {}";
-const char* GMSG_SHOPKEEPER_ASK_FOR_PAY2 = "'You owe me %d gp, How much you would like to pay?'";
+const char* GMSG_SHOPKEEPER_ASK_FOR_PAY2 = "'You owe me {} gp, How much you would like to pay?'";
 const char* GMSG_SHOPKEEPER_THANKS = "'Thank you for paying!'";
 const char* GMSG_SHOPKEEPER_TO_CUSTOMER0 = "{} says 'You owe me {} gp. Don't try to take anything without paying!'";
 const char* GMSG_SHOPKEEPER_TO_CUSTOMER1 = "{} says 'Welcome to my shop, {}!'";
@@ -241,9 +241,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
     }
 
     if (debt.debtor_sum > 0 && item->isValid() && item->quantity > 0) {
-        char buf[256];
-        sprintf(buf, GMSG_SHOPKEEPER_ASK_FOR_PAY2, (int)debt.debtor_sum);
-        msgwin.Add(buf);
+        msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_FOR_PAY2, debt.debtor_sum));
         XPoint pt(0, item->quantity);
         int res = giver->GetTarget(TR_HOW_MUCH, &pt, (int)debt.debtor_sum);
 

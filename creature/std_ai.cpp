@@ -927,8 +927,8 @@ int XStandardAI::PickUpItems()
     ai_owner->ny = ai_owner->y;
 
     if (ai_owner->isVisible()) {
-        msgwin.Add(ai_owner->name);
-        msgwin.Add("picks something up from the ground.");
+        msgwin.Add(fmt::format("{} picks something up from the ground.",
+            ai_owner->name));
     }
 
     return 1;

@@ -361,7 +361,7 @@ class XCreature : public XBaseObject
 
         CREATURE_CLASS creature_class;
 
-        virtual const char* StdAnswer()
+        virtual std::string StdAnswer()
         {
             return "You receive no answer.";
         }

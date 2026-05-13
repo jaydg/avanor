@@ -45,12 +45,6 @@ class XMsgWin
 
         void Add(std::string_view str, int flag = 0);
 
-        // Compatibility fallback for unported code
-        void Add(const char* str, int flag = 0)
-        {
-            Add(std::string_view(str), flag);
-        }
-
         void ClrMsg(int flag = 0);
         void ShowHistory() const;
 };

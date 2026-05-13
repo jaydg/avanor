@@ -151,7 +151,7 @@ class XShopkeeper : public XAnyCreature
         XShopkeeper(_CREATURE *cr);
         XShopkeeper(char* _name, XShop * shop, CREATURE_LEVEL crl, CREATURE_EXP cre) {}
 
-        const char* StdAnswer() override;
+        std::string StdAnswer() override;
         void Die(XCreature * killer) override;
         void SetShop(char* _name, XShop * shop);
 };

@@ -377,15 +377,18 @@ int XEffect::Make(EFFECT_DATA * pData)
             if (it) {
                 if (it->isIdentifed()) {
                     if (pData->caller->isVisible()) {
-                        msgwin.Add(pData->caller->name);
-                        msgwin.Add("learns nothing new about their items.");
+                        msgwin.Add(fmt::format(
+                            "{} learns nothing new about their items.",
+                            pData->caller->name));
                     }
                 } else {
                     it->Identify(1);
 
                     if (pData->caller->isVisible()) {
-                        msgwin.Add(fmt::format("{} identifies item.", pData->caller->name));
-                        msgwin.Add(fmt::format("It was {}.", it->toString()));
+                        msgwin.Add(fmt::format(
+                            "{} identifies the item. It was {}.",
+                            pData->caller->name,
+                            it->toString()));
                     }
                 }
 
