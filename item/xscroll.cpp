@@ -53,7 +53,7 @@ void SCROLL_REC::Store(XFile * f)
     f->Write(&effect, sizeof(EFFECT));
     f->Write(&scroll_name, sizeof(SCROLL_NAME));
     f->Write(&identify, sizeof(int));
-    f->Write(name, sizeof(char), 20);
+    f->WriteStr(name);
 }
 
 void SCROLL_REC::Restore(XFile * f)
@@ -61,7 +61,7 @@ void SCROLL_REC::Restore(XFile * f)
     f->Read(&effect, sizeof(EFFECT));
     f->Read(&scroll_name, sizeof(SCROLL_NAME));
     f->Read(&identify, sizeof(int));
-    f->Read(name, sizeof(char), 20);
+    f->ReadStr(name);
 }
 
 int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)

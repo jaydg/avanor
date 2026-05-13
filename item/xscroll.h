@@ -60,7 +60,6 @@ struct SCROLL_REC {
 
         const char* tmp = "euioa";
         int words = vRand() % 2 + 1;
-        strcpy(name, "");
 
         for (int i = 0; i < words; i++) {
             int word_len = vRand() % (5 - words) + 3;
@@ -74,14 +73,14 @@ struct SCROLL_REC {
                     let[0] = (char)(vRand() % 26 + 'a');
                 }
 
-                strcat(name, let);
+                name.append(let);
             }
 
             if (i < words - 1) {
                 if (vRand() % 4 == 1) {
-                    strcat(name, "-");
+                    name.append("-");
                 } else {
-                    strcat(name, " ");
+                    name.append(" ");
                 }
             }
         }
@@ -90,8 +89,8 @@ struct SCROLL_REC {
     EFFECT effect;
     SCROLL_NAME scroll_name;
     int identify;
-    char name[20];
-    const char* real_name;
+    std::string name;
+    std::string_view real_name;
     int value;
     int rarity;
 
