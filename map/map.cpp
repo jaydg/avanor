@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fstream>
+
 #include "creature/creature.h"
 #include "item/item.h"
 #include "map/map.h"
@@ -475,11 +477,11 @@ void XMap::Restore(XFile* f)
         }
 }
 
-void XMap::Dump(FILE* f) const
+void XMap::Dump(std::ofstream &file) const
 {
     for (int i = 0; i < hgt; i++) {
         for (int j = 0; j < len; j++) {
-            MAP * tmap = &map[i * len + j];
+            MAP* tmap = &map[i * len + j];
             int n = tmap->n;
             char vch = std_tile_data[n].view;
 
@@ -496,10 +498,10 @@ void XMap::Dump(FILE* f) const
                 vch = tmap->pMonster->view;
             }
 
-            fprintf(f, "%c", vch);
+            file << vch;
         }
 
-        fprintf(f, "\n");
+        file << "\n";
     }
 }
 

@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <set>
 
-#include "engine/global.h"
 #include "helpers/rect.h"
 #include "map/xanyplace.h"
 
@@ -190,7 +189,7 @@ class XMap
         void Store(XFile* f) const;
         void Restore(XFile* f);
 
-        void Dump(FILE* f) const;
+        void Dump(std::ofstream &file) const;
 };
 
 #endif

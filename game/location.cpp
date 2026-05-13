@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <cctype>
+#include <fstream>
 
 #include "creature/unique.h"
 #include "engine/xgen.h"
@@ -428,12 +429,12 @@ void XLocation::Restore(XFile * f)
     f->ReadStr(event);
 }
 
-void XLocation::DumpLocation(FILE * f)
+void XLocation::DumpLocation(std::ofstream &file)
 {
-    fprintf(f, "###### %s ######\n", full_name);
-    map->Dump(f);
-    fprintf(f, "\n");
-    fprintf(f, "\n");
+    file << fmt::format("###### {} ######\n", full_name);
+    map->Dump(file);
+
+    file << "\n\n";
 }
 
 void XLocation::CreateRandomCave()

@@ -191,7 +191,7 @@ class XLocation : public XObject
         }
 
         int visited_by_hero;
-        void DumpLocation(FILE * f);
+        void DumpLocation(std::ofstream &file);
 
         int GetCreatureCount(unsigned int creature_class); //count of such creatures on this level (need for quests)
 

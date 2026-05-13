@@ -18,7 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
 #include <ctime>
+#include <fstream>
+#include <string>
+#include <vector>
+
+#include <fmt/format.h>
 
 #include "engine/xarchive.h"
 #include "game/game.h"
@@ -185,98 +191,77 @@ void XGame::RunWithoutHero()
             }
 
             if (ch == 'L') {
-                FILE * f = fopen(vMakePath(HOME_DIR, "location.txt"), "w");
+                std::ofstream f(vMakePath(HOME_DIR, "location.txt"));
 
-                for (int i = 0; i < L_EOF; i++)
+                for (int i = 0; i < L_EOF; i++) {
                     if (locations[i]) {
                         locations[i]->DumpLocation(f);
                     }
-
-                fclose(f);
+                }
             }
 
             if (ch == 'I') {
-                int count = 0;
-
-                for (const auto& [key, pItem] : XObject::objects) {
-                    if (pItem && pItem->im & IM_ITEM) {
-                        count++;
-                    }
-                }
-
                 struct TMP {
                     XItem* pI;
                     int val;
                 };
 
-                TMP * ia = new TMP[count];
-
-                int index = 0;
+                std::vector<TMP> ia;
 
                 for (const auto& [key, pItem] : XObject::objects) {
                     if (pItem && pItem->im & IM_ITEM) {
-                        ia[index].pI = (XItem*)pItem;
-                        ia[index].val = ia[index].pI->GetValue();
-                        index++;
+                        TMP entry;
+                        entry.pI = static_cast<XItem*>(pItem);
+                        entry.val = entry.pI->GetValue();
+                        ia.push_back(entry);
                     }
                 }
 
-                // sort it by value;
-                for (int i = 0; i < count; i++) {
-                    for (int j = 0; j < count - 1; j++) {
-                        if (ia[j].val < ia[j + 1].val) {
-                            TMP tmp = ia[j + 1];
-                            ia[j + 1] = ia[j];
-                            ia[j] = tmp;
-                        }
-                    }
-                }
+                // sort by value (descending)
+                std::sort(ia.begin(), ia.end(), [](const TMP& a, const TMP& b) {
+                    return a.val > b.val;
+                });
 
                 // dump it
-                FILE * f = fopen(vMakePath(HOME_DIR, "items.txt"), "wt");
+                std::ofstream f(vMakePath(HOME_DIR, "items.txt"));
 
-                for (int k = 0; k < count; k++) {
-                    if (ia[k].pI->im & (IM_VALUEDICE | IM_ARMOUR)) {
-                        char buf2[256];
-                        ia[k].pI->Identify(1);
-                        sprintf(buf2, "%-70s%d", (ia[k].pI->toString()).c_str(), ia[k].val);
-                        fprintf(f, "%s\n", buf2);
+                for (const auto& entry : ia) {
+                    if (entry.pI->im & (IM_VALUEDICE | IM_ARMOUR)) {
+                        entry.pI->Identify(1);
+                        f << fmt::format("{:<70}{}\n", entry.pI->toString(), entry.val);
                     }
                 }
-
-                fclose(f);
             }
         }
 
         vClrScr();
         vGotoXY(0, 0);
-        char tname[256] = "";
 
-        if (best_creature) {
-            sprintf(tname, "%s", best_creature->name.c_str());
-        }
+        std::string tname = best_creature ? best_creature->name : "";
 
-        sprintf(static_buffer,
+        std::string status = fmt::format(
             MSG_YELLOW "Testing Avanor - running game without hero ... (press ESC to stop)\n\n"
             MSG_LIGHTGRAY
-        "Number of valid objects   : %d\n"
-        "Number of invalid objects : %d\n"
-        "\n"
-        "Number of creatures       : %d\n"
-        "Number of items           : %d\n"
-        "\n"
-        "Best creature             : %s [%d]\n"
-        "\n"
-        "Turns                     : %d\n"
-        "Performance               : %.1lf turns/s",
+            "Number of valid objects   : {}\n"
+            "Number of invalid objects : {}\n"
+            "\n"
+            "Number of creatures       : {}\n"
+            "Number of items           : {}\n"
+            "\n"
+            "Best creature             : {} [{}]\n"
+            "\n"
+            "Turns                     : {}\n"
+            "Performance               : {:.1f} turns/s",
             XObject::objects.size(),
             XObject::invalid_count,
             total_cr,
             total_it,
             tname, best_cr_level,
             Game.Scheduler.GetTime() / 1000,
-            (double)Game.Scheduler.GetTime() * CLOCKS_PER_SEC / (1000. * (clock() - start_clock)));
-        vPutS(static_buffer);
+            (double)Game.Scheduler.GetTime() * CLOCKS_PER_SEC
+                / (1000. * (clock() - start_clock)));
+
+        vPutS(status.c_str());
         vRefresh();
     }
 
