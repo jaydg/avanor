@@ -37,9 +37,9 @@ class XFile
             }
         }
 
-        bool Open(const char* name, const char* param)
+        bool Open(const std::string& name, const char* param)
         {
-            file = fopen(name, param);
+            file = fopen(name.c_str(), param);
 
             if (file) {
                 return true;

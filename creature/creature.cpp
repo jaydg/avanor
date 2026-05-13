@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cmath>
 #include <fmt/format.h>
 
+#include "creature/anycr.h"
 #include "creature/creature.h"
 #include "creature/los.h"
 #include "game/game.h"

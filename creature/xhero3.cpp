@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <filesystem>
 #include <memory>
 
 #include "creature/xhero.h"
@@ -87,40 +88,30 @@ XItem* XHero::SelectItem(XItemFilter* filter, const bool isGetAll)
     return Inventory(&contain, IM_UNKNOWN, IF_NONE, !isGetAll, filter);
 }
 
-void XHero::DumpVBuffer(FILE * f)
+void XHero::DumpVBuffer(std::ofstream& file)
 {
     for (int j = 0; j < size_y; j++) {
         for (int k = 0; k < size_x; k++) {
-            fprintf(f, "%c", vTestCh(k, j));
+            file << vTestCh(k, j);
         }
 
-        fprintf(f, "\n");
+        file << "\n";
     }
 }
 
 void XHero::CreateScreenShot()
 {
     for (int i = 0; i < 1000; i++) {
-        char buf[256];
-        sprintf(buf, "shot%3d.txt", i);
+        auto filename = fmt::format("shot{:03}.txt", i);
 
-        for (unsigned int q = 0; q < strlen(buf); q++)
-            if (buf[q] == ' ') {
-                buf[q] = '_';
-            }
+        if (!std::filesystem::exists(filename)) {
+            std::ofstream file(filename);
+            DumpVBuffer(file);
 
-        FILE * f = fopen(buf, "rb");
+            msgwin.Add(fmt::format("Screenshot '{}' created successfully.",
+                filename));
 
-        if (!f) {
-            f = fopen(buf, "wb");
-            DumpVBuffer(f);
-            fclose(f);
-            char buf2[256];
-            sprintf(buf2, "Screenshot '%s' created successfully.", buf);
-            msgwin.Add(buf2);
             return;
-        } else {
-            fclose(f);
         }
     }
 }
@@ -299,31 +290,29 @@ void XHero::EndGame(const char* end_msg)
         msgwin.ClrMsg();
         msgwin.Add("### Screenshot ###");
 
-        char tname[256];
-        strcpy(tname, main_creature->name.c_str());
-        strcat(tname, ".mem");
-        FILE * f = fopen(vMakePath(HOME_DIR, tname), "w");
-        XHero::DumpVBuffer(f);
-        list.Put(f);
-        fprintf(f, "\n");
-        dynamic_cast<XHero *>(main_creature)->Equipment(f);
-        fprintf(f, "\n");
-        dynamic_cast<XHero *>(main_creature)->WarSkillsList(f);
-        fprintf(f, "\n");
-        dynamic_cast<XHero *>(main_creature)->SkillsList(SKF_LIST_SKILL, 0, f);
-        fprintf(f, "\n");
-        dynamic_cast<XHero *>(main_creature)->XCast(f);
-        fprintf(f, "\n");
-        dynamic_cast<XHero *>(main_creature)->ShowResistance(f);
-        fprintf(f, "\n");
+        auto filename = main_creature->name.append(".mem");
+        std::ofstream file(vMakePath(HOME_DIR, filename));
+        DumpVBuffer(file);
+        list.Put(file);
+        file << "\n";
+        dynamic_cast<XHero *>(main_creature)->Equipment(file);
+        file << "\n";
+        dynamic_cast<XHero *>(main_creature)->WarSkillsList(file);
+        file << "\n";
+        dynamic_cast<XHero *>(main_creature)->SkillsList(SKF_LIST_SKILL, 0, file);
+        file << "\n";
+        dynamic_cast<XHero *>(main_creature)->XCast(file);
+        file << "\n";
+        dynamic_cast<XHero *>(main_creature)->ShowResistance(file);
+        file << "\n";
 
         for (const auto item : main_creature->contain) {
             item->Identify(1);
         }
 
         dynamic_cast<XHero *>(main_creature)->Inventory(
-            &main_creature->contain, IM_ALL, IF_NONE, 0, nullptr, f);
-        fclose(f);
+            &main_creature->contain, IM_ALL, IF_NONE, 0, nullptr, file);
+
         vClrScr();
     }
 
@@ -334,7 +323,7 @@ void XHero::EndGame(const char* end_msg)
     hiscore.Show();
 }
 
-void XHero::ShowResistance(FILE* f)
+void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstream>> file)
 {
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Resistances and Intrinsics " MSG_BROWN "###");
@@ -360,8 +349,8 @@ void XHero::ShowResistance(FILE* f)
         list.AddItem(new XGuiItem_Text("You have no Resistances and Intrinsics.", 0), 0);
     }
 
-    if (f) {
-        list.Put(f);
+    if (file) {
+        list.Put(file);
     } else {
         int ch = list.Run(1);
     }

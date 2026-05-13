@@ -870,7 +870,8 @@ const char* output_items_name[] = {
 static int first_item = 0;
 static XItemList* pLastList = nullptr;
 
-XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count, XItemFilter* ifiltr, FILE* f)
+XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count,
+    XItemFilter* ifiltr, const std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
     while (true) {
         XGuiList list;
@@ -947,8 +948,8 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
             first_item = 0;
         }
 
-        if (f) {
-            list.Put(f);
+        if (file) {
+            list.Put(file);
             return nullptr;
         }
 
@@ -1017,7 +1018,7 @@ const char* part_names[] = {"",
         "Boots", "Light source", "Tool", "Missile weapon", "Missile", "eof"
     };
 
-void XHero::Equipment(FILE * f)
+void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>> file)
 {
     XBodyPart* xqsa[30]; //this array save us from typing hard algorithm
     first_item = 0;
@@ -1071,8 +1072,8 @@ void XHero::Equipment(FILE * f)
             ++xbp;
         }
 
-        if (f) {
-            list.Put(f);
+        if (file) {
+            list.Put(file);
             return;
         }
 
@@ -1793,9 +1794,8 @@ int XHero::SelectPosition(XPoint * pt, int flag)
     }
 }
 
-int XHero::XCast(FILE * f)
+int XHero::XCast(std::optional<std::reference_wrapper<std::ofstream>> file)
 {
-    char buf[256];
     int ch = '!';
 
     while (true) {
@@ -1809,8 +1809,8 @@ int XHero::XCast(FILE * f)
             }
         }
 
-        if (f) {
-            list.Put(f);
+        if (file) {
+            list.Put(file);
             return 0;
         }
 
@@ -2016,7 +2016,7 @@ void XHero::MagicLevelList() const
     list.Run();
 }
 
-XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, FILE * f) const
+XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
     while (1) {
         XGuiList list;
@@ -2057,8 +2057,8 @@ XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, FIL
             list.AddItem(new XGuiItem_SimpleSelect(buf.c_str()), 0);
         }
 
-        if (f) {
-            list.Put(f);
+        if (file) {
+            list.Put(file);
             return nullptr;
         }
 
@@ -2149,7 +2149,7 @@ const char* wsk_levels_name[] = {
     "grand master"
 };
 
-void XHero::WarSkillsList(FILE * f) const
+void XHero::WarSkillsList(std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Weapon Skills " MSG_BROWN "###");
@@ -2186,8 +2186,8 @@ void XHero::WarSkillsList(FILE * f) const
         list.AddItem(new XGuiItem_Text(buf, 0), 0);
     }
 
-    if (f) {
-        list.Put(f);
+    if (file) {
+        list.Put(file);
     } else {
         list.Run();
     }

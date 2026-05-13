@@ -156,25 +156,19 @@ bool XGuiItem_Text::SetWidth(const std::string::size_type new_width) {
     return true;
 }
 
-void XGuiList::Put(FILE * f)
+void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> file)
 {
     vClrScr();
 
     if (caption) {
         const int dx = size_x / 2 - x_strlen(caption) / 2;
 
-        if (!f) {
+        if (!file) {
             vGotoXY(dx, 0);
             vPutS(caption);
         } else {
-            char buf[256];
-
-            for (int i = 0; i < dx; i++) {
-                buf[i] = ' ';
-            }
-
-            sprintf(buf + dx, "%s\n\n", caption);
-            vFPutS(f, buf);
+            auto line = fmt::format("{}{}\n\n", std::string(dx, ' '), caption);
+            vFPutS(file.value(), line);
         }
     }
 
@@ -184,7 +178,7 @@ void XGuiList::Put(FILE * f)
 
     int count = list_height;
 
-    if (f) {
+    if (file) {
         count = 100000;
     }
 
@@ -206,8 +200,8 @@ void XGuiList::Put(FILE * f)
             }
 
             if (cur_line == item_first_line && item->isSelectable()) {
-                if (f) {
-                    vFPutS(f, " ");
+                if (file) {
+                    vFPutS(file.value(), " ");
                 } else {
                     char buf[256];
                     sprintf(buf, MSG_BROWN "[" MSG_YELLOW "%c" MSG_BROWN "]", i++ + 65);
@@ -217,9 +211,9 @@ void XGuiList::Put(FILE * f)
                 }
             }
 
-            if (f) {
-                vFPutS(f, (*item)[cur_line++ - item_first_line]);
-                vFPutS(f, "\n");
+            if (file) {
+                vFPutS(file.value(), (*item)[cur_line++ - item_first_line]);
+                vFPutS(file.value(), "\n");
             } else {
                 vGotoXY(4, y_pos);
                 vPutS((*item)[cur_line++ - item_first_line]);
@@ -234,7 +228,7 @@ void XGuiList::Put(FILE * f)
         }
     }
 
-    if (!f) {
+    if (!file) {
         const char* tprompt = MSG_LIGHTGRAY "Use " MSG_BROWN "[" MSG_YELLOW "/*-+" MSG_BROWN "]" MSG_LIGHTGRAY "to scroll up/down, " MSG_BROWN "[" MSG_YELLOW "ESC" MSG_LIGHTGRAY "," MSG_YELLOW "Z" MSG_BROWN "]" MSG_LIGHTGRAY " to exit.";
         vGotoXY(size_x / 2 - x_strlen(tprompt) / 2, size_y - 1);
         vPutS(tprompt);
@@ -250,7 +244,7 @@ void XGuiList::Put(FILE * f)
         }
     }
 
-    if (footer && !f) {
+    if (footer && !file) {
         int dx = size_x / 2 - x_strlen(footer) / 2;
         vGotoXY(dx, size_y - 2);
         vPutS(footer);
@@ -330,7 +324,7 @@ int XGuiList::Run(int flag, int flag2)
     XGuiItem * item = head;
     lines_count = 0;
 
-    while (item != 0) {
+    while (item != nullptr) {
         item->SetWidth(size_x - 6);
         lines_count += item->GetHeight();
         item = item->next;
@@ -347,7 +341,7 @@ int XGuiList::Run(int flag, int flag2)
         LineDown(flag2);
     }
 
-    while (1) {
+    while (true) {
         Put();
         int ch = vGetch();
         last_pressed_key = ch;

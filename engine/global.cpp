@@ -18,10 +18,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <string>
 
 #include "engine/global.h"
 
@@ -62,7 +63,7 @@ int current_attr = 7;
 void vInit()
 {
 #ifdef XLINUX
-    mkdir(vMakePath(HOME_DIR, ""), 0755);
+    std::filesystem::create_directory(vMakePath(HOME_DIR, ""));
 #endif
 
 #ifdef XWIN32
@@ -470,18 +471,15 @@ void vPutS(const char* s)
     }
 }
 
-void vFPutS(FILE * f, const char* s)
+void vFPutS(std::ofstream &file, std::string_view s)
 {
-    int pos = 0;
-
-    while (s[pos]) {
-        if (s[pos] == 31) {
-            pos += 2;
+    for (std::size_t pos = 0; pos < s.size(); ++pos) {
+        if (s[pos] == '\x1F') {
+            // Escape sequence: skip byte 31 and 1 following byte
+            ++pos;
             continue;
         }
-
-        fprintf(f, "%c", s[pos]);
-        pos++;
+        file << s[pos];
     }
 }
 
@@ -554,18 +552,20 @@ void vRestore(const V_BUFFER* buf)
 #endif
 }
 
-static char path_buffer[1024];
-
-char* vMakePath(const char* prefix, const char* filename)
+std::string vMakePath(std::string_view prefix, std::string_view filename)
 {
-#ifdef XLINUX
+    std::string path_buffer;
 
+#ifdef XLINUX
     if (prefix[0] == '~') {
-        sprintf(path_buffer, "%s%s%s", getenv("HOME"), prefix + 1, filename);
+        path_buffer.assign(getenv("HOME"))
+            .append("/")
+            .append(filename);
     } else
 #endif
     {
-        sprintf(path_buffer, "%s%s", prefix, filename);
+        path_buffer.append(prefix)
+            .append(filename);
     }
 
     return path_buffer;

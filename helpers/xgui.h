@@ -22,7 +22,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define XGUI_H
 
 #include <cstdio>
+#include <functional>
 #include <string>
+#include <optional>
 #include <vector>
 
 #include "engine/global.h"
@@ -266,7 +268,7 @@ class XGuiList final
 
         void AddHtmlText(char* text);
 
-        void Put(FILE* f = nullptr);
+        void Put(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
         int Run(int flag = 0, int flag2 = 0);
 
         void LineUp(int count = 1);

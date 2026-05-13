@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
+#include <fstream>
 #include <fmt/format.h>
 
 #include "creature/creature.h"
@@ -525,17 +525,15 @@ void XAlchemy::Init()
         alchemy.BuildReception(i);
     }
 
-    FILE * f = fopen(vMakePath(HOME_DIR, "recipies.txt"), "w");
+    std::fstream file(vMakePath(HOME_DIR, "recipies.txt"));
 
-    for (auto it: alchemy.reception) {
-        fprintf(f, "%s + %s = %s\n",
+    for (const auto it: alchemy.reception) {
+        file <<  fmt::format("{} + {} = {}\n",
             potion_descr[it->pn1].name,
             potion_descr[it->pn2].name,
             potion_descr[it->result].name
         );
     }
-
-    fclose(f);
 }
 
 void XAlchemy::GetReceptionName(char* buf, POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)

@@ -21,11 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XHERO_H
 #define XHERO_H
 
+#include <fstream>
+#include <optional>
 #include <string>
 #include <vector>
 #include <fmt/format.h>
 
-#include "creature/anycr.h"
 #include "creature/creature.h"
 #include "engine/global.h"
 #include "helpers/xgui.h"
@@ -67,13 +68,15 @@ class XHero final : public XCreature
         void PlayerSetup();
         void NewMove() override;
         void Move() override;
-        XItem* Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE, int ret_item_count = 0, XItemFilter* ifiltr = nullptr, FILE* f = nullptr);
-        void Equipment(FILE* f = nullptr);
+        XItem* Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE,
+                         int ret_item_count = 0, XItemFilter* ifiltr = nullptr,
+                         std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt) const;
+        void Equipment(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
         void PickItem();
         void DropItem();
         void LookAt();
         static void CreateScreenShot();
-        static void DumpVBuffer(FILE* f);
+        static void DumpVBuffer(std::ofstream &file);
         void ReadAll();
         int Compare(XObject* o) override
         {
@@ -94,15 +97,16 @@ class XHero final : public XCreature
         void OpenChest();
         void CloseDoor();
         void Die(XCreature* killer) override;
-        int XCast(FILE* f = nullptr);
+        int XCast(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
         XSpell* last_cast;
         int RepeatCast();
 
         void MagicLevelList() const;
-        XSkill* SkillsList(SKILL_FLAG skill_flag, int marks_left = 0, FILE* f = nullptr) const;
+        XSkill* SkillsList(SKILL_FLAG skill_flag, int marks_left = 0,
+            std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt) const;
         int UseSkill();
         void IncLevel() override;
-        void WarSkillsList(FILE* f = nullptr) const;
+        void WarSkillsList(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt) const;
 
         void DrinkPotion();
         void SetTactics();
@@ -113,7 +117,7 @@ class XHero final : public XCreature
         void Pray();
         static int WhichDirection(XPoint* pt, int flag = 1); // flag == 1 - allow 0,0 coords (self)
         XItem* onIdentifyItem() override;
-        void ShowResistance(FILE* f = nullptr);
+        void ShowResistance(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
 
         void ActivateTrap();
         void GiveItem();
