@@ -51,7 +51,7 @@ static int html_decode_color(char * text)
 	YYCTYPE * cursor = text;
 	YYCTYPE * marker = text;
 color_open:;
-/*!re2c               
+/*!re2c
 	HtmlColorOpen            { goto color_text; }
 	[\000-\377]              { return -1; }
 */
@@ -122,18 +122,18 @@ next:
 	YYCTYPE * token = cursor;
 /*!re2c
 	HtmlSkip
-	{ 
-		NEXT_TOKEN(); 
+	{
+		NEXT_TOKEN();
 	}
 
 	"<font "([\001-\377]\[>])*">"
 	{
 		int color = html_decode_color(token);
-		if (color != -1) 
+		if (color != -1)
 		{
-			colors.push(color); 
-			out += (char)0x1F; 
-			out += (char)color; 
+			colors.push(color);
+			out += (char)0x1F;
+			out += (char)color;
 		}
 		else
 		{
@@ -142,29 +142,29 @@ next:
 		NEXT_TOKEN();
 	}
 
-	"</font>"             
+	"</font>"
 	{
 		if (!colors.empty())
 		{
-			colors.pop(); 
-			out += (char)0x1F; 
+			colors.pop();
+			out += (char)0x1F;
 			if (!colors.empty())
 				out += (char)colors.top();
 			else
 				out += 7; // lightgray
 		}
-		NEXT_TOKEN(); 
+		NEXT_TOKEN();
 	}
 
 	"<a "([\001-\377]\[>])*">"
-	{ 
+	{
 		ref_name = html_decode_ref(token);
 		if (!ref_name.empty())
 		{
 			if (!out.empty())
 			{
 				AddItem(new XGuiItem_Text(out.c_str(), is_ref));
-				out = ""; 
+				out = "";
 			}
 			is_ref = true;
 		}
@@ -175,12 +175,12 @@ next:
 		NEXT_TOKEN();
 	}
 
-	"</a>" 
-	{ 
+	"</a>"
+	{
 		if (!out.empty())
 		{
 			AddItem(new XGuiItem_Text(out.c_str(), is_ref));
-			out = ""; 
+			out = "";
 		}
 		is_ref = false;
 		ref_name = "";
@@ -188,27 +188,27 @@ next:
 	}
 
 	"<br>"
-	{ 
-		out += '\n'; 
-		NEXT_TOKEN(); 
+	{
+		out += '\n';
+		NEXT_TOKEN();
 	}
 
 	"</h"[123456]">"
 	{
-		out += "\n\n"; 
-		NEXT_TOKEN(); 
+		out += "\n\n";
+		NEXT_TOKEN();
 	}
 
 	"<"([\001-\377]\[>])*">"
-	{ 
-		NEXT_TOKEN(); 
+	{
+		NEXT_TOKEN();
 	}
 
 	[\001-\377]
 	{
 		if (out.empty() && !colors.empty())
 		{
-			out += (char)0x1F; 
+			out += (char)0x1F;
 			out += (char)colors.top();
 		}
 		out += *token;
