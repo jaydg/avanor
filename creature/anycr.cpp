@@ -45,7 +45,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
 
     max_stats.Set(stats.get());
 
-    XBodyPart::Create(this, cr->body.c_str());
+    XBodyPart::Create(this, cr->body);
 
     ttmb = cr->move_energy.Throw();
     ttm	= ttmb;

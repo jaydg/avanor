@@ -62,7 +62,7 @@ class XBodyPart
 
         const char* GetName() const;
         static const char* XGetName(BODY_PART bp);
-        static void Create(XCreature* cr, const char* str);
+        static void Create(XCreature *cr, std::string &str);
 
         int Fit(const BODY_PART bp) const
         {

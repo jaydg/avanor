@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <sstream>
+#include <string>
+
 #include "creature/bodypart.h"
 #include "creature/creature.h"
 
@@ -133,33 +136,24 @@ int XBodyPart::GetPartSize() const
     }
 }
 
-void XBodyPart::Create(XCreature* cr, const char* str)
+void XBodyPart::Create(XCreature *cr, std::string &str)
 {
-    int l = 0;
-    int k = 0;
-    char buf[100];
+    std::istringstream stream(str);
+    std::string token;
 
-    while (str[k]) {
-        while (str[k] == ' ') {
-            k++;
-        }
+    while (stream >> token)
+    {
+        int i = 0;
 
-        l = k;
-
-        while (str[k] != ' ' && str[k]) {
-            k++;
-        }
-
-        strncpy(buf, &str[l], k - l);
-        buf[k - l] = 0;
-        int i;
-
-        for (i = 0; i < BP_EOF; i++)
-            if (strcmp(buf, XGetName(static_cast<BODY_PART>(i))) == 0) {
+        for (; i < BP_EOF; i++)
+        {
+            if (token == XGetName(static_cast<BODY_PART>(i)))
+            {
                 auto* bp = new XBodyPart(cr, static_cast<BODY_PART>(i));
                 cr->components.push_back(bp);
                 break;
             }
+        }
 
         assert(i < BP_EOF);
     }
