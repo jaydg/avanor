@@ -266,7 +266,7 @@ class XGuiList final
             lines_count += item->GetHeight();
         }
 
-        void AddHtmlText(char* text);
+        void AddHtmlText(std::string_view text);
 
         void Put(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
         int Run(int flag = 0, int flag2 = 0);

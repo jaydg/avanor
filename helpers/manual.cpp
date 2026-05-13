@@ -18,34 +18,31 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fstream>
+#include <string>
+#include <fmt/format.h>
+
 #include "engine/global.h"
 #include "helpers/manual.h"
 
-XGuiList* XManual::OpenPage(const char* page)
+XGuiList* XManual::OpenPage(const std::string& page)
 {
     auto* list = new XGuiList();
-    char tbuf[64000];
 
-    strcpy(tbuf, "could not find file");
-    char path[256];
-    sprintf(path, "%s%s", vMakePath(DATA_DIR, "manual/"), page);
-    FILE * f = fopen(path, "rb");
+    const std::string path = vMakePath(DATA_DIR, "manual/" + page);
+    std::ifstream f(path, std::ios::binary);
 
-    if (f) {
-        const size_t rb = fread(tbuf, 1, 63999, f);
-        fclose(f);
-        tbuf[rb] = 0;
-    } else {
-        sprintf(tbuf, "Could not find file '%s'", path);
-    }
+    const std::string content = f
+        ? std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>())
+        : fmt::format("Could not find file '{}'", path);
 
-    list->AddHtmlText(tbuf);
+    list->AddHtmlText(content.c_str());
     return list;
 }
 
 void XManual::Run()
 {
-    auto open_page = "index.html";
+    std::string open_page = "index.html";
 
     while (true) {
         XGuiList * list = OpenPage(open_page);
@@ -53,7 +50,7 @@ void XManual::Run()
         delete list;
 
         if (res == -1) {
-            if (strcmp(open_page, "index.html") == 0) {
+            if (open_page == "index.html") {
                 break;
             } else {
                 open_page = "index.html";

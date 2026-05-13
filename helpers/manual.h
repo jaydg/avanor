@@ -21,12 +21,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MANUAL_H
 #define MANUAL_H
 
+#include <string>
+
 #include "helpers/xgui.h"
 
 class XManual
 {
     public:
-        static XGuiList* OpenPage(const char* page);
+        static XGuiList* OpenPage(const std::string& page);
         static void Run();
 };
 
