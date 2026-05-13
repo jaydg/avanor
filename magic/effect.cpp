@@ -51,17 +51,14 @@ EFFECT_REQ XEffect::GetReq(EFFECT effect)
         case E_COLD_RESISTANCE:
         case E_POISON_RESISTANCE:
             return ER_NONE;
-            break;
 
         case E_BURNING_HANDS:
         case E_ICE_TOUCH:
         case E_DRAIN_LIFE:
             return ER_DIRECTION;
-            break;
 
         case E_IDENTIFY:
             return ER_ITEM;
-            break;
 
         case E_MAGIC_ARROW:
         case E_FIRE_BOLT:
@@ -70,7 +67,6 @@ EFFECT_REQ XEffect::GetReq(EFFECT effect)
         case E_ACID_BOLT:
         case E_TELEPORT:
             return ER_TARGET;
-            break;
 
         default:
             return ER_NONE;
@@ -84,8 +80,6 @@ int XEffect::GetRange(EFFECT effect, int power)
             return power / 4 + 2;
 
         case E_FIRE_BOLT:
-            return power / 6 + 2;
-
         case E_ICE_BOLT:
             return power / 6 + 2;
 
@@ -169,8 +163,7 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
     return 0;
 }
 
-
-int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
+int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
 {
     XCreature * target = pData->l->map->GetMonster(pData->target_x, pData->target_y);
 
@@ -184,7 +177,7 @@ int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_T
     if (target) {
         XDice d(X, Y, Z);
 
-        DAMAGE_DATA_EX dd;
+        DAMAGE_DATA_EX dd{};
         dd.damage	= d.S;
         dd.attacker	= pData->caller;
         dd.attack_name	= msg;
@@ -199,7 +192,7 @@ int XEffect::Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_T
 }
 
 
-int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
+int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
 {
     MF_DATA mfd;
     mfd.arrow_type = MFT_BALL;
@@ -211,13 +204,12 @@ int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TY
     mfd.ey = pData->target_y;
     mfd.to_hit = 1000;
     mfd.max_range = GetRange(pData->effect, pData->power);
-    MF_RESULT res = XCreature::MissileFlight(&mfd);
 
-    XCreature * target;
+    XCreature* target;
 
-    if (target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y)) {
+    if ((target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y))) {
         XDice d(X, Y, Z);
-        DAMAGE_DATA_EX dd;
+        DAMAGE_DATA_EX dd{};
         dd.damage	= d.S;
         dd.attacker	= pData->caller;
         dd.attack_name	= msg;
@@ -233,7 +225,7 @@ int XEffect::Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TY
 
 RESULT XEffect::Make(XCreature * caster, EFFECT effect, int power)
 {
-    EFFECT_DATA ed;
+    EFFECT_DATA ed{};
     ed.caller	= caster;
     ed.l	= caster->l;
     ed.effect	= effect;
@@ -268,48 +260,44 @@ RESULT XEffect::Make(XCreature * caster, EFFECT effect, int power)
     }
 }
 
-int XEffect::Make(EFFECT_DATA * pData)
+int XEffect::Make(const EFFECT_DATA* pData)
 {
-    int flag = 0;
-    char buf[256];
-
     switch (pData->effect) {
-        //healing and restoration
+        // healing and restoration
         case E_CURE_LIGHT_WOUNDS:
-            return Heal(pData->caller, 1, pData->power / 2, 3) || Cure(pData->caller, 1, pData->power / 10, 1);
-            break;
+            return Heal(pData->caller, 1, pData->power / 2, 3) ||
+                Cure(pData->caller, 1, pData->power / 10, 1);
 
         case E_CURE_SERIOUS_WOUNDS:
-            return Heal(pData->caller, 1, pData->power, 5) || Cure(pData->caller, 1, pData->power / 5, 2);
-            break;
+            return Heal(pData->caller, 1, pData->power, 5) ||
+                Cure(pData->caller, 1, pData->power / 5, 2);
 
         case E_CURE_CRITICAL_WOUNDS:
-            return Heal(pData->caller, 2, pData->power, 5) || Cure(pData->caller, 1, pData->power / 2, 3);
-            break;
+            return Heal(pData->caller, 2, pData->power, 5) ||
+                Cure(pData->caller, 1, pData->power / 2, 3);
 
         case E_CURE_MORTAL_WOUNDS:
-            return Heal(pData->caller, 3, pData->power, 10) || Cure(pData->caller, 3, pData->power, 10);
-            break;
+            return Heal(pData->caller, 3, pData->power, 10) ||
+                Cure(pData->caller, 3, pData->power, 10);
 
         case E_HEAL:
-            return Heal(pData->caller, 5, pData->power, 20) || Cure(pData->caller, 5, pData->power, 20);
-            break;
+            return Heal(pData->caller, 5, pData->power, 20) ||
+                Cure(pData->caller, 5, pData->power, 20);
 
         case E_POWER:
             return Mana(pData->caller, 3, pData->power, 20);
-            break;
 
         case E_RESTORATION:
-            return Heal(pData->caller, 5, pData->power, 20) || Cure(pData->caller, 5, pData->power, 20) || Mana(pData->caller, 5, pData->power, 20);
-            break;
+            return Heal(pData->caller, 5, pData->power, 20) ||
+                Cure(pData->caller, 5, pData->power, 20) ||
+                    Mana(pData->caller, 5, pData->power, 20);
 
         case E_ULTRAHEAL:
-            return Heal(pData->caller, 7, pData->power, 20) || Cure(pData->caller, 7, pData->power, 20);
-            break;
+            return Heal(pData->caller, 7, pData->power, 20) ||
+                Cure(pData->caller, 7, pData->power, 20);
 
         case E_ULTRAPOWER:
             return Mana(pData->caller, 5, pData->power, 20);
-            break;
 
 
         case E_CURE_POISON: {
@@ -324,41 +312,33 @@ int XEffect::Make(EFFECT_DATA * pData)
         }
         break;
 
-        //combat - touch
+        // combat - touch
         case E_BURNING_HANDS:
             return Touch(pData, 1, pData->power, 5, xRED, BR_FIRE, "the ball of fire");
-            break;
 
         case E_ICE_TOUCH:
             return Touch(pData, 1, pData->power, 7, xWHITE, BR_COLD, "the cone of ice");
-            break;
 
         case E_DRAIN_LIFE:
             return Touch(pData, 1, pData->power, 9, xDARKGRAY, BR_DRAIN_LIFE, "the black sphere");
-            break;
 
-        //combat - bolts
+        // combat - bolts
         case E_MAGIC_ARROW:
             return Bolt(pData, 1, pData->power / 2, 0, xBROWN, BR_EARTH, "the small arrow");
-            break;
 
         case E_FIRE_BOLT:
             return Bolt(pData, 1, pData->power, 3, xRED, BR_FIRE, "the small ball of fire");
-            break;
 
         case E_ICE_BOLT:
             return Bolt(pData, 1, pData->power, 5, xWHITE, BR_COLD, "the small cone of ice");
-            break;
 
         case E_LIGHTNING_BOLT:
             return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, BR_LIGHTNING, "the bright spark");
-            break;
 
         case E_ACID_BOLT:
             return Bolt(pData, 3, pData->power, 15, xGREEN, BR_ACID, "the small ball of viscous liquid");
-            break;
 
-        // Misc	modifers
+        // Misc	modifiers
         case E_HEROISM: {
             XDice d(2, pData->power, 5);
             pData->caller->md->Add(MOD_HEROISM, d.S, pData->caller);
@@ -367,14 +347,12 @@ int XEffect::Make(EFFECT_DATA * pData)
 
         case E_SELF_KNOWLEDGE:
             if (pData->caller->im & IM_HERO) {
-                ((XHero*)pData->caller)->ShowResistance();
+                dynamic_cast<XHero *>(pData->caller)->ShowResistance();
             }
             break;
 
         case E_IDENTIFY: {
-            XItem * it = pData->caller->onIdentifyItem();
-
-            if (it) {
+            if (auto it = pData->caller->onIdentifyItem()) {
                 if (it->isIdentifed()) {
                     if (pData->caller->isVisible()) {
                         msgwin.Add(fmt::format(
@@ -397,7 +375,6 @@ int XEffect::Make(EFFECT_DATA * pData)
 
             return 0;
         }
-        break;
 
         case E_GREAT_IDENTIFY: {
             for (auto i : pData->target->contain) {
@@ -420,16 +397,15 @@ int XEffect::Make(EFFECT_DATA * pData)
 
             return 1;
         }
-        break;
 
         case E_SUMMON_MONSTER: {
             int flg = 0;
-            int tx;
-            int ty;
+            int tx = 0;
+            int ty = 0;
 
             for (int i = 0; i < 20; i++) {
-                tx = pData->caller->x + vRand(3) - 1;
-                ty = pData->caller->y + vRand(3) - 1;
+                tx = pData->caller->x + static_cast<int>(vRand(3)) - 1;
+                ty = pData->caller->y + static_cast<int>(vRand(3)) - 1;
 
                 if (pData->l->map->XGetMovability(tx, ty) == 0) {
                     flg = 1;
@@ -453,7 +429,6 @@ int XEffect::Make(EFFECT_DATA * pData)
                 return 0;
             }
         }
-        break;
 
         case E_CREATE_ITEM: {
             XItem * item = ICREATEA(IM_ITEM);
@@ -514,23 +489,21 @@ int XEffect::Make(EFFECT_DATA * pData)
 
         case E_SEE_INVISIBLE:
             return pData->caller->md->Add(MOD_SEE_INVISIBLE, pData->power, pData->caller);
-            break;
 
         case E_ACID_RESISTANCE:
             return pData->caller->md->Add(MOD_ACID_RESISTANCE, pData->power, pData->caller);
-            break;
 
         case E_FIRE_RESISTANCE:
             return pData->caller->md->Add(MOD_FIRE_RESISTANCE, pData->power, pData->caller);
-            break;
 
         case E_POISON_RESISTANCE:
             return pData->caller->md->Add(MOD_POISON_RESISTANCE, pData->power, pData->caller);
-            break;
 
         case E_COLD_RESISTANCE:
             return pData->caller->md->Add(MOD_COLD_RESISTANCE, pData->power, pData->caller);
-            break;
+
+        default:
+            assert(0);
     }
 
     return 0;

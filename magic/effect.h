@@ -76,12 +76,24 @@ class XLocation;
 
 struct EFFECT_DATA {
     EFFECT effect;
-    XCreature* caller;      // in much case effect makes caller, but some time it can be trap.
-    XLocation* l;           // for much visual effect this field must be filed
-    int call_x, call_y;     // starting pt of effect (for example for trap)
-    XCreature* target;      // target creature, usualy not required
-    int target_x, target_y; // target position: we can make fire-bolt trap :)
-    int power;              // power == willpower)
+
+    // In many case effects fill caller, but not when cause by a trap.
+    XCreature* caller;
+
+    // For many visual effects this field must be filled.
+    XLocation* l;
+
+    // Starting point of effect (for example for trap).
+    int call_x, call_y;
+
+    // Target creature, usually not required
+    XCreature* target;
+
+    // target position: we can make fire-bolt traps :)
+    int target_x, target_y;
+
+    // power == willpower
+    int power;
 };
 
 class XEffect
@@ -89,10 +101,10 @@ class XEffect
         static int Heal(XCreature * caster, int X, int Y, int Z);
         static int Cure(XCreature * caster, int X, int Y, int Z);
         static int Mana(XCreature * caster, int X, int Y, int Z);
-        static int Touch(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
-        static int Bolt(EFFECT_DATA * pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
+        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
+        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
     public:
-        static int Make(EFFECT_DATA * pData);
+        static int Make(const EFFECT_DATA* pData);
         static RESULT Make(XCreature * caster, EFFECT effect, int power);
         static EFFECT_REQ GetReq(EFFECT effect);
         static int GetRange(EFFECT effect, int power);
