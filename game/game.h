@@ -44,11 +44,8 @@ class XGame
         XScheduler Scheduler;
         static int current_location;
         static XGUID hero_guid;
-
         static int best_cr_level;
         static XPtr<XCreature> best_creature;
-
-        static bool isAvgPV;
         static bool isGodMode;
 };
 

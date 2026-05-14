@@ -43,10 +43,7 @@ char static_buffer[4096];
 
 int XGame::best_cr_level = 0;
 XPtr<XCreature> XGame::best_creature;
-
-bool XGame::isAvgPV = true;
 bool XGame::isGodMode = false;
-
 XGUID XGame::hero_guid = 0;
 int XGame::current_location = 0;
 
