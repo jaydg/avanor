@@ -28,7 +28,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "item/uniquei.h"
-#include "item/xtool.h"
 #include "magic/modifier.h"
 
 
@@ -431,13 +430,12 @@ std::string XShopkeeper::StdAnswer()
     auto ai = dynamic_cast<XShopKeeperAI*>(xai.get());
 
     if (!ai->debt.unpaid_items.empty()) {
-        sprintf(static_buffer, "Don't forget to pay for the items you have taken!", ai->debt.debtor_sum);
-        return static_buffer;
+        return "Don't forget to pay for the items you have taken!";
     }
 
     if (ai->debt.debtor_sum > 0) {
-        sprintf(static_buffer, "Remember that you owe me money. Don't touch anything else before you pay me %d gp!", (int)ai->debt.debtor_sum);
-        return static_buffer;
+        return fmt::format("Remember that you owe me money. Don't touch anything else before you pay me {} gp!",
+            static_cast<int>(ai->debt.debtor_sum));
     } else {
         switch (vRand(5)) {
             case 0 :

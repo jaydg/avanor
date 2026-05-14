@@ -218,13 +218,12 @@ const std::string XHerbBush::GetName(XCreature *viewer)
     }
 
     if (herb_data->difficulty > val && !herb_data->identify) {
-        sprintf(static_buffer, "%s bush of unknown herbs", size_name);
-    } else {
-        herb_data->identify = 1;
-        sprintf(static_buffer, "%s bush of %s", size_name, herb_data->bush_name);
+        return fmt::format("{} bush of unknown herbs", size_name);
     }
 
-    return static_buffer;
+    herb_data->identify = 1;
+
+    return fmt::format("{} bush of {}", size_name, herb_data->bush_name);
 }
 
 int XHerbBush::CountNeighbours(int x, int y)

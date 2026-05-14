@@ -38,9 +38,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
     #include <conio.h>
 #endif
 
-
-char static_buffer[4096];
-
 int XGame::best_cr_level = 0;
 XPtr<XCreature> XGame::best_creature;
 bool XGame::isGodMode = false;

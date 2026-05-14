@@ -26,8 +26,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/location.h"
 #include "engine/xscheduler.h"
 
-extern char static_buffer[];
-
 class XGame
 {
         void CreateLocations();

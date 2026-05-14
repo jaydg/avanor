@@ -2277,21 +2277,30 @@ void XHero::LookAt()
 #ifdef __XDEBUG_01
         list.AddItem(new XGuiItem_Text("", 0), 0);
 
-        sprintf(static_buffer, "St:%d Dx:%d To:%d Le:%d Wi:%d Ma:%d Pe:%d Ch:%d Sp:%d    ", xcr->GetStats(S_STR), xcr->GetStats(S_DEX), xcr->GetStats(S_TOU),
-            xcr->GetStats(S_LEN), xcr->GetStats(S_WIL), xcr->GetStats(S_MAN), xcr->GetStats(S_PER), xcr->GetStats(S_CHR), 100000 / xcr->GetSpeed());
-        list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
+        str = fmt::format("St:{} Dx:{} To:{} Le:{} Wi:{} Ma:{} Pe:{} Ch:{} Sp:{}    ",
+            xcr->GetStats(S_STR),
+            xcr->GetStats(S_DEX),
+            xcr->GetStats(S_TOU),
+            xcr->GetStats(S_LEN),
+            xcr->GetStats(S_WIL),
+            xcr->GetStats(S_MAN),
+            xcr->GetStats(S_PER),
+            xcr->GetStats(S_CHR),
+            100000 / xcr->GetSpeed());
+        list.AddItem(new XGuiItem_Text(str, 0), 0);
 
-        sprintf(static_buffer, "HP:%d(%d)  PP:%d(%d)", xcr->_HP, xcr->GetMaxHP(), xcr->_PP, xcr->GetMaxPP());
-        list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
+        str = fmt::format("HP:{}({})  PP:{}({})",
+            xcr->_HP, xcr->GetMaxHP(),
+            xcr->_PP, xcr->GetMaxPP());
+        list.AddItem(new XGuiItem_Text(str, 0), 0);
 
-        sprintf(static_buffer, "Exp(%d)%lu", xcr->level, xcr->_EXP);
-        list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
+        str = fmt::format("Exp({}){}", xcr->level, xcr->_EXP);
+        list.AddItem(new XGuiItem_Text(str, 0), 0);
 
-        sprintf(static_buffer, "_DV - %d, _PV - %d, hit, xdy+z[%d, %dd%d + %d] _EXP(EXP_ADD) %d(%d)"
-            , xcr->GetDV(), xcr->GetPV()
-            , xcr->GetHIT(), xcr->dice.X, xcr->dice.Y, xcr->dice.Z
-            , xcr->_EXP, xcr->GetExp());
-        list.AddItem(new XGuiItem_Text(static_buffer, 0), 0);
+        fmt::format("_DV - {}, _PV - {}, hit, xdy+z[{}, {}d{} + {}] _EXP(EXP_ADD) {}({})",
+            xcr->GetDV(), xcr->GetPV(), xcr->GetHIT(), xcr->dice.X,
+            xcr->dice.Y, xcr->dice.Z,xcr->_EXP, xcr->GetExp());
+        list.AddItem(new XGuiItem_Text(str, 0), 0);
 #endif
     } else {
         list.AddItem(new XGuiItem_Text(l->map->GetDescription(pt.x, pt.y), 0), 0);
