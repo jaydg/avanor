@@ -160,8 +160,8 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
 {
     vClrScr();
 
-    if (caption) {
-        const int dx = size_x / 2 - x_strlen(caption) / 2;
+    if (!caption.empty()) {
+        const int dx = size_x / 2 - x_strlen(caption.c_str()) / 2;
 
         if (!file) {
             vGotoXY(dx, 0);
@@ -172,11 +172,10 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
         }
     }
 
-    XGuiItem * item = top_item;
-    int item_first_line = top_item_first_line;
-    int item_lines_count = top_item_lines_count;
-
-    int count = list_height;
+    XGuiItem* item = top_item;
+    std::size_t item_first_line = top_item_first_line;
+    std::size_t item_lines_count = top_item_lines_count;
+    std::size_t count = list_height;
 
     if (file) {
         count = 100000;
@@ -188,7 +187,7 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
         count = lines_count - top_line;
     }
 
-    int cur_line = top_line;
+    std::size_t cur_line = top_line;
     int i = 0;
     selectable_items_count = 0;
 
@@ -244,8 +243,8 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
         }
     }
 
-    if (footer && !file) {
-        int dx = size_x / 2 - x_strlen(footer) / 2;
+    if (!footer.empty() && !file) {
+        int dx = size_x / 2 - x_strlen(footer.c_str()) / 2;
         vGotoXY(dx, size_y - 2);
         vPutS(footer);
     }
@@ -253,7 +252,7 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
     vRefresh();
 }
 
-void XGuiList::LineUp(int count)
+void XGuiList::LineUp(size_t count)
 {
     while (count > 0) {
         if (top_line <= 0) {
@@ -278,7 +277,7 @@ void XGuiList::LineUp(int count)
     }
 }
 
-void XGuiList::LineDown(int count)
+void XGuiList::LineDown(size_t count)
 {
     while (count > 0) {
         if (top_line + list_height >= lines_count) {
@@ -354,30 +353,28 @@ int XGuiList::Run(int flag, int flag2)
                 vRestore(&xyzbuf);
                 vRefresh();
                 return -1;
-                break;
 
             case '*' :
             case '+' :
             case KEY_DOWN :
                 LineDown();
                 continue;
-                break;
 
             case '/' :
             case '-' :
             case KEY_UP :
                 LineUp();
                 continue;
-                break;
 
             case KEY_PGUP :
                 PageUp();
                 continue;
-                break;
 
             case KEY_PGDOWN :
                 PageDown();
                 continue;
+
+            default:
                 break;
         }
 

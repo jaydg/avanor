@@ -184,22 +184,17 @@ class XGuiItem_Inventory final : public XGuiItem
             return 1;
         }
 
-        int isTitle() override
-        {
-            return 0;
-        }
-
         bool SetWidth(std::string::size_type new_width) override
         {
             return true;
         }
 
-        int GetHeight() override
+        size_t GetHeight() override
         {
             return 1;
         }
 
-        const char* operator[](int index) override
+        const char* operator[](const std::size_t index) override
         {
             return str.c_str();
         }

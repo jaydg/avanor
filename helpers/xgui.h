@@ -21,7 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XGUI_H
 #define XGUI_H
 
-#include <cstdio>
 #include <functional>
 #include <string>
 #include <optional>
@@ -31,27 +30,30 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XGuiItem
 {
+    protected:
+        XGuiItem* next;
+        XGuiItem* prev;
+
+        friend class XGuiList;
+
     public:
         XGuiItem() : next(nullptr), prev(nullptr) {}
 
         virtual ~XGuiItem() = default;
 
-        XGuiItem* next;
-        XGuiItem* prev;
         virtual int isSelectable() = 0;
-        virtual int isTitle() = 0;
 
         virtual bool SetWidth(std::string::size_type new_width)
         {
             return false;
         }
 
-        virtual int GetHeight()
+        virtual size_t GetHeight()
         {
             return 0;
         }
 
-        virtual const char* operator[](int index)
+        virtual const char* operator[](std::size_t index)
         {
             return nullptr;
         }
@@ -59,11 +61,11 @@ class XGuiItem
 
 class XGuiItem_SimpleSelect final : public XGuiItem
 {
-        char buf[256]{};
+        std::string str;
     public:
-        explicit XGuiItem_SimpleSelect(const char* text) : XGuiItem()
+        explicit XGuiItem_SimpleSelect(std::string_view text)
         {
-            strcpy(buf, text);
+            str = text;
         }
 
         int isSelectable() override
@@ -71,24 +73,19 @@ class XGuiItem_SimpleSelect final : public XGuiItem
             return 1;
         }
 
-        int isTitle() override
-        {
-            return 0;
-        }
-
         bool SetWidth(std::string::size_type new_width) override
         {
             return true;
         }
 
-        int GetHeight() override
+        size_t GetHeight() override
         {
             return 1;
         }
 
-        const char * operator[](int index) override
+        const char* operator[](std::size_t index) override
         {
-            return buf;
+            return str.c_str();
         }
 };
 
@@ -144,33 +141,24 @@ class XGuiItem_Text final : public XGuiItem
             return select_flag;
         }
 
-        int isTitle() override
+        size_t GetHeight() override
         {
-            return 0;
+            return lines.size();
         }
 
-        int GetHeight() override
-        {
-            // FIXME
-            return static_cast<int>(lines.size());
-        }
+        bool SetWidth(std::string::size_type new_width) override;
 
-        const char* operator[](const int index) override
+        const char* operator[](const std::size_t index) override
         {
             return lines[index].c_str();
         }
 
-protected:
-    void Clear() {
-        for (auto line = lines.begin(); line != lines.end();)
-            line = lines.erase(line);
-    }
-
-    bool SetWidth(std::string::size_type new_width) override;
+    protected:
+        void Clear() {
+            for (auto line = lines.begin(); line != lines.end();)
+                line = lines.erase(line);
+        }
 };
-
-#define XGUI_LIST_HEADER 3
-#define XGUI_LIST_FOOTER 3
 
 class XGuiList final
 {
@@ -178,39 +166,34 @@ class XGuiList final
         XGuiItem* tail;
 
         XGuiItem* top_item{};
-        int top_item_first_line{};
-        int top_item_lines_count{};
-        int top_line{};
+        std::size_t top_item_first_line{};
+        std::size_t top_item_lines_count{};
+        std::size_t top_line{};
         int top_item_index{};
         int top_selectable_index;
         int selectable_items_count;
 
-        int items_count;
-        int lines_count;
+        std::size_t items_count;
+        std::size_t lines_count;
         int width{};
 
-        int list_height;
-        int list_width;
+        std::size_t list_height;
+        std::size_t list_width;
 
-        void SetFirstVisible();
-        int CalculateVisibleCount();
-
-        const char* caption;
-        const char* footer;
+        std::string caption;
+        std::string footer;
 
         int last_pressed_key{};
 
-
     public:
         XGuiList() :
-            head(nullptr), tail(nullptr), top_selectable_index(0), selectable_items_count(0), items_count(0), lines_count(0),
-            caption(nullptr), footer(nullptr)
+            head(nullptr), tail(nullptr), top_selectable_index(0), selectable_items_count(0), items_count(0), lines_count(0)
         {
             list_height = size_y - 5;
             list_width = size_x - 6;
         }
 
-        virtual ~XGuiList()
+        ~XGuiList()
         {
             while (head != nullptr) {
                 const XGuiItem* tmp = head;
@@ -271,21 +254,21 @@ class XGuiList final
         void Put(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
         int Run(int flag = 0, int flag2 = 0);
 
-        void LineUp(int count = 1);
-        void LineDown(int count = 1);
+        void LineUp(size_t count = 1);
+        void LineDown(size_t count = 1);
         void PageUp();
         void PageDown();
-        void SetCaption(const char* _caption)
+        void SetCaption(std::string_view _caption)
         {
             caption = _caption;
         }
 
-        void SetFooter(const char* _footer)
+        void SetFooter(std::string_view _footer)
         {
             footer = _footer;
         }
 
-        virtual int GetHeight()
+        [[nodiscard]] size_t GetHeight() const
         {
             return lines_count;
         }
