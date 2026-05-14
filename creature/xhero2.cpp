@@ -160,11 +160,7 @@ void XHero::PlayerSetup()
     int race_choice = ' ';
 
     while (true) {
-#ifndef __CHOOSE_RACE
         int ch = vGetch();
-#else
-        int ch = 'c';
-#endif
         race_choice = ch;
 
         if (ch >= 97 && ch < 97 + 7) {
@@ -229,12 +225,8 @@ void XHero::PlayerSetup()
     vRefresh();
 
     while (true) {
-#ifndef __CHOOSE_RACE
-        int ch = vGetch();
-#else
-        int ch = 'a';
-#endif
-        if (ch >= 97 && ch < 97 + 2) {
+        if (int ch = vGetch(); ch >= 97 && ch < 97 + 2)
+        {
             stmp = new XStats(cust_gender[ch - 97].stats);
             stats->Add(stmp);
             delete stmp;
@@ -263,13 +255,8 @@ void XHero::PlayerSetup()
     vRefresh();
 
     while (true) {
-#ifndef __CHOOSE_RACE
-        int ch = vGetch();
-#else
-        char ch = 'a';
-#endif
-
-        if (ch >= 97 && ch < 97 + 8) {
+        if (int ch = vGetch(); ch >= 97 && ch < 97 + 8)
+        {
             stmp = new XStats(cust_profession[ch - 97].stats);
             stats->Add(stmp);
             delete stmp;
@@ -829,7 +816,6 @@ void XHero::PlayerSetup()
         bp->Wear(ICREATEB(IM_BODY, IT_ROBE, 1, 100));
     }
 
-#ifndef __ENTER_NAME
     vClrScr();
     vGotoXY(0, 4);
     vPutS(MSG_LIGHTGRAY "Enter character name (15 letters max.): ");
@@ -837,9 +823,6 @@ void XHero::PlayerSetup()
     char char_name[20];
     vGetS(char_name, 15);
     name = char_name;
-#else
-    strcpy(name, "-=RET=-");
-#endif
 }
 
 const char* XHero::GetRaceStr() const

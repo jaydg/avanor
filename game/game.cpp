@@ -311,9 +311,7 @@ void XGame::Run()
     }
 
     vRefresh();
-#ifndef __XDEBUG_00
     vGetch();
-#endif
 }
 
 //#define __DEBUG_L

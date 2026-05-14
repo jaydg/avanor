@@ -22,12 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define XDEBUG_H
 
 #ifdef _DEBUG
-    /*#      define __NOHERO__
-    #      define __XDEBUG_00__*/
     #define XDEBUG_01
     /*#      define NOT_SET_RND_SEED*/
-    #define CHOOSE_RACE
-    #define ENTER_NAME
 #endif
 
 #endif

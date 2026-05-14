@@ -22,7 +22,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cstdlib>
 
 #include "engine/global.h"
-#include "engine/xdebug.h"
 #include "game/game.h"
 #include "helpers/hiscore.h"
 #include "helpers/manual.h"
@@ -83,11 +82,7 @@ XGame Game;
 
 int main(int argc, char* argv[])
 {
-#ifdef NOT_SET_RND_SEED
-    vRandSeed(0);
-#else
-    vRandSeed((unsigned long)time(NULL));
-#endif
+    vRandSeed(static_cast<unsigned long>(time(nullptr)));
     vInit();
     vClrScr();
     vHideCursor();
