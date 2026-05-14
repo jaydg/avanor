@@ -44,7 +44,7 @@ class XModifier
 
         int Run(XCreature* cr);
 
-        void toString(char* buf) const;
+        std::string toString() const;
 
         void Store(XFile* f);
         void Restore(XFile* f, XCreature* owner);

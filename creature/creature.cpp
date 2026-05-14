@@ -579,12 +579,8 @@ void XCreature::PutStatus()
             break;
     };
 
-    md->toString(buf);
-
-    vPutS(buf);
-
+    vPutS(md->toString());
     vClrEol();
-
     vSetAttr(xLIGHTGRAY);
 }
 

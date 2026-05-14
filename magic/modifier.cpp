@@ -201,69 +201,60 @@ int XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
     return 1;
 }
 
-void XModifier::toString(char* buf) const
+std::string XModifier::toString() const
 {
-    strcpy(buf, "");
+    std::string res;
 
-    int xval = Get(MOD_WOUND);
-
-    if (xval > 0) {
+    if (int val = Get(MOD_WOUND) > 0) {
         const auto tmp = new XModWound(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(xval));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(val) + " ";
 
         delete tmp;
     }
 
     if (Get(MOD_POISON) > 0) {
         const auto tmp = new XModPoison(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(1));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(1) +  " ";
 
         delete tmp;
     }
 
-    xval = Get(MOD_STUN);
-
-    if (xval > 0) {
+    if (int val = Get(MOD_STUN) > 0) {
         const auto tmp = new XModStun(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(xval));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(val) + " ";
 
         delete tmp;
     }
 
     if (Get(MOD_CONFUSE) > 0) {
         const auto tmp = new XModConfuse(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(1));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(1) +  " ";
 
         delete tmp;
     }
 
     if (Get(MOD_DISEASE) > 0) {
         const auto tmp = new XModDisease(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(1));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(1) +  " ";
 
         delete tmp;
     }
 
     if (Get(MOD_PARALYSE) > 0) {
         const auto tmp = new XModParalyse(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(1));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(1) +  " ";
 
         delete tmp;
     }
 
     if (Get(MOD_SEE_INVISIBLE) > 0) {
         auto tmp = new XModSeeInvisible(0, nullptr);
-        strcat(buf, tmp->GetDisplayName(1));
-        strcat(buf, " ");
+        res = tmp->GetDisplayName(1) +  " ";
 
         delete tmp;
     }
+
+    return res;
 }
 
 int XModifier::Run(XCreature* cr)
