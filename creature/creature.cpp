@@ -474,74 +474,70 @@ void XCreature::ShowNewView()
 
 void XCreature::PutStatus()
 {
-    char buf[250];
-
     vGotoXY(0, size_y - 3);
     vSetAttr(xLIGHTGRAY);
     vPutS(name);
 
-    if (XGame::isAvgPV) {
-        sprintf(buf, "DV/PV:%d/%d  ", GetDV(), GetPV());
-    } else {
-        sprintf(buf, "DV/PV:%d/%d  ", GetDV(), GetPV());
-    }
-
     vGotoXY(0, size_y - 2);
-    vPutS(buf);
+    vPutS(fmt::format("DV/PV:{}/{}  ", GetDV(), GetPV()));
 
-    sprintf(buf, "St:%-2d Dx:%-2d To:%-2d Le:%-2d Wi:%-2d Ma:%-2d Pe:%-2d Ch:%-2d Sp:%-3d L:%s", GetStats(S_STR), GetStats(S_DEX), GetStats(S_TOU),
-        GetStats(S_LEN), GetStats(S_WIL), GetStats(S_MAN), GetStats(S_PER), GetStats(S_CHR), 100000 / GetSpeed(), l->GetBriefName());
     vGotoXY(15, size_y - 3);
-    vPutS(buf);
+    vPutS(fmt::format(
+        "St:{:<2} Dx:{:<2} To:{:<2} Le:{:<2} Wi:{:<2} Ma:{:<2} Pe:{:<2} Ch:{:<2} Sp:{:<3} L:{}",
+        GetStats(S_STR),
+        GetStats(S_DEX),
+        GetStats(S_TOU),
+        GetStats(S_LEN),
+        GetStats(S_WIL),
+        GetStats(S_MAN),
+        GetStats(S_PER),
+        GetStats(S_CHR),
+        100000 / GetSpeed(),
+        l->GetBriefName()));
     vClrEol();
 
-    sprintf(buf, "HP:%d(%d)  PP:%d(%d)  ", _HP, GetMaxHP(), _PP, GetMaxPP());
     vGotoXY(14, size_y - 2);
-    vPutS(buf);
+    vPutS(fmt::format("HP:{}({})  PP:{}({})  ", _HP, GetMaxHP(), _PP, GetMaxPP()));
 
-    sprintf(buf, "Exp(%d)%lu", level, _EXP);
     vGotoXY(38, size_y - 2);
-    vPutS(buf);
+    vPutS(fmt::format("Exp({}){}", level, _EXP));
 
 #ifdef _DEBUG
-    sprintf(buf, "x:y[%d:%d]", x, y);
     vGotoXY(60, size_y - 2);
-    vPutS(buf);
+    vPutS(fmt::format("x:y[{}:{}]", x, y));
 #endif
 
+    vGotoXY(0, size_y - 1);
+
     if (nutrio > base_nutrio * 18) {
-        sprintf(buf, MSG_RED "overfed! ");
+        vPutS(MSG_RED "overfed! " MSG_LIGHTGRAY);
     } else if (nutrio > base_nutrio * 14) {
-        sprintf(buf, "bloated ");
+        vPutS("bloated ");
     } else if (nutrio > base_nutrio * 10 && nutrio <= base_nutrio * 14) {
-        sprintf(buf, "satiated ");
+        vPutS("satiated ");
     } else if (nutrio > base_nutrio * 8 && nutrio <= base_nutrio * 10) {
-        sprintf(buf, "");
+        vPutS("");
     } else if (nutrio > base_nutrio * 6 && nutrio <= base_nutrio * 8) {
-        sprintf(buf, "hungry ");
+        vPutS("hungry ");
     } else if (nutrio > base_nutrio * 4 && nutrio <= base_nutrio * 6) {
-        sprintf(buf, MSG_YELLOW "very hungry ");
+        vPutS(MSG_YELLOW "very hungry " MSG_LIGHTGRAY);
 
         if (action_data.action != A_EAT) {
             stopAction();
         }
     } else if (nutrio > base_nutrio && nutrio <= base_nutrio * 4) {
-        sprintf(buf, MSG_RED "weak ");
+        vPutS( MSG_RED "weak " MSG_LIGHTGRAY);
 
         if (action_data.action != A_EAT) {
             stopAction();
         }
     } else if (nutrio <= base_nutrio) {
-        sprintf(buf, MSG_RED "dying! ");
+        vPutS(MSG_RED "dying! " MSG_LIGHTGRAY);
 
         if (action_data.action != A_EAT) {
             stopAction();
         }
     }
-
-    strcat(buf, MSG_LIGHTGRAY);
-    vGotoXY(0, size_y - 1);
-    vPutS(buf);
 
     switch (action_data.action) {
         case A_READ	:
