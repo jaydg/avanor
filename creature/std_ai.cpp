@@ -896,20 +896,21 @@ int XStandardAI::Shoot() const
 
 int XStandardAI::PickUpItems() const
 {
-    XItemList * item_list = ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y);
+    XItemList *item_list = ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y);
     bool item_picked = false;
 
-    for (auto it: *item_list) {
-        if (it->im & IM_CHEST) {
+    for (auto it = item_list->begin(); it != item_list->end(); ) {
+        if ((*it)->im & IM_CHEST) {
             break;
         }
 
-        item_list->erase(it);
+        XItem* current_item = *it;
+        it = item_list->erase(it);
 
-        if (ai_owner->PickUpItem(it)) {
+        if (ai_owner->PickUpItem(current_item)) {
             item_picked = true;
         } else {
-            item_list->insert(it);
+            item_list->insert(it, current_item);
             break;
         }
     }
