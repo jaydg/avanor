@@ -180,12 +180,13 @@ class XLocation : public XObject
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
         void Invalidate() override;
-        const char* GetBriefName()
+
+        std::string GetBriefName()
         {
             return brief_name;
         }
 
-        const char* GetFullName()
+        std::string GetFullName()
         {
             return full_name;
         }
@@ -305,8 +306,8 @@ class XLocation : public XObject
         static int CRCOD(lua_State * L);
 
     protected:
-        char brief_name[10];
-        char full_name[80];
+        std::string brief_name; // max. 10 characters
+        std::string full_name;  // max. 80 characters
         XPtr<XAnyPlace> places[MAX_PLACES];
 
         void PutPalette(int x, int y);

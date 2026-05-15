@@ -401,8 +401,8 @@ void XLocation::Store(XFile * f)
         places[i].Store(f);
     }
 
-    f->Write(brief_name, 10);
-    f->Write(full_name, 80);
+    f->WriteStr(brief_name);
+    f->WriteStr(full_name);
     f->Write(&visited_by_hero);
     f->Write(&ln, sizeof(LOCATION));
     f->WriteStr(event);
@@ -422,8 +422,8 @@ void XLocation::Restore(XFile * f)
         }
     }
 
-    f->Read(brief_name, 10);
-    f->Read(full_name, 80);
+    f->ReadStr(brief_name);
+    f->ReadStr(full_name);
     f->Read(&visited_by_hero);
     f->Read(&ln, sizeof(LOCATION));
     f->ReadStr(event);
@@ -458,8 +458,8 @@ void XLocation::CreateRandomCave()
 XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, int cr_lvl) : XLocation((LOCATION)(XLocation::rand_location_count))
 {
     XLocation::rand_location_count++;
-    sprintf(brief_name, "Rnd%d", deep);
-    sprintf(full_name, "Random Place Level %d", deep);
+    brief_name = fmt::format("Rnd{}", deep);
+    full_name = fmt::format("Random Place Level {}", deep);
 
     if (view) {
         BuildCave();
@@ -498,8 +498,8 @@ int XLocation::CreateLocation(lua_State * L)
     int type = lua_tonumber(L, 4);
 
     current_location = new XLocation((LOCATION)loc_id);
-    strcpy(current_location->brief_name, lbrief);
-    strcpy(current_location->full_name, lfull);
+    current_location->brief_name = lbrief;
+    current_location->full_name = lfull;
 
     if (type == 0) {
         current_location->BuildCave();

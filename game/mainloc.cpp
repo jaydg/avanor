@@ -26,8 +26,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
 {
-    strcpy(brief_name, "Valley");
-    strcpy(full_name, "Valley of Avanor");
+    brief_name = "Valley";
+    full_name = "Valley of Avanor";
 
     int lm = 0;
     int rm = 200;
