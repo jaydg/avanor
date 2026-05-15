@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <cmath>
+
 #include "engine/xmapobj.h"
 
 XMapObject::XMapObject(XMapObject* copy) :
@@ -84,4 +86,11 @@ int XMapObject::Compare(XObject * o)
     } else {
         return 1;
     }
+}
+
+int XMapObject::Distance(const XMapObject* other) const
+{
+    int d = (other->x - this->x) * (other->x - this->x) + (other->y - this->y) * (other->y - this->y);
+
+    return static_cast<int>(sqrt(static_cast<double>(d)));
 }

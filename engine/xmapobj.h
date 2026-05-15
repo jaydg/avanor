@@ -109,6 +109,9 @@ class XMapObject : public XObject
             return l->map->GetVisible(px, py);
         }
 
+        // Calculate the distance to another XMapObjet
+        int Distance(const XMapObject* other) const;
+
         // Some objects (e.g. herbs) can be picked up.
         virtual XObject* Pick(XCreature * picker)
         {

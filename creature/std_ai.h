@@ -111,19 +111,20 @@ class XStandardAI
         virtual void onDie(XCreature * killer);
         virtual void onSteal(XCreature * rogue);
 
-        virtual int Chat(XCreature * chatter = nullptr, const char* msg = nullptr);
+        virtual int Chat(XCreature* chatter, const char* msg);
         virtual int onGiveItem(XCreature * giver, XItem * item);
         virtual int GetTargetPos(XPoint * pt);
 
-        int Wear();
+        int Wear() const;
 
-        void GetDirection(XPoint * target, XPoint * direction); // calculate exact direction to target
-        void GetRandDirection(XPoint * target, XPoint * direction); // calculate aproximate direction target
-        void GetExactDirection(XPoint * target, XPoint * direction); // calucalte exact direction on target
+        void GetDirection(const XPoint* target, XPoint* direction) const;      // calculate exact direction to target
+        void GetRandDirection(const XPoint* target, XPoint* direction) const;  // calculate approximate direction target
+        void GetExactDirection(const XPoint* target, XPoint* direction) const; // calculate exact direction on target
 
         void SetAIFlag(AI_FLAG aif);
         void ResAIFlag(AI_FLAG aif);
-        unsigned int GetAIFlag()
+
+        unsigned int GetAIFlag() const
         {
             return ai_flag;
         }
@@ -131,11 +132,11 @@ class XStandardAI
         void SetEnemyClass(CREATURE_CLASS cr_class);
 
         void AddPersonalEnemy(XCreature * cr);
-        void RemovePersonalEnemy(XCreature * cr);
+        void RemovePersonalEnemy(const XCreature* cr);
 
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
-        void SetGroupEnemy(XCreature * enemy);
+        void SetGroupEnemy(XCreature* cr) const;
 
 
         // companion
@@ -144,7 +145,7 @@ class XStandardAI
         XPtr<XCreature> ordered_enemy;
 
         std::deque<SCRIPT_CMD> script;
-        void ExecuteScript(std::vector<SCRIPT_CMD> &scr);
+        void ExecuteScript(const std::vector<SCRIPT_CMD> &scr);
         void RunScript();
 
         // the creature who knows a trap can't activate it
@@ -157,20 +158,21 @@ class XStandardAI
     protected:
         XPtr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
 
-        int FindPath(XPoint * target, XPoint * direction);
-        int AttackEnemy(int x, int y);
+        int FindPath(const XPoint* target, XPoint* direction) const;
+        int AttackEnemy(int x, int y) const;
         int CastSpell() const;
-        int Shoot();
-        int ReadScroll();
-        int DrinkPotion();
-        int PickUpItems();
+        int Shoot() const;
+        int ReadScroll() const;
+        int DrinkPotion() const;
+        int PickUpItems() const;
 
-        int MoveTo(int x, int y, XLocation * l = nullptr);
+        int MoveTo(int x, int y, XLocation* l = nullptr) const;
 
+        // creature tries to run away from attacker
+        int TryToRunAway() const;
 
-        int TryToRunAway(); //creature tryes to run away from attacker... if can
-
-        bool CanMoveHere(int px, int py); //can move here without risk of attaking friendly creature
+        // can move here without risk of attacking friendly creature
+        bool CanMoveHere(int px, int py);
 
         AI_FLAG ai_flag;
         XPtr<XCreature> ai_owner;
@@ -179,23 +181,34 @@ class XStandardAI
         XRect guard_area;
         LOCATION guard_area_location;
 
+        // currently targeted creature
+        XCreature* enemy;
 
-        XCreature* enemy; // current targeted creature
-        int enemy_dist; // distance to the closest enemy
+        // distance to the closest enemy
+        int enemy_dist;
 
         XPtr<XCreature> last_enemy;
-        XMapObject* last_moved_way; //used to prevent up/down moving way repeating...
+
+        // used to prevent up/down moving way repeating...
+        XMapObject* last_moved_way;
         int invisible_x;
         int invisible_y;
         int invisible_hunting_mode;
 
         int friend_avg_x;
         int friend_avg_y;
-        int friends_count; //count of friends (which has same enemy) for coward attack
 
-        int item_dist; // distance to the closest item
-        int item_x; // item x coordinate
-        int item_y; // item y coordinate
+        // count of friends (which have the same enemy) for coward attack
+        int friends_count;
+
+        // distance to the closest item
+        int item_dist;
+
+        // item x coordinate
+        int item_x;
+
+        // item y coordinate
+        int item_y;
 
         int way_dist;
         int way_x;

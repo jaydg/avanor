@@ -27,7 +27,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "map/map_objects.h"
 
-XStandardAI::XStandardAI(XCreature * _cr) : guard_area(1, 1, 2, 3)
+XStandardAI::XStandardAI(XCreature* _cr) : guard_area(1, 1, 2, 3),
+                                           guard_area_location(),
+                                           enemy(nullptr), enemy_dist(0),
+                                           friend_avg_x(0), friend_avg_y(0),
+                                           friends_count(0),
+                                           item_dist(0), item_x(0), item_y(0),
+                                           way_dist(0), way_x(0), way_y(0)
 {
     ai_owner = _cr;
     ai_flag = AIF_NONE; //(AI_FLAG)(AIF_RANDOM_MOVE | AIF_ALLOW_PICK_UP);
@@ -46,8 +52,8 @@ XStandardAI::~XStandardAI()
 {
     ai_owner = nullptr;
 
-    for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
-        personal_enemy[i] = nullptr;
+    for (auto & i : personal_enemy) {
+        i = nullptr;
     }
 }
 
@@ -95,7 +101,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
         (((spec->view == '>') && (ai_flag & AIF_ALLOW_MOVE_WAY_DOWN)) ||
         ((spec->view == '<') && (ai_flag & AIF_ALLOW_MOVE_WAY_UP)))
     ) {
-        if (((XStairWay*)spec)->ln != L_MAIN || ai_flag & AIF_ALLOW_MOVE_OUT) {
+        if (dynamic_cast<XStairWay *>(spec)->ln != L_MAIN || ai_flag & AIF_ALLOW_MOVE_OUT) {
             way_dist = w;
             way_x = j;
             way_y = i;
@@ -116,18 +122,18 @@ void XStandardAI::Move()
     way_x = 0;
     way_y = 0;
 
-    //if no last enemy to attack only than process grids...
+    //  process grids if no enemy can be attacked
     if (sleep_well <= 0) {
         friends_count = 1;
         friend_avg_x = ai_owner->x;
         friend_avg_y = ai_owner->y;
 
-        // processing all visible grids
+        // process all visible grids
         AnalyzeView(ai_owner->GetVisibleRadius());
 
-        //calculate avg coordinats for AIF_ALLOW_PACK
-        friend_avg_x = std::lround((float)friend_avg_x / (float)friends_count);
-        friend_avg_y = std::lround((float)friend_avg_y / (float)friends_count);
+        // calculate average coordinates for AIF_ALLOW_PACK
+        friend_avg_x = static_cast<int>(std::lround(static_cast<float>(friend_avg_x) / static_cast<float>(friends_count)));
+        friend_avg_y = static_cast<int>(std::lround(static_cast<float>(friend_avg_y) / static_cast<float>(friends_count)));
 
         if (enemy_dist > 100) {
             sleep_well = 3;
@@ -145,11 +151,8 @@ void XStandardAI::Move()
 
     int was_attack = 0;
     int was_item_pick = 0;
-    int was_stair_way = 0;
 
     // first of all, execute order of companion to attack
-    bool order_executing = false;
-
     if (companion && companion_command == CC_ATTACK) {
         if (ordered_enemy && ordered_enemy->isValid()) {
             enemy = ordered_enemy;
@@ -178,7 +181,8 @@ void XStandardAI::Move()
             invisible_hunting_mode = 0;
         }
     } else if (companion && (companion_command == CC_FOLLOW || companion_command == CC_NONE)
-        && MoveTo(companion->x, companion->y, companion->l)) {
+        && MoveTo(companion->x, companion->y, companion->l))
+    {
         //do nothing....
     } else if (last_enemy) {
         if (!MoveTo(last_enemy->x, last_enemy->y, last_enemy->l)) {
@@ -187,16 +191,20 @@ void XStandardAI::Move()
     } else if (ai_flag & AIF_EXECUTE_SCRIPT) {
         //execute script when nothing to do
         RunScript();
-    } else if (ai_flag & AIF_ALLOW_PICK_UP && !(ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y))->empty() && !ai_owner->l->map->GetPlace(ai_owner->x, ai_owner->y)) {
+    } else if (ai_flag & AIF_ALLOW_PICK_UP &&
+        !(ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y))->empty() &&
+        !ai_owner->l->map->GetPlace(ai_owner->x, ai_owner->y))
+    {
         if (PickUpItems()) {
             return;
         }
     } else if (ai_flag & AIF_ALLOW_PICK_UP && item_dist < 10000) {
         MoveTo(item_x, item_y);
         was_item_pick = 1;
-    } else if (ai_flag & (AIF_ALLOW_MOVE_WAY_DOWN | AIF_ALLOW_MOVE_WAY_UP) && way_dist < 10000 && !(ai_flag && AIF_GUARD_AREA)) {
-
-        XMapObject * spec = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
+    } else if (ai_flag & (AIF_ALLOW_MOVE_WAY_DOWN | AIF_ALLOW_MOVE_WAY_UP)
+        && way_dist < 10000 && !(ai_flag & AIF_GUARD_AREA))
+    {
+        auto spec = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
 
         if (spec && spec->im & IM_WAY &&
             (((spec->view == '>') && (ai_flag & AIF_ALLOW_MOVE_WAY_DOWN)) ||
@@ -206,10 +214,8 @@ void XStandardAI::Move()
         } else {
             MoveTo(way_x, way_y);
         }
-
-        was_stair_way = 1;
     } else if (ai_flag & AIF_ALLOW_PACK) {
-        //Allow to create packs....
+        // Allow to create packs....
         XPoint direction_point;
         XPoint target_point(friend_avg_x, friend_avg_y);
         GetRandDirection(&target_point, &direction_point);
@@ -225,7 +231,7 @@ void XStandardAI::Move()
         ai_owner->ny = ai_owner->y + vRand(3) - 1;
     }
 
-    //we can leave area only to pursuit enemy, other wise - comeback
+    // we can leave the area only to pursuit enemies, otherwise come back
     if (!companion && !was_attack && !was_item_pick && (ai_flag & AIF_GUARD_AREA)) {
         if (guard_area_location != ai_owner->l->ln || !guard_area.PointIn(ai_owner->nx, ai_owner->ny)) {
             MoveTo((guard_area.left + guard_area.right) / 2, (guard_area.top + guard_area.bottom) / 2, Game.locations[guard_area_location]);
@@ -233,7 +239,7 @@ void XStandardAI::Move()
     }
 
     //Prevents from attacking friends...
-    XCreature * tgt = ai_owner->l->map->GetMonster(ai_owner->nx, ai_owner->ny);
+    const auto tgt = ai_owner->l->map->GetMonster(ai_owner->nx, ai_owner->ny);
 
     if (tgt) {
         if (!isEnemy(tgt)) {
@@ -247,9 +253,9 @@ void XStandardAI::Move()
     }
 }
 
-const int find_path_deep = 200;
+constexpr int find_path_deep = 200;
 
-int XStandardAI::FindPath(XPoint * target, XPoint * direction)
+int XStandardAI::FindPath(const XPoint* target, XPoint * direction) const
 {
     int dist_x = abs(target->x - ai_owner->x);
     int dist_y = abs(target->y - ai_owner->y);
@@ -263,8 +269,7 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
     int center_x = (target->x + ai_owner->x) / 2;
     int center_y = (target->y + ai_owner->y) / 2;
 
-    int path_flags[find_path_deep + 4][find_path_deep + 4];
-    memset(path_flags, 0, (find_path_deep + 4) * (find_path_deep + 4) * sizeof(int));
+    int path_flags[find_path_deep + 4][find_path_deep + 4] = {};
 
     int map_x = center_x - find_path_deep / 2 + 2;
     int map_y = center_y - find_path_deep / 2 + 2;
@@ -443,7 +448,7 @@ int XStandardAI::FindPath(XPoint * target, XPoint * direction)
     return 1;
 };
 
-void XStandardAI::GetDirection(XPoint * target, XPoint * direction)
+void XStandardAI::GetDirection(const XPoint* target, XPoint * direction) const
 {
     int dx = sgn(target->x - ai_owner->x);
     int dy = sgn(target->y - ai_owner->y);
@@ -458,7 +463,7 @@ void XStandardAI::GetDirection(XPoint * target, XPoint * direction)
 }
 
 
-void XStandardAI::GetRandDirection(XPoint * target, XPoint * direction)
+void XStandardAI::GetRandDirection(const XPoint* target, XPoint * direction) const
 {
     int dx = sgn(target->x - ai_owner->x);
     int dy = sgn(target->y - ai_owner->y);
@@ -482,7 +487,7 @@ void XStandardAI::GetRandDirection(XPoint * target, XPoint * direction)
     }
 }
 
-void XStandardAI::GetExactDirection(XPoint * target, XPoint * direction)
+void XStandardAI::GetExactDirection(const XPoint* target, XPoint* direction) const
 {
     direction->x = sgn(target->x - ai_owner->x);
     direction->y = sgn(target->y - ai_owner->y);
@@ -513,8 +518,8 @@ bool XStandardAI::isEnemy(XCreature *cr)
 
 bool XStandardAI::isPersonalEnemy(XCreature *cr)
 {
-    for (int i = 0; i < ENEMY_LIST_SIZE; i++)
-        if (personal_enemy[i] == cr) {
+    for (const auto & i : personal_enemy)
+        if (i == cr) {
             return true;
         }
 
@@ -523,12 +528,12 @@ bool XStandardAI::isPersonalEnemy(XCreature *cr)
 
 void XStandardAI::SetAIFlag(AI_FLAG aif)
 {
-    ai_flag = (AI_FLAG)(ai_flag | aif);
+    ai_flag = static_cast<AI_FLAG>(ai_flag | aif);
 }
 
 void XStandardAI::ResAIFlag(AI_FLAG aif)
 {
-    ai_flag = (AI_FLAG)((ai_flag | aif) ^ aif);
+    ai_flag = static_cast<AI_FLAG>((ai_flag | aif) ^ aif);
 }
 
 void XStandardAI::SetEnemyClass(CREATURE_CLASS cr_class)
@@ -536,7 +541,7 @@ void XStandardAI::SetEnemyClass(CREATURE_CLASS cr_class)
     enemy_class = cr_class;
 }
 
-int XStandardAI::Wear()
+int XStandardAI::Wear() const
 {
 
     for (auto item: ai_owner->contain) {
@@ -549,10 +554,8 @@ int XStandardAI::Wear()
         XItem * old_item = ai_owner->GetItem(item->bp);
 
         if (old_item) {
-            XBodyPart * xbp1 = ai_owner->GetBodyPart(item->bp, 1);
-
-            if (xbp1) {
-                XItem * old_item1 = ai_owner->GetItem(item->bp, 1);
+            if (auto xbp1 = ai_owner->GetBodyPart(item->bp, 1)) {
+                auto old_item1 = ai_owner->GetItem(item->bp, 1);
 
                 if (!old_item1 || (old_item1->GetValue() < old_item->GetValue())) {
                     xbp = xbp1;
@@ -603,8 +606,6 @@ int XStandardAI::Wear()
     }
 
     // Sacrifice useless items
-    int s_flag = 0;
-
     for (const auto item: ai_owner->contain) {
         assert(item->isValid());
 
@@ -622,7 +623,6 @@ int XStandardAI::Wear()
 
         ai_owner->contain.erase(item);
         ai_owner->Sacrifice(item);
-        s_flag = 1;
         break;
     }
 
@@ -641,10 +641,9 @@ XStairWay* RecursiveWayFound(XLocation * tl, XLocation * tgt_l)
         }
 
         if (Game.locations[way->ln] && Game.locations[way->ln]->way_found_flag) {
-            XStairWay * tway = RecursiveWayFound(Game.locations[way->ln], tgt_l);
-
-            if (tway) {
-                // we need to find only top(closest) WAY at this time
+            if (RecursiveWayFound(Game.locations[way->ln], tgt_l))
+            {
+                // we need to find only the top (i.e. the closest) way
                 return way;
             }
         }
@@ -655,9 +654,9 @@ XStairWay* RecursiveWayFound(XLocation * tl, XLocation * tgt_l)
 
 XStairWay* RWayFound(XLocation * tl, XLocation * tgt_l)
 {
-    for (int i = 0; i < L_EOF; i++) {
-        if (Game.locations[i]) {
-            Game.locations[i]->way_found_flag = true;
+    for (const auto & location : Game.locations) {
+        if (location) {
+            location->way_found_flag = true;
         }
     }
 
@@ -665,9 +664,9 @@ XStairWay* RWayFound(XLocation * tl, XLocation * tgt_l)
 }
 
 
-int XStandardAI::MoveTo(int x, int y, XLocation * l)
+int XStandardAI::MoveTo(int x, int y, XLocation * l) const
 {
-    // if it is not this location, than try to way to nearest location
+    // if it is not this location, then try the way to the nearest location
     if (l && l->ln != ai_owner->l->ln) {
         if (!(ai_flag & AIF_FIND_WAY)) {
             return 0;
@@ -702,7 +701,8 @@ int XStandardAI::MoveTo(int x, int y, XLocation * l)
     }
 }
 
-int XStandardAI::TryToRunAway() // from enemy
+// from enemy
+int XStandardAI::TryToRunAway() const
 {
     assert(enemy);
     int dx = sgn(ai_owner->x - enemy->x);
@@ -747,11 +747,11 @@ int XStandardAI::TryToRunAway() // from enemy
     return 0;
 }
 
-int XStandardAI::AttackEnemy(int ex, int ey)
+int XStandardAI::AttackEnemy(int ex, int ey) const
 {
     // try to run away if we must or can
     if (ai_flag & AIF_COWARD && enemy &&
-        (enemy->GetExp() / 10 > ai_owner->GetExp() * friends_count // creature is more powerfull
+        (enemy->GetExp() / 10 > ai_owner->GetExp() * friends_count // creature is more powerful
         || ai_owner->GetMaxHP() / ai_owner->_HP > 4) // less than 25% of _HP
         && TryToRunAway()) {
         return 0;
@@ -797,8 +797,7 @@ int XStandardAI::CastSpell() const {
 
     // try to attack
     if (enemy) {
-        int r_enemy = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) +
-            (enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
+        int r_enemy = ai_owner->Distance(enemy);
 
         assert(r_enemy > 0);
 
@@ -819,14 +818,14 @@ int XStandardAI::CastSpell() const {
     return 0;
 }
 
-int XStandardAI::ReadScroll()
+int XStandardAI::ReadScroll() const
 {
     for (auto item: ai_owner->contain) {
         if (!(item->im & IM_SCROLL)) {
             continue;
         }
 
-        XScroll* scroll = static_cast<XScroll*>(item);
+        auto scroll = dynamic_cast<XScroll*>(item);
 
         if (scroll->sc_name == SCROLL_MAGIC_ARROW ||
             scroll->sc_name == SCROLL_FIRE_BOLT ||
@@ -846,12 +845,12 @@ int XStandardAI::ReadScroll()
     return 0;
 }
 
-int XStandardAI::DrinkPotion()
+int XStandardAI::DrinkPotion() const
 {
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
         for (const auto it: ai_owner->contain) {
             if (it->im & IM_POTION) {
-                auto pot = static_cast<XPotion *>(it);
+                auto pot = dynamic_cast<XPotion *>(it);
 
                 if (pot->pn == PN_HEALING ||
                     pot->pn == PN_CURE_LIGHT_WOUNDS ||
@@ -859,7 +858,7 @@ int XStandardAI::DrinkPotion()
                     pot->pn == PN_CURE_CRITICAL_WOUNDS ||
                     pot->pn == PN_CURE_MORTAL_WOUNDS) {
                     // FIXME: why the copy?
-                    XPotion * np = static_cast<XPotion *>(pot->MakeCopy());
+                    auto np = dynamic_cast<XPotion *>(pot->MakeCopy());
                     np->onDrink(ai_owner);
 
                     if (pot->quantity > 1) {
@@ -878,7 +877,7 @@ int XStandardAI::DrinkPotion()
     return 0;
 }
 
-int XStandardAI::Shoot()
+int XStandardAI::Shoot() const
 {
     int hit;
     int range;
@@ -886,10 +885,7 @@ int XStandardAI::Shoot()
     ai_owner->GetRangeAttackInfo(&range, &hit, &dmg);
 
     if (enemy) {
-        int r = (int)sqrt((float)(enemy->x - ai_owner->x) * (enemy->x - ai_owner->x) +
-            (enemy->y - ai_owner->y) * (enemy->y - ai_owner->y));
-
-        if (r <= range) {
+        if (ai_owner->Distance(enemy) <= range) {
             ai_owner->Shoot(enemy->x, enemy->y);
             return 1;
         }
@@ -898,8 +894,7 @@ int XStandardAI::Shoot()
     return 0;
 }
 
-
-int XStandardAI::PickUpItems()
+int XStandardAI::PickUpItems() const
 {
     XItemList * item_list = ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y);
     bool item_picked = false;
@@ -965,13 +960,13 @@ void XStandardAI::onDie(XCreature * killer)
     }
 }
 
-void XStandardAI::SetGroupEnemy(XCreature* enemy)
+void XStandardAI::SetGroupEnemy(XCreature* cr) const
 {
-    if (ai_owner->groupID() != GID_NONE && enemy) {
+    if (ai_owner->groupID() != GID_NONE && cr) {
         for (const auto& buddy : ai_owner->getGroupMembers()) {
-            buddy->xai->AddPersonalEnemy(enemy);
+            buddy->xai->AddPersonalEnemy(cr);
             buddy->xai->ResAIFlag(AIF_GUARD_AREA);
-            buddy->xai->enemy = enemy;
+            buddy->xai->enemy = cr;
         }
     }
 }
@@ -1000,17 +995,18 @@ void XStandardAI::AddPersonalEnemy(XCreature * cr)
     personal_enemy[ENEMY_LIST_SIZE - 1] = cr;
 }
 
-void XStandardAI::RemovePersonalEnemy(XCreature * cr)
+void XStandardAI::RemovePersonalEnemy(const XCreature* cr)
 {
-    for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
-        if (personal_enemy[i].get() == cr) {
-            personal_enemy[i] = nullptr;
+    for (auto & i : personal_enemy) {
+        if (i.get() == cr) {
+            i = nullptr;
+
             return;
         }
     }
 }
 
-int XStandardAI::Chat(XCreature * chatter, const char* msg)
+int XStandardAI::Chat(XCreature* chatter, const char* msg)
 {
     if (!ai_owner->Chat(chatter, msg)) {
         msgwin.Add(ai_owner->StdAnswer());
@@ -1068,8 +1064,8 @@ void XStandardAI::Store(XFile * f)
     ordered_enemy.Store(f);
     f->Write(&companion_command, sizeof(COMPANION_COMMAND));
 
-    for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
-        personal_enemy[i].Store(f);
+    for (const auto & i : personal_enemy) {
+        i.Store(f);
     }
 
     ai_owner.Store(f);
@@ -1096,8 +1092,8 @@ void XStandardAI::Restore(XFile * f)
     ordered_enemy.Restore(f);
     f->Read(&companion_command, sizeof(COMPANION_COMMAND));
 
-    for (int i = 0; i < ENEMY_LIST_SIZE; i++) {
-        personal_enemy[i].Restore(f);
+    for (auto & i : personal_enemy) {
+        i.Restore(f);
     }
 
     ai_owner.Restore(f);
@@ -1109,7 +1105,7 @@ void XStandardAI::Restore(XFile * f)
 }
 
 /////////////// scripting support
-void XStandardAI::ExecuteScript(std::vector<SCRIPT_CMD> &scr)
+void XStandardAI::ExecuteScript(const std::vector<SCRIPT_CMD> &scr)
 {
     script.clear();
 
@@ -1141,10 +1137,10 @@ void XStandardAI::RunScript()
             break;
 
         case SCC_COLLECT_MUSHROOM: {
-            XMapObject * obj = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
+            XMapObject* obj = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
 
             if (obj && obj->isValid() && obj->im == IM_OTHER) {
-                XItem * tit = (XItem*)(obj->Pick(ai_owner));
+                auto  tit = dynamic_cast<XItem *>(obj->Pick(ai_owner));
 
                 if (ai_owner->PickUpItem(tit)) {
                     if (ai_owner->isVisible()) {
@@ -1201,5 +1197,5 @@ bool XStandardAI::isKnowThisTrap(const XMapObject* trap)
     return std::any_of(
         known_traps.begin(),
         known_traps.end(),
-        [trap](XMapObject* t) { return trap == t; });
+        [trap](const XMapObject* t) { return trap == t; });
 }
