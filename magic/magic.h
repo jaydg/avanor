@@ -131,7 +131,8 @@ class XMagic
         static int GetSpellRange(const XSpell* spell, XCreature* caster);
         int Train(MAGIC_SCHOOL school, int count);
         int GainLevel(MAGIC_SCHOOL school, int n = 1);
-        int LevelToString(MAGIC_SCHOOL school, char* buf) const;
+
+        std::string LevelToString(MAGIC_SCHOOL school) const;
         void Learn(SPELL_NAME spell);
         [[nodiscard]] XSpell* GetSpell(SPELL_NAME spell) const;
 

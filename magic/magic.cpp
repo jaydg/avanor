@@ -342,14 +342,13 @@ const char* mg_level_str[] = {
     MSG_DARKGRAY	"Grand Master"
 };
 
-int XMagic::LevelToString(const MAGIC_SCHOOL school, char* buf) const
+std::string XMagic::LevelToString(const MAGIC_SCHOOL school) const
 {
     if (GetLevel(school) > 0) {
-        sprintf(buf, MSG_YELLOW "%-30s %s", mg_name_str[school], mg_level_str[magic_level[school]]);
-        return 1;
+        return fmt::format(MSG_YELLOW "{:<30} {}", mg_name_str[school], mg_level_str[magic_level[school]]);
     }
 
-    return 0;
+    return "";
 }
 
 void XMagic::Store(XFile * f)

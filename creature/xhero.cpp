@@ -702,28 +702,23 @@ void XHero::InfoList()
     vPutS(GetProfessionStr());
     vGotoXY(40, 5);
     vPutS(MSG_BROWN "Gold:");
-    char tbuf[256];
-    sprintf(tbuf, MSG_YELLOW "%d" MSG_BROWN " gp", MoneyOp(0));
     vGotoXY(50, 5);
-    vPutS(tbuf);
+    vPutS(fmt::format(MSG_YELLOW "{}" MSG_BROWN " gp", MoneyOp(0)));
     vGotoXY(40, 6);
     vPutS(MSG_BROWN "Time:");
     vGotoXY(50, 6);
-    sprintf(tbuf, MSG_YELLOW "%d" MSG_BROWN " : " MSG_YELLOW "%d" MSG_BROWN " : "
-        MSG_YELLOW "%d", XTime::GetHour(), XTime::GetMin(), XTime::GetSec());
-    vPutS(tbuf);
+    vPutS(fmt::format(MSG_YELLOW "{}" MSG_BROWN " : " MSG_YELLOW "{}" MSG_BROWN " : "
+        MSG_YELLOW "{}", XTime::GetHour(), XTime::GetMin(), XTime::GetSec()));
     vGotoXY(40, 7);
     vPutS(MSG_BROWN "Date:");
     vGotoXY(50, 7);
-    sprintf(tbuf, MSG_YELLOW "%s" MSG_BROWN ", " MSG_YELLOW "%d" MSG_BROWN ", "
-        MSG_YELLOW "%d", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear());
-    vPutS(tbuf);
+    vPutS(fmt::format(MSG_YELLOW "{}" MSG_BROWN ", " MSG_YELLOW "{}" MSG_BROWN ", "
+        MSG_YELLOW "{}", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear()));
     vGotoXY(40, 8);
     vPutS(MSG_BROWN "Day/Week");
     vGotoXY(50, 8);
-    sprintf(tbuf, MSG_YELLOW "%s" MSG_BROWN "/" MSG_YELLOW "%s",
-        XTime::GetDayName(), XTime::GetWeekName());
-    vPutS(tbuf);
+    vPutS(fmt::format(MSG_YELLOW "{}" MSG_BROWN "/" MSG_YELLOW "{}",
+        XTime::GetDayName(), XTime::GetWeekName()));
 
     vSetAttr(xBROWN);
 
@@ -737,45 +732,42 @@ void XHero::InfoList()
     }
 
     vGotoXY(0, 13);
-    sprintf(tbuf, MSG_LIGHTGRAY "Burden" MSG_BROWN ": current " MSG_YELLOW "%d" MSG_BROWN
-        ", burdened " MSG_YELLOW "%d" MSG_BROWN ", strained "
-        MSG_YELLOW "%d" MSG_BROWN ", overburdened " MSG_YELLOW "%d",
-        carried_weight, CarryValue(CSTATE_NORMAL), CarryValue(CSTATE_BURDENED), CarryValue(CSTATE_STRAINED));
-    vPutS(tbuf);
+    vPutS(fmt::format(MSG_LIGHTGRAY "Burden" MSG_BROWN ": current " MSG_YELLOW "{}"
+        MSG_BROWN ", burdened " MSG_YELLOW "{}" MSG_BROWN ", strained "
+        MSG_YELLOW "{}" MSG_BROWN ", overburdened " MSG_YELLOW "{}",
+        carried_weight,
+        CarryValue(CSTATE_NORMAL),
+        CarryValue(CSTATE_BURDENED),
+        CarryValue(CSTATE_STRAINED)));
 
     vGotoXY(0, 15);
     vPutS(MSG_LIGHTGRAY "Melee Attack");
 
-    sprintf(tbuf, MSG_BROWN "Unarmed:    (" MSG_YELLOW "%+d" MSG_BROWN ", "
-        MSG_YELLOW"%d" MSG_BROWN "d" MSG_YELLOW "%d %+d" MSG_BROWN ")",
-        GetHIT() + wsk->GetHIT(XWarSkills::UNARMED),
-        dice.X, dice.Y, dice.Z + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED));
     vGotoXY(0, 16);
-    vPutS(tbuf);
+    vPutS(fmt::format(MSG_BROWN "Unarmed:    (" MSG_YELLOW "{:+}" MSG_BROWN ", "
+        MSG_YELLOW "{}" MSG_BROWN "d" MSG_YELLOW "{} {:+}" MSG_BROWN ")",
+        GetHIT() + wsk->GetHIT(XWarSkills::UNARMED),
+        dice.X, dice.Y, dice.Z + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED)));
 
     const XBodyPart* hand_1 = GetBodyPart(BP_HAND, 0);
     const XBodyPart* hand_2 = GetBodyPart(BP_HAND, 1);
 
-    int free_hand = (hand_1->Item() == nullptr) | (hand_2->Item() == nullptr);
-
     if (hand_1->Item() && hand_1->Item()->im & IM_WEAPON) {
-        sprintf(tbuf, "Left hand:  (" MSG_YELLOW "%+d" MSG_BROWN ", "
-            MSG_YELLOW"%d" MSG_BROWN "d" MSG_YELLOW "%d %+d" MSG_BROWN ")",
+        vGotoXY(0, 17);
+        vPutS(fmt::format("Left hand:  (" MSG_YELLOW "{:+}" MSG_BROWN ", "
+            MSG_YELLOW"{}" MSG_BROWN "d" MSG_YELLOW "{}{:+}" MSG_BROWN ")",
             GetHIT() + wsk->GetHIT(hand_1->Item()->wt) + GetHITFHBonus(hand_1->Item()),
             hand_1->Item()->dice.X, hand_1->Item()->dice.Y,
-            hand_1->Item()->dice.Z + GetDMG() + wsk->GetDMG(hand_1->Item()->wt));
-        vGotoXY(0, 17);
-        vPutS(tbuf);
+            hand_1->Item()->dice.Z + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)));
     }
 
     if (hand_2->Item() && hand_2->Item()->im & IM_WEAPON) {
-        sprintf(tbuf, "Right hand: (" MSG_YELLOW "%+d" MSG_BROWN ", "
-            MSG_YELLOW"%d" MSG_BROWN "d" MSG_YELLOW "%d %+d" MSG_BROWN ")",
+        vGotoXY(0, 18);
+        vPutS(fmt::format("Right hand: (" MSG_YELLOW "{:+}" MSG_BROWN ", "
+            MSG_YELLOW"{}" MSG_BROWN "d" MSG_YELLOW "{} {:+}" MSG_BROWN ")",
             GetHIT() + wsk->GetHIT(hand_2->Item()->wt) + GetHITFHBonus(hand_2->Item()),
             hand_2->Item()->dice.X, hand_2->Item()->dice.Y,
-            hand_2->Item()->dice.Z + GetDMG() + wsk->GetDMG(hand_2->Item()->wt));
-        vGotoXY(0, 18);
-        vPutS(tbuf);
+            hand_2->Item()->dice.Z + GetDMG() + wsk->GetDMG(hand_2->Item()->wt)));
     }
 
     int hit;
@@ -784,11 +776,10 @@ void XHero::InfoList()
     GetRangeAttackInfo(&range, &hit, &dmg);
 
     if (range > 0) {
-        sprintf(tbuf, "Range Attack: <" MSG_YELLOW "%d" MSG_BROWN "> ("
-            MSG_YELLOW "%+d" MSG_BROWN ", " MSG_YELLOW "%d" MSG_BROWN "d"
-            MSG_YELLOW "%d %+d" MSG_BROWN ")", range, hit, dmg.X, dmg.Y, dmg.Z);
         vGotoXY(0, 19);
-        vPutS(tbuf);
+        vPutS(fmt::format("Range Attack: <" MSG_YELLOW "{}" MSG_BROWN "> ("
+            MSG_YELLOW "{:+}" MSG_BROWN ", " MSG_YELLOW "{}" MSG_BROWN "d"
+            MSG_YELLOW "{} {:+}" MSG_BROWN ")", range, hit, dmg.X, dmg.Y, dmg.Z));
     }
 
     vGotoXY(0, size_y - 1);
@@ -805,8 +796,6 @@ void XHero::ExpList() const
     vStore(&xbuf);
     vClrScr();
 
-    char bufx[250];
-
     if (level >= 50) {
         vGotoXY(0, 0);
         vPutS("\x1F\0FYou need unknown points of experience!");
@@ -816,9 +805,8 @@ void XHero::ExpList() const
         int yy = 0;
 
         while (i < 50) {
-            sprintf(bufx, "\x1F\x06Level(\x1F\x0E%d\x1F\x06): \x1F\x0E%lu", i + 1, ExpOfLevel(i));
             vGotoXY(xx, yy);
-            vPutS(bufx);
+            vPutS(fmt::format("\x1F\x06Level(\x1F\x0E{}\x1F\x06): \x1F\x0E{}", i + 1, ExpOfLevel(i)));
             yy++;
 
             if (yy > 17) {
@@ -830,8 +818,8 @@ void XHero::ExpList() const
         }
 
         vGotoXY(0, 20);
-        sprintf(bufx, "\x1F\x06You need \x1F\x0E%lu\x1F\x06 experience to next level.", ExpOfLevel(level) - _EXP);
-        vPutS(bufx);
+        vPutS(fmt::format("\x1F\x06You need \x1F\x0E{}\x1F\x06 experience to next level.",
+            ExpOfLevel(level) - _EXP));
     }
 
     vGotoXY(0, 22);
@@ -893,8 +881,6 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
             }
         }
 
-        char buf[256];
-
         if (all_item_count == 0) {
             if ((mask == IM_ALL) || (mask == IM_UNKNOWN))
                 if (&contain == item_list) {
@@ -904,13 +890,14 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
                 } else {
                 for (int oi = 0; oi < std::size(output_items_name); oi++) {
                     if (output_items_mask[oi] & mask) {
+                        std::string msg;
                         if (&contain == item_list) {
-                            sprintf(buf, MSG_LIGHTGRAY "You have no %s.", output_items_name[oi]);
+                            msg = fmt::format(MSG_LIGHTGRAY "You have no {}.", output_items_name[oi]);
                         } else {
-                            sprintf(buf, MSG_LIGHTGRAY "There are no %s.", output_items_name[oi]);
+                            msg = fmt::format(MSG_LIGHTGRAY "There are no {}.", output_items_name[oi]);
                         }
 
-                        list.AddItem(new XGuiItem_Text(buf), 0);
+                        list.AddItem(new XGuiItem_Text(msg), 0);
                     }
                 }
             }
@@ -930,8 +917,10 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
 
                         for (int oi = 0; oi < std::size(output_items_name); oi++) {
                             if (output_items_mask[oi] & last_mask) {
-                                sprintf(buf, MSG_YELLOW "%s " MSG_BROWN "('" MSG_YELLOW "%c" MSG_BROWN "')", output_items_name[oi], output_items_ext[oi]);
-                                list.AddItem(new XGuiItem_Text(buf), 0);
+                                auto str = fmt::format(
+                                    MSG_YELLOW "{} " MSG_BROWN "('" MSG_YELLOW "{}" MSG_BROWN "')",
+                                    output_items_name[oi], output_items_ext[oi]);
+                                list.AddItem(new XGuiItem_Text(str), 0);
                             }
                         }
                     }
@@ -1229,8 +1218,6 @@ void XHero::DropItem()
 
 void XHero::PickItem()
 {
-    char bufx[256];
-
     XItemList* tmpquae = l->map->GetItemList(x, y);
 
     if (tmpquae->empty()) {
@@ -1859,7 +1846,6 @@ int XHero::RepeatCast()
 int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject** back)
 {
     int flag = 0;
-    char buf[256];
     char ch;
     int cx;
     int cy;
@@ -1924,8 +1910,7 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
                 cy = 0;
             }
 
-            sprintf(buf, "(Enter = %d)? ", max_range);
-            msgwin.Add(buf);
+            msgwin.Add(fmt::format("(Enter = {})? ", max_range));
             vPutS(" ");
             vRefresh();
             gets_flag = vGetS(in_buf, 9);
@@ -2006,10 +1991,10 @@ void XHero::MagicLevelList() const
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Magic School " MSG_BROWN "###");
 
     for (int i = 0; i < MS_EOF; i++) {
-        char buf[256];
+        auto s = m->LevelToString(static_cast<MAGIC_SCHOOL>(i));
 
-        if (m->LevelToString(static_cast<MAGIC_SCHOOL>(i), buf)) {
-            list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
+        if (!s.empty()) {
+            list.AddItem(new XGuiItem_SimpleSelect(s), 0);
         }
     }
 
@@ -2154,36 +2139,33 @@ void XHero::WarSkillsList(std::optional<std::reference_wrapper<std::ofstream>> f
     XGuiList list;
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Weapon Skills " MSG_BROWN "###");
 
-    list.AddItem(new XGuiItem_Text(MSG_BROWN "Melee Weapon         DV  HIT  DMG      Level              required marks", 0), 0);
-    char buf[256];
+    list.AddItem(new XGuiItem_Text(MSG_BROWN "Melee Weapon         DV  HIT  DMG      Level          required marks", 0), 0);
 
     for (int i = 0; i < XWarSkills::ALL; i++) {
         const auto w_skill = static_cast<XWarSkills::Type>(i);
 
         if (w_skill == XWarSkills::BOW) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
-            list.AddItem(new XGuiItem_Text(MSG_BROWN "Missile Weapon       RNG HIT  DMG      Level              required marks", 0), 0);
+            list.AddItem(new XGuiItem_Text(MSG_BROWN "Missile Weapon       RNG HIT  DMG      Level          required marks", 0), 0);
         }
 
         if (i == XWarSkills::SHIELD) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
-            list.AddItem(new XGuiItem_Text(MSG_BROWN "Shields              DV                Level              required marks", 0), 0);
+            list.AddItem(new XGuiItem_Text(MSG_BROWN "Shields              DV                Level          required marks", 0), 0);
         }
 
-        char tbuf[256];
+        auto str = fmt::format(
+            MSG_YELLOW "{:<18} " MSG_LIGHTGRAY "{:+4} {:+4} {:+4}      "
+            MSG_BROWN "[" MSG_LIGHTGRAY "{}" MSG_BROWN "]"
+            MSG_LIGHTGRAY " {:<10} " MSG_LIGHTGRAY "{:8}",
+            wsk->GetName(w_skill),
+            wsk->GetDV(w_skill), wsk->GetHIT(w_skill), wsk->GetDMG(w_skill),
+            wsk->GetLevel(w_skill),
+            wsk_levels_name[wsk->GetLevel(w_skill)],
+            (wsk->GetLevel(w_skill) < 15) ? fmt::format("{}", wsk->GetMarks(w_skill)) : "NaN"
+        );
 
-        if (wsk->GetLevel(w_skill) < 15) {
-            sprintf(tbuf, "%d", wsk->GetMarks(w_skill));
-        } else {
-            sprintf(tbuf, "NaN");
-        }
-
-        sprintf(buf, MSG_YELLOW "%-18s " MSG_LIGHTGRAY "%+4d %+4d %+4d      " MSG_BROWN "[" MSG_LIGHTGRAY "%d" MSG_BROWN "]" MSG_LIGHTGRAY " %-10s " MSG_LIGHTGRAY "%8s",
-            wsk->GetName(w_skill), wsk->GetDV(w_skill),
-            wsk->GetHIT(w_skill), wsk->GetDMG(w_skill),
-            wsk->GetLevel(w_skill), wsk_levels_name[wsk->GetLevel(w_skill)], tbuf);
-
-        list.AddItem(new XGuiItem_Text(buf, 0), 0);
+        list.AddItem(new XGuiItem_Text(str, 0), 0);
     }
 
     if (file) {
@@ -2461,27 +2443,27 @@ void XHero::SetTactics()
     while (true) {
         msgwin.ClrMsg();
 
-        char buf[256] = "Change tactics: ";
+        std::string s = "Change tactics: ";
 
         switch (tactics) {
             case TS_COWARD	:
-                strcat(buf, "Coward ");
+                s.append("Coward ");
                 break;
 
             case TS_DEFENSIVE	:
-                strcat(buf, "Defensive ");
+                s.append("Defensive ");
                 break;
 
             case TS_NORMAL	:
-                strcat(buf, "Normal ");
+                s.append("Normal ");
                 break;
 
             case TS_AGGRESSIVE	:
-                strcat(buf, "Aggressive ");
+                s.append("Aggressive ");
                 break;
 
             case TS_BERSERKER	:
-                strcat(buf, "Berserker ");
+                s.append("Berserker ");
                 break;
 
             default :
@@ -2489,10 +2471,10 @@ void XHero::SetTactics()
         }
 
         vGotoXY(0, 0);
-        vPutS(buf);
+        vPutS(s);
 
-        sprintf(buf, " (DV:%+d, HIT:%+d, DMG:%+d)      ", GetTacticsDVBonus(), GetTacticsHITBonus(), GetTacticsDMGBonus());
-        vPutS(buf);
+        s = fmt::format(" (DV:{:+}, HIT:{:+}, DMG:{:+})      ", GetTacticsDVBonus(), GetTacticsHITBonus(), GetTacticsDMGBonus());
+        vPutS(s);
 
         vGotoXY(0, 1);
 
