@@ -27,7 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 void XScheduler::Place(XObject * p)
 {
     assert(p->isValid());
-    assert(dynamic_cast<XObject*>(p));
 
     long shift;
 
@@ -47,17 +46,16 @@ void XScheduler::Place(XObject * p)
     data[index].push_back(p);
 }
 
-void XScheduler::Add(XObject * p)
+void XScheduler::Add(XObject* p)
 {
     assert(p->isValid());
-    assert(dynamic_cast<XObject*>(p));
     p->AddRef();
     Place(p);
 }
 
 XObject* XScheduler::Get()
 {
-    while (1) {
+    while (true) {
         int empty_count = 0;
 
         while (data[head].empty()) {
@@ -78,6 +76,17 @@ XObject* XScheduler::Get()
         auto it = data[head].begin();
         auto p = *it;
 
+        // Dead entry?
+        if (!p->isValid()) {
+            // remove from schedule
+            data[head].erase(it);
+
+            // remove reference (corresponding to Add)
+            p->Release();
+
+            continue;
+        }
+
         if (p->ttm < 0) {
             return p;
         }
@@ -92,9 +101,6 @@ XObject* XScheduler::Remove()
     assert(!data[head].empty());
     auto it = data[head].begin();
     auto p = *it;
-
-    assert(p->isValid());
-    assert(p->ttm < 0);
 
     data[head].erase(it);
     return p;

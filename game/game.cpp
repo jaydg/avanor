@@ -272,7 +272,13 @@ void XGame::Run()
     vHideCursor();
 
     while (!_exit_flag && XQuest::quest.hero_win == 0 && XQuest::quest.hero_die == 0) {
-        Game.Scheduler.Get()->Run();
+        auto o = Game.Scheduler.Get();
+
+        if (!o->Run()) {
+            // object is dead!
+            Game.Scheduler.Remove();
+            o->Release();
+        }
     }
 
     XObject::InvalidateAllObjects();

@@ -302,6 +302,11 @@ bool XCreature::Run()
         NewMove();
     }
 
+    // safety net: when killed by the actions above indicate the object
+    // must be removed from the scheduler and deleted.
+    if (!isValid())
+        return false;
+
     if (md && md->Run(this)) {
         int athletics = sk->GetLevel(XSkill::Skill::ATHLETICS);
 
@@ -318,11 +323,11 @@ bool XCreature::Run()
         DoMove();
     }
 
-    if (ttm <= 0 && isValid()) {
+    if (ttm <= 0) {
         ttm += GetSpeed();
     }
 
-    return true;
+    return isValid();
 }
 
 void XCreature::DoMove()

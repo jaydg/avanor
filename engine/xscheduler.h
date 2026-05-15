@@ -53,7 +53,7 @@ class XScheduler
             return _time;
         }
 
-        void Add(XObject * p);
+        void Add(XObject* p);
         XObject* Get();
         XObject* Remove();
 
