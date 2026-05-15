@@ -120,7 +120,8 @@ class XHerbBush: public XMapObject
         XHerbBush(int _x, int _y, XLocation * _l);
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
-        int Run() override;
+
+        bool Run() override;
 
         XObject* Pick(XCreature * picker) override;
 };
@@ -140,7 +141,8 @@ class XMushSpawn: public XMapObject
         XMushSpawn(int _x, int _y, XLocation * _l);
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
-        int Run() override;
+
+        bool Run() override;
 
         XObject* Pick(XCreature * picker) override;
 };

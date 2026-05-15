@@ -152,7 +152,7 @@ class XLocation : public XObject
 {
         std::string event;
     public:
-        int Run() override;
+        bool Run() override;
 
         bool way_found_flag; //used for recursive way found alg...
 

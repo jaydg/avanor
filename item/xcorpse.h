@@ -93,7 +93,8 @@ class XCorpse : public XAnyFood
         }
 
         RESULT onEat(XCreature * eater) override;
-        int Run() override;
+
+        bool Run() override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
 

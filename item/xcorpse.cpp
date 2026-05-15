@@ -173,7 +173,7 @@ std::string XCorpse::postEat(XCreature *eater)
     return "tasty";
 }
 
-int XCorpse::Run()
+bool XCorpse::Run()
 {
     CORPSE_CONDITION cc = GetCondition();
 
@@ -203,11 +203,11 @@ int XCorpse::Run()
         }
 
         Invalidate();
-        return 0;
+        return false;
     }
 
     ttm += ttmb;
-    return 1;
+    return true;
 }
 
 CORPSE_CONDITION XCorpse::GetCondition()

@@ -275,10 +275,10 @@ class XObject
         virtual void Restore(XFile * f);// = 0;
 
         // Runnable object.
-        // If it returns zero, then the object must be removed from scheduler
-        virtual int Run()
+        // If it returns false, the object must be removed from the scheduler.
+        virtual bool Run()
         {
-            return 1;
+            return true;
         }
 
         template<typename T>

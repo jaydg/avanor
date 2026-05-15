@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XUniversalGen);
 
-int XUniversalGen::Run()
+bool XUniversalGen::Run()
 {
     unsigned int cr_count[32] = {0};
 
@@ -55,7 +55,8 @@ int XUniversalGen::Run()
     }
 
     ttm = ttmb;
-    return 1;
+
+    return true;
 };
 
 void XUniversalGen::Store(XFile * f)
@@ -76,7 +77,7 @@ void XUniversalGen::Restore(XFile * f)
 
 REGISTER_CLASS(XMainLocationGen);
 
-int XMainLocationGen::Run()
+bool XMainLocationGen::Run()
 {
     ttm = ttmb;
     turns_count++;
@@ -91,7 +92,7 @@ int XMainLocationGen::Run()
         }
     }
 
-    return 0;
+    return false;
 }
 
 void XMainLocationGen::Store(XFile * f)

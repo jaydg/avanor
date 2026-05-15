@@ -248,7 +248,7 @@ int XHerbBush::CountNeighbours(int x, int y)
     return N;
 }
 
-int XHerbBush::Run()
+bool XHerbBush::Run()
 {
     assert(isValid());
 
@@ -258,7 +258,7 @@ int XHerbBush::Run()
         if (--herb_strength <= 0) {
             l->map->SetSpecial(x, y, nullptr);
             Invalidate();
-            return 0;
+            return false;
         }
     }
 
@@ -285,7 +285,7 @@ int XHerbBush::Run()
         ttm += vRand(BASE_HERB_REFRESH);
     }
 
-    return 1;
+    return true;
 }
 
 void XHerbBush::Store(XFile * f)
@@ -347,7 +347,7 @@ const std::string XMushSpawn::GetName(XCreature *viewer)
     return herb_data->bush_name;
 }
 
-int XMushSpawn::Run()
+bool XMushSpawn::Run()
 {
     assert(isValid());
 
@@ -358,10 +358,10 @@ int XMushSpawn::Run()
 
         l->map->SetSpecial(x, y, nullptr);
         Invalidate();
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 void XMushSpawn::Store(XFile * f)

@@ -40,7 +40,7 @@ class XGenerator : public XMapObject
             im = IM_OTHER;
         }
 
-        int Run() override
+        bool Run() override
         {
             assert(0);
             return 0;
@@ -68,7 +68,7 @@ class XUniversalGen final : public XGenerator
             max_creature = _max_creature;
         }
 
-        int Run() override;
+        bool Run() override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
     protected:
@@ -91,7 +91,7 @@ class XMainLocationGen final : public XGenerator
             assert(0);
         }
 
-        int Run() override;
+        bool Run() override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
     protected:

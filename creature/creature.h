@@ -218,7 +218,8 @@ class XCreature : public XBaseObject
         virtual void ShowNewView();
         virtual void PutStatus();
         virtual void DoMove();
-        int Run() override;
+
+        bool Run() override;
 
         std::unique_ptr<XStandardAI> xai;
 

@@ -76,7 +76,7 @@ void XLocation::Invalidate()
     XObject::Invalidate();
 }
 
-int XLocation::Run()
+bool XLocation::Run()
 {
     if (event.size()) {
         lua_pushstring(XLocation::L, event.c_str());
@@ -89,7 +89,7 @@ int XLocation::Run()
         return res;
     }
 
-    return 1;
+    return true;
 }
 
 void XLocation::AddPlace(XAnyPlace * pl)

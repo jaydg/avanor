@@ -290,7 +290,7 @@ int XCreature::DecNutrio()
     return 1;
 }
 
-int XCreature::Run()
+bool XCreature::Run()
 {
     if (action_data.action == A_EAT) {
         continueEat();
@@ -322,7 +322,7 @@ int XCreature::Run()
         ttm += GetSpeed();
     }
 
-    return 1;
+    return true;
 }
 
 void XCreature::DoMove()
