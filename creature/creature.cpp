@@ -303,14 +303,14 @@ bool XCreature::Run()
     }
 
     if (md && md->Run(this)) {
-        int atletics = sk->GetLevel(XSkill::Skill::ATHLETICS);
+        int athletics = sk->GetLevel(XSkill::Skill::ATHLETICS);
 
         if (GetCarryState() >= CSTATE_STRAINED) {
-            if (vRand(3000 / (5 + atletics)) == 0) {
+            if (vRand(3000 / (5 + athletics)) == 0) {
                 GainAttr(S_STR, 1);
                 sk->UseSkill(XSkill::Skill::ATHLETICS, 10);
             }
-        } else if (vRand(6000 / (5 + atletics)) == 0) {
+        } else if (vRand(6000 / (5 + athletics)) == 0) {
             GainAttr(S_DEX, 1);
             sk->UseSkill(XSkill::Skill::ATHLETICS, 10);
         }
