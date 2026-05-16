@@ -347,7 +347,7 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
     if (file) {
         list.Put(file);
     } else {
-        int ch = list.Run(1);
+        list.Run(1);
     }
 }
 
