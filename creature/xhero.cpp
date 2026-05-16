@@ -1081,8 +1081,7 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             XItem* witem = xqsa[n]->Item();
 
             if (witem != nullptr) {
-                xqsa[n]->UnWear();
-                contain.insert(witem);
+                contain.insert(xqsa[n]->UnWear());
             } else {
                 if (xqsa[n]->GetProperIM() == IM_MISSILE) {
                     witem = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK);
