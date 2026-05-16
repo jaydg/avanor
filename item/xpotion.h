@@ -110,12 +110,6 @@ enum POTION_NAME {
     PN_RANDOM
 };
 
-struct PN_COLORTABLE {
-    const char* name;
-    int color;
-    int is_used;
-};
-
 struct POTION_REC {
     POTION_NAME pn;
     const char* name;
@@ -134,8 +128,6 @@ struct POTION_REC {
     static int potion_total_value;
     static POTION_REC* GetRec(POTION_NAME pn);
 };
-
-class XItem;
 
 class XPotion : public XItem
 {
@@ -203,7 +195,8 @@ class XAlchemyRec : public XObject
 class XAlchemy
 {
         void BuildReception(int al_lvl);
-        int GetPotionCount(int al_lvl, POTION_NAME** pTable);
+
+        static int GetPotionCount(int al_lvl, POTION_NAME** pTable);
         std::vector<XAlchemyRec*> reception;
     public:
         XAlchemy();

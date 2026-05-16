@@ -28,6 +28,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 REGISTER_CLASS(XPotion);
 
+struct PN_COLORTABLE {
+    const char* name;
+    int color;
+    int is_used;
+};
+
 PN_COLORTABLE pnc_table[] = {
     /* 0 PNC_CLEAR*/{	"clear",	xLIGHTGRAY	, 0},
     /* 1 PNC_SMOKY*/{	"smoky",	xLIGHTGRAY	, 0},
@@ -83,17 +89,19 @@ POTION_COLOR POTION_REC::SelectColor(POTION_COLOR pnc)
 
             if (pnc_table[rp].is_used == 0) {
                 pnc_table[rp].is_used = 1;
-                return (POTION_COLOR)rp;
+
+                return static_cast<POTION_COLOR>(rp);
             }
         }
 
         assert(0);
         return PNC_CLEAR;
-    } else {
-        assert(pnc_table[pnc].is_used == 0);
-        pnc_table[pnc].is_used = 1;
-        return pnc;
     }
+
+    assert(pnc_table[pnc].is_used == 0);
+    pnc_table[pnc].is_used = 1;
+
+    return pnc;
 }
 
 POTION_REC potion_descr[] = {
@@ -169,10 +177,10 @@ POTION_NAME POTION_REC::GetRandomPotion()
         val -= potion_descr[pos].rarity;
     } while (val >= 0);
 
-    return (POTION_NAME)pos;
+    return static_cast<POTION_NAME>(pos);
 }
 
-POTION_REC* POTION_REC::GetRec(POTION_NAME pn)
+POTION_REC* POTION_REC::GetRec(const POTION_NAME pn)
 {
     for (int i = 0; i < PN_RANDOM; i++)
         if (potion_descr[i].pn == pn) {
@@ -183,7 +191,7 @@ POTION_REC* POTION_REC::GetRec(POTION_NAME pn)
 }
 
 
-XPotion::XPotion(POTION_NAME _pn)
+XPotion::XPotion(const POTION_NAME _pn)
 {
     if (_pn == PN_RANDOM) {
         pn = POTION_REC::GetRandomPotion();
@@ -214,7 +222,7 @@ XPotion::XPotion(POTION_NAME _pn)
     dice.Setup("1d2");
 }
 
-XPotion::XPotion(XPotion * copy) : XItem((XItem*)copy)
+XPotion::XPotion(XPotion * copy) : XItem(static_cast<XItem *>(copy))
 {
     pn = copy->pn;
     pdescr = copy->pdescr;
@@ -223,7 +231,7 @@ XPotion::XPotion(XPotion * copy) : XItem((XItem*)copy)
 int XPotion::Compare(XObject * o)
 {
     assert(dynamic_cast<XPotion*>(o));
-    XPotion * pot = (XPotion*)o;
+    auto pot = static_cast<XPotion *>(o);
 
     if (pot->x == x && pot->y == y && pot->pn == pn) {
         return 0;
@@ -271,7 +279,7 @@ int XPotion::onDrink(XCreature * cr)
         msgwin.Add(fmt::format("{} drinks a {}.", cr->name, toString()));
     }
 
-    int flag;
+    int flag{};
 
     if (pdescr->effect > E_NONE) {
         flag = XEffect::Make(cr, pdescr->effect, 30);
@@ -556,13 +564,13 @@ void XAlchemy::BuildReception(int al_lvl)
     memset(tbl, -1, sizeof(int) * tbl_src * tbl_src);
 
     for (int j = 0; j < tbl_dest; j++) {
-        while (1) {
-            int pos1 = vRand(tbl_src);
+        while (true) {
+            const int pos1 = vRand(tbl_src);
             int pos2 = vRand(tbl_src);
 
             if (pos1 != pos2 && tbl[tbl_src * pos1 + pos2] == -1) {
                 tbl[tbl_src * pos1 + pos2] = j;
-                XAlchemyRec * alrec = new XAlchemyRec(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]);
+                auto alrec = new XAlchemyRec(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]);
                 reception.push_back(alrec);
                 break;
             }
@@ -574,7 +582,7 @@ void XAlchemy::BuildReception(int al_lvl)
     delete[] pTableDest;
 }
 
-int XAlchemy::GetPotionCount(int al_lvl, POTION_NAME** pTable)
+int XAlchemy::GetPotionCount(const int al_lvl, POTION_NAME** pTable)
 {
     int res = 0;
     int i;
