@@ -642,31 +642,29 @@ void XHero::InfoList()
     int i = 0;
 
     for (i = 0; i < S_EOF; i++) {
-        char stat[256];
         vGotoXY(0, i + 3);
         vSetAttr(xBROWN);
         vPutS(stats->GetFullName(static_cast<STATS>(i)));
-        sprintf(stat, "%d", stats->Get(static_cast<STATS>(i)));
+        auto stat = fmt::format("{}", stats->Get(static_cast<STATS>(i)));
         vSetAttr(xLIGHTGRAY);
-        vGotoXY(15 - strlen(stat), 3 + i);
+        vGotoXY(15 - stat.size(), 3 + i);
         vPutS(stat);
-        sprintf(stat, "%d", max_stats.Get(static_cast<STATS>(i)));
+        stat = fmt::format("{}", max_stats.Get(static_cast<STATS>(i)));
         vSetAttr(xBROWN);
-        vGotoXY(20 - strlen(stat), 3 + i);
+        vGotoXY(20 - stat.size(), 3 + i);
         vPutS(stat);
 
         int tres = added_stats.Get(static_cast<STATS>(i));
 
         if (tres != 0) {
+            stat = fmt::format("{:+}", tres);
             if (tres > 0) {
-                sprintf(stat, "%+d", tres);
                 vSetAttr(xLIGHTGREEN);
             } else {
-                sprintf(stat, "%+d", tres);
                 vSetAttr(xRED);
             }
 
-            vGotoXY(26 - strlen(stat), 3 + i);
+            vGotoXY(26 - stat.size(), 3 + i);
             vPutS(stat);
         }
 
@@ -676,9 +674,9 @@ void XHero::InfoList()
             tres = 1;
         }
 
-        sprintf(stat, "%d", tres);
+        stat = fmt::format("{}", tres);
         vSetAttr(xYELLOW);
-        vGotoXY(32 - strlen(stat), 3 + i);
+        vGotoXY(32 - stat.size(), 3 + i);
         vPutS(stat);
     }
 

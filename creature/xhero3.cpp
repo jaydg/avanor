@@ -119,13 +119,13 @@ void XHero::CreateScreenShot()
 void XHero::Pray()
 {
     XGuiList list;
-    char buf[256];
     DEITY_HELP * pLifeHelp;
     DEITY_HELP * pDeathHelp;
 
     DEITY_RELATION dr = religion.GetRelation(D_LIFE);
-    sprintf(buf, MSG_YELLOW "%s " MSG_LIGHTGRAY "(%s" MSG_LIGHTGRAY ")", XReligion::GetDeityName(D_LIFE), XReligion::GetRelationName(dr));
-    list.AddItem(new XGuiItem_Text(buf, 0));
+    std::string item_text = fmt::format(MSG_YELLOW "{} " MSG_LIGHTGRAY "({}" MSG_LIGHTGRAY ")",
+                                        XReligion::GetDeityName(D_LIFE), XReligion::GetRelationName(dr));
+    list.AddItem(new XGuiItem_Text(item_text, 0));
     const int life_count = religion.GetAvailHelp(D_LIFE, &pLifeHelp);
 
     if (life_count == 0) {
@@ -139,8 +139,8 @@ void XHero::Pray()
     list.AddItem(new XGuiItem_Text("", 0));
 
     dr = religion.GetRelation(D_DEATH);
-    sprintf(buf, MSG_YELLOW "%s " MSG_LIGHTGRAY "(%s" MSG_LIGHTGRAY ")", XReligion::GetDeityName(D_DEATH), XReligion::GetRelationName(dr));
-    list.AddItem(new XGuiItem_Text(buf, 0));
+    item_text = fmt::format(MSG_YELLOW "{} " MSG_LIGHTGRAY "({}" MSG_LIGHTGRAY ")", XReligion::GetDeityName(D_DEATH), XReligion::GetRelationName(dr));
+    list.AddItem(new XGuiItem_Text(item_text, 0));
     int death_count = religion.GetAvailHelp(D_DEATH, &pDeathHelp);
 
     if (death_count == 0) {
@@ -325,7 +325,6 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
     list.SetFooter("Press any key to exit");
 
     int flag = 0;
-    char buf[256];
     XResistance tr;
 
     for (int i = 0; i < R_EOF; i++) {
@@ -334,8 +333,8 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
         tr.SetResistance(res, GetResistance(res));
 
         if (tr.GetResistance(res) != 0) {
-            sprintf(buf, MSG_LIGHTGRAY "%-15s%s", tr.GetResistanceName(res), tr.GetResistanceLevel(res));
-            list.AddItem(new XGuiItem_Text(buf, 0), 0);
+            auto res_str = fmt::format(MSG_LIGHTGRAY "{:<15}{}", tr.GetResistanceName(res), tr.GetResistanceLevel(res));
+            list.AddItem(new XGuiItem_Text(res_str, 0), 0);
             flag = 1;
         }
     }

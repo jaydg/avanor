@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include "engine/global.h"
 #include "engine/xfile.h"
 #include "game/quest.h"
@@ -137,9 +139,10 @@ void XQuest::ShowQuests()
     }
 
     if (ahk_ulan_quest) {
-        char buf[256];
-        sprintf(buf, "Ahk-Ulan asked you to bring 3 parts of ancient machine. There are %d more parts left.", 4 - ahk_ulan_quest);
-        list.AddItem(new XGuiItem_Text(buf));
+        std::string quest_str = fmt::format(
+            "Ahk-Ulan asked you to bring 3 parts of ancient machine. There are {} more parts left.",
+            4 - ahk_ulan_quest);
+        list.AddItem(new XGuiItem_Text(quest_str));
         flag = 0;
     }
 
