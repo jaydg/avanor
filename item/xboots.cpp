@@ -36,7 +36,7 @@ XBoots::XBoots(const ITEM_TYPE it)
     im = IM_BOOTS;
     BasicFill(it, &gi_boots);
     bp = BP_BOOTS;
-    dice.Z = 0;
+    dice.SetBonus(0);
     RNG = 0;
     _HIT = -(weight / 500);
 }

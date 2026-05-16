@@ -57,9 +57,9 @@ XMissile::XMissile(ITEM_TYPE _it)
         view = '*';
         color = xDARKGRAY;
         XDice d(1, 3);
-        _HIT = d.S;
+        _HIT = d.GetResult();
         d.Setup(1, 2);
-        dice.Setup(1, 5, d.S);
+        dice.Setup(1, 5, d.GetResult());
         value = 1;
         weight = 5;
         RNG = 0;
@@ -147,7 +147,8 @@ std::string XMissile::toString()
         return fmt::format("{}{}{} <{:+}>({:+}, {}d{}{:+}){}",
             brt & BR_POISON ? "poisoned " : "",
             brt & BR_UNDEADSLAYER ? "holy " : "",
-            name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+            name, RNG, _HIT,
+            dice.GetCount(), dice.GetSides(), dice.GetBonus(),
             brt & BR_FIRE ? " of fire" : ""
         );
 
@@ -155,7 +156,8 @@ std::string XMissile::toString()
         quantity,
         brt & BR_POISON ? "poisoned " : "",
         brt & BR_UNDEADSLAYER ? "holy " : "",
-        name, RNG, _HIT, dice.X, dice.Y, dice.Z,
+        name, RNG, _HIT,
+        dice.GetCount(), dice.GetSides(), dice.GetBonus(),
         brt & BR_FIRE ? " of fire" : ""
     );
 }

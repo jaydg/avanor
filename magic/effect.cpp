@@ -101,18 +101,18 @@ int XEffect::Heal(XCreature * caster, int X, int Y, int Z)
 {
     XDice d(X, Y, Z);
 
-    if (caster->onHeal(d.S)) {
+    if (caster->onHeal(d.GetResult())) {
         if (caster->isVisible()) {
             msgwin.Add(caster->GetNameEx(CRN_T1));
             msgwin.Add(caster->GetVerb("feel"));
 
             if (caster->GetMaxHP() == caster->_HP) {
                 msgwin.Add("completly healed.");
-            } else if (d.S < 8) {
+            } else if (d.GetResult() < 8) {
                 msgwin.Add("slightly healed.");
-            } else if (d.S < 15) {
+            } else if (d.GetResult()< 15) {
                 msgwin.Add("somewhat healed.");
-            } else if (d.S < 100) {
+            } else if (d.GetResult()< 100) {
                 msgwin.Add("healed.");
             } else {
                 msgwin.Add("greatly healed.");
@@ -129,7 +129,7 @@ int XEffect::Cure(XCreature * caster, int X, int Y, int Z)
 {
     XDice d(X, Y, Z);
 
-    if (caster->md->Add(MOD_WOUND, -d.S, caster)) {
+    if (caster->md->Add(MOD_WOUND, -d.GetResult(), caster)) {
         if (caster->isVisible()) {
             msgwin.Add(caster->GetNameEx(CRN_T1));
 
@@ -150,7 +150,7 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
 {
     XDice d(X, Y, Z);
 
-    if (caster->onRestorePP(d.S)) {
+    if (caster->onRestorePP(d.GetResult())) {
         if (caster->isVisible()) {
             std::string str;
             str = fmt::format("The power flows through {} body.", caster->GetNameEx(CRN_T4));
@@ -178,7 +178,7 @@ int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BR
         XDice d(X, Y, Z);
 
         DAMAGE_DATA_EX dd{};
-        dd.damage	= d.S;
+        dd.damage	= d.GetResult();
         dd.attacker	= pData->caller;
         dd.attack_name	= msg;
         dd.attack_HIT	= 1000;
@@ -210,7 +210,7 @@ int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRA
     if ((target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y))) {
         XDice d(X, Y, Z);
         DAMAGE_DATA_EX dd{};
-        dd.damage	= d.S;
+        dd.damage	= d.GetResult();
         dd.attacker	= pData->caller;
         dd.attack_name	= msg;
         dd.attack_HIT	= 1000;
@@ -302,13 +302,13 @@ int XEffect::Make(const EFFECT_DATA* pData)
 
         case E_CURE_POISON: {
             XDice d(1, pData->power, 5);
-            pData->caller->md->Add(MOD_POISON, -d.S, pData->caller);
+            pData->caller->md->Add(MOD_POISON, -d.GetResult(), pData->caller);
         }
         break;
 
         case E_CURE_DISEASE: {
             XDice d(1, pData->power, 3);
-            pData->caller->md->Add(MOD_DISEASE, -d.S, pData->caller);
+            pData->caller->md->Add(MOD_DISEASE, -d.GetResult(), pData->caller);
         }
         break;
 
@@ -341,7 +341,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
         // Misc	modifiers
         case E_HEROISM: {
             XDice d(2, pData->power, 5);
-            pData->caller->md->Add(MOD_HEROISM, d.S, pData->caller);
+            pData->caller->md->Add(MOD_HEROISM, d.GetResult(), pData->caller);
         }
         break;
 

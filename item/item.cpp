@@ -112,8 +112,8 @@ void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
     _HIT = d->NThrow();
 
     d->Setup(is->dice);
-    int tx = d->X;
-    int ty = d->Y;
+    int tx = d->GetCount();
+    int ty = d->GetSides();
 
     d->Setup(is->z);
     dice.Setup(tx, ty, d->NThrow());
@@ -173,10 +173,10 @@ void XItem::PropFill(ITEM_SET is, int val)
     _HIT += d.NThrow();
 
     d.Setup(item_prop[r_val].dice);
-    int tx = dice.X + d.X;
-    int ty = dice.Y + d.Y;
+    int tx = dice.GetCount() + d.GetCount();
+    int ty = dice.GetSides() + d.GetSides();
     d.Setup(item_prop[r_val].z);
-    dice.Setup(tx, ty, dice.Z + d.NThrow());
+    dice.Setup(tx, ty, dice.GetBonus() + d.NThrow());
 
     quality = (ITEM_QUALITY)(quality + item_prop[r_val].iq);
     assert(resistances == nullptr);
@@ -217,10 +217,10 @@ void XItem::SpecialFill()
     _HIT += d->Throw();
 
     d->Setup(ienh_db[r_val].dice);
-    int tx = dice.X + d->X;
-    int ty = dice.Y + d->Y;
+    int tx = dice.GetCount() + d->GetCount();
+    int ty = dice.GetSides() + d->GetSides();
     d->Setup(ienh_db[r_val].z);
-    dice.Setup(tx, ty, dice.Z + d->Throw());
+    dice.Setup(tx, ty, dice.GetBonus() + d->Throw());
     delete d;
 
     XResistance xres(ienh_db[r_val].r);
@@ -288,7 +288,7 @@ int XItem::GetValue()
     int xhitdmg = 0;
 
     if (im & IM_VALUEDICE) {
-        xdice = (dice.X * dice.Y + dice.X) * 3;
+        xdice = (dice.GetCount() * dice.GetSides() + dice.GetCount()) * 3;
     }
 
     if (im & IM_VALUEDVPV) {
@@ -300,7 +300,7 @@ int XItem::GetValue()
     }
 
     if (im & IM_VALUEHITDMG) {
-        xhitdmg = (_HIT + dice.Z * 3) * 3;
+        xhitdmg = (_HIT + dice.GetBonus() * 3) * 3;
     }
 
     int xrng = RNG * (abs(RNG) + 5);
@@ -441,7 +441,7 @@ std::string XItem::GetArtifactName(std::string real_name)
         if (im & IM_WEAPON) {
             str.append(fmt::format(
                 " ({:+}, {}d{}{:+})",
-                _HIT, dice.X, dice.Y, dice.Z));
+                _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
         }
 
         str.append(StatsToString());
@@ -513,7 +513,7 @@ int XItem::onWear(XCreature * cr)
     }
 
     if (!(im & (IM_WEAPON | IM_MISSILE | IM_MISSILEW))) {
-        cr->added_DMG	+= dice.Z;
+        cr->added_DMG	+= dice.GetBonus();
     }
 
     cr->added_RNG	+= RNG;
@@ -540,7 +540,7 @@ int XItem::onUnWear(XCreature * cr)
     }
 
     if (!(im & IM_WEAPON | IM_MISSILE | IM_MISSILEW)) {
-        cr->added_DMG	-= dice.Z;
+        cr->added_DMG	-= dice.GetBonus();
     }
 
     cr->added_RNG	-= RNG;

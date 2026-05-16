@@ -21,82 +21,95 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef DICE_H
 #define DICE_H
 
+#include <string_view>
+
 class XFile;
 
-// this class is represented XdY : throw Y - side cube X turns
+// Represents an XdY+Z dice expression: throw a Y-sided die X times, add bonus Z.
 class XDice
 {
-    public:
-        XDice() = default;
+public:
+    XDice() = default;
 
-        XDice(const int _x, const int _y, const int _z = 0)
-        {
-            Setup(_x, _y, _z);
-        }
+    XDice(const int count, const int sides, const int bonus = 0)
+    {
+        Setup(count, sides, bonus);
+    }
 
-        explicit XDice(const XDice* d)
-        {
-            Setup(*d);
-        }
+    explicit XDice(const XDice* d)
+    {
+        Setup(*d);
+    }
 
-        explicit XDice(const char* str)
-        {
-            Setup(str); // represent "XdY +Z" for example "2d6 - 5" or "4d12 + 30"
-        }
+    // Accepts "XdY+Z" expressions, e.g. "2d6 - 5" or "4d12 + 30"
+    explicit XDice(const std::string_view str)
+    {
+        Setup(str);
+    }
 
-        void Setup(const int _x, const int _y, const int _z = 0)
-        {
-            X = _x;
-            Y = _y;
-            Z = _z;
-            Throw();
-        }
+    void Setup(int count, int sides, int bonus = 0)
+    {
+        count_ = count;
+        sides_ = sides;
+        bonus_ = bonus;
+        Throw();
+    }
 
-        void Setup(const char* str);
-        void Setup(const XDice & d)
-        {
-            Setup(d.X, d.Y, d.Z);
-        }
+    void Setup(std::string_view str);
 
-        void Add(const XDice* d)
-        {
-            X += d->X;
-            Y = (Y + d->Y) / 2;
-            Z += d->Z;
-        }
+    void Setup(const XDice& d)
+    {
+        Setup(d.count_, d.sides_, d.bonus_);
+    }
 
-        void Add(const int toX, const int toY, const int toZ)
-        {
-            X += toX;
-            Y += toY;
-            Z += toZ;
-        }
+    [[nodiscard]] int GetCount()  const { return count_; }  // number of dice
+    [[nodiscard]] int GetSides()  const { return sides_; }  // sides per die
+    [[nodiscard]] int GetBonus()  const { return bonus_; }  // flat bonus/penalty
+    [[nodiscard]] int GetResult() const { return result_; }  // last throw result
 
-        int Throw();
-        bool isEqual(const XDice* d) const
-        {
-            return X == d->X && Y == d->Y && Z == d->Z;
-        }
+    // Mutates the flat bonus. Used by callers that adjust damage bonuses.
+    void ModifyBonus(int delta) { bonus_ += delta; }
+    void SetBonus(int value)    { bonus_ = value;  }
 
-        int S{}; // generated result by throw
-        int X{};
-        int Y{};
-        int Z{};
+    void Add(const XDice* d)
+    {
+        count_ += d->count_;
+        sides_ = (sides_ + d->sides_) / 2;
+        bonus_ += d->bonus_;
+    }
 
-        void Store(const XFile* f) const;
-        void Restore(const XFile* f);
+    void Add(const int toCount, const int toSides, const int toBonus)
+    {
+        count_ += toCount;
+        sides_ += toSides;
+        bonus_ += toBonus;
+    }
 
-        // the function of very good (for Avanor's purpose) number distribution
-        // current version can generate value from 0 to 20 with next probability
-        // 0 - 75%
-        // 1 - 5%
-        // 20 - 0.1%
-        static int DFunc();
-        // normalization DFunc to (-maximum, +maximum)
-        static int NDFunc(int maximum);
+    int Throw();
 
-        // throw normalized by DFunc
-        [[nodiscard]] int NThrow() const;
+    [[nodiscard]] bool isEqual(const XDice* d) const
+    {
+        return count_ == d->count_ && sides_ == d->sides_ && bonus_ == d->bonus_;
+    }
+
+    void Store(const XFile* f) const;
+    void Restore(const XFile* f);
+
+    // Generates a value 0-20 with heavily right-skewed distribution:
+    //   0 ~ 75%, 1 ~ 5%, ..., 20 ~ 0.1%
+    static int DFunc();
+
+    // Normalises DFunc() result to the range (-maximum, +maximum).
+    static int NDFunc(int maximum);
+
+    // Throws normalized by DFunc.
+    [[nodiscard]] int NThrow() const;
+
+private:
+    int result_{}; // last generated result
+    int count_{};  // number of dice
+    int sides_{};  // sides per die
+    int bonus_{};  // flat bonus/penalty
 };
 
 #endif

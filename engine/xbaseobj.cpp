@@ -68,8 +68,8 @@ int XBaseObject::Compare(XObject * o)
 
     if (XMapObject::Compare(o) == 0
         && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
-        && _HIT == tit->_HIT && dice.X == tit->dice.X
-        && dice.Y == tit->dice.Y && dice.Z == tit->dice.Z
+        && _HIT == tit->_HIT && dice.GetCount() == tit->dice.GetCount()
+        && dice.GetSides() == tit->dice.GetSides() && dice.GetBonus() == tit->dice.GetBonus()
         && resistances->isEqual(tit->resistances.get()) && stats->isEqual(tit->stats.get())) {
         return 0;
     } else {

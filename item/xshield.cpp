@@ -42,7 +42,7 @@ XShield::XShield(ITEM_TYPE _it)
     bp = BP_HAND;
     RNG = 0;
     wt = XWarSkills::SHIELD;
-    dice.Z = 0;
+    dice.SetBonus(0);
     _HIT = 0;
 }
 
