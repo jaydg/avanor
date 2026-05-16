@@ -1274,19 +1274,19 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
         *range += bow->RNG;
         dmg->Add(&(bow->dice));
         *range += wsk->GetDV(bow->wt);
-        dmg->Z += wsk->GetDMG(bow->wt);
+        dmg->ModifyBonus(wsk->GetDMG(bow->wt));
         *hit += wsk->GetHIT(bow->wt);
     } else {
         *range += RNG + str / 25;
-        dmg->Z += str / 10;
+        dmg->ModifyBonus(str / 10);
         *range += wsk->GetDV(XWarSkills::THROW);
-        dmg->Z += wsk->GetDMG(XWarSkills::THROW);
+        dmg->ModifyBonus(wsk->GetDMG(XWarSkills::THROW));
         *hit += wsk->GetHIT(XWarSkills::THROW);
     }
 
     if (skill) {
         int lvl = skill->GetLevel();
-        dmg->Z += lvl / 2;
+        dmg->ModifyBonus(lvl / 2);
         *range += lvl / 5;
         *hit += lvl * 3;
     }
@@ -1712,7 +1712,7 @@ int XCreature::GetCreatureStrength()
 
     int dv_pv_bonus = ((tdv * tpv * tpv) / 10 + (_DV * _PV * _PV));
     int thit = GetHIT() / 10;
-    int tdmg = (dice.X * dice.Y + dice.Z + GetDMG());
+    int tdmg = (dice.GetCount() * dice.GetSides() + dice.GetBonus() + GetDMG());
 
     if (thit <= 0) {
         thit = 1;

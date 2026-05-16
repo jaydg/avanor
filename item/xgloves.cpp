@@ -36,6 +36,6 @@ XGloves::XGloves(ITEM_TYPE it)
     im = IM_GLOVES;
     BasicFill(it, &gi_gloves);
     bp = BP_GLOVES;
-    dice.Z = 0;
+    dice.SetBonus(0);
     RNG = 0;
 }

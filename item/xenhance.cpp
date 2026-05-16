@@ -228,8 +228,8 @@ XEnhance::XEnhance(const Type enh)
     _HIT = d->Throw();
 
     d->Setup(is->dice);
-    int tx = d->X;
-    int ty = d->Y;
+    int tx = d->GetCount();
+    int ty = d->GetSides();
 
     d->Setup(is->z);
     dice.Setup(tx, ty, d->Throw());
@@ -278,15 +278,15 @@ std::string XEnhance::toString()
         fullname.append(fmt::format(" <{:+}>", RNG));
     }
 
-    if (dice.Z != 0 && _HIT != 0) {
-        fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.Z));
+    if (dice.GetBonus() != 0 && _HIT != 0) {
+        fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.GetBonus()));
     } else {
         if (_HIT != 0) {
             fullname.append(fmt::format(" ({:+})", _HIT));
         }
 
-        if (dice.Z != 0) {
-            fullname.append(fmt::format(" ({:+})", dice.Z));
+        if (dice.GetBonus() != 0) {
+            fullname.append(fmt::format(" ({:+})", dice.GetBonus()));
         }
     }
 

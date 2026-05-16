@@ -18,90 +18,86 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <regex>
+#include <stdexcept>
+
 #include "engine/global.h"
 #include "engine/xfile.h"
 #include "helpers/dice.h"
 
-void XDice::Setup(const char* str)
+// Parses expressions like "XdY", "XdY+Z" or "XdY - Z".
+void XDice::Setup(const std::string& str)
 {
-    if (str == nullptr || strlen(str) < 2) {
-        X = Y = 0;
-        Z = 0;
+    if (str.empty()) {
+        count_ = sides_ = bonus_ = 0;
         Throw();
-    } else {
-        char buf[100];
-        strcpy(buf, str);
-
-        for (unsigned int i = 0; i < strlen(buf); i++) {
-            if (buf[i] == 'd') {
-                buf[i] = ' ';
-            }
-
-            if ((buf[i] == '+' || buf[i] == '-') && buf[i + 1] == ' ') {
-                buf[i + 1] = buf[i];
-                buf[i] = ' ';
-            }
-        }
-
-        X = Y = 0;
-        Z = 0;
-        sscanf(buf, "%d %d %d", &X, &Y, &Z);
-        assert(X >= 0 && Y >= 0);
-        Throw();
+        return;
     }
+
+    static const std::regex pattern(R"(^(\d*)d(\d+)([+-]\d+)?$)");
+    std::smatch match;
+
+    if (!std::regex_match(str, match, pattern)) {
+        throw std::invalid_argument("Invalid dice format");
+    }
+
+    count_ = match[1].matched ? std::stoi(match[1].str()) : 1;
+    sides_ = std::stoi(match[2].str());
+    bonus_ = match[3].matched ? std::stoi(match[3].str()) : 0;
+
+    Throw();
 }
 
 int XDice::Throw()
 {
-    S = Z;
+    result_ = bonus_;
 
-    if (Y > 0)
-        for (int i = 0; i < X; i++) {
-            S += vRand() % Y + 1;
-        }
+    if (sides_ > 0)
+        for (int i = 0; i < count_; ++i)
+            result_ += vRand() % sides_ + 1;
 
-    return S;
-
+    return result_;
 }
 
 int XDice::NThrow() const
 {
-    return NDFunc(X * Y) + Z;
+    return NDFunc(count_ * sides_) + bonus_;
 }
 
-void XDice::Store(const XFile* f) const {
-    size_t wc;
-
-    wc = f->Write(&S); assert(wc == sizeof(S));
-    wc = f->Write(&X); assert(wc == sizeof(X));
-    wc = f->Write(&Y); assert(wc == sizeof(Y));
-    wc = f->Write(&Z); assert(wc == sizeof(Z));
+void XDice::Store(const XFile* f) const
+{
+    std::size_t wc;
+    wc = f->Write(&result_); assert(wc == sizeof(result_));
+    wc = f->Write(&count_); assert(wc == sizeof(count_));
+    wc = f->Write(&sides_); assert(wc == sizeof(sides_));
+    wc = f->Write(&bonus_); assert(wc == sizeof(bonus_));
 }
 
 void XDice::Restore(const XFile* f)
 {
-    f->Read(&S);
-    f->Read(&X);
-    f->Read(&Y);
-    f->Read(&Z);
+    f->Read(&result_);
+    f->Read(&count_);
+    f->Read(&sides_);
+    f->Read(&bonus_);
 }
 
-int dfunc_data[22] =
-{ 750, 800, 840, 870, 890, 902, 914, 926, 937, 947, 956, 964, 971, 977, 982, 986, 990, 993, 996, 998, 999, 100000};
+static constexpr int dfunc_data[] = {
+    750, 800, 840, 870, 890, 902, 914, 926, 937, 947,
+    956, 964, 971, 977, 982, 986, 990, 993, 996, 998, 999, 100000
+};
 
 int XDice::DFunc()
 {
-    int r = vRand(1000);
-    int i = 0;
+    const int r = vRand(1000);
+    const auto it = std::lower_bound(std::begin(dfunc_data), std::end(dfunc_data), r);
 
-    while (dfunc_data[i] < r) {
-        i++;
-    }
-
-    return i;
+    return static_cast<int>(it - std::begin(dfunc_data));
 }
 
 int XDice::NDFunc(const int maximum)
 {
-    return std::lround((DFunc() * maximum) / 20.0f);
+    return static_cast<int>(std::lround((DFunc() * maximum) / 20.0));
 }

@@ -745,7 +745,7 @@ void XHero::InfoList()
     vPutS(fmt::format(MSG_BROWN "Unarmed:    (" MSG_YELLOW "{:+}" MSG_BROWN ", "
         MSG_YELLOW "{}" MSG_BROWN "d" MSG_YELLOW "{} {:+}" MSG_BROWN ")",
         GetHIT() + wsk->GetHIT(XWarSkills::UNARMED),
-        dice.X, dice.Y, dice.Z + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED)));
+        dice.GetCount(), dice.GetSides(), dice.GetBonus() + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED)));
 
     const XBodyPart* hand_1 = GetBodyPart(BP_HAND, 0);
     const XBodyPart* hand_2 = GetBodyPart(BP_HAND, 1);
@@ -755,8 +755,8 @@ void XHero::InfoList()
         vPutS(fmt::format("Left hand:  (" MSG_YELLOW "{:+}" MSG_BROWN ", "
             MSG_YELLOW"{}" MSG_BROWN "d" MSG_YELLOW "{}{:+}" MSG_BROWN ")",
             GetHIT() + wsk->GetHIT(hand_1->Item()->wt) + GetHITFHBonus(hand_1->Item()),
-            hand_1->Item()->dice.X, hand_1->Item()->dice.Y,
-            hand_1->Item()->dice.Z + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)));
+            hand_1->Item()->dice.GetCount(), hand_1->Item()->dice.GetSides(),
+            hand_1->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)));
     }
 
     if (hand_2->Item() && hand_2->Item()->im & IM_WEAPON) {
@@ -764,8 +764,8 @@ void XHero::InfoList()
         vPutS(fmt::format("Right hand: (" MSG_YELLOW "{:+}" MSG_BROWN ", "
             MSG_YELLOW"{}" MSG_BROWN "d" MSG_YELLOW "{} {:+}" MSG_BROWN ")",
             GetHIT() + wsk->GetHIT(hand_2->Item()->wt) + GetHITFHBonus(hand_2->Item()),
-            hand_2->Item()->dice.X, hand_2->Item()->dice.Y,
-            hand_2->Item()->dice.Z + GetDMG() + wsk->GetDMG(hand_2->Item()->wt)));
+            hand_2->Item()->dice.GetCount(), hand_2->Item()->dice.GetSides(),
+            hand_2->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_2->Item()->wt)));
     }
 
     int hit;
@@ -777,7 +777,7 @@ void XHero::InfoList()
         vGotoXY(0, 19);
         vPutS(fmt::format("Range Attack: <" MSG_YELLOW "{}" MSG_BROWN "> ("
             MSG_YELLOW "{:+}" MSG_BROWN ", " MSG_YELLOW "{}" MSG_BROWN "d"
-            MSG_YELLOW "{} {:+}" MSG_BROWN ")", range, hit, dmg.X, dmg.Y, dmg.Z));
+            MSG_YELLOW "{} {:+}" MSG_BROWN ")", range, hit, dmg.GetCount(), dmg.GetSides(), dmg.GetBonus()));
     }
 
     vGotoXY(0, size_y - 1);

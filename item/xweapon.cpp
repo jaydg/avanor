@@ -210,7 +210,8 @@ std::string XWeapon::toString()
             fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
         }
 
-        fullname.append(fmt::format(" ({:+}, {}d{}{:+})", _HIT, dice.X, dice.Y, dice.Z));
+        fullname.append(fmt::format(" ({:+}, {}d{}{:+})",
+            _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
 
         fullname.append(StatsToString());
     }

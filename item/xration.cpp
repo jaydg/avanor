@@ -86,7 +86,7 @@ XRation::XRation(ITEM_TYPE _it)
     it = rations_db[idx].it;
     name = rations_db[idx].name;
     XDice d(rations_db[idx].nutrition);
-    food_nutrio = d.S;
+    food_nutrio = d.GetResult();
     color = rations_db[idx].color;
     value = rations_db[idx].value;
     weight = rations_db[idx].weight;

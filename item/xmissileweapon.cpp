@@ -66,7 +66,7 @@ std::string XMissileWeapon::toString()
 
     fullname.append(fmt::format(" <{:+}>", RNG));
     fullname.append(fmt::format(" ({:+}, {}d{}{:+})",
-        _HIT, dice.X, dice.Y, dice.Z));
+        _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
     fullname.append(StatsToString());
 
     return fullname;
