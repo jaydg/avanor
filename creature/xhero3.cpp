@@ -171,20 +171,17 @@ void XHero::EndGame(const char* end_msg)
     unsigned long score = main_creature->_EXP + main_creature->MoneyOp(0);
 
     XGuiList list;
-    char buf2[256];
-    char tbuf[256];
 
-    sprintf(buf2, "%s, %s %s %s (L%d).",
-        main_creature->name.c_str(),
+    const std::string title = fmt::format("{}, {} {} {} (L{}).",
+        main_creature->name,
         main_creature->GetGenderStr(),
         dynamic_cast<XHero *>(main_creature)->GetRaceStr(),
         dynamic_cast<XHero *>(main_creature)->GetProfessionStr(),
         main_creature->level);
 
-    list.AddItem(new XGuiItem_Text(buf2));
+    list.AddItem(new XGuiItem_Text(title));
 
-    sprintf(tbuf, "You survived %d turns.", dynamic_cast<XHero *>(main_creature)->turn_count);
-    list.AddItem(new XGuiItem_Text(tbuf));
+    list.AddItem(new XGuiItem_Text(fmt::format("You survived {} turns.", dynamic_cast<XHero *>(main_creature)->turn_count)));
 
     if (XQuest::quest.hero_win) {
         if (XQuest::quest.ahk_ulan_killed && XQuest::quest.roderick_killed) {
@@ -215,29 +212,28 @@ void XHero::EndGame(const char* end_msg)
     }
 
     score += place_count * 200;
-    sprintf(tbuf, "You visited %d places.", place_count);
-    list.AddItem(new XGuiItem_Text(tbuf));
+    list.AddItem(new XGuiItem_Text(fmt::format("You visited {} places.", place_count)));
 
     const DEITY_RELATION dr1 = main_creature->religion.GetRelation(D_LIFE);
     const DEITY_RELATION dr2 = main_creature->religion.GetRelation(D_DEATH);
     int flag = 1;
 
     if (dr1 >= DR_ADEPT) {
-        sprintf(tbuf, "You were a %s of %s",
+        auto rel1 = fmt::format("You were a {} of {}",
             XReligion::GetRelationName(dr1),
             XReligion::GetDeityName(D_LIFE));
 
-        list.AddItem(new XGuiItem_Text(tbuf));
+        list.AddItem(new XGuiItem_Text(rel1));
         flag = 0;
         score += dr1 * 300;
     }
 
     if (dr2 >= DR_ADEPT) {
-        sprintf(tbuf, "You were a %s of %s",
+        auto rel2 = fmt::format("You were a {} of {}",
             XReligion::GetRelationName(dr2),
             XReligion::GetDeityName(D_DEATH));
 
-        list.AddItem(new XGuiItem_Text(tbuf));
+        list.AddItem(new XGuiItem_Text(rel2));
         score += dr2 * 300;
         flag = 0;
     }
@@ -275,8 +271,7 @@ void XHero::EndGame(const char* end_msg)
         list.AddItem(new XGuiItem_Text("You tried to help to repulse an attack of orcs."));
     }
 
-    sprintf(tbuf, "You scored %lu.", score);
-    list.AddItem(new XGuiItem_Text(tbuf));
+    list.AddItem(new XGuiItem_Text(fmt::format("You scored %{}.", score)));
     list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Achievements " MSG_BROWN "###");
     list.Run();
 
@@ -316,7 +311,7 @@ void XHero::EndGame(const char* end_msg)
         vClrScr();
     }
 
-    const std::shared_ptr<XHiScoreItem> hii(new XHiScoreItem(0, score, buf2, end_msg, XQuest::quest.hero_win, 1));
+    const std::shared_ptr<XHiScoreItem> hii(new XHiScoreItem(0, score, title, end_msg, XQuest::quest.hero_win, 1));
 
     XHiScore hiscore;
     hiscore.AddRecord(hii);
