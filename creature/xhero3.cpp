@@ -375,9 +375,8 @@ void XHero::ShowReception() const {
         list.AddItem(new XGuiItem_Text("You don't know any recipes yet.", 0), 0);
     } else {
         for (auto it: reception_list) {
-            char buf[256];
-            XAlchemy::GetReceptionName(buf, it->pn1, it->pn2, it->result);
-            list.AddItem(new XGuiItem_Text(buf, 0), 0);
+            auto recipe = XAlchemy::GetReceptionName(it->pn1, it->pn2, it->result);
+            list.AddItem(new XGuiItem_Text(recipe, 0), 0);
         }
     }
 

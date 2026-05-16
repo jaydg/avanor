@@ -214,7 +214,7 @@ class XAlchemy
         static void Store(XFile * f);
         static void Restore(XFile * f);
         static int isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
-        static void GetReceptionName(char* buf, POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
+        static std::string GetReceptionName(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
         static POTION_NAME GetPotionName(POTION_NAME pn1, POTION_NAME pn2);
 };
 

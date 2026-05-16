@@ -536,12 +536,12 @@ void XAlchemy::Init()
     }
 }
 
-void XAlchemy::GetReceptionName(char* buf, POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
+std::string XAlchemy::GetReceptionName(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
 {
     const char* c1 = potion_descr[pn1].name;
     const char* c2 = potion_descr[pn2].name;
     const char* c3 = potion_descr[pn3].name;
-    sprintf(buf, "potion of %s + potion of %s = potion of %s", c1, c2, c3);
+    return fmt::format("potion of {} + potion of {} = potion of {}", c1, c2, c3);
 }
 
 void XAlchemy::BuildReception(int al_lvl)
