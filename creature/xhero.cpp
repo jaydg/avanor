@@ -1212,7 +1212,7 @@ void XHero::DropItem()
             return;
         }
 
-        msgwin.Add(fmt::format("{] drops {}.", name, drop_item->toString()));
+        msgwin.Add(fmt::format("{} drops {}.", name, drop_item->toString()));
     }
 }
 

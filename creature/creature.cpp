@@ -971,6 +971,8 @@ int XCreature::DropItem(XItem * i)
     }
 
     if (flag) {
+        contain.erase(i);
+        // Adjust weight
         UnCarryItem(i);
         i->Drop(l, x, y);
     }
