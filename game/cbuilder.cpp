@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <memory>
 #include <vector>
 
 #include "game/cbuilder.h"
@@ -39,7 +40,7 @@ void XCaveBuilder::Build()
             m->SetXY(j, i, XTileType::MAGMA);
         }
 
-    std::vector<XCave*> quae;
+    std::vector<std::unique_ptr<XCave>> quae;
 
     int nCave = m->hgt * m->len / 200;
 
@@ -47,31 +48,29 @@ void XCaveBuilder::Build()
         int iflag = 10000;
 
         while (iflag--) {
-            XCave * xc = new XCave(m->len, m->hgt, isCreateDoorTrapChest);
+            auto xc = std::make_unique<XCave>(m->len, m->hgt, isCreateDoorTrapChest);
 
             int tflag = 1;
 
             for (unsigned int q = 0; q < quae.size() && tflag; q++) {
-                XCave * txc = quae[q];
+                XCave * txc = quae[q].get();
 
-                if (txc->Intersect(xc, 0)) {
+                if (txc->Intersect(xc.get(), 0)) {
                     tflag = 0;
                 }
             }
 
             if (tflag) {
-                quae.push_back(xc);
                 xc->Draw(location);
+                quae.push_back(std::move(xc));
                 iflag = 0;
-            } else {
-                delete xc;
             }
         }
     }
 
     for (int k = 0; k < quae.size() - 1; k++) {
-        XCave * tc1 = quae[k];
-        XCave * tc2 = quae[k + 1];
+        XCave * tc1 = quae[k].get();
+        XCave * tc2 = quae[k + 1].get();
         XPoint pt1;
         XPoint pt2;
 
