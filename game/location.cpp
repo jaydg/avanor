@@ -1262,7 +1262,7 @@ int XLocation::GiveAward(lua_State * L)
 
 int XLocation::Quest(lua_State * L)
 {
-    QUEST_REC * qr = new QUEST_REC;
+    XQuestRec * qr = new XQuestRec;
     qr->quest_id = lua_tonumber(L, 1);
     qr->status = (QUEST)lua_tonumber(L, 2);
     qr->know = lua_tostring(L, 3);
@@ -1276,7 +1276,7 @@ int XLocation::Quest(lua_State * L)
 int XLocation::QuestModify(lua_State * L)
 {
     int id = lua_tonumber(L, 1);
-    QUEST_REC * qr = XQuest::quest.Find(id);
+    XQuestRec * qr = XQuest::quest.Find(id);
 
     if (qr) {
         qr->status = (QUEST)lua_tonumber(L, 2);
@@ -1289,7 +1289,7 @@ int XLocation::QuestModify(lua_State * L)
 int XLocation::QuestStatus(lua_State * L)
 {
     int id = lua_tonumber(L, 1);
-    QUEST_REC * qr = XQuest::quest.Find(id);
+    XQuestRec * qr = XQuest::quest.Find(id);
 
     if (qr) {
         lua_pushnumber(L, qr->status);

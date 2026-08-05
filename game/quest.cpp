@@ -68,7 +68,7 @@ void XQuest::Restore(XFile * f)
     f->Read(&sz);
 
     while (sz > 0) {
-        QUEST_REC * qr = new QUEST_REC;
+        XQuestRec * qr = new XQuestRec;
         int status;
         f->Read(&qr->quest_id);
         f->Read(&status);
@@ -166,29 +166,29 @@ void XQuest::ShowQuests()
 
 void XQuest::Take(int id)
 {
-    QUEST_REC * qr = Find(id);
+    XQuestRec * qr = Find(id);
     qr->status = Q_KNOWN;
 }
 
 void XQuest::Complete(int id)
 {
-    QUEST_REC * qr = Find(id);
+    XQuestRec * qr = Find(id);
     qr->status = Q_COMPLETE;
 }
 
 void XQuest::Close(int id)
 {
-    QUEST_REC * qr = Find(id);
+    XQuestRec * qr = Find(id);
     qr->status = Q_CLOSED;
 }
 
 QUEST XQuest::Status(int id)
 {
-    QUEST_REC * qr = Find(id);
+    XQuestRec * qr = Find(id);
     return qr->status;
 }
 
-QUEST_REC* XQuest::Find(const int id)
+XQuestRec* XQuest::Find(const int id)
 {
     for (const auto it: XQuest::quest.quests) {
         if (it->quest_id == id) {

@@ -38,7 +38,7 @@ enum QUEST {
     Q_FAIL	= 4,
 };
 
-struct QUEST_REC {
+struct XQuestRec {
     std::string know;
     std::string complete;
     std::string closed;
@@ -70,7 +70,7 @@ class XQuest
             rotmoth_status = 0;
         };
 
-        std::vector<QUEST_REC*> quests;
+        std::vector<XQuestRec*> quests;
 
         void ShowQuests();
 
@@ -110,7 +110,7 @@ class XQuest
         static void Complete(int id);
         static void Close(int id);
         static QUEST Status(int id);
-        static QUEST_REC* Find(int id);
+        static XQuestRec* Find(int id);
 
         void Store(XFile * f);
         void Restore(XFile * f);
