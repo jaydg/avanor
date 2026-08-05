@@ -149,8 +149,7 @@ void XBodyPart::Create(XCreature *cr, std::string &str)
         {
             if (token == XGetName(static_cast<BODY_PART>(i)))
             {
-                auto* bp = new XBodyPart(cr, static_cast<BODY_PART>(i));
-                cr->components.push_back(bp);
+                cr->components.emplace_back(std::make_unique<XBodyPart>(cr, static_cast<BODY_PART>(i)));
                 break;
             }
         }

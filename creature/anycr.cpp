@@ -111,13 +111,13 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     XBodyPart * hand_1 = nullptr;
     XBodyPart * hand_2 = nullptr;
 
-    for (auto bp: components) {
+    for (auto& bp: components) {
         if (!bp->Item() && vRand(100) < cr->equip_probability) {
             if (bp->bp_uin == BP_HAND) {
                 if (hand_1 == nullptr) {
-                    hand_1 = bp;
+                    hand_1 = bp.get();
                 } else {
-                    hand_2 = bp;
+                    hand_2 = bp.get();
                 }
             } else if (bp->bp_uin == BP_MISSILE) {
                 continue;

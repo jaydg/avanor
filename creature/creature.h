@@ -194,7 +194,7 @@ class XCreature : public XBaseObject
 
     public:
         XItemList contain;
-        std::vector<XBodyPart*> components;
+        std::vector<std::unique_ptr<XBodyPart>> components;
         CR_PERSON_TYPE creature_person_type;
         const char* creature_description;
         CREATURE_NAME creature_name; // allow to store less info into save file

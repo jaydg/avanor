@@ -95,10 +95,7 @@ XCreature::XCreature()
 
 void XCreature::Invalidate()
 {
-    for (auto it = components.begin(); it != components.end(); it++) {
-        delete *it;
-        components.erase(it);
-    }
+    components.clear();
 
     for (auto item: contain) {
         item->Invalidate();
@@ -638,7 +635,7 @@ int XCreature::GetDV(XCreature * attacker)
 
 int XCreature::GetShieldDVBonus()
 {
-    for (auto xbp: components)
+    for (auto& xbp: components)
     {
         XItem* i = xbp->Item();
 
@@ -940,7 +937,7 @@ void XCreature::Die(XCreature * killer)
     }
 
     // Drop inventory to the ground
-    for (auto bp: components) {
+    for (auto& bp: components) {
         if (bp->Item()) {
             bp->UnWear()->Drop(l, x, y);
         }
@@ -1110,17 +1107,17 @@ int XCreature::GetDMGFHBonus(XItem* weapon)
 XBodyPart* XCreature::GetRNDBodyPart()
 {
     int value = 0;
-    for (auto bp: components) {
+    for (auto& bp: components) {
         value += bp->GetPartSize();
     }
 
     int v = value > 0 ? vRand() % value : 0;
 
-    for (auto bp: components) {
+    for (auto& bp: components) {
         v -= bp->GetPartSize();
 
         if (v <= 0)
-            return bp;
+            return bp.get();
     }
 
     return nullptr;
@@ -1132,16 +1129,16 @@ XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
         auto bpi = std::find_if(
             components.begin(),
             components.end(),
-            [](XBodyPart* xbp) { return xbp->Item() && xbp->Item()->im & IM_SHIELD; }
+            [](const std::unique_ptr<XBodyPart>& xbp) { return xbp->Item() && xbp->Item()->im & IM_SHIELD; }
         );
 
         if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(XWarSkills::SHIELD) + 5)) {
-            return bpi[0];
+            return bpi->get();
         }
     }
 
     int count = 0;
-    for (auto xbp: components) {
+    for (auto& xbp: components) {
         if (xbp->GetProperIM() & xim) {
             count++;
         }
@@ -1154,12 +1151,11 @@ XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
     int n = vRand() % count;
 
     count = 0;
-    for (const auto xbp: components) {
+    for (const auto& xbp: components) {
         if (xbp->GetProperIM() & xim) {
             if (n == count) {
-                return xbp;
+                return xbp.get();
             }
-
             count++;
         }
     }
@@ -1405,9 +1401,9 @@ int XCreature::Shoot(int tx, int ty)
 
 XBodyPart* XCreature::GetBodyPart(BODY_PART bp, int count)
 {
-    for (auto xbp: components) {
+    for (auto& xbp: components) {
         if (xbp->bp_uin == bp && count-- == 0) {
-            return xbp;
+            return xbp.get();
         }
     }
 
@@ -1419,12 +1415,12 @@ bool XCreature::CanWear(const XItem* item)
     return std::any_of(
         components.begin(),
         components.end(),
-        [item](XBodyPart* bp){ return bp->Fit(item->bp) && !bp->Item(); }
+        [item](const std::unique_ptr<XBodyPart>& bp){ return bp->Fit(item->bp) && !bp->Item(); }
     );
 }
 
 bool XCreature::Wear(XItem* item) const {
-    for (const auto bp: components) {
+    for (const auto& bp: components) {
         if (bp->Fit(item->bp) && !bp->Item()) {
             bp->Wear(item);
             return true;

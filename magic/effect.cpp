@@ -381,7 +381,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
                 i->Identify(1);
             }
 
-            for (auto bp: pData->target->components) {
+            for (auto& bp: pData->target->components) {
                 if (bp->Item()) {
                     bp->Item()->Identify(1);
                 }

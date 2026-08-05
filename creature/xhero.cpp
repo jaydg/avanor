@@ -1020,8 +1020,8 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
         list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Equipment " MSG_BROWN "###");
         list.SetFooter(MSG_BROWN "[" MSG_YELLOW "V" MSG_BROWN "]" MSG_LIGHTGRAY " - show inventory.");
 
-        for (auto xbp: components) {
-            xqsa[counter] = xbp;
+        for (auto& xbp: components) {
+            xqsa[counter] = xbp.get();
 
             // Determine name of body part
             std::string_view part_name;
@@ -1056,7 +1056,6 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             const std::string buf = left + right;
             list.AddItem(new XGuiItem_SimpleSelect(buf.c_str()));
             counter++;
-            ++xbp;
         }
 
         if (file) {
@@ -2227,7 +2226,7 @@ void XHero::LookAt()
 
         bool iflag = false;
 
-        for (auto xbp: xcr->components) {
+        for (auto& xbp: xcr->components) {
             if (xbp->Item()) {
                 if (!iflag) {
                     if (xcr->isHero()) {
@@ -2243,8 +2242,6 @@ void XHero::LookAt()
                 list.AddItem(new XGuiItem_Text(xbp->Item()->toString(), 0), 0);
                 iflag = true;
             }
-
-            ++xbp;
         }
 
         list.AddItem(new XGuiItem_Text("", 0), 0);

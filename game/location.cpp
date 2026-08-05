@@ -1235,7 +1235,7 @@ int XLocation::GiveAward(lua_State * L)
     if (it != owner->contain.end()) {
         owner->contain.erase(it);
     } else {
-        for (const auto bp: owner->components) {
+        for (const auto& bp: owner->components) {
             if (bp->Item() && bp->Item() == item) {
                 item = bp->UnWear();
                 break;
