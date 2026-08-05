@@ -76,7 +76,7 @@ MAP::~MAP()
 
     if (pSpecialObject) {
         pSpecialObject->Invalidate();
-        pSpecialObject = nullptr;
+        pSpecialObject.release();
     }
 }
 
@@ -91,7 +91,6 @@ void MAP::Store(XFile * f)
     f->Write(&n, sizeof(XTileType::Type));
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    pSpecialObject.Store(f);
     pMonster.Store(f);
 
     f->Write(&visible, sizeof(bool));
@@ -108,7 +107,6 @@ void MAP::Restore(XFile * f)
     f->Read(&n, sizeof(XTileType::Type));
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    pSpecialObject.Restore(f);
     pMonster.Restore(f);
 
     f->Read(&visible, sizeof(bool));
@@ -208,7 +206,18 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    map[x + y * len].pSpecialObject = spec;
+    // Callers only ever pass either a fresh object self-registering into an
+    // empty slot, or nullptr to evict the current occupant just before that
+    // same occupant Invalidate()s itself - never a replacement of one live
+    // occupant with another. Releasing rather than resetting on eviction
+    // matters: the occupant's own Invalidate() call right after this one is
+    // what actually deletes it, so this must not delete it out from under
+    // that still-executing method first.
+    if (spec == nullptr) {
+        map[x + y * len].pSpecialObject.release();
+    } else {
+        map[x + y * len].pSpecialObject.reset(spec);
+    }
 }
 
 XMapObject* XMap::GetSpecial(const int x, const int y) const

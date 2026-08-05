@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MAP_H
 #define MAP_H
 
+#include <memory>
 #include <set>
 
 #include "helpers/rect.h"
@@ -120,7 +121,7 @@ struct MAP {
     XTileType::Type n;
     XPtr<XCreature> pMonster;        // if null then no monster here
     XItemList item_list;             // list of item in this cell of map. Automatic construct/destruct
-    XPtr<XMapObject> pSpecialObject; // door, way, trap door.
+    std::unique_ptr<XMapObject> pSpecialObject; // door, way, trap door.
     bool visible;                    // visible for HERO!!!
     char known;                      // for hero memory
     char color;                      // for hero memory
