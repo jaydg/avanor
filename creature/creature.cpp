@@ -124,9 +124,12 @@ void XCreature::Invalidate()
     // remove perished creature from the group members list
     if (group_id != GID_NONE) {
         auto group = group_members.equal_range(group_id);
-        for (auto el = group.first; el != group.second; el++) {
+
+        for (auto el = group.first; el != group.second;) {
             if (el->second == this) {
-                group_members.erase(el);
+                el = group_members.erase(el);
+            } else {
+                ++el;
             }
         }
     }

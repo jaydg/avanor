@@ -168,9 +168,15 @@ void XObject::RestoreAllObjects(XFile * f)
 
 void XObject::InvalidateAllObjects()
 {
-    for (auto& [key, obj] : objects)
-    {
-        obj->Invalidate();
+    // Invalidate() removes its own entry from objects and may cascade into
+    // deleting other objects, e.g. a location invalidating its places.
+    // Iterating objects directly, or even a pre-captured snapshot of it,
+    // risks either an invalidated loop iterator or a dangling pointer to
+    // an object that already got deleted.
+    //
+    // Always re-derive the next target from the live map instead.
+    while (!objects.empty()) {
+        objects.begin()->second->Invalidate();
     }
 }
 
