@@ -1262,13 +1262,13 @@ int XLocation::GiveAward(lua_State * L)
 
 int XLocation::Quest(lua_State * L)
 {
-    XQuestRec * qr = new XQuestRec;
+    auto qr = std::make_unique<XQuestRec>();
     qr->quest_id = lua_tonumber(L, 1);
     qr->status = (QUEST)lua_tonumber(L, 2);
     qr->know = lua_tostring(L, 3);
     qr->complete = lua_tostring(L, 4);
     qr->closed = lua_tostring(L, 5);
-    XQuest::quest.quests.push_back(qr);
+    XQuest::quest.quests.push_back(std::move(qr));
 
     return 0;
 }

@@ -32,7 +32,7 @@ void XQuest::Store(XFile * f)
     int sz = quests.size();
     f->Write(&sz);
 
-    for (auto quest: quests) {
+    for (auto& quest: quests) {
         int idx = quest->quest_id;
         f->Write(&idx);
         int status = quest->status;
@@ -68,7 +68,7 @@ void XQuest::Restore(XFile * f)
     f->Read(&sz);
 
     while (sz > 0) {
-        XQuestRec * qr = new XQuestRec;
+        auto qr = std::make_unique<XQuestRec>();
         int status;
         f->Read(&qr->quest_id);
         f->Read(&status);
@@ -76,7 +76,7 @@ void XQuest::Restore(XFile * f)
         f->ReadStr(qr->know);
         f->ReadStr(qr->closed);
         f->ReadStr(qr->complete);
-        quests.push_back(qr);
+        quests.push_back(std::move(qr));
         sz--;
     }
 
@@ -107,7 +107,7 @@ void XQuest::ShowQuests()
     list.SetCaption(MSG_BROWN "### " MSG_YELLOW "Current Quests" MSG_BROWN " ###");
     int flag = 1;
 
-    for (auto quest: quests) {
+    for (auto& quest: quests) {
         if (quest->status == Q_KNOWN) {
             list.AddItem(new XGuiItem_Text(quest->know.c_str()));
             flag = 0;
@@ -190,9 +190,9 @@ QUEST XQuest::Status(int id)
 
 XQuestRec* XQuest::Find(const int id)
 {
-    for (const auto it: XQuest::quest.quests) {
+    for (const auto& it: XQuest::quest.quests) {
         if (it->quest_id == id) {
-            return it;
+            return it.get();
         }
     }
 
