@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef LOCATION_H
 #define LOCATION_H
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -308,7 +309,7 @@ class XLocation : public XObject
     protected:
         std::string brief_name; // max. 10 characters
         std::string full_name;  // max. 80 characters
-        XPtr<XAnyPlace> places[MAX_PLACES];
+        std::unique_ptr<XAnyPlace> places[MAX_PLACES];
 
         void PutPalette(int x, int y);
 

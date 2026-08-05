@@ -128,7 +128,7 @@ struct MAP {
     // Pointer to an object which describes this place. It can be nullptr, Shop,
     // special room etc. It will be useful to mark all rooms in cave (to create
     // good links between rooms or to create unique room descriptions).
-    XPtr<XAnyPlace> place;
+    XAnyPlace* place;
 
     // 0 - no room
     // 1, 2, ... - room ID

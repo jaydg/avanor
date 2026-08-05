@@ -72,7 +72,7 @@ void XLocation::Invalidate()
     for (int i = 0; i < MAX_PLACES; i++)
         if (places[i]) {
             places[i]->Invalidate();
-            places[i] = nullptr;
+            places[i].release();
         }
 
     delete map; // map must be the last!!!!!
@@ -101,7 +101,7 @@ void XLocation::AddPlace(XAnyPlace * pl)
 {
     for (int i = 0; i < MAX_PLACES; i++)
         if (places[i] == nullptr) {
-            places[i] = pl;
+            places[i].reset(pl);
             return;
         }
 
@@ -402,9 +402,7 @@ void XLocation::Store(XFile * f)
     XObject::Store(f);
     map->Store(f);
 
-    for (int i = 0; i < MAX_PLACES; i++) {
-        places[i].Store(f);
-    }
+    // FIXME: Implement when porting saving/restoring to Cereal
 
     f->WriteStr(brief_name);
     f->WriteStr(full_name);
@@ -419,11 +417,11 @@ void XLocation::Restore(XFile * f)
     map = new XMap();
     map->Restore(f);
 
-    for (int i = 0; i < MAX_PLACES; i++) {
-        places[i].Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 
+    for (int i = 0; i < MAX_PLACES; i++) {
         if (places[i] && places[i]->im & IM_WAY) {
-            ways_list.push_back(places[i]);
+            ways_list.push_back(places[i].get());
         }
     }
 

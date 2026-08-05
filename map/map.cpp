@@ -90,7 +90,7 @@ void MAP::Store(XFile * f)
     f->Write(&known, sizeof(char));
     f->Write(&n, sizeof(XTileType::Type));
 
-    place.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     pSpecialObject.Store(f);
     pMonster.Store(f);
 
@@ -107,7 +107,7 @@ void MAP::Restore(XFile * f)
     f->Read(&known, sizeof(char));
     f->Read(&n, sizeof(XTileType::Type));
 
-    place.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     pSpecialObject.Restore(f);
     pMonster.Restore(f);
 
@@ -176,7 +176,7 @@ XAnyPlace* XMap::GetPlace(const int x, const int y) const
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    return map[x + y * len].place.get();
+    return map[x + y * len].place;
 }
 
 void XMap::ResKnown(const int x, const int y) const
