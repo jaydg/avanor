@@ -516,7 +516,6 @@ void XPotion::RestoreTable(XFile * f)
     }
 }
 
-REGISTER_CLASS(XAlchemyRec);
 XAlchemy alchemy;
 
 XAlchemy::XAlchemy()
@@ -535,7 +534,7 @@ void XAlchemy::Init()
 
     std::fstream file(vMakePath(HOME_DIR, "recipies.txt"));
 
-    for (const auto it: alchemy.reception) {
+    for (const auto& it: alchemy.reception) {
         file <<  fmt::format("{} + {} = {}\n",
             potion_descr[it->pn1].name,
             potion_descr[it->pn2].name,
@@ -570,8 +569,7 @@ void XAlchemy::BuildReception(int al_lvl)
 
             if (pos1 != pos2 && tbl[tbl_src * pos1 + pos2] == -1) {
                 tbl[tbl_src * pos1 + pos2] = j;
-                auto alrec = new XAlchemyRec(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]);
-                reception.push_back(alrec);
+                reception.push_back(std::make_unique<XAlchemyRec>(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]));
                 break;
             }
         }
@@ -616,12 +614,12 @@ XAlchemyRec* XAlchemy::GetReception(int num)
     if (num > alchemy.reception.size())
         return nullptr;
 
-    return alchemy.reception[num - 1];
+    return alchemy.reception[num - 1].get();
 }
 
 int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
 {
-    for (auto rec: alchemy.reception) {
+    for (auto& rec: alchemy.reception) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 && rec->result == pn3)
             return 1;
     }
@@ -631,7 +629,7 @@ int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3
 
 POTION_NAME XAlchemy::GetPotionName(POTION_NAME pn1, POTION_NAME pn2)
 {
-    for (auto rec: alchemy.reception) {
+    for (auto& rec: alchemy.reception) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 || rec->pn2 == pn1 && rec->pn1 == pn2)
             return rec->result;
     }

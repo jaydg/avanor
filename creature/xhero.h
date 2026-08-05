@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define XHERO_H
 
 #include <fstream>
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -148,7 +149,7 @@ class XHero final : public XCreature
         int LearnReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
         void ShowReception() const;
         void MixPotions();
-        std::vector<XAlchemyRec*> reception_list;
+        std::vector<std::unique_ptr<XAlchemyRec>> reception_list;
 };
 
 class XGuiItem_Inventory final : public XGuiItem

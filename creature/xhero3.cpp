@@ -353,13 +353,13 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
 
 int XHero::LearnReception(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
 {
-    for (const auto it : reception_list)
+    for (const auto& it : reception_list)
         if (it->pn1 == pn1 && it->pn2 == pn2) {
             return 0;
         }
 
     if (XAlchemy::isValidReception(pn1, pn2, pn3)) {
-        reception_list.push_back(new XAlchemyRec(pn1, pn2, pn3));
+        reception_list.push_back(std::make_unique<XAlchemyRec>(pn1, pn2, pn3));
         msgwin.Add("You have learned a new alchemy recipe.");
     }
 
@@ -373,7 +373,7 @@ void XHero::ShowReception() const {
     if (reception_list.empty()) {
         list.AddItem(new XGuiItem_Text("You don't know any recipes yet.", 0), 0);
     } else {
-        for (auto it: reception_list) {
+        for (auto& it: reception_list) {
             auto recipe = XAlchemy::GetReceptionName(it->pn1, it->pn2, it->result);
             list.AddItem(new XGuiItem_Text(recipe, 0), 0);
         }

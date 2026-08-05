@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XPOTION_H
 #define XPOTION_H
 
+#include <memory>
 #include <vector>
 
 #include "item/item.h"
@@ -159,37 +160,15 @@ class XPotion : public XItem
         POTION_REC* pdescr;
 };
 
-class XAlchemyRec : public XObject
+class XAlchemyRec
 {
     public:
         POTION_NAME pn1;
         POTION_NAME pn2;
         POTION_NAME result;
 
-        DECLARE_CREATOR(XAlchemyRec, XObject);
-        XAlchemyRec()
-        {
-            assert(0);
-        }
-
         XAlchemyRec(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
             pn1(p1), pn2(p2), result(res) {}
-
-        void Store(XFile * f) override
-        {
-            XObject::Store(f);
-            f->Write(&pn1, sizeof(POTION_NAME));
-            f->Write(&pn2, sizeof(POTION_NAME));
-            f->Write(&result, sizeof(POTION_NAME));
-        }
-
-        void Restore(XFile * f) override
-        {
-            XObject::Restore(f);
-            f->Read(&pn1, sizeof(POTION_NAME));
-            f->Read(&pn2, sizeof(POTION_NAME));
-            f->Read(&result, sizeof(POTION_NAME));
-        }
 };
 
 class XAlchemy
@@ -197,7 +176,7 @@ class XAlchemy
         void BuildReception(int al_lvl);
 
         static int GetPotionCount(int al_lvl, POTION_NAME** pTable);
-        std::vector<XAlchemyRec*> reception;
+        std::vector<std::unique_ptr<XAlchemyRec>> reception;
     public:
         XAlchemy();
         ~XAlchemy();
