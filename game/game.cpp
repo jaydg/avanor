@@ -53,11 +53,15 @@ XGame::XGame()
 
 XGame::~XGame()
 {
+    // By this point XObject::InvalidateAllObjects() (called from Run() before
+    // exiting) has already invalidated every location, deleting the ones with
+    // no outstanding reference; any that survived are still referenced by the
+    // Scheduler, which drains and Release()s them during its own teardown
+    // (a member destructor that runs after this one). Either way, the actual
+    // objects may already be gone, so this array must not dereference them -
+    // just relinquish its claim without deleting.
     for (int i = 0; i < L_EOF; i++) {
-        if (locations[i]) {
-            locations[i]->Invalidate();
-            locations[i] = nullptr;
-        }
+        locations[i].release();
     }
 }
 
@@ -361,9 +365,9 @@ void XGame::CreateHero()
     locations[L_MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
     XHero * hero = new XHero(1);
-    Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN]);
+    Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN].get());
 
-    Game.NewCreature(hero, 57, 4, locations[56]);
+    Game.NewCreature(hero, 57, 4, locations[56].get());
     hero->MoneyOp(2000);
 
     //if hero is a bard, than create a dog for him...
@@ -381,7 +385,7 @@ void XGame::CreateHero()
     XPoint pt;
     locations[L_DEBUG1]->GetFreeXY(&pt);
     XHero * hero = new XHero(1);
-    Game.NewCreature(hero, pt.x, pt.y, locations[L_DEBUG1]);
+    Game.NewCreature(hero, pt.x, pt.y, locations[L_DEBUG1].get());
     locations[L_DEBUG1]->map->Center(hero->x, hero->y);
 
     XRect gr(pt.x + 2, pt.y + 2, pt.x + 3, pt.y + 3);

@@ -234,7 +234,7 @@ void XStandardAI::Move()
     // we can leave the area only to pursuit enemies, otherwise come back
     if (!companion && !was_attack && !was_item_pick && (ai_flag & AIF_GUARD_AREA)) {
         if (guard_area_location != ai_owner->l->ln || !guard_area.PointIn(ai_owner->nx, ai_owner->ny)) {
-            MoveTo((guard_area.left + guard_area.right) / 2, (guard_area.top + guard_area.bottom) / 2, Game.locations[guard_area_location]);
+            MoveTo((guard_area.left + guard_area.right) / 2, (guard_area.top + guard_area.bottom) / 2, Game.locations[guard_area_location].get());
         }
     }
 
@@ -641,7 +641,7 @@ XStairWay* RecursiveWayFound(XLocation * tl, XLocation * tgt_l)
         }
 
         if (Game.locations[way->ln] && Game.locations[way->ln]->way_found_flag) {
-            if (RecursiveWayFound(Game.locations[way->ln], tgt_l))
+            if (RecursiveWayFound(Game.locations[way->ln].get(), tgt_l))
             {
                 // we need to find only the top (i.e. the closest) way
                 return way;
@@ -1129,7 +1129,7 @@ void XStandardAI::RunScript()
             break;
 
         case SCC_MOVE_POINT:
-            MoveTo(cmd.pt_x, cmd.pt_y, Game.locations[cmd.ln]);
+            MoveTo(cmd.pt_x, cmd.pt_y, Game.locations[cmd.ln].get());
 
             if (cmd.pt_x == ai_owner->nx && cmd.pt_y == ai_owner->ny && cmd.ln == ai_owner->l->ln) {
                 flag = true;

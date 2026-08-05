@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef GAME_H
 #define GAME_H
 
+#include <memory>
 
 #include "creature/xhero.h"
 #include "game/location.h"
@@ -38,7 +39,7 @@ class XGame
         void RunDemo();
         void Create(char type_of_start);
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
-        XPtr<XLocation> locations[L_EOF];
+        std::unique_ptr<XLocation> locations[L_EOF];
         XScheduler Scheduler;
         static int current_location;
         static XGUID hero_guid;

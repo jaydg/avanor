@@ -31,7 +31,7 @@ XMapObject::XMapObject(XMapObject* copy) :
     view(copy->view),
     color(copy->color)
 {
-    l = copy->l.get();
+    l = copy->l;
     name = copy->name;
 }
 
@@ -52,7 +52,7 @@ void XMapObject::Store(XFile * f)
     f->Write(&view, sizeof(char));
     f->Write(&color, sizeof(int));
     f->WriteStr(name);
-    l.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 
@@ -68,7 +68,7 @@ void XMapObject::Restore(XFile * f)
     f->Read(&color, sizeof(int));
     f->ReadStr(name);
 
-    l.Restore(f);;
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 int XMapObject::Compare(XObject * o)

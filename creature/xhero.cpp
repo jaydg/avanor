@@ -1436,7 +1436,7 @@ void XHero::CloseDoor()
         XMapObject * spec = l->map->GetSpecial(od_x, od_y);
         LastStep();
         dynamic_cast<XDoor *>(spec)->Switch();
-        FirstStep(x, y, l.get());
+        FirstStep(x, y, l);
         return;
     }
 
@@ -1455,7 +1455,7 @@ void XHero::CloseDoor()
             msgwin.Add("You have closed the door.");
             LastStep();
             dynamic_cast<XDoor *>(spec)->Switch();
-            FirstStep(x, y, l.get());
+            FirstStep(x, y, l);
         } else {
             msgwin.Add("There is no door here.");
         }

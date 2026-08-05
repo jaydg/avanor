@@ -55,9 +55,7 @@ int XArchive::StoreGame()
     file.Write(&XGame::hero_guid, sizeof(int));
     Game.Scheduler.Store(&file);
 
-    for (const auto & location : Game.locations) {
-        location.Store(&file);
-    }
+    // FIXME: Implement when porting saving/restoring to Cereal
 
     XObject::StorePointer(&file, XCreature::main_creature);
     constexpr unsigned int tmp = SAVE_GAME_CONTROL;
@@ -98,9 +96,7 @@ int XArchive::RestoreGame()
     file.Read(&XGame::hero_guid, sizeof(int));
     Game.Scheduler.Restore(&file);
 
-    for (auto & location : Game.locations) {
-        location.Restore(&file);
-    }
+    // FIXME: Implement when porting saving/restoring to Cereal
 
     XCreature::main_creature = dynamic_cast<XCreature *>(XObject::RestorePointer(&file, nullptr));
     file.Read(&tmp, sizeof(unsigned int));

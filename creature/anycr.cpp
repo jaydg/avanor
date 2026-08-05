@@ -203,7 +203,7 @@ void XAnyCreature::Die(XCreature * killer)
     if (creature_class == CR_UNDEAD) {
         if (creature_name == CN_SKELETON && vRand() % 12 == 0) {
             XItem * it = new XBone();
-            it->Drop(l.get(), x, y);
+            it->Drop(l, x, y);
         }
     }
 

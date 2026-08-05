@@ -1398,7 +1398,7 @@ int XCreature::Shoot(int tx, int ty)
         }
     }
 
-    msl->Drop(l.get(), mfd.pt.x, mfd.pt.y);
+    msl->Drop(l, mfd.pt.x, mfd.pt.y);
     return 1;
 }
 

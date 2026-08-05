@@ -517,7 +517,7 @@ int XTeleport::MoveIn(XCreature* cr)
 
     if (Game.locations[ln]->map->XGetMovability(nx, ny) == 0) {
         cr->LastStep();
-        cr->FirstStep(nx, ny, Game.locations[ln]);
+        cr->FirstStep(nx, ny, Game.locations[ln].get());
     }
 
     return 1;

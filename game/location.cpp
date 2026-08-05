@@ -56,7 +56,7 @@ XLocation::XLocation(LOCATION location)
 
     assert(Game.locations[location] == nullptr);
     ln = location;
-    Game.locations[location] = this;
+    Game.locations[location].reset(this);
 
     ttmb = 1000000;
     ttm = ttmb;
@@ -65,6 +65,10 @@ XLocation::XLocation(LOCATION location)
 
 void XLocation::Invalidate()
 {
+    if (!isValid()) {
+        return;
+    }
+
     for (int i = 0; i < MAX_PLACES; i++)
         if (places[i]) {
             places[i]->Invalidate();
@@ -72,6 +76,7 @@ void XLocation::Invalidate()
         }
 
     delete map; // map must be the last!!!!!
+    map = nullptr;
 
     XObject::Invalidate();
 }

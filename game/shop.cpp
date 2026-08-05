@@ -66,14 +66,14 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
         for (int i = area.left + 1; i < area.right - 1; i++)
             for (int j = area.top + 1; j < area.bottom - 1; j++) {
                 XItem * item = ICREATEA(shop_mask);
-                item->Drop(location.get(), i, j);
+                item->Drop(location, i, j);
             }
 
     } else {
         for (int i = area.left; i < area.right; i++)
             for (int j = area.top; j < area.bottom; j++) {
                 XItem * item = ICREATEA(shop_mask);
-                item->Drop(location.get(), i, j);
+                item->Drop(location, i, j);
             }
     }
 

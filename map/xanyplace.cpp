@@ -131,7 +131,7 @@ void XAnyPlace::Store(XFile* f)
 {
     XObject::Store(f);
 
-    location.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     owner.Store(f);
     area.Store(f);
     size_t sz = 0;
@@ -160,7 +160,7 @@ void XAnyPlace::Restore(XFile* f)
 {
     XObject::Restore(f);
 
-    location.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     owner.Restore(f);
     area.Restore(f);
     size_t sz = 0;

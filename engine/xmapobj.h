@@ -30,7 +30,7 @@ class XLocation;
 class XMapObject : public XObject
 {
     public:
-        XPtr<XLocation> l;
+        XLocation* l;
         std::string name;
 
         DECLARE_CREATOR(XMapObject, XObject);
