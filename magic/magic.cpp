@@ -298,7 +298,7 @@ int XMagic::GainLevel(MAGIC_SCHOOL school, int n)
 
 void XMagic::Learn(const SPELL_NAME spell)
 {
-    for (const auto tsp : spells) {
+    for (const auto& tsp : spells) {
         if (tsp->GetSpellName() == spell) {
             tsp->GainLevel();
 
@@ -306,14 +306,14 @@ void XMagic::Learn(const SPELL_NAME spell)
         }
     }
 
-    spells.push_back(new XSpell(spell));
+    spells.push_back(std::make_unique<XSpell>(spell));
 }
 
 XSpell* XMagic::GetSpell(const SPELL_NAME spell) const
 {
-    for (const auto tsp : spells) {
+    for (const auto& tsp : spells) {
         if (tsp->GetSpellName() == spell) {
-            return tsp;
+            return tsp.get();
         }
     }
 

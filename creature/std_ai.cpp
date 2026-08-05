@@ -781,14 +781,14 @@ int XStandardAI::CastSpell() const {
     //	try to heal self
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
 
-        for (const auto spell: ai_owner->m->spells) {
+        for (const auto& spell: ai_owner->m->spells) {
             if ((spell->GetSpellName() == SPELL_CURE_LIGHT_WOUNDS ||
                 spell->GetSpellName() == SPELL_CURE_SERIOUS_WOUNDS ||
                 spell->GetSpellName() == SPELL_CURE_CRITICAL_WOUNDS ||
                 spell->GetSpellName() == SPELL_CURE_MORTAL_WOUNDS ||
                 spell->GetSpellName() == SPELL_HEAL) &&
                 spell->GetManaCost() <= ai_owner->_PP) {
-                ai_owner->m->Cast(spell, ai_owner);
+                ai_owner->m->Cast(spell.get(), ai_owner);
 
                 return 1;
             }
@@ -801,14 +801,14 @@ int XStandardAI::CastSpell() const {
 
         assert(r_enemy > 0);
 
-        for (const auto spell: ai_owner->m->spells) {
+        for (const auto& spell: ai_owner->m->spells) {
             if ((spell->GetSpellName() == SPELL_MAGIC_ARROW ||
                 spell->GetSpellName() == SPELL_FIRE_BOLT ||
                 spell->GetSpellName() == SPELL_ICE_BOLT ||
                 spell->GetSpellName() == SPELL_LIGHTNING_BOLT ||
                 spell->GetSpellName() == SPELL_ACID_BOLT)
                 && spell->GetManaCost() <= ai_owner->_PP) {
-                ai_owner->m->Cast(spell, ai_owner);
+                ai_owner->m->Cast(spell.get(), ai_owner);
 
                 return 1;
             }

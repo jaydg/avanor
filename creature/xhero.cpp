@@ -1787,7 +1787,7 @@ int XHero::XCast(std::optional<std::reference_wrapper<std::ofstream>> file)
         if (m->spells.empty()) {
             list.AddItem(new XGuiItem_Text("You do not know any spells", 0));
         } else {
-            for (auto spell : m->spells) {
+            for (auto& spell : m->spells) {
                 list.AddItem(new XGuiItem_SimpleSelect(spell->toString().c_str()), 0);
             }
         }
@@ -1806,13 +1806,13 @@ int XHero::XCast(std::optional<std::reference_wrapper<std::ofstream>> file)
                 return 0;
             }
         } else {
-            for(auto spell : m->spells) {
+            for(auto& spell : m->spells) {
                 if (ch == 0) {
-                    if (m->Cast(spell, this) == CONTINUE) {
+                    if (m->Cast(spell.get(), this) == CONTINUE) {
                         return 0;
                     }
 
-                    last_cast = spell;
+                    last_cast = spell.get();
                     break;
                 }
 

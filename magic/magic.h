@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MAGIC_H
 #define MAGIC_H
 
+#include <memory>
 #include <vector>
 
 #include "magic/effect.h"
@@ -122,11 +123,6 @@ class XMagic
         XMagic();
         explicit XMagic(XMagic*) = delete;
 
-        ~XMagic() {
-            for (auto spell: spells)
-                delete spell;
-        }
-
         RESULT Cast(XSpell* spell, XCreature* caster);
         static int GetSpellRange(const XSpell* spell, XCreature* caster);
         int Train(MAGIC_SCHOOL school, int count);
@@ -140,7 +136,7 @@ class XMagic
             return magic_level[ms];
         }
 
-        std::vector<XSpell*> spells;
+        std::vector<std::unique_ptr<XSpell>> spells;
 
         void Store(XFile * f);
         void Restore(XFile * f);
