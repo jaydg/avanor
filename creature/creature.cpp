@@ -952,7 +952,7 @@ void XCreature::Die(XCreature * killer)
 
     LastStep();
 
-    if (killer && killer != this) {
+    if (killer && killer != this && !dynamic_cast<XFakeCreature*>(killer)) {
         xai->onDie(killer);
         killer->religion.KillCreature(killer, this);
         killer->AddExp(GetExp());
