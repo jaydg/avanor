@@ -1086,11 +1086,6 @@ void XCreature::IncLevel()
     MAX_HP += vRand((GetStats(S_TOU) / 5) + 1) + 1;
     MAX_PP += vRand((GetStats(S_MAN) / 2) + 1) + 1;
     level++;
-
-    if (level > XGame::best_cr_level) {
-        XGame::best_cr_level = level;
-        XGame::best_creature = this;
-    }
 }
 
 unsigned long XCreature::ExpOfLevel(const int lev) const

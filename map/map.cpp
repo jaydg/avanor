@@ -338,7 +338,7 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
         // carried items, ...), not just bookkeeping. Invalidate() itself
         // decides whether it's safe to delete now (nothing else - reads:
         // no not-yet-migrated XPtr cross-reference like
-        // XQuest::kidnapped_girl, XGame::best_creature, ... - is still holding
+        // XQuest::kidnapped_girl, ... - is still holding
         // GetRef() above zero) or must defer to Release() finishing the job
         // once that last legacy reference also lets go.
         map[x + y * len].pMonster = std::shared_ptr<XCreature>(monst, [](XCreature* p) {

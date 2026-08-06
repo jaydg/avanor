@@ -38,8 +38,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
     #include <conio.h>
 #endif
 
-int XGame::best_cr_level = 0;
-XPtr<XCreature> XGame::best_creature;
 bool XGame::isGodMode = false;
 XGUID XGame::hero_guid = 0;
 int XGame::current_location = 0;
@@ -233,8 +231,6 @@ void XGame::RunWithoutHero()
         vClrScr();
         vGotoXY(0, 0);
 
-        std::string tname = best_creature ? best_creature->name : "";
-
         std::string status = fmt::format(
             MSG_YELLOW "Testing Avanor - running game without hero ... (press ESC to stop)\n\n"
             MSG_LIGHTGRAY
@@ -244,15 +240,12 @@ void XGame::RunWithoutHero()
             "Number of creatures       : {}\n"
             "Number of items           : {}\n"
             "\n"
-            "Best creature             : {} [{}]\n"
-            "\n"
             "Turns                     : {}\n"
             "Performance               : {:.1f} turns/s",
             XObject::objects.size(),
             XObject::invalid_count,
             total_cr,
             total_it,
-            tname, best_cr_level,
             Game.Scheduler.GetTime() / 1000,
             (double)Game.Scheduler.GetTime() * CLOCKS_PER_SEC
                 / (1000. * (clock() - start_clock)));
