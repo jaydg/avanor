@@ -2572,8 +2572,9 @@ int XHero::OrderCompanion()
         for (int j = -10; j < 11; j++) {
             if (isVisibleArea(x + i, y + j)) {
                 XCreature* cr = l->map->GetMonster(x + i, y + j);
+                auto cr_companion = cr ? cr->xai->companion.lock() : nullptr;
 
-                if (cr && cr->xai->companion && cr->xai->companion->isHero()) {
+                if (cr_companion && cr_companion->isHero()) {
                     companions_list.push_back(cr);
                 }
             }

@@ -1208,10 +1208,10 @@ int XLocation::SetCompanion(lua_State * L)
     bool flag = lua_toboolean(L, 3);
 
     if (flag) {
-        slave->xai->companion = owner;
+        slave->xai->SetCompanion(owner);
         slave->xai->companion_command = CC_FOLLOW;
     } else {
-        slave->xai->companion = nullptr;
+        slave->xai->SetCompanion(nullptr);
     }
 
     return 0;

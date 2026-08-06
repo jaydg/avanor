@@ -337,7 +337,7 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
         // real cleanup (deregistering from the object registry, invalidating
         // carried items, ...), not just bookkeeping. Invalidate() itself
         // decides whether it's safe to delete now (nothing else - reads:
-        // no not-yet-migrated XPtr cross-reference like companion,
+        // no not-yet-migrated XPtr cross-reference like
         // personal_enemy[], target, debtor, ... - is still holding
         // GetRef() above zero) or must defer to Release() finishing the job
         // once that last legacy reference also lets go.

@@ -152,8 +152,12 @@ void XStandardAI::Move()
     int was_attack = 0;
     int was_item_pick = 0;
 
+    // companion may have died independently since we last checked; lock once
+    // and reuse for the rest of this function rather than re-locking per use.
+    auto companion_sp = companion.lock();
+
     // first of all, execute order of companion to attack
-    if (companion && companion_command == CC_ATTACK) {
+    if (companion_sp && companion_command == CC_ATTACK) {
         if (ordered_enemy && ordered_enemy->isValid()) {
             enemy = ordered_enemy;
         } else {
@@ -180,8 +184,8 @@ void XStandardAI::Move()
             invisible_y = -1;
             invisible_hunting_mode = 0;
         }
-    } else if (companion && (companion_command == CC_FOLLOW || companion_command == CC_NONE)
-        && MoveTo(companion->x, companion->y, companion->l))
+    } else if (companion_sp && (companion_command == CC_FOLLOW || companion_command == CC_NONE)
+        && MoveTo(companion_sp->x, companion_sp->y, companion_sp->l))
     {
         //do nothing....
     } else if (last_enemy) {
@@ -232,7 +236,7 @@ void XStandardAI::Move()
     }
 
     // we can leave the area only to pursuit enemies, otherwise come back
-    if (!companion && !was_attack && !was_item_pick && (ai_flag & AIF_GUARD_AREA)) {
+    if (!companion_sp && !was_attack && !was_item_pick && (ai_flag & AIF_GUARD_AREA)) {
         if (guard_area_location != ai_owner->l->ln || !guard_area.PointIn(ai_owner->nx, ai_owner->ny)) {
             MoveTo((guard_area.left + guard_area.right) / 2, (guard_area.top + guard_area.bottom) / 2, Game.locations[guard_area_location].get());
         }
@@ -495,7 +499,7 @@ void XStandardAI::GetExactDirection(const XPoint* target, XPoint* direction) con
 
 bool XStandardAI::isEnemy(XCreature *cr)
 {
-    if (cr == companion
+    if (cr == companion.lock().get()
         || (ai_flag & AIF_GUARD_AREA && cr->groupID() == ai_owner->groupID())) {
         return false;
     }
@@ -936,6 +940,11 @@ void XStandardAI::SetArea(XRect & area, LOCATION ln)
     guard_area_location = ln;
 }
 
+void XStandardAI::SetCompanion(XCreature * cr)
+{
+    companion = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
+}
+
 void XStandardAI::onWasAttacked(XCreature * attacker)
 {
     assert(attacker != ai_owner);
@@ -1061,7 +1070,7 @@ void XStandardAI::Store(XFile * f)
     XObject::StorePointer(f, last_moved_way);
 
     last_enemy.Store(f);
-    companion.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     ordered_enemy.Store(f);
     f->Write(&companion_command, sizeof(COMPANION_COMMAND));
 
@@ -1089,7 +1098,7 @@ void XStandardAI::Restore(XFile * f)
     // FIXME: Implement when porting saving/restoring to Cereal
     // last_moved_way = (XMapObject*)RestorePointer(f, this);
     last_enemy.Restore(f);
-    companion.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     ordered_enemy.Restore(f);
     f->Read(&companion_command, sizeof(COMPANION_COMMAND));
 

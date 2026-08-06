@@ -101,6 +101,7 @@ class XStandardAI
         {
             ai_owner = cr;
         }
+        void SetCompanion(XCreature * cr);
 
         virtual void AnalyzeGrid(int j, int i, int w);
         virtual void AnalyzeView(int radius);
@@ -140,7 +141,7 @@ class XStandardAI
 
 
         // companion
-        XPtr<XCreature> companion;
+        std::weak_ptr<XCreature> companion;
         COMPANION_COMMAND companion_command;
         XPtr<XCreature> ordered_enemy;
 

@@ -372,7 +372,7 @@ void XGame::CreateHero()
         XRect tr(hero_point.x - 1, hero_point.y - 1, hero_point.x + 1, hero_point.y + 1);
         locations[L_MAIN]->GetFreeXY(&hero_point, &tr);
         XCreature * cr = locations[L_MAIN]->NewCreature(CN_DOG, hero_point.x, hero_point.y);
-        cr->xai->companion = hero;
+        cr->xai->SetCompanion(hero);
         cr->xai->SetAIFlag(AIF_ALLOW_MOVE_OUT);
         cr->xai->SetAIFlag(AIF_PEACEFUL);
         cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_KOBOLD | CR_GOBLIN | CR_UNDEAD | CR_INSECT | CR_BLOB | CR_CANINE | CR_FELINE | CR_RAT | CR_REPTILE | CR_ORC));

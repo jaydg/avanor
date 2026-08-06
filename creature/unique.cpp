@@ -303,7 +303,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
                             msgwin.Add("Thank you, girl!");
                         }
 
-                        XQuest::quest.kidnapped_girl->xai->companion = chatter;
+                        XQuest::quest.kidnapped_girl->xai->SetCompanion(chatter);
                         XQuest::quest.rotmoth_status = 1;
                     }
                 }
