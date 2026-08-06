@@ -1916,8 +1916,12 @@ int XCreature::MoneyOp(int money_count)
 
         if (money->quantity + money_count == 0) {
             carried_weight -= money->quantity / 10;
-            money->Invalidate();
+            // erase() must run before Invalidate() - XItemList's comparator
+            // dereferences its argument (lhs->im) to walk the tree, and
+            // Invalidate() deletes money outright once nothing else
+            // references it.
             contain.erase(money);
+            money->Invalidate();
 
             return 0;
         }

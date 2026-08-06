@@ -843,6 +843,7 @@ int XStandardAI::ReadScroll() const
             scroll->onRead(ai_owner);
 
             if (--scroll->quantity <= 0) {
+                ai_owner->contain.erase(item);
                 scroll->Invalidate();
             }
 
