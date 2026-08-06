@@ -61,7 +61,7 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
 
 void XShopKeeperAI::SetDebtor(XCreature * cr)
 {
-    debt.debtor = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
+    debt.debtor = XCreature::ToWeakPtr(cr);
 }
 
 void XShopKeeperAI::Invalidate()

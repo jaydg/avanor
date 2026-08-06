@@ -206,6 +206,12 @@ class XCreature : public XBaseObject
         XCreature();
         void Invalidate() override;
 
+        // Safely wrap a creature pointer that may be null, or may already
+        // be dead (in which case shared_from_this() would throw
+        // std::bad_weak_ptr), into a weak_ptr - returns an empty weak_ptr in
+        // either of those cases.
+        static std::weak_ptr<XCreature> ToWeakPtr(XCreature* cr);
+
         int Compare(XObject* o) override
         {
             return 1;

@@ -1088,6 +1088,15 @@ void XCreature::IncLevel()
     level++;
 }
 
+std::weak_ptr<XCreature> XCreature::ToWeakPtr(XCreature * cr)
+{
+    if (cr && cr->isValid()) {
+        return std::static_pointer_cast<XCreature>(cr->shared_from_this());
+    }
+
+    return {};
+}
+
 unsigned long XCreature::ExpOfLevel(const int lev) const
 {
     return static_cast<unsigned long>(2.0 * base_exp * std::pow(static_cast<float>(lev), 2.5f));

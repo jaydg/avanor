@@ -176,7 +176,9 @@ void XStandardAI::Move()
         was_attack = AttackEnemy(enemy->x, enemy->y);
 
         if (was_attack) {
-            last_enemy = std::static_pointer_cast<XCreature>(enemy->shared_from_this());
+            // enemy may have died from that very attack - only remember it
+            // as last_enemy if it's still around.
+            last_enemy = XCreature::ToWeakPtr(enemy);
         }
     } else if (invisible_hunting_mode > 0) {
         was_attack = AttackEnemy(invisible_x, invisible_y);
@@ -944,12 +946,12 @@ void XStandardAI::SetArea(XRect & area, LOCATION ln)
 
 void XStandardAI::SetCompanion(XCreature * cr)
 {
-    companion = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
+    companion = XCreature::ToWeakPtr(cr);
 }
 
 void XStandardAI::SetOrderedEnemy(XCreature * cr)
 {
-    ordered_enemy = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
+    ordered_enemy = XCreature::ToWeakPtr(cr);
 }
 
 void XStandardAI::onWasAttacked(XCreature * attacker)
@@ -962,7 +964,7 @@ void XStandardAI::onWasAttacked(XCreature * attacker)
     }
 
     if (ai_owner->isCreatureVisible(attacker)) {
-        last_enemy = std::static_pointer_cast<XCreature>(attacker->shared_from_this());
+        last_enemy = XCreature::ToWeakPtr(attacker);
     }
 
     invisible_x = attacker->x;
@@ -998,7 +1000,7 @@ void XStandardAI::AddPersonalEnemy(XCreature * cr)
     int i;
     sleep_well = 0;
 
-    auto cr_sp = std::static_pointer_cast<XCreature>(cr->shared_from_this());
+    auto cr_sp = XCreature::ToWeakPtr(cr).lock();
 
     for (i = 0; i < ENEMY_LIST_SIZE; i++) {
         if (personal_enemy[i].expired()) {

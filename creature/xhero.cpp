@@ -1564,7 +1564,7 @@ int XHero::XShoot()
         XCreature* tgt = l->map->GetMonster(pt.x, pt.y);
 
         if (tgt && !(pt.x == x && pt.y == y)) {
-            target = std::static_pointer_cast<XCreature>(tgt->shared_from_this());
+            target = XCreature::ToWeakPtr(tgt);
         } else {
             target.reset();
         }
