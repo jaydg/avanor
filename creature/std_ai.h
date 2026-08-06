@@ -158,7 +158,7 @@ class XStandardAI
 
         int sleep_well;
     protected:
-        XPtr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
+        std::weak_ptr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
 
         int FindPath(const XPoint* target, XPoint* direction) const;
         int AttackEnemy(int x, int y) const;
@@ -189,7 +189,7 @@ class XStandardAI
         // distance to the closest enemy
         int enemy_dist;
 
-        XPtr<XCreature> last_enemy;
+        std::weak_ptr<XCreature> last_enemy;
 
         // used to prevent up/down moving way repeating...
         XMapObject* last_moved_way;

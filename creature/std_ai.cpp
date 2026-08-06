@@ -53,7 +53,7 @@ XStandardAI::~XStandardAI()
     ai_owner = nullptr;
 
     for (auto & i : personal_enemy) {
-        i = nullptr;
+        i.reset();
     }
 }
 
@@ -176,7 +176,7 @@ void XStandardAI::Move()
         was_attack = AttackEnemy(enemy->x, enemy->y);
 
         if (was_attack) {
-            last_enemy = enemy;
+            last_enemy = std::static_pointer_cast<XCreature>(enemy->shared_from_this());
         }
     } else if (invisible_hunting_mode > 0) {
         was_attack = AttackEnemy(invisible_x, invisible_y);
@@ -190,9 +190,9 @@ void XStandardAI::Move()
         && MoveTo(companion_sp->x, companion_sp->y, companion_sp->l))
     {
         //do nothing....
-    } else if (last_enemy) {
-        if (!MoveTo(last_enemy->x, last_enemy->y, last_enemy->l)) {
-            last_enemy = nullptr;
+    } else if (auto last_enemy_sp = last_enemy.lock()) {
+        if (!MoveTo(last_enemy_sp->x, last_enemy_sp->y, last_enemy_sp->l)) {
+            last_enemy.reset();
         }
     } else if (ai_flag & AIF_EXECUTE_SCRIPT) {
         //execute script when nothing to do
@@ -525,7 +525,7 @@ bool XStandardAI::isEnemy(XCreature *cr)
 bool XStandardAI::isPersonalEnemy(XCreature *cr)
 {
     for (const auto & i : personal_enemy)
-        if (i == cr) {
+        if (i.lock().get() == cr) {
             return true;
         }
 
@@ -962,7 +962,7 @@ void XStandardAI::onWasAttacked(XCreature * attacker)
     }
 
     if (ai_owner->isCreatureVisible(attacker)) {
-        last_enemy = attacker;
+        last_enemy = std::static_pointer_cast<XCreature>(attacker->shared_from_this());
     }
 
     invisible_x = attacker->x;
@@ -998,25 +998,27 @@ void XStandardAI::AddPersonalEnemy(XCreature * cr)
     int i;
     sleep_well = 0;
 
+    auto cr_sp = std::static_pointer_cast<XCreature>(cr->shared_from_this());
+
     for (i = 0; i < ENEMY_LIST_SIZE; i++) {
-        if (!personal_enemy[i]) {
-            personal_enemy[i] = cr;
+        if (personal_enemy[i].expired()) {
+            personal_enemy[i] = cr_sp;
             return;
         }
     }
 
     for (i = 1; i < ENEMY_LIST_SIZE; i++) {
-        personal_enemy[i - 1] = personal_enemy[i].get();
+        personal_enemy[i - 1] = personal_enemy[i];
     }
 
-    personal_enemy[ENEMY_LIST_SIZE - 1] = cr;
+    personal_enemy[ENEMY_LIST_SIZE - 1] = cr_sp;
 }
 
 void XStandardAI::RemovePersonalEnemy(const XCreature* cr)
 {
     for (auto & i : personal_enemy) {
-        if (i.get() == cr) {
-            i = nullptr;
+        if (i.lock().get() == cr) {
+            i.reset();
 
             return;
         }
@@ -1076,13 +1078,8 @@ void XStandardAI::Store(XFile * f)
     f->Write(&invisible_hunting_mode, sizeof(int));
     XObject::StorePointer(f, last_moved_way);
 
-    last_enemy.Store(f);
     // FIXME: Implement when porting saving/restoring to Cereal
     f->Write(&companion_command, sizeof(COMPANION_COMMAND));
-
-    for (const auto & i : personal_enemy) {
-        i.Store(f);
-    }
 
     // FIXME: Implement when porting saving/restoring to Cereal
     guard_area.Store(f);
@@ -1103,13 +1100,8 @@ void XStandardAI::Restore(XFile * f)
 
     // FIXME: Implement when porting saving/restoring to Cereal
     // last_moved_way = (XMapObject*)RestorePointer(f, this);
-    last_enemy.Restore(f);
     // FIXME: Implement when porting saving/restoring to Cereal
     f->Read(&companion_command, sizeof(COMPANION_COMMAND));
-
-    for (auto & i : personal_enemy) {
-        i.Restore(f);
-    }
 
     // FIXME: Implement when porting saving/restoring to Cereal
     guard_area.Restore(f);
