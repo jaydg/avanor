@@ -44,7 +44,7 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
     SetShop(_shop);
     _shop->SetShopkeeper(shopkeeper);
 
-    debt.debtor = nullptr;
+    debt.debtor.reset();
     debt.debtor_sum = 0;
     debt.turn_count = 0;
     debt.debtor_leave_shop = 0;
@@ -59,10 +59,15 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
     ResAIFlag(AIF_ALLOW_PICK_UP);
 }
 
+void XShopKeeperAI::SetDebtor(XCreature * cr)
+{
+    debt.debtor = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
+}
+
 void XShopKeeperAI::Invalidate()
 {
     shop = nullptr;
-    debt.debtor = nullptr;
+    debt.debtor.reset();
 
     for (auto item: debt.unpaid_items)
         item->Invalidate();
@@ -78,7 +83,7 @@ void XShopKeeperAI::Move()
 
     XStandardAI::Move();
 
-    if (debt.debtor) {
+    if (auto debtor_sp = debt.debtor.lock(); debtor_sp && debtor_sp->isValid()) {
         debt.debtor_sum += debt.debtor_add_value;
     }
 }
@@ -167,15 +172,15 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
     if (!(customer->im & IM_HERO) || customer->GetTarget(TR_NO_YES)) {
         int money_to_add = price;
 
-        if (debt.debtor == customer) {
+        if (debt.debtor.lock().get() == customer) {
             if ((int)debt.debtor_sum > price) {
                 debt.debtor_sum -= price;
                 return 1;
             } else {
                 money_to_add = price - (int)debt.debtor_sum;
-                RemovePersonalEnemy(debt.debtor);
+                RemovePersonalEnemy(customer);
                 debt.debtor_sum = 0;
-                debt.debtor = nullptr;
+                debt.debtor.reset();
                 debt.debtor_leave_shop = 0;
 
                 if (money_to_add == 0) {
@@ -249,8 +254,8 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
             debt.debtor_sum -= res;
 
             if (debt.debtor_sum < 1) {
-                RemovePersonalEnemy(debt.debtor);
-                debt.debtor = nullptr;
+                RemovePersonalEnemy(debt.debtor.lock().get());
+                debt.debtor.reset();
                 debt.debtor_sum = 0;
                 debt.debtor_leave_shop = 0;
                 debt.debtor_add_value = 0;
@@ -293,7 +298,7 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
     for (auto it = debt.unpaid_items.begin(); debt.unpaid_items.end() != it;) {
         auto item = *it;
 
-        debt.debtor = customer;
+        SetDebtor(customer);
         debt.debtor_sum += item->GetValue() * item->quantity;
         item->Invalidate();
 
@@ -310,7 +315,7 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
         if (debt.debtor_sum > 0) {
             str = fmt::format(GMSG_SHOPKEEPER_TO_CUSTOMER2, ai_owner->name, (int)debt.debtor_sum);
             debt.debtor_leave_shop = 1;
-            debt.debtor = customer;
+            SetDebtor(customer);
 
             if (debt.debtor_sum > 150) {
                 AddPersonalEnemy(customer);
@@ -327,7 +332,7 @@ void XShopKeeperAI::Store(XFile * f)
 {
     XStandardAI::Store(f);
     f->Write(&debt.debtor_add_value, sizeof(double));
-    debt.debtor.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     f->Write(&debt.debtor_leave_shop, sizeof(int));
     f->Write(&debt.debtor_sum, sizeof(double));
 
@@ -341,7 +346,7 @@ void XShopKeeperAI::Restore(XFile * f)
 {
     XStandardAI::Restore(f);
     f->Read(&debt.debtor_add_value, sizeof(double));
-    debt.debtor.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     f->Read(&debt.debtor_leave_shop, sizeof(int));
     f->Read(&debt.debtor_sum, sizeof(double));
 

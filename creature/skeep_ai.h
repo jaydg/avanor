@@ -29,7 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XCreature;
 
 struct SHOP_DEBT {
-    XPtr<XCreature> debtor;
+    std::weak_ptr<XCreature> debtor;
     double debtor_sum;
     double debtor_add_value;
     int turn_count; //after some turns after debtor leave a shop - debtors can't by nothing
@@ -64,6 +64,7 @@ class XShopKeeperAI : public XStandardAI
 
         SHOP_DEBT debt;
     protected:
+        void SetDebtor(XCreature * cr);
         XPtr<XShop> shop;
 };
 
