@@ -53,15 +53,13 @@ XGame::XGame()
 
 XGame::~XGame()
 {
-    // By this point XObject::InvalidateAllObjects() (called from Run() before
-    // exiting) has already invalidated every location, deleting the ones with
-    // no outstanding reference; any that survived are still referenced by the
-    // Scheduler, which drains and Release()s them during its own teardown
-    // (a member destructor that runs after this one). Either way, the actual
-    // objects may already be gone, so this array must not dereference them -
-    // just relinquish its claim without deleting.
+    // XObject::InvalidateAllObjects() (called from Run() before exiting) has
+    // already invalidated every location. Deletion itself is now entirely
+    // shared_ptr-driven: dropping this array's reference deletes a location
+    // only once every other reference to it (the Scheduler's weak_ptr
+    // doesn't count) is also gone.
     for (int i = 0; i < L_EOF; i++) {
-        locations[i].release();
+        locations[i] = nullptr;
     }
 }
 
@@ -173,7 +171,7 @@ void XGame::RunWithoutHero()
 
     while (true) {
         for (int i = 0; i < 1000; i++) {
-            XObject * o = Game.Scheduler.Get();
+            auto o = Game.Scheduler.Get();
             o->Run();
         }
 
@@ -281,7 +279,6 @@ void XGame::Run()
         if (!o->Run()) {
             // object is dead!
             Game.Scheduler.Remove();
-            o->Release();
         }
     }
 

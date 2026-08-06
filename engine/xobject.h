@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cassert>
 #include <cstdlib>
 #include <map>
+#include <memory>
 #include <string>
 
 #include "engine/xfile.h"
@@ -128,7 +129,7 @@ extern XGUID guid;
 typedef std::map<XGUID, class XObject*> XObjectMap;
 
 // The base class for most important parts of the game
-class XObject
+class XObject : public std::enable_shared_from_this<XObject>
 {
     private:
         // reference count
@@ -221,7 +222,7 @@ class XObject
         {
             assert(reference > 0);
 
-            if (--reference == 0 && !is_valid) {
+            if (--reference == 0 && !is_valid && weak_from_this().expired()) {
                 delete this;
             }
         }
@@ -240,7 +241,14 @@ class XObject
             is_valid = 0;
             objects.erase(xguid);
 
-            if (reference == 0) {
+            // Objects that have been wrapped in a shared_ptr somewhere (the
+            // ones migrated off this legacy refcount) must never be deleted
+            // here - their lifetime is governed entirely by shared_ptr
+            // refcounting from this point on, and something (a container, a
+            // scheduler weak_ptr's lock(), a shared_from_this() guard higher
+            // up the call stack) is guaranteed to still be holding this
+            // object alive for as long as we're inside this call anyway.
+            if (reference == 0 && weak_from_this().expired()) {
                 delete this;
             }
         }

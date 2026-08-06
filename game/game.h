@@ -39,7 +39,7 @@ class XGame
         void RunDemo();
         void Create(char type_of_start);
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
-        std::unique_ptr<XLocation> locations[L_EOF];
+        std::shared_ptr<XLocation> locations[L_EOF];
         XScheduler Scheduler;
         static int current_location;
         static XGUID hero_guid;

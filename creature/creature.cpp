@@ -929,6 +929,11 @@ void XCreature::Die(XCreature * killer)
 {
     assert(isValid());
 
+    // LastStep() below drops the map cell's shared_ptr reference (pMonster),
+    // which may be the only thing keeping this object alive. Keep ourselves
+    // alive for the rest of this function regardless.
+    auto self = shared_from_this();
+
     if (event_handler) {
         lua_pushstring(XLocation::L, event_handler);
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);

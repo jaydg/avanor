@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSCHEDULER_H
 #define XSCHEDULER_H
 
+#include <memory>
+#include <variant>
 #include <vector>
 
 constexpr int XSCHEDULER_TIME_SLICE = 100;
@@ -30,9 +32,20 @@ class XMapObject;
 
 class XScheduler
 {
+        // An object added while nothing else owns it yet (e.g. a freshly
+        // created generator) is strongly owned right here - the scheduler
+        // becomes its sole owner for as long as it stays scheduled. An
+        // object added while something else already owns it (a creature via
+        // its map cell, a location via Game.locations[]) is only weakly
+        // observed.
+        using Entry = std::variant<std::shared_ptr<XObject>, std::weak_ptr<XObject>>;
+
         long _time, head;
-        std::vector<XObject*> data[XSCHEDULER_STEPS_AHEAD];
-        void Place(XObject * p);
+        std::vector<Entry> data[XSCHEDULER_STEPS_AHEAD];
+
+        static std::shared_ptr<XObject> Lock(const Entry& e);
+        void Place(Entry e);
+
     public:
         XScheduler() : _time(0), head(0) { }
 
@@ -54,8 +67,8 @@ class XScheduler
         }
 
         void Add(XObject* p);
-        XObject* Get();
-        XObject* Remove();
+        std::shared_ptr<XObject> Get();
+        void Remove();
 
         void Store(XFile * f);
         void Restore(XFile * f);

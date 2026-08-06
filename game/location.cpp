@@ -56,7 +56,7 @@ XLocation::XLocation(LOCATION location)
 
     assert(Game.locations[location] == nullptr);
     ln = location;
-    Game.locations[location].reset(this);
+    Game.locations[location] = std::shared_ptr<XLocation>(this);
 
     ttmb = 1000000;
     ttm = ttmb;

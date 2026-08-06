@@ -119,7 +119,7 @@ struct MAP {
     void Restore(XFile* f);
 
     XTileType::Type n;
-    XPtr<XCreature> pMonster;        // if null then no monster here
+    std::shared_ptr<XCreature> pMonster; // if null then no monster here
     XItemList item_list;             // list of item in this cell of map. Automatic construct/destruct
     std::unique_ptr<XMapObject> pSpecialObject; // door, way, trap door.
     bool visible;                    // visible for HERO!!!

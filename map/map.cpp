@@ -95,7 +95,6 @@ void MAP::Store(XFile * f)
     f->Write(&n, sizeof(XTileType::Type));
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    pMonster.Store(f);
 
     f->Write(&visible, sizeof(bool));
 }
@@ -111,7 +110,6 @@ void MAP::Restore(XFile * f)
     f->Read(&n, sizeof(XTileType::Type));
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    pMonster.Restore(f);
 
     f->Read(&visible, sizeof(bool));
 }
@@ -325,7 +323,28 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    map[x + y * len].pMonster = monst;
+    // First time this creature is ever placed on the map (birth): nothing
+    // owns it yet, so this is the one place its master shared_ptr gets
+    // constructed. Every later move just transfers a fresh shared_ptr from
+    // the same control block via shared_from_this() - never a second,
+    // independent one.
+    if (monst->weak_from_this().expired()) {
+        // Several cross-references (companion, personal_enemy[], target,
+        // debtor, ...) haven't been migrated off the legacy XPtr/AddRef
+        // mechanism yet and may still be holding GetRef() above zero when
+        // every shared_ptr/weak_ptr reference here is gone. A default
+        // deleter would free the object out from under them, turning their
+        // next safe "am I still valid" check into a use-after-free. Defer
+        // the actual delete to Release() (already updated to finish the job
+        // once the shared_ptr side has also let go) in that case.
+        map[x + y * len].pMonster = std::shared_ptr<XCreature>(monst, [](XCreature* p) {
+            if (p->GetRef() == 0) {
+                delete p;
+            }
+        });
+    } else {
+        map[x + y * len].pMonster = std::static_pointer_cast<XCreature>(monst->shared_from_this());
+    }
 }
 
 void XMap::ResMonster(const int x, const int y) const
@@ -374,8 +393,8 @@ void XMap::Put(XCreature * cr) const
                     vPutCh(j + SCR_X, i + SCR_Y, std_tile_data[n].view, std_tile_data[n].color);
                 }
 
-                if (tmap->pMonster && cr->isCreatureVisible(tmap->pMonster)) {
-                    XCreature * xb = tmap->pMonster;
+                if (tmap->pMonster && cr->isCreatureVisible(tmap->pMonster.get())) {
+                    XCreature * xb = tmap->pMonster.get();
                     vPutCh(xb->x - wx + SCR_X, xb->y - wy + SCR_Y, xb->view, xb->color);
                 }
             } else {

@@ -24,14 +24,24 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xscheduler.h"
 #include "game/xtime.h"
 
-void XScheduler::Place(XObject * p)
+std::shared_ptr<XObject> XScheduler::Lock(const Entry& e)
 {
-    assert(p->isValid());
+    if (const auto* sp = std::get_if<std::shared_ptr<XObject>>(&e)) {
+        return *sp;
+    }
+
+    return std::get<std::weak_ptr<XObject>>(e).lock();
+}
+
+void XScheduler::Place(Entry e)
+{
+    auto sp = Lock(e);
+    assert(sp && sp->isValid());
 
     long shift;
 
-    if (p->ttm < XSCHEDULER_TIME_SLICE * (XSCHEDULER_STEPS_AHEAD - 1)) {
-        shift = p->ttm / XSCHEDULER_TIME_SLICE + 1;
+    if (sp->ttm < XSCHEDULER_TIME_SLICE * (XSCHEDULER_STEPS_AHEAD - 1)) {
+        shift = sp->ttm / XSCHEDULER_TIME_SLICE + 1;
     } else {
         shift = (XSCHEDULER_STEPS_AHEAD - 1);
     }
@@ -42,18 +52,22 @@ void XScheduler::Place(XObject * p)
         index -= XSCHEDULER_STEPS_AHEAD;
     }
 
-    p->ttm -= shift * XSCHEDULER_TIME_SLICE;
-    data[index].push_back(p);
+    sp->ttm -= shift * XSCHEDULER_TIME_SLICE;
+    data[index].push_back(std::move(e));
 }
 
 void XScheduler::Add(XObject* p)
 {
     assert(p->isValid());
-    p->AddRef();
-    Place(p);
+
+    if (p->weak_from_this().expired()) {
+        Place(std::shared_ptr<XObject>(p));
+    } else {
+        Place(p->weak_from_this());
+    }
 }
 
-XObject* XScheduler::Get()
+std::shared_ptr<XObject> XScheduler::Get()
 {
     while (true) {
         int empty_count = 0;
@@ -74,36 +88,34 @@ XObject* XScheduler::Get()
         }
 
         auto it = data[head].begin();
-        auto p = *it;
+        auto sp = Lock(*it);
 
-        // Dead entry?
-        if (!p->isValid()) {
-            // remove from schedule
+        // Dead entry? Either the object is gone entirely (weak_ptr expired),
+        // or it's still physically alive - kept that way by our own strong
+        // entry, for objects the scheduler solely owns - but has already
+        // Invalidate()'d itself directly (e.g. XHerbBush/XCorpse deciding
+        // they're done from within Run()/Pick(), outside the normal
+        // "Run() returns false" removal path). Either way, erasing the
+        // entry here drops whatever ownership it held.
+        if (!sp || !sp->isValid()) {
             data[head].erase(it);
-
-            // remove reference (corresponding to Add)
-            p->Release();
-
             continue;
         }
 
-        if (p->ttm < 0) {
-            return p;
+        if (sp->ttm < 0) {
+            return sp;
         }
 
+        Entry entry = std::move(*it);
         data[head].erase(it);
-        Place(p);
+        Place(std::move(entry));
     }
 }
 
-XObject* XScheduler::Remove()
+void XScheduler::Remove()
 {
     assert(!data[head].empty());
-    auto it = data[head].begin();
-    auto p = *it;
-
-    data[head].erase(it);
-    return p;
+    data[head].erase(data[head].begin());
 }
 
 void XScheduler::Store(XFile * f)
