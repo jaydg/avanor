@@ -158,10 +158,12 @@ void XStandardAI::Move()
 
     // first of all, execute order of companion to attack
     if (companion_sp && companion_command == CC_ATTACK) {
-        if (ordered_enemy && ordered_enemy->isValid()) {
-            enemy = ordered_enemy;
+        auto ordered_enemy_sp = ordered_enemy.lock();
+
+        if (ordered_enemy_sp && ordered_enemy_sp->isValid()) {
+            enemy = ordered_enemy_sp.get();
         } else {
-            ordered_enemy = nullptr;
+            ordered_enemy.reset();
             companion_command = CC_NONE;
         }
     }
@@ -945,6 +947,11 @@ void XStandardAI::SetCompanion(XCreature * cr)
     companion = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
 }
 
+void XStandardAI::SetOrderedEnemy(XCreature * cr)
+{
+    ordered_enemy = cr ? std::static_pointer_cast<XCreature>(cr->shared_from_this()) : std::weak_ptr<XCreature>();
+}
+
 void XStandardAI::onWasAttacked(XCreature * attacker)
 {
     assert(attacker != ai_owner);
@@ -1071,7 +1078,6 @@ void XStandardAI::Store(XFile * f)
 
     last_enemy.Store(f);
     // FIXME: Implement when porting saving/restoring to Cereal
-    ordered_enemy.Store(f);
     f->Write(&companion_command, sizeof(COMPANION_COMMAND));
 
     for (const auto & i : personal_enemy) {
@@ -1099,7 +1105,6 @@ void XStandardAI::Restore(XFile * f)
     // last_moved_way = (XMapObject*)RestorePointer(f, this);
     last_enemy.Restore(f);
     // FIXME: Implement when porting saving/restoring to Cereal
-    ordered_enemy.Restore(f);
     f->Read(&companion_command, sizeof(COMPANION_COMMAND));
 
     for (auto & i : personal_enemy) {

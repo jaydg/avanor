@@ -2654,7 +2654,7 @@ int XHero::OrderCompanion()
         msgwin.Add(slave->GetNameEx(CRN_T1));
         msgwin.Add("to attack");
         msgwin.Add(tgt->GetNameEx(CRN_T1));
-        slave->xai->ordered_enemy = tgt;
+        slave->xai->SetOrderedEnemy(tgt);
         slave->xai->companion_command = CC_ATTACK;
         slave->xai->ResAIFlag(AIF_GUARD_AREA);
         return 1;
@@ -2662,7 +2662,7 @@ int XHero::OrderCompanion()
         msgwin.Add("You command");
         msgwin.Add(slave->GetNameEx(CRN_T1));
         msgwin.Add("to come to you.");
-        slave->xai->ordered_enemy = nullptr;
+        slave->xai->SetOrderedEnemy(nullptr);
         slave->xai->companion_command = CC_FOLLOW;
         slave->xai->ResAIFlag(AIF_GUARD_AREA);
         return 1;
@@ -2670,7 +2670,7 @@ int XHero::OrderCompanion()
         msgwin.Add("You command");
         msgwin.Add(slave->GetNameEx(CRN_T1));
         msgwin.Add("to wait.");
-        slave->xai->ordered_enemy = nullptr;
+        slave->xai->SetOrderedEnemy(nullptr);
         slave->xai->companion_command = CC_WAIT;
         XRect tr(slave->x, slave->y, slave->x + 1, slave->y + 1);
         slave->xai->SetArea(tr, slave->l->ln);
