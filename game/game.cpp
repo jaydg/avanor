@@ -368,10 +368,11 @@ void XGame::CreateHero()
     hero->MoneyOp(2000);
 
     //if hero is a bard, than create a dog for him...
-    if (strstr(hero->GetRaceStr(), "bard")) {
-        XRect tr(hero_point.x - 1, hero_point.y - 1, hero_point.x + 1, hero_point.y + 1);
-        locations[L_MAIN]->GetFreeXY(&hero_point, &tr);
-        XCreature * cr = locations[L_MAIN]->NewCreature(CN_DOG, hero_point.x, hero_point.y);
+    if (strstr(hero->GetProfessionStr(), "bard")) {
+        XPoint dog_point;
+        XRect tr(hero->x - 1, hero->y - 1, hero->x + 1, hero->y + 1);
+        hero->l->GetFreeXY(&dog_point, &tr);
+        XCreature * cr = hero->l->NewCreature(CN_DOG, dog_point.x, dog_point.y);
         cr->xai->SetCompanion(hero);
         cr->xai->SetAIFlag(AIF_ALLOW_MOVE_OUT);
         cr->xai->SetAIFlag(AIF_PEACEFUL);
