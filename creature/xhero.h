@@ -56,12 +56,12 @@ class XHero final : public XCreature
             last_char = '5';
             isDisturb = 0;
             run_way_count = 0;
-            target = nullptr;
+            target.reset();
         }
 
         int last_char;
         int run_way_count;
-        XPtr<XCreature> target; // for convenient user interface
+        std::weak_ptr<XCreature> target; // for convenient user interface
         int PossibleWayCount(int px, int py) const;
     public:
         DECLARE_CREATOR(XHero, XCreature);

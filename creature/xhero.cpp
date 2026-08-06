@@ -56,7 +56,7 @@ XHero::XHero(int flag)
     color = xWHITE;
     name = "-=RET=-";
     RNG = 5;
-    target = nullptr;
+    target.reset();
     im = IM_HERO;
 
     auto *d = new XDice("1d3");
@@ -92,7 +92,7 @@ XHero::XHero(int flag)
     isDisturb = 0;
     last_char = '5';
     run_way_count = 0;
-    target = nullptr;
+    target.reset();
 
     creature_class = CR_HUMAN;
 
@@ -1561,10 +1561,12 @@ int XHero::XShoot()
     if (Targeting(range, &pt) != ABORT) {
         Shoot(pt.x, pt.y);
 
-        if (l->map->GetMonster(pt.x, pt.y) && !(pt.x == x && pt.y == y)) {
-            target = l->map->GetMonster(pt.x, pt.y);
+        XCreature* tgt = l->map->GetMonster(pt.x, pt.y);
+
+        if (tgt && !(pt.x == x && pt.y == y)) {
+            target = std::static_pointer_cast<XCreature>(tgt->shared_from_this());
         } else {
-            target = nullptr;
+            target.reset();
         }
 
         return 1;
@@ -1575,8 +1577,13 @@ int XHero::XShoot()
 
 int XHero::Targeting(int range, XPoint * pt)
 {
-    if (target && !target->isValid()) {
-        target = nullptr;
+    // target may have died independently since the last shot; lock once and
+    // reuse for the rest of this function rather than re-locking per use.
+    auto target_sp = target.lock();
+
+    if (target_sp && !target_sp->isValid()) {
+        target.reset();
+        target_sp = nullptr;
     }
 
     const XCreature* tgt = nullptr;
@@ -1602,12 +1609,12 @@ int XHero::Targeting(int range, XPoint * pt)
     int tx = x;
     int ty = y;
 
-    if (tgt && !target) {
+    if (tgt && !target_sp) {
         tx = tgt->x;
         ty = tgt->y;
-    } else if (target && target->isVisible()) {
-        tx = target->x;
-        ty = target->y;
+    } else if (target_sp && target_sp->isVisible()) {
+        tx = target_sp->x;
+        ty = target_sp->y;
     }
 
     while (true) {
@@ -2548,7 +2555,7 @@ void XHero::Restore(XFile * f)
     isDisturb = 0;
     last_char = '5';
     run_way_count = 0;
-    target = nullptr;
+    target.reset();
     last_cast = nullptr;
     melee_attack = &hero_melee;
 }
