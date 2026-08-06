@@ -1575,13 +1575,21 @@ int XHero::Targeting(int range, XPoint * pt)
     int dist = 10000;
 
     for (int i = -7; i <= 7; i++)
-        for (int j = -7; j <= 7; j++)
-            if (l->map->GetMonster(x + j, y + i) && l->map->GetMonster(x + j, y + i)->isVisible()
-                && l->map->GetMonster(x + j, y + i)->xai->isEnemy(this)
+        for (int j = -7; j <= 7; j++) {
+            int cx = x + j;
+            int cy = y + i;
+
+            if (cx < 0 || cx >= l->map->len || cy < 0 || cy >= l->map->hgt) {
+                continue;
+            }
+
+            if (l->map->GetMonster(cx, cy) && l->map->GetMonster(cx, cy)->isVisible()
+                && l->map->GetMonster(cx, cy)->xai->isEnemy(this)
                 && std::max(abs(i), abs(j)) < dist && !(j == 0 && i == 0)) {
                 dist = std::max(abs(i), abs(j));
-                tgt = l->map->GetMonster(x + j, y + i);
+                tgt = l->map->GetMonster(cx, cy);
             }
+        }
 
     int tx = x;
     int ty = y;
