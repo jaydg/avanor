@@ -329,16 +329,22 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
     // the same control block via shared_from_this() - never a second,
     // independent one.
     if (monst->weak_from_this().expired()) {
-        // Several cross-references (companion, personal_enemy[], target,
-        // debtor, ...) haven't been migrated off the legacy XPtr/AddRef
-        // mechanism yet and may still be holding GetRef() above zero when
-        // every shared_ptr/weak_ptr reference here is gone. A default
-        // deleter would free the object out from under them, turning their
-        // next safe "am I still valid" check into a use-after-free. Defer
-        // the actual delete to Release() (already updated to finish the job
-        // once the shared_ptr side has also let go) in that case.
+        // This can be the last shared_ptr/weak_ptr reference going away
+        // without the creature ever having gone through Die() (e.g. the
+        // whole map being torn down at once at full teardown, out from
+        // under a creature that was simply still standing on it) - make
+        // sure Invalidate() always runs first regardless, since it does
+        // real cleanup (deregistering from the object registry, invalidating
+        // carried items, ...), not just bookkeeping. Invalidate() itself
+        // decides whether it's safe to delete now (nothing else - reads:
+        // no not-yet-migrated XPtr cross-reference like companion,
+        // personal_enemy[], target, debtor, ... - is still holding
+        // GetRef() above zero) or must defer to Release() finishing the job
+        // once that last legacy reference also lets go.
         map[x + y * len].pMonster = std::shared_ptr<XCreature>(monst, [](XCreature* p) {
-            if (p->GetRef() == 0) {
+            if (p->isValid()) {
+                p->Invalidate();
+            } else if (p->GetRef() == 0) {
                 delete p;
             }
         });

@@ -175,7 +175,7 @@ class XStandardAI
         bool CanMoveHere(int px, int py);
 
         AI_FLAG ai_flag;
-        XPtr<XCreature> ai_owner;
+        XCreature* ai_owner;
         CREATURE_CLASS enemy_class;
 
         XRect guard_area;

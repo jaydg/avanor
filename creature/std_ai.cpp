@@ -163,7 +163,7 @@ void XStandardAI::Move()
     }
 
     assert(ai_owner->isValid());
-    assert(enemy != ai_owner.get());
+    assert(enemy != ai_owner);
 
     if (enemy) {
         //second try to attack enemy
@@ -245,7 +245,7 @@ void XStandardAI::Move()
         if (!isEnemy(tgt)) {
             ai_owner->nx = ai_owner->x;
             ai_owner->ny = ai_owner->y;
-        } else if (!ai_owner->isCreatureVisible(tgt) && ai_owner.get() != tgt) {
+        } else if (!ai_owner->isCreatureVisible(tgt) && ai_owner != tgt) {
             invisible_x = tgt->x;
             invisible_y = tgt->y;
             invisible_hunting_mode = 1;
@@ -938,7 +938,7 @@ void XStandardAI::SetArea(XRect & area, LOCATION ln)
 
 void XStandardAI::onWasAttacked(XCreature * attacker)
 {
-    assert(attacker != ai_owner.get());
+    assert(attacker != ai_owner);
     AddPersonalEnemy(attacker);
 
     if (ai_owner->groupID() != GID_NONE) {
@@ -1069,7 +1069,7 @@ void XStandardAI::Store(XFile * f)
         i.Store(f);
     }
 
-    ai_owner.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     guard_area.Store(f);
     f->Write(&guard_area_location, sizeof(LOCATION));
 
@@ -1097,7 +1097,7 @@ void XStandardAI::Restore(XFile * f)
         i.Restore(f);
     }
 
-    ai_owner.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
     guard_area.Restore(f);
     f->Read(&guard_area_location, sizeof(LOCATION));
 
