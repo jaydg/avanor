@@ -97,7 +97,7 @@ class XQuest
 
         ITEM_TYPE yohjishiro_it_quest;
 
-        XPtr<XCreature> kidnapped_girl;
+        std::weak_ptr<XCreature> kidnapped_girl;
         int rotmoth_status; // 0 - initial, 1 - killed, 2 - payed;
         int kidnapped_girl_status;
 

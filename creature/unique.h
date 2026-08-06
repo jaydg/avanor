@@ -120,6 +120,7 @@ class XGiana : public XAnyCreature
         DECLARE_CREATOR(XGiana, XAnyCreature);
         XGiana(_CREATURE * cr);
         int Chat(XCreature * chatter, const char* msg) override;
+        void FirstStep(int _x, int _y, XLocation * _l) override;
 };
 
 class XBandit : public XAnyCreature

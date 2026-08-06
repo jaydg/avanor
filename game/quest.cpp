@@ -59,7 +59,7 @@ void XQuest::Store(XFile * f)
     f->Write(&roderick_quest2);
     f->Write(&torin_quest);
     f->Write(&rotmoth_status);
-    XObject::StorePointer(f, (XObject*)kidnapped_girl.get());
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 void XQuest::Restore(XFile * f)
@@ -97,7 +97,7 @@ void XQuest::Restore(XFile * f)
     f->Read(&roderick_quest2);
     f->Read(&torin_quest);
     f->Read(&rotmoth_status);
-    kidnapped_girl = (XCreature*)(XObject::RestorePointer(f, nullptr));
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 void XQuest::ShowQuests()

@@ -287,7 +287,9 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
         msgwin.Add("You will be rewarded for your stupidness!");
     } else {
         if (XQuest::quest.rotmoth_status == 0) {
-            if (XQuest::quest.kidnapped_girl.get() && isCreatureVisible(XQuest::quest.kidnapped_girl)) {
+            auto girl = XQuest::quest.kidnapped_girl.lock();
+
+            if (girl && isCreatureVisible(girl.get())) {
                 msgwin.Add("I hope you'll bring 100 gold coins, otherwise this girl will die.");
 
                 if (chatter->MoneyOp(0) >= 100) {
@@ -303,7 +305,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
                             msgwin.Add("Thank you, girl!");
                         }
 
-                        XQuest::quest.kidnapped_girl->xai->SetCompanion(chatter);
+                        girl->xai->SetCompanion(chatter);
                         XQuest::quest.rotmoth_status = 1;
                     }
                 }
@@ -321,8 +323,8 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
 void XRotmothAI::onWasAttacked(XCreature * attacker)
 {
     if (attacker->isHero()) {
-        if (XQuest::quest.kidnapped_girl) {
-            XStandardAI::onWasAttacked(XQuest::quest.kidnapped_girl);
+        if (auto girl = XQuest::quest.kidnapped_girl.lock()) {
+            XStandardAI::onWasAttacked(girl.get());
             AddPersonalEnemy(attacker);
             return;
         }
@@ -338,7 +340,20 @@ void XRotmothAI::onWasAttacked(XCreature * attacker)
 REGISTER_CLASS(XGiana);
 XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr)
 {
-    XQuest::quest.kidnapped_girl = this;
+}
+
+void XGiana::FirstStep(int _x, int _y, XLocation * _l)
+{
+    XAnyCreature::FirstStep(_x, _y, _l);
+
+    // Registering self as the tracked kidnapped_girl needs shared_from_this(),
+    // which throws until this creature has been placed on the map for the
+    // first time (the constructor runs before that, so it can't be done
+    // there). FirstStep() runs on every move, not just the first one, so
+    // guard against re-registering on every subsequent step.
+    if (XQuest::quest.kidnapped_girl.expired()) {
+        XQuest::quest.kidnapped_girl = XCreature::ToWeakPtr(this);
+    }
 }
 
 int XGiana::Chat(XCreature * chatter, const char* msg)
