@@ -494,6 +494,14 @@ void XHero::NewMove()
                     ny = y;
                 } else {
                     XLocation * tl = l;
+
+                    // Unlike a creature moving under its own turn (always kept
+                    // alive by the scheduler's own shared_ptr for the whole
+                    // turn), cr is a bystander here - its map cell is the only
+                    // thing keeping it alive. cr->LastStep() below drops that
+                    // reference; without this guard, that can delete cr right
+                    // out from under the cr->FirstStep() call two lines down.
+                    auto cr_keepalive = std::static_pointer_cast<XCreature>(cr->shared_from_this());
                     cr->LastStep();
                     LastStep();
                     cr->x = x;
