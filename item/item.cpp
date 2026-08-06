@@ -49,6 +49,22 @@ XItem::XItem()
 
 void XItem::Invalidate()
 {
+    if (!isValid()) {
+        return;
+    }
+
+    // If this item is currently lying on the ground, its map cell's
+    // item_list holds a raw, non-owning pointer to it. Invalidate() can be
+    // reached directly (e.g. XObject::InvalidateAllObjects() walking the
+    // global registry) without going through the normal pickup/drop paths
+    // that keep item_list in sync, so make sure that stale entry can't
+    // outlive us and dangle. l->map may already be gone (its location's
+    // teardown got there first and already reclaimed every item on it), in
+    // which case there's nothing left to remove ourselves from.
+    if (l && l->map && x >= 0 && y >= 0) {
+        l->map->GetItemList(x, y)->erase(this);
+    }
+
     total_it--;
     XBaseObject::Invalidate();
 }

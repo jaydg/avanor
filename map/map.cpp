@@ -70,8 +70,12 @@ MAP::MAP()
 
 MAP::~MAP()
 {
-    for (const auto item : item_list) {
-        item->Invalidate();
+    // XItem::Invalidate() removes the item from this very item_list, so
+    // iterating it directly while invalidating would erase out from under
+    // the iterator. Always re-derive the next target from the live set
+    // instead, mirroring XObject::InvalidateAllObjects().
+    while (!item_list.empty()) {
+        (*item_list.begin())->Invalidate();
     }
 
     if (pSpecialObject) {
