@@ -18,11 +18,20 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "engine/global.h"
 #include "engine/xbaseobj.h"
 
 #include "xfile.h"
 #include "xobject.h"
+
+// XBaseObject, like XMapObject, is never itself a dynamic type - just
+// another link in the polymorphic pointer-cast chain (XObject ->
+// XMapObject -> XBaseObject -> XItem/XCreature), so no
+// CEREAL_REGISTER_TYPE of its own.
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XBaseObject);
 
 XBaseObject::XBaseObject() :
     RNG(0), weight(0), resistances(nullptr), stats(nullptr)

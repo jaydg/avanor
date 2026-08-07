@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XGEN_H
 #define XGEN_H
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+
 #include "engine/xmapobj.h"
 #include "map/map.h"
 
@@ -28,6 +31,7 @@ class XGenerator : public XMapObject
 {
     protected:
         XGenerator() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XGenerator, XMapObject);
@@ -50,6 +54,41 @@ class XGenerator : public XMapObject
         {
             return 1;
         }
+
+        // XGenerator is never itself a dynamic type, just a link in the
+        // chain for its two concrete subclasses below.
+        //
+        // `l` (the owning location) needs an exception to XMapObject::
+        // serialize()'s usual "deliberately not persisted, re-derived
+        // structurally" rule for it: that rule only holds for objects
+        // actually placed into a location's MAP grid, where
+        // XLocation::FixupMapObjectPositions()/XAnyPlace::Setup() calls
+        // SetLocation() on every occupant after load. A generator is
+        // never grid-placed - it only exists as a scheduled
+        // XScheduler entry - so nothing else ever re-derives `l` for
+        // it. Leaving it null after load crashes the very next time the
+        // generator runs (e.g. XUniversalGen::Run() dereferencing
+        // l->GetFreeXY()) - found via a real save/restore/explore
+        // playtest of a live game.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+
+            if constexpr (Archive::is_loading::value) {
+                std::weak_ptr<XLocation> wl;
+                ar(wl);
+                l = wl.lock().get();
+            } else {
+                std::weak_ptr<XLocation> wl;
+
+                if (l && l->isValid() && !l->weak_from_this().expired()) {
+                    wl = std::static_pointer_cast<XLocation>(l->shared_from_this());
+                }
+
+                ar(wl);
+            }
+        }
 };
 
 class XUniversalGen final : public XGenerator
@@ -57,6 +96,7 @@ class XUniversalGen final : public XGenerator
     protected:
         XUniversalGen() : crl(), crc() {
         }
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XUniversalGen, XGenerator);
@@ -71,6 +111,13 @@ class XUniversalGen final : public XGenerator
         bool Run() override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XGenerator>(this));
+            ar(crl, crc, max_creature);
+        }
     protected:
         CREATURE_LEVEL crl;
         CREATURE_CLASS crc;
@@ -94,8 +141,24 @@ class XMainLocationGen final : public XGenerator
         bool Run() override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XGenerator>(this));
+            ar(turns_count);
+        }
     protected:
         int turns_count;
 };
+
+// Construction routed via each class's own DECLARE_CREATOR-provided
+// DUMMY_STRUCT constructor rather than the (protected/asserting)
+// default constructor. These specializations have to live here rather
+// than in xgen.cpp: they get triggered from inside XScheduler::serialize()
+// (a template in xscheduler.h, reinstantiated per translation unit),
+// same reasoning as XStandardAI/XSpell/etc.
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XUniversalGen, serialize);
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XMainLocationGen, serialize);
 
 #endif

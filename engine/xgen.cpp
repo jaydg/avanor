@@ -18,12 +18,21 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/anycr.h"
 #include "engine/xapi.h"
 #include "engine/xgen.h"
 #include "game/game.h"
 
+// XGenerator is never itself a dynamic type - just a link in the
+// polymorphic pointer-cast chain for its two concrete subclasses below.
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XGenerator);
+
 REGISTER_CLASS(XUniversalGen);
+CEREAL_REGISTER_TYPE(XUniversalGen);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XGenerator, XUniversalGen);
 
 bool XUniversalGen::Run()
 {
@@ -76,6 +85,8 @@ void XUniversalGen::Restore(XFile * f)
 }
 
 REGISTER_CLASS(XMainLocationGen);
+CEREAL_REGISTER_TYPE(XMainLocationGen);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XGenerator, XMainLocationGen);
 
 bool XMainLocationGen::Run()
 {

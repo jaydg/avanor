@@ -20,7 +20,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cmath>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "engine/xmapobj.h"
+
+// XMapObject is never itself the dynamic type of a serialized object
+// (only ever a base class in the middle of a longer chain), so it
+// doesn't need its own CEREAL_REGISTER_TYPE - this relation just
+// connects the polymorphic pointer-cast graph so shared_ptr<XObject>
+// (e.g. XScheduler::Entry) can resolve any XMapObject-derived leaf.
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XObject, XMapObject);
 
 XMapObject::XMapObject(XMapObject* copy) :
     XObject(static_cast<XObject *>(copy)),

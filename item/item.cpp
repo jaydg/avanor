@@ -20,8 +20,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/creature.h"
 #include "item/item.h"
+
+// XItem is never itself a dynamic type either (every actual item is a
+// concrete subclass, each with its own CEREAL_REGISTER_TYPE against
+// XItem) - this just extends the polymorphic pointer-cast chain one
+// more hop, up to XObject, for XScheduler::Entry's shared_ptr<XObject>.
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XBaseObject, XItem);
 
 XItem::XItem()
 {

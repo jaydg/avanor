@@ -22,6 +22,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cmath>
 #include <fmt/format.h>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/anycr.h"
 #include "creature/creature.h"
 #include "creature/los.h"
@@ -34,6 +37,13 @@ extern "C"
 {
 #include "lauxlib.h"
 }
+
+// XCreature is never itself a dynamic type - every actual creature is
+// a concrete subclass (XAnyCreature, XHero, the uniques), each with
+// its own CEREAL_REGISTER_TYPE against XCreature - this just extends
+// the polymorphic pointer-cast chain one more hop, up to XObject, for
+// XScheduler::Entry's shared_ptr<XObject>.
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XBaseObject, XCreature);
 
 // a creature which is currently being displayed
 XCreature* XCreature::main_creature = nullptr;
