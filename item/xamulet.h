@@ -41,8 +41,6 @@ class XAmulet : public XEnhance
 
         int isIdentifed() override;
         void Identify(int level) override;
-        static void StoreTable(XFile * f);
-        static void RestoreTable(XFile * f);
 
         // aidentify_db is private to xamulet.cpp.
         static void SaveTable(cereal::JSONOutputArchive& ar);

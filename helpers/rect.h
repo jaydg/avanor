@@ -79,8 +79,6 @@ class XRect
         void Grow(int r);
         [[nodiscard]] int Width() const;
         [[nodiscard]] int Height() const;
-        void Store(const XFile* f) const;
-        void Restore(const XFile* f);
 
         template<class Archive>
         void serialize(Archive& ar)

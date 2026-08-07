@@ -109,8 +109,6 @@ class XUniversalGen final : public XGenerator
         }
 
         bool Run() override;
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -139,8 +137,6 @@ class XMainLocationGen final : public XGenerator
         }
 
         bool Run() override;
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         template<class Archive>
         void serialize(Archive& ar)

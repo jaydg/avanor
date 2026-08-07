@@ -95,8 +95,6 @@ class XCorpse : public XAnyFood
         RESULT onEat(XCreature * eater) override;
 
         bool Run() override;
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         // pCorpseData is a non-owning pointer into a static per-species
         // table (XCreatureStorage), not owned/serialized data - only `cn`

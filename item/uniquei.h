@@ -73,7 +73,6 @@ class XAvanorDefender : public XWeapon
 
         std::string toString() override;
         static XGUID avanordefender_guid;
-        void Restore(XFile * f) override;
 
         // avanordefender_guid mirrors this instance's own guid (see the
         // ctor and the existing Restore() above) - resetting it

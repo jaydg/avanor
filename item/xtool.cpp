@@ -127,18 +127,6 @@ RESULT XCookingSet::onUse(ItemUsageState uis, XCreature * cr)
     return FAIL;
 }
 
-void XCookingSet::Store(XFile * f)
-{
-    f->Write(&use_time, sizeof(int));
-    XItem::Store(f);
-}
-
-void XCookingSet::Restore(XFile * f)
-{
-    f->Read(&use_time, sizeof(int));
-    XItem::Restore(f);
-}
-
 void XCookingSet::Invalidate()
 {
     if (cooked_item) {
@@ -217,8 +205,6 @@ RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
     return FAIL;
 }
 
-
-
 //////////////////////////////////////////////////////////////////////
 // EyeOfRaa
 // Artifact
@@ -236,9 +222,6 @@ RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature * cr)
 
     return SUCCESS;
 }
-
-
-
 
 //////////////////////////////////////////////////////////////////////
 // AlchemySet

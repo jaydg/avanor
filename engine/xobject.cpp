@@ -34,10 +34,10 @@ XGUID guid = 1;
 XClassInfo* XClassFactory::first_class = nullptr;
 int XClassFactory::counter = 0;
 
-XClassFactory::XClassFactory(const std::string& name, const CLASS_CREATOR pClassCreator, CLASS_CREATOR pClassNew)
+XClassFactory::XClassFactory(const std::string& name, CLASS_CREATOR pClassNew)
 {
     if (!first_class) {
-        first_class = new XClassInfo(name, pClassCreator, pClassNew);
+        first_class = new XClassInfo(name, pClassNew);
     } else {
         XClassInfo * tmp = first_class;
 
@@ -45,7 +45,7 @@ XClassFactory::XClassFactory(const std::string& name, const CLASS_CREATOR pClass
             tmp = tmp->next;
         }
 
-        tmp->next = new XClassInfo(name, pClassCreator, pClassNew);
+        tmp->next = new XClassInfo(name, pClassNew);
     }
 
     counter++;
@@ -66,22 +66,6 @@ XClassFactory::~XClassFactory()
     }
 }
 
-XObject* XClassFactory::Create(const std::string& name)
-{
-    const XClassInfo * tmp = first_class;
-
-    while (tmp) {
-        if (tmp->name == name) {
-            return tmp->pClassCreator();
-        }
-
-        tmp = tmp->next;
-    }
-
-    assert(0);
-    return nullptr;
-}
-
 XObject* XClassFactory::CreateNew(const std::string& name)
 {
     const XClassInfo* tmp = first_class;
@@ -95,75 +79,6 @@ XObject* XClassFactory::CreateNew(const std::string& name)
     }
 
     return nullptr;
-}
-
-void XObject::Store(XFile * f)
-{
-    if (bAlreadyStored) {
-        assert(!bAlreadyStored);
-    }
-
-    bAlreadyStored = true;
-
-    f->Write(&xguid, sizeof(XGUID));
-    f->Write(&quantity, sizeof(int));
-    f->Write(&im, sizeof(ITEM_MASK));
-    f->Write(&ttm, sizeof(int));
-    f->Write(&ttmb, sizeof(int));
-}
-
-void XObject::Restore(XFile * f)
-{
-    f->Read(&xguid, sizeof(XGUID));
-    f->Read(&quantity, sizeof(int));
-    f->Read(&im, sizeof(ITEM_MASK));
-    f->Read(&ttm, sizeof(int));
-    f->Read(&ttmb, sizeof(int));
-}
-
-void XObject::StoreAllObjects(XFile * f)
-{
-    const size_t size = objects.size();
-    f->Write(&size, sizeof(size_t), 1);
-
-    std::ofstream tmp("dmp.txt");
-
-    long i = 0;
-    for (const auto& [key, obj] : objects) {
-        const std::string& class_name = obj->GetClassName();
-        auto name_size = static_cast<unsigned char>(class_name.size());
-        f->Write(&name_size, sizeof(name_size));
-        f->Write(class_name.c_str(), sizeof(char), name_size);
-        obj->bAlreadyStored = false;
-        tmp << fmt::format("[{:04}] {}\n", i++, class_name);
-    }
-
-    for (const auto& [key, obj] : objects) {
-        obj->Store(f);
-    }
-}
-
-void XObject::RestoreAllObjects(XFile * f)
-{
-    assert(objects.empty());
-
-    long read_count = 0;
-    f->Read(&read_count, sizeof(read_count));
-
-    std::ofstream tmp("dmp2.txt");
-
-    for (long i = 0; i < read_count; i++) {
-        unsigned char name_size;
-        f->Read(&name_size, sizeof(name_size));
-        std::string class_name(name_size, '\0');
-        f->Read(class_name.data(), sizeof(char), name_size);
-        XClassFactory::Create(class_name);
-        tmp << fmt::format("[{:04}] {}\n", i, class_name);
-    }
-
-    for (auto& [key, obj] : objects) {
-        obj->Restore(f);
-    }
 }
 
 void XObject::InvalidateAllObjects()

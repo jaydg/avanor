@@ -61,7 +61,6 @@ enum AI_FLAG {
     AIF_GHOST               = AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
 };
 
-
 enum COMPANION_COMMAND {
     CC_NONE,
     CC_ATTACK,
@@ -138,9 +137,6 @@ class XStandardAI
         void AddPersonalEnemy(XCreature * cr);
         void RemovePersonalEnemy(const XCreature* cr);
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-
         // Matches Store/Restore's actual current scope, not just what's
         // convenient - companion/ordered_enemy/personal_enemy/last_enemy
         // (all weak_ptr<XCreature>, easy to serialize) and script were
@@ -166,7 +162,6 @@ class XStandardAI
         }
 
         void SetGroupEnemy(XCreature* cr) const;
-
 
         // companion
         std::weak_ptr<XCreature> companion;

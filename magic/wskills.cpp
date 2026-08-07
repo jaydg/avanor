@@ -168,14 +168,3 @@ int XWarSkills::GetUseTime(Type wt)
     return 1000 - GetLevel(wt) * 30;
 }
 
-void XWarSkills::Store(XFile * f)
-{
-    f->Write(marks_counter, sizeof(int), ALL);
-    f->Write(levels, sizeof(int), ALL);
-}
-
-void XWarSkills::Restore(XFile * f)
-{
-    f->Read(marks_counter, sizeof(int), ALL);
-    f->Read(levels, sizeof(int), ALL);
-}

@@ -132,24 +132,3 @@ void XScheduler::Remove()
     data[head].erase(data[head].begin());
 }
 
-void XScheduler::Store(XFile * f)
-{
-    f->Write(&_time, sizeof(_time));
-    f->Write(&head, sizeof(head));
-
-    for (auto & i : data) {
-        // FIXME: Implement when porting saving/restoring to Cereal
-        // i.StoreList(f);
-    }
-}
-
-void XScheduler::Restore(XFile * f)
-{
-    f->Read(&_time, sizeof(_time));
-    f->Read(&head, sizeof(head));
-
-    for (auto & i : data) {
-        // FIXME: Implement when porting saving/restoring to Cereal
-        // i.RestoreList(f);
-    }
-}

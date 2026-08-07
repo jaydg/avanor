@@ -291,15 +291,3 @@ int XModifier::Get(const MODIFIER_TYPE mt) const
     return val;
 }
 
-void XModifier::Store(XFile * f)
-{
-    // FIXME: Implement when porting saving/restoring to cereal
-    // ml.StoreList(f);
-}
-
-void XModifier::Restore(XFile * f, XCreature * owner)
-{
-    assert(ml.empty());
-    // FIXME: Implement when porting saving/restoring to cereal
-    // ml.RestoreList(f);
-}

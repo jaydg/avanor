@@ -51,36 +51,6 @@ void XMapObject::Invalidate()
     XObject::Invalidate();
 }
 
-void XMapObject::Store(XFile * f)
-{
-    XObject::Store(f);
-
-    f->Write(&x, sizeof(int));
-    f->Write(&y, sizeof(int));
-    f->Write(&nx, sizeof(int));
-    f->Write(&ny, sizeof(int));
-    f->Write(&view, sizeof(char));
-    f->Write(&color, sizeof(int));
-    f->WriteStr(name);
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
-
-void XMapObject::Restore(XFile * f)
-{
-    XObject::Restore(f);
-
-    f->Read(&x, sizeof(int));
-    f->Read(&y, sizeof(int));
-    f->Read(&nx, sizeof(int));
-    f->Read(&ny, sizeof(int));
-    f->Read(&view, sizeof(char));
-    f->Read(&color, sizeof(int));
-    f->ReadStr(name);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
 int XMapObject::Compare(XObject * o)
 {
     assert(dynamic_cast<XMapObject*>(o));

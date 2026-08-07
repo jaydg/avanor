@@ -86,18 +86,3 @@ int XRect::Height() const
     return bottom - top;
 }
 
-void XRect::Store(const XFile* f) const
-{
-    f->Write(&left, sizeof(int));
-    f->Write(&right, sizeof(int));
-    f->Write(&top, sizeof(int));
-    f->Write(&bottom, sizeof(int));
-}
-
-void XRect::Restore(const XFile* f)
-{
-    f->Read(&left, sizeof(int));
-    f->Read(&right, sizeof(int));
-    f->Read(&top, sizeof(int));
-    f->Read(&bottom, sizeof(int));
-}

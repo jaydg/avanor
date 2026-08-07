@@ -27,16 +27,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRing);
 
 int ridentify_db[20] = {};
 
-void XRing::StoreTable(XFile * f)
-{
-    f->Write(ridentify_db, sizeof(int), 20);
-}
-
-void XRing::RestoreTable(XFile * f)
-{
-    f->Read(ridentify_db, sizeof(int), 20);
-}
-
 void XRing::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < 20; i++) {

@@ -61,9 +61,6 @@ class XMapObject : public XObject
 
         int Compare(XObject * o) override;
 
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
-
         template<class Archive>
         void serialize(Archive& ar)
         {

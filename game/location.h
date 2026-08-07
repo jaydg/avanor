@@ -101,7 +101,6 @@ enum LOCATION {
     L_EOF = 200,
 };
 
-
 enum LUA_EVENT {
     LE_MOVE	= 1,
     LE_MOVE_IN	= 2,
@@ -149,7 +148,6 @@ struct LOCATION_PATTERN {
 
 class XMap;
 class XStairWay;
-
 
 struct lua_State;
 
@@ -257,8 +255,6 @@ class XLocation : public XObject
             }
         }
 
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
         void Invalidate() override;
 
         std::string GetBriefName()

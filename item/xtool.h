@@ -84,8 +84,6 @@ class XCookingSet : public XTool
             return name;
         }
 
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
         void Invalidate() override;
 
         template<class Archive>
@@ -102,7 +100,6 @@ class XCookingSet : public XTool
         std::shared_ptr<XItem> cooked_item;
         int use_time;
 };
-
 
 //using of pick axe and mining skill
 //all object on map have some digiting resistance

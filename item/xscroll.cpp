@@ -115,22 +115,6 @@ SCROLL_REC scroll_descr[] = {
     SCROLL_REC("recipe",	E_NONE,	SCROLL_RECIPIE,	30,	25),
 };
 
-void SCROLL_REC::Store(XFile * f)
-{
-    f->Write(&effect, sizeof(EFFECT));
-    f->Write(&scroll_name, sizeof(SCROLL_NAME));
-    f->Write(&identify, sizeof(int));
-    f->WriteStr(name);
-}
-
-void SCROLL_REC::Restore(XFile * f)
-{
-    f->Read(&effect, sizeof(EFFECT));
-    f->Read(&scroll_name, sizeof(SCROLL_NAME));
-    f->Read(&identify, sizeof(int));
-    f->ReadStr(name);
-}
-
 int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
 {
     if (scrn == SCROLL_RANDOM) {
@@ -286,34 +270,6 @@ int XScroll::onRead(XCreature * cr)
     }
 
     return flag;
-}
-
-void XScroll::Store(XFile * f)
-{
-    XItem::Store(f);
-    f->Write(&descr, sizeof(int));
-    f->Write(&sc_name, sizeof(SCROLL_NAME));
-}
-
-void XScroll::Restore(XFile * f)
-{
-    XItem::Restore(f);
-    f->Read(&descr, sizeof(int));
-    f->Read(&sc_name, sizeof(SCROLL_NAME));
-}
-
-void XScroll::StoreTable(XFile * f)
-{
-    for (int i = 0; i < SCROLL_RANDOM; i++) {
-        scroll_descr[i].Store(f);
-    }
-}
-
-void XScroll::RestoreTable(XFile * f)
-{
-    for (int i = 0; i < SCROLL_RANDOM; i++) {
-        scroll_descr[i].Restore(f);
-    }
 }
 
 void XScroll::SaveTable(cereal::JSONOutputArchive& ar)

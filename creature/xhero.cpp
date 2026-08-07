@@ -799,7 +799,6 @@ void XHero::InfoList()
     vRestore(&xbuf);
 }
 
-
 void XHero::ExpList() const
 {
     V_BUFFER xbuf;
@@ -839,7 +838,6 @@ void XHero::ExpList() const
     vRestore(&xbuf);
 }
 
-
 auto empty = "                                                                 ";
 auto smask = "[|{}'=!?\"\\%]]$X";
 ITEM_MASK imask[] = {
@@ -862,7 +860,6 @@ const char* output_items_name[] = {
     "Weapon", "Necklaces", "Rings", "Missile weapon", "Missiles", "Potions",
     "Scrolls", "Books", "Wands", "Food", "Herbs", "Light sources", "Tools", "Money"
 };
-
 
 // first_item must be 0 if need to start from first item
 static int first_item = 0;
@@ -1018,7 +1015,6 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, co
 
     return nullptr;
 }
-
 
 const char* part_names[] = {"",
         "Head", "Necklace", "Body", "Cloak",
@@ -2349,7 +2345,6 @@ std::shared_ptr<XItem> XHero::onIdentifyItem()
     return it;
 }
 
-
 void XHero::ChatWithMonster()
 {
     int creature_count = 0;
@@ -2568,35 +2563,6 @@ void XHero::SaveGame()
     vRestore(&xyzbuf);
     vRefresh();
 };
-
-void XHero::Store(XFile * f)
-{
-    XCreature::Store(f);
-    f->Write(&race, sizeof(int), 1);
-    f->Write(&profession, sizeof(int), 1);
-    f->Write(&turn_count);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // reception_list.StoreList(f);
-}
-
-void XHero::Restore(XFile * f)
-{
-    XCreature::Restore(f);
-    f->Read(&race, sizeof(int), 1);
-    f->Read(&profession, sizeof(int), 1);
-    f->Read(&turn_count);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // reception_list.RestoreList(f);
-
-    isDisturb = 0;
-    last_char = '5';
-    run_way_count = 0;
-    target.reset();
-    last_cast = nullptr;
-    melee_attack = &hero_melee;
-}
 
 void XHero::FixupHeroDefaults()
 {

@@ -250,23 +250,6 @@ int XCorpse::GetValue()
     return value;
 }
 
-void XCorpse::Store(XFile * f)
-{
-    XAnyFood::Store(f);
-    f->Write(&corpse_flag, sizeof(unsigned int));
-    f->Write(&time_of_roating, sizeof(int));
-    f->Write(&cn, sizeof(CREATURE_NAME));
-}
-
-void XCorpse::Restore(XFile * f)
-{
-    XAnyFood::Restore(f);
-    f->Read(&corpse_flag, sizeof(unsigned int));
-    f->Read(&time_of_roating, sizeof(int));
-    f->Read(&cn, sizeof(CREATURE_NAME));
-    FixupCorpseData();
-}
-
 void XCorpse::FixupCorpseData()
 {
     pCorpseData = &XCreatureStorage::GetCreatureData(cn)->pCorpseData;

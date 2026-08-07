@@ -157,18 +157,6 @@ struct POTION_RUN_ONCE {
     }
 } _POTION_RUN_ONCE;
 
-void POTION_REC::Store(XFile * f)
-{
-    f->Write(&identify, sizeof(identify));
-    f->Write(&force_color, sizeof(POTION_COLOR));
-}
-
-void POTION_REC::Restore(XFile * f)
-{
-    f->Read(&identify, sizeof(identify));
-    f->Read(&force_color, sizeof(POTION_COLOR));
-}
-
 POTION_NAME POTION_REC::GetRandomPotion()
 {
     int val = vRand(potion_total_value);
@@ -191,7 +179,6 @@ POTION_REC* POTION_REC::GetRec(const POTION_NAME pn)
 
     return nullptr;
 }
-
 
 XPotion::XPotion(const POTION_NAME _pn)
 {
@@ -427,7 +414,6 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-
             case PN_BLEEDNESS:
                 cr->md->Add(MOD_WOUND, 30, cr);
 
@@ -482,19 +468,6 @@ int XPotion::onDrink(XCreature * cr)
     return 0;
 }
 
-void XPotion::Store(XFile * f)
-{
-    XItem::Store(f);
-    f->Write(&pn, sizeof(POTION_NAME));
-}
-
-void XPotion::Restore(XFile * f)
-{
-    XItem::Restore(f);
-    f->Read(&pn, sizeof(POTION_NAME));
-    FixupDescr();
-}
-
 void XPotion::FixupDescr()
 {
     pdescr = nullptr;
@@ -506,20 +479,6 @@ void XPotion::FixupDescr()
         }
 
     assert(pdescr);
-}
-
-void XPotion::StoreTable(XFile * f)
-{
-    for (int i = 0; i < PN_RANDOM; i++) {
-        potion_descr[i].Store(f);
-    }
-}
-
-void XPotion::RestoreTable(XFile * f)
-{
-    for (int i = 0; i < PN_RANDOM; i++) {
-        potion_descr[i].Restore(f);
-    }
 }
 
 void XPotion::SaveTable(cereal::JSONOutputArchive& ar)
@@ -620,7 +579,6 @@ int XAlchemy::GetPotionCount(const int al_lvl, POTION_NAME** pTable)
             tres++;
         }
 
-
     return res;
 }
 
@@ -657,14 +615,3 @@ POTION_NAME XAlchemy::GetPotionName(POTION_NAME pn1, POTION_NAME pn2)
     return PN_UNKNOWN;
 }
 
-void XAlchemy::Store(XFile * f)
-{
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // alchemy.reception.StoreList(f);
-}
-
-void XAlchemy::Restore(XFile * f)
-{
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // alchemy.reception.RestoreList(f);
-}

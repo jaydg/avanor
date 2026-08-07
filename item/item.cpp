@@ -128,7 +128,6 @@ void XItem::Invalidate()
     }
 }
 
-
 int XItem::BasicFill(ITEM_TYPE it, XItemBasicStructure * pData)
 {
     _MAIN_ITEM_STRUCT * x_struct = pData->pFirstItem;
@@ -525,51 +524,6 @@ std::string XItem::GetArtifactName(std::string real_name)
     }
 
     return str;
-}
-
-void XItem::Store(XFile * f)
-{
-    XBaseObject::Store(f);
-
-    f->Write(&bp, sizeof(BODY_PART));
-    f->Write(&brt, sizeof(BRAND_TYPE));
-    f->Write(&durability, sizeof(int));
-    f->Write(&identify, sizeof(int));
-
-    f->Write(&is_selected, sizeof(int));
-    f->Write(&it, sizeof(ITEM_TYPE));
-    f->Write(&material_index, sizeof(int));
-
-    f->Write(&special_number, sizeof(int));
-    f->Write(&special_property, sizeof(SPECIAL_PROPERTY));
-
-    f->Write(&value, sizeof(int));
-    f->Write(&wt, sizeof(XWarSkills::Type));
-    f->Write(&quality, sizeof(ITEM_QUALITY));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
-void XItem::Restore(XFile * f)
-{
-    XBaseObject::Restore(f);
-
-    f->Read(&bp, sizeof(BODY_PART));
-    f->Read(&brt, sizeof(BRAND_TYPE));
-    f->Read(&durability, sizeof(int));
-    f->Read(&identify, sizeof(int));
-
-    f->Read(&is_selected, sizeof(int));
-    f->Read(&it, sizeof(ITEM_TYPE));
-    f->Read(&material_index, sizeof(int));
-
-    f->Read(&special_number, sizeof(int));
-    f->Read(&special_property, sizeof(SPECIAL_PROPERTY));
-
-    f->Read(&value, sizeof(int));
-    f->Read(&wt, sizeof(XWarSkills::Type));
-    f->Read(&quality, sizeof(ITEM_QUALITY));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 int XItem::onWear(XCreature * cr)

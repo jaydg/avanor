@@ -41,8 +41,6 @@ struct _HERBS {
     int difficulty;
     int identify;
     static void Create();
-    static void Store(XFile * f);
-    static void Restore(XFile * f);
 
     // herbs[] is private to xherb.cpp.
     static void SaveTable(cereal::JSONOutputArchive& ar);
@@ -88,19 +86,7 @@ class XHerb : public XAnyFood
         int isIdentifed() override;
 
         std::string toString() override;
-        void Store(XFile * f) override
-        {
-            XAnyFood::Store(f);
-            f->Write(&herb_index, sizeof(herb_index));
-        }
-
-        void Restore(XFile * f) override
-        {
-            XAnyFood::Restore(f);
-            f->Read(&herb_index, sizeof(herb_index));
-        }
-
-        template<class Archive>
+                        template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XAnyFood>(this));
@@ -136,8 +122,6 @@ class XHerbBush: public XMapObject
     public:
         DECLARE_CREATOR(XHerbBush, XMapObject);
         XHerbBush(int _x, int _y, XLocation * _l);
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -165,8 +149,6 @@ class XMushSpawn: public XMapObject
     public:
         DECLARE_CREATOR(XMushSpawn, XMapObject);
         XMushSpawn(int _x, int _y, XLocation * _l);
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -179,6 +161,5 @@ class XMushSpawn: public XMapObject
 
         XObject* Pick(XCreature * picker) override;
 };
-
 
 #endif

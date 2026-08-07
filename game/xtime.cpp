@@ -63,30 +63,6 @@ const char* week_name[] = {
     "week_4",
 };
 
-void XTime::Store(XFile * f)
-{
-    f->Write(&sec, sizeof(unsigned int));
-    f->Write(&min, sizeof(unsigned int));
-    f->Write(&hour, sizeof(unsigned int));
-    f->Write(&day, sizeof(unsigned int));
-    f->Write(&month, sizeof(unsigned int));
-    f->Write(&year, sizeof(unsigned int));
-
-    f->Write(&tic, sizeof(unsigned int));
-}
-
-void XTime::Restore(XFile * f)
-{
-    f->Read(&sec, sizeof(unsigned int));
-    f->Read(&min, sizeof(unsigned int));
-    f->Read(&hour, sizeof(unsigned int));
-    f->Read(&day, sizeof(unsigned int));
-    f->Read(&month, sizeof(unsigned int));
-    f->Read(&year, sizeof(unsigned int));
-
-    f->Read(&tic, sizeof(unsigned int));
-}
-
 int XTime::GetMonth()
 {
     return month;

@@ -115,16 +115,6 @@ bool XStats::isEqual(const XStats* s) const
     return true;
 }
 
-void XStats::Store(XFile * f)
-{
-    f->Write(&stats[S_STR], sizeof(int), S_EOF);
-}
-
-void XStats::Restore(XFile * f)
-{
-    f->Read(&stats[S_STR], sizeof(int), S_EOF);
-}
-
 XStatsGenerator::XStatsGenerator()
 {
     for (int i = S_STR; i < S_EOF; i++) {

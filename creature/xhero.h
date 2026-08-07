@@ -143,9 +143,6 @@ class XHero final : public XCreature
 
         int stopAction() override;
 
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
-
         // last_char/run_way_count/target/last_cast are transient
         // per-turn UI state, and melee_attack is a non-owning pointer
         // into a static table (hero_melee, private to xhero.cpp) - none

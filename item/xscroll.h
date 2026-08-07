@@ -71,10 +71,6 @@ class XScroll : public XItem
         std::string toString() override;
         int Compare(XObject * o) override;
         virtual int onRead(XCreature * cr);
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
-        static void StoreTable(XFile * f);
-        static void RestoreTable(XFile * f);
 
         // Non-template, concrete-archive-typed (like XPotion::Save/
         // LoadTable): SCROLL_REC/scroll_descr[] are private to

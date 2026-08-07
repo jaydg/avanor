@@ -84,8 +84,6 @@ class XScheduler
             }
         }
 
-        void Store(XFile * f);
-        void Restore(XFile * f);
 };
 
 #endif

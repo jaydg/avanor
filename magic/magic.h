@@ -73,7 +73,6 @@ enum MAGIC_SCHOOL {
     MS_EOF
 };
 
-
 class XSpell
 {
         int cast_count;
@@ -158,9 +157,6 @@ class XMagic
         }
 
         std::vector<std::unique_ptr<XSpell>> spells;
-
-        void Store(XFile * f);
-        void Restore(XFile * f);
 
         // Store/Restore above are already entirely stubbed out (see the
         // FIXME in magic.cpp) - this is new real persistence, not a

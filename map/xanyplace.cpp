@@ -123,7 +123,6 @@ int XAnyPlace::onCreatureLeave(XCreature* cr)
     return 0;
 }
 
-
 void XAnyPlace::Invalidate()
 {
     location = nullptr;
@@ -146,56 +145,3 @@ void XAnyPlace::Setup(XLocation* _map)
         }
 }
 
-void XAnyPlace::Store(XFile* f)
-{
-    XObject::Store(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    area.Store(f);
-    size_t sz = 0;
-
-    if (onEventLua) {
-        sz = strlen(onEventLua) + 1;
-    }
-
-    f->Write(&sz);
-
-    if (sz > 0) {
-        f->Write(onEventLua, sz);
-    }
-
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_SAVE);
-        lua_call(XLocation::L, 1, 1);
-        lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
-    }
-}
-
-void XAnyPlace::Restore(XFile* f)
-{
-    XObject::Restore(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    area.Restore(f);
-    size_t sz = 0;
-    f->Read(&sz);
-
-    if (sz > 0) {
-        onEventLua = new char [sz];
-        f->Read(onEventLua, sz);
-    } else {
-        onEventLua = nullptr;
-    }
-
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_LOAD);
-        lua_call(XLocation::L, 1, 1);
-        lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
-    }
-}

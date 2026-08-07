@@ -94,9 +94,6 @@ public:
         return count_ == d->count_ && sides_ == d->sides_ && bonus_ == d->bonus_;
     }
 
-    void Store(const XFile* f) const;
-    void Restore(const XFile* f);
-
     template<class Archive>
     void serialize(Archive& ar)
     {

@@ -116,15 +116,11 @@ class XQuest
         int hero_die;
         int hero_win;
 
-
         static void Take(int id);
         static void Complete(int id);
         static void Close(int id);
         static QUEST Status(int id);
         static XQuestRec* Find(int id);
-
-        void Store(XFile * f);
-        void Restore(XFile * f);
 
         template<class Archive>
         void serialize(Archive& ar)

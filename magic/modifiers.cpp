@@ -115,20 +115,6 @@ MODIFIER_RESULT XBasicModifier::Run(XCreature * owner)
     }
 }
 
-void XBasicModifier::Store(XFile * f)
-{
-    f->Write(&val, sizeof(int));
-    f->Write(&mdt, sizeof(MODIFIER_TYPE));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
-void XBasicModifier::Restore(XFile * f)
-{
-    f->Read(&val, sizeof(int));
-    f->Read(&mdt, sizeof(MODIFIER_TYPE));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
 MODIFIER_RESULT XModWound::Run(XCreature * owner)
 {
     val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(XSkill::Skill::FIRST_AID));
@@ -269,7 +255,6 @@ MODIFIER_RESULT XModParalyse::Run(XCreature * owner)
     return XBasicModifier::Run(owner);
 }
 
-
 MODIFIER_RESULT XModDelayed::Run(XCreature * owner)
 {
     MODIFIER_RESULT mr = XBasicModifier::Run(owner);
@@ -280,21 +265,6 @@ MODIFIER_RESULT XModDelayed::Run(XCreature * owner)
 
     return mr;
 }
-
-void XModDelayed::Store(XFile * f)
-{
-    XBasicModifier::Store(f);
-    f->Write(&set_mt, sizeof(MODIFIER_TYPE));
-    f->Write(&set_val, sizeof(int));
-}
-
-void XModDelayed::Restore(XFile * f)
-{
-    XBasicModifier::Restore(f);
-    f->Read(&set_mt, sizeof(MODIFIER_TYPE));
-    f->Read(&set_val, sizeof(int));
-}
-
 
 int XModSeeInvisible::onSet(XCreature * owner)
 {

@@ -81,7 +81,6 @@ enum CR_NAME_TYPE {
     CRN_T4, // yours, his/hers, its
 };
 
-
 /////// attack structures ///////////
 // 1) Creatures can make one attack with several consequences:
 //	a) just a simple damage
@@ -117,8 +116,6 @@ struct ACTION_DATA {
     // multi-turn book read), so this can be the item's only reference.
     // See XItem::Own().
     std::shared_ptr<XItem> item;
-    void Store(XFile * f);
-    void Restore(XFile * f);
 
     // `item` was never actually persisted even before Cereal (see the
     // FIXME still in Store/Restore) - new real persistence.
@@ -178,7 +175,6 @@ struct DAMAGE_DATA {
     const char* attacker_name; // if this name is specified, then write it instead attacker name
     int damage;
 };
-
 
 //*******************************************************************************//
 // We have to create one unificated function to damage any creature
@@ -385,9 +381,6 @@ class XCreature : public XBaseObject
         virtual void LastStep();
 
         static MF_RESULT MissileFlight(MF_DATA* mfd);
-
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
 
         // Defined in creature.cpp, where creature/anycr.h (for
         // XCreatureStorage) and the Lua C headers are already included

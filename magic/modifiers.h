@@ -138,9 +138,6 @@ class XBasicModifier
             return "";
         }
 
-        virtual void Store(XFile * f);
-        virtual void Restore(XFile * f);
-
         // `setter` was never actually persisted even before the
         // shared_ptr migration (Store/Restore only ever wrote val/mdt -
         // see the FIXME left in place in modifiers.cpp) - this is new
@@ -219,7 +216,6 @@ class XModWound : public XBasicModifier
         }
 };
 
-
 class XModPoison : public XBasicModifier
 {
     public:
@@ -263,7 +259,6 @@ class XModPoison : public XBasicModifier
             ar(cereal::base_class<XBasicModifier>(this));
         }
 };
-
 
 class XModConfuse : public XBasicModifier
 {
@@ -445,7 +440,6 @@ class XModDisease : public XBasicModifier
         }
 };
 
-
 class XModWeak : public XBasicModifier
 {
     public:
@@ -491,7 +485,6 @@ class XModWeak : public XBasicModifier
             ar(cereal::base_class<XBasicModifier>(this));
         }
 };
-
 
 class XModParalyse : public XBasicModifier
 {
@@ -551,8 +544,6 @@ class XModDelayed : public XBasicModifier
         }
 
         MODIFIER_RESULT Run(XCreature * owner) override;
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         int Compare(XBasicModifier *o) override
         {

@@ -100,9 +100,6 @@ class XResistance
 
         bool isEqual(const XResistance* xr) const;
 
-        void Store(XFile * f);
-        void Restore(XFile * f);
-
         template<class Archive>
         void serialize(Archive& ar)
         {

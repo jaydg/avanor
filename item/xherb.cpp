@@ -91,24 +91,6 @@ void _HERBS::Create()
     }
 }
 
-void _HERBS::Store(XFile * f)
-{
-    for (int i = 0; i < HERBS_COUNT; i++) {
-        f->Write(&herbs[i].pn, sizeof(POTION_NAME));
-        f->Write(&herbs[i].difficulty, sizeof(herbs[i].difficulty));
-        f->Write(&herbs[i].identify, sizeof(herbs[i].identify));
-    }
-}
-
-void _HERBS::Restore(XFile * f)
-{
-    for (int i = 0; i < HERBS_COUNT; i++) {
-        f->Read(&herbs[i].pn, sizeof(POTION_NAME));
-        f->Read(&herbs[i].difficulty, sizeof(herbs[i].difficulty));
-        f->Read(&herbs[i].identify, sizeof(herbs[i].identify));
-    }
-}
-
 void _HERBS::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
@@ -311,20 +293,6 @@ bool XHerbBush::Run()
     return true;
 }
 
-void XHerbBush::Store(XFile * f)
-{
-    XMapObject::Store(f);
-    f->Write(&herb_strength, sizeof(herb_strength));
-    f->Write(&herb_index, sizeof(herb_index));
-}
-
-void XHerbBush::Restore(XFile * f)
-{
-    XMapObject::Restore(f);
-    f->Read(&herb_strength, sizeof(herb_strength));
-    f->Read(&herb_index, sizeof(herb_index));
-}
-
 XObject* XHerbBush::Pick(XCreature * picker)
 {
     picker->sk->UseSkill(XSkill::Skill::HERBALISM);
@@ -387,18 +355,6 @@ bool XMushSpawn::Run()
     }
 
     return true;
-}
-
-void XMushSpawn::Store(XFile * f)
-{
-    XMapObject::Store(f);
-    f->Write(&mush_index, sizeof(mush_index));
-}
-
-void XMushSpawn::Restore(XFile * f)
-{
-    XMapObject::Restore(f);
-    f->Read(&mush_index, sizeof(mush_index));
 }
 
 XObject* XMushSpawn::Pick(XCreature * picker)

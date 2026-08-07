@@ -50,9 +50,6 @@ class XBaseObject : public XMapObject
         std::unique_ptr<XResistance> resistances;
         std::unique_ptr<XStats> stats;
 
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
-
         template<class Archive>
         void serialize(Archive& ar)
         {

@@ -57,8 +57,6 @@ class XShopKeeperAI : public XStandardAI
         virtual int onAnyonePickItem(XCreature * customer, XItem * item);
         virtual int onAnyoneDropItem(XCreature * customer, XItem * item);
         int onGiveItem(XCreature * giver, XItem * item) override;
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
         void SetShop(XShop * _shop)
         {
             shop = _shop;

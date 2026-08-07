@@ -100,7 +100,6 @@ int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
     return 1;
 }
 
-
 int XShop::onCreatureEnter(XCreature * cr)
 {
     if (cr->isHero()) {
@@ -139,24 +138,9 @@ int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
     return 1;
 }
 
-
 int XShop::onCreatureMove(XCreature * cr)
 {
     return 1;
-}
-
-void XShop::Store(XFile * f)
-{
-    XAnyPlace::Store(f);
-    f->Write(&hero_in);
-    f->Write(&shop_mask, sizeof(ITEM_MASK));
-}
-
-void XShop::Restore(XFile * f)
-{
-    XAnyPlace::Restore(f);
-    f->Read(&hero_in);
-    f->Read(&shop_mask, sizeof(ITEM_MASK));
 }
 
 std::string XShop::onShowItem(XItem* item)

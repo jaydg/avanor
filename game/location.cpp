@@ -213,7 +213,6 @@ void XLocation::GetFreeXY(XPoint * pt, XRect * area)
     assert(0);
 }
 
-
 void XLocation::BuildPlain(int w, int h)
 {
     int lm = 0;
@@ -337,7 +336,6 @@ void XLocation::BuildLabirint(int create_trap_door_chest)
     xcb->Build();
     delete xcb;
 }
-
 
 void XLocation::CreateTraps()
 {
@@ -467,41 +465,6 @@ int XLocation::GetCreatureCount(unsigned int creature_class)
     }
 
     return count;
-}
-
-void XLocation::Store(XFile * f)
-{
-    XObject::Store(f);
-    map->Store(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-
-    f->WriteStr(brief_name);
-    f->WriteStr(full_name);
-    f->Write(&visited_by_hero);
-    f->Write(&ln, sizeof(LOCATION));
-    f->WriteStr(event);
-}
-
-void XLocation::Restore(XFile * f)
-{
-    XObject::Restore(f);
-    map = new XMap();
-    map->Restore(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-
-    for (int i = 0; i < MAX_PLACES; i++) {
-        if (places[i] && places[i]->im & IM_WAY) {
-            ways_list.push_back(places[i].get());
-        }
-    }
-
-    f->ReadStr(brief_name);
-    f->ReadStr(full_name);
-    f->Read(&visited_by_hero);
-    f->Read(&ln, sizeof(LOCATION));
-    f->ReadStr(event);
 }
 
 void XLocation::DumpLocation(std::ofstream &file)
@@ -1217,7 +1180,6 @@ int XLocation::SetEventHandler(lua_State * L)
     return 1;
 }
 
-
 int XLocation::GetObjectGUID(lua_State * L)
 {
     XObject * p = (XObject*)lua_topointer(L, 1);
@@ -1288,7 +1250,6 @@ int XLocation::SetCompanion(lua_State * L)
 
     return 0;
 }
-
 
 int XLocation::GiveObjectToCreature(lua_State * L)
 {
@@ -1371,7 +1332,6 @@ int XLocation::QuestModify(lua_State * L)
     return 0;
 }
 
-
 int XLocation::QuestStatus(lua_State * L)
 {
     int id = lua_tonumber(L, 1);
@@ -1385,7 +1345,6 @@ int XLocation::QuestStatus(lua_State * L)
 
     return 1;
 }
-
 
 XFile* XLocation::svg_file = nullptr;
 int XLocation::StoreInt(lua_State * L)

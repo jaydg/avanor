@@ -109,36 +109,6 @@ void MAP::LoadCrossRefs(cereal::JSONInputArchive& ar)
     ar(pMonster, item_list, pSpecialObject);
 }
 
-void MAP::Store(XFile * f)
-{
-    f->Write(&color, sizeof(char));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // item_list.StoreList(f);
-
-    f->Write(&known, sizeof(char));
-    f->Write(&n, sizeof(XTileType::Type));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-
-    f->Write(&visible, sizeof(bool));
-}
-
-void MAP::Restore(XFile * f)
-{
-    f->Read(&color, sizeof(char));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // item_list.RestoreList(f);
-
-    f->Read(&known, sizeof(char));
-    f->Read(&n, sizeof(XTileType::Type));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-
-    f->Read(&visible, sizeof(bool));
-}
-
 XMap::XMap()
 {
     map = nullptr;
@@ -480,7 +450,6 @@ XTileType::Type XMap::GetXY(const int x, const int y) const
     return map[x + y * len].n;
 }
 
-
 void XMap::SetRoom(const int x, const int y, const int room_id) const
 {
     assert(x >= 0 && x < len);
@@ -514,29 +483,6 @@ void XMap::CreateRoom(const int x, const int y, const int l, const int h, const 
             }
         }
     }
-}
-
-void XMap::Store(XFile* f) const
-{
-    f->Write(&len, sizeof(int));
-    f->Write(&hgt, sizeof(int));
-
-    for (int i = 0; i < hgt; i++)
-        for (int j = 0; j < len; j++) {
-            map[j + i * len].Store(f);
-        }
-}
-
-void XMap::Restore(XFile* f)
-{
-    f->Read(&len, sizeof(int));
-    f->Read(&hgt, sizeof(int));
-    map = new MAP[len * hgt];
-
-    for (int i = 0; i < hgt; i++)
-        for (int j = 0; j < len; j++) {
-            map[j + i * len].Restore(f);
-        }
 }
 
 void XMap::Dump(std::ofstream &file) const

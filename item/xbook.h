@@ -53,9 +53,6 @@ struct BOOK_REC {
     int identify;
     int rarity;
 
-    void Store(XFile * f);
-    void Restore(XFile * f);
-
     static int GetBook(BOOK_NAME); //number in array of books
 
     static int current_descr;
@@ -94,16 +91,11 @@ class XBook: public XItem
         std::string toString() override;
         int Compare(XObject * o) override;
         virtual int onRead(XCreature * reader);
-        static void StoreTable(XFile * f);
-        static void RestoreTable(XFile * f);
 
         // Non-template, concrete-archive-typed (like XPotion::Save/
         // LoadTable): book_descr[] is private to xbook.cpp.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);
-
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         template<class Archive>
         void serialize(Archive& ar)

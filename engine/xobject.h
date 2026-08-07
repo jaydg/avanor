@@ -79,20 +79,27 @@ enum ITEM_MASK {
     IM_ALL = 0xFFFFFFFF
 };
 
-
 class XObject;
 // next code is for creating class by it name
 typedef XObject* (*CLASS_CREATOR)();
 
 #define REGISTER_CLASS(__xClass) \
-    XClassFactory reg##__xClass(#__xClass, (CLASS_CREATOR)__xClass::Creator, (CLASS_CREATOR)__xClass::MakeNew)
+    XClassFactory reg##__xClass(#__xClass, (CLASS_CREATOR)__xClass::MakeNew)
 
 struct DUMMY_STRUCT {
 };
 
+// The DUMMY_STRUCT constructor is still real, load-bearing machinery:
+// CEREAL_LOAD_VIA_DUMMY_CONSTRUCT below calls it directly to construct
+// polymorphic objects during Cereal load, bypassing whatever
+// inaccessible/asserting no-args constructor the class has otherwise.
+// The old Creator() static wrapper that used to be the only caller of
+// this constructor (via the legacy, now-removed XClassFactory::Create()/
+// RestoreAllObjects()) is gone - MakeNew() (used by Location.CreateObject,
+// a still-active Lua binding for runtime object creation by class name)
+// is the only factory method left.
 #define DECLARE_CREATOR(__xClass, __xBaseClass) \
     explicit __xClass(DUMMY_STRUCT * ds) : __xBaseClass(ds) {} \
-    static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
     static __xClass * MakeNew() { return new __xClass(); } \
     virtual const std::string GetClassName() override {return #__xClass;}
 
@@ -140,16 +147,14 @@ struct DUMMY_STRUCT {
 class XClassInfo
 {
     public:
-        XClassInfo(const std::string _name, CLASS_CREATOR p, CLASS_CREATOR n)
+        XClassInfo(const std::string _name, CLASS_CREATOR n)
         {
             name = _name;
-            pClassCreator = p;
             pClassNew = n;
             next = nullptr;
         }
 
         std::string name;
-        CLASS_CREATOR pClassCreator;
         CLASS_CREATOR pClassNew;
         XClassInfo* next;
 };
@@ -159,13 +164,11 @@ class XClassFactory
     public:
         static XClassInfo* first_class;
         static int counter;
-        XClassFactory(const std::string& name, CLASS_CREATOR pClass, CLASS_CREATOR pClassNew);
+        XClassFactory(const std::string& name, CLASS_CREATOR pClassNew);
         ~XClassFactory();
-        static XObject* Create(const std::string& name);
         static XObject* CreateNew(const std::string &name);
 };
 // end
-
 
 typedef unsigned long XGUID;
 extern XGUID guid;
@@ -183,9 +186,6 @@ class XObject : public std::enable_shared_from_this<XObject>
 
         // counter of deleted objects
         static long invalid_count;
-
-        // used during saving
-        bool bAlreadyStored;
 
         // all objects have a global unique identifier
         // (it has no sense to store pointers)
@@ -224,8 +224,6 @@ class XObject : public std::enable_shared_from_this<XObject>
 
         static void StorePointer(XFile * f, XObject * p);
         static XObject* RestorePointer(XFile * f, void* owner);
-        static void StoreAllObjects(XFile * f);
-        static void RestoreAllObjects(XFile * f);
         static void InvalidateAllObjects();
         static XObject* GetObject(XGUID guid) {
             if (const auto it = objects.find(guid); it != objects.end()) {
@@ -338,8 +336,8 @@ class XObject : public std::enable_shared_from_this<XObject>
             return "XObject";
         }
 
-        // reference/is_valid/bAlreadyStored are runtime bookkeeping, not
-        // persisted state - always reset by Create() on construction.
+        // reference/is_valid are runtime bookkeeping, not persisted
+        // state - always reset by Create() on construction.
         //
         // On load, the constructor's Create() already inserted this
         // object into `objects` under whatever garbage xguid it had
@@ -392,8 +390,6 @@ class XObject : public std::enable_shared_from_this<XObject>
         }
 
         // interface for store/restore functions
-        virtual void Store(XFile * f);// = 0;
-        virtual void Restore(XFile * f);// = 0;
 
         // Runnable object.
         // If it returns false, the object must be removed from the scheduler.

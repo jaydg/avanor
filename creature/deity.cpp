@@ -49,7 +49,6 @@ DEITY_HELP death_help[] = {
     {"major divine intervention",	5,	PRAY_MAJOR_INTERVENTION},
 };
 
-
 struct DEITY_ACT {
     int good;
     int bad;
@@ -296,14 +295,3 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
     return 1;
 }
 
-void XReligion::Store(const XFile* f)
-{
-    f->Write(&life_act);
-    f->Write(&death_act);
-}
-
-void XReligion::Restore(const XFile* f)
-{
-    f->Read(&life_act);
-    f->Read(&death_act);
-}

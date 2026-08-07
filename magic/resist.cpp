@@ -108,17 +108,6 @@ bool XResistance::isEqual(const XResistance* xr) const
     return true;
 }
 
-void XResistance::Store(XFile * f)
-{
-    f->Write(&resistances[R_WHITE], sizeof(int), R_EOF);
-}
-
-void XResistance::Restore(XFile * f)
-{
-    f->Read(&resistances[R_WHITE], sizeof(int), R_EOF);
-}
-
-
 const char* resist_name[] = {
     "White magic",
     "Black magic",

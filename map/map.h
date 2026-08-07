@@ -64,7 +64,6 @@ enum VISIBILITY {
     VI_WALL = 80
 };
 
-
 struct XTileType {
     enum Type {
         UNKNOWN,
@@ -128,8 +127,6 @@ typedef std::set<std::shared_ptr<XItem>, compare> XItemList;
 struct MAP {
     MAP();
     ~MAP();
-    void Store(XFile* f);
-    void Restore(XFile* f);
 
     XTileType::Type n;
     std::shared_ptr<XCreature> pMonster; // if null then no monster here
@@ -227,9 +224,6 @@ class XMap
 
         void CreateRoom(int x, int y, int l, int h, XTileType::Type m1, XTileType::Type m2) const;
         void CreateRoom(int x, int y, int l, int h, int px, int py, XTileType::Type m1, XTileType::Type m2) const;
-
-        void Store(XFile* f) const;
-        void Restore(XFile* f);
 
         void Dump(std::ofstream &file) const;
 

@@ -40,17 +40,7 @@ class XRation : public XAnyFood
 
         RESULT onEat(XCreature * eater) override;
 
-        void Store(XFile * f) override
-        {
-            XAnyFood::Store(f);
-        }
-
-        void Restore(XFile * f) override
-        {
-            XAnyFood::Restore(f);
-        }
-
-        template<class Archive>
+                        template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XAnyFood>(this));

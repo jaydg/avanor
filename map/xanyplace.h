@@ -73,8 +73,6 @@ class XAnyPlace : public XObject
             return owner;
         }
 
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
         void Setup(XLocation* _map);
         XLocation* location{};
 

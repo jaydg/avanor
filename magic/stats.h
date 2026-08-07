@@ -76,9 +76,6 @@ class XStats
         void Sub(const XStats * s);
         bool isEqual(const XStats * s) const;
 
-        void Store(XFile * f);
-        void Restore(XFile * f);
-
         template<class Archive>
         void serialize(Archive& ar)
         {

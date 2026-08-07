@@ -342,30 +342,3 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
     }
 }
 
-void XShopKeeperAI::Store(XFile * f)
-{
-    XStandardAI::Store(f);
-    f->Write(&debt.debtor_add_value, sizeof(double));
-    // FIXME: Implement when porting saving/restoring to Cereal
-    f->Write(&debt.debtor_leave_shop, sizeof(int));
-    f->Write(&debt.debtor_sum, sizeof(double));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // debt.unpaid_items.StoreList(f);
-    f->Write(&debt.turn_count, sizeof(int));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
-void XShopKeeperAI::Restore(XFile * f)
-{
-    XStandardAI::Restore(f);
-    f->Read(&debt.debtor_add_value, sizeof(double));
-    // FIXME: Implement when porting saving/restoring to Cereal
-    f->Read(&debt.debtor_leave_shop, sizeof(int));
-    f->Read(&debt.debtor_sum, sizeof(double));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // debt.unpaid_items.RestoreList(f);
-    f->Read(&debt.turn_count, sizeof(int));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}

@@ -141,8 +141,6 @@ class XChest : public XItem
         }
 
         std::string toString() override;
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
         void Invalidate() override;
 
         template<class Archive>

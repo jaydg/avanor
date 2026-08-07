@@ -45,9 +45,6 @@ class XTime
         static int GetSec();
         static int GetMin();
 
-        static void Store(XFile * f);
-        static void Restore(XFile * f);
-
         // XTime has no instances (every field is static), so this can't
         // be a normal per-instance cereal serialize() picked up by ADL -
         // call it explicitly (XTime::serialize(ar)) from the top-level

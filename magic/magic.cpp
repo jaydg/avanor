@@ -352,22 +352,3 @@ std::string XMagic::LevelToString(const MAGIC_SCHOOL school) const
     return "";
 }
 
-void XMagic::Store(XFile * f)
-{
-    // FIXME: Implement when porting saving/restoring to Cereal
-    /*
-    f->Write(magic_level, sizeof(int), MS_EOF);
-    f->Write(magic_count, sizeof(int), MS_EOF);
-    spells.StoreList(f);
-    */
-}
-
-void XMagic::Restore(XFile * f)
-{
-    // FIXME: Implement when porting saving/restoring to Cereal
-    /*
-    f->Read(magic_level, sizeof(int), MS_EOF);
-    f->Read(magic_count, sizeof(int), MS_EOF);
-    spells.RestoreList(f);
-    */
-}

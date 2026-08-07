@@ -67,23 +67,6 @@ int XDice::NThrow() const
     return NDFunc(count_ * sides_) + bonus_;
 }
 
-void XDice::Store(const XFile* f) const
-{
-    std::size_t wc;
-    wc = f->Write(&result_); assert(wc == sizeof(result_));
-    wc = f->Write(&count_); assert(wc == sizeof(count_));
-    wc = f->Write(&sides_); assert(wc == sizeof(sides_));
-    wc = f->Write(&bonus_); assert(wc == sizeof(bonus_));
-}
-
-void XDice::Restore(const XFile* f)
-{
-    f->Read(&result_);
-    f->Read(&count_);
-    f->Read(&sides_);
-    f->Read(&bonus_);
-}
-
 static constexpr int dfunc_data[] = {
     750, 800, 840, 870, 890, 902, 914, 926, 937, 947,
     956, 964, 971, 977, 982, 986, 990, 993, 996, 998, 999, 100000

@@ -49,9 +49,6 @@ class XModifier
 
         std::string toString() const;
 
-        void Store(XFile* f);
-        void Restore(XFile* f, XCreature* owner);
-
         // Unlike Restore() above, no owner param is needed here - each
         // XBasicModifier's own `setter` (a weak_ptr<XCreature>) already
         // carries its owner reference and resolves directly against the

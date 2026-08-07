@@ -18,7 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 #include "creature/creature.h"
 #include "game/game.h"
 #include "game/location.h"
@@ -406,31 +405,6 @@ int XTrap::Disarm(XCreature * cr)
     return 0;
 }
 
-
-void XTrap::Store(XFile * f)
-{
-    XMapObject::Store(f);
-    f->Write(&trap_type, sizeof(TRAP_TYPE));
-    f->Write(&isVisibleForHero, sizeof(int));
-    f->Write(&trap_level, sizeof(TRAP_LEVEL));
-    XObject::StorePointer(f, owner.lock().get());
-    XObject::StorePointer(f, trap_item.get());
-    f->Write(&last_activator, sizeof(XGUID));
-    f->Write(&activation_count, sizeof(int));
-}
-
-void XTrap::Restore(XFile * f)
-{
-    XMapObject::Restore(f);
-    f->Read(&trap_type, sizeof(TRAP_TYPE));
-    f->Read(&isVisibleForHero, sizeof(int));
-    f->Read(&trap_level, sizeof(TRAP_LEVEL));
-    owner = XCreature::ToWeakPtr(dynamic_cast<XCreature*>(XObject::RestorePointer(f, nullptr)));
-    trap_item = XItem::Own(dynamic_cast<XItem*>(XObject::RestorePointer(f, nullptr)));
-    f->Read(&last_activator, sizeof(XGUID));
-    f->Read(&activation_count, sizeof(int));
-}
-
 void XTrap::Invalidate()
 {
     if (trap_item) {
@@ -486,18 +460,6 @@ void XStairWay::Bind(XStairWay * way)
     way->ny = y;
 }
 
-void XStairWay::Store(XFile * f)
-{
-    XMapObject::Store(f);
-    f->Write(&ln, sizeof(LOCATION));
-}
-
-void XStairWay::Restore(XFile * f)
-{
-    XMapObject::Restore(f);
-    f->Read(&ln, sizeof(LOCATION));
-}
-
 REGISTER_CLASS(XTeleport);
 CEREAL_REGISTER_TYPE(XTeleport);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTeleport);
@@ -518,18 +480,6 @@ XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const LOCATION 
     view = '0';
     loc->map->SetSpecial(x, y, this);
     name = "magic circle";
-}
-
-void XTeleport::Store(XFile* f)
-{
-    XMapObject::Store(f);
-    f->Write(&ln, sizeof(LOCATION));
-}
-
-void XTeleport::Restore(XFile* f)
-{
-    XMapObject::Restore(f);
-    f->Read(&ln, sizeof(LOCATION));
 }
 
 int XTeleport::MoveIn(XCreature* cr)
@@ -576,19 +526,6 @@ void XDoor::Switch()
     }
 }
 
-void XDoor::Store(XFile* f)
-{
-    XMapObject::Store(f);
-    f->Write(&isOpened, sizeof(int));
-
-}
-
-void XDoor::Restore(XFile* f)
-{
-    XMapObject::Restore(f);
-    f->Read(&isOpened, sizeof(int));
-}
-
 REGISTER_CLASS(XAltar);
 CEREAL_REGISTER_TYPE(XAltar);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XAltar);
@@ -611,16 +548,6 @@ XAltar::XAltar(const int _x, const int _y, const DEITY deity, XLocation* _l)
     assert(l->map->GetSpecial(x, y) == nullptr);
     l->map->SetSpecial(x, y, this);
     name = "altar";
-}
-
-void XAltar::Store(XFile * f)
-{
-    XMapObject::Store(f);
-}
-
-void XAltar::Restore(XFile * f)
-{
-    XMapObject::Restore(f);
 }
 
 REGISTER_CLASS(XGrave);
@@ -680,24 +607,6 @@ int XGrave::onOuterUse(XCreature* cr)
 
     isOpened = 1;
     return 1;
-}
-
-void XGrave::Store(XFile* f)
-{
-    XMapObject::Store(f);
-    f->Write(&isOpened);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // hidden_items.StoreList(f);
-}
-
-void XGrave::Restore(XFile* f)
-{
-    XMapObject::Restore(f);
-    f->Read(&isOpened);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // hidden_items.RestoreList(f);
 }
 
 REGISTER_CLASS(XFurniture);
@@ -763,51 +672,3 @@ int XOuterObject::onOuterUse(XCreature* cr)
     return XMapObject::onOuterUse(cr);
 }
 
-void XOuterObject::Store(XFile* f)
-{
-    XMapObject::Store(f);
-    int sz = 0;
-
-    if (onEventLua) {
-        sz = strlen(onEventLua) + 1;
-    }
-
-    f->Write(&sz);
-
-    if (sz > 0) {
-        f->Write(onEventLua, sz);
-    }
-
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_SAVE);
-        lua_call(XLocation::L, 1, 1);
-        lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
-    }
-}
-
-void XOuterObject::Restore(XFile* f)
-{
-    XMapObject::Restore(f);
-
-    int sz = 0;
-    f->Read(&sz);
-
-    if (sz > 0) {
-        onEventLua = new char [sz];
-        f->Read(onEventLua, sz);
-    } else {
-        onEventLua = nullptr;
-    }
-
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_LOAD);
-        lua_call(XLocation::L, 1, 1);
-        lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
-    }
-}

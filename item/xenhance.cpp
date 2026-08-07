@@ -310,14 +310,3 @@ std::string XEnhance::toString()
     return fullname;
 }
 
-void XEnhance::Store(XFile * f)
-{
-    XItem::Store(f);
-    f->Write(&descr, sizeof(int));
-}
-
-void XEnhance::Restore(XFile * f)
-{
-    XItem::Restore(f);
-    f->Read(&descr, sizeof(int));
-}

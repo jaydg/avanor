@@ -89,7 +89,6 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
         friend_avg_y += tgt->y;
     }
 
-
     //test for items
     if (ai_flag & AIF_ALLOW_PICK_UP &&
         (ai_owner->l->map->GetItemCount(j, i) > 0) && (w < item_dist)) {
@@ -101,7 +100,6 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
             item_y = i;
         }
     }
-
 
     //test for ways
     XMapObject * spec = ai_owner->l->map->GetSpecial(j, i);
@@ -117,7 +115,6 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
         }
     }
 }
-
 
 void XStandardAI::Move()
 {
@@ -345,7 +342,6 @@ int XStandardAI::FindPath(const XPoint* target, XPoint * direction) const
                 }
             }
 
-
             if (map_rect.PointIn(cpt->x + 1, cpt->y - 1) &&
                 path_flags[cpt->x - map_x + 1][cpt->y - map_y - 1] == 0) {
                 if (cpt->x + 1 == ai_owner->x &&
@@ -478,7 +474,6 @@ void XStandardAI::GetDirection(const XPoint* target, XPoint * direction) const
 
     FindPath(target, direction);
 }
-
 
 void XStandardAI::GetRandDirection(const XPoint* target, XPoint * direction) const
 {
@@ -681,7 +676,6 @@ XStairWay* RWayFound(XLocation * tl, XLocation * tgt_l)
 
     return RecursiveWayFound(tl, tgt_l);
 }
-
 
 int XStandardAI::MoveTo(int x, int y, XLocation * l) const
 {
@@ -1056,7 +1050,6 @@ int XStandardAI::onGiveItem(XCreature * giver, XItem * item)
     return ai_owner->onGiveItem(giver, item);
 }
 
-
 int XStandardAI::GetTargetPos(XPoint * pt)
 {
     if (enemy) {
@@ -1068,7 +1061,6 @@ int XStandardAI::GetTargetPos(XPoint * pt)
         return 0;
     }
 }
-
 
 bool XStandardAI::CanMoveHere(int px, int py)
 {
@@ -1083,49 +1075,6 @@ bool XStandardAI::CanMoveHere(int px, int py)
     } else {
         return true;
     }
-}
-
-void XStandardAI::Store(XFile * f)
-{
-    // XObject::Store(f);
-    f->Write(&ai_flag, sizeof(AI_FLAG));
-    f->Write(&enemy_class, sizeof(CREATURE_CLASS));
-    f->Write(&invisible_x, sizeof(int));
-    f->Write(&invisible_y, sizeof(int));
-    f->Write(&invisible_hunting_mode, sizeof(int));
-    XObject::StorePointer(f, last_moved_way);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    f->Write(&companion_command, sizeof(COMPANION_COMMAND));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    guard_area.Store(f);
-    f->Write(&guard_area_location, sizeof(LOCATION));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // known_traps.StoreList(f);
-}
-
-void XStandardAI::Restore(XFile * f)
-{
-    // XObject::Restore(f);
-    f->Read(&ai_flag, sizeof(AI_FLAG));
-    f->Read(&enemy_class, sizeof(CREATURE_CLASS));
-    f->Read(&invisible_x, sizeof(int));
-    f->Read(&invisible_y, sizeof(int));
-    f->Read(&invisible_hunting_mode, sizeof(int));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // last_moved_way = (XMapObject*)RestorePointer(f, this);
-    // FIXME: Implement when porting saving/restoring to Cereal
-    f->Read(&companion_command, sizeof(COMPANION_COMMAND));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    guard_area.Restore(f);
-    f->Read(&guard_area_location, sizeof(LOCATION));
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // known_traps.RestoreList(f);
 }
 
 /////////////// scripting support

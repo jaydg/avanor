@@ -27,16 +27,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAmulet);
 
 int aidentify_db[20] = {};
 
-void XAmulet::StoreTable(XFile * f)
-{
-    f->Write(aidentify_db, sizeof(int), 20);
-}
-
-void XAmulet::RestoreTable(XFile * f)
-{
-    f->Read(aidentify_db, sizeof(int), 20);
-}
-
 void XAmulet::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < 20; i++) {

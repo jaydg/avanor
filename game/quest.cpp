@@ -27,79 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 XQuest XQuest::quest;
 
-void XQuest::Store(XFile * f)
-{
-    int sz = quests.size();
-    f->Write(&sz);
-
-    for (auto& quest: quests) {
-        int idx = quest->quest_id;
-        f->Write(&idx);
-        int status = quest->status;
-        f->Write(&status);
-        f->WriteStr(quest->know);
-        f->WriteStr(quest->closed);
-        f->WriteStr(quest->complete);
-    }
-
-    f->Write(&beelzvile_killed);
-    f->Write(&beelzvile_ordered);
-    f->Write(&hero_die);
-    f->Write(&hero_win);
-    f->Write(&orcs_killed);
-    f->Write(&total_orcs_killed);
-    f->Write(&guards_get_orc_slay);
-    f->Write(&yohjishiro_it_quest, sizeof(ITEM_TYPE));
-    f->Write(&ahk_ulan_ordered);
-    f->Write(&ahk_ulan_killed, sizeof(int));
-    f->Write(&ahk_ulan_quest);
-    f->Write(&roderick_ordered);
-    f->Write(&roderick_killed);
-    f->Write(&roderick_quest);
-    f->Write(&roderick_quest2);
-    f->Write(&torin_quest);
-    f->Write(&rotmoth_status);
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
-void XQuest::Restore(XFile * f)
-{
-    int sz;
-    f->Read(&sz);
-
-    while (sz > 0) {
-        auto qr = std::make_unique<XQuestRec>();
-        int status;
-        f->Read(&qr->quest_id);
-        f->Read(&status);
-        qr->status = (QUEST)status;
-        f->ReadStr(qr->know);
-        f->ReadStr(qr->closed);
-        f->ReadStr(qr->complete);
-        quests.push_back(std::move(qr));
-        sz--;
-    }
-
-    f->Read(&beelzvile_killed, sizeof(int));
-    f->Read(&beelzvile_ordered, sizeof(int));
-    f->Read(&hero_die, sizeof(int));
-    f->Read(&hero_win, sizeof(int));
-    f->Read(&orcs_killed, sizeof(int));
-    f->Read(&total_orcs_killed, sizeof(int));
-    f->Read(&guards_get_orc_slay, sizeof(int));
-    f->Read(&yohjishiro_it_quest, sizeof(ITEM_TYPE));
-    f->Read(&ahk_ulan_ordered, sizeof(int));
-    f->Read(&ahk_ulan_killed, sizeof(int));
-    f->Read(&ahk_ulan_quest);
-    f->Read(&roderick_ordered);
-    f->Read(&roderick_killed);
-    f->Read(&roderick_quest);
-    f->Read(&roderick_quest2);
-    f->Read(&torin_quest);
-    f->Read(&rotmoth_status);
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
 void XQuest::ShowQuests()
 {
     XGuiList list;
@@ -162,7 +89,6 @@ void XQuest::ShowQuests()
 
     list.Run();
 }
-
 
 void XQuest::Take(int id)
 {

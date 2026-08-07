@@ -93,18 +93,3 @@ void XChest::Invalidate()
     XItem::Invalidate();
 }
 
-void XChest::Store(XFile * f)
-{
-    XItem::Store(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // contain.StoreList(f);
-}
-
-void XChest::Restore(XFile * f)
-{
-    XItem::Restore(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // contain.RestoreList(f);
-}

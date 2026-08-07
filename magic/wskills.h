@@ -71,9 +71,6 @@ class XWarSkills
 
         void SetLevel(Type wt, int level);
 
-        void Store(XFile * f);
-        void Restore(XFile * f);
-
         template<class Archive>
         void serialize(Archive& ar)
         {

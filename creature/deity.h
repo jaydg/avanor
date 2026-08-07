@@ -92,9 +92,6 @@ class XReligion
         int GetAvailHelp(DEITY deity, DEITY_HELP** help) const;
         int Pray(DEITY deity, DEITY_HELP* pray, XCreature* prayer);
 
-        void Store(const XFile* f);
-        void Restore(const XFile* f);
-
         template<class Archive>
         void serialize(Archive& ar)
         {

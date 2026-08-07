@@ -48,18 +48,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XBaseObject, XCreature);
 // a creature which is currently being displayed
 XCreature* XCreature::main_creature = nullptr;
 
-void ACTION_DATA::Store(XFile * f)
-{
-    f->Write(&action, sizeof(ACTION));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
-void ACTION_DATA::Restore(XFile * f)
-{
-    f->Read(&action, sizeof(ACTION));
-    // FIXME: Implement when porting saving/restoring to Cereal
-}
-
 XCreatureGroupMap XCreature::group_members = XCreatureGroupMap();
 
 XCreature::XCreature()
@@ -274,7 +262,6 @@ int XCreature::continueEat()
 
     return 1;
 }
-
 
 int XCreature::Eat(XAnyFood * food)
 {
@@ -1614,176 +1601,6 @@ int XCreature::Read(XItem * item)
     return 0;
 }
 
-void XCreature::Store(XFile * f)
-{
-    XBaseObject::Store(f);
-
-    f->Write(&_EXP, sizeof(unsigned long));
-    f->Write(&added_DMG);
-    f->Write(&added_DV);
-    f->Write(&added_HIT);
-    f->Write(&added_HP);
-    f->Write(&added_PP);
-    f->Write(&added_PV);
-
-    f->Write(&attack_energy);
-    f->Write(&move_energy);
-    f->Write(&base_speed);
-    f->Write(&added_speed);
-
-    added_resists.Store(f);
-    f->Write(&added_RNG);
-    added_stats.Store(f);
-    f->Write(&base_exp);
-    f->Write(&base_nutrio);
-    f->Write(&carried_weight);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // components.StoreList(f);
-
-    f->Write(&creature_class, sizeof(CREATURE_CLASS));
-    f->Write(&creature_size, sizeof(CREATURE_SIZE));
-    f->Write(&food_feeling, sizeof(FOOD_FEELING));
-    f->Write(&group_id, sizeof(GROUP_ID));
-
-    f->Write(&level);
-
-    m->Store(f);
-    md->Store(f);
-    f->Write(&nutrio);
-    f->Write(&nutrio_speed);
-
-    // FIXME: implement when saving with Cereal
-    // sk->Store(f);
-
-    f->Write(&tactics, sizeof(TACTICS_STATE));
-    wsk->Store(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // XObject::StorePointer(f, xai);
-
-    action_data.Store(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // contain.StoreList(f);
-
-    religion.Store(f);
-    max_stats.Store(f);
-    f->Write(&creature_person_type, sizeof(creature_person_type));
-    f->Write(&creature_name, sizeof(creature_name));
-
-    int sz = 0;
-
-    if (event_handler) {
-        sz = strlen(event_handler) + 1;
-    }
-
-    f->Write(&sz);
-
-    if (sz > 0) {
-        f->Write(event_handler, sz);
-    }
-
-    if (event_handler && strlen(event_handler)) {
-        lua_pushstring(XLocation::L, event_handler);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_SAVE);
-        lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
-    }
-
-}
-
-void XCreature::Restore(XFile * f)
-{
-    XBaseObject::Restore(f);
-
-    f->Read(&_EXP, sizeof(unsigned long));
-    f->Read(&added_DMG);
-    f->Read(&added_DV);
-    f->Read(&added_HIT);
-    f->Read(&added_HP);
-    f->Read(&added_PP);
-    f->Read(&added_PV);
-
-    f->Read(&attack_energy);
-    f->Read(&move_energy);
-    f->Read(&base_speed);
-    f->Read(&added_speed);
-
-
-    added_resists.Restore(f);
-    f->Read(&added_RNG);
-    added_stats.Restore(f);
-    f->Read(&base_exp);
-    f->Read(&base_nutrio);
-    f->Read(&carried_weight);
-
-    assert(components.empty());
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // components.RestoreList(f);
-
-    f->Read(&creature_class, sizeof(CREATURE_CLASS));
-    f->Read(&creature_size, sizeof(CREATURE_SIZE));
-    f->Read(&food_feeling, sizeof(FOOD_FEELING));
-    f->Read(&group_id, sizeof(GROUP_ID));
-
-    f->Read(&level);
-
-    m = new XMagic();
-    m->Restore(f);
-    md = new XModifier();
-    md->Restore(f, this);
-    f->Read(&nutrio);
-    f->Read(&nutrio_speed);
-    sk = new XSkills();
-
-    // FIXME: Implement when saving with Cereal
-    // sk->Restore(f);
-
-    f->Read(&tactics, sizeof(TACTICS_STATE));
-    wsk = new XWarSkills();
-    wsk->Restore(f);
-
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // xai = (XStandardAI*)XObject::RestorePointer(f, this);
-
-    action_data.Restore(f);
-
-    assert(contain.empty());
-    // FIXME: Implement when porting saving/restoring to Cereal
-    // contain.RestoreList(f);
-
-    religion.Restore(f);
-    max_stats.Restore(f);
-    f->Read(&creature_person_type, sizeof(creature_person_type));
-    f->Read(&creature_name, sizeof(creature_name));
-
-    if (!isHero()) { //skip restoing of descriptions and other for hero
-        XCreatureStorage::RestoreCreatureInfo(this);
-    }
-
-    int sz = 0;
-    f->Read(&sz);
-
-    if (sz > 0) {
-        event_handler = new char [sz];
-        f->Read(event_handler, sz);
-    } else {
-        event_handler = nullptr;
-    }
-
-    if (event_handler && strlen(event_handler)) {
-        lua_pushstring(XLocation::L, event_handler);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_LOAD);
-        lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
-    }
-}
-
 void XCreature::SetEventHandler(const char* handler)
 {
     event_handler = new char [strlen(handler) + 1];
@@ -2141,7 +1958,6 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                     case CRN_T4:
                         return "its";
                 }
-
 
             case CPT_HE:
                 switch (crn) {

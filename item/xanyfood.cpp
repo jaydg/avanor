@@ -171,20 +171,3 @@ FOOD_TYPE XAnyFood::FoodTypeForCreature(XCreature * creature)
     return food_type;
 }
 
-void XAnyFood::Store(XFile * f)
-{
-    XItem::Store(f);
-    f->Write(&food_nutrio, sizeof(int));
-    f->Write(&consume_nutrio, sizeof(int));
-    f->Write(&consumed_food, sizeof(int));
-    f->Write(&food_type, sizeof(FOOD_TYPE));
-}
-
-void XAnyFood::Restore(XFile * f)
-{
-    XItem::Restore(f);
-    f->Read(&food_nutrio, sizeof(int));
-    f->Read(&consume_nutrio, sizeof(int));
-    f->Read(&consumed_food, sizeof(int));
-    f->Read(&food_type, sizeof(FOOD_TYPE));
-}

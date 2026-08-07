@@ -125,8 +125,6 @@ struct POTION_REC {
     int identify;
 
     static POTION_COLOR SelectColor(POTION_COLOR pnc = PNC_RANDOM);
-    void Store(XFile * f);
-    void Restore(XFile * f);
     static POTION_NAME GetRandomPotion();
     static void RunOnce();
     static int potion_total_value;
@@ -165,10 +163,6 @@ class XPotion : public XItem
 
         POTION_NAME pn;
         int onDrink(XCreature * cr);
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
-        static void StoreTable(XFile * f);
-        static void RestoreTable(XFile * f);
 
         // Non-template, concrete-archive-typed (like XCreature::Save/
         // LoadModifier): potion_descr[] is private to xpotion.cpp, so
@@ -248,8 +242,6 @@ class XAlchemy
         static int GetReceptionCount();
         static XAlchemyRec* GetReception(int num);
         static void Init();
-        static void Store(XFile * f);
-        static void Restore(XFile * f);
         static int isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
         static std::string GetReceptionName(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
         static POTION_NAME GetPotionName(POTION_NAME pn1, POTION_NAME pn2);

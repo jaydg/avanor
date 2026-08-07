@@ -41,9 +41,6 @@ class XRing : public XEnhance
             return new XRing(this);
         }
 
-        static void StoreTable(XFile * f);
-        static void RestoreTable(XFile * f);
-
         // ridentify_db is private to xring.cpp.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);

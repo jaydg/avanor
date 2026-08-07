@@ -102,12 +102,6 @@ std::string XAvanorDefender::toString()
     return GetArtifactName("long sword named \"Avanor's Defender\"");
 }
 
-void XAvanorDefender::Restore(XFile * f)
-{
-    XWeapon::Restore(f);
-    avanordefender_guid = guid();
-}
-
 REGISTER_CLASS(XForestBrotherCloak);
 CEREAL_REGISTER_TYPE(XForestBrotherCloak);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XForestBrotherCloak);

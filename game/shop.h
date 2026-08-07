@@ -44,9 +44,6 @@ class XShop : public XAnyPlace
         std::string onShowItem(XItem* item) override;
         void SetShopkeeper(XCreature * shopkeeper);
 
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
-
         // hero_in is transient per-visit UI state (whether the hero is
         // currently standing inside), always false for a freshly loaded
         // game - not persisted.

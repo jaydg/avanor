@@ -68,22 +68,6 @@ bool XUniversalGen::Run()
     return true;
 };
 
-void XUniversalGen::Store(XFile * f)
-{
-    XGenerator::Store(f);
-    f->Write(&crl, sizeof(CREATURE_LEVEL));
-    f->Write(&crc, sizeof(CREATURE_CLASS));
-    f->Write(&max_creature, sizeof(unsigned int));
-}
-
-void XUniversalGen::Restore(XFile * f)
-{
-    XGenerator::Restore(f);
-    f->Read(&crl, sizeof(CREATURE_LEVEL));
-    f->Read(&crc, sizeof(CREATURE_CLASS));
-    f->Read(&max_creature, sizeof(unsigned int));
-}
-
 REGISTER_CLASS(XMainLocationGen);
 CEREAL_REGISTER_TYPE(XMainLocationGen);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XGenerator, XMainLocationGen);
@@ -106,14 +90,3 @@ bool XMainLocationGen::Run()
     return false;
 }
 
-void XMainLocationGen::Store(XFile * f)
-{
-    XGenerator::Store(f);
-    f->Write(&turns_count, sizeof(int));
-}
-
-void XMainLocationGen::Restore(XFile * f)
-{
-    XGenerator::Restore(f);
-    f->Read(&turns_count, sizeof(int));
-}

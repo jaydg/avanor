@@ -99,8 +99,6 @@ class XTrap final : public XMapObject
         int isVisible(XCreature * cr) const;
 
         int Disarm(XCreature * cr);
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
         void Invalidate() override;
 
         template<class Archive>
@@ -126,8 +124,6 @@ class XStairWay final : public XMapObject
         }
 
         void Bind(XStairWay* way);
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -162,8 +158,6 @@ class XTeleport final : public XMapObject
         }
 
         int MoveIn(XCreature* cr);
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -194,9 +188,6 @@ class XDoor final : public XMapObject
         void Switch();
         int isOpened;
 
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
-
         template<class Archive>
         void serialize(Archive& ar)
         {
@@ -224,8 +215,6 @@ class XAltar final : public XMapObject
     public:
         DECLARE_CREATOR(XAltar, XMapObject);
         XAltar(int _x, int _y, DEITY deity, XLocation* _l);
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
 
         // Pre-existing behaviour, not a shared_ptr-migration regression:
         // `deity` is only ever used to pick a color at construction time
@@ -264,8 +253,6 @@ class XGrave: public XMapObject
         XGrave(int _x, int _y, char* subscr, XLocation* _l);
         void HideItem(XItem* item);
         int onOuterUse(XCreature* cr) override;
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
         void Invalidate() override;
 
         template<class Archive>
@@ -316,8 +303,6 @@ class XOuterObject final : public XMapObject
         XOuterObject(int _x, int _y, int _c, char _v, const char* subscr, XLocation* _l, const char* event);
         ~XOuterObject() override;
         int onOuterUse(XCreature* cr) override;
-        void Store(XFile* f) override;
-        void Restore(XFile* f) override;
 
         // onEventLua is an owned, heap-allocated C string (see the dtor)
         // rather than a std::string - Cereal has no built-in support for

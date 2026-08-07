@@ -67,22 +67,6 @@ BOOK_REC book_descr[] = {
     BOOK_REC(5,	BOOK_SELF_KNOWLEDGE, SPELL_SELF_KNOWLEDGE),
 };
 
-void BOOK_REC::Store(XFile * f)
-{
-    f->Write(&identify, sizeof(identify));
-    f->Write(&name_index, sizeof(name_index));
-    f->Write(&spell_name, sizeof(spell_name));
-    f->Write(&book_name, sizeof(book_name));
-}
-
-void BOOK_REC::Restore(XFile * f)
-{
-    f->Read(&identify, sizeof(identify));
-    f->Read(&name_index, sizeof(name_index));
-    f->Read(&spell_name, sizeof(spell_name));
-    f->Read(&book_name, sizeof(book_name));
-}
-
 int BOOK_REC::GetBook(BOOK_NAME bn)
 {
     if (bn != BOOK_RANDOM) {
@@ -105,21 +89,6 @@ int BOOK_REC::GetBook(BOOK_NAME bn)
 
     assert(0);
     return -1;
-}
-
-
-void XBook::StoreTable(XFile * f)
-{
-    for (int i = 0; i < ARRAY_SIZE(book_descr); i++) {
-        book_descr[i].Store(f);
-    }
-}
-
-void XBook::RestoreTable(XFile * f)
-{
-    for (int i = 0; i < ARRAY_SIZE(book_descr); i++) {
-        book_descr[i].Restore(f);
-    }
 }
 
 void XBook::SaveTable(cereal::JSONOutputArchive& ar)
@@ -242,18 +211,3 @@ int XBook::onRead(XCreature * reader)
     return 1;
 }
 
-void XBook::Store(XFile * f)
-{
-    XItem::Store(f);
-    f->Write(&descr, sizeof(int));
-    f->Write(&left_to_read, sizeof(int));
-    f->Write(&reader_guid, sizeof(XGUID));
-}
-
-void XBook::Restore(XFile * f)
-{
-    XItem::Restore(f);
-    f->Read(&descr, sizeof(int));
-    f->Read(&left_to_read, sizeof(int));
-    f->Read(&reader_guid, sizeof(XGUID));
-}

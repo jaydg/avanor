@@ -99,7 +99,6 @@ class XItem : public XBaseObject
         int material_index; // reference to material;
         _ITEMPROP* GetMaterial(int index);
 
-
         void Drop(XLocation * location, int _x, int _y);
         void Pickup(XCreature * picker);
 
@@ -110,9 +109,6 @@ class XItem : public XBaseObject
         virtual int onPutOn(XCreature * cr);
 
         virtual int onHit(XCreature * user, XCreature * target);
-
-        void Store(XFile * f) override;
-        void Restore(XFile * f) override;
 
         template<class Archive>
         void serialize(Archive& ar)
