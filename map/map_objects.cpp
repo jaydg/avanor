@@ -28,6 +28,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map_objects.h"
 
 #include <fmt/format.h>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 extern "C"
 {
@@ -35,6 +37,13 @@ extern "C"
 }
 
 REGISTER_CLASS(XTrap);
+CEREAL_REGISTER_TYPE(XTrap);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTrap);
+// XTrap()'s only no-args constructor is an assert(0) guard - real
+// instances always come from the parameterized constructor, so route
+// Cereal's load-time construction through the DUMMY_STRUCT idiom
+// instead of that assert.
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XTrap, serialize);
 
 XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature* _owner, XItem* items)
 {
@@ -423,6 +432,8 @@ void XTrap::Restore(XFile * f)
 }
 
 REGISTER_CLASS(XStairWay);
+CEREAL_REGISTER_TYPE(XStairWay);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XStairWay);
 
 XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const STAIRWAY_TYPE type)
 {
@@ -478,6 +489,8 @@ void XStairWay::Restore(XFile * f)
 }
 
 REGISTER_CLASS(XTeleport);
+CEREAL_REGISTER_TYPE(XTeleport);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTeleport);
 
 XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const int _nx, const int _ny)
 {
@@ -524,6 +537,8 @@ int XTeleport::MoveIn(XCreature* cr)
 }
 
 REGISTER_CLASS(XDoor);
+CEREAL_REGISTER_TYPE(XDoor);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XDoor);
 
 XDoor::XDoor(const int _x, const int _y, const int flg, XLocation* _l)
 {
@@ -565,6 +580,8 @@ void XDoor::Restore(XFile* f)
 }
 
 REGISTER_CLASS(XAltar);
+CEREAL_REGISTER_TYPE(XAltar);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XAltar);
 
 XAltar::XAltar(const int _x, const int _y, const DEITY deity, XLocation* _l)
 {
@@ -597,6 +614,8 @@ void XAltar::Restore(XFile * f)
 }
 
 REGISTER_CLASS(XGrave);
+CEREAL_REGISTER_TYPE(XGrave);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XGrave);
 
 XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 {
@@ -658,6 +677,8 @@ void XGrave::Restore(XFile* f)
 }
 
 REGISTER_CLASS(XFurniture);
+CEREAL_REGISTER_TYPE(XFurniture);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XFurniture);
 
 XFurniture::XFurniture(const int _x, const int _y, const int _c, const char _v, const char* subscr, XLocation* _l)
 {
@@ -673,6 +694,8 @@ XFurniture::XFurniture(const int _x, const int _y, const int _c, const char _v, 
 }
 
 REGISTER_CLASS(XOuterObject);
+CEREAL_REGISTER_TYPE(XOuterObject);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XOuterObject);
 XOuterObject::XOuterObject(const int _x, const int _y, const int _c, const char _v, const char* subscr, XLocation* _l, const char* event)
 {
     SetLocation(_l);

@@ -21,6 +21,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef OTHER_MISC_H
 #define OTHER_MISC_H
 
+#include <cstring>
+
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/string.hpp>
+
 #include "creature/deity.h"
 #include "item/item.h"
 #include "engine/xmapobj.h"
@@ -94,6 +101,13 @@ class XTrap final : public XMapObject
         int Disarm(XCreature * cr);
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(trap_type, trap_level, owner, trap_item, isVisibleForHero, last_activator, activation_count);
+        }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -114,6 +128,13 @@ class XStairWay final : public XMapObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(ln);
+        }
+
         const std::string GetName(XCreature *viewer) override
         {
             return "a stairway";
@@ -122,6 +143,7 @@ class XStairWay final : public XMapObject
     protected:
         XStairWay() : ln() {
         }
+        friend class cereal::access;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -142,6 +164,13 @@ class XTeleport final : public XMapObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(ln);
+        }
+
         const std::string GetName(XCreature *viewer) override
         {
             return "a magic circle";
@@ -150,6 +179,7 @@ class XTeleport final : public XMapObject
     protected:
         XTeleport() : ln() {
         }
+        friend class cereal::access;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -166,6 +196,13 @@ class XDoor final : public XMapObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(isOpened);
+        }
+
         const std::string GetName(XCreature *viewer) override
         {
             return "a door";
@@ -175,6 +212,7 @@ class XDoor final : public XMapObject
         XDoor() : isOpened(0) {
             im = IM_DOOR;
         }
+        friend class cereal::access;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -188,6 +226,18 @@ class XAltar final : public XMapObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
+        // Pre-existing behaviour, not a shared_ptr-migration regression:
+        // `deity` is only ever used to pick a color at construction time
+        // (see the .cpp) and isn't kept as a member anywhere on this
+        // class - the base's `color` field (already covered by
+        // XMapObject::serialize()) is the only trace of it that
+        // survives, same as the existing (also base-only) Store/Restore.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+        }
+
         const std::string GetName(XCreature *viewer) override
         {
             return color == xWHITE ? "an altar of white granite" : "an altar of black granite";
@@ -198,6 +248,7 @@ class XAltar final : public XMapObject
         {
             im = IM_ALTAR;
         }
+        friend class cereal::access;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -214,10 +265,19 @@ class XGrave: public XMapObject
         int onOuterUse(XCreature* cr) override;
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(isOpened, hidden_items);
+        }
+
     protected:
         XGrave() : isOpened(0) {
             im = IM_MISC;
         }
+        friend class cereal::access;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -228,11 +288,19 @@ class XFurniture: public XMapObject
     public:
         DECLARE_CREATOR(XFurniture, XMapObject);
         XFurniture(int _x, int _y, int _c, char _v, const char* subscr, XLocation* _l);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+        }
+
     protected:
         XFurniture()
         {
             im = IM_MISC;
         }
+        friend class cereal::access;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -248,10 +316,40 @@ class XOuterObject final : public XMapObject
         int onOuterUse(XCreature* cr) override;
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+
+        // onEventLua is an owned, heap-allocated C string (see the dtor)
+        // rather than a std::string - Cereal has no built-in support for
+        // raw char*, so save/load go through a temporary std::string.
+        template<class Archive>
+        void save(Archive& ar) const
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(std::string(onEventLua ? onEventLua : ""));
+        }
+
+        template<class Archive>
+        void load(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+
+            std::string event;
+            ar(event);
+
+            delete[] onEventLua;
+
+            if (event.empty()) {
+                onEventLua = nullptr;
+            } else {
+                onEventLua = new char[event.size() + 1];
+                std::memcpy(onEventLua, event.c_str(), event.size() + 1);
+            }
+        }
+
     protected:
         XOuterObject() : onEventLua(nullptr) {
             im = IM_MISC;
         }
+        friend class cereal::access;
 };
 
 #endif
