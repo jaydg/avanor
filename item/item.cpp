@@ -47,6 +47,47 @@ XItem::XItem()
     owner.reset();
 }
 
+std::weak_ptr<XItem> XItem::ToWeakPtr(XItem * it)
+{
+    // Mirrors XCreature::ToWeakPtr: an item isn't shared_from_this()-safe
+    // until something has actually wrapped it via Own() - guard against
+    // that rather than letting shared_from_this() throw std::bad_weak_ptr.
+    if (it && it->isValid() && !it->weak_from_this().expired()) {
+        return std::static_pointer_cast<XItem>(it->shared_from_this());
+    }
+
+    return {};
+}
+
+std::shared_ptr<XItem> XItem::Own(XItem * raw)
+{
+    assert(raw);
+
+    // First time this item is handed to something that will hold it long
+    // term (contain/item_list/chest-contain insertion, a trap's ammo
+    // template, ...): nothing owns it yet, so this is the one place its
+    // master shared_ptr gets constructed - mirrors XMap::SetMonster's birth
+    // path for XCreature. Every later hand-off just transfers a fresh
+    // shared_ptr from the same control block via shared_from_this(), never
+    // a second, independent one.
+    if (raw->weak_from_this().expired()) {
+        // Unlike XCreature, legacy XPtr<XItem> cross-references still exist
+        // (XBodyPart::item, ACTION_DATA::item, XTool::cooked_item,
+        // XTrap::trap_item) - so, same as XMap::SetMonster's deleter before
+        // those were all migrated for XCreature, defer deletion to the last
+        // XPtr<XItem>::Release() if one is still outstanding.
+        return std::shared_ptr<XItem>(raw, [](XItem * p) {
+            if (p->isValid()) {
+                p->Invalidate();
+            } else if (p->GetRef() == 0) {
+                delete p;
+            }
+        });
+    }
+
+    return std::static_pointer_cast<XItem>(raw->shared_from_this());
+}
+
 void XItem::Invalidate()
 {
     if (!isValid()) {

@@ -119,6 +119,9 @@ class XItem : public XBaseObject
 
         void UnCarry();
 
+        static std::weak_ptr<XItem> ToWeakPtr(XItem * it);
+        static std::shared_ptr<XItem> Own(XItem * raw);
+
     protected:
         [[nodiscard]] std::string GetFullName();
 
