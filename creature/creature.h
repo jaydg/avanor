@@ -21,12 +21,22 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CREATURE_H
 #define CREATURE_H
 
+#include <cstring>
 #include <memory>
 #include <vector>
+
+#include <cereal/specialize.hpp>
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/set.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
 
 #include "creature/bodypart.h"
 #include "creature/cr_defs.h"
 #include "creature/deity.h"
+#include <cereal/archives/json.hpp>
+
 #include "creature/std_ai.h"
 #include "item/incl_i.h"
 #include "item/xanyfood.h"
@@ -109,6 +119,14 @@ struct ACTION_DATA {
     std::shared_ptr<XItem> item;
     void Store(XFile * f);
     void Restore(XFile * f);
+
+    // `item` was never actually persisted even before Cereal (see the
+    // FIXME still in Store/Restore) - new real persistence.
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(action, item);
+    }
 };
 
 typedef int (XItemFilter)(XItem*);
@@ -371,6 +389,119 @@ class XCreature : public XBaseObject
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
 
+        // Defined in creature.cpp, where creature/anycr.h (for
+        // XCreatureStorage) and the Lua C headers are already included
+        // without a circular-include problem - both are needed by
+        // load()/save() below but can't live in this header directly
+        // (anycr.h itself includes this header).
+        void FixupCreatureInfo();
+        void NotifyLuaEventHandler(LUA_EVENT event) const;
+
+        // magic/modifier.h can't be #included here (magic/modifiers.h
+        // includes this header right back, and unlike XCreatureStorage/
+        // Lua above, `md` actually needs dereferencing inline in
+        // save()/load() below, not just calling through) - pinned to
+        // the concrete JSON archive types (the only ones this project
+        // uses) rather than kept generic, so these can be ordinary,
+        // non-template member functions defined in creature.cpp, where
+        // magic/modifier.h is available without the cycle.
+        void SaveModifier(cereal::JSONOutputArchive& ar) const;
+        void LoadModifier(cereal::JSONInputArchive& ar);
+
+        // m/md/sk/wsk are owned via raw pointer (see the ctor and
+        // Invalidate()), not smart pointers - dereferenced directly
+        // here rather than changed to unique_ptr just for Cereal's
+        // sake. On load each is heap-allocated first (mirroring the
+        // existing Restore()), then its own serialize()/load()
+        // populates it - same choice made for XSkills/XWarSkills.
+        //
+        // creature_description/super_info are non-owning pointers into
+        // the static per-species table (XCreatureStorage) - re-derived
+        // from creature_name via XCreatureStorage::RestoreCreatureInfo()
+        // for non-hero creatures, same as the existing Restore().
+        //
+        // event_handler mirrors XOuterObject::onEventLua (an owned heap
+        // char*, not std::string) but also fires the same Lua
+        // LE_SAVE/LE_LOAD notification the existing Store/Restore
+        // already do, via NotifyLuaEventHandler() (kept out of this
+        // header since it needs the Lua C headers, which nothing else
+        // here requires).
+        //
+        // xai's ai_owner isn't part of XStandardAI::serialize() (see
+        // std_ai.h) - fixed up here immediately after loading it.
+        //
+        // contain/components/xai/sk/m/md/wsk were all entirely unsaved
+        // before this (see the FIXMEs still in Store/Restore) - new
+        // real persistence, not a mechanical port.
+        template<class Archive>
+        void save(Archive& ar) const
+        {
+            ar(cereal::base_class<XBaseObject>(this));
+            ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
+            ar(attack_energy, move_energy, base_speed, added_speed);
+            ar(added_resists, added_RNG, added_stats);
+            ar(base_exp, base_nutrio, carried_weight);
+            ar(components);
+            ar(creature_class, creature_size, food_feeling, group_id);
+            ar(level);
+            ar(*m);
+            SaveModifier(ar);
+            ar(nutrio, nutrio_speed, *sk);
+            ar(tactics, *wsk);
+            ar(xai);
+            ar(action_data);
+            ar(contain);
+            ar(religion, max_stats);
+            ar(creature_person_type, creature_name);
+            ar(std::string(event_handler ? event_handler : ""));
+            NotifyLuaEventHandler(LE_SAVE);
+        }
+
+        template<class Archive>
+        void load(Archive& ar)
+        {
+            ar(cereal::base_class<XBaseObject>(this));
+            ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
+            ar(attack_energy, move_energy, base_speed, added_speed);
+            ar(added_resists, added_RNG, added_stats);
+            ar(base_exp, base_nutrio, carried_weight);
+            ar(components);
+            ar(creature_class, creature_size, food_feeling, group_id);
+            ar(level);
+            m = new XMagic();
+            ar(*m);
+            LoadModifier(ar);
+            ar(nutrio, nutrio_speed);
+            sk = new XSkills();
+            ar(*sk);
+            ar(tactics);
+            wsk = new XWarSkills();
+            ar(*wsk);
+            ar(xai);
+
+            if (xai) {
+                xai->SetOwner(this);
+            }
+
+            ar(action_data);
+            ar(contain);
+            ar(religion, max_stats);
+            ar(creature_person_type, creature_name);
+            FixupCreatureInfo();
+
+            std::string event;
+            ar(event);
+
+            if (event.empty()) {
+                event_handler = nullptr;
+            } else {
+                event_handler = new char[event.size() + 1];
+                std::memcpy(event_handler, event.c_str(), event.size() + 1);
+            }
+
+            NotifyLuaEventHandler(LE_LOAD);
+        }
+
         CREATURE_CLASS creature_class;
 
         virtual std::string StdAnswer()
@@ -415,6 +546,13 @@ class XCreature : public XBaseObject
 
         [[nodiscard]] std::string GetVerb(std::string verb) const;
 };
+
+// XBaseObject (an ancestor) has a member serialize(), and XCreature has
+// a member load()/save() pair - Cereal's access rules mean that pair is
+// ambiguous with the inherited serialize() unless disambiguated
+// explicitly (see cereal/specialize.hpp's own worked example, which is
+// this exact scenario).
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(XCreature, cereal::specialization::member_load_save);
 
 // Fake creature is need
 class XFakeCreature final : public XCreature

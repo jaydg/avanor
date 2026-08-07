@@ -33,12 +33,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // but still polymorphic (virtual destructor/methods), so Cereal's
 // polymorphic dispatch applies even when the concrete object really is
 // just a plain XStandardAI - needs its own registration, not only the
-// base/derived relation below.
+// base/derived relation in skeep_ai.cpp.
 CEREAL_REGISTER_TYPE(XStandardAI);
-// XStandardAI() is deleted - real construction always takes an owning
-// XCreature*, fixed up separately by that creature's own load() (see
-// the comment on serialize() above), so a null placeholder is fine here.
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XStandardAI, serialize, nullptr);
 
 XStandardAI::XStandardAI(XCreature* _cr) : guard_area(1, 1, 2, 3),
                                            guard_area_location(),

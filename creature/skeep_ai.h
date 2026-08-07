@@ -96,4 +96,10 @@ class XShopKeeperAI : public XStandardAI
         XShop* shop = nullptr;
 };
 
+// XShopKeeperAI() is deleted - real construction always takes an
+// owning XCreature* and an XShop*, so both get null placeholders here.
+// Must live here, not in skeep_ai.cpp - see the identical reasoning on
+// XStandardAI's own CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT in std_ai.h.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XShopKeeperAI, serialize, nullptr, nullptr);
+
 #endif

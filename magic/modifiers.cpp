@@ -34,81 +34,85 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // polymorphic registration is what makes real persistence here possible
 // for the first time, not a mechanical port.
 //
-// Every subclass constructor requires args (no usable no-args
-// constructor - the assert(0)-guarded one that exists on each is a
-// deliberate guard, not meant to ever run), so each gets a
-// CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT routing load-time construction
-// through the real constructor with placeholder arguments instead -
-// every field gets overwritten by serialize() immediately afterward.
+// The matching CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT for each of these
+// lives in modifiers.h, not here: every subclass constructor requires
+// args (no usable no-args constructor - the assert(0)-guarded one that
+// exists on each is a deliberate guard, not meant to ever run), and
+// their construction gets instantiated from inside XModifier::ml's own
+// deserialization, which itself gets reinstantiated in every TU that
+// reaches XCreature::md - a specialization declared only in this .cpp
+// wouldn't be visible to those other TUs (see the comment on
+// XStandardAI's own CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT in std_ai.h
+// for the same reasoning, first hit there).
+// XBasicModifier is itself directly instantiable (not just an abstract
+// base), same reasoning as XStandardAI (see std_ai.cpp) - registered
+// on its own in addition to each subclass's base/derived relation.
+CEREAL_REGISTER_TYPE(XBasicModifier);
+
 CEREAL_REGISTER_TYPE(XModWound);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModWound);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWound, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModPoison);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModPoison);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModPoison, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModConfuse);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModConfuse);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModConfuse, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModStun);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModStun);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModStun, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModHeroism);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModHeroism);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModHeroism, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModDisease);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModDisease);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDisease, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModWeak);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModWeak);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWeak, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModParalyse);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModParalyse);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModParalyse, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModDelayed);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModDelayed);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDelayed, serialize, MOD_UNKNOWN, 0, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModSeeInvisible);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModSeeInvisible);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSeeInvisible, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModBoostSpeed);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModBoostSpeed);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModBoostSpeed, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModSlowness);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModSlowness);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSlowness, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModAcidResistance);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModAcidResistance);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModAcidResistance, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModFireResistance);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModFireResistance);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModFireResistance, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModColdResistance);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModColdResistance);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModColdResistance, serialize, 0, nullptr);
 
 CEREAL_REGISTER_TYPE(XModPoisonResistance);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModPoisonResistance);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModPoisonResistance, serialize, 0, nullptr);
 
 XBasicModifier::XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr)
 {
     mdt = mt;
     val = _val;
     setter = XCreature::ToWeakPtr(_cr);
+}
+
+MODIFIER_RESULT XBasicModifier::Run(XCreature * owner)
+{
+    if (owner->_HP <= 0) {
+        owner->Die(setter.lock().get());
+        return MR_DIE;
+    } else {
+        val--;
+        return val > 0 ? MR_OK : MR_REMOVE;
+    }
 }
 
 void XBasicModifier::Store(XFile * f)

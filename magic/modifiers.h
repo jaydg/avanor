@@ -64,6 +64,15 @@ class XBasicModifier
 {
     protected:
         XBasicModifier() {}
+        // Harmless to call directly (unlike the assert(0)-guarded
+        // no-args constructors on every concrete subclass below) -
+        // every field gets overwritten by serialize() immediately
+        // afterward. Grants Cereal access to construct this base type
+        // directly: it's polymorphic and not abstract, so - same as
+        // XStandardAI (see std_ai.h) - Cereal's dispatch has to account
+        // for a unique_ptr<XBasicModifier> holding a plain
+        // XBasicModifier, not just a registered subclass.
+        friend class cereal::access;
 
     public:
         XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = nullptr);
@@ -86,17 +95,13 @@ class XBasicModifier
             val += (o)->val;
         }
 
-        virtual MODIFIER_RESULT Run(XCreature * owner)
-        {
-            if (owner->_HP <= 0) {
-                owner->Die(setter.lock().get());
-                return MR_DIE;
-            } else {
-                val--;
-                return val > 0 ? MR_OK : MR_REMOVE;
-            }
-
-        }
+        // Defined in modifiers.cpp, not inline here: it needs XCreature
+        // complete (owner->_HP, owner->Die()), and creature.h needs
+        // XModifier (this class's owner, magic/modifier.h) complete for
+        // XCreature::load()/save() to dereference `md` - an inline body
+        // here would make the two headers require each other's complete
+        // type at the same time, which can't work.
+        virtual MODIFIER_RESULT Run(XCreature * owner);
 
         virtual int onSet(XCreature * owner)
         {
@@ -892,5 +897,28 @@ class XModPoisonResistance : public XBasicModifier
             ar(cereal::base_class<XBasicModifier>(this));
         }
 };
+
+// See the comment in modifiers.cpp (next to the CEREAL_REGISTER_TYPE
+// calls) for why these live here rather than there: each subclass's
+// construction gets instantiated from inside XModifier::ml's own
+// deserialization, which gets reinstantiated in every TU that reaches
+// XCreature::md, so the specialization needs to be visible wherever
+// this header is included, not just in modifiers.cpp.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWound, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModPoison, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModConfuse, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModStun, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModHeroism, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDisease, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWeak, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModParalyse, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDelayed, serialize, MOD_UNKNOWN, 0, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSeeInvisible, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModBoostSpeed, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSlowness, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModAcidResistance, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModFireResistance, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModColdResistance, serialize, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModPoisonResistance, serialize, 0, nullptr);
 
 #endif

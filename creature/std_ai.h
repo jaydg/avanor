@@ -244,4 +244,14 @@ class XStandardAI
         int way_y;
 };
 
+// XStandardAI() is deleted - real construction always takes an owning
+// XCreature*, fixed up separately by that creature's own load() (see
+// the comment on serialize() above), so a null placeholder is fine
+// here. Must live here, not in std_ai.cpp: XStandardAI's construction
+// gets instantiated from inside XCreature::load() itself, which gets
+// reinstantiated in every TU that reaches XCreature::xai (e.g. any
+// item's owner weak_ptr<XCreature> chain) - a specialization declared
+// only in std_ai.cpp wouldn't be visible to those other TUs.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XStandardAI, serialize, nullptr);
+
 #endif

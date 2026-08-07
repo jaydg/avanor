@@ -122,6 +122,18 @@ class XSpell
         }
 };
 
+// XSpell() is deleted (real construction always takes a SPELL_NAME) -
+// route Cereal's load-time construction through the real constructor
+// with a placeholder, same idea as CEREAL_LOAD_VIA_DUMMY_CONSTRUCT but
+// for a non-XObject class with no DUMMY_STRUCT support. Not
+// polymorphic, so no CEREAL_REGISTER_TYPE needed. Must live here, not
+// in magic.cpp: XSpell's construction gets instantiated from inside
+// XMagic::serialize(), which itself gets reinstantiated in every TU
+// that reaches XCreature::m (e.g. any item's owner weak_ptr<XCreature>
+// chain) - a specialization declared only in magic.cpp wouldn't be
+// visible to those other TUs.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XSpell, serialize, SPELL_CURE_LIGHT_WOUNDS);
+
 class XMagic
 {
     protected:

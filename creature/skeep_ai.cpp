@@ -29,9 +29,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 CEREAL_REGISTER_TYPE(XShopKeeperAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XShopKeeperAI);
-// XShopKeeperAI() is deleted - real construction always takes an owning
-// XCreature* and an XShop*, so both get null placeholders here.
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XShopKeeperAI, serialize, nullptr, nullptr);
 
 const char* GMSG_SHOPKEEPER_ATTACK = "'You were warned! Prepare to die!'";
 const char* GMSG_SHOPKEEPER_ATTACK2 = "'I'll kill you, you bastard!'";

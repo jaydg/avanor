@@ -1775,6 +1775,36 @@ void XCreature::SetEventHandler(const char* handler)
     strcpy(event_handler, handler);
 }
 
+void XCreature::SaveModifier(cereal::JSONOutputArchive& ar) const
+{
+    ar(*md);
+}
+
+void XCreature::LoadModifier(cereal::JSONInputArchive& ar)
+{
+    md = new XModifier();
+    ar(*md);
+}
+
+void XCreature::FixupCreatureInfo()
+{
+    if (!isHero()) { //skip restoing of descriptions and other for hero
+        XCreatureStorage::RestoreCreatureInfo(this);
+    }
+}
+
+void XCreature::NotifyLuaEventHandler(LUA_EVENT event) const
+{
+    if (event_handler && strlen(event_handler)) {
+        lua_pushstring(XLocation::L, event_handler);
+        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+        lua_pushnumber(XLocation::L, event);
+        lua_call(XLocation::L, 1, 1);
+        int res = lua_tonumber(XLocation::L, 2);
+        lua_pop(XLocation::L, 1);
+    }
+}
+
 int XCreature::GetCreatureStrength()
 {
     int tdv = GetDV();
