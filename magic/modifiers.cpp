@@ -26,21 +26,21 @@ XBasicModifier::XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr)
 {
     mdt = mt;
     val = _val;
-    setter = _cr;
+    setter = XCreature::ToWeakPtr(_cr);
 }
 
 void XBasicModifier::Store(XFile * f)
 {
     f->Write(&val, sizeof(int));
     f->Write(&mdt, sizeof(MODIFIER_TYPE));
-    setter.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 void XBasicModifier::Restore(XFile * f)
 {
     f->Read(&val, sizeof(int));
     f->Read(&mdt, sizeof(MODIFIER_TYPE));
-    setter.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 MODIFIER_RESULT XModWound::Run(XCreature * owner)

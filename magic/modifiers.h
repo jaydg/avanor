@@ -66,12 +66,12 @@ class XBasicModifier
         XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = nullptr);
 
         virtual ~XBasicModifier() {
-            setter = nullptr;
+            setter.reset();
         }
 
         virtual int Compare(XBasicModifier *mod)
         {
-            if (mod->mdt == mdt && mod->setter == setter) {
+            if (mod->mdt == mdt && mod->setter.lock() == setter.lock()) {
                 return 0;
             } else {
                 return -1;
@@ -86,7 +86,7 @@ class XBasicModifier
         virtual MODIFIER_RESULT Run(XCreature * owner)
         {
             if (owner->_HP <= 0) {
-                owner->Die(setter);
+                owner->Die(setter.lock().get());
                 return MR_DIE;
             } else {
                 val--;
@@ -135,7 +135,7 @@ class XBasicModifier
 
         MODIFIER_TYPE mdt;
         int val; // value of modifier;
-        XPtr<XCreature> setter;
+        std::weak_ptr<XCreature> setter;
     protected:
 };
 
