@@ -57,7 +57,7 @@ class XShopKeeperAI : public XStandardAI
             shop = _shop;
         }
 
-        const XPtr<XShop> &GetShop()
+        XShop* GetShop()
         {
             return shop;
         }
@@ -65,7 +65,15 @@ class XShopKeeperAI : public XStandardAI
         SHOP_DEBT debt;
     protected:
         void SetDebtor(XCreature * cr);
-        XPtr<XShop> shop;
+        // Raw, not weak: XShop has never been migrated to shared_ptr
+        // ownership (it's the sole XAnyPlace subclass, still owned via
+        // XLocation::places[]'s unique_ptr). A shopkeeper's shop is a
+        // permanent 1:1 pairing set once at location generation and never
+        // reassigned; shop and shopkeeper are always torn down together in
+        // the same location-teardown pass (see XLocation::Invalidate()),
+        // never independently, so this is always safe to dereference for
+        // as long as the shopkeeper itself is alive.
+        XShop* shop = nullptr;
 };
 
 #endif

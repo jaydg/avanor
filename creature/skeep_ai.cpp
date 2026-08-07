@@ -339,7 +339,7 @@ void XShopKeeperAI::Store(XFile * f)
     // FIXME: Implement when porting saving/restoring to Cereal
     // debt.unpaid_items.StoreList(f);
     f->Write(&debt.turn_count, sizeof(int));
-    shop.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 void XShopKeeperAI::Restore(XFile * f)
@@ -353,5 +353,5 @@ void XShopKeeperAI::Restore(XFile * f)
     // FIXME: Implement when porting saving/restoring to Cereal
     // debt.unpaid_items.RestoreList(f);
     f->Read(&debt.turn_count, sizeof(int));
-    shop.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }

@@ -71,6 +71,15 @@ void XLocation::Invalidate()
 
     for (int i = 0; i < MAX_PLACES; i++)
         if (places[i]) {
+            // No XPtr<XShop> reference exists anywhere anymore to defer
+            // to, so XObject::Invalidate()'s own generic logic
+            // (reference == 0 && weak_from_this().expired(), both always
+            // true for a shop - it's never shared_ptr-wrapped) now
+            // deletes the object synchronously, right here. release()
+            // (not reset()/= nullptr) is still required: the object is
+            // already gone by the time Invalidate() returns, so the
+            // unique_ptr must let go of the pointer without also trying
+            // to delete it a second time.
             places[i]->Invalidate();
             places[i].release();
         }
