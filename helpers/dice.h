@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string>
 
+#include <cereal/cereal.hpp>
+
 class XFile;
 
 // Represents an XdY+Z dice expression: throw a Y-sided die X times, add bonus Z.
@@ -94,6 +96,12 @@ public:
 
     void Store(const XFile* f) const;
     void Restore(const XFile* f);
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(result_, count_, sides_, bonus_);
+    }
 
     // Generates a value 0-20 with heavily right-skewed distribution:
     //   0 ~ 75%, 1 ~ 5%, ..., 20 ~ 0.1%

@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XTIME_H
 #define XTIME_H
 
+#include <cereal/cereal.hpp>
+
 class XFile;
 
 class XTime
@@ -45,6 +47,16 @@ class XTime
 
         static void Store(XFile * f);
         static void Restore(XFile * f);
+
+        // XTime has no instances (every field is static), so this can't
+        // be a normal per-instance cereal serialize() picked up by ADL -
+        // call it explicitly (XTime::serialize(ar)) from the top-level
+        // archive code instead.
+        template<class Archive>
+        static void serialize(Archive& ar)
+        {
+            ar(sec, min, hour, day, month, year, tic);
+        }
 
         static unsigned int tic;
     protected:

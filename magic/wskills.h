@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef WSKILLS_H
 #define WSKILLS_H
 
+#include <cereal/cereal.hpp>
+
 struct _SKILL_DB {
     const char* name;
     int base_dv[16];
@@ -71,6 +73,12 @@ class XWarSkills
 
         void Store(XFile * f);
         void Restore(XFile * f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(marks_counter, levels);
+        }
 
         int marks_counter[ALL];
         int levels[ALL];

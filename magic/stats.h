@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <memory>
 
+#include <cereal/cereal.hpp>
+
 #include "engine/global.h"
 #include "helpers/dice.h"
 
@@ -76,6 +78,12 @@ class XStats
 
         void Store(XFile * f);
         void Restore(XFile * f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(stats);
+        }
 
         static STATS Random()
         {

@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <memory>
 
+#include <cereal/cereal.hpp>
+
 #include "helpers/dice.h"
 
 enum RESISTANCE {
@@ -100,6 +102,12 @@ class XResistance
 
         void Store(XFile * f);
         void Restore(XFile * f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(resistances);
+        }
 
     protected:
         int resistances[R_EOF]{};

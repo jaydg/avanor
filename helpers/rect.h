@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef RECT_H
 #define RECT_H
 
+#include <cereal/cereal.hpp>
+
 #include "engine/xfile.h"
 #include "helpers/point.h"
 
@@ -79,6 +81,12 @@ class XRect
         [[nodiscard]] int Height() const;
         void Store(const XFile* f) const;
         void Restore(const XFile* f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(left, right, top, bottom);
+        }
 };
 
 #endif
