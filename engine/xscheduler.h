@@ -25,6 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <variant>
 #include <vector>
 
+#include <cereal/types/memory.hpp>
+#include <cereal/types/variant.hpp>
+#include <cereal/types/vector.hpp>
+
 constexpr int XSCHEDULER_TIME_SLICE = 100;
 constexpr int XSCHEDULER_STEPS_AHEAD = 100;
 
@@ -69,6 +73,16 @@ class XScheduler
         void Add(XObject* p);
         std::shared_ptr<XObject> Get();
         void Remove();
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(_time, head);
+
+            for (auto& d : data) {
+                ar(d);
+            }
+        }
 
         void Store(XFile * f);
         void Restore(XFile * f);

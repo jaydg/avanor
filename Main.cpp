@@ -426,6 +426,60 @@ static bool TestRealLocation()
     return pass;
 }
 
+static bool TestRealScheduler()
+{
+    // A fresh, isolated scheduler rather than Game.Scheduler itself -
+    // XScheduler::Get() has real side effects (it can advance time,
+    // reschedule entries whose timer hasn't yet expired) that would be
+    // unsafe to trigger against the live, shared one mid-test.
+    XScheduler local_sched;
+    local_sched.SetTime(12345);
+
+    // Add() takes ownership via XItem::Own() (see its own comment) for
+    // XItem-derived entries - matches how real code schedules things
+    // (e.g. Game.Scheduler.Add(new XCorpse(...))), not something this
+    // test needs to manage itself.
+    local_sched.Add(new XMoney(500));
+
+    std::ostringstream oss;
+    {
+        cereal::JSONOutputArchive archive(oss);
+        archive(local_sched);
+    }
+
+    XScheduler restored;
+    {
+        std::istringstream iss(oss.str());
+        cereal::JSONInputArchive archive(iss);
+        archive(restored);
+    }
+
+    bool pass = restored.GetTime() == local_sched.GetTime();
+
+    // ttm/ttmb round-trip via XObject::serialize() same as every other
+    // field - a freshly-constructed XMoney's ttm is 0, which Place()
+    // turns negative (expired) the moment it's re-placed one slot
+    // ahead, so a single Get() call is enough to retrieve it back.
+    auto entry = restored.Get();
+    pass = pass && entry && dynamic_cast<XMoney*>(entry.get()) != nullptr;
+
+    std::cout
+        << "  scheduler time " << local_sched.GetTime() << " -> " << restored.GetTime()
+        << ", entry " << (entry ? typeid(*entry).name() : "none")
+        << std::endl;
+
+    // Genuine orphan (Cereal's plain-delete deleter, no Invalidate()
+    // safety net) - Get() doesn't remove it from `restored`'s own
+    // internal data[], so invalidating it here is enough: restored's
+    // own destructor will find it already invalid and just drop the
+    // reference, not double-invalidate it.
+    if (entry) {
+        entry->Invalidate();
+    }
+
+    return pass;
+}
+
 } // namespace cereal_pilot
 
 static void RunCerealPilotTest()
@@ -435,13 +489,15 @@ static void RunCerealPilotTest()
     const bool selfref_pass = cereal_pilot::TestSelfReferentialWeakPtr();
     const bool creature_pass = cereal_pilot::TestRealCreature();
     const bool location_pass = cereal_pilot::TestRealLocation();
+    const bool scheduler_pass = cereal_pilot::TestRealScheduler();
 
     std::cout << "polymorphic item:      " << (item_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "XItemList round-trip:  " << (list_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "self-referential weak: " << (selfref_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "real creature:         " << (creature_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "real location:         " << (location_pass ? "PASS" : "FAIL") << std::endl;
-    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass && creature_pass && location_pass) ? "PASS" : "FAIL") << std::endl;
+    std::cout << "scheduler round-trip:  " << (scheduler_pass ? "PASS" : "FAIL") << std::endl;
+    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass && creature_pass && location_pass && scheduler_pass) ? "PASS" : "FAIL") << std::endl;
 
     // TestRealCreature() calls Game.Create('T'), populating a whole real
     // game world - unlike -test/-demo mode, this mode returns from main()
