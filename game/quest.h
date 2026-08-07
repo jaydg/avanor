@@ -25,6 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
+#include <cereal/types/memory.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "creature/creature.h"
 #include "item/itemdef.h"
 
@@ -45,6 +49,12 @@ struct XQuestRec {
     std::string closed;
     QUEST status;
     int quest_id;
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(know, complete, closed, status, quest_id);
+    }
 };
 
 class XQuest
@@ -115,6 +125,22 @@ class XQuest
 
         void Store(XFile * f);
         void Restore(XFile * f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(quests);
+            ar(beelzvile_killed, beelzvile_ordered);
+            ar(ahk_ulan_ordered, ahk_ulan_killed, ahk_ulan_quest);
+            ar(roderick_ordered, roderick_killed, roderick_quest, roderick_quest2);
+            ar(orcs_killed, total_orcs_killed);
+            ar(guards_get_orc_slay);
+            ar(torin_quest);
+            ar(yohjishiro_it_quest);
+            ar(kidnapped_girl);
+            ar(rotmoth_status, kidnapped_girl_status);
+            ar(hero_die, hero_win);
+        }
 };
 
 #endif
