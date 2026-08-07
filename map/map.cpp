@@ -335,16 +335,15 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
         // under a creature that was simply still standing on it) - make
         // sure Invalidate() always runs first regardless, since it does
         // real cleanup (deregistering from the object registry, invalidating
-        // carried items, ...), not just bookkeeping. Invalidate() itself
-        // decides whether it's safe to delete now (nothing else - reads:
-        // no not-yet-migrated XPtr cross-reference like XItem::owner, ... -
-        // is still holding
-        // GetRef() above zero) or must defer to Release() finishing the job
-        // once that last legacy reference also lets go.
+        // carried items, ...), not just bookkeeping. No XPtr<XCreature>
+        // cross-reference exists anywhere anymore (all migrated to
+        // weak_ptr), so nothing can still be holding a legacy reference by
+        // the time we get here - safe to delete unconditionally once
+        // Invalidate() has run (or already had, on a previous pass).
         map[x + y * len].pMonster = std::shared_ptr<XCreature>(monst, [](XCreature* p) {
             if (p->isValid()) {
                 p->Invalidate();
-            } else if (p->GetRef() == 0) {
+            } else {
                 delete p;
             }
         });
