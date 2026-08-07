@@ -324,7 +324,7 @@ int XCreature::UseItem(XTool* tool)
     if (res) {
         if (res == CONTINUE) {
             action_data.action = A_USE_TOOL;
-            action_data.item = tool;
+            action_data.item = XItem::Own(tool);
             return 1;
         } else {
             return 1;

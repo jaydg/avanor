@@ -80,7 +80,11 @@ class XCookingSet : public XTool
         void Restore(XFile * f) override;
         void Invalidate() override;
     protected:
-        XPtr<XItem> cooked_item;
+        // Owning, not weak: the corpse being cooked is already erased from
+        // contain (SelectItem()/Inventory() picked it destructively) by the
+        // time it lands here, so this can be its only reference. See
+        // XItem::Own().
+        std::shared_ptr<XItem> cooked_item;
         int use_time;
 };
 

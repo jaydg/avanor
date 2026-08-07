@@ -132,6 +132,18 @@ inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {
     return lhs->im < rhs->im;
 }
 
-typedef std::set<XItem*, compare> XItemList;
+inline bool compare::operator()(const std::shared_ptr<XItem>& lhs, const std::shared_ptr<XItem>& rhs) const {
+    return (*this)(lhs.get(), rhs.get());
+}
+
+inline bool compare::operator()(const std::shared_ptr<XItem>& lhs, const XItem* rhs) const {
+    return (*this)(lhs.get(), rhs);
+}
+
+inline bool compare::operator()(const XItem* lhs, const std::shared_ptr<XItem>& rhs) const {
+    return (*this)(lhs, rhs.get());
+}
+
+typedef std::set<std::shared_ptr<XItem>, compare> XItemList;
 
 #endif

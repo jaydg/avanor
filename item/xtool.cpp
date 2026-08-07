@@ -50,14 +50,14 @@ RESULT XCookingSet::onUse(ItemUsageState uis, XCreature * cr)
     switch (uis) {
         case START:
             if (cr->isHero()) {
-                XItem * corpse = cr->SelectItem(CorpseFiltr);
+                std::shared_ptr<XItem> corpse = cr->SelectItem(CorpseFiltr);
 
                 if (corpse == nullptr) {
                     return FAIL;
                 }
 
                 cooked_item = corpse;
-                ((XCorpse*)corpse)->roating_stopped = 1;
+                ((XCorpse*)corpse.get())->roating_stopped = 1;
                 use_time = 50 - cr->sk->GetLevel(XSkill::Skill::COOKING) * 2;
 
                 if (cr->isVisible()) {
@@ -113,7 +113,7 @@ RESULT XCookingSet::onUse(ItemUsageState uis, XCreature * cr)
         case FINISH:
             XCorpse * corpse = (XCorpse*)cooked_item.get();
             corpse->roating_stopped = 0;
-            cr->contain.insert(corpse);
+            cr->contain.insert(cooked_item);
             cooked_item = nullptr;
             break;
     }
@@ -244,7 +244,8 @@ int RootsFiltr(XItem * item)
 
 RESULT XAlchemySet::onUse(ItemUsageState uis, XCreature * cr)
 {
-    XHerb * herb = (XHerb*)cr->SelectItem(RootsFiltr);
+    std::shared_ptr<XItem> herb_sp = cr->SelectItem(RootsFiltr);
+    XHerb * herb = (XHerb*)herb_sp.get();
 
     if (herb == nullptr) {
         return FAIL;
@@ -260,7 +261,7 @@ RESULT XAlchemySet::onUse(ItemUsageState uis, XCreature * cr)
             cr->name, pot->toString()));
 
         cr->CarryItem(pot);
-        cr->contain.insert(pot);
+        cr->contain.insert(XItem::Own(pot));
         cr->sk->UseSkill(XSkill::Skill::ALCHEMY);
     } else {
         msgwin.Add(fmt::format("{} failed to create a potion.", cr->name));

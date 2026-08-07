@@ -61,7 +61,9 @@ std::weak_ptr<XItem> XItem::ToWeakPtr(XItem * it)
 
 std::shared_ptr<XItem> XItem::Own(XItem * raw)
 {
-    assert(raw);
+    if (!raw) {
+        return {};
+    }
 
     // First time this item is handed to something that will hold it long
     // term (contain/item_list/chest-contain insertion, a trap's ammo
@@ -71,15 +73,16 @@ std::shared_ptr<XItem> XItem::Own(XItem * raw)
     // shared_ptr from the same control block via shared_from_this(), never
     // a second, independent one.
     if (raw->weak_from_this().expired()) {
-        // Unlike XCreature, legacy XPtr<XItem> cross-references still exist
-        // (XBodyPart::item, ACTION_DATA::item, XTool::cooked_item,
-        // XTrap::trap_item) - so, same as XMap::SetMonster's deleter before
-        // those were all migrated for XCreature, defer deletion to the last
-        // XPtr<XItem>::Release() if one is still outstanding.
+        // No XPtr<XItem> cross-reference exists anywhere anymore (all
+        // migrated to owning shared_ptr: XBodyPart::item, ACTION_DATA::item,
+        // XTool::cooked_item, XTrap::trap_item), so nothing can still be
+        // holding a legacy reference by the time this deleter runs - safe
+        // to delete unconditionally once Invalidate() has run (or already
+        // had, on a previous pass). Mirrors XMap::SetMonster's deleter.
         return std::shared_ptr<XItem>(raw, [](XItem * p) {
             if (p->isValid()) {
                 p->Invalidate();
-            } else if (p->GetRef() == 0) {
+            } else {
                 delete p;
             }
         });
@@ -95,19 +98,25 @@ void XItem::Invalidate()
     }
 
     // If this item is currently lying on the ground, its map cell's
-    // item_list holds a raw, non-owning pointer to it. Invalidate() can be
-    // reached directly (e.g. XObject::InvalidateAllObjects() walking the
-    // global registry) without going through the normal pickup/drop paths
-    // that keep item_list in sync, so make sure that stale entry can't
-    // outlive us and dangle. l->map may already be gone (its location's
-    // teardown got there first and already reclaimed every item on it), in
-    // which case there's nothing left to remove ourselves from.
-    if (l && l->map && x >= 0 && y >= 0) {
-        l->map->GetItemList(x, y)->erase(this);
-    }
+    // item_list holds the item's master shared_ptr (see XItem::Own()).
+    // Capture that list now, before XBaseObject::Invalidate() clears our
+    // location below, but don't actually erase from it until after is_valid
+    // is cleared - if this is the item's last reference, erasing it runs
+    // Own()'s deleter synchronously, and that deleter must see isValid() ==
+    // false (delete outright) rather than re-entering this very Invalidate()
+    // call while it's still on the stack. l->map may already be gone (its
+    // location's teardown got there first and already reclaimed every item
+    // on it), in which case there's nothing left to remove ourselves from.
+    XItemList* ground_list = (l && l->map && x >= 0 && y >= 0) ? l->map->GetItemList(x, y) : nullptr;
 
     total_it--;
     XBaseObject::Invalidate();
+
+    if (ground_list) {
+        if (auto it = ground_list->find(this); it != ground_list->end()) {
+            ground_list->erase(it);
+        }
+    }
 }
 
 

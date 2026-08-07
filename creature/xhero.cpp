@@ -610,7 +610,7 @@ void XHero::Move()
             msgwin.Add("There is a heap of items here.");
         } else if (l->map->GetItemCount(nx, ny) == 1) {
             XItemList* ilist = (l->map->GetItemList(nx, ny));
-            XItem* item = *(ilist->begin());
+            XItem* item = ilist->begin()->get();
             XAnyPlace* place = l->map->GetPlace(nx, ny);
 
             msgwin.Add(fmt::format("There is a {} here.",
@@ -864,7 +864,7 @@ const char* output_items_name[] = {
 static int first_item = 0;
 static XItemList* pLastList = nullptr;
 
-XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count,
+std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count,
     XItemFilter* ifiltr, const std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
     while (true) {
@@ -882,7 +882,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
         int all_item_count = 0;
 
         for (const auto it : *item_list) {
-            if ((ifiltr && ifiltr(it)) || it->im & mask) {
+            if ((ifiltr && ifiltr(it.get())) || it->im & mask) {
                 all_item_count++;
             }
         }
@@ -911,7 +911,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
             ITEM_MASK last_mask = IM_UNKNOWN;
 
             for (const auto item: *item_list) {
-                if ((ifiltr && ifiltr(item)) || (item->im & mask)) {
+                if ((ifiltr && ifiltr(item.get())) || (item->im & mask)) {
                     // we need to show item group name (e.g. boots, weapons etc.)
                     if (item->im != last_mask) {
                         // skip output empty string for first item in inventory
@@ -932,7 +932,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
                     }
 
                     //output item
-                    list.AddItem(new XGuiItem_Inventory(item), 0);
+                    list.AddItem(new XGuiItem_Inventory(item.get()), 0);
                 }
             }
         }
@@ -969,7 +969,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
             int stop_flag = -1;
 
             while (true) {
-                if ((ifiltr && ifiltr(*selected_it)) || ((*selected_it)->im & mask)) {
+                if ((ifiltr && ifiltr(selected_it->get())) || ((*selected_it)->im & mask)) {
                     stop_flag++;
                 }
 
@@ -982,7 +982,16 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
 
             assert(stop_flag == item_number);
 
-            XItem* ritem = *selected_it;
+            // Capture the shared_ptr before any erase below - item_list
+            // can be ritem's only reference, and erasing it while it's
+            // still valid would run XItem::Own()'s deleter and invalidate
+            // it outright instead of just handing it to the caller.
+            std::shared_ptr<XItem> ritem = *selected_it;
+
+            if (flag & IF_NO_ERASE) {
+                return ritem;
+            }
+
             item_list->erase(selected_it);
 
             if (ret_item_count <= 0) {
@@ -993,7 +1002,7 @@ XItem* XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FL
                 return ritem;
             }
 
-            auto sitem = dynamic_cast<XItem *>(ritem->MakeCopy());
+            auto sitem = XItem::Own(dynamic_cast<XItem *>(ritem->MakeCopy()));
             sitem->quantity = ret_item_count;
             ritem->quantity -= ret_item_count;
             item_list->insert(ritem);
@@ -1088,20 +1097,22 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             if (witem != nullptr) {
                 contain.insert(xqsa[n]->UnWear());
             } else {
+                std::shared_ptr<XItem> picked;
+
                 if (xqsa[n]->GetProperIM() == IM_MISSILE) {
-                    witem = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK);
+                    picked = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK);
                 } else {
-                    witem = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK, 1);
+                    picked = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK, 1);
                 }
 
-                if (witem) {
+                if (picked) {
                     if (xqsa[n]->bp_uin == BP_HAND) {
-                        xqsa[n]->Wear(witem);
+                        xqsa[n]->Wear(picked.get());
                     } else {
-                        if (xqsa[n]->bp_uin == witem->bp) {
-                            xqsa[n]->Wear(witem);
+                        if (xqsa[n]->bp_uin == picked->bp) {
+                            xqsa[n]->Wear(picked.get());
                         } else {
-                            contain.insert(witem);
+                            contain.insert(picked);
                         }
                     }
                 }
@@ -1117,7 +1128,7 @@ void XHero::Eat()
     } else {
         first_item = 0;
 
-        XItem* food = nullptr;
+        std::shared_ptr<XItem> food;
         XItemList* tmpquae = l->map->GetItemList(x, y);
 
         if (!tmpquae->empty()) {
@@ -1125,7 +1136,7 @@ void XHero::Eat()
 
             XAnyPlace* place = l->map->GetPlace(x, y);
 
-            if (place && food && !place->onCreaturePickItem(this, food)) {
+            if (place && food && !place->onCreaturePickItem(this, food.get())) {
                 vRefresh();
                 return;
             }
@@ -1139,7 +1150,7 @@ void XHero::Eat()
         vRefresh();
 
         if (food) {
-            XCreature::Eat(dynamic_cast<XAnyFood *>(food));
+            XCreature::Eat(dynamic_cast<XAnyFood *>(food.get()));
         }
     }
 }
@@ -1152,15 +1163,15 @@ int XHero::stopAction()
 void XHero::ReadAll()
 {
     first_item = 0;
-    XItem* item = Inventory(&contain, static_cast<ITEM_MASK>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
+    std::shared_ptr<XItem> item = Inventory(&contain, static_cast<ITEM_MASK>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
 
     if (item) {
         if (item->im & IM_SCROLL) {
-            if (!XCreature::Read(item)) {
+            if (!XCreature::Read(item.get())) {
                 contain.insert(item);
             }
         } else if (item->im & IM_BOOK) {
-            if (!XCreature::Read(item)) {
+            if (!XCreature::Read(item.get())) {
                 contain.insert(item);
             }
         }
@@ -1172,7 +1183,8 @@ void XHero::ReadAll()
 void XHero::DrinkPotion()
 {
     first_item = 0;
-    auto pot = dynamic_cast<XPotion *>(Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1));
+    auto pot_sp = Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1);
+    auto pot = dynamic_cast<XPotion *>(pot_sp.get());
 
     if (pot) {
         if (pot->onDrink(this)) {
@@ -1186,11 +1198,11 @@ void XHero::DrinkPotion()
 
 void XHero::DropItem()
 {
-    XItem * item;
+    std::shared_ptr<XItem> item;
     first_item = 0;
 
     while (contain.begin() != contain.end() && (item = Inventory(&contain))) {
-        XItem* drop_item = item;
+        std::shared_ptr<XItem> drop_item = item;
 
         if (item->quantity > 1) {
             msgwin.ClrMsg();
@@ -1204,14 +1216,14 @@ void XHero::DropItem()
             }
 
             if (res != item->quantity) {
-                drop_item = dynamic_cast<XItem *>(item->MakeCopy());
+                drop_item = XItem::Own(dynamic_cast<XItem *>(item->MakeCopy()));
                 drop_item->quantity = res;
                 item->quantity -= res;
                 contain.insert(item);
             }
         }
 
-        if (!XCreature::DropItem(drop_item)) {
+        if (!XCreature::DropItem(drop_item.get())) {
             contain.insert(drop_item);
             return;
         }
@@ -1230,30 +1242,30 @@ void XHero::PickItem()
         if (obj == nullptr || !obj->isValid() || obj->im != IM_OTHER) {
             msgwin.Add("There is nothing to pick up here.");
         } else {
-            const auto tit = dynamic_cast<XItem *>(obj->Pick(this));
+            const auto tit = XItem::Own(dynamic_cast<XItem *>(obj->Pick(this)));
 
             auto desc = tit->toString();
-            if (PickUpItem(tit)) {
+            if (PickUpItem(tit.get())) {
                 msgwin.Add(fmt::format("You pick a {}.", desc));
             } else {
                 tit->Invalidate();
             }
         }
     } else if (tmpquae->size() == 1) {
-        XItem* tit = *(tmpquae->begin());
+        std::shared_ptr<XItem> tit = *(tmpquae->begin());
         tmpquae->erase(tit);
 
-        if (PickUpItem(tit)) {
+        if (PickUpItem(tit.get())) {
             msgwin.Add(fmt::format("You pick up a {}.", tit->toString()));
         } else {
             tmpquae->insert(tit);
         }
     } else {
-        XItem* tit;
+        std::shared_ptr<XItem> tit;
         int nitem = 0;
 
         while (!tmpquae->empty() && (tit = Inventory(tmpquae))) {
-            if (PickUpItem(tit)) {
+            if (PickUpItem(tit.get())) {
                 nitem++;
             } else {
                 // we can't pick item, so return it back
@@ -1277,21 +1289,22 @@ void XHero::OpenChest()
     int chest_count = 0;
     XChest* last_chest = nullptr;
 
-    for (const auto it : *tq) {
+    for (const auto& it : *tq) {
         if (it->im == IM_CHEST) {
-            last_chest = dynamic_cast<XChest *>(it);
+            last_chest = dynamic_cast<XChest *>(it.get());
             chest_count++;
         }
     }
 
     if (chest_count > 1) {
-        last_chest = dynamic_cast<XChest *>(Inventory(tq, IM_CHEST, IF_NONE, 1));
+        auto chest_sp = Inventory(tq, IM_CHEST, IF_NONE, 1);
+        last_chest = dynamic_cast<XChest *>(chest_sp.get());
 
         if (!last_chest) {
             return;
         }
 
-        XItem* it = nullptr;
+        std::shared_ptr<XItem> it;
 
         do {
             it = Inventory(&last_chest->contain);
@@ -1299,18 +1312,18 @@ void XHero::OpenChest()
             if (it) {
                 last_chest->weight -= it->weight;
 
-                if (!ContainItem(it)) {
+                if (!ContainItem(it.get())) {
                     it->Drop(l, x, y);
                 }
             }
         } while (it);
 
-        tq->insert(last_chest);
+        tq->insert(chest_sp);
     } else if (chest_count == 1) {
         msgwin.Add("Do you wish to open the chest?");
 
         if (GetTarget(TR_NO_YES)) {
-            XItem* it = nullptr;
+            std::shared_ptr<XItem> it;
 
             do {
                 it = Inventory(&last_chest->contain);
@@ -1318,7 +1331,7 @@ void XHero::OpenChest()
                 if (it) {
                     last_chest->weight -= it->weight;
 
-                    if (!ContainItem(it)) {
+                    if (!ContainItem(it.get())) {
                         it->Drop(l, x, y);
                     }
                 }
@@ -1502,7 +1515,7 @@ int XHero::XShoot()
     // if no missile, try to load them
     if (!missile) {
         for (auto it: contain) {
-            if (it->im & IM_MISSILE && XMissile::isProperWeapon(it, missile_w)) {
+            if (it->im & IM_MISSILE && XMissile::isProperWeapon(it.get(), missile_w)) {
                 msgwin.ClrMsg();
                 msgwin.Add(fmt::format("Load {}", it->toString()));
                 msgwin.Add("["
@@ -1521,7 +1534,7 @@ int XHero::XShoot()
                         return 0;
                     }
 
-                    XItem * tmp = it;
+                    XItem * tmp = it.get();
                     contain.erase(it);
                     bp->Wear(tmp);
                     break;
@@ -1959,7 +1972,14 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
             assert(back);
 
             if (GetTarget(TR_ATTACK_DIRECTION, pt)) {
-                XItem* item;
+                // IF_NO_ERASE: *back only carries a raw XObject* across to
+                // the caller (UseSteal(), in magic/skill.cpp) - it can't
+                // preserve a shared_ptr, so the item must stay owned by its
+                // current container (cr->contain / the ground item_list)
+                // rather than being erased here, or it would be destroyed
+                // before the caller ever sees it. UseSteal() erases it from
+                // the source itself, once the theft actually succeeds.
+                std::shared_ptr<XItem> item;
                 XCreature *cr = l->map->GetMonster(x + pt->x, y + pt->y);
 
                 if (cr) {
@@ -1968,8 +1988,8 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
                         return 0;
                     }
 
-                    if ((item = Inventory(&cr->contain))) {
-                        *back = item;
+                    if ((item = Inventory(&cr->contain, IM_ALL, IF_NO_ERASE))) {
+                        *back = item.get();
                         return 1;
                     }
 
@@ -1986,10 +2006,10 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
                         return 0;
                     }
 
-                    item = Inventory(l->map->GetItemList(x + pt->x, y + pt->y));
+                    item = Inventory(l->map->GetItemList(x + pt->x, y + pt->y), IM_ALL, IF_NO_ERASE);
 
                     if (item) {
-                        *back = item;
+                        *back = item.get();
                         return 1;
                     }
 
@@ -2310,9 +2330,9 @@ void XHero::LookAt()
     list.Run();
 }
 
-XItem* XHero::onIdentifyItem()
+std::shared_ptr<XItem> XHero::onIdentifyItem()
 {
-    XItem * it = Inventory(&contain);
+    auto it = Inventory(&contain);
 
     if (it) {
         contain.insert(it);
@@ -2420,10 +2440,10 @@ void XHero::GiveItem()
         }
     }
 
-    if (XItem* item = Inventory(&contain)) {
+    if (auto item = Inventory(&contain)) {
         if (item->im & IM_MONEY) {
             contain.insert(item);
-            last_creature->xai->onGiveItem(this, item);
+            last_creature->xai->onGiveItem(this, item.get());
         } else {
             int res = item->quantity;
 
@@ -2433,10 +2453,10 @@ void XHero::GiveItem()
             }
 
             int flag = 1;
-            XItem * gitem;
+            std::shared_ptr<XItem> gitem;
 
             if (res < item->quantity && res > 0) {
-                gitem = dynamic_cast<XItem *>(item->MakeCopy());
+                gitem = XItem::Own(dynamic_cast<XItem *>(item->MakeCopy()));
                 gitem->quantity = res;
                 item->quantity -= res;
                 contain.insert(item);
@@ -2446,7 +2466,7 @@ void XHero::GiveItem()
 
             if (res > 0) {
                 carried_weight -= item->weight * res;
-                flag = last_creature->xai->onGiveItem(this, gitem);
+                flag = last_creature->xai->onGiveItem(this, gitem.get());
             }
 
             if (!flag || res == 0) {

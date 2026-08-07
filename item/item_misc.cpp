@@ -41,7 +41,7 @@ XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
     for (int i = 0; i < item_count; i++) {
         XItem * it = ICREATE(imask, low_v, high_v);
         weight += it->weight;
-        contain.insert(it);
+        contain.insert(XItem::Own(it));
     }
 }
 

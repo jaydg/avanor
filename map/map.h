@@ -107,10 +107,19 @@ class XMapObject;
 class XItem;
 
 struct compare {
+    // Transparent so contain.erase(raw_ptr)/.find(raw_ptr) - pervasive
+    // throughout the codebase - keep working by heterogeneous lookup once
+    // XItemList holds shared_ptr<XItem> instead of raw XItem*, without
+    // requiring every one of those call sites to be rewritten.
+    using is_transparent = void;
+
     bool operator()(const XItem* lhs, const XItem* rhs) const;
+    bool operator()(const std::shared_ptr<XItem>& lhs, const std::shared_ptr<XItem>& rhs) const;
+    bool operator()(const std::shared_ptr<XItem>& lhs, const XItem* rhs) const;
+    bool operator()(const XItem* lhs, const std::shared_ptr<XItem>& rhs) const;
 };
 
-typedef std::set<XItem*, compare> XItemList;
+typedef std::set<std::shared_ptr<XItem>, compare> XItemList;
 
 struct MAP {
     MAP();

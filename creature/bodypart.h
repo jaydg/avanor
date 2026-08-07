@@ -49,7 +49,12 @@ enum BODY_PART {
 
 class XBodyPart
 {
-        XPtr<XItem> item;	//main item for this body part;
+        // Owning, not weak: while worn, a bodypart is - in the current,
+        // pre-worn-items-stay-in-contain design - typically the item's only
+        // reference (Wear() is often called on gear that never passes
+        // through XCreature::contain at all, e.g. starting-gear equip
+        // loops). See XItem::Own().
+        std::shared_ptr<XItem> item;	//main item for this body part;
         std::weak_ptr<XCreature> owner;
         XBodyPart() : bp_uin() {}
 
@@ -73,7 +78,7 @@ class XBodyPart
 
         XItem* Item() const;
         int Wear(XItem* new_item);
-        XItem* UnWear();
+        std::shared_ptr<XItem> UnWear();
         void SetOwner(XCreature* o);
 
         int GetPartSize() const;

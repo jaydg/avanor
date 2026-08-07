@@ -198,13 +198,25 @@ bool XCorpse::Run()
                 msgwin.Add("Suddenly your equipment weighs less.");
             }
 
-            owner_sp->contain.erase(this);
             owner_sp->UnCarryItem(this);
         } else if (l && isInVisibleArea()) {
             msgwin.Add("Suddenly something disappered from the ground.");
         }
 
         Invalidate();
+
+        // Erase from contain last, after is_valid is already cleared above
+        // - see the matching comment in XItem::Invalidate(). If contain was
+        // this corpse's last reference, erasing it here safely runs
+        // Own()'s deleter as a plain delete (Invalidate() already ran)
+        // instead of risking a reentrant Invalidate() call while this
+        // Run() is still executing.
+        if (owner_sp) {
+            if (auto it = owner_sp->contain.find(this); it != owner_sp->contain.end()) {
+                owner_sp->contain.erase(it);
+            }
+        }
+
         return false;
     }
 

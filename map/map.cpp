@@ -299,7 +299,7 @@ void XMap::PutItem(const int x, const int y, XItem* item) const
 
     item->x = x;
     item->y = y;
-    map[x + y * len].item_list.insert(item);
+    map[x + y * len].item_list.insert(XItem::Own(item));
 }
 
 XItemList* XMap::GetItemList(const int x, const int y) const
@@ -387,7 +387,7 @@ void XMap::Put(XCreature * cr) const
                     tmap->color = tmap->pSpecialObject->color;
                     tmap->known = tmap->pSpecialObject->view;
                 } else if (!tmap->item_list.empty()) {
-                    const XItem* item = *(tmap->item_list.begin());
+                    const XItem* item = tmap->item_list.begin()->get();
 
                     vPutCh(j + SCR_X, i + SCR_Y, item->view, item->color);
                     tmap->color = item->color;

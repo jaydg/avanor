@@ -40,6 +40,13 @@ enum INVENTORY_FLAG {
     IF_NONE,
     IF_FIXED_MASK,
     IF_VIEW_ONLY,
+    // Select and return an item without removing it from item_list - unlike
+    // IF_VIEW_ONLY (which never returns a selection at all), this still
+    // returns the chosen item, just leaves it where it lives. Needed
+    // whenever the raw pointer handed back has to survive past this
+    // function's own scope (e.g. through an XObject** out-param) without
+    // item_list's shared_ptr ownership going away under it.
+    IF_NO_ERASE = 4,
 };
 
 enum SKILL_FLAG {
@@ -69,7 +76,7 @@ class XHero final : public XCreature
         void PlayerSetup();
         void NewMove() override;
         void Move() override;
-        XItem* Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE,
+        std::shared_ptr<XItem> Inventory(XItemList* item_list, ITEM_MASK mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE,
                          int ret_item_count = 0, XItemFilter* ifiltr = nullptr,
                          std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt) const;
         void Equipment(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
@@ -90,7 +97,7 @@ class XHero final : public XCreature
         int XShoot();
         int Targeting(int range, XPoint* pt);
         int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr) override; //Get target for a spell
-        XItem* SelectItem(XItemFilter* filter, bool isGetAll = false) override;
+        std::shared_ptr<XItem> SelectItem(XItemFilter* filter, bool isGetAll = false) override;
 
         int SelectPosition(XPoint * pt, int flag = 0);
         unsigned int turn_count{};
@@ -117,7 +124,7 @@ class XHero final : public XCreature
         void QuickPay();
         void Pray();
         static int WhichDirection(XPoint* pt, int flag = 1); // flag == 1 - allow 0,0 coords (self)
-        XItem* onIdentifyItem() override;
+        std::shared_ptr<XItem> onIdentifyItem() override;
         void ShowResistance(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
 
         void ActivateTrap();

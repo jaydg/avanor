@@ -102,7 +102,11 @@ struct ACTION_DATA {
     ACTION_DATA() : item(nullptr), action(A_MOVE) {}
 
     ACTION action;
-    XPtr<XItem> item;
+    // Owning, not weak: an in-progress action's target item is typically
+    // already erased from contain by the time it lands here (e.g. a
+    // multi-turn book read), so this can be the item's only reference.
+    // See XItem::Own().
+    std::shared_ptr<XItem> item;
     void Store(XFile * f);
     void Restore(XFile * f);
 };
@@ -297,12 +301,12 @@ class XCreature : public XBaseObject
 
         // Get target for a spell
         virtual int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr);
-        virtual XItem* onIdentifyItem()
+        virtual std::shared_ptr<XItem> onIdentifyItem()
         {
             return nullptr;
         }
 
-        virtual XItem* SelectItem(XItemFilter* filtr, bool isGetAll = false)
+        virtual std::shared_ptr<XItem> SelectItem(XItemFilter* filtr, bool isGetAll = false)
         {
             return nullptr;
         }

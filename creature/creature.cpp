@@ -41,13 +41,13 @@ XCreature* XCreature::main_creature = nullptr;
 void ACTION_DATA::Store(XFile * f)
 {
     f->Write(&action, sizeof(ACTION));
-    item.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 void ACTION_DATA::Restore(XFile * f)
 {
     f->Read(&action, sizeof(ACTION));
-    item.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 XCreatureGroupMap XCreature::group_members = XCreatureGroupMap();
@@ -236,7 +236,7 @@ int XCreature::stopAction()
         dynamic_cast<XTool *>(action_data.item.get())->onUse(XTool::FINISH, this);
     } else {
         if (action_data.item) {
-            contain.insert(action_data.item.get());
+            contain.insert(action_data.item);
         }
     }
 
@@ -268,7 +268,7 @@ int XCreature::Eat(XAnyFood * food)
     if (res) {
         if (res == 2) {
             action_data.action = A_EAT;
-            action_data.item = food;
+            action_data.item = XItem::Own(food);
             return 1;
         } else {
             return 1;
@@ -981,10 +981,20 @@ int XCreature::DropItem(XItem * i)
     }
 
     if (flag) {
-        contain.erase(i);
         // Adjust weight
         UnCarryItem(i);
+
+        // Drop() (via XMap::PutItem -> XItem::Own()) establishes the
+        // ground's item_list as a second owner of i before we let go of
+        // contain's reference below - if contain was i's only reference,
+        // erasing it first (before the item is anywhere else) would run
+        // Own()'s deleter on a still-valid item and invalidate it outright
+        // instead of just moving it to the ground.
         i->Drop(l, x, y);
+
+        if (auto it = contain.find(i); it != contain.end()) {
+            contain.erase(it);
+        }
     }
 
     return flag;
@@ -1011,7 +1021,7 @@ int XCreature::PickUpItem(XItem * i)
             if (xbp && xbp->Item() && xbp->Item()->Compare(i) == 0 && i->GetRef() == 0) {
                 xbp->Item()->Concat(i);
             } else {
-                contain.insert(i);
+                contain.insert(XItem::Own(i));
             }
 
             return 1;
@@ -1555,7 +1565,7 @@ int XCreature::Read(XItem * item)
             item->Invalidate();
         } else {
             action_data.action = A_READ;
-            action_data.item = item;
+            action_data.item = XItem::Own(item);
         }
 
         return 1;
@@ -1802,7 +1812,7 @@ int XCreature::Chat(XCreature * chatter, const char* msg)
 bool XCreature::ContainItem(XItem * item)
 {
     if (CarryItem(item)) {
-        contain.insert(item);
+        contain.insert(XItem::Own(item));
         return true;
     } else {
         return false;
@@ -1927,7 +1937,7 @@ int XCreature::MoneyOp(int money_count)
 
     for (auto it: contain) {
         if (it->im & IM_MONEY) {
-            money = it;
+            money = it.get();
             break;
         }
     }
@@ -1951,12 +1961,21 @@ int XCreature::MoneyOp(int money_count)
 
         if (money->quantity + money_count == 0) {
             carried_weight -= money->quantity / 10;
-            // erase() must run before Invalidate() - XItemList's comparator
-            // dereferences its argument (lhs->im) to walk the tree, and
-            // Invalidate() deletes money outright once nothing else
-            // references it.
-            contain.erase(money);
+
+            // Invalidate() must run before erase() now that contain holds
+            // money's real shared_ptr ownership (opposite of the old
+            // raw-pointer ordering): contain can be money's only reference,
+            // and erasing it while money is still valid would run Own()'s
+            // deleter on a still-valid item, re-entering Invalidate() while
+            // we're still about to call it ourselves below. Invalidate()
+            // itself doesn't free money - contain still holds it alive at
+            // that point - so money->im stays safe to read for the erase's
+            // tree walk immediately after.
             money->Invalidate();
+
+            if (auto it = contain.find(money); it != contain.end()) {
+                contain.erase(it);
+            }
 
             return 0;
         }
@@ -1966,7 +1985,7 @@ int XCreature::MoneyOp(int money_count)
 
     if (money_count > 0) {
         carried_weight += money_count / 10;
-        contain.insert(new XMoney(money_count));
+        contain.insert(XItem::Own(new XMoney(money_count)));
 
         return money_count;
     }

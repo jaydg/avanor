@@ -43,7 +43,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
     x = _x;
     y = _y;
     owner = XCreature::ToWeakPtr(_owner);
-    trap_item = items;
+    trap_item = XItem::Own(items);
 
     if (tt == TT_RANDOM) {
         tt = static_cast<TRAP_TYPE>(vRand(TT_RANDOM));
@@ -79,7 +79,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
             color = xBROWN;
 
             if (trap_item == nullptr) {
-                trap_item = ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000);
+                trap_item = XItem::Own(ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000));
                 trap_item->quantity = vRand(5) + 5;
             }
 
@@ -100,7 +100,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
             isMagic = false;
 
             if (trap_item == nullptr) {
-                trap_item = ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000);
+                trap_item = XItem::Own(ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000));
                 trap_item->quantity = vRand(3) + 2;
             }
 
@@ -405,7 +405,7 @@ void XTrap::Store(XFile * f)
     f->Write(&isVisibleForHero, sizeof(int));
     f->Write(&trap_level, sizeof(TRAP_LEVEL));
     XObject::StorePointer(f, owner.lock().get());
-    XObject::StorePointer(f, trap_item);
+    XObject::StorePointer(f, trap_item.get());
     f->Write(&last_activator, sizeof(XGUID));
     f->Write(&activation_count, sizeof(int));
 }
@@ -417,7 +417,7 @@ void XTrap::Restore(XFile * f)
     f->Read(&isVisibleForHero, sizeof(int));
     f->Read(&trap_level, sizeof(TRAP_LEVEL));
     owner = XCreature::ToWeakPtr(dynamic_cast<XCreature*>(XObject::RestorePointer(f, nullptr)));
-    trap_item = dynamic_cast<XItem*>(XObject::RestorePointer(f, nullptr));
+    trap_item = XItem::Own(dynamic_cast<XItem*>(XObject::RestorePointer(f, nullptr)));
     f->Read(&last_activator, sizeof(XGUID));
     f->Read(&activation_count, sizeof(int));
 }
@@ -614,7 +614,7 @@ XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 
 void XGrave::HideItem(XItem* item)
 {
-    hidden_items.insert(item);
+    hidden_items.insert(XItem::Own(item));
 }
 
 int XGrave::onOuterUse(XCreature* cr)
@@ -627,9 +627,12 @@ int XGrave::onOuterUse(XCreature* cr)
         }
     }
 
-    for (const auto item: hidden_items) {
-        item->Drop(l, x, y);
-        hidden_items.erase(item);
+    // Pre-existing bug, fixed in passing: erasing from hidden_items while
+    // range-for iterating it invalidated the iterator on the very next
+    // increment. Use the erase-returns-next-iterator form instead.
+    for (auto it = hidden_items.begin(); it != hidden_items.end();) {
+        (*it)->Drop(l, x, y);
+        it = hidden_items.erase(it);
     }
 
     isOpened = 1;

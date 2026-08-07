@@ -62,7 +62,10 @@ class XTrap final : public XMapObject
 
         int isVisibleForHero = 0;
 
-        XPtr<XItem> trap_item = nullptr;
+        // Owning: the ammo template is created directly here and never
+        // placed in any XItemList, so this is always its only reference.
+        // See XItem::Own().
+        std::shared_ptr<XItem> trap_item;
 
         bool isMagic = false;
 

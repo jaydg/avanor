@@ -94,7 +94,7 @@ int XBodyPart::Wear(XItem* new_item)
             return 1;
         }
 
-        item = new_item;
+        item = XItem::Own(new_item);
 
         // owner can still be unresolved here if this is a creature
         // equipping its own starting gear from within its own constructor -
@@ -111,7 +111,7 @@ int XBodyPart::Wear(XItem* new_item)
     return 2;
 }
 
-XItem* XBodyPart::UnWear()
+std::shared_ptr<XItem> XBodyPart::UnWear()
 {
     assert(item);
 
@@ -120,7 +120,7 @@ XItem* XBodyPart::UnWear()
         item->onUnWear(o.get());
     }
 
-    XItem * tmp = item.get();
+    std::shared_ptr<XItem> tmp = item;
     item = nullptr;
 
     return tmp;
@@ -128,11 +128,7 @@ XItem* XBodyPart::UnWear()
 
 XItem* XBodyPart::Item() const
 {
-    if (item) {
-        return item.get();
-    }
-
-    return nullptr;
+    return item.get();
 }
 
 int XBodyPart::GetPartSize() const

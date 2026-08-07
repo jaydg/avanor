@@ -181,7 +181,7 @@ int XSkill::UseSteal(XCreature * user)
     if (user->GetTarget(TR_STEAL_ITEM, &pt, 0, (XObject**)&object)) {
         if (pt.x == 0 && pt.y == 0) {
             msgwin.Add("Stealing from yourself? You are successful!");
-            user->contain.insert(object);
+            user->contain.insert(XItem::Own(object));
         } else {
             XCreature * cr = user->l->map->GetMonster(user->x + pt.x, user->y + pt.y);
             int flag = 0;
@@ -207,7 +207,27 @@ int XSkill::UseSteal(XCreature * user)
 
                 cr->UnCarryItem(object);
                 user->CarryItem(object);
-                user->contain.insert(object);
+
+                // object is still sitting wherever GetTarget(TR_STEAL_ITEM,
+                // ...) found it (IF_NO_ERASE - it only had a raw pointer to
+                // hand back through *back, so it couldn't safely erase it
+                // there). Establish user->contain's ownership first, then
+                // erase from the source - never the other way around, or
+                // the erase could run Own()'s deleter on a still-valid item.
+                user->contain.insert(XItem::Own(object));
+
+                if (flag) {
+                    auto* src = user->l->map->GetItemList(user->x + pt.x, user->y + pt.y);
+
+                    if (auto it = src->find(object); it != src->end()) {
+                        src->erase(it);
+                    }
+                } else {
+                    if (auto it = cr->contain.find(object); it != cr->contain.end()) {
+                        cr->contain.erase(it);
+                    }
+                }
+
                 UseSkill(6);
             } else {
                 if (user->isVisible()) {
@@ -217,11 +237,9 @@ int XSkill::UseSteal(XCreature * user)
 
                 cr->xai->onSteal(user);
 
-                if (flag) {
-                    (user->l->map->GetItemList(user->x + pt.x, user->y + pt.y))->insert(object);
-                } else {
-                    cr->contain.insert(object);
-                }
+                // Theft failed - object was never erased from its source
+                // (see the IF_NO_ERASE comment above), so it's already
+                // right where it should stay. Nothing to do.
             }
         }
     }
@@ -331,7 +349,7 @@ int XSkill::UseCreate(XCreature * user)
         }
     } else {
         // this trap created from items...
-        XItem * item = nullptr;
+        std::shared_ptr<XItem> item;
 
         if (trap_create_rec[ch].var == IT_ARROW) {
             item = user->SelectItem(&TrapArrowsFiltr, true);
@@ -342,7 +360,7 @@ int XSkill::UseCreate(XCreature * user)
         if (trap_create_rec[ch].var2 == IT_PICKAXE) {
             if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == IT_PICKAXE) {
                 if (item && trap_create_rec[ch].var > 0) {
-                    new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item);
+                    new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item.get());
                     user->sk->UseSkill(XSkill::Skill::CREATETRAP, 20);
                     msgwin.Add("You have successfuly created a trap!");
                 } else if (trap_create_rec[ch].var == 0) {
@@ -354,7 +372,7 @@ int XSkill::UseCreate(XCreature * user)
                 msgwin.Add("You should wield a pickaxe!");
             }
         } else if (item) {
-            new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ARROW, user, item);
+            new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ARROW, user, item.get());
             user->sk->UseSkill(XSkill::Skill::CREATETRAP, 15);
             msgwin.Add("You have successfuly created a trap!");
         }

@@ -1234,13 +1234,22 @@ int XLocation::GiveAward(lua_State * L)
     const auto target = (XCreature*)lua_topointer(L, 3);
     auto item = dynamic_cast<XItem *>(GetObject(aguid));
 
+    // Keep a live shared_ptr across the whole transfer below - owner's
+    // contain can be item's only reference, and erasing it here (before
+    // target's contain takes it over) would run Own()'s deleter on a
+    // still-valid item and invalidate it outright instead of just handing
+    // it to target.
+    std::shared_ptr<XItem> item_sp;
+
     const auto it = owner->contain.find(item);
     if (it != owner->contain.end()) {
+        item_sp = *it;
         owner->contain.erase(it);
     } else {
         for (const auto& bp: owner->components) {
             if (bp->Item() && bp->Item() == item) {
-                item = bp->UnWear();
+                item_sp = bp->UnWear();
+                item = item_sp.get();
                 break;
             }
         }
@@ -1250,7 +1259,7 @@ int XLocation::GiveAward(lua_State * L)
         owner->UnCarryItem(item);
 
         if (target->CarryItem(item)) {
-            target->contain.insert(item);
+            target->contain.insert(item_sp);
         } else {
             owner->DropItem(item);
         }

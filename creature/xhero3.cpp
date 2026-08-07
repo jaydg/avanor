@@ -45,7 +45,7 @@ int XHero::UseTool()
 void XHero::doSacrifice()
 {
     while (true) {
-        XItem* item = nullptr;
+        std::shared_ptr<XItem> item;
 
         XItemList* tmpquae = l->map->GetItemList(x, y);
 
@@ -55,7 +55,7 @@ void XHero::doSacrifice()
             item = Inventory(tmpquae);
         }
 
-        XItem* drop_item = item;
+        std::shared_ptr<XItem> drop_item = item;
 
         if (item) {
             if (item->quantity > 1) {
@@ -69,21 +69,21 @@ void XHero::doSacrifice()
                 }
 
                 if (res != item->quantity) {
-                    drop_item = dynamic_cast<XItem *>(item->MakeCopy());
+                    drop_item = XItem::Own(dynamic_cast<XItem *>(item->MakeCopy()));
                     drop_item->quantity = res;
                     item->quantity -= res;
                     contain.insert(item);
                 }
             }
 
-            Sacrifice(drop_item);
+            Sacrifice(drop_item.get());
         } else {
             break;
         }
     }
 }
 
-XItem* XHero::SelectItem(XItemFilter* filter, const bool isGetAll)
+std::shared_ptr<XItem> XHero::SelectItem(XItemFilter* filter, const bool isGetAll)
 {
     return Inventory(&contain, IM_UNKNOWN, IF_NONE, !isGetAll, filter);
 }
@@ -384,10 +384,12 @@ void XHero::ShowReception() const {
 
 void XHero::MixPotions()
 {
-    auto pot1 = dynamic_cast<XPotion *>(Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1));
+    auto item1 = Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1);
+    auto pot1 = dynamic_cast<XPotion *>(item1.get());
 
     if (pot1) {
-        auto pot2 = dynamic_cast<XPotion *>(Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1));
+        auto item2 = Inventory(&contain, IM_POTION, IF_FIXED_MASK, 1);
+        auto pot2 = dynamic_cast<XPotion *>(item2.get());
 
         if (pot2) {
             const POTION_NAME pn = XAlchemy::GetPotionName(pot1->pn, pot2->pn);
@@ -399,7 +401,7 @@ void XHero::MixPotions()
                 sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
                 msgwin.Add(fmt::format("You have mixed {}.", pot->toString()));
                 CarryItem(pot);
-                contain.insert(pot);
+                contain.insert(XItem::Own(pot));
             } else {
                 msgwin.Add("You failed to mix a new potion.");
             }

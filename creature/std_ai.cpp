@@ -586,7 +586,7 @@ int XStandardAI::Wear() const
             ai_owner->contain.insert(xbp->UnWear());
         }
 
-        xbp->Wear(item);
+        xbp->Wear(item.get());
         ai_owner->contain.erase(item);
 
         if (ai_owner->isVisible()) {
@@ -630,7 +630,7 @@ int XStandardAI::Wear() const
         }
 
         ai_owner->contain.erase(item);
-        ai_owner->Sacrifice(item);
+        ai_owner->Sacrifice(item.get());
         break;
     }
 
@@ -833,7 +833,7 @@ int XStandardAI::ReadScroll() const
             continue;
         }
 
-        auto scroll = dynamic_cast<XScroll*>(item);
+        auto scroll = dynamic_cast<XScroll*>(item.get());
 
         if (scroll->sc_name == SCROLL_MAGIC_ARROW ||
             scroll->sc_name == SCROLL_FIRE_BOLT ||
@@ -859,7 +859,7 @@ int XStandardAI::DrinkPotion() const
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
         for (const auto it: ai_owner->contain) {
             if (it->im & IM_POTION) {
-                auto pot = dynamic_cast<XPotion *>(it);
+                auto pot = dynamic_cast<XPotion *>(it.get());
 
                 if (pot->pn == PN_HEALING ||
                     pot->pn == PN_CURE_LIGHT_WOUNDS ||
@@ -913,13 +913,16 @@ int XStandardAI::PickUpItems() const
             break;
         }
 
-        XItem* current_item = *it;
+        // Hold a live shared_ptr across the erase - item_list can be this
+        // item's only reference, and PickUpItem() failing needs to hand it
+        // right back, so it must not be destroyed in between.
+        std::shared_ptr<XItem> current_item = *it;
         it = item_list->erase(it);
 
-        if (ai_owner->PickUpItem(current_item)) {
+        if (ai_owner->PickUpItem(current_item.get())) {
             item_picked = true;
         } else {
-            item_list->insert(it, current_item);
+            it = item_list->insert(it, current_item);
             break;
         }
     }
@@ -1172,10 +1175,17 @@ void XStandardAI::RunScript()
         break;
 
         case SCC_DROP_ITEM: {
-            for (auto item: ai_owner->contain) {
-                if (item->im & cmd.im) {
-                    ai_owner->contain.erase(item);
-                    ai_owner->DropItem(item);
+            // Pre-existing bug, fixed in passing: erasing from contain
+            // while range-for iterating it invalidated the iterator on the
+            // very next increment. Use the erase-returns-next-iterator form
+            // instead.
+            for (auto it = ai_owner->contain.begin(); it != ai_owner->contain.end();) {
+                if ((*it)->im & cmd.im) {
+                    auto item = *it;
+                    it = ai_owner->contain.erase(it);
+                    ai_owner->DropItem(item.get());
+                } else {
+                    ++it;
                 }
             }
 

@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xmapobj.h"
 #include "engine/xscheduler.h"
 #include "game/xtime.h"
+#include "item/item.h"
 
 std::shared_ptr<XObject> XScheduler::Lock(const Entry& e)
 {
@@ -61,7 +62,20 @@ void XScheduler::Add(XObject* p)
     assert(p->isValid());
 
     if (p->weak_from_this().expired()) {
-        Place(std::shared_ptr<XObject>(p));
+        // An XItem can reach here before it's ever been placed in any
+        // XItemList (e.g. XCorpse registers with the scheduler from within
+        // its own constructor) - in that case this Add() call is the
+        // item's actual birth. Route it through XItem::Own() rather than a
+        // plain shared_ptr, so the deleter that ends up fixed in the shared
+        // control block is the one that knows to call Invalidate() - a bare
+        // delete here would skip that entirely. contain/item_list inserting
+        // the same item later just shares this same control block via
+        // shared_from_this().
+        if (auto* item = dynamic_cast<XItem*>(p)) {
+            Place(std::shared_ptr<XObject>(XItem::Own(item)));
+        } else {
+            Place(std::shared_ptr<XObject>(p));
+        }
     } else {
         Place(p->weak_from_this());
     }
