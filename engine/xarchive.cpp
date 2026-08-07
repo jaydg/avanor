@@ -18,95 +18,154 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fstream>
+
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "engine/xarchive.h"
+#include "engine/xfile.h"
 #include "game/game.h"
 #include "game/quest.h"
 #include "game/xtime.h"
+#include "item/xamulet.h"
+#include "item/xbook.h"
 #include "item/xherb.h"
+#include "item/xpotion.h"
+#include "item/xring.h"
+#include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x0000046;
+constexpr unsigned int SAVE_GAME_VERSION = 0x0000047;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 int XArchive::StoreGame()
 {
-    XFile file;
-    XLocation::svg_file = &file;
+    // Location.StoreObject/RestoreObject (Lua bindings, game/location.cpp)
+    // still go through the legacy XFile-based StorePointer/RestorePointer
+    // mechanism - a separate scratch file for that, since it's an
+    // incompatible (raw binary) format from the JSON archive below.
+    XFile lua_file;
+    XLocation::svg_file = &lua_file;
 
-    if (!file.Open(vMakePath(HOME_DIR, "avanor.svg"), "wb")) {
+    if (!lua_file.Open(vMakePath(HOME_DIR, "avanor_lua.svg"), "wb")) {
         return 0;
     }
 
-    if (!file.Write((void*)&SAVE_GAME_VERSION, sizeof(unsigned int))) {
+    std::ofstream file(vMakePath(HOME_DIR, "avanor.svg"));
+
+    if (!file.is_open()) {
+        lua_file.Close();
         return 0;
     }
 
-    XObject::StoreAllObjects(&file);
+    {
+        cereal::JSONOutputArchive ar(file);
 
-    file.Write(&::guid, sizeof(XGUID));
-    XQuest::quest.Store(&file);
-    XBook::StoreTable(&file);
-    XPotion::StoreTable(&file);
-    XScroll::StoreTable(&file);
-    XAmulet::StoreTable(&file);
-    XRing::StoreTable(&file);
-    XTime::Store(&file);
-    XAlchemy::Store(&file);
-    _HERBS::Store(&file);
-    file.Write(&XGame::hero_guid, sizeof(int));
-    Game.Scheduler.Store(&file);
+        ar(SAVE_GAME_VERSION);
+        ar(::guid);
 
-    // FIXME: Implement when porting saving/restoring to Cereal
+        for (auto& loc : Game.locations) {
+            ar(loc);
+        }
 
-    XObject::StorePointer(&file, XCreature::main_creature);
-    constexpr unsigned int tmp = SAVE_GAME_CONTROL;
-    file.Write(&tmp, sizeof(unsigned int));
-    file.Close();
+        ar(XQuest::quest);
+
+        XBook::SaveTable(ar);
+        XPotion::SaveTable(ar);
+        XScroll::SaveTable(ar);
+        XAmulet::SaveTable(ar);
+        XRing::SaveTable(ar);
+        _HERBS::SaveTable(ar);
+
+        XTime::serialize(ar);
+
+        ar(XGame::hero_guid);
+        ar(Game.Scheduler);
+
+        // main_creature is a raw XCreature* (used pervasively as one
+        // throughout gameplay code, not worth converting) - saved as a
+        // weak_ptr so it resolves via the same shared_ptr identity
+        // tracking as everything else in this archive, replacing the
+        // old guid-registry-based StorePointer/RestorePointer. Must
+        // come after Game.locations above: that's what actually
+        // registers this creature's shared_ptr id with Cereal.
+        ar(XCreature::ToWeakPtr(XCreature::main_creature));
+
+        ar(SAVE_GAME_CONTROL);
+    }
+
+    lua_file.Close();
 
     return 1;
 }
 
 int XArchive::RestoreGame()
 {
-    XFile file;
-    XLocation::svg_file = &file;
+    XFile lua_file;
+    XLocation::svg_file = &lua_file;
 
-    if (!file.Open(vMakePath(HOME_DIR, "avanor.svg"), "rb")) {
+    if (!lua_file.Open(vMakePath(HOME_DIR, "avanor_lua.svg"), "rb")) {
         return 0;
     }
 
-    unsigned int tmp = 0;
-    file.Read(&tmp, sizeof(unsigned int));
+    std::ifstream file(vMakePath(HOME_DIR, "avanor.svg"));
 
-    if (tmp != SAVE_GAME_VERSION) {
+    if (!file.is_open()) {
+        lua_file.Close();
         return 0;
     }
 
-    XObject::RestoreAllObjects(&file);
+    try {
+        cereal::JSONInputArchive ar(file);
 
-    file.Read(&::guid, sizeof(XGUID));
-    XQuest::quest.Restore(&file);
-    XBook::RestoreTable(&file);
-    XPotion::RestoreTable(&file);
-    XScroll::RestoreTable(&file);
-    XAmulet::RestoreTable(&file);
-    XRing::RestoreTable(&file);
-    XTime::Restore(&file);
-    XAlchemy::Restore(&file);
-    _HERBS::Restore(&file);
-    file.Read(&XGame::hero_guid, sizeof(int));
-    Game.Scheduler.Restore(&file);
+        unsigned int version = 0;
+        ar(version);
 
-    // FIXME: Implement when porting saving/restoring to Cereal
+        if (version != SAVE_GAME_VERSION) {
+            lua_file.Close();
+            return 0;
+        }
 
-    XCreature::main_creature = dynamic_cast<XCreature *>(XObject::RestorePointer(&file, nullptr));
-    file.Read(&tmp, sizeof(unsigned int));
+        ar(::guid);
 
-    if (tmp != SAVE_GAME_CONTROL) {
-        printf("File corrupted!");
-        exit(0);
+        for (auto& loc : Game.locations) {
+            ar(loc);
+        }
+
+        ar(XQuest::quest);
+
+        XBook::LoadTable(ar);
+        XPotion::LoadTable(ar);
+        XScroll::LoadTable(ar);
+        XAmulet::LoadTable(ar);
+        XRing::LoadTable(ar);
+        _HERBS::LoadTable(ar);
+
+        XTime::serialize(ar);
+
+        ar(XGame::hero_guid);
+        ar(Game.Scheduler);
+
+        std::weak_ptr<XCreature> main_creature_weak;
+        ar(main_creature_weak);
+        XCreature::main_creature = main_creature_weak.lock().get();
+
+        unsigned int control = 0;
+        ar(control);
+
+        if (control != SAVE_GAME_CONTROL) {
+            printf("File corrupted!");
+            exit(0);
+        }
+    } catch (const cereal::Exception&) {
+        // Malformed/foreign/truncated file - same graceful "nothing to
+        // load" outcome as the version check above, not a hard failure.
+        lua_file.Close();
+        return 0;
     }
 
-    file.Close();
+    lua_file.Close();
 
     return 1;
 }

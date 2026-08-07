@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/set.hpp>
 
 #include "engine/global.h"
+#include "engine/xarchive.h"
 #include "engine/xfile.h"
 #include "game/game.h"
 #include "helpers/hiscore.h"
@@ -583,6 +584,78 @@ int main(int argc, char* argv[])
         RunCerealPilotTest();
         vFinit();
         return 0;
+    } else if (argc > 1 && strcmp(argv[1], "-test-save") == 0) {
+        // End-to-end proof of the real XArchive::StoreGame()/RestoreGame()
+        // entry points, as two separate process invocations (this one,
+        // then -test-load in a fresh process) rather than one process
+        // doing both: RestoreGame() populates Game.locations[]/Scheduler
+        // directly, which is only safe against an empty, freshly-started
+        // world (exactly how production uses it, via XGame::Create('R')
+        // right at startup) - calling it against this process's own
+        // already-live Game.Create('T') world would silently orphan the
+        // live locations via plain shared_ptr reassignment, without ever
+        // Invalidate()ing them first.
+        if (argc > 2) {
+            vRandSeed(atoi(argv[2]));
+        }
+
+        Game.Create('T');
+
+        for (int i = 0; i < 100; i++) {
+            Game.Scheduler.Get()->Run();
+        }
+
+        const int ok = XArchive::StoreGame();
+        std::cout << "StoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
+
+        for (int i = 0; i < 100; i++) {
+            Game.Scheduler.Get()->Run();
+        }
+
+        XObject::InvalidateAllObjects();
+        vFinit();
+        return ok ? 0 : 1;
+    } else if (argc > 1 && strcmp(argv[1], "-test-load") == 0) {
+        XLocation::Restoration();
+        const int ok = XArchive::RestoreGame();
+        std::cout << "RestoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
+
+        if (ok) {
+            int location_count = 0;
+            int monster_count = 0;
+            int item_count = 0;
+
+            for (auto& loc : Game.locations) {
+                if (!loc || !loc->map) {
+                    continue;
+                }
+
+                location_count++;
+
+                for (int i = 0; i < loc->map->len * loc->map->hgt; i++) {
+                    if (loc->map->map[i].pMonster) {
+                        monster_count++;
+                    }
+
+                    item_count += static_cast<int>(loc->map->map[i].item_list.size());
+                }
+            }
+
+            std::cout
+                << "  locations " << location_count
+                << ", monsters " << monster_count
+                << ", items " << item_count
+                << ", hero " << (XCreature::main_creature ? "present" : "none")
+                << std::endl;
+
+            for (int i = 0; i < 100; i++) {
+                Game.Scheduler.Get()->Run();
+            }
+        }
+
+        XObject::InvalidateAllObjects();
+        vFinit();
+        return ok ? 0 : 1;
     } else if (argc > 1 && strcmp(argv[1], "-test") == 0) {
         if (argc > 2) {
             vRandSeed(atoi(argv[2]));
