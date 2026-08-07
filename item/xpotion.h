@@ -163,22 +163,25 @@ class XPotion : public XItem
         // (potion_descr[], private to xpotion.cpp), not owned/serialized
         // data - only `pn` is persisted, and pdescr is re-derived from it
         // on load via FixupDescr() (defined in the .cpp, where
-        // potion_descr[] is visible), same as the existing Restore()
-        // above. Split save/load rather than a symmetric serialize()
-        // since that re-derivation only makes sense on load.
+        // potion_descr[] is visible).
+        //
+        // One symmetric serialize() rather than a split save()/load()
+        // pair: XBaseObject (an ancestor) has its own member serialize(),
+        // which makes a derived save()/load() pair ambiguous to Cereal -
+        // and, as found and fixed for XCreature earlier this session,
+        // even a correctly-disambiguated split pair silently breaks
+        // Cereal's *polymorphic type registration* for the type at
+        // runtime ("Trying to save an unregistered polymorphic type"),
+        // not just compile-time resolution.
         template<class Archive>
-        void save(Archive& ar) const
+        void serialize(Archive& ar)
         {
             ar(cereal::base_class<XItem>(this));
             ar(pn);
-        }
 
-        template<class Archive>
-        void load(Archive& ar)
-        {
-            ar(cereal::base_class<XItem>(this));
-            ar(pn);
-            FixupDescr();
+            if constexpr (Archive::is_loading::value) {
+                FixupDescr();
+            }
         }
 
     protected:

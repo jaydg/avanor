@@ -320,28 +320,32 @@ class XOuterObject final : public XMapObject
         // onEventLua is an owned, heap-allocated C string (see the dtor)
         // rather than a std::string - Cereal has no built-in support for
         // raw char*, so save/load go through a temporary std::string.
+        //
+        // One symmetric serialize() rather than a split save()/load()
+        // pair: as found and fixed for XCreature/XPotion/XCorpse earlier
+        // this session, a split pair - even a correctly-disambiguated
+        // one - silently breaks Cereal's *polymorphic type registration*
+        // for the type at runtime whenever an ancestor (XMapObject here)
+        // has its own plain serialize().
         template<class Archive>
-        void save(Archive& ar) const
+        void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-            ar(std::string(onEventLua ? onEventLua : ""));
-        }
 
-        template<class Archive>
-        void load(Archive& ar)
-        {
-            ar(cereal::base_class<XMapObject>(this));
+            if constexpr (Archive::is_loading::value) {
+                std::string event;
+                ar(event);
 
-            std::string event;
-            ar(event);
+                delete[] onEventLua;
 
-            delete[] onEventLua;
-
-            if (event.empty()) {
-                onEventLua = nullptr;
+                if (event.empty()) {
+                    onEventLua = nullptr;
+                } else {
+                    onEventLua = new char[event.size() + 1];
+                    std::memcpy(onEventLua, event.c_str(), event.size() + 1);
+                }
             } else {
-                onEventLua = new char[event.size() + 1];
-                std::memcpy(onEventLua, event.c_str(), event.size() + 1);
+                ar(std::string(onEventLua ? onEventLua : ""));
             }
         }
 

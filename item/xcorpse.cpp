@@ -31,11 +31,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XCorpse);
 CEREAL_REGISTER_TYPE(XCorpse);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCorpse);
-// XCorpse()'s only no-args constructor is an assert(0) guard - real
-// instances always come from XCorpse(XCreature*, ...), so route
-// Cereal's load-time construction through the DUMMY_STRUCT idiom
-// instead of that assert.
-CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XCorpse, load);
 
 XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLAG cf)
 {

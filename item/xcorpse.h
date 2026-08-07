@@ -103,22 +103,23 @@ class XCorpse : public XAnyFood
         // (which species) is persisted, and pCorpseData is re-derived from
         // it on load via FixupCorpseData() (defined in the .cpp, where
         // creature/anycr.h - which itself needs CORPSE_DATA from this
-        // header - can be included without a cycle). Split save/load
-        // rather than a symmetric serialize() since that re-derivation
-        // only makes sense on load.
+        // header - can be included without a cycle).
+        //
+        // One symmetric serialize() rather than a split save()/load()
+        // pair: as found and fixed for XCreature/XPotion earlier this
+        // session, a split pair - even a correctly-disambiguated one -
+        // silently breaks Cereal's *polymorphic type registration* for
+        // the type at runtime whenever an ancestor (XBaseObject here)
+        // has its own plain serialize().
         template<class Archive>
-        void save(Archive& ar) const
+        void serialize(Archive& ar)
         {
             ar(cereal::base_class<XAnyFood>(this));
             ar(corpse_flag, time_of_roating, cn);
-        }
 
-        template<class Archive>
-        void load(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyFood>(this));
-            ar(corpse_flag, time_of_roating, cn);
-            FixupCorpseData();
+            if constexpr (Archive::is_loading::value) {
+                FixupCorpseData();
+            }
         }
 
     protected:
@@ -143,5 +144,15 @@ class XCorpse : public XAnyFood
         int corpse_flag;
         int roating_stopped; //flag for stoping of roating during Cooking
 };
+
+// XCorpse's default constructor asserts(0) - route Cereal's load-time
+// construction through DECLARE_CREATOR's DUMMY_STRUCT constructor
+// instead. Lives here rather than xcorpse.cpp: XCorpse can be directly
+// scheduled (Game.Scheduler.Add(this) in xcorpse.cpp), so this gets
+// triggered from inside XScheduler::serialize() (a template in
+// xscheduler.h, reinstantiated per translation unit) - same reasoning
+// as XStandardAI/XSpell/XUniversalGen/XLocation/etc. earlier this
+// session.
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XCorpse, serialize);
 
 #endif
