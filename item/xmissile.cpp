@@ -20,10 +20,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "item/item_cereal.h"
 #include "item/xmissile.h"
 #include "item/xweapon.h"
 
 REGISTER_CLASS(XMissile);
+CEREAL_REGISTER_TYPE(XMissile);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissile);
 
 _MAIN_ITEM_STRUCT MISSILE_STRUCT[] = {
     {IT_ARROW,	"arrow",	'\\',	"",	"",	"1d2", "1d4", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},

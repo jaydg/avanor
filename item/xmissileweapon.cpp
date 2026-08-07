@@ -20,10 +20,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "item/item_cereal.h"
 #include "item/xmissileweapon.h"
 #include "item/xweapon.h"
 
 REGISTER_CLASS(XMissileWeapon);
+CEREAL_REGISTER_TYPE(XMissileWeapon);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissileWeapon);
 
 _MAIN_ITEM_STRUCT MWEAPON_STRUCT[] = {
     {IT_LONGBOW,	"long bow",	'{',	"",	"",	"1d3+2",	"1d6", "1d3+2",	"1d1+2",	ISET_BOW,	20,	10,	30,	IQ_FAIR,	""},

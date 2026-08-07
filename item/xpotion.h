@@ -24,6 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 #include "magic/effect.h"
 
@@ -156,7 +158,31 @@ class XPotion : public XItem
         void Restore(XFile * f) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        // pdescr is a non-owning pointer into a static table
+        // (potion_descr[], private to xpotion.cpp), not owned/serialized
+        // data - only `pn` is persisted, and pdescr is re-derived from it
+        // on load via FixupDescr() (defined in the .cpp, where
+        // potion_descr[] is visible), same as the existing Restore()
+        // above. Split save/load rather than a symmetric serialize()
+        // since that re-derivation only makes sense on load.
+        template<class Archive>
+        void save(Archive& ar) const
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(pn);
+        }
+
+        template<class Archive>
+        void load(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(pn);
+            FixupDescr();
+        }
+
     protected:
+        void FixupDescr();
         POTION_REC* pdescr;
 };
 

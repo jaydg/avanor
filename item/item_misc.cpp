@@ -18,14 +18,34 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
 
 REGISTER_CLASS(XBatWing);
+CEREAL_REGISTER_TYPE(XBatWing);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBatWing);
+
 REGISTER_CLASS(XRatTail);
+CEREAL_REGISTER_TYPE(XRatTail);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRatTail);
+
 REGISTER_CLASS(XBone);
+CEREAL_REGISTER_TYPE(XBone);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBone);
+
 REGISTER_CLASS(XAncientMachinePart);
+CEREAL_REGISTER_TYPE(XAncientMachinePart);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAncientMachinePart);
+
 REGISTER_CLASS(XChest);
+CEREAL_REGISTER_TYPE(XChest);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XChest);
+// XChest()'s only no-args constructor is an assert(0) guard - real
+// instances always come from XChest(int, ITEM_MASK, int, int), so
+// route Cereal's load-time construction through the DUMMY_STRUCT idiom
+// instead of that assert.
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XChest, serialize);
 
 XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
 {

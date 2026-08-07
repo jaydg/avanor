@@ -34,6 +34,12 @@ class XGlamdring : public XWeapon
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XWeapon>(this));
+        }
 };
 
 class XDeathHack : public XWeapon
@@ -47,6 +53,12 @@ class XDeathHack : public XWeapon
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XWeapon>(this));
+        }
 };
 
 class XAvanorDefender : public XWeapon
@@ -62,6 +74,17 @@ class XAvanorDefender : public XWeapon
         std::string toString() override;
         static XGUID avanordefender_guid;
         void Restore(XFile * f) override;
+
+        // avanordefender_guid mirrors this instance's own guid (see the
+        // ctor and the existing Restore() above) - resetting it
+        // unconditionally here is a correctness no-op on save (it
+        // already matches) and exactly what's needed on load.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XWeapon>(this));
+            avanordefender_guid = guid();
+        }
 };
 
 class XForestBrotherCloak : public XCloak
@@ -74,6 +97,12 @@ class XForestBrotherCloak : public XCloak
         {
             return -1;
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XCloak>(this));
+        }
 };
 
 class XGreatElementalRing : public XRing
@@ -84,6 +113,12 @@ class XGreatElementalRing : public XRing
         int Compare(XObject * o) override
         {
             return -1;
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XRing>(this));
         }
 };
 
@@ -98,6 +133,12 @@ class XAvanorScepter : public XWeapon
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XWeapon>(this));
+        }
 };
 
 class XAvanorCrown : public XCap
@@ -111,6 +152,12 @@ class XAvanorCrown : public XCap
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XCap>(this));
+        }
 };
 
 class XAvanorMitre : public XCap
@@ -124,6 +171,12 @@ class XAvanorMitre : public XCap
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XCap>(this));
+        }
 };
 
 class XTorinAxe : public XWeapon
@@ -137,6 +190,12 @@ class XTorinAxe : public XWeapon
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XWeapon>(this));
+        }
 };
 
 class XTorinShield : public XShield
@@ -150,6 +209,12 @@ class XTorinShield : public XShield
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XShield>(this));
+        }
 };
 
 class XDwarfCrown : public XCap
@@ -163,6 +228,12 @@ class XDwarfCrown : public XCap
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XCap>(this));
+        }
 };
 
 class XBlackClub : public XWeapon
@@ -176,6 +247,12 @@ class XBlackClub : public XWeapon
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XWeapon>(this));
+        }
 };
 
 #endif

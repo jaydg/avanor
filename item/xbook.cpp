@@ -20,11 +20,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
-#include "creature/creature.h"
+#include "item/item_cereal.h"
 #include "item/xbook.h"
 #include "helpers/msgwin.h"
 
 REGISTER_CLASS(XBook);
+CEREAL_REGISTER_TYPE(XBook);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBook);
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 

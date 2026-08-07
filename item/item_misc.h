@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEM_MISC_H
 #define ITEM_MISC_H
 
+#include <cereal/types/set.hpp>
+
 #include "item/xanyfood.h"
 
 class XBatWing : public XAnyFood
@@ -44,6 +46,12 @@ class XBatWing : public XAnyFood
         XObject* MakeCopy() override
         {
             return new XBatWing(this);
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyFood>(this));
         }
 };
 
@@ -69,6 +77,12 @@ class XRatTail : public XAnyFood
         {
             return new XRatTail(this);
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyFood>(this));
+        }
 };
 
 class XBone : public XAnyFood
@@ -91,6 +105,12 @@ class XBone : public XAnyFood
         XObject* MakeCopy() override
         {
             return new XBone(this);
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyFood>(this));
         }
 };
 
@@ -123,6 +143,13 @@ class XChest : public XItem
         std::string toString() override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(contain);
+        }
 };
 
 class XAncientMachinePart : public XItem
@@ -153,6 +180,11 @@ class XAncientMachinePart : public XItem
             return GetFullName();
         }
 
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+        }
 };
 
 #endif

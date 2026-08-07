@@ -21,12 +21,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fstream>
 #include <fmt/format.h>
 
-#include "creature/creature.h"
 #include "helpers/msgwin.h"
+#include "item/item_cereal.h"
 #include "item/xpotion.h"
 #include "magic/modifier.h"
 
 REGISTER_CLASS(XPotion);
+CEREAL_REGISTER_TYPE(XPotion);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPotion);
 
 struct PN_COLORTABLE {
     const char* name;
@@ -490,7 +492,11 @@ void XPotion::Restore(XFile * f)
 {
     XItem::Restore(f);
     f->Read(&pn, sizeof(POTION_NAME));
+    FixupDescr();
+}
 
+void XPotion::FixupDescr()
+{
     pdescr = nullptr;
 
     for (int i = 0; i < PN_RANDOM; i++)

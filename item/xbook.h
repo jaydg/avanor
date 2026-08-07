@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XBOOK_H
 #define XBOOK_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 #include "magic/magic.h"
 
@@ -85,6 +87,14 @@ class XBook: public XItem
         static void RestoreTable(XFile * f);
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(descr, left_to_read, reader_guid);
+        }
+
         int left_to_read;
     protected:
         int descr;

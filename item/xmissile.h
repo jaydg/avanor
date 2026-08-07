@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XMISSILE_H
 #define XMISSILE_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 
 //struct _WEAPON_BIND;
@@ -39,6 +41,12 @@ class XMissile : public XItem
         }
 
         static bool isProperWeapon(XItem * missile, XItem * weapon);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+        }
 };
 
 #endif

@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSCROLL_H
 #define XSCROLL_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 #include "magic/effect.h"
 
@@ -72,6 +74,14 @@ class XScroll : public XItem
         void Restore(XFile * f) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(descr, sc_name);
+        }
+
         SCROLL_NAME sc_name;
     protected:
         int descr;
