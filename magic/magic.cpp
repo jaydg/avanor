@@ -19,10 +19,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fmt/format.h>
+#include <cereal/archives/json.hpp>
 
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/magic.h"
+
+// XSpell() is deleted (real construction always takes a SPELL_NAME) -
+// route Cereal's load-time construction through the real constructor
+// with a placeholder, same idea as CEREAL_LOAD_VIA_DUMMY_CONSTRUCT but
+// for a non-XObject class with no DUMMY_STRUCT support. Not
+// polymorphic, so no CEREAL_REGISTER_TYPE needed.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XSpell, serialize, SPELL_CURE_LIGHT_WOUNDS);
 
 struct SPELL_REC {
     EFFECT effect;

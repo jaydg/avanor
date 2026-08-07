@@ -119,6 +119,24 @@ struct DUMMY_STRUCT {
         }; \
     }
 
+// Same idea as CEREAL_LOAD_VIA_DUMMY_CONSTRUCT, for non-XObject classes
+// that don't have the DECLARE_CREATOR/DUMMY_STRUCT machinery: construct
+// via the class's own real constructor with placeholder arguments,
+// skipping whatever assert(0)-guarded or inaccessible no-args
+// constructor it has, then let its own serialize()/load() populate every
+// field immediately afterward.
+#define CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(__xClass, __method, ...) \
+    namespace cereal { \
+        template<> struct LoadAndConstruct<__xClass> { \
+            template<class Archive> \
+            static void load_and_construct(Archive& ar, cereal::construct<__xClass>& construct) \
+            { \
+                construct(__VA_ARGS__); \
+                construct->__method(ar); \
+            } \
+        }; \
+    }
+
 class XClassInfo
 {
     public:

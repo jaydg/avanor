@@ -24,6 +24,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "magic/modifiers.h"
 
 class XCreature;
@@ -48,6 +51,16 @@ class XModifier
 
         void Store(XFile* f);
         void Restore(XFile* f, XCreature* owner);
+
+        // Unlike Restore() above, no owner param is needed here - each
+        // XBasicModifier's own `setter` (a weak_ptr<XCreature>) already
+        // carries its owner reference and resolves directly against the
+        // Cereal graph, same as any other weak_ptr in this migration.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(ml);
+        }
 
     protected:
         std::vector<std::unique_ptr<XBasicModifier>> ml;

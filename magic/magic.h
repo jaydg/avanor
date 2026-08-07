@@ -24,6 +24,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "magic/effect.h"
 
 /* Forward declaration */
@@ -91,6 +94,12 @@ class XSpell
         // called after successful casting of spell
         void Cast();
 
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(spell_name, eff_level, cast_count);
+        }
+
         [[nodiscard]] int GetManaCost() const;
 
         [[nodiscard]] int GetEffectivity() const
@@ -140,6 +149,15 @@ class XMagic
 
         void Store(XFile * f);
         void Restore(XFile * f);
+
+        // Store/Restore above are already entirely stubbed out (see the
+        // FIXME in magic.cpp) - this is new real persistence, not a
+        // mechanical port.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(magic_level, magic_count, spells);
+        }
 };
 
 #endif

@@ -23,6 +23,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+
 #include "creature/creature.h"
 #include "engine/xobject.h"
 
@@ -133,6 +136,16 @@ class XBasicModifier
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
 
+        // `setter` was never actually persisted even before the
+        // shared_ptr migration (Store/Restore only ever wrote val/mdt -
+        // see the FIXME left in place in modifiers.cpp) - this is new
+        // real persistence, not a mechanical port.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(mdt, val, setter);
+        }
+
         MODIFIER_TYPE mdt;
         int val; // value of modifier;
         std::weak_ptr<XCreature> setter;
@@ -193,6 +206,12 @@ class XModWound : public XBasicModifier
         }
 
         MODIFIER_RESULT Run(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 
@@ -232,6 +251,12 @@ class XModPoison : public XBasicModifier
         }
 
         MODIFIER_RESULT Run(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 
@@ -271,6 +296,12 @@ class XModConfuse : public XBasicModifier
         }
 
         MODIFIER_RESULT Run(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModStun : public XBasicModifier
@@ -310,6 +341,12 @@ class XModStun : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModHeroism : public XBasicModifier
@@ -349,6 +386,12 @@ class XModHeroism : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModDisease : public XBasicModifier
@@ -389,6 +432,12 @@ class XModDisease : public XBasicModifier
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
         MODIFIER_RESULT Run(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 
@@ -430,6 +479,12 @@ class XModWeak : public XBasicModifier
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
         MODIFIER_RESULT Run(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 
@@ -469,6 +524,12 @@ class XModParalyse : public XBasicModifier
         }
 
         MODIFIER_RESULT Run(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModDelayed : public XBasicModifier
@@ -503,6 +564,13 @@ class XModDelayed : public XBasicModifier
             val = std::min(val, mod->val);
             set_val += mod->set_val;
             XBasicModifier::Concat(mod); //hack
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+            ar(set_mt, set_val);
         }
 
     protected:
@@ -547,6 +615,12 @@ class XModSeeInvisible : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModBoostSpeed : public XBasicModifier
@@ -586,6 +660,12 @@ class XModBoostSpeed : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModSlowness : public XBasicModifier
@@ -625,6 +705,12 @@ class XModSlowness : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModAcidResistance : public XBasicModifier
@@ -664,6 +750,12 @@ class XModAcidResistance : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModFireResistance : public XBasicModifier
@@ -703,6 +795,12 @@ class XModFireResistance : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModColdResistance : public XBasicModifier
@@ -742,6 +840,12 @@ class XModColdResistance : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 class XModPoisonResistance : public XBasicModifier
@@ -781,6 +885,12 @@ class XModPoisonResistance : public XBasicModifier
 
         int onSet(XCreature * owner) override;
         int onRemove(XCreature * owner) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBasicModifier>(this));
+        }
 };
 
 #endif
