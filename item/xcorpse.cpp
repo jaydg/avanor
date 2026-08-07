@@ -176,29 +176,30 @@ std::string XCorpse::postEat(XCreature *eater)
 bool XCorpse::Run()
 {
     CORPSE_CONDITION cc = GetCondition();
+    auto owner_sp = owner.lock();
 
     if (corpse_flag == CF_RAW) {
         time_of_roating++;
 
-        if (!owner) {
+        if (!owner_sp) {
             time_of_roating += 3;
         }
     }
 
     if (cc != GetCondition()) {
-        if (owner && owner->im & IM_HERO) {
+        if (owner_sp && owner_sp->im & IM_HERO) {
             msgwin.Add("Something in your backpack seems to rotting.");
         } else if (l && isInVisibleArea()) {
             msgwin.Add("Something seems to rotting.");
         }
     } else if (time_of_roating > pCorpseData->roating_time) {
-        if (owner) {
-            if (owner->im & IM_HERO) {
+        if (owner_sp) {
+            if (owner_sp->im & IM_HERO) {
                 msgwin.Add("Suddenly your equipment weighs less.");
             }
 
-            owner->contain.erase(this);
-            owner->UnCarryItem(this);
+            owner_sp->contain.erase(this);
+            owner_sp->UnCarryItem(this);
         } else if (l && isInVisibleArea()) {
             msgwin.Add("Suddenly something disappered from the ground.");
         }

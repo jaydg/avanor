@@ -43,7 +43,7 @@ class XCreature;
 class XItem : public XBaseObject
 {
     protected:
-        XPtr<XCreature> owner;
+        std::weak_ptr<XCreature> owner;
     public:
         DECLARE_CREATOR(XItem, XBaseObject);
 
@@ -112,7 +112,7 @@ class XItem : public XBaseObject
         void Restore(XFile * f) override;
 
         bool SetOwner(XCreature * new_owner);
-        XPtr<XCreature> &GetOwner()
+        std::weak_ptr<XCreature> &GetOwner()
         {
             return owner;
         }

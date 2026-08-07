@@ -58,11 +58,16 @@ ITEM_MASK bpim[] = {
     IM_ALL
 };
 
-XBodyPart::XBodyPart(XCreature* o, const BODY_PART bp) : owner(o)
+XBodyPart::XBodyPart(XCreature* o, const BODY_PART bp)
 {
-    owner = o;
+    SetOwner(o);
     bp_uin = bp;
     item = nullptr;
+}
+
+void XBodyPart::SetOwner(XCreature* o)
+{
+    owner = XCreature::ToWeakPtr(o);
 }
 
 ITEM_MASK XBodyPart::GetProperIM() const
@@ -90,8 +95,15 @@ int XBodyPart::Wear(XItem* new_item)
         }
 
         item = new_item;
-        owner->CarryItem(item.get());
-        item->onWear(owner.get());
+
+        // owner can still be unresolved here if this is a creature
+        // equipping its own starting gear from within its own constructor -
+        // it isn't shared_from_this()-safe yet at that point. XCreature::
+        // FirstStep() finishes this (CarryItem()/onWear()) once it's safe.
+        if (auto o = owner.lock()) {
+            o->CarryItem(item.get());
+            item->onWear(o.get());
+        }
 
         return 0;
     }
@@ -101,8 +113,13 @@ int XBodyPart::Wear(XItem* new_item)
 
 XItem* XBodyPart::UnWear()
 {
-    assert(owner && item);
-    item->onUnWear(owner.get());
+    assert(item);
+
+    // owner can be unresolved here too - see the matching comment in Wear().
+    if (auto o = owner.lock()) {
+        item->onUnWear(o.get());
+    }
+
     XItem * tmp = item.get();
     item = nullptr;
 

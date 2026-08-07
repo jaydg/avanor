@@ -44,7 +44,7 @@ XItem::XItem()
     dice.Setup("0d0");
     special_number = -1;
     brt = BR_NONE;
-    owner = nullptr;
+    owner.reset();
 }
 
 void XItem::Invalidate()
@@ -262,7 +262,7 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
     value = copy->value;
     wt = copy->wt;
     brt = copy->brt;
-    owner = copy->owner.get();
+    owner = copy->owner;
 }
 
 int XItem::Compare(XObject * o)
@@ -487,7 +487,7 @@ void XItem::Store(XFile * f)
     f->Write(&value, sizeof(int));
     f->Write(&wt, sizeof(XWarSkills::Type));
     f->Write(&quality, sizeof(ITEM_QUALITY));
-    owner.Store(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 void XItem::Restore(XFile * f)
@@ -510,7 +510,7 @@ void XItem::Restore(XFile * f)
     f->Read(&wt, sizeof(XWarSkills::Type));
     f->Read(&quality, sizeof(ITEM_QUALITY));
 
-    owner.Restore(f);
+    // FIXME: Implement when porting saving/restoring to Cereal
 }
 
 int XItem::onWear(XCreature * cr)
@@ -600,9 +600,9 @@ void XItem::Drop(XLocation * location, int _x, int _y)
 
 bool XItem::SetOwner(XCreature * new_owner)
 {
-    owner = new_owner;
+    owner = XCreature::ToWeakPtr(new_owner);
 
-    if (owner) {
+    if (new_owner) {
         SetLocation(nullptr);
     }
 
@@ -616,7 +616,7 @@ void XItem::Pickup(XCreature * picker)
 
 void XItem::UnCarry()
 {
-    if (owner) {
-        owner->UnCarryItem(this);
+    if (auto o = owner.lock()) {
+        o->UnCarryItem(this);
     }
 }

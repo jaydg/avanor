@@ -1095,7 +1095,13 @@ void XCreature::IncLevel()
 
 std::weak_ptr<XCreature> XCreature::ToWeakPtr(XCreature * cr)
 {
-    if (cr && cr->isValid()) {
+    // A creature isn't shared_from_this()-safe until it's been placed on
+    // the map for the first time (see XMap::SetMonster's birth path) -
+    // notably, that's after its own constructor has already returned, so
+    // this can be reached for a creature referencing itself mid-construction
+    // (e.g. XAnyCreature equipping its own starting gear). Guard against
+    // that rather than letting shared_from_this() throw std::bad_weak_ptr.
+    if (cr && cr->isValid() && !cr->weak_from_this().expired()) {
         return std::static_pointer_cast<XCreature>(cr->shared_from_this());
     }
 
@@ -1467,7 +1473,31 @@ void XCreature::FirstStep(int _x, int _y, XLocation * _l)
     SetLocation(_l);
 
     assert(!l->map->GetMonster(_x, _y));
+
+    // The very first placement is also the first point at which this
+    // creature becomes shared_from_this()-safe (see XMap::SetMonster's
+    // birth path). Starting gear worn/carried during this creature's own
+    // constructor (XAnyCreature's equip loop) couldn't establish item/
+    // bodypart owner backlinks - or, for worn items, run their weight/
+    // onWear() side effects at all - since shared_from_this() wasn't
+    // usable yet. Finish that now that it's safe.
+    bool first_placement = weak_from_this().expired();
+
     l->map->SetMonster(_x, _y, this);
+
+    if (first_placement) {
+        for (auto& bp: components) {
+            if (XItem* worn = bp->Item()) {
+                bp->SetOwner(this);
+                CarryItem(worn);
+                worn->onWear(this);
+            }
+        }
+
+        for (auto item: contain) {
+            item->SetOwner(this);
+        }
+    }
 }
 
 void XCreature::LastStep()
@@ -1781,7 +1811,7 @@ bool XCreature::ContainItem(XItem * item)
 
 bool XCreature::CarryItem(XItem * item)
 {
-    if (item->GetOwner() && item->GetOwner().get() == this) {
+    if (item->GetOwner().lock().get() == this) {
         return 1;
     }
 
@@ -1798,8 +1828,8 @@ bool XCreature::CarryItem(XItem * item)
 
 void XCreature::UnCarryItem(XItem * item)
 {
-    if (item->GetOwner()) {
-        assert(item->GetOwner().get() == this);
+    if (auto o = item->GetOwner().lock()) {
+        assert(o.get() == this);
         carried_weight -= item->weight * item->quantity;
     }
 

@@ -50,14 +50,14 @@ enum BODY_PART {
 class XBodyPart
 {
         XPtr<XItem> item;	//main item for this body part;
-        XPtr<XCreature> owner;
+        std::weak_ptr<XCreature> owner;
         XBodyPart() : bp_uin() {}
 
     public:
         XBodyPart(XCreature* o, BODY_PART bp);
         ~XBodyPart() {
             item = nullptr;
-            owner = nullptr;
+            owner.reset();
         }
 
         const char* GetName() const;
@@ -74,6 +74,7 @@ class XBodyPart
         XItem* Item() const;
         int Wear(XItem* new_item);
         XItem* UnWear();
+        void SetOwner(XCreature* o);
 
         int GetPartSize() const;
         ITEM_MASK GetProperIM() const;
