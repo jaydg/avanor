@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/anycr.h"
 #include "creature/unique.h"
 #include "engine/xapi.h"
@@ -26,6 +29,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemf.h"
 
 REGISTER_CLASS(XAnyCreature);
+CEREAL_REGISTER_TYPE(XAnyCreature);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XAnyCreature);
 
 _CREATURE XCreatureStorage::creature_storage[CN_EOF];
 CREATURE_SET_REC XCreatureStorage::creature_set[32];

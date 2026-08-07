@@ -22,6 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cctype>
 #include <cmath>
 #include <fmt/format.h>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include "creature/skeep_ai.h"
 #include "creature/xhero.h"
@@ -38,6 +40,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map_objects.h"
 
 REGISTER_CLASS(XHero);
+CEREAL_REGISTER_TYPE(XHero);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XHero);
 int _exit_flag = 0;
 
 static std::vector<MELEE_ATTACK> hero_melee;
@@ -2586,6 +2590,16 @@ void XHero::Restore(XFile * f)
     // FIXME: Implement when porting saving/restoring to Cereal
     // reception_list.RestoreList(f);
 
+    isDisturb = 0;
+    last_char = '5';
+    run_way_count = 0;
+    target.reset();
+    last_cast = nullptr;
+    melee_attack = &hero_melee;
+}
+
+void XHero::FixupHeroDefaults()
+{
     isDisturb = 0;
     last_char = '5';
     run_way_count = 0;

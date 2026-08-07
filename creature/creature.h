@@ -433,8 +433,25 @@ class XCreature : public XBaseObject
         // contain/components/xai/sk/m/md/wsk were all entirely unsaved
         // before this (see the FIXMEs still in Store/Restore) - new
         // real persistence, not a mechanical port.
+        //
+        // One symmetric serialize() rather than a split save()/load()
+        // pair: a base class (XBaseObject) has its own member
+        // serialize(), which makes a derived load()/save() pair
+        // ambiguous to Cereal unless explicitly disambiguated (see
+        // cereal/specialize.hpp's own worked example) - that
+        // disambiguation compiles fine, but broke Cereal's *polymorphic
+        // type registration* for every XCreature subclass at runtime
+        // (confirmed live: "Trying to save an unregistered polymorphic
+        // type" for XAnyCreature specifically, despite its
+        // CEREAL_REGISTER_TYPE being textually correct and even
+        // explicitly, manually re-invoked - items, whose base hierarchy
+        // never needed this disambiguation, round-tripped fine).
+        // `if constexpr (Archive::is_loading::value)` reproduces the
+        // load-only steps (heap-allocating m/md/sk/wsk before
+        // dereferencing them, the ai_owner/event_handler/
+        // FixupCreatureInfo fixups) inside one method instead.
         template<class Archive>
-        void save(Archive& ar) const
+        void serialize(Archive& ar)
         {
             ar(cereal::base_class<XBaseObject>(this));
             ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
@@ -444,62 +461,64 @@ class XCreature : public XBaseObject
             ar(components);
             ar(creature_class, creature_size, food_feeling, group_id);
             ar(level);
-            ar(*m);
-            SaveModifier(ar);
-            ar(nutrio, nutrio_speed, *sk);
-            ar(tactics, *wsk);
-            ar(xai);
-            ar(action_data);
-            ar(contain);
-            ar(religion, max_stats);
-            ar(creature_person_type, creature_name);
-            ar(std::string(event_handler ? event_handler : ""));
-            NotifyLuaEventHandler(LE_SAVE);
-        }
 
-        template<class Archive>
-        void load(Archive& ar)
-        {
-            ar(cereal::base_class<XBaseObject>(this));
-            ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
-            ar(attack_energy, move_energy, base_speed, added_speed);
-            ar(added_resists, added_RNG, added_stats);
-            ar(base_exp, base_nutrio, carried_weight);
-            ar(components);
-            ar(creature_class, creature_size, food_feeling, group_id);
-            ar(level);
-            m = new XMagic();
+            if constexpr (Archive::is_loading::value) {
+                m = new XMagic();
+            }
+
             ar(*m);
-            LoadModifier(ar);
+
+            if constexpr (Archive::is_loading::value) {
+                LoadModifier(ar);
+            } else {
+                SaveModifier(ar);
+            }
+
             ar(nutrio, nutrio_speed);
-            sk = new XSkills();
+
+            if constexpr (Archive::is_loading::value) {
+                sk = new XSkills();
+            }
+
             ar(*sk);
             ar(tactics);
-            wsk = new XWarSkills();
+
+            if constexpr (Archive::is_loading::value) {
+                wsk = new XWarSkills();
+            }
+
             ar(*wsk);
             ar(xai);
 
-            if (xai) {
-                xai->SetOwner(this);
+            if constexpr (Archive::is_loading::value) {
+                if (xai) {
+                    xai->SetOwner(this);
+                }
             }
 
             ar(action_data);
             ar(contain);
             ar(religion, max_stats);
             ar(creature_person_type, creature_name);
-            FixupCreatureInfo();
 
-            std::string event;
-            ar(event);
+            if constexpr (Archive::is_loading::value) {
+                FixupCreatureInfo();
 
-            if (event.empty()) {
-                event_handler = nullptr;
+                std::string event;
+                ar(event);
+
+                if (event.empty()) {
+                    event_handler = nullptr;
+                } else {
+                    event_handler = new char[event.size() + 1];
+                    std::memcpy(event_handler, event.c_str(), event.size() + 1);
+                }
+
+                NotifyLuaEventHandler(LE_LOAD);
             } else {
-                event_handler = new char[event.size() + 1];
-                std::memcpy(event_handler, event.c_str(), event.size() + 1);
+                ar(std::string(event_handler ? event_handler : ""));
+                NotifyLuaEventHandler(LE_SAVE);
             }
-
-            NotifyLuaEventHandler(LE_LOAD);
         }
 
         CREATURE_CLASS creature_class;
@@ -546,13 +565,6 @@ class XCreature : public XBaseObject
 
         [[nodiscard]] std::string GetVerb(std::string verb) const;
 };
-
-// XBaseObject (an ancestor) has a member serialize(), and XCreature has
-// a member load()/save() pair - Cereal's access rules mean that pair is
-// ambiguous with the inherited serialize() unless disambiguated
-// explicitly (see cereal/specialize.hpp's own worked example, which is
-// this exact scenario).
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(XCreature, cereal::specialization::member_load_save);
 
 // Fake creature is need
 class XFakeCreature final : public XCreature

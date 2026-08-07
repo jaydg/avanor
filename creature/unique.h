@@ -21,28 +21,44 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef UNIQUE_H
 #define UNIQUE_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "creature/anycr.h"
 
 class XBeelzvile : public XAnyCreature
 {
         XBeelzvile() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XBeelzvile, XAnyCreature);
         XBeelzvile(_CREATURE * cr);
         void NewMove() override;
         void Move() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XGefeon : public XAnyCreature
 {
     protected:
         XGefeon() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XGefeon, XAnyCreature);
         XGefeon(_CREATURE * cr);
         int Chat(XCreature * chatter, const char* msg) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XAhkUlan : public XAnyCreature
@@ -64,6 +80,7 @@ class XRoderick : public XAnyCreature
 {
     protected:
         XRoderick() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XRoderick, XAnyCreature);
@@ -71,6 +88,12 @@ class XRoderick : public XAnyCreature
         int Chat(XCreature * chatter, const char* msg) override;
         void Die(XCreature * killer) override;
         int onGiveItem(XCreature * giver, XItem * item) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XRandomMonster : public XAnyCreature
@@ -82,6 +105,7 @@ class XHighPriest : public XAnyCreature
 {
     protected:
         XHighPriest() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XHighPriest, XAnyCreature);
@@ -89,17 +113,30 @@ class XHighPriest : public XAnyCreature
         int Chat(XCreature * chatter, const char* msg) override;
         void Die(XCreature * killer) override;
         int onGiveItem(XCreature * giver, XItem * item) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XRotmoth : public XAnyCreature
 {
     protected:
         XRotmoth() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XRotmoth, XAnyCreature);
         XRotmoth(_CREATURE * cr);
         int Chat(XCreature * chatter, const char* msg) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XRotmothAI : public XStandardAI
@@ -109,28 +146,55 @@ class XRotmothAI : public XStandardAI
         XRotmothAI(XCreature * cr) : XStandardAI(cr) {}
 
         void onWasAttacked(XCreature * attacker) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XStandardAI>(this));
+        }
 };
+
+// XRotmothAI() is deleted - real construction always takes an owning
+// XCreature*. Lives here, not in unique.cpp - same cross-TU visibility
+// reasoning as XStandardAI's own CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT
+// (see std_ai.h): XRotmothAI's construction gets instantiated from
+// inside XCreature::load() itself, wherever that gets reinstantiated.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XRotmothAI, serialize, nullptr);
 
 class XGiana : public XAnyCreature
 {
     protected:
         XGiana() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XGiana, XAnyCreature);
         XGiana(_CREATURE * cr);
         int Chat(XCreature * chatter, const char* msg) override;
         void FirstStep(int _x, int _y, XLocation * _l) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XBandit : public XAnyCreature
 {
     protected:
         XBandit() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XBandit, XAnyCreature);
         XBandit(_CREATURE * cr);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 class XBanditAI : public XStandardAI
@@ -140,12 +204,23 @@ class XBanditAI : public XStandardAI
         XBanditAI(XCreature * cr) : XStandardAI(cr) {}
 
         bool isEnemy(XCreature *cr) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XStandardAI>(this));
+        }
 };
+
+// See the identical reasoning on XRotmothAI's own
+// CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT above.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XBanditAI, serialize, nullptr);
 
 class XShopkeeper : public XAnyCreature
 {
     protected:
         XShopkeeper() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XShopkeeper, XAnyCreature);
@@ -155,6 +230,12 @@ class XShopkeeper : public XAnyCreature
         std::string StdAnswer() override;
         void Die(XCreature * killer) override;
         void SetShop(char* _name, XShop * shop);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyCreature>(this));
+        }
 };
 
 #endif

@@ -24,6 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
+#include <cereal/types/base_class.hpp>
+
 #include "creature/cr_defs.h"
 #include "creature/creature.h"
 #include "magic/resist.h"
@@ -132,11 +134,18 @@ class XAnyCreature : public XCreature
 {
     protected:
         XAnyCreature() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XAnyCreature, XCreature);
         explicit XAnyCreature(_CREATURE * cr);
         void Die(XCreature * killer) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XCreature>(this));
+        }
 };
 
 #endif

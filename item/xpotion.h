@@ -195,7 +195,23 @@ class XAlchemyRec
 
         XAlchemyRec(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
             pn1(p1), pn2(p2), result(res) {}
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(pn1, pn2, result);
+        }
 };
+
+// XAlchemyRec has no default constructor at all (not even a deleted
+// one) - route Cereal's load-time construction through the real
+// constructor with placeholders. Lives here, not in xpotion.cpp:
+// reception_list (a vector<unique_ptr<XAlchemyRec>>) is a field of
+// XHero, and its own deserialization is inline in XHero::serialize()
+// (a header template) - a specialization declared only in xpotion.cpp
+// wouldn't be visible wherever that gets instantiated (see the same
+// reasoning, first hit for XStandardAI, in std_ai.h).
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRec, serialize, PN_WATER, PN_WATER, PN_WATER);
 
 class XAlchemy
 {

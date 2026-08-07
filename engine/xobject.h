@@ -316,9 +316,20 @@ class XObject : public std::enable_shared_from_this<XObject>
 
         // reference/is_valid/bAlreadyStored are runtime bookkeeping, not
         // persisted state - always reset by Create() on construction.
+        //
+        // On load, the constructor's Create() already inserted this
+        // object into `objects` under whatever garbage xguid it had
+        // before the archive overwrites it below (the DUMMY_STRUCT/
+        // placeholder constructors used for Cereal's polymorphic
+        // construction don't initialize xguid the way the normal
+        // constructor does) - so the map entry has to be re-keyed
+        // here, or it's left dangling under a stale key that a later
+        // full sweep (e.g. InvalidateAllObjects()) walks into.
         template<class Archive>
         void serialize(Archive& ar)
         {
+            const XGUID old_guid = xguid;
+
             ar(
                 cereal::make_nvp("guid", xguid),
                 quantity,
@@ -326,6 +337,13 @@ class XObject : public std::enable_shared_from_this<XObject>
                 ttm,
                 ttmb
             );
+
+            if constexpr (Archive::is_loading::value) {
+                if (old_guid != xguid) {
+                    objects.erase(old_guid);
+                    objects[xguid] = this;
+                }
+            }
         }
 
         virtual void Dump(XFile * f);

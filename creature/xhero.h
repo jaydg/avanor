@@ -28,6 +28,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <vector>
 #include <fmt/format.h>
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "creature/creature.h"
 #include "engine/global.h"
 #include "helpers/xgui.h"
@@ -65,6 +69,8 @@ class XHero final : public XCreature
             run_way_count = 0;
             target.reset();
         }
+
+        friend class cereal::access;
 
         int last_char;
         int run_way_count;
@@ -139,6 +145,24 @@ class XHero final : public XCreature
 
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+
+        // last_char/run_way_count/target/last_cast are transient
+        // per-turn UI state, and melee_attack is a non-owning pointer
+        // into a static table (hero_melee, private to xhero.cpp) - none
+        // of these were ever persisted even before Cereal (the existing
+        // Restore() above resets every one of them to the same fresh
+        // values the default constructor uses), so FixupHeroDefaults()
+        // (defined in xhero.cpp, where hero_melee is visible) just
+        // replicates that reset here rather than persisting them.
+        void FixupHeroDefaults();
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XCreature>(this));
+            ar(race, profession, turn_count, reception_list);
+            FixupHeroDefaults();
+        }
 
         void doSacrifice();
         int OrderCompanion();

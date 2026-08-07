@@ -23,8 +23,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <typeinfo>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/types/polymorphic.hpp>
 #include <cereal/types/set.hpp>
 
 #include "engine/global.h"
@@ -191,6 +193,111 @@ static bool TestSelfReferentialWeakPtr()
         && restored->sub->owner.lock() == restored;
 }
 
+// The real thing: spawns an actual game world (same init path as the
+// established -test soak mode) and round-trips a real, fully-populated
+// XCreature - not a synthetic stand-in. Exercises everything the
+// XCreature/XBodyPart/magic-modifier/skills work depends on: polymorphic
+// dispatch through the full creature hierarchy, xai's ai_owner fixup,
+// XBodyPart's self-referential owner, and worn items staying resident in
+// (and round-tripping identically with) contain.
+static bool TestRealCreature()
+{
+    Game.Create('T');
+
+    std::shared_ptr<XCreature> original;
+
+    for (int li = 0; li < L_EOF && !original; li++) {
+        auto& loc = Game.locations[li];
+
+        if (!loc || !loc->map) {
+            continue;
+        }
+
+        for (int y = 0; y < loc->map->hgt && !original; y++) {
+            for (int x = 0; x < loc->map->len; x++) {
+                if (auto& cr = loc->map->map[x + y * loc->map->len].pMonster) {
+                    original = cr;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!original) {
+        std::cout << "TestRealCreature: no creature found to test with" << std::endl;
+        return false;
+    }
+
+    std::cout << "TestRealCreature: runtime type is " << typeid(*original).name() << std::endl;
+
+    const auto original_guid = original->guid();
+    const auto original_im = original->im;
+    const auto original_contain_size = original->contain.size();
+    const auto original_components_size = original->components.size();
+
+    // A worn item (if any) must stay resident in contain by identity -
+    // note whether there is one, to check the same invariant Wear()
+    // enforces at runtime survives the round trip.
+    bool had_worn_item = false;
+    for (auto& bp : original->components) {
+        if (bp->Item()) {
+            had_worn_item = true;
+            break;
+        }
+    }
+
+    std::ostringstream oss;
+    {
+        cereal::JSONOutputArchive archive(oss);
+        archive(original);
+    }
+
+    std::shared_ptr<XCreature> restored;
+    {
+        std::istringstream iss(oss.str());
+        cereal::JSONInputArchive archive(iss);
+        archive(restored);
+    }
+
+    bool pass = restored
+        && restored.get() != original.get()
+        && restored->guid() == original_guid
+        && restored->im == original_im
+        && restored->contain.size() == original_contain_size
+        && restored->components.size() == original_components_size;
+
+    if (had_worn_item) {
+        bool found_worn_in_restored_contain = false;
+
+        for (auto& bp : restored->components) {
+            if (auto item = bp->Item()) {
+                found_worn_in_restored_contain = restored->contain.find(item) != restored->contain.end();
+                break;
+            }
+        }
+
+        pass = pass && found_worn_in_restored_contain;
+    }
+
+    std::cout
+        << "  guid " << original_guid << " -> " << (restored ? restored->guid() : 0)
+        << ", contain " << original_contain_size << " -> " << (restored ? restored->contain.size() : 0)
+        << ", components " << original_components_size << " -> " << (restored ? restored->components.size() : 0)
+        << std::endl;
+
+    // `original` is a real, live creature still referenced elsewhere in
+    // the running game (the map tile, scheduler, etc.) - must NOT be
+    // invalidated here, unlike every other orphaned test object in this
+    // file. `restored` is a genuine orphan (this function is its only
+    // reference) and needs the usual explicit Invalidate(), same as
+    // TestPolymorphicItem()'s original/restored.
+    if (restored) {
+        restored->Invalidate();
+    }
+
+    return pass;
+}
+
 } // namespace cereal_pilot
 
 static void RunCerealPilotTest()
@@ -198,11 +305,29 @@ static void RunCerealPilotTest()
     const bool item_pass = cereal_pilot::TestPolymorphicItem();
     const bool list_pass = cereal_pilot::TestItemList();
     const bool selfref_pass = cereal_pilot::TestSelfReferentialWeakPtr();
+    const bool creature_pass = cereal_pilot::TestRealCreature();
 
     std::cout << "polymorphic item:      " << (item_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "XItemList round-trip:  " << (list_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "self-referential weak: " << (selfref_pass ? "PASS" : "FAIL") << std::endl;
-    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass) ? "PASS" : "FAIL") << std::endl;
+    std::cout << "real creature:         " << (creature_pass ? "PASS" : "FAIL") << std::endl;
+    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass && creature_pass) ? "PASS" : "FAIL") << std::endl;
+
+    // TestRealCreature() calls Game.Create('T'), populating a whole real
+    // game world - unlike -test/-demo mode, this mode returns from main()
+    // right after this function without ever tearing that world down, so
+    // static/global destructors at process exit would otherwise run
+    // against a world nothing ever Invalidate()'d. -test/-demo mode
+    // always runs the scheduler for a while before their own equivalent
+    // teardown call - a completely fresh, never-ticked world segfaulted
+    // inside InvalidateAllObjects() (confirmed via gdb: a virtual call
+    // through a corrupted vtable pointer, i.e. a stale/dangling entry in
+    // the object registry), so mirror that by running a few ticks first.
+    for (int i = 0; i < 100; i++) {
+        Game.Scheduler.Get()->Run();
+    }
+
+    XObject::InvalidateAllObjects();
 }
 
 const char* logo_text[] = {

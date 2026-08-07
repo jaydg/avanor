@@ -19,6 +19,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fmt/format.h>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include "creature/skeep_ai.h"
 #include "creature/unique.h"
@@ -35,6 +37,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // Beelzevile
 ///////////////////////////////////////////////////////////////////////
 REGISTER_CLASS(XBeelzvile);
+CEREAL_REGISTER_TYPE(XBeelzvile);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBeelzvile);
 
 XBeelzvile::XBeelzvile(_CREATURE * cr) : XAnyCreature(cr)
 {
@@ -70,6 +74,8 @@ void XBeelzvile::Move()
 // Gefeon, great master of Fire
 ///////////////////////////////////////////////////////////////////////
 REGISTER_CLASS(XGefeon);
+CEREAL_REGISTER_TYPE(XGefeon);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGefeon);
 XGefeon::XGefeon(_CREATURE * cr) : XAnyCreature(cr) { }
 
 int XGefeon::Chat(XCreature * chatter, const char* msg)
@@ -105,6 +111,8 @@ int XGefeon::Chat(XCreature * chatter, const char* msg)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XRoderick);
+CEREAL_REGISTER_TYPE(XRoderick);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XRoderick);
 XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr)
 {
     XPotion * pt = new XPotion(PN_HEALING);
@@ -194,6 +202,8 @@ int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XHighPriest);
+CEREAL_REGISTER_TYPE(XHighPriest);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XHighPriest);
 XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr)
 {
     XPotion * pt = new XPotion(PN_HEALING);
@@ -273,6 +283,10 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XRotmoth);
+CEREAL_REGISTER_TYPE(XRotmoth);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XRotmoth);
+CEREAL_REGISTER_TYPE(XRotmothAI);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XRotmothAI);
 XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XRotmothAI>(this);
@@ -338,6 +352,8 @@ void XRotmothAI::onWasAttacked(XCreature * attacker)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XGiana);
+CEREAL_REGISTER_TYPE(XGiana);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGiana);
 XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr)
 {
 }
@@ -373,6 +389,10 @@ int XGiana::Chat(XCreature * chatter, const char* msg)
 // BANDIT
 ///////////////////////////////////////////////////////////////////////
 REGISTER_CLASS(XBandit);
+CEREAL_REGISTER_TYPE(XBandit);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBandit);
+CEREAL_REGISTER_TYPE(XBanditAI);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XBanditAI);
 
 XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
 {
@@ -419,6 +439,8 @@ bool XBanditAI::isEnemy(XCreature *cr)
 ///////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XShopkeeper);
+CEREAL_REGISTER_TYPE(XShopkeeper);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XShopkeeper);
 
 XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
 {
