@@ -98,36 +98,32 @@ class XBodyPart
         // `item` is a weak observing reference into XCreature::contain,
         // the item's real owner (see the comment above) - it resolves
         // correctly here because the owning XCreature's contain is part
-        // of the very same archive graph. `owner` is self-referential
-        // (it points back at the enclosing XCreature this XBodyPart is a
-        // component of) - safe for the same reason proved out in the
-        // Phase 2 pilot: Cereal registers a shared_ptr's id before
-        // recursing into the pointee's own serialize(), so by the time
-        // this runs (nested inside that XCreature's own serialize())
-        // the id is already there to resolve against.
+        // of the very same archive graph.
         //
-        // `owner_raw` is re-derived from `owner` on load only - NOT
-        // "harmless to redo on save" as originally assumed: a bodypart
-        // whose starting gear was equipped from within its own
-        // creature's constructor (before shared_from_this() is safe,
-        // see the comment on Wear() below) legitimately has an `owner`
-        // that never got bound, even though `owner_raw` was correctly
-        // set at the time via SetOwner()'s direct pointer assignment.
-        // Redoing this unconditionally on save clobbers that
-        // still-correct owner_raw with nullptr the moment a real, live
-        // creature's bodyparts are ever serialized for save - a subtle
-        // but real corruption bug, not merely a redundant no-op, found
-        // via a live *-test-cereal round trip of a whole populated
-        // location (a single creature's round trip never happened to
-        // include one of these still-unbound bodyparts).
+        // `owner`/`owner_raw` are deliberately NOT persisted here, even
+        // though `owner` is self-referential and could, in principle,
+        // resolve the same way `item` does (proved out in the Phase 2
+        // pilot). The catch: a bodypart whose starting gear was equipped
+        // from within its own creature's constructor (before
+        // shared_from_this() is safe, see the comment on Wear() below)
+        // legitimately has an `owner` that never got bound in the first
+        // place, even though `owner_raw` was correctly set at the time
+        // via SetOwner()'s direct pointer assignment - so round-tripping
+        // `owner` faithfully reproduces "unbound" and offers nothing
+        // real to re-derive owner_raw from. XCreature::serialize()
+        // re-runs SetOwner() structurally on every component instead,
+        // once its own `this` is guaranteed shared_from_this()-safe -
+        // same idiom as XMapObject::l/SetLocation(). Found via two
+        // rounds of a live *-test-cereal/-test-load round trip of a
+        // whole populated world: the first fix (guarding the old
+        // owner_raw-from-owner.lock() re-derivation to load-only) only
+        // stopped it from corrupting an already-good owner_raw on save;
+        // it didn't fix restoring one that was never bound to begin
+        // with.
         template<class Archive>
         void serialize(Archive& ar)
         {
-            ar(bp_uin, item, owner);
-
-            if constexpr (Archive::is_loading::value) {
-                owner_raw = owner.lock().get();
-            }
+            ar(bp_uin, item);
         }
 };
 

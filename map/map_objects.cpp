@@ -431,6 +431,16 @@ void XTrap::Restore(XFile * f)
     f->Read(&activation_count, sizeof(int));
 }
 
+void XTrap::Invalidate()
+{
+    if (trap_item) {
+        trap_item->Invalidate();
+        trap_item = nullptr;
+    }
+
+    XMapObject::Invalidate();
+}
+
 REGISTER_CLASS(XStairWay);
 CEREAL_REGISTER_TYPE(XStairWay);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XStairWay);
@@ -634,6 +644,20 @@ XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 void XGrave::HideItem(XItem* item)
 {
     hidden_items.insert(XItem::Own(item));
+}
+
+void XGrave::Invalidate()
+{
+    // Same idiom as XChest::Invalidate(): XItem::Invalidate() has no
+    // idea this set exists (it only knows how to remove itself from
+    // l->map's per-cell item_list), so there's no self-removal to race
+    // against - just mark every item invalid and let hidden_items' own
+    // destructor release the references afterward.
+    for (auto& item : hidden_items) {
+        item->Invalidate();
+    }
+
+    XMapObject::Invalidate();
 }
 
 int XGrave::onOuterUse(XCreature* cr)

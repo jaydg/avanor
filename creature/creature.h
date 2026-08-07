@@ -459,6 +459,23 @@ class XCreature : public XBaseObject
             ar(added_resists, added_RNG, added_stats);
             ar(base_exp, base_nutrio, carried_weight);
             ar(components);
+
+            if constexpr (Archive::is_loading::value) {
+                // XBodyPart::owner (a weak_ptr, its only Cereal-trackable
+                // form) can be legitimately unbound even in the live,
+                // never-saved game - a bodypart equipped with starting
+                // gear from within this very constructor runs before
+                // shared_from_this() is safe (see SetOwner()'s own
+                // comment) - so it isn't something safe to round-trip
+                // via `owner` and re-derive owner_raw from. Re-run
+                // SetOwner() structurally instead, now that `this` is
+                // guaranteed shared_from_this()-safe (same reasoning as
+                // XMapObject::l/SetLocation()).
+                for (auto& bp : components) {
+                    bp->SetOwner(this);
+                }
+            }
+
             ar(creature_class, creature_size, food_feeling, group_id);
             ar(level);
 

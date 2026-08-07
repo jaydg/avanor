@@ -111,6 +111,11 @@ void XCreature::Invalidate()
         item->Invalidate();
     }
 
+    if (action_data.item) {
+        action_data.item->Invalidate();
+        action_data.item = nullptr;
+    }
+
     delete sk;
     sk = nullptr;
 

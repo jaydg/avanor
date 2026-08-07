@@ -141,7 +141,11 @@ void XCookingSet::Restore(XFile * f)
 
 void XCookingSet::Invalidate()
 {
-    cooked_item = nullptr;
+    if (cooked_item) {
+        cooked_item->Invalidate();
+        cooked_item = nullptr;
+    }
+
     XItem::Invalidate();
 }
 

@@ -101,6 +101,7 @@ class XTrap final : public XMapObject
         int Disarm(XCreature * cr);
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+        void Invalidate() override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -265,6 +266,7 @@ class XGrave: public XMapObject
         int onOuterUse(XCreature* cr) override;
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+        void Invalidate() override;
 
         template<class Archive>
         void serialize(Archive& ar)

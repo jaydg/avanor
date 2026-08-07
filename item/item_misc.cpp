@@ -76,6 +76,23 @@ std::string XChest::toString()
     return str;
 }
 
+void XChest::Invalidate()
+{
+    // Unlike MAP's ground-level item_list, XItem::Invalidate() has no
+    // idea this set exists - it only knows how to remove itself from
+    // l->map's per-cell item_list, not an arbitrary container - so
+    // there's no self-removal to race against here. Same idiom as
+    // XCreature::Invalidate() handling its own `contain`: just mark
+    // every item invalid and let `contain`'s own destructor release the
+    // (now-invalid, so ~XObject()'s assertion is satisfied) references
+    // afterward.
+    for (auto& item : contain) {
+        item->Invalidate();
+    }
+
+    XItem::Invalidate();
+}
+
 void XChest::Store(XFile * f)
 {
     XItem::Store(f);

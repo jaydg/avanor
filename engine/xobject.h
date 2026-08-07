@@ -235,7 +235,20 @@ class XObject : public std::enable_shared_from_this<XObject>
             return nullptr;
         }
 
-        XObject(DUMMY_STRUCT * ds) : is_valid(1)
+        // xguid must be initialized here, not left to whatever garbage
+        // was already in this object's freshly-allocated memory:
+        // Create() below inserts into `objects` keyed by xguid, and
+        // serialize() (further down) later reads the pre-overwrite
+        // value of xguid to know which key to erase when it re-keys
+        // this entry to the real, persisted guid. Uninitialized memory
+        // being zero more often than not (fresh heap pages typically
+        // are) meant many unrelated objects shared the same "old" key -
+        // each one's serialize() call erasing entry 0 in turn, wiping
+        // out whichever real, legitimately-numbered object actually
+        // belonged there. Assigning a fresh ::guid++ here instead
+        // guarantees every DUMMY_STRUCT-constructed object starts under
+        // a unique key of its own, exactly like the normal constructor.
+        XObject(DUMMY_STRUCT * ds) : xguid(::guid++), is_valid(1)
         {
             Create();
         }
