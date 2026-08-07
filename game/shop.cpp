@@ -20,11 +20,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "creature/creature.h"
 #include "creature/skeep_ai.h"
 #include "game/shop.h"
 #include "item/itemf.h"
 
 REGISTER_CLASS(XShop);
+
+void XShop::SetShopkeeper(XCreature * shopkeeper)
+{
+    owner = XCreature::ToWeakPtr(shopkeeper);
+}
 
 XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
     : XAnyPlace(_area, _loc)
@@ -82,8 +88,8 @@ XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
 
 int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
 {
-    if (owner) {
-        return dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onAnyonePickItem(cr, item);
+    if (auto o = owner.lock()) {
+        return dynamic_cast<XShopKeeperAI *>(o->xai.get())->onAnyonePickItem(cr, item);
     }
 
     return 1;
@@ -103,8 +109,8 @@ int XShop::onCreatureEnter(XCreature * cr)
             }
     }
 
-    if (owner) {
-        dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onCreatureEnterShop(cr);
+    if (auto o = owner.lock()) {
+        dynamic_cast<XShopKeeperAI *>(o->xai.get())->onCreatureEnterShop(cr);
     }
 
     return 1;
@@ -112,8 +118,8 @@ int XShop::onCreatureEnter(XCreature * cr)
 
 int XShop::onCreatureLeave(XCreature * cr)
 {
-    if (owner) {
-        dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onCreatureLeaveShop(cr);
+    if (auto o = owner.lock()) {
+        dynamic_cast<XShopKeeperAI *>(o->xai.get())->onCreatureLeaveShop(cr);
     }
 
     return 1;
@@ -121,8 +127,8 @@ int XShop::onCreatureLeave(XCreature * cr)
 
 int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
 {
-    if (owner) {
-        return dynamic_cast<XShopKeeperAI *>(owner->xai.get())->onAnyoneDropItem(cr, item);
+    if (auto o = owner.lock()) {
+        return dynamic_cast<XShopKeeperAI *>(o->xai.get())->onAnyoneDropItem(cr, item);
     }
 
     return 1;
@@ -152,7 +158,7 @@ std::string XShop::onShowItem(XItem* item)
 {
     auto desc = item->toString();
 
-    if (owner) {
+    if (owner.lock()) {
         desc.append(fmt::format("{{{}gp}}", item->quantity * item->GetValue()));
     }
 

@@ -39,10 +39,7 @@ class XShop : public XAnyPlace
         int onCreatureDropItem(XCreature * cr, XItem * item) override;
         int onCreatureMove(XCreature * cr) override;
         std::string onShowItem(XItem* item) override;
-        void SetShopkeeper(XCreature * shopkeeper)
-        {
-            owner = shopkeeper;
-        }
+        void SetShopkeeper(XCreature * shopkeeper);
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;

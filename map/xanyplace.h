@@ -61,7 +61,7 @@ class XAnyPlace : public XObject
             return area;
         }
 
-        virtual XPtr<XCreature> &GetOwner()
+        virtual std::weak_ptr<XCreature> &GetOwner()
         {
             return owner;
         }
@@ -73,7 +73,7 @@ class XAnyPlace : public XObject
 
     protected:
         XRect area;
-        XPtr<XCreature> owner;
+        std::weak_ptr<XCreature> owner;
         char* onEventLua{};
 };
 

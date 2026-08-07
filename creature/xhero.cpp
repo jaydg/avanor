@@ -1978,8 +1978,10 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
 
                 XAnyPlace* pl = l->map->GetPlace(x + pt->x, y + pt->y);
 
-                if (pl && pl->GetOwner() && l->map->GetItemCount(x + pt->x, y + pt->y) > 0) {
-                    if ((pl->GetOwner())->xai->isEnemy(this)) {
+                auto pl_owner = pl ? pl->GetOwner().lock() : nullptr;
+
+                if (pl_owner && l->map->GetItemCount(x + pt->x, y + pt->y) > 0) {
+                    if (pl_owner->xai->isEnemy(this)) {
                         msgwin.Add("You can't.");
                         return 0;
                     }
@@ -2366,7 +2368,7 @@ void XHero::QuickPay()
         return;
     }
 
-    shopkeeper = pl->GetOwner();
+    shopkeeper = pl->GetOwner().lock().get();
 
     if (shopkeeper) {
         const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai.get());

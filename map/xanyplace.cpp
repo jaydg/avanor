@@ -108,7 +108,7 @@ int XAnyPlace::onCreatureLeave(XCreature* cr)
 void XAnyPlace::Invalidate()
 {
     location = nullptr;
-    owner = nullptr;
+    owner.reset();
     XObject::Invalidate();
 }
 
@@ -132,7 +132,6 @@ void XAnyPlace::Store(XFile* f)
     XObject::Store(f);
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    owner.Store(f);
     area.Store(f);
     size_t sz = 0;
 
@@ -161,7 +160,6 @@ void XAnyPlace::Restore(XFile* f)
     XObject::Restore(f);
 
     // FIXME: Implement when porting saving/restoring to Cereal
-    owner.Restore(f);
     area.Restore(f);
     size_t sz = 0;
     f->Read(&sz);

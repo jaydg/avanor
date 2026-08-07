@@ -190,7 +190,7 @@ int XSkill::UseSteal(XCreature * user)
                 XAnyPlace * pl = user->l->map->GetPlace(user->x + pt.x, user->y + pt.y);
 
                 if (pl) {
-                    cr = pl->GetOwner().get();
+                    cr = pl->GetOwner().lock().get();
                     flag = 1;
                 }
             }
