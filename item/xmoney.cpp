@@ -19,10 +19,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fmt/format.h>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
+#include "creature/creature.h"
 #include "item/xmoney.h"
 
 REGISTER_CLASS(XMoney);
+CEREAL_REGISTER_TYPE(XMoney);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMoney);
 
 XMoney::XMoney(int _quantity)
 {

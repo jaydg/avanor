@@ -36,6 +36,12 @@ class XMoney : public XItem
         {
             return new XMoney(this);
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+        }
 };
 
 #endif

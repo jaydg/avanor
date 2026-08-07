@@ -27,6 +27,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <string>
 
+#include <cereal/cereal.hpp>
+
 #include "engine/xfile.h"
 
 enum ITEM_MASK {
@@ -268,6 +270,20 @@ class XObject : public std::enable_shared_from_this<XObject>
         virtual const std::string GetClassName()
         {
             return "XObject";
+        }
+
+        // reference/is_valid/bAlreadyStored are runtime bookkeeping, not
+        // persisted state - always reset by Create() on construction.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(
+                cereal::make_nvp("guid", xguid),
+                quantity,
+                im,
+                ttm,
+                ttmb
+            );
         }
 
         virtual void Dump(XFile * f);

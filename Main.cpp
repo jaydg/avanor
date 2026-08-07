@@ -20,11 +20,63 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cctype>
 #include <cstdlib>
+#include <iostream>
+#include <sstream>
+#include <cereal/archives/json.hpp>
 
 #include "engine/global.h"
 #include "game/game.h"
 #include "helpers/hiscore.h"
 #include "helpers/manual.h"
+#include "item/xmoney.h"
+
+// Throwaway proof that the Cereal serialize()/CEREAL_REGISTER_TYPE chain
+// added so far (XObject -> XMapObject -> XBaseObject -> XItem -> XMoney)
+// actually round-trips a real polymorphic shared_ptr<XItem>. Not part of
+// the real save/restore path - remove once the save/restore rewrite is
+// further along and has its own proper regression coverage.
+static void RunCerealPilotTest()
+{
+    auto original = XItem::Own(new XMoney(500));
+
+    std::ostringstream oss;
+    {
+        cereal::JSONOutputArchive archive(oss);
+        archive(original);
+    }
+
+    std::cout << oss.str() << std::endl;
+
+    std::shared_ptr<XItem> restored;
+    {
+        std::istringstream iss(oss.str());
+        cereal::JSONInputArchive archive(iss);
+        archive(restored);
+    }
+
+    const bool pass = restored
+        && restored.get() != original.get()
+        && dynamic_cast<XMoney*>(restored.get()) != nullptr
+        && restored->im == original->im
+        && restored->quantity == original->quantity
+        && restored->value == original->value
+        && restored->guid() == original->guid();
+
+    std::cout << (pass ? "CEREAL PILOT: PASS" : "CEREAL PILOT: FAIL") << std::endl;
+
+    // Cereal constructs shared_ptr<T> internally using its own plain-delete
+    // deleter, not XItem::Own()'s Invalidate()-aware one - unlike a normal
+    // Own()'d object, a cereal-loaded object has no safety net if its last
+    // shared_ptr reference drops before something calls Invalidate() on it
+    // explicitly. In the real restore path (Phase 4) every loaded object
+    // becomes really owned by a real container as part of the same graph
+    // deserialization, so it'll go through the same explicit
+    // Invalidate()-before-last-reference-drops discipline as everything
+    // else already does - but here, as a orphaned local with no container,
+    // it needs that same explicit call or ~XObject()'s invariant trips.
+    original->Invalidate();
+    restored->Invalidate();
+}
 
 const char* logo_text[] = {
     MSG_CYAN
@@ -89,7 +141,11 @@ int main(int argc, char* argv[])
 
     ShowLogo();
 
-    if (argc > 1 && strcmp(argv[1], "-test") == 0) {
+    if (argc > 1 && strcmp(argv[1], "-test-cereal") == 0) {
+        RunCerealPilotTest();
+        vFinit();
+        return 0;
+    } else if (argc > 1 && strcmp(argv[1], "-test") == 0) {
         if (argc > 2) {
             vRandSeed(atoi(argv[2]));
         }

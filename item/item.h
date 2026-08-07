@@ -23,6 +23,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <set>
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+
 #include "creature/bodypart.h"
 #include "engine/xbaseobj.h"
 #include "item/itemdb.h"
@@ -110,6 +113,17 @@ class XItem : public XBaseObject
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XBaseObject>(this));
+            ar(
+                owner, bp, it, wt, quality, durability, identify,
+                is_selected, value, special_property, special_number,
+                brt, material_index
+            );
+        }
 
         bool SetOwner(XCreature * new_owner);
         std::weak_ptr<XCreature> &GetOwner()

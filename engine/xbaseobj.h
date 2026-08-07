@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XBASEOBJ_H
 #define XBASEOBJ_H
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+
 #include "xobject.h"
 #include "engine/xmapobj.h"
 #include "helpers/dice.h"
@@ -49,6 +52,13 @@ class XBaseObject : public XMapObject
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(_DV, _PV, _HIT, RNG, _HP, _PP, MAX_HP, MAX_PP, weight, dice, resistances, stats);
+        }
 };
 
 #endif

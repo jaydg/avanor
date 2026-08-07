@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XMAPOBJECT_H
 #define XMAPOBJECT_H
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/string.hpp>
+
 #include "engine/xobject.h"
 #include "game/location.h"
 
@@ -60,6 +63,18 @@ class XMapObject : public XObject
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XObject>(this));
+            // `l` (the owning XLocation) is deliberately not persisted -
+            // it's re-established structurally via SetLocation() when
+            // this object is restored into its owning location's map
+            // grid, same as today's XFile-based Store/Restore.
+            ar(x, y, nx, ny, view, color, name);
+        }
+
         virtual std::string toString()
         {
             return "";
