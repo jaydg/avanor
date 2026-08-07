@@ -197,6 +197,7 @@ bool XCorpse::Run()
                 msgwin.Add("Suddenly your equipment weighs less.");
             }
 
+            owner->contain.erase(this);
             owner->UnCarryItem(this);
         } else if (l && isInVisibleArea()) {
             msgwin.Add("Suddenly something disappered from the ground.");
