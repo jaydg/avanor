@@ -24,6 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <deque>
 #include <vector>
 
+#include <cereal/cereal.hpp>
+
 #include "creature/creature.h"
 #include "creature/cr_defs.h"
 #include "helpers/rect.h"
@@ -138,6 +140,31 @@ class XStandardAI
 
         virtual void Store(XFile * f);
         virtual void Restore(XFile * f);
+
+        // Matches Store/Restore's actual current scope, not just what's
+        // convenient - companion/ordered_enemy/personal_enemy/last_enemy
+        // (all weak_ptr<XCreature>, easy to serialize) and script were
+        // never persisted even before Cereal, a pre-existing design
+        // choice rather than a migration regression, so left alone here
+        // too. last_moved_way/known_traps (raw XMapObject* - Store
+        // already writes last_moved_way but Restore's read side is
+        // commented out, and known_traps is a live FIXME) are also
+        // deliberately deferred - XMapObject-derived types aren't part
+        // of the shared_ptr graph yet (see the map_objects.h commit),
+        // so there's no Cereal-trackable identity to resolve a raw
+        // cross-reference to them against until that happens.
+        //
+        // ai_owner isn't serialized here either - XStandardAI always
+        // lives 1:1 inside its owning XCreature (see xai), so it's
+        // fixed up by that XCreature's own load(), same idea as
+        // XBodyPart::owner_raw.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(ai_flag, enemy_class, invisible_x, invisible_y, invisible_hunting_mode);
+            ar(companion_command, guard_area, guard_area_location);
+        }
+
         void SetGroupEnemy(XCreature* cr) const;
 
 

@@ -23,6 +23,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <vector>
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
 #include "creature/std_ai.h"
 #include "game/shop.h"
 
@@ -34,8 +38,11 @@ struct SHOP_DEBT {
     double debtor_add_value;
     int turn_count; //after some turns after debtor leave a shop - debtors can't by nothing
     int debtor_leave_shop;
-    // picked but unpaid items;
-    std::vector<XItem*> unpaid_items;
+    // picked but unpaid items - each a fresh XItem::MakeCopy(), owned
+    // here (not a reference into the debtor's own contain), so this
+    // needs to be a real owning shared_ptr like every other item
+    // reference in the codebase, not a raw pointer. See XItem::Own().
+    std::vector<std::shared_ptr<XItem>> unpaid_items;
 };
 
 class XShopKeeperAI : public XStandardAI
@@ -63,6 +70,19 @@ class XShopKeeperAI : public XStandardAI
         }
 
         SHOP_DEBT debt;
+
+        // `shop` is deliberately not persisted here (see the comment on
+        // it below) - XShop/XAnyPlace aren't part of the shared_ptr
+        // graph yet, so there's no Cereal-trackable identity to resolve
+        // this raw cross-reference against until the location/map-grid
+        // step of this migration addresses it.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XStandardAI>(this));
+            ar(debt.debtor, debt.debtor_sum, debt.debtor_add_value, debt.turn_count, debt.debtor_leave_shop, debt.unpaid_items);
+        }
+
     protected:
         void SetDebtor(XCreature * cr);
         // Raw, not weak: XShop has never been migrated to shared_ptr

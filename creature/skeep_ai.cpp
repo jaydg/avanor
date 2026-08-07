@@ -20,10 +20,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 #include <fmt/format.h>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
 #include "creature/skeep_ai.h"
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
+
+CEREAL_REGISTER_TYPE(XShopKeeperAI);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XShopKeeperAI);
+// XShopKeeperAI() is deleted - real construction always takes an owning
+// XCreature* and an XShop*, so both get null placeholders here.
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XShopKeeperAI, serialize, nullptr, nullptr);
 
 const char* GMSG_SHOPKEEPER_ATTACK = "'You were warned! Prepare to die!'";
 const char* GMSG_SHOPKEEPER_ATTACK2 = "'I'll kill you, you bastard!'";
@@ -108,7 +116,7 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
     titem->x = -1;
     titem->y = -1;
 
-    debt.unpaid_items.push_back(titem);
+    debt.unpaid_items.push_back(XItem::Own(titem));
 
     if (debt.debtor_leave_shop == 0) {
         return 1;
@@ -138,7 +146,7 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
         auto it = debt.unpaid_items.begin();
 
         while (it != debt.unpaid_items.end()) {
-            if (item->im != (*it)->im || item->Compare(*it) != 0) {
+            if (item->im != (*it)->im || item->Compare(it->get()) != 0) {
                 it++;
                 continue;
             }
@@ -154,9 +162,9 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
             }
 
             item->quantity -= (*it)->quantity;
-            XItem* t = *it;
-            it = debt.unpaid_items.erase(it);
+            auto t = *it;
             t->Invalidate();
+            it = debt.unpaid_items.erase(it);
         }
     }
 
@@ -225,7 +233,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
         auto it = debt.unpaid_items.begin();
 
         while (it != debt.unpaid_items.end() && item->quantity > 0) {
-            XItem* titem = *it;
+            auto titem = *it;
 
             msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_FOR_PAY,
                 titem->GetValue() * titem->quantity, titem->toString()));
@@ -238,9 +246,8 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 
             giver->MoneyOp(-res);
             debt.debtor_sum += titem->GetValue() * titem->quantity - res;
-            XItem* t = *it;
+            titem->Invalidate();
             it = debt.unpaid_items.erase(it);
-            t->Invalidate();
             msgwin.Add(GMSG_SHOPKEEPER_THANKS);
         }
     }
