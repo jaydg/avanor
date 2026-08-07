@@ -18,9 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xration.h"
 
 REGISTER_CLASS(XRation);
+CEREAL_REGISTER_TYPE(XRation);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRation);
 
 struct RationData {
     ITEM_TYPE it;

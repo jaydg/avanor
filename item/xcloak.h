@@ -36,6 +36,12 @@ class XCloak : public XClothes
         {
             return new XCloak(this);
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XClothes>(this));
+        }
 };
 
 #endif

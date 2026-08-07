@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <string>
 
+#include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
 
 #include "engine/xfile.h"
@@ -94,6 +95,29 @@ struct DUMMY_STRUCT {
     static __xClass * Creator() {DUMMY_STRUCT ds; return new __xClass(&ds);} \
     static __xClass * MakeNew() { return new __xClass(); } \
     virtual const std::string GetClassName() override {return #__xClass;}
+
+// For XObject-derived classes whose only accessible no-args constructor
+// exists purely as a legacy convenience or deliberately asserts (the
+// type is never meant to be default-constructed in real gameplay) -
+// Cereal's default polymorphic construction strategy would call that
+// constructor directly during load, either failing (protected/private)
+// or actively crashing (an assert(0) guard). Route construction through
+// the same DUMMY_STRUCT idiom DECLARE_CREATOR already uses for exactly
+// this purpose instead: skip real initialization, then let the class's
+// own serialize()/load() populate every field (inherited ones included)
+// immediately afterward, same as the legacy Store/Restore factory did.
+#define CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(__xClass, __method) \
+    namespace cereal { \
+        template<> struct LoadAndConstruct<__xClass> { \
+            template<class Archive> \
+            static void load_and_construct(Archive& ar, cereal::construct<__xClass>& construct) \
+            { \
+                DUMMY_STRUCT ds; \
+                construct(&ds); \
+                construct->__method(ar); \
+            } \
+        }; \
+    }
 
 class XClassInfo
 {

@@ -18,9 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xamulet.h"
 
 REGISTER_CLASS(XAmulet);
+CEREAL_REGISTER_TYPE(XAmulet);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAmulet);
 
 int aidentify_db[20] = {};
 

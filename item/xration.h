@@ -49,6 +49,12 @@ class XRation : public XAnyFood
         {
             XAnyFood::Restore(f);
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyFood>(this));
+        }
 };
 
 #endif

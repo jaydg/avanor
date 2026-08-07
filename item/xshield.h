@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSHIELD_H
 #define XSHIELD_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 
 class XShield : public XItem
@@ -36,6 +38,12 @@ class XShield : public XItem
         }
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+        }
 };
 
 #endif

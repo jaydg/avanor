@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XANYFOOD_H
 #define XANYFOOD_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 
 enum FOOD_TYPE {
@@ -52,6 +54,14 @@ class XAnyFood : public XItem
         int Compare(XObject * o) override;
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(food_nutrio, consume_nutrio, consumed_food, food_type);
+        }
+
         int food_nutrio;
         int consumed_food;  // how much is eated
         FOOD_TYPE FoodTypeForCreature(XCreature * creature);

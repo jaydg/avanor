@@ -18,9 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xboots.h"
 
 REGISTER_CLASS(XBoots);
+CEREAL_REGISTER_TYPE(XBoots);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBoots);
 
 _MAIN_ITEM_STRUCT BOOTS_STRUCT[] = {
     {IT_SANDALS,	"sandals",	']',	"1d2-1",	"0d0",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	1,	1,	150,	IQ_POOR,	""},

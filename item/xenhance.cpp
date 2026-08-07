@@ -20,9 +20,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "item/item_cereal.h"
 #include "item/xenhance.h"
 
 REGISTER_CLASS(XEnhance);
+CEREAL_REGISTER_TYPE(XEnhance);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XEnhance);
 
 enum ENH_COLOR {
     EC_WHITE,

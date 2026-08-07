@@ -93,6 +93,13 @@ class XHerb : public XAnyFood
             XAnyFood::Restore(f);
             f->Read(&herb_index, sizeof(herb_index));
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyFood>(this));
+            ar(herb_index);
+        }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -114,12 +121,24 @@ class XHerbBush: public XMapObject
 
         const std::string GetName(XCreature *viewer) override;
         XHerbBush() { }
+        // Grants Cereal access to the otherwise-inaccessible constructor
+        // above - harmless to call directly (unlike XHerb/XCorpse's own
+        // no-args guards), every field gets overwritten by serialize()
+        // immediately afterward anyway.
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XHerbBush, XMapObject);
         XHerbBush(int _x, int _y, XLocation * _l);
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(herb_strength, herb_index);
+        }
 
         bool Run() override;
 
@@ -135,12 +154,20 @@ class XMushSpawn: public XMapObject
 
         const std::string GetName(XCreature *viewer) override;
         XMushSpawn() { }
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XMushSpawn, XMapObject);
         XMushSpawn(int _x, int _y, XLocation * _l);
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(mush_index);
+        }
 
         bool Run() override;
 

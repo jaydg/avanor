@@ -18,40 +18,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef XWEAPON_H
-#define XWEAPON_H
+#ifndef ITEM_CEREAL_H
+#define ITEM_CEREAL_H
 
-#include <cereal/types/base_class.hpp>
+// Every .cpp registering a concrete XItem subclass with Cereal
+// (CEREAL_REGISTER_TYPE + CEREAL_REGISTER_POLYMORPHIC_RELATION) needs
+// both of these:
+//  - the target archive(s) visible at the point of registration, since
+//    the macros force eager instantiation of the type's serialize()
+//    chain for every registered archive;
+//  - creature/creature.h, because that instantiation reaches
+//    XItem::owner (a weak_ptr<XCreature>) - item.h's forward
+//    declaration of XCreature is enough to declare XItem::serialize(),
+//    but not to instantiate it.
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
 
-#include "item/item.h"
-
-struct _WEAPON_BIND {
-    ITEM_TYPE it;
-    XWarSkills::Type ws;
-};
-
-class XWeapon : public XItem
-{
-    public:
-        DECLARE_CREATOR(XWeapon, XItem);
-        XWeapon(ITEM_TYPE it = IT_RANDOM);
-        XWeapon(XWeapon * copy) : XItem((XItem*)copy) {}
-
-        XObject* MakeCopy() override
-        {
-            return new XWeapon(this);
-        }
-
-        int BindWeapon();
-        std::string toString() override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XItem>(this));
-        }
-    protected:
-        std::string GetTemplate(unsigned int mask, int isRight = 1);
-};
+#include "creature/creature.h"
 
 #endif

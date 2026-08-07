@@ -20,9 +20,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "item/item_cereal.h"
 #include "item/xshield.h"
 
 REGISTER_CLASS(XShield);
+CEREAL_REGISTER_TYPE(XShield);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XShield);
 
 _MAIN_ITEM_STRUCT SHIELD_STRUCT[] = {
 

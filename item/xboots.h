@@ -38,6 +38,12 @@ class XBoots: public XClothes
         {
             return new XBoots(this);
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XClothes>(this));
+        }
 };
 
 #endif

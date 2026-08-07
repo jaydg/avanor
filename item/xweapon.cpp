@@ -21,9 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 
 #include "engine/xapi.h"
+#include "item/item_cereal.h"
 #include "item/xweapon.h"
 
 REGISTER_CLASS(XWeapon);
+CEREAL_REGISTER_TYPE(XWeapon);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XWeapon);
 
 _MAIN_ITEM_STRUCT weapon_db[] = {
     {IT_CLUB,	"club",	'/',	"",	"",	"",	"1d3", "",	"",	ISET_WOODSTONE,	1,	10,	200,	IQ_POOR,	""},

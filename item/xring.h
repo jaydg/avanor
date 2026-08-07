@@ -41,6 +41,12 @@ class XRing : public XEnhance
 
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XEnhance>(this));
+        }
 };
 
 #endif

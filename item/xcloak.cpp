@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xcloak.h"
 
 _MAIN_ITEM_STRUCT CLOAK_STRUCT[] = {
@@ -30,6 +31,8 @@ _MAIN_ITEM_STRUCT CLOAK_STRUCT[] = {
 XItemBasicStructure gi_cloaks(CLOAK_STRUCT, 4);
 
 REGISTER_CLASS(XCloak);
+CEREAL_REGISTER_TYPE(XCloak);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCloak);
 
 XCloak::XCloak(const ITEM_TYPE it)
 {

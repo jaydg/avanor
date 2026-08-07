@@ -36,6 +36,12 @@ class XArmor: public XClothes
         {
             return new XArmor(this);
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XClothes>(this));
+        }
 };
 
 #endif

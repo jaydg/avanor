@@ -18,9 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xarmor.h"
 
 REGISTER_CLASS(XArmor);
+CEREAL_REGISTER_TYPE(XArmor);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XArmor);
 
 _MAIN_ITEM_STRUCT ARMOR_STRUCT[] = {
     {IT_CLOTHES,	"clothes",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	3,	5,	100,	IQ_POOR,	""},

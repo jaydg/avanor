@@ -98,6 +98,34 @@ class XCorpse : public XAnyFood
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
 
+        // pCorpseData is a non-owning pointer into a static per-species
+        // table (XCreatureStorage), not owned/serialized data - only `cn`
+        // (which species) is persisted, and pCorpseData is re-derived from
+        // it on load via FixupCorpseData() (defined in the .cpp, where
+        // creature/anycr.h - which itself needs CORPSE_DATA from this
+        // header - can be included without a cycle). Split save/load
+        // rather than a symmetric serialize() since that re-derivation
+        // only makes sense on load.
+        template<class Archive>
+        void save(Archive& ar) const
+        {
+            ar(cereal::base_class<XAnyFood>(this));
+            ar(corpse_flag, time_of_roating, cn);
+        }
+
+        template<class Archive>
+        void load(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyFood>(this));
+            ar(corpse_flag, time_of_roating, cn);
+            FixupCorpseData();
+        }
+
+    protected:
+        void FixupCorpseData();
+
+    public:
+
         [[nodiscard]] std::string postEat(XCreature *eater) override;
         int Compare(XObject * o) override
         {

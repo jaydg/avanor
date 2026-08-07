@@ -18,9 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xring.h"
 
 REGISTER_CLASS(XRing);
+CEREAL_REGISTER_TYPE(XRing);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRing);
 
 int ridentify_db[20] = {};
 

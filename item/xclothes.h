@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef	XCLOTHES_H
 #define	XCLOTHES_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 
 class XClothes : public XItem
@@ -32,6 +34,12 @@ class XClothes : public XItem
         explicit XClothes(XClothes* copy) : XItem(static_cast<XItem *>(copy)) {}
 
         std::string toString() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+        }
 };
 
 #endif

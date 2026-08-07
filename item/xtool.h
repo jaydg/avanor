@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XTOOL_H
 #define XTOOL_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 
 class XTool : public XItem {
@@ -38,6 +40,12 @@ class XTool : public XItem {
         virtual RESULT onUse(ItemUsageState uis, XCreature* cr)
         {
             return FAIL;
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
         }
 };
 
@@ -79,6 +87,13 @@ class XCookingSet : public XTool
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
         void Invalidate() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XTool>(this));
+            ar(use_time, cooked_item);
+        }
     protected:
         // Owning, not weak: the corpse being cooked is already erased from
         // contain (SelectItem()/Inventory() picked it destructively) by the
@@ -130,6 +145,12 @@ class XPickAxe : public XTool
         {
             return name;
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XTool>(this));
+        }
 };
 
 class XEyeOfRaa : public XTool
@@ -163,6 +184,12 @@ class XEyeOfRaa : public XTool
         {
             return name;
         }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XTool>(this));
+        }
 };
 
 class XAlchemySet : public XTool
@@ -194,6 +221,12 @@ class XAlchemySet : public XTool
         std::string toString() override
         {
             return name;
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XTool>(this));
         }
 };
 

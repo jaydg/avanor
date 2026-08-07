@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef	XENHANCE_H
 #define	XENHANCE_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "item/item.h"
 
 class XEnhance : public XItem
@@ -56,6 +58,13 @@ class XEnhance : public XItem
         int Compare(XObject* o) override;
         void Store(XFile* f) override;
         void Restore(XFile* f) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+            ar(descr);
+        }
 };
 
 #endif

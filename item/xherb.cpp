@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
+#include "item/item_cereal.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
 #include "magic/modifier.h"
@@ -109,6 +110,12 @@ void _HERBS::Restore(XFile * f)
 }
 
 REGISTER_CLASS(XHerb);
+CEREAL_REGISTER_TYPE(XHerb);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XHerb);
+// XHerb()'s only no-args constructor is an assert(0) guard - real
+// instances always come from XHerb(int), so route Cereal's load-time
+// construction through the DUMMY_STRUCT idiom instead of that assert.
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XHerb, serialize);
 
 XHerb::XHerb(int _herb_index) : herb_index(_herb_index), XAnyFood()
 {
@@ -167,6 +174,8 @@ int XHerb::isIdentifed()
 ////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XHerbBush);
+CEREAL_REGISTER_TYPE(XHerbBush);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XHerbBush);
 
 XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 {
@@ -319,6 +328,8 @@ XObject* XHerbBush::Pick(XCreature * picker)
 ////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XMushSpawn);
+CEREAL_REGISTER_TYPE(XMushSpawn);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XMushSpawn);
 
 XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 {

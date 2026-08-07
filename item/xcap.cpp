@@ -18,9 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "item/item_cereal.h"
 #include "item/xcap.h"
 
 REGISTER_CLASS(XCap);
+CEREAL_REGISTER_TYPE(XCap);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCap);
 
 _MAIN_ITEM_STRUCT CAP_STRUCT[] = {
     {IT_HAT,	"hat",	'[',	"1d1",	"0d0",	"",	"1d1",	"",	"",	ISET_SOFT,	1,	1,	100,	IQ_POOR,	""},

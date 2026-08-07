@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature/creature.h"
 #include "helpers/msgwin.h"
+#include "item/item_cereal.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
 #include "item/xtool.h"
@@ -31,6 +31,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XCookingSet);
+CEREAL_REGISTER_TYPE(XCookingSet);
+// Registered directly against XItem (not just the immediate parent
+// XTool): XItemList and every other container in the codebase holds
+// shared_ptr<XItem>, never shared_ptr<XTool> - that's the pointer type
+// Cereal actually needs a relation for to resolve a loaded XCookingSet.
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCookingSet);
 
 int CorpseFiltr(XItem * item)
 {
@@ -145,6 +151,8 @@ void XCookingSet::Invalidate()
 //////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XPickAxe);
+CEREAL_REGISTER_TYPE(XPickAxe);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPickAxe);
 
 RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
 {
@@ -213,6 +221,8 @@ RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
 //////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XEyeOfRaa);
+CEREAL_REGISTER_TYPE(XEyeOfRaa);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XEyeOfRaa);
 
 RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature * cr)
 {
@@ -232,6 +242,8 @@ RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature * cr)
 //////////////////////////////////////////////////////////////////////
 
 REGISTER_CLASS(XAlchemySet);
+CEREAL_REGISTER_TYPE(XAlchemySet);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAlchemySet);
 
 int RootsFiltr(XItem * item)
 {
