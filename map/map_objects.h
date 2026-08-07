@@ -58,7 +58,7 @@ class XTrap final : public XMapObject
         TRAP_LEVEL trap_level;
 
         // owner to get exp.
-        XPtr<XCreature> owner{};
+        std::weak_ptr<XCreature> owner;
 
         int isVisibleForHero = 0;
 

@@ -42,7 +42,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
     im = IM_TRAP;
     x = _x;
     y = _y;
-    owner = _owner;
+    owner = XCreature::ToWeakPtr(_owner);
     trap_item = items;
 
     if (tt == TT_RANDOM) {
@@ -114,7 +114,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
 
     view = '^';
 
-    if (owner && owner->isHero()) {
+    if (auto o = owner.lock(); o && o->isHero()) {
         isVisibleForHero = 1;
     } else {
         isVisibleForHero = 0;
@@ -205,7 +205,7 @@ int XTrap::Activate(XCreature* cr)
 
     if (isMagic) {
         EFFECT_DATA ed{};
-        ed.caller	= owner;
+        ed.caller	= owner.lock().get();
         ed.l	= l;
         ed.power	= 10 * (trap_level + 1);
         ed.call_x	= x;
@@ -251,7 +251,7 @@ int XTrap::Activate(XCreature* cr)
                 }
 
                 dd.damage	= drop_item->dice.Throw();
-                dd.attacker	= owner;
+                dd.attacker	= owner.lock().get();
 
                 // temporary solution, should be replaced in future with a
                 // general solution which returns the name of an item with
@@ -282,7 +282,7 @@ int XTrap::Activate(XCreature* cr)
 
             case TT_PIT:
                 dd.damage	= vRand(30) + 2;
-                dd.attacker	= owner;
+                dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the bottom of the pit";
                 dd.attack_HIT	= 10000;
                 dd.attack_brand	= 0;
@@ -297,7 +297,7 @@ int XTrap::Activate(XCreature* cr)
                     dd.damage += trap_item->dice.Throw();
                 }
 
-                dd.attacker	= owner;
+                dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the spears in the pit";
                 dd.attack_HIT	= 10000;
                 dd.attack_brand	= 0;
@@ -404,7 +404,7 @@ void XTrap::Store(XFile * f)
     f->Write(&trap_type, sizeof(TRAP_TYPE));
     f->Write(&isVisibleForHero, sizeof(int));
     f->Write(&trap_level, sizeof(TRAP_LEVEL));
-    XObject::StorePointer(f, owner);
+    XObject::StorePointer(f, owner.lock().get());
     XObject::StorePointer(f, trap_item);
     f->Write(&last_activator, sizeof(XGUID));
     f->Write(&activation_count, sizeof(int));
@@ -416,7 +416,7 @@ void XTrap::Restore(XFile * f)
     f->Read(&trap_type, sizeof(TRAP_TYPE));
     f->Read(&isVisibleForHero, sizeof(int));
     f->Read(&trap_level, sizeof(TRAP_LEVEL));
-    owner = dynamic_cast<XCreature*>(XObject::RestorePointer(f, nullptr));
+    owner = XCreature::ToWeakPtr(dynamic_cast<XCreature*>(XObject::RestorePointer(f, nullptr)));
     trap_item = dynamic_cast<XItem*>(XObject::RestorePointer(f, nullptr));
     f->Read(&last_activator, sizeof(XGUID));
     f->Read(&activation_count, sizeof(int));
