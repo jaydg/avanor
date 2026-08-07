@@ -21,6 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cctype>
 #include <fstream>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
+#include "creature/skeep_ai.h"
 #include "creature/unique.h"
 #include "engine/xgen.h"
 #include "game/cbuilder.h"
@@ -44,6 +48,65 @@ extern "C"
 int XLocation::rand_location_count = L_RANDOM;
 
 REGISTER_CLASS(XLocation);
+CEREAL_REGISTER_TYPE(XLocation);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XObject, XLocation);
+
+void XLocation::FixupWaysList()
+{
+    ways_list.clear();
+
+    for (int i = 0; i < map->len * map->hgt; i++) {
+        if (auto* way = dynamic_cast<XStairWay*>(map->map[i].pSpecialObject.get())) {
+            ways_list.push_back(way);
+        }
+    }
+
+    for (auto& p : places) {
+        if (p && (p->im & IM_WAY)) {
+            ways_list.push_back(p.get());
+        }
+    }
+}
+
+void XLocation::FixupMapObjectPositions()
+{
+    for (int y = 0; y < map->hgt; y++) {
+        for (int x = 0; x < map->len; x++) {
+            auto& cell = map->map[x + y * map->len];
+
+            if (auto& cr = cell.pMonster) {
+                cr->x = x;
+                cr->y = y;
+                cr->nx = x;
+                cr->ny = y;
+                cr->SetLocation(this);
+            }
+
+            for (auto& item : cell.item_list) {
+                item->x = x;
+                item->y = y;
+                item->SetLocation(this);
+            }
+        }
+    }
+}
+
+void XLocation::FixupShops()
+{
+    for (auto& p : places) {
+        auto* shop = dynamic_cast<XShop*>(p.get());
+
+        if (!shop) {
+            continue;
+        }
+
+        if (auto owner = shop->GetOwner().lock()) {
+            if (auto* ai = dynamic_cast<XShopKeeperAI*>(owner->xai.get())) {
+                ai->SetShop(shop);
+            }
+        }
+    }
+}
 
 XLocation::XLocation(LOCATION location)
 {

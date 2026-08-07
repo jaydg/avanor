@@ -21,6 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XANYPLACE_H
 #define XANYPLACE_H
 
+#include <cstring>
+#include <string>
+
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+
 #include "engine/xobject.h"
 #include "helpers/rect.h"
 
@@ -33,6 +39,7 @@ class XAnyPlace : public XObject
 {
     protected:
         XAnyPlace() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XAnyPlace, XObject);
@@ -71,10 +78,47 @@ class XAnyPlace : public XObject
         void Setup(XLocation* _map);
         XLocation* location{};
 
+        // `location` is deliberately not persisted - it, along with every
+        // MAP::place pointer within `area`, is re-established structurally
+        // by re-running Setup() (the same call the real constructors make)
+        // once the owning XLocation has finished loading both `places` and
+        // its map grid, mirroring the XMapObject::l/SetLocation() idiom.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XObject>(this));
+            ar(area, owner);
+
+            if constexpr (Archive::is_loading::value) {
+                std::string event;
+                ar(event);
+
+                if (event.empty()) {
+                    onEventLua = nullptr;
+                } else {
+                    onEventLua = new char[event.size() + 1];
+                    std::memcpy(onEventLua, event.c_str(), event.size() + 1);
+                }
+
+                NotifyLuaEvent(true);
+            } else {
+                NotifyLuaEvent(false);
+                ar(std::string(onEventLua ? onEventLua : ""));
+            }
+        }
+
     protected:
         XRect area;
         std::weak_ptr<XCreature> owner;
         char* onEventLua{};
+
+    private:
+        // Takes a bool rather than the LUA_EVENT enum (LE_LOAD/LE_SAVE) to
+        // avoid needing game/location.h's full declaration here - that
+        // header already includes this one, so pulling it in would be
+        // circular. Maps to LE_LOAD/LE_SAVE in the .cpp, where
+        // game/location.h is fully visible.
+        void NotifyLuaEvent(bool is_load) const;
 };
 
 #endif

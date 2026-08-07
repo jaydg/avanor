@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/set.hpp>
 
 #include "engine/global.h"
+#include "engine/xfile.h"
 #include "game/game.h"
 #include "helpers/hiscore.h"
 #include "helpers/manual.h"
@@ -298,6 +299,133 @@ static bool TestRealCreature()
     return pass;
 }
 
+static bool TestRealLocation()
+{
+    std::shared_ptr<XLocation> original = Game.locations[L_MAIN];
+
+    if (!original || !original->map) {
+        std::cout << "TestRealLocation: L_MAIN not built, nothing to test with" << std::endl;
+        return false;
+    }
+
+    const auto original_guid = original->guid();
+    const auto original_ln = original->ln;
+    const auto original_len = original->map->len;
+    const auto original_hgt = original->map->hgt;
+    const auto original_ways_count = original->ways_list.size();
+
+    std::set<XAnyPlace*> original_places;
+    int original_monster_count = 0;
+    int original_item_count = 0;
+
+    for (int i = 0; i < original_len * original_hgt; i++) {
+        if (original->map->map[i].pMonster) {
+            original_monster_count++;
+        }
+
+        original_item_count += static_cast<int>(original->map->map[i].item_list.size());
+    }
+
+    for (int y = 0; y < original_hgt; y++) {
+        for (int x = 0; x < original_len; x++) {
+            if (auto* p = original->map->GetPlace(x, y)) {
+                original_places.insert(p);
+            }
+        }
+    }
+
+    // A creature reachable from this location's map can carry a custom
+    // Lua event handler that, via NotifyLuaEventHandler(LE_SAVE/LE_LOAD)
+    // inside XCreature::serialize(), calls back into Location.StoreInt/
+    // RestoreInt - legacy Lua bindings that write/read through the
+    // static XLocation::svg_file the real save path (XArchive::
+    // StoreGame/RestoreGame, engine/xarchive.cpp) always opens first.
+    // This pilot bypasses that entry point, so svg_file is otherwise
+    // null here - open a throwaway scratch file and point svg_file at
+    // it for the duration, mirroring StoreGame/RestoreGame.
+    const std::string svg_path = "/tmp/avanor_cereal_pilot_location.tmp";
+    XFile svg_file;
+    XLocation::svg_file = &svg_file;
+
+    std::ostringstream oss;
+    {
+        svg_file.Open(svg_path, "wb");
+        cereal::JSONOutputArchive archive(oss);
+        archive(original);
+        svg_file.Close();
+    }
+
+    std::shared_ptr<XLocation> restored;
+    {
+        svg_file.Open(svg_path, "rb");
+        std::istringstream iss(oss.str());
+        cereal::JSONInputArchive archive(iss);
+        archive(restored);
+        svg_file.Close();
+    }
+
+    XLocation::svg_file = nullptr;
+    std::remove(svg_path.c_str());
+
+    bool pass = restored
+        && restored.get() != original.get()
+        && restored->guid() == original_guid
+        && restored->ln == original_ln
+        && restored->map
+        && restored->map->len == original_len
+        && restored->map->hgt == original_hgt
+        && restored->ways_list.size() == original_ways_count;
+
+    std::set<XAnyPlace*> restored_places;
+    int restored_monster_count = 0;
+    int restored_item_count = 0;
+
+    if (restored && restored->map) {
+        for (int i = 0; i < restored->map->len * restored->map->hgt; i++) {
+            if (restored->map->map[i].pMonster) {
+                restored_monster_count++;
+            }
+
+            restored_item_count += static_cast<int>(restored->map->map[i].item_list.size());
+        }
+
+        for (int y = 0; y < restored->map->hgt; y++) {
+            for (int x = 0; x < restored->map->len; x++) {
+                if (auto* p = restored->map->GetPlace(x, y)) {
+                    restored_places.insert(p);
+
+                    // Setup() must have re-derived `location` (and, per
+                    // cell, MAP::place) after load, exactly like the
+                    // real constructors do - not persisted directly.
+                    pass = pass && (p->location == restored.get());
+                }
+            }
+        }
+    }
+
+    pass = pass
+        && (restored_places.size() == original_places.size())
+        && (restored_monster_count == original_monster_count)
+        && (restored_item_count == original_item_count);
+
+    std::cout
+        << "  guid " << original_guid << " -> " << (restored ? restored->guid() : 0)
+        << ", places " << original_places.size() << " -> " << restored_places.size()
+        << ", ways " << original_ways_count << " -> " << (restored ? restored->ways_list.size() : 0)
+        << ", monsters " << original_monster_count << " -> " << restored_monster_count
+        << ", items " << original_item_count << " -> " << restored_item_count
+        << std::endl;
+
+    // `original` is Game.locations[L_MAIN] itself, still live and
+    // referenced there - must NOT be invalidated. `restored` is a
+    // genuine orphan (this function is its only reference).
+    if (restored) {
+        restored->Invalidate();
+    }
+
+    return pass;
+}
+
 } // namespace cereal_pilot
 
 static void RunCerealPilotTest()
@@ -306,12 +434,14 @@ static void RunCerealPilotTest()
     const bool list_pass = cereal_pilot::TestItemList();
     const bool selfref_pass = cereal_pilot::TestSelfReferentialWeakPtr();
     const bool creature_pass = cereal_pilot::TestRealCreature();
+    const bool location_pass = cereal_pilot::TestRealLocation();
 
     std::cout << "polymorphic item:      " << (item_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "XItemList round-trip:  " << (list_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "self-referential weak: " << (selfref_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "real creature:         " << (creature_pass ? "PASS" : "FAIL") << std::endl;
-    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass && creature_pass) ? "PASS" : "FAIL") << std::endl;
+    std::cout << "real location:         " << (location_pass ? "PASS" : "FAIL") << std::endl;
+    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass && creature_pass && location_pass) ? "PASS" : "FAIL") << std::endl;
 
     // TestRealCreature() calls Game.Create('T'), populating a whole real
     // game world - unlike -test/-demo mode, this mode returns from main()

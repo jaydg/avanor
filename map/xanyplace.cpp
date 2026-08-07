@@ -18,16 +18,35 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/creature.h"
 #include "game/location.h"
 #include "map/map.h"
 #include "map/xanyplace.h"
 
 REGISTER_CLASS(XAnyPlace);
+CEREAL_REGISTER_TYPE(XAnyPlace);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XObject, XAnyPlace);
 
 extern "C"
 {
 #include "lauxlib.h"
+}
+
+void XAnyPlace::NotifyLuaEvent(bool is_load) const
+{
+    if (!onEventLua) {
+        return;
+    }
+
+    lua_pushstring(XLocation::L, onEventLua);
+    lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
+    lua_pushnumber(XLocation::L, is_load ? LE_LOAD : LE_SAVE);
+    lua_call(XLocation::L, 1, 1);
+    lua_tonumber(XLocation::L, 2);
+    lua_pop(XLocation::L, 1);
 }
 
 XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc) : area(_area)

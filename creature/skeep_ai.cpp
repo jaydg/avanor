@@ -47,21 +47,31 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
     : XStandardAI(shopkeeper)
 {
     SetShop(_shop);
-    _shop->SetShopkeeper(shopkeeper);
 
     debt.debtor.reset();
     debt.debtor_sum = 0;
     debt.turn_count = 0;
     debt.debtor_leave_shop = 0;
 
-    SetArea(shop->GetArea(), shop->location->ln);
-    SetAIFlag(AIF_GUARD_AREA);
-    SetAIFlag(AIF_GUARD_AREA);
-    SetAIFlag(AIF_COWARD);
-    SetAIFlag(AIF_RANDOM_MOVE);
-    SetEnemyClass(CR_NONE);
+    // _shop is null when Cereal constructs a placeholder instance to
+    // load into (CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT) - every field
+    // touched below gets properly re-derived after load instead
+    // (base_class<XStandardAI> serialization restores ai_flags/area/
+    // enemy_class; XLocation::FixupShops(), run once the whole location
+    // graph is loaded, resolves `shop` via XShop::owner and redoes
+    // SetShopkeeper() - see game/location.cpp).
+    if (_shop) {
+        _shop->SetShopkeeper(shopkeeper);
 
-    ResAIFlag(AIF_ALLOW_PICK_UP);
+        SetArea(shop->GetArea(), shop->location->ln);
+        SetAIFlag(AIF_GUARD_AREA);
+        SetAIFlag(AIF_GUARD_AREA);
+        SetAIFlag(AIF_COWARD);
+        SetAIFlag(AIF_RANDOM_MOVE);
+        SetEnemyClass(CR_NONE);
+
+        ResAIFlag(AIF_ALLOW_PICK_UP);
+    }
 }
 
 void XShopKeeperAI::SetDebtor(XCreature * cr)

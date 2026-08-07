@@ -25,6 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
+#include <cereal/types/base_class.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/string.hpp>
+
 #include "creature/cr_defs.h"
 #include "helpers/point.h"
 #include "map/map.h"
@@ -178,6 +182,81 @@ class XLocation : public XObject
         void GetFreeXY(XPoint * pt, XRect * area = nullptr);
         void AddPlace(XAnyPlace * pl);
 
+        // ways_list holds raw, non-owning XObject* into two different
+        // unique_ptr-owned homes (XStairWay via a map cell's
+        // pSpecialObject, or an XAnyPlace via `places`) - not something
+        // Cereal can track identity for directly, so it's rebuilt
+        // structurally after load instead of persisted. This is the same
+        // reconstruction the legacy Restore() already did for the
+        // `places`-derived half (see the FIXME'd Restore() below); the
+        // pSpecialObject-derived half (from NewWay()) was never
+        // reconstructed by the old system at all - real persistence, not
+        // a mechanical port.
+        void FixupWaysList();
+
+        // MAP::pMonster/item_list round-trip a creature's/item's own
+        // state correctly (XCreature::serialize()/XItem's own serialize()
+        // handle that), but position (x/y, plus a creature's nx/ny) and
+        // the owning-location back-reference (`l`, inherited from
+        // XMapObject) are deliberately not part of either - re-derived
+        // here structurally from the cell each is actually found in, same
+        // idiom as XMapObject::l/SetLocation() for ordinary map objects.
+        //
+        // Not just cosmetic: XItem::Invalidate() uses `l`/x/y to find and
+        // erase itself from its ground cell's item_list - without this,
+        // that lookup silently fails (l is null) and the item never
+        // leaves the list, which hangs MAP::~MAP()'s
+        // `while (!item_list.empty())` loop forever the first time a
+        // loaded location is ever torn down.
+        void FixupMapObjectPositions();
+
+        // XShopKeeperAI::shop is a raw, non-owning XShop* - not
+        // something Cereal can track identity for directly (XShop
+        // itself has no shared/weak-trackable identity of its own).
+        // XShop::owner (a weak_ptr<XCreature>, see XAnyPlace::serialize)
+        // already round-trips correctly via Cereal's normal pointer
+        // tracking, so this resolves `shop` in the other direction from
+        // that: for every XShop whose owner is a live, loaded
+        // shopkeeper, point its XShopKeeperAI back at it.
+        void FixupShops();
+
+        // `location` on the ways/places array, along with every
+        // MAP::place pointer, is deliberately not persisted directly -
+        // re-running XAnyPlace::Setup() for every loaded place (after
+        // `places` and `map` are both loaded) re-derives both, the same
+        // idiom as XMapObject::l/SetLocation().
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XObject>(this));
+            ar(ln);
+
+            if constexpr (Archive::is_loading::value) {
+                map = new XMap();
+            }
+
+            ar(*map);
+
+            for (auto& p : places) {
+                ar(p);
+            }
+
+            ar(brief_name, full_name, visited_by_hero, event);
+
+            if constexpr (Archive::is_loading::value) {
+                for (auto& p : places) {
+                    if (p) {
+                        p->Setup(this);
+                    }
+                }
+
+                FixupWaysList();
+                FixupMapObjectPositions();
+                FixupShops();
+                way_found_flag = false;
+            }
+        }
+
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
         void Invalidate() override;
@@ -321,6 +400,14 @@ class XLocation : public XObject
 
         void CreateShop(unsigned int im, XRect& rect, char* sk_name, SHOP_DOOR sd = SHOP_DOOR_UP);
 };
+
+// Both of XLocation's no-args-shaped constructors assert(0) - route
+// construction through DECLARE_CREATOR's DUMMY_STRUCT constructor
+// instead. Lives here rather than location.cpp: it gets triggered from
+// inside XScheduler::serialize() (a template in xscheduler.h,
+// reinstantiated per translation unit), same reasoning as
+// XStandardAI/XSpell/XUniversalGen/etc. earlier this session.
+CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XLocation, serialize);
 
 class XRandomLocation : public XLocation
 {

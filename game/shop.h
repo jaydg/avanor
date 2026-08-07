@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSHOP_H
 #define XSHOP_H
 
+#include <cereal/types/base_class.hpp>
+
 #include "game/location.h"
 #include "map/xanyplace.h"
 
@@ -28,6 +30,7 @@ class XShop : public XAnyPlace
 {
     protected:
         XShop() {}
+        friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XShop, XAnyPlace);
@@ -43,6 +46,20 @@ class XShop : public XAnyPlace
 
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
+
+        // hero_in is transient per-visit UI state (whether the hero is
+        // currently standing inside), always false for a freshly loaded
+        // game - not persisted.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XAnyPlace>(this));
+            ar(shop_mask);
+
+            if constexpr (Archive::is_loading::value) {
+                hero_in = 0;
+            }
+        }
 
         ITEM_MASK shop_mask;
     protected:

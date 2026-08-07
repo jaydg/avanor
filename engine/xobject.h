@@ -283,7 +283,18 @@ class XObject : public std::enable_shared_from_this<XObject>
             }
 
             is_valid = 0;
-            objects.erase(xguid);
+
+            // Erase by identity, not just by key: a Cereal-restored
+            // object can end up assigned the same xguid as some other
+            // still-live object already registered under that key (the
+            // restore path re-keys `objects` to the value read from the
+            // archive - see serialize() below - which says nothing about
+            // whether that key was already taken). Blindly erasing by
+            // key here would remove the OTHER object's registry entry
+            // instead of this one's, whenever that's happened.
+            if (auto it = objects.find(xguid); it != objects.end() && it->second == this) {
+                objects.erase(it);
+            }
 
             // Objects that have been wrapped in a shared_ptr somewhere (the
             // ones migrated off this legacy refcount) must never be deleted
@@ -341,7 +352,20 @@ class XObject : public std::enable_shared_from_this<XObject>
             if constexpr (Archive::is_loading::value) {
                 if (old_guid != xguid) {
                     objects.erase(old_guid);
-                    objects[xguid] = this;
+
+                    // Never steal an occupied slot from a different,
+                    // already-registered live object - in normal
+                    // production use `objects` starts empty before a
+                    // restore, so this never collides, but a restore
+                    // that runs while an object using this exact xguid
+                    // is still alive (e.g. a round-trip test probing a
+                    // live game) must not silently evict it: it would
+                    // vanish from InvalidateAllObjects()'s sweep for
+                    // good, even though it's still alive and reachable
+                    // elsewhere.
+                    if (auto it = objects.find(xguid); it == objects.end()) {
+                        objects[xguid] = this;
+                    }
                 }
             }
         }

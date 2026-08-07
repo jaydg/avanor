@@ -20,6 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fstream>
 
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/creature.h"
 #include "item/item.h"
 #include "map/map.h"
@@ -78,10 +80,33 @@ MAP::~MAP()
         (*item_list.begin())->Invalidate();
     }
 
+    // Unlike XItem, XCreature::Invalidate() doesn't remove itself from
+    // wherever it's referenced from (no map-cell back-reference to do
+    // that through) - clear pMonster explicitly afterward rather than
+    // relying on a side effect. A cell can still be genuinely holding a
+    // live creature here (e.g. the whole map being torn down at once,
+    // out from under a creature that was simply still standing on it) -
+    // this is real, not theoretical: reachable via
+    // XLocation::Invalidate()'s `delete map`.
+    if (pMonster) {
+        pMonster->Invalidate();
+        pMonster = nullptr;
+    }
+
     if (pSpecialObject) {
         pSpecialObject->Invalidate();
         pSpecialObject.release();
     }
+}
+
+void MAP::SaveCrossRefs(cereal::JSONOutputArchive& ar) const
+{
+    ar(pMonster, item_list, pSpecialObject);
+}
+
+void MAP::LoadCrossRefs(cereal::JSONInputArchive& ar)
+{
+    ar(pMonster, item_list, pSpecialObject);
 }
 
 void MAP::Store(XFile * f)

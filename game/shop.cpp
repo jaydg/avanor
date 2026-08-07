@@ -20,12 +20,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/polymorphic.hpp>
+
 #include "creature/creature.h"
 #include "creature/skeep_ai.h"
 #include "game/shop.h"
 #include "item/itemf.h"
 
 REGISTER_CLASS(XShop);
+CEREAL_REGISTER_TYPE(XShop);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XAnyPlace, XShop);
 
 void XShop::SetShopkeeper(XCreature * shopkeeper)
 {

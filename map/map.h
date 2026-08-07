@@ -24,6 +24,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <set>
 
+#include <cereal/archives/json.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/set.hpp>
+
 #include "helpers/rect.h"
 #include "map/xanyplace.h"
 
@@ -145,6 +149,34 @@ struct MAP {
     // Currently used to indicate "special" rooms which should not be crossed
     // by passages.
     int room_id;
+
+    // `place` is a raw, non-owning pointer into the owning XLocation's
+    // places[MAX_PLACES] (which owns the XAnyPlace instances via
+    // unique_ptr) - deliberately not persisted here; XLocation
+    // re-derives every cell's `place` structurally, by re-running
+    // XAnyPlace::Setup() for each loaded place once the whole map grid
+    // is loaded, the same idiom as XMapObject::l/SetLocation().
+    //
+    // pMonster/item_list/pSpecialObject go through non-template,
+    // concrete-archive-typed helpers (defined in map.cpp, where XCreature
+    // and XItem are fully visible) rather than directly in this template -
+    // same reasoning as XCreature::SaveModifier/LoadModifier: pulling
+    // creature.h/item.h's full definitions into this widely-included
+    // header would be circular.
+    void SaveCrossRefs(cereal::JSONOutputArchive& ar) const;
+    void LoadCrossRefs(cereal::JSONInputArchive& ar);
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(n, visible, known, color, room_id);
+
+        if constexpr (Archive::is_loading::value) {
+            LoadCrossRefs(ar);
+        } else {
+            SaveCrossRefs(ar);
+        }
+    }
 };
 
 class XMap
@@ -200,6 +232,20 @@ class XMap
         void Restore(XFile* f);
 
         void Dump(std::ofstream &file) const;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(len, hgt, wx, wy);
+
+            if constexpr (Archive::is_loading::value) {
+                map = new MAP[len * hgt];
+            }
+
+            for (int i = 0; i < len * hgt; i++) {
+                ar(map[i]);
+            }
+        }
 };
 
 #endif
