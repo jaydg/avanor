@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef SKILL_H
 #define SKILL_H
 
+#include <cereal/cereal.hpp>
+
 struct SKILL_DB {
     const char* name;
     int use_per_level;
@@ -98,6 +100,17 @@ class XSkill
 
         int GetMaxLevel();
         SKILL_MASTERY GetMastery();
+
+        // No LoadAndConstruct needed - unlike XSpell (see magic.h),
+        // XSkills owns its XSkill instances as raw pointers in a plain
+        // map, not through Cereal's own smart-pointer construction
+        // machinery, so XSkills::save()/load() constructs and
+        // dereferences them manually instead.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(skt, level, used_time);
+        }
 
         Skill skt;
 

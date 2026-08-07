@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef DEITY_H
 #define DEITY_H
 
+#include <cereal/cereal.hpp>
+
 #include "engine/xfile.h"
 
 class XCreature;
@@ -92,6 +94,12 @@ class XReligion
 
         void Store(const XFile* f);
         void Restore(const XFile* f);
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(life_act, death_act);
+        }
         /*	int fire_act;
         	int water_act;
         	int earth_act;
