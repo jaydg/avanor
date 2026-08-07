@@ -164,9 +164,13 @@ class XGuiItem_Inventory final : public XGuiItem
         XItem* pItem;
         std::string str;
     public:
-        explicit XGuiItem_Inventory(XItem* item) : pItem(item)
+        explicit XGuiItem_Inventory(XItem* item, bool worn = false) : pItem(item)
         {
             str = MSG_LIGHTGRAY + item->toString();
+
+            if (worn) {
+                str += MSG_BROWN " (worn)";
+            }
 
             // Pad to size_x characters using spaces. str may contain ANSI
             // escape codes that do not count toward the visible width.
@@ -182,8 +186,16 @@ class XGuiItem_Inventory final : public XGuiItem
                 item->weight * item->quantity);
             const size_t badge_visible = static_cast<size_t>(x_strlen(badge.c_str()));
 
-            // Insertion position in str
-            const size_t insert_pos = size_x - 5 - badge_visible;
+            // Insertion position in str. Measured back from str's actual
+            // byte length, not size_x: the padding appended above is
+            // plain spaces (1 byte per visible column) all the way to the
+            // end of str, so this naturally lands badge_visible + 5
+            // visible columns before the end regardless of how many color
+            // codes (MSG_LIGHTGRAY, plus MSG_BROWN if worn) precede it.
+            // Using size_x here instead used to get that wrong by however
+            // many color-code bytes preceded the padding - correct for an
+            // unworn item's one code, 2 bytes short for a worn item's two.
+            const size_t insert_pos = str.size() - 5 - badge_visible;
             str.replace(insert_pos, badge.size(), badge);
         }
 

@@ -932,7 +932,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, co
                     }
 
                     //output item
-                    list.AddItem(new XGuiItem_Inventory(item.get()), 0);
+                    list.AddItem(new XGuiItem_Inventory(item.get(), IsWorn(item.get())), 0);
                 }
             }
         }
@@ -1095,25 +1095,21 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             XItem* witem = xqsa[n]->Item();
 
             if (witem != nullptr) {
-                contain.insert(xqsa[n]->UnWear());
+                // Worn items stay resident in contain the whole time
+                // they're worn (see XBodyPart::Wear()) - UnWear() just
+                // clears the slot, nothing needs putting back.
+                xqsa[n]->UnWear();
             } else {
-                std::shared_ptr<XItem> picked;
-
-                if (xqsa[n]->GetProperIM() == IM_MISSILE) {
-                    picked = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK);
-                } else {
-                    picked = Inventory(&contain, xqsa[n]->GetProperIM(), IF_FIXED_MASK, 1);
-                }
+                // IF_NO_ERASE: picking something to wear must not remove
+                // it from contain - it's meant to stay visible there,
+                // worn or not.
+                std::shared_ptr<XItem> picked = Inventory(&contain, xqsa[n]->GetProperIM(), static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
 
                 if (picked) {
                     if (xqsa[n]->bp_uin == BP_HAND) {
                         xqsa[n]->Wear(picked.get());
-                    } else {
-                        if (xqsa[n]->bp_uin == picked->bp) {
-                            xqsa[n]->Wear(picked.get());
-                        } else {
-                            contain.insert(picked);
-                        }
+                    } else if (xqsa[n]->bp_uin == picked->bp) {
+                        xqsa[n]->Wear(picked.get());
                     }
                 }
             }
@@ -1202,6 +1198,14 @@ void XHero::DropItem()
     first_item = 0;
 
     while (contain.begin() != contain.end() && (item = Inventory(&contain))) {
+        if (IsWorn(item.get())) {
+            // Inventory() erased it from contain even though it's worn -
+            // put it back, it never actually left.
+            contain.insert(item);
+            msgwin.Add(fmt::format("You can't drop {} - it's currently equipped.", item->toString()));
+            continue;
+        }
+
         std::shared_ptr<XItem> drop_item = item;
 
         if (item->quantity > 1) {
@@ -1534,9 +1538,9 @@ int XHero::XShoot()
                         return 0;
                     }
 
-                    XItem * tmp = it.get();
-                    contain.erase(it);
-                    bp->Wear(tmp);
+                    // Stays in contain - it's simply also worn now (see
+                    // XBodyPart::Wear()).
+                    bp->Wear(it.get());
                     break;
                 }
 
@@ -2441,6 +2445,14 @@ void XHero::GiveItem()
     }
 
     if (auto item = Inventory(&contain)) {
+        if (IsWorn(item.get())) {
+            // Inventory() erased it from contain even though it's worn -
+            // put it back, it never actually left.
+            contain.insert(item);
+            msgwin.Add(fmt::format("You can't give away {} - it's currently equipped.", item->toString()));
+            return;
+        }
+
         if (item->im & IM_MONEY) {
             contain.insert(item);
             last_creature->xai->onGiveItem(this, item.get());

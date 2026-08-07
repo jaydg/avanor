@@ -1241,18 +1241,20 @@ int XLocation::GiveAward(lua_State * L)
     // it to target.
     std::shared_ptr<XItem> item_sp;
 
+    // Worn items are still resident in contain the whole time (see
+    // XBodyPart::Wear()), so unwear first if needed - UnWear() no longer
+    // needs a matching contain.insert(), it was never removed.
+    for (const auto& bp: owner->components) {
+        if (bp->Item() && bp->Item() == item) {
+            bp->UnWear();
+            break;
+        }
+    }
+
     const auto it = owner->contain.find(item);
     if (it != owner->contain.end()) {
         item_sp = *it;
         owner->contain.erase(it);
-    } else {
-        for (const auto& bp: owner->components) {
-            if (bp->Item() && bp->Item() == item) {
-                item_sp = bp->UnWear();
-                item = item_sp.get();
-                break;
-            }
-        }
     }
 
     if (item) {

@@ -383,7 +383,17 @@ XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
     XBodyPart * cloak = GetBodyPart(BP_CLOAK, 0);
 
     if (cloak->Item()) {
-        cloak->UnWear()->Invalidate();
+        auto old_cloak = cloak->UnWear();
+
+        // UnWear() doesn't remove it from contain anymore (worn items stay
+        // resident there - see XBodyPart::Wear()), so this must, or
+        // Invalidate() below leaves a zombie entry behind: still in
+        // contain, but invalid.
+        if (auto it = contain.find(old_cloak); it != contain.end()) {
+            contain.erase(it);
+        }
+
+        old_cloak->Invalidate();
     }
 
     cloak->Wear(new XForestBrotherCloak());
@@ -412,18 +422,18 @@ REGISTER_CLASS(XShopkeeper);
 
 XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
 {
+    // Wear() puts the item in the inventory itself now (see
+    // XBodyPart::Wear()), so the explicit CarryItem() calls that used to
+    // precede these are redundant (and would have double-counted weight).
     auto am = new XAmulet(XEnhance::SEEINVISIBLE);
-    CarryItem(am);
     XBodyPart * bp = GetBodyPart(BP_NECK);
     bp->Wear(am);
 
     auto rn = new XRing(XEnhance::ACIDRESIST);
-    CarryItem(rn);
     bp = GetBodyPart(BP_RING, 0);
     bp->Wear(rn);
 
     rn = new XRing(XEnhance::SLAYING);
-    CarryItem(rn);
     bp = GetBodyPart(BP_RING, 1);
     bp->Wear(rn);
 }

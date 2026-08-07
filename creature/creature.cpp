@@ -944,10 +944,12 @@ void XCreature::Die(XCreature * killer)
         lua_pop(XLocation::L, 1);
     }
 
-    // Drop inventory to the ground
+    // Unwear everything first, firing onUnWear() side effects - the items
+    // themselves stay in contain regardless (see XBodyPart::Wear()), so
+    // the single drop loop below picks up worn and carried items alike.
     for (auto& bp: components) {
         if (bp->Item()) {
-            bp->UnWear()->Drop(l, x, y);
+            bp->UnWear();
         }
     }
 
@@ -1360,7 +1362,17 @@ int XCreature::Shoot(int tx, int ty)
 
     if (--missile->quantity <= 0) {
         XBodyPart * xbp = GetBodyPart(BP_MISSILE);
-        xbp->UnWear()->Invalidate();
+        auto used_up = xbp->UnWear();
+
+        // UnWear() doesn't remove it from contain anymore (worn items stay
+        // resident there - see XBodyPart::Wear()), so this must, or
+        // Invalidate() below leaves a zombie entry behind: still in
+        // contain, but invalid.
+        if (auto it = contain.find(used_up); it != contain.end()) {
+            contain.erase(it);
+        }
+
+        used_up->Invalidate();
     }
 
     // fly away
@@ -1463,6 +1475,16 @@ bool XCreature::Wear(XItem* item) const {
     return false;
 }
 
+bool XCreature::IsWorn(const XItem* item) const {
+    for (const auto& bp: components) {
+        if (bp->Item() == item) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 XItem* XCreature::GetItem(BODY_PART bp, int count)
 {
     XBodyPart * xbp = GetBodyPart(bp, count);
@@ -1488,9 +1510,13 @@ void XCreature::FirstStep(int _x, int _y, XLocation * _l)
     // creature becomes shared_from_this()-safe (see XMap::SetMonster's
     // birth path). Starting gear worn/carried during this creature's own
     // constructor (XAnyCreature's equip loop) couldn't establish item/
-    // bodypart owner backlinks - or, for worn items, run their weight/
-    // onWear() side effects at all - since shared_from_this() wasn't
-    // usable yet. Finish that now that it's safe.
+    // bodypart owner backlinks - or, for worn items, run their onWear()
+    // side effect - since shared_from_this() wasn't usable yet.
+    // XBodyPart::Wear() already puts worn items in contain via
+    // owner_raw->ContainItem() regardless (that doesn't need
+    // shared_from_this()), so weight accounting is already correct; only
+    // the owner backlinks and the deferred onWear() callback are left to
+    // finish here.
     bool first_placement = weak_from_this().expired();
 
     l->map->SetMonster(_x, _y, this);
@@ -1499,7 +1525,6 @@ void XCreature::FirstStep(int _x, int _y, XLocation * _l)
         for (auto& bp: components) {
             if (XItem* worn = bp->Item()) {
                 bp->SetOwner(this);
-                CarryItem(worn);
                 worn->onWear(this);
             }
         }

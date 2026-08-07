@@ -142,17 +142,31 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     XBodyPart * ring1 = GetBodyPart(BP_RING, 0);
     XBodyPart * ring2 = GetBodyPart(BP_RING, 1);
 
+    // UnWear() doesn't remove the item from contain anymore (worn items
+    // stay resident there - see XBodyPart::Wear()), so a bare
+    // UnWear()->Invalidate() would leave a zombie entry behind: still in
+    // contain, but invalid. Erase it first.
+    auto unwear_and_invalidate = [this](XBodyPart* bp) {
+        auto old_item = bp->UnWear();
+
+        if (auto it = contain.find(old_item); it != contain.end()) {
+            contain.erase(it);
+        }
+
+        old_item->Invalidate();
+    };
+
     if (cr->generation_flags & GFS_SUPRESS_INVIS) {
         if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
-            neck->UnWear()->Invalidate();
+            unwear_and_invalidate(neck);
         }
 
         if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
-            ring1->UnWear()->Invalidate();
+            unwear_and_invalidate(ring1);
         }
 
         if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
-            ring2->UnWear()->Invalidate();
+            unwear_and_invalidate(ring2);
         }
     }
 
@@ -171,7 +185,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
             }
 
             if (ring1 && ring1->Item()) {
-                ring1->UnWear()->Invalidate();
+                unwear_and_invalidate(ring1);
                 ring1->Wear(new XRing(XEnhance::SEEINVISIBLE));
             }
 

@@ -316,6 +316,7 @@ class XCreature : public XBaseObject
         XBodyPart* GetBodyPart(BODY_PART bp, int count = 0);
         bool CanWear(const XItem* item);
         bool Wear(XItem* item) const; // if can Wear, Wear it.
+        bool IsWorn(const XItem* item) const;
 
         XModifier* md;
         XMagic* m;

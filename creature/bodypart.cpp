@@ -62,11 +62,12 @@ XBodyPart::XBodyPart(XCreature* o, const BODY_PART bp)
 {
     SetOwner(o);
     bp_uin = bp;
-    item = nullptr;
+    item.reset();
 }
 
 void XBodyPart::SetOwner(XCreature* o)
 {
+    owner_raw = o;
     owner = XCreature::ToWeakPtr(o);
 }
 
@@ -90,19 +91,28 @@ int XBodyPart::Wear(XItem* new_item)
     assert(new_item);
 
     if (Fit(new_item->bp)) {
-        if (item) {
+        if (!item.expired()) {
             return 1;
         }
 
-        item = XItem::Own(new_item);
+        // Put it in the inventory before wearing it: this establishes
+        // new_item's real shared_ptr ownership (via XCreature::contain,
+        // through ContainItem() -> XItem::Own()) regardless of whether the
+        // caller already had it in contain (picker-driven wear - a no-op
+        // re-insert) or is equipping brand-new starting gear that never
+        // touched contain at all (construction-time equip loops). Safe to
+        // call even mid-construction, before the creature is
+        // shared_from_this()-safe: owner_raw is a direct member access,
+        // not gated on that (unlike owner.lock() below).
+        owner_raw->ContainItem(new_item);
+        item = XItem::ToWeakPtr(new_item);
 
         // owner can still be unresolved here if this is a creature
         // equipping its own starting gear from within its own constructor -
         // it isn't shared_from_this()-safe yet at that point. XCreature::
-        // FirstStep() finishes this (CarryItem()/onWear()) once it's safe.
+        // FirstStep() finishes this (onWear()) once it's safe.
         if (auto o = owner.lock()) {
-            o->CarryItem(item.get());
-            item->onWear(o.get());
+            new_item->onWear(o.get());
         }
 
         return 0;
@@ -113,22 +123,25 @@ int XBodyPart::Wear(XItem* new_item)
 
 std::shared_ptr<XItem> XBodyPart::UnWear()
 {
-    assert(item);
+    // Worn items stay resident in contain the whole time they're worn (see
+    // Wear()), so this lock() should always succeed - contain, not this
+    // weak_ptr, is what's actually keeping the item alive.
+    auto locked = item.lock();
+    assert(locked);
 
     // owner can be unresolved here too - see the matching comment in Wear().
     if (auto o = owner.lock()) {
-        item->onUnWear(o.get());
+        locked->onUnWear(o.get());
     }
 
-    std::shared_ptr<XItem> tmp = item;
-    item = nullptr;
+    item.reset();
 
-    return tmp;
+    return locked;
 }
 
 XItem* XBodyPart::Item() const
 {
-    return item.get();
+    return item.lock().get();
 }
 
 int XBodyPart::GetPartSize() const

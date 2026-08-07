@@ -196,6 +196,15 @@ int XSkill::UseSteal(XCreature * user)
             }
 
             assert(cr);
+
+            if (!flag && cr->IsWorn(object)) {
+                if (user->isVisible()) {
+                    msgwin.Add("You can't steal that - it's currently equipped.");
+                }
+
+                return 1;
+            }
+
             double perception = 1 + cr->stats->Get(S_PER);
             double stealing = 1 + user->sk->GetLevel(XSkill::Skill::STEALING);
             int p = (int)((stealing * 300) / perception);

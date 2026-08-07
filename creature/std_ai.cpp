@@ -583,11 +583,13 @@ int XStandardAI::Wear() const
         }
 
         if (old_item) {
-            ai_owner->contain.insert(xbp->UnWear());
+            // Worn items stay resident in contain the whole time they're
+            // worn (see XBodyPart::Wear()) - nothing to put back.
+            xbp->UnWear();
         }
 
+        // item stays in contain - it's simply also worn now.
         xbp->Wear(item.get());
-        ai_owner->contain.erase(item);
 
         if (ai_owner->isVisible()) {
             std::string str;
