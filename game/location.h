@@ -192,7 +192,7 @@ class XLocation : public XObject
         // a mechanical port.
         void FixupWaysList();
 
-        // MAP::pMonster/item_list round-trip a creature's/item's own
+        // XMapTile::pMonster/item_list round-trip a creature's/item's own
         // state correctly (XCreature::serialize()/XItem's own serialize()
         // handle that), but position (x/y, plus a creature's nx/ny) and
         // the owning-location back-reference (`l`, inherited from
@@ -203,7 +203,7 @@ class XLocation : public XObject
         // Not just cosmetic: XItem::Invalidate() uses `l`/x/y to find and
         // erase itself from its ground cell's item_list - without this,
         // that lookup silently fails (l is null) and the item never
-        // leaves the list, which hangs MAP::~MAP()'s
+        // leaves the list, which hangs XMapTile::~XMapTile()'s
         // `while (!item_list.empty())` loop forever the first time a
         // loaded location is ever torn down.
         void FixupMapObjectPositions();
@@ -219,7 +219,7 @@ class XLocation : public XObject
         void FixupShops();
 
         // `location` on the ways/places array, along with every
-        // MAP::place pointer, is deliberately not persisted directly -
+        // XMapTile::place pointer, is deliberately not persisted directly -
         // re-running XAnyPlace::Setup() for every loaded place (after
         // `places` and `map` are both loaded) re-derives both, the same
         // idiom as XMapObject::l/SetLocation().

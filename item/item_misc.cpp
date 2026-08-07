@@ -78,7 +78,7 @@ std::string XChest::toString()
 
 void XChest::Invalidate()
 {
-    // Unlike MAP's ground-level item_list, XItem::Invalidate() has no
+    // Unlike XMapTile's ground-level item_list, XItem::Invalidate() has no
     // idea this set exists - it only knows how to remove itself from
     // l->map's per-cell item_list, not an arbitrary container - so
     // there's no self-removal to race against here. Same idiom as

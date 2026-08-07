@@ -77,7 +77,7 @@ class XAnyPlace : public XObject
         XLocation* location{};
 
         // `location` is deliberately not persisted - it, along with every
-        // MAP::place pointer within `area`, is re-established structurally
+        // XMapTile::place pointer within `area`, is re-established structurally
         // by re-running Setup() (the same call the real constructors make)
         // once the owning XLocation has finished loading both `places` and
         // its map grid, mirroring the XMapObject::l/SetLocation() idiom.

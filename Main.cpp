@@ -396,7 +396,7 @@ static bool TestRealLocation()
                     restored_places.insert(p);
 
                     // Setup() must have re-derived `location` (and, per
-                    // cell, MAP::place) after load, exactly like the
+                    // cell, XMapTile::place) after load, exactly like the
                     // real constructors do - not persisted directly.
                     pass = pass && (p->location == restored.get());
                 }

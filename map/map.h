@@ -124,9 +124,9 @@ struct compare {
 
 typedef std::set<std::shared_ptr<XItem>, compare> XItemList;
 
-struct MAP {
-    MAP();
-    ~MAP();
+struct XMapTile {
+    XMapTile();
+    ~XMapTile();
 
     XTileType::Type n;
     std::shared_ptr<XCreature> pMonster; // if null then no monster here
@@ -182,7 +182,7 @@ class XMap
         void ForceRecenter(int x, int y);
         int hgt, len;
         int wx, wy;
-        MAP* map;
+        XMapTile* map;
         XMap();
         XMap(int l, int h);
         ~XMap();
@@ -233,7 +233,7 @@ class XMap
             ar(len, hgt, wx, wy);
 
             if constexpr (Archive::is_loading::value) {
-                map = new MAP[len * hgt];
+                map = new XMapTile[len * hgt];
             }
 
             for (int i = 0; i < len * hgt; i++) {

@@ -58,7 +58,7 @@ XTileType std_tile_data[] = {
     {'0', xWHITE, "teleport circle", MO_NORMAL, VI_NORMAL},
 };
 
-MAP::MAP()
+XMapTile::XMapTile()
 {
     n = XTileType::GREEN_GRAS;
     pMonster = nullptr;
@@ -70,7 +70,7 @@ MAP::MAP()
     room_id = 0;
 };
 
-MAP::~MAP()
+XMapTile::~XMapTile()
 {
     // XItem::Invalidate() removes the item from this very item_list, so
     // iterating it directly while invalidating would erase out from under
@@ -99,12 +99,12 @@ MAP::~MAP()
     }
 }
 
-void MAP::SaveCrossRefs(cereal::JSONOutputArchive& ar) const
+void XMapTile::SaveCrossRefs(cereal::JSONOutputArchive& ar) const
 {
     ar(pMonster, item_list, pSpecialObject);
 }
 
-void MAP::LoadCrossRefs(cereal::JSONInputArchive& ar)
+void XMapTile::LoadCrossRefs(cereal::JSONInputArchive& ar)
 {
     ar(pMonster, item_list, pSpecialObject);
 }
@@ -120,7 +120,7 @@ XMap::XMap()
 
 XMap::XMap(const int l, const int h)
 {
-    map = new MAP[l * h];
+    map = new XMapTile[l * h];
 
     hgt = h;
     len = l;
@@ -256,7 +256,7 @@ int XMap::GetMovability(const int x, const int y) const
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    const MAP& _map = map[x + y * len];
+    const XMapTile& _map = map[x + y * len];
 
     if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
         dynamic_cast<XDoor *>(_map.pSpecialObject.get())->isOpened == 0) {
@@ -271,7 +271,7 @@ int XMap::XGetMovability(const int x, const int y) const
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    const MAP* m = &map[x + y * len];
+    const XMapTile* m = &map[x + y * len];
 
     if (m->pMonster) {
         return 2;
@@ -374,7 +374,7 @@ void XMap::Put(XCreature * cr) const
 {
     for (int i = 0; i < SCR_HGT && wy + i < hgt; i++)
         for (int j = 0; j < SCR_LEN && wx + j < len; j++) {
-            MAP * tmap = &map[(i + wy) * len + j + wx];
+            XMapTile * tmap = &map[(i + wy) * len + j + wx];
 
             if (tmap->visible) {
                 if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !dynamic_cast<XTrap *>(tmap->pSpecialObject.get())->isVisible(nullptr))) {
@@ -489,7 +489,7 @@ void XMap::Dump(std::ofstream &file) const
 {
     for (int i = 0; i < hgt; i++) {
         for (int j = 0; j < len; j++) {
-            MAP* tmap = &map[i * len + j];
+            XMapTile* tmap = &map[i * len + j];
             int n = tmap->n;
             char vch = std_tile_data[n].view;
 
