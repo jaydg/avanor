@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XHERB_H
 #define XHERB_H
 
+#include <cereal/archives/json.hpp>
+
 #include "item/xanyfood.h"
 #include "item/xpotion.h"
 
@@ -41,6 +43,10 @@ struct _HERBS {
     static void Create();
     static void Store(XFile * f);
     static void Restore(XFile * f);
+
+    // herbs[] is private to xherb.cpp.
+    static void SaveTable(cereal::JSONOutputArchive& ar);
+    static void LoadTable(cereal::JSONInputArchive& ar);
 };
 
 class XHerb : public XAnyFood

@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XAMULET_H
 #define XAMULET_H
 
+#include <cereal/archives/json.hpp>
+
 #include "item/xenhance.h"
 
 class XAmulet : public XEnhance
@@ -41,6 +43,10 @@ class XAmulet : public XEnhance
         void Identify(int level) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        // aidentify_db is private to xamulet.cpp.
+        static void SaveTable(cereal::JSONOutputArchive& ar);
+        static void LoadTable(cereal::JSONInputArchive& ar);
 
         template<class Archive>
         void serialize(Archive& ar)

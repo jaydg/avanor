@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
+#include <cereal/archives/json.hpp>
 #include <cereal/types/base_class.hpp>
 
 #include "item/item.h"
@@ -130,6 +131,16 @@ struct POTION_REC {
     static void RunOnce();
     static int potion_total_value;
     static POTION_REC* GetRec(POTION_NAME pn);
+
+    // name/effect/rarity/alchemy_power/value are compile-time constants
+    // (see potion_descr[]'s static initializer) - only identify/
+    // force_color are per-game-session mutable state, same fields the
+    // legacy Store/Restore already persisted.
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(identify, force_color);
+    }
 };
 
 class XPotion : public XItem
@@ -158,6 +169,15 @@ class XPotion : public XItem
         void Restore(XFile * f) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        // Non-template, concrete-archive-typed (like XCreature::Save/
+        // LoadModifier): potion_descr[] is private to xpotion.cpp, so
+        // these are declared here but defined there, only ever called
+        // from the top-level save/restore code (never nested inside
+        // another type's own template serialize(), so no per-TU
+        // visibility concern).
+        static void SaveTable(cereal::JSONOutputArchive& ar);
+        static void LoadTable(cereal::JSONInputArchive& ar);
 
         // pdescr is a non-owning pointer into a static table
         // (potion_descr[], private to xpotion.cpp), not owned/serialized

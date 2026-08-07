@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSCROLL_H
 #define XSCROLL_H
 
+#include <cereal/archives/json.hpp>
 #include <cereal/types/base_class.hpp>
 
 #include "item/item.h"
@@ -74,6 +75,12 @@ class XScroll : public XItem
         void Restore(XFile * f) override;
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        // Non-template, concrete-archive-typed (like XPotion::Save/
+        // LoadTable): SCROLL_REC/scroll_descr[] are private to
+        // xscroll.cpp.
+        static void SaveTable(cereal::JSONOutputArchive& ar);
+        static void LoadTable(cereal::JSONInputArchive& ar);
 
         template<class Archive>
         void serialize(Archive& ar)

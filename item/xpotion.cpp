@@ -522,6 +522,20 @@ void XPotion::RestoreTable(XFile * f)
     }
 }
 
+void XPotion::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    for (int i = 0; i < PN_RANDOM; i++) {
+        ar(potion_descr[i]);
+    }
+}
+
+void XPotion::LoadTable(cereal::JSONInputArchive& ar)
+{
+    for (int i = 0; i < PN_RANDOM; i++) {
+        ar(potion_descr[i]);
+    }
+}
+
 XAlchemy alchemy;
 
 XAlchemy::XAlchemy()

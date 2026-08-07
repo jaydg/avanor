@@ -37,6 +37,20 @@ void XAmulet::RestoreTable(XFile * f)
     f->Read(aidentify_db, sizeof(int), 20);
 }
 
+void XAmulet::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    for (int i = 0; i < 20; i++) {
+        ar(aidentify_db[i]);
+    }
+}
+
+void XAmulet::LoadTable(cereal::JSONInputArchive& ar)
+{
+    for (int i = 0; i < 20; i++) {
+        ar(aidentify_db[i]);
+    }
+}
+
 XAmulet::XAmulet(Type enh) : XEnhance(enh)
 {
     im = IM_NECK;

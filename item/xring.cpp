@@ -37,6 +37,20 @@ void XRing::RestoreTable(XFile * f)
     f->Read(ridentify_db, sizeof(int), 20);
 }
 
+void XRing::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    for (int i = 0; i < 20; i++) {
+        ar(ridentify_db[i]);
+    }
+}
+
+void XRing::LoadTable(cereal::JSONInputArchive& ar)
+{
+    for (int i = 0; i < 20; i++) {
+        ar(ridentify_db[i]);
+    }
+}
+
 XRing::XRing(Type enh) : XEnhance(enh)
 {
     im = IM_RING;

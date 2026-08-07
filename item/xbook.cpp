@@ -122,6 +122,20 @@ void XBook::RestoreTable(XFile * f)
     }
 }
 
+void XBook::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    for (int i = 0; i < ARRAY_SIZE(book_descr); i++) {
+        ar(book_descr[i]);
+    }
+}
+
+void XBook::LoadTable(cereal::JSONInputArchive& ar)
+{
+    for (int i = 0; i < ARRAY_SIZE(book_descr); i++) {
+        ar(book_descr[i]);
+    }
+}
+
 XBook::XBook(BOOK_NAME bn)
 {
     descr = BOOK_REC::GetBook(bn);

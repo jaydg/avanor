@@ -78,6 +78,17 @@ struct SCROLL_REC {
     void Restore(XFile * f);
     static int total_value;
     static int GetRandomDescription(SCROLL_NAME scrn);
+
+    // real_name/value/rarity are compile-time constants; effect/
+    // scroll_name/identify/name are per-game-session mutable state (the
+    // scroll<->effect scrambling, its randomly-generated flavor name,
+    // and identification progress), same fields the legacy Store/
+    // Restore already persisted.
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(effect, scroll_name, identify, name);
+    }
 };
 
 int SCROLL_REC::total_value = 0;
@@ -302,5 +313,19 @@ void XScroll::RestoreTable(XFile * f)
 {
     for (int i = 0; i < SCROLL_RANDOM; i++) {
         scroll_descr[i].Restore(f);
+    }
+}
+
+void XScroll::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    for (int i = 0; i < SCROLL_RANDOM; i++) {
+        ar(scroll_descr[i]);
+    }
+}
+
+void XScroll::LoadTable(cereal::JSONInputArchive& ar)
+{
+    for (int i = 0; i < SCROLL_RANDOM; i++) {
+        ar(scroll_descr[i]);
     }
 }

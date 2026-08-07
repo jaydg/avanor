@@ -109,6 +109,20 @@ void _HERBS::Restore(XFile * f)
     }
 }
 
+void _HERBS::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    for (int i = 0; i < HERBS_COUNT; i++) {
+        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
+    }
+}
+
+void _HERBS::LoadTable(cereal::JSONInputArchive& ar)
+{
+    for (int i = 0; i < HERBS_COUNT; i++) {
+        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
+    }
+}
+
 REGISTER_CLASS(XHerb);
 CEREAL_REGISTER_TYPE(XHerb);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XHerb);

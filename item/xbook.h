@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XBOOK_H
 #define XBOOK_H
 
+#include <cereal/archives/json.hpp>
 #include <cereal/types/base_class.hpp>
 
 #include "item/item.h"
@@ -59,6 +60,16 @@ struct BOOK_REC {
 
     static int current_descr;
     static int total_value;
+
+    // rarity is a compile-time constant; identify/name_index/
+    // spell_name/book_name are per-game-session mutable state (the
+    // book<->spell scrambling and identification progress), same fields
+    // the legacy Store/Restore already persisted.
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(identify, name_index, spell_name, book_name);
+    }
 };
 
 class XBook: public XItem
@@ -85,6 +96,12 @@ class XBook: public XItem
         virtual int onRead(XCreature * reader);
         static void StoreTable(XFile * f);
         static void RestoreTable(XFile * f);
+
+        // Non-template, concrete-archive-typed (like XPotion::Save/
+        // LoadTable): book_descr[] is private to xbook.cpp.
+        static void SaveTable(cereal::JSONOutputArchive& ar);
+        static void LoadTable(cereal::JSONInputArchive& ar);
+
         void Store(XFile * f) override;
         void Restore(XFile * f) override;
 
