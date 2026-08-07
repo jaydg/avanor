@@ -955,6 +955,11 @@ void XCreature::Die(XCreature * killer)
         item->Drop(l, x, y);
     }
 
+    // Drop() moves each item onto the ground but leaves it in contain -
+    // without clearing it here, Invalidate() below would walk contain again
+    // and delete every item just dropped, instead of leaving it as loot.
+    contain.clear();
+
     LastStep();
 
     if (killer && killer != this && !dynamic_cast<XFakeCreature*>(killer)) {
