@@ -29,6 +29,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
 
+#include <sol/sol.hpp>
+
 #include "creature/cr_defs.h"
 #include "helpers/point.h"
 #include "map/map.h"
@@ -135,13 +137,16 @@ enum PALETTE {
 struct PALETTE_MAP {
     char this_view;
     XTileType::Type real_view;
-    char lua_str[512];
+
+    // Set instead of real_view when this translation resolves
+    // to a spawn callback rather than a plain tile type.
+    sol::protected_function callback;
 };
 
 struct LOCATION_PATTERN {
-    char* pattern;
-    int w;
-    int h;
+    std::string pattern;
+    int w = 0;
+    int h = 0;
 };
 
 #define MAX_PLACES 8
@@ -294,26 +299,32 @@ class XLocation : public XObject
         static int pat_offs_x;
         static int pat_offs_y;
 
-        static int CreateLocation(lua_State * L);
-        static int Settle(lua_State * L);
+        static void CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type);
+        static void Settle(int crc, int crl);
 
-        static int Creature(lua_State * L);
-        static int Guardian(lua_State * L);
+        static void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+        static void* Guardian(const std::string& crn, int gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
 
-        static int Way(lua_State * L);
-        static int CreateObject(lua_State * L);
-        static int DropItem(lua_State * L);
-        static int SetPattern(lua_State * L);
-        static int AddTranslation(lua_State * L);
-        static int DrawPattern(lua_State * L);
-        static int BuildShop(lua_State * L);
-        static int Furniture(lua_State * L);
-        static int OuterObject(lua_State * L);
-        static int Altar(lua_State * L);
-        static int Treasure(lua_State * L);
-        static int Chest(lua_State * L);
-        static int Trap(lua_State * L);
-        static int EventPlace(lua_State * L);
+        static void Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y);
+        static void* CreateObjectByName(const std::string& name);
+        static void* CreateObjectByMask(int flag, int min_val, int max_val);
+        static void DropItem(void* item, sol::optional<int> x, sol::optional<int> y);
+        static void DropItemAt(void* item, void* object);
+        static void SetPattern(int w, int h, const std::string& txt);
+        static void AddTranslation(const std::string& view, sol::object target);
+        static void DrawPattern(int x, int y);
+        static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
+        static void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr);
+        static void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
+        static void* OuterObjectAt(int x, int y, int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
+        static void Altar(int x, int y, int deity);
+        static void Treasure(int x, int y, int val);
+        static void Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval);
+        static void Trap(int x, int y);
+        static void EventPlace(const std::string& event);
+        static void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
+        static void CreateMushroom(void* location);
+
         static int InflictDamage(lua_State * L);
         static int ChangeStats(lua_State * L);
         static int GetStats(lua_State * L);
@@ -369,7 +380,6 @@ class XLocation : public XObject
         static int BinaryAND(lua_State * L);
 
         static int ExecuteAIScript(lua_State * L);
-        static int CreateMushroom(lua_State * L);
 
     protected:
         std::string brief_name; // max. 10 characters

@@ -45,12 +45,6 @@ XTileType::Type best_fit_terrain_table[] = {
     XTileType::GOLDEN_FLOOR,
 };
 
-//Location Script Support
-extern "C"
-{
-#include "lauxlib.h"
-}
-
 void XLocation::PutPalette(int x, int y)
 {
     std::vector<XPoint> points_to_resolve;
@@ -59,9 +53,9 @@ void XLocation::PutPalette(int x, int y)
         for (int j = 0; j < current_pattern.w; j++) {
             bool found_it = false;
 
-            for (auto [this_view, real_view, lua_str]: pattern_translation) {
+            for (auto& [this_view, real_view, callback]: pattern_translation) {
                 if (this_view == current_pattern.pattern[i * current_pattern.w + j]) {
-                    if (lua_str[0]) {
+                    if (callback.valid()) {
                         points_to_resolve.emplace_back(x + j, y + i);
                     } else {
                         map->SetXY(x + j, y + i, real_view);
@@ -147,11 +141,9 @@ void XLocation::PutPalette(int x, int y)
 
         map->SetXY(pt.x, pt.y, best_fit_terrain_table[best_fit_index]);
 
-        for (auto tit: pattern_translation) {
-            if (tit.this_view == current_pattern.pattern[(pt.y - y) * current_pattern.w + pt.x - x]) {
-                char buf[1024];
-                sprintf(buf, "local x, y = %d, %d\n %s", pt.x, pt.y, tit.lua_str);
-                luaL_dostring(L, buf);
+        for (auto& tit: pattern_translation) {
+            if (tit.this_view == current_pattern.pattern[(pt.y - y) * current_pattern.w + pt.x - x] && tit.callback.valid()) {
+                tit.callback(pt.x, pt.y);
             }
         }
     }
