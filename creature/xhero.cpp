@@ -421,11 +421,6 @@ void XHero::NewMove()
                     moved = OrderCompanion();
                     break;
 
-                case KEY_CTRL_D:
-                    moved = 0;
-                    ExecuteScript();
-                    break;
-
                 default :
                     moved = 0;
                     break;
@@ -2717,21 +2712,4 @@ int XHero::OrderCompanion()
 
     return 0;
 
-}
-
-//Location Script Support
-extern "C"
-{
-#include "lauxlib.h"
-#include "lualib.h"
-}
-
-int XHero::ExecuteScript()
-{
-    msgwin.Add("===DEBUG CMD===: ");
-    vRefresh();
-    char buf[255];
-    vGetS(buf, 250);
-    luaL_dostring(XLocation::L, buf);
-    return 0;
 }

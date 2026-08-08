@@ -163,7 +163,6 @@ class XHero final : public XCreature
 
         void doSacrifice();
         int OrderCompanion();
-        static int ExecuteScript();
 
         int race{};
         int profession{};
