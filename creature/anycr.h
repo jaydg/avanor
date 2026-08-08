@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define ANY_CR_H
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <cereal/types/base_class.hpp>
@@ -31,14 +32,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/resist.h"
 
 struct CREATURE_SET_REC {
-    CREATURE_SET_REC()
-    {
-        count = 0;
-    }
-
-    // up to 256 creature of one type
-    CREATURE_NAME cn[256]{};
-    int count;
+    std::vector<CREATURE_NAME> cn;
 };
 
 
@@ -100,8 +94,18 @@ struct _CREATURE {
 class XCreatureStorage
 {
         static CREATURE_NAME last_name;
+
+        // The 8 unique NPCs (Bandit, Shopkeeper, Gefeon, Roderick,
+        // Beelzevile, HighPriest, Rotmoth, Giana) each have a hand-written
+        // C++ subclass with real custom behavior (creature/unique.h/.cpp)
+        // - this is purely an implementation-dispatch table for those,
+        // replacing the old switch(cn) over a small numeric range
+        // (cn >= CN_UNIQUE). Every other monster, no matter what its
+        // XCreature::unique flag says, gets the generic XAnyCreature.
+        static const std::unordered_map<CREATURE_NAME, XCreature*(*)(_CREATURE*)> unique_creators;
+
     public:
-        static _CREATURE creature_storage[CN_EOF];
+        static std::unordered_map<CREATURE_NAME, _CREATURE> creature_storage;
         static CREATURE_SET_REC creature_set[32];
 
         static void View(CREATURE_NAME cn, const char* name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class, CREATURE_NAME cn_instance = CN_NONE);

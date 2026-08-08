@@ -326,7 +326,7 @@ int XPotion::onDrink(XCreature * cr)
                     // Inform the hero of their fate.
                     msgwin.Add("You feel your life draining away very rapidly!");
                 } else if (cr->isVisible()) {
-                    if (cr->creature_name > CN_UNIQUE) {
+                    if (cr->unique) {
                         // Uniques are too smart to be fooled by such petty implements...
                         msgwin.Add(cr->name);
                         msgwin.Add("seems to change");

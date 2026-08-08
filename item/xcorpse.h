@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <vector>
 
+#include <cereal/types/string.hpp>
+
 #include "item/xanyfood.h"
 
 enum CORPSE_CONDITION {

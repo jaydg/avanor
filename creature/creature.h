@@ -215,6 +215,15 @@ class XCreature : public XBaseObject
         const char* creature_description;
         CREATURE_NAME creature_name; // allow to store less info into save file
         const _CREATURE* super_info; // full information about Creature Creation struct...
+
+        // Is this one of the small set of unique NPCs with a hand-written
+        // C++ subclass (see XCreatureStorage::unique_creators)? Not
+        // persisted - derived from creature_name, along with
+        // melee_attack/creature_description/super_info above, by
+        // XCreatureStorage::RestoreCreatureInfo() on both the fresh-
+        // creation and the Cereal-load path. false for the hero and
+        // every ordinary monster.
+        bool unique = false;
         char* event_handler;
         void SetEventHandler(const char* handler);
 

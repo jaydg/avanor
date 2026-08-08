@@ -32,8 +32,19 @@ REGISTER_CLASS(XAnyCreature);
 CEREAL_REGISTER_TYPE(XAnyCreature);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XAnyCreature);
 
-_CREATURE XCreatureStorage::creature_storage[CN_EOF];
+std::unordered_map<CREATURE_NAME, _CREATURE> XCreatureStorage::creature_storage;
 CREATURE_SET_REC XCreatureStorage::creature_set[32];
+
+const std::unordered_map<CREATURE_NAME, XCreature*(*)(_CREATURE*)> XCreatureStorage::unique_creators = {
+    {CN_BANDIT,     [](_CREATURE* cr) -> XCreature* { return new XBandit(cr); }},
+    {CN_SHOPKEEPER, [](_CREATURE* cr) -> XCreature* { return new XShopkeeper(cr); }},
+    {CN_GEFEON,     [](_CREATURE* cr) -> XCreature* { return new XGefeon(cr); }},
+    {CN_RODERIK,    [](_CREATURE* cr) -> XCreature* { return new XRoderick(cr); }},
+    {CN_BEELZEVILE, [](_CREATURE* cr) -> XCreature* { return new XBeelzvile(cr); }},
+    {CN_HIGHPRIEST, [](_CREATURE* cr) -> XCreature* { return new XHighPriest(cr); }},
+    {CN_ROTMOTH,    [](_CREATURE* cr) -> XCreature* { return new XRotmoth(cr); }},
+    {CN_GIANA,      [](_CREATURE* cr) -> XCreature* { return new XGiana(cr); }},
+};
 
 XAnyCreature::XAnyCreature(_CREATURE * cr)
 {
@@ -387,65 +398,25 @@ void XCreatureStorage::CorpseEffects(const CORPSE_EFFECT_TYPE cet, const int val
 
 _CREATURE* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 {
-    return &creature_storage[cn];
+    return &creature_storage.at(cn);
 }
 
 void XCreatureStorage::CreateQuickBase()
 {
-    for (int i = 0; i < CN_EOF; i++) {
-        if (!creature_storage[i].name.empty()) {
-            const CREATURE_CLASS crc = creature_storage[i].cr_class;
-            creature_set[vGetBitNumber(crc)].cn[creature_set[vGetBitNumber(crc)].count] = (CREATURE_NAME)i;
-            creature_set[vGetBitNumber(crc)].count++;
-        }
+    for (auto& [cn, cr] : creature_storage) {
+        creature_set[vGetBitNumber(cr.cr_class)].cn.push_back(cn);
     }
 }
 
 XCreature* XCreatureStorage::Create(const CREATURE_NAME cn)
 {
-    _CREATURE * cr = &creature_storage[cn];
+    _CREATURE * cr = &creature_storage.at(cn);
     XCreature * tcr = nullptr;
 
-    if (cn < CN_UNIQUE) {
-        tcr = new XAnyCreature(cr);
+    if (auto it = unique_creators.find(cn); it != unique_creators.end()) {
+        tcr = it->second(cr);
     } else {
-        switch (cn) {
-            case CN_BANDIT:
-                tcr = new XBandit(cr);
-                break;
-
-            case CN_SHOPKEEPER:
-                tcr = new XShopkeeper(cr);
-                break;
-
-            case CN_GEFEON:
-                tcr = new XGefeon(cr);
-                break;
-
-            case CN_RODERIK:
-                tcr = new XRoderick(cr);
-                break;
-
-            case CN_BEELZEVILE:
-                tcr = new XBeelzvile(cr);
-                break;
-
-            case CN_HIGHPRIEST:
-                tcr = new XHighPriest(cr);
-                break;
-
-            case CN_ROTMOTH:
-                tcr = new XRotmoth(cr);
-                break;
-
-            case CN_GIANA:
-                tcr = new XGiana(cr);
-                break;
-
-            default:
-                tcr = new XAnyCreature(cr);
-                break;
-        }
+        tcr = new XAnyCreature(cr);
     }
 
     tcr->creature_name = cn;
@@ -459,7 +430,8 @@ XCreature* XCreatureStorage::CreateRnd(const CREATURE_CLASS cc, const int lvl)
     int count = 100;
 
     while (count > 0) {
-        if (long r = vRand(creature_set[set].count); creature_storage[creature_set[set].cn[r]].crl <= lvl) {
+        if (long r = vRand(static_cast<int>(creature_set[set].cn.size()));
+            creature_storage.at(creature_set[set].cn[r]).crl <= lvl) {
             return Create(creature_set[set].cn[r]);
         }
 
@@ -474,4 +446,12 @@ void XCreatureStorage::RestoreCreatureInfo(XCreature* cr)
     cr->melee_attack = &creature_storage[cr->creature_name].melee_attack;
     cr->creature_description = creature_storage[cr->creature_name].creature_description.c_str();
     cr->super_info = &creature_storage[cr->creature_name];
+
+    // Derived, not persisted - same reasoning as the three fields above:
+    // whether a creature is one of the hand-written unique NPCs is fully
+    // determined by its (persisted) creature_name, so it's re-derived
+    // here rather than stored, on both the fresh-creation path (from
+    // Create()) and the Cereal-load path (from XCreature::
+    // FixupCreatureInfo(), which calls this too).
+    cr->unique = unique_creators.find(cr->creature_name) != unique_creators.end();
 }

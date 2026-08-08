@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CR_DEFS_H
 #define CR_DEFS_H
 
+#include <string>
+
 enum CREATURE_CLASS {
     CR_NONE     = 0x00000000,
     CR_RAT      = 0x00000001,
@@ -42,30 +44,43 @@ enum CREATURE_CLASS {
     CR_ALL_IMPL = CR_RAT | CR_FELINE | CR_CANINE | CR_REPTILE | CR_KOBOLD | CR_INSECT | CR_GOBLIN | CR_UNDEAD,
 };
 
-enum CREATURE_NAME {
-    CN_NONE       = 0,
-    CN_RAT        = 1,
-    CN_LARGE_RAT  = 2,
+// A monster's identity, everywhere: XCreatureStorage::creature_storage's
+// key, XCreature::creature_name/XCorpse::cn (both persisted via Cereal),
+// and the id a Lua script uses to define (Monster.new(id)...) or spawn
+// (NewCreature(id, ...)) it. Was a fixed CN_EOF=350-slot enum, hand-
+// mirrored (108 lines, flagged in a comment as fragile) in world/ids.lua
+// to keep the two in sync; a plain string removes that mirror entirely -
+// scripts just use the same literal id C++ does, or one of their own for
+// the ~340 monsters C++ never needs to name directly.
+//
+// Only monsters C++ itself references by name - special-cased combat/
+// drop logic, or one of the hand-written unique-NPC classes dispatched
+// in XCreatureStorage::Create() - get a constant here. constexpr
+// const char*, not a CREATURE_NAME/std::string: these are used to
+// initialize other namespace-scope statics (XCreatureStorage's unique-
+// NPC registry), and a std::string constant would risk the classic
+// static-initialization-order-fiasco across translation units: a
+// dynamically-initialized const char* has no such ordering, since its
+// value doesn't depend on any runtime construction.
+using CREATURE_NAME = std::string;
 
-    CN_BAT        = 10,
-    CN_HUGE_BAT   = 11,
+inline constexpr const char* CN_NONE = "";
 
-    CN_DOG        = 30,
+inline constexpr const char* CN_RAT = "rat";
+inline constexpr const char* CN_LARGE_RAT = "large_rat";
+inline constexpr const char* CN_BAT = "bat";
+inline constexpr const char* CN_HUGE_BAT = "huge_bat";
+inline constexpr const char* CN_DOG = "dog";
+inline constexpr const char* CN_SKELETON = "skeleton";
 
-    CN_SKELETON   = 180,
-
-    CN_UNIQUE     = 300,
-    CN_BANDIT     = 302,
-    CN_SHOPKEEPER = 303,
-    CN_GEFEON     = 305,
-    CN_RODERIK    = 307,
-    CN_BEELZEVILE = 312,
-    CN_HIGHPRIEST = 316,
-    CN_ROTMOTH    = 317,
-    CN_GIANA      = 318,
-
-    CN_EOF        = 350
-};
+inline constexpr const char* CN_BANDIT = "bandit";
+inline constexpr const char* CN_SHOPKEEPER = "shopkeeper";
+inline constexpr const char* CN_GEFEON = "gefeon";
+inline constexpr const char* CN_RODERIK = "roderick";
+inline constexpr const char* CN_BEELZEVILE = "beelzevile";
+inline constexpr const char* CN_HIGHPRIEST = "highpriest";
+inline constexpr const char* CN_ROTMOTH = "rotmoth";
+inline constexpr const char* CN_GIANA = "giana";
 
 enum CREATURE_LEVEL	{
     CRL_VERY_LOW  = 0x0001,
