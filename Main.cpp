@@ -101,11 +101,9 @@ static bool TestItemList()
     original_list.insert(XItem::Own(new XMoney(100)));
     original_list.insert(XItem::Own(new XMoney(250)));
 
-    // The custom comparator orders XItemList purely by `im` (item mask),
-    // so two items sharing an `im` are equivalent as far as std::set is
-    // concerned - this is pre-existing container behaviour, not anything
-    // to do with Cereal. Round-trip whatever the set actually ends up
-    // holding rather than assuming a particular size.
+    // `im` (item mask) is the primary sort key, but compare() tiebreaks
+    // by pointer identity - both XMoney entries share IM_MONEY, so this
+    // also confirms they don't collide into a single set element.
     const size_t original_size = original_list.size();
 
     std::ostringstream oss;
@@ -121,7 +119,7 @@ static bool TestItemList()
         archive(restored_list);
     }
 
-    bool pass = restored_list.size() == original_size;
+    bool pass = original_size == 2 && restored_list.size() == original_size;
 
     // Heterogeneous lookup via the transparent comparator (find by raw
     // XItem*, not shared_ptr<XItem>) is used throughout the codebase -
