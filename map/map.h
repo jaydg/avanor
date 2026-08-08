@@ -29,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/set.hpp>
 
 #include "helpers/rect.h"
+#include "item/itemlist.h"
 #include "map/xanyplace.h"
 
 #define MAP_MINX 10
@@ -108,21 +109,6 @@ extern XTileType std_tile_data[];
 /* Forward declarations */
 class XMapObject;
 class XItem;
-
-struct compare {
-    // Transparent so contain.erase(raw_ptr)/.find(raw_ptr) - pervasive
-    // throughout the codebase - keep working by heterogeneous lookup once
-    // XItemList holds shared_ptr<XItem> instead of raw XItem*, without
-    // requiring every one of those call sites to be rewritten.
-    using is_transparent = void;
-
-    bool operator()(const XItem* lhs, const XItem* rhs) const;
-    bool operator()(const std::shared_ptr<XItem>& lhs, const std::shared_ptr<XItem>& rhs) const;
-    bool operator()(const std::shared_ptr<XItem>& lhs, const XItem* rhs) const;
-    bool operator()(const XItem* lhs, const std::shared_ptr<XItem>& rhs) const;
-};
-
-typedef std::set<std::shared_ptr<XItem>, compare> XItemList;
 
 struct XMapTile {
     XMapTile();

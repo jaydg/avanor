@@ -101,10 +101,13 @@ static bool TestItemList()
     original_list.insert(XItem::Own(new XMoney(100)));
     original_list.insert(XItem::Own(new XMoney(250)));
 
-    // `im` (item mask) is the primary sort key, but compare() tiebreaks
-    // by pointer identity - both XMoney entries share IM_MONEY, so this
-    // also confirms they don't collide into a single set element.
+    // XItemList::insert() (item.h) merges same-category, Compare() == 0
+    // items into a single stack rather than adding a second entry - both
+    // XMoney(100) and XMoney(250) share IM_MONEY and always compare equal,
+    // so this confirms they combine into one element with the summed
+    // quantity, not two.
     const size_t original_size = original_list.size();
+    const int original_quantity = original_size == 1 ? (*original_list.begin())->quantity : -1;
 
     std::ostringstream oss;
     {
@@ -119,7 +122,9 @@ static bool TestItemList()
         archive(restored_list);
     }
 
-    bool pass = original_size == 2 && restored_list.size() == original_size;
+    bool pass = original_size == 1 && original_quantity == 350
+        && restored_list.size() == original_size
+        && (*restored_list.begin())->quantity == original_quantity;
 
     // Heterogeneous lookup via the transparent comparator (find by raw
     // XItem*, not shared_ptr<XItem>) is used throughout the codebase -

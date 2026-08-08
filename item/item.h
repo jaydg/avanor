@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xbaseobj.h"
 #include "item/itemdb.h"
 #include "item/itemdef.h"
+#include "item/itemlist.h"
 #include "magic/wskills.h"
 
 #define DUR_INFINITE 65535
@@ -167,6 +168,56 @@ inline bool compare::operator()(const XItem* lhs, const std::shared_ptr<XItem>& 
     return (*this)(lhs, rhs.get());
 }
 
-typedef std::set<std::shared_ptr<XItem>, compare> XItemList;
+// Find a same-category item this new one is interchangeable with
+// and Concat() into it instead of adding a second entry.
+//
+// The old XSortedList::insert(iterator, T) took a hint iterator too but
+// ignored it for merge purposes - it always rescanned for a match
+// regardless. Matched here: the hint-taking overload runs the same
+// TryMerge() and only falls back to the hint for the no-match case.
+inline XItemList::iterator XItemList::TryMerge(const std::shared_ptr<XItem>& item)
+{
+    if (item->GetRef() == 0) {
+        for (auto it = begin(); it != end(); ++it) {
+            if (it->get() == item.get()) {
+                // Already this exact element - e.g. XCreature::stopAction()
+                // reinserting action_data.item after an interrupted action,
+                // where the item never left contain in the first place
+                // (XItem::Own() just handed out a second shared_ptr to the
+                // same live object via shared_from_this()). Concat()-ing an
+                // item into itself would double its quantity and then
+                // Invalidate() it while still a live set member - caught by
+                // the -test soak's assert(item->isValid()) in
+                // XStandardAI::Wear(). Nothing to do: it's already here.
+                return it;
+            }
+
+            if ((*it)->im == item->im && (*it)->Compare(item.get()) == 0) {
+                (*it)->Concat(item.get());
+                return it;
+            }
+        }
+    }
+
+    return end();
+}
+
+inline std::pair<XItemList::iterator, bool> XItemList::insert(std::shared_ptr<XItem> item)
+{
+    if (auto it = TryMerge(item); it != end()) {
+        return {it, false};
+    }
+
+    return Base::insert(std::move(item));
+}
+
+inline XItemList::iterator XItemList::insert(iterator hint, std::shared_ptr<XItem> item)
+{
+    if (auto it = TryMerge(item); it != end()) {
+        return it;
+    }
+
+    return Base::insert(hint, std::move(item));
+}
 
 #endif
