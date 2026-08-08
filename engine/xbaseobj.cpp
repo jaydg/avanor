@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/xbaseobj.h"
 
-#include "xfile.h"
 #include "xobject.h"
 
 // XBaseObject, like XMapObject, is never itself a dynamic type - just

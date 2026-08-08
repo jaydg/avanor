@@ -117,9 +117,6 @@ struct ACTION_DATA {
     // See XItem::Own().
     std::shared_ptr<XItem> item;
 
-    // `item` was never actually persisted even before Cereal (the
-    // legacy XFile-based Store/Restore, since removed, left it as a
-    // FIXME) - new real persistence.
     template<class Archive>
     void serialize(Archive& ar)
     {

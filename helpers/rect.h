@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/cereal.hpp>
 
-#include "engine/xfile.h"
 #include "helpers/point.h"
 
 class XRect

@@ -30,8 +30,6 @@ struct _SKILL_DB {
     int	base_dmg[16];
 };
 
-class XFile;
-
 class XWarSkills
 {
     public:

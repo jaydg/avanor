@@ -74,8 +74,6 @@ struct SCROLL_REC {
     int value;
     int rarity;
 
-    void Store(XFile * f);
-    void Restore(XFile * f);
     static int total_value;
     static int GetRandomDescription(SCROLL_NAME scrn);
 

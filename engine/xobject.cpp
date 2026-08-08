@@ -94,24 +94,3 @@ void XObject::InvalidateAllObjects()
         objects.begin()->second->Invalidate();
     }
 }
-
-void XObject::DumpAll()
-{
-    XFile file;
-    file.Open(vMakePath(HOME_DIR, "dump.txt"), "w");
-
-    for (auto& [key, obj] : objects)
-    {
-        obj->Dump(&file);
-    }
-
-    file.Close();
-}
-
-void XObject::Dump(XFile * f)
-{
-    char buf[256];
-    sprintf(buf, "%5lu   %2d     %s", xguid, reference, GetClassName().c_str());
-    f->Write(buf, strlen(buf));
-    f->Write("\n", 1);
-}

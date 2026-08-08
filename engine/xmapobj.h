@@ -65,10 +65,9 @@ class XMapObject : public XObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XObject>(this));
-            // `l` (the owning XLocation) is deliberately not persisted -
-            // it's re-established structurally via SetLocation() when
-            // this object is restored into its owning location's map
-            // grid, same as today's XFile-based Store/Restore.
+            // l, the owning XLocation, is deliberately not persisted - it is
+            // re-established structurally via SetLocation() when this object
+            // is restored into its owning location's map grid
             ar(x, y, nx, ny, view, color, name);
         }
 

@@ -28,8 +28,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define GAME_VERSION "0.6.0"
 
-class XFile;
-
 class XHiScoreItem
 {
     public:

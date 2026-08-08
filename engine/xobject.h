@@ -30,8 +30,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
 
-#include "engine/xfile.h"
-
 enum ITEM_MASK {
     IM_UNKNOWN = 0x00000000,
     IM_HERO = 0x00000001, // let it's be
@@ -378,9 +376,6 @@ class XObject : public std::enable_shared_from_this<XObject>
                 }
             }
         }
-
-        virtual void Dump(XFile * f);
-        static void DumpAll();
 
         int isValid()
         {

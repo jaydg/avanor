@@ -25,8 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/cereal.hpp>
 
-class XFile;
-
 // Represents an XdY+Z dice expression: throw a Y-sided die X times, add bonus Z.
 class XDice
 {

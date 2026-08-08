@@ -32,7 +32,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "item/itemdef.h"
 
-class XFile;
 class XCreature;
 
 enum QUEST {

@@ -180,10 +180,6 @@ void XGame::RunWithoutHero()
                 break;
             }
 
-            if (ch == 'D') {
-                XObject::DumpAll();
-            }
-
             if (ch == 'L') {
                 std::ofstream f(vMakePath(HOME_DIR, "location.txt"));
 

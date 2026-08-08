@@ -25,7 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdexcept>
 
 #include "engine/global.h"
-#include "engine/xfile.h"
 #include "helpers/dice.h"
 
 // Parses expressions like "XdY", "XdY+Z" or "XdY - Z".
