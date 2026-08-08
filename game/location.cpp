@@ -2123,6 +2123,34 @@ void XLocation::CommonLuaInitialization()
     luaopen_base(L);
     luaopen_string(L);
 
+    // Sol2-bound Monster builder - registered before world scripts
+    // load below, since world/creatures.lua will call it
+    {
+        sol::state_view lua(L);
+        lua.new_usertype<MonsterBuilder>("Monster",
+            sol::constructors<MonsterBuilder(CREATURE_NAME), MonsterBuilder(CREATURE_NAME, CREATURE_NAME)>(),
+            "View", &MonsterBuilder::View,
+            "Basic", &MonsterBuilder::Basic,
+            "Body", &MonsterBuilder::Body,
+            "AI", &MonsterBuilder::AI,
+            "Stats", &MonsterBuilder::Stats,
+            "Resist", &MonsterBuilder::Resist,
+            "Combat", &MonsterBuilder::Combat,
+            "Main", &MonsterBuilder::Main,
+            "Description", &MonsterBuilder::Description,
+            "Melee", &MonsterBuilder::Melee,
+            "MeleeExtra", &MonsterBuilder::MeleeExtra,
+            "LearnSkill", &MonsterBuilder::LearnSkill,
+            "LearnSpell", &MonsterBuilder::LearnSpell,
+            "Equip", &MonsterBuilder::Equip,
+            "EquipCount", &MonsterBuilder::EquipCount,
+            "Corpse", &MonsterBuilder::Corpse,
+            "CorpseEffect", &MonsterBuilder::CorpseEffect,
+            "Unique", &MonsterBuilder::Unique,
+            "Register", &MonsterBuilder::Register
+        );
+    }
+
     luaL_dofile(L, "./world/init.lua");
 
     luaL_dostring(L, "LoadScripts()");

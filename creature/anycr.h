@@ -89,6 +89,7 @@ struct _CREATURE {
     std::vector<MELEE_ATTACK> melee_attack;
     int equip_probability;
     unsigned int generation_flags;
+    bool unique = false;
 };
 
 class XCreatureStorage
@@ -132,6 +133,44 @@ class XCreatureStorage
         static XCreature* Create(CREATURE_NAME cn);
         static XCreature* CreateRnd(CREATURE_CLASS cc, int lvl = CRL_ANY);
         static void RestoreCreatureInfo(XCreature * cr);
+};
+
+class MonsterBuilder
+{
+    public:
+        explicit MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base = CN_NONE);
+
+        MonsterBuilder& View(const std::string& name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class);
+        MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, CREATURE_SIZE size, const std::string& weight);
+        MonsterBuilder& Body(const std::string& body, int prob, unsigned int gen_flags);
+        MonsterBuilder& AI(unsigned int flags);
+        MonsterBuilder& Stats(const std::string& stats);
+        MonsterBuilder& Resist(const std::string& resists);
+        MonsterBuilder& Combat(const std::string& hit, const std::string& dice);
+        MonsterBuilder& Main(const std::string& dv, const std::string& pv, const std::string& hp, const std::string& pp);
+        MonsterBuilder& Description(const std::string& descr);
+        MonsterBuilder& Melee(BRAND_TYPE br, int prob);
+        MonsterBuilder& MeleeExtra(EXTENDED_ATTACK ea, int prob);
+        MonsterBuilder& LearnSkill(XSkill::Skill skt, int lvl);
+        MonsterBuilder& LearnSpell(SPELL_NAME spn);
+        MonsterBuilder& Equip(unsigned int mask, ITEM_TYPE it, int prob);
+        MonsterBuilder& EquipCount(unsigned int mask, int count, int prob);
+        MonsterBuilder& Corpse(int rotting_time, FOOD_TYPE ft);
+        MonsterBuilder& CorpseEffect(CORPSE_EFFECT_TYPE cet, int val);
+        MonsterBuilder& Unique();
+
+        void Register();
+
+    private:
+        CREATURE_NAME id;
+
+        // {}, not left default-initialized: _CREATURE's plain int/enum
+        // members (ai_flags, cr_class, ...) have no default constructor
+        // of their own to zero them, unlike its std::string/XDice/vector
+        // members - value-initializing here matches what
+        // creature_storage[cn] (an unordered_map) already does for a
+        // fresh entry.
+        _CREATURE cr{};
 };
 
 class XAnyCreature : public XCreature

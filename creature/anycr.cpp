@@ -448,10 +448,173 @@ void XCreatureStorage::RestoreCreatureInfo(XCreature* cr)
     cr->super_info = &creature_storage[cr->creature_name];
 
     // Derived, not persisted - same reasoning as the three fields above:
-    // whether a creature is one of the hand-written unique NPCs is fully
-    // determined by its (persisted) creature_name, so it's re-derived
-    // here rather than stored, on both the fresh-creation path (from
-    // Create()) and the Cereal-load path (from XCreature::
-    // FixupCreatureInfo(), which calls this too).
-    cr->unique = unique_creators.find(cr->creature_name) != unique_creators.end();
+    // fully determined by its (persisted) creature_name, so it's
+    // re-derived here rather than stored, on both the fresh-creation
+    // path (from Create()) and the Cereal-load path (from XCreature::
+    // FixupCreatureInfo(), which calls this too). True for a hand-
+    // written unique-NPC class (registry membership) or a generic
+    // monster explicitly marked unique in its own definition (see
+    // _CREATURE::unique) - either can be true without the other.
+    cr->unique = unique_creators.find(cr->creature_name) != unique_creators.end()
+        || creature_storage[cr->creature_name].unique;
+}
+
+MonsterBuilder::MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base) : id(id)
+{
+    if (!base.empty()) {
+        cr = *XCreatureStorage::GetCreatureData(base);
+    }
+}
+
+MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class)
+{
+    cr.name = name;
+    cr.view = view;
+    cr.color = color;
+    cr.person = person;
+    cr.crl = crl;
+    cr.cr_class = cr_class;
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, CREATURE_SIZE size, const std::string& weight)
+{
+    cr.speed = XDice(speed);
+    cr.move_energy = XDice(move_energy);
+    cr.attack_energy = XDice(attack_energy);
+    cr.creature_size = size;
+    cr.creature_weight = XDice(weight);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Body(const std::string& body, int prob, unsigned int gen_flags)
+{
+    cr.body = body;
+    cr.equip_probability = prob;
+    cr.generation_flags = gen_flags;
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::AI(unsigned int flags)
+{
+    cr.ai_flags = flags;
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Stats(const std::string& stats)
+{
+    cr.stats_gen.Init(stats.c_str());
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Resist(const std::string& resists)
+{
+    cr.r_gen.Init(resists.c_str());
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Combat(const std::string& hit, const std::string& dice)
+{
+    cr.hit = XDice(hit);
+    cr.dice = XDice(dice);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Main(const std::string& dv, const std::string& pv, const std::string& hp, const std::string& pp)
+{
+    cr.dv = XDice(dv);
+    cr.pv = XDice(pv);
+    cr.hp = XDice(hp);
+    cr.pp = XDice(pp);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Description(const std::string& descr)
+{
+    cr.creature_description = descr;
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Melee(BRAND_TYPE br, int prob)
+{
+    MELEE_ATTACK ma{};
+    ma.e_attack = EA_NONE;
+    ma.br_attack = br;
+    ma.prob = prob;
+    cr.melee_attack.push_back(ma);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::MeleeExtra(EXTENDED_ATTACK ea, int prob)
+{
+    MELEE_ATTACK ma{};
+    ma.e_attack = ea;
+    ma.br_attack = BR_NONE;
+    ma.prob = prob;
+    cr.melee_attack.push_back(ma);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::LearnSkill(XSkill::Skill skt, int lvl)
+{
+    SKILL_REC scr{};
+    scr.level = lvl;
+    scr.skt = skt;
+    cr.skills.push_back(scr);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::LearnSpell(SPELL_NAME spn)
+{
+    cr.spells.push_back(spn);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Equip(unsigned int mask, ITEM_TYPE it, int prob)
+{
+    EQUIP_REC er{};
+    er.mask = mask;
+    er.count = 1;
+    er.probability = prob;
+    er.it = it;
+    cr.equipment.push_back(er);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::EquipCount(unsigned int mask, int count, int prob)
+{
+    EQUIP_REC er{};
+    er.mask = mask;
+    er.count = count;
+    er.probability = prob;
+    er.it = IT_UNKNOWN;
+    cr.equipment.push_back(er);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Corpse(int rotting_time, FOOD_TYPE ft)
+{
+    cr.pCorpseData.roating_time = rotting_time;
+    cr.pCorpseData.ft = ft;
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::CorpseEffect(CORPSE_EFFECT_TYPE cet, int val)
+{
+    CORPSE_EFFECT ce{};
+    ce.type = cet;
+    ce.value = val;
+    cr.pCorpseData.effect.push_back(ce);
+    return *this;
+}
+
+MonsterBuilder& MonsterBuilder::Unique()
+{
+    cr.unique = true;
+    return *this;
+}
+
+void MonsterBuilder::Register()
+{
+    XCreatureStorage::creature_storage[id] = cr;
 }
