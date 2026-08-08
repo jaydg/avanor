@@ -35,8 +35,11 @@ extern "C"
 #include "lauxlib.h"
 }
 
-void XAnyPlace::NotifyLuaEvent(bool is_load) const
+void XAnyPlace::NotifyLuaEvent(bool is_load)
 {
+    XLocation::lua_int_buffer = &lua_ints;
+    XLocation::lua_int_index = 0;
+
     if (!onEventLua) {
         return;
     }

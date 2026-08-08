@@ -31,7 +31,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/global.h"
 #include "engine/xarchive.h"
-#include "engine/xfile.h"
 #include "game/game.h"
 #include "helpers/hiscore.h"
 #include "helpers/manual.h"
@@ -341,35 +340,22 @@ static bool TestRealLocation()
     // A creature reachable from this location's map can carry a custom
     // Lua event handler that, via NotifyLuaEventHandler(LE_SAVE/LE_LOAD)
     // inside XCreature::serialize(), calls back into Location.StoreInt/
-    // RestoreInt - legacy Lua bindings that write/read through the
-    // static XLocation::svg_file the real save path (XArchive::
-    // StoreGame/RestoreGame, engine/xarchive.cpp) always opens first.
-    // This pilot bypasses that entry point, so svg_file is otherwise
-    // null here - open a throwaway scratch file and point svg_file at
-    // it for the duration, mirroring StoreGame/RestoreGame.
-    const std::string svg_path = "/tmp/avanor_cereal_pilot_location.tmp";
-    XFile svg_file;
-    XLocation::svg_file = &svg_file;
-
+    // RestoreInt - Lua bindings backed by XLocation::lua_int_buffer, a
+    // pointer NotifyLuaEventHandler/NotifyLuaEvent point at that object's
+    // own lua_ints member before firing. No special setup needed here:
+    // it's just another field in the normal archive stream below.
     std::ostringstream oss;
     {
-        svg_file.Open(svg_path, "wb");
         cereal::JSONOutputArchive archive(oss);
         archive(original);
-        svg_file.Close();
     }
 
     std::shared_ptr<XLocation> restored;
     {
-        svg_file.Open(svg_path, "rb");
         std::istringstream iss(oss.str());
         cereal::JSONInputArchive archive(iss);
         archive(restored);
-        svg_file.Close();
     }
-
-    XLocation::svg_file = nullptr;
-    std::remove(svg_path.c_str());
 
     bool pass = restored
         && restored.get() != original.get()

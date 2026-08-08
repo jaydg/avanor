@@ -1633,8 +1633,11 @@ void XCreature::FixupXaiOwner()
     }
 }
 
-void XCreature::NotifyLuaEventHandler(LUA_EVENT event) const
+void XCreature::NotifyLuaEventHandler(LUA_EVENT event)
 {
+    XLocation::lua_int_buffer = &lua_ints;
+    XLocation::lua_int_index = 0;
+
     if (event_handler && strlen(event_handler)) {
         lua_pushstring(XLocation::L, event_handler);
         lua_gettable(XLocation::L, LUA_GLOBALSINDEX);

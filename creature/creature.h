@@ -220,6 +220,12 @@ class XCreature : public XBaseObject
         const _CREATURE* super_info; // full information about Creature Creation struct...
         char* event_handler;
         void SetEventHandler(const char* handler);
+
+        // Backing store for event_handler's Lua StoreInt/RestoreInt calls
+        // (see NotifyLuaEventHandler()) - filled by StoreInt during
+        // LE_SAVE, serialized, then read back and handed out via
+        // RestoreInt during LE_LOAD.
+        std::vector<int> lua_ints;
     public:
         DECLARE_CREATOR(XCreature, XBaseObject);
         XCreature();
@@ -389,7 +395,9 @@ class XCreature : public XBaseObject
         // load()/save() below but can't live in this header directly
         // (anycr.h itself includes this header).
         void FixupCreatureInfo();
-        void NotifyLuaEventHandler(LUA_EVENT event) const;
+        // Not const: hands lua_ints out as a mutable buffer for
+        // StoreInt to append to (see game/location.h/.cpp).
+        void NotifyLuaEventHandler(LUA_EVENT event);
 
         // Also defined in creature.cpp. This header does #include
         // "creature/std_ai.h" above (needed regardless: ar(xai) below
@@ -543,10 +551,19 @@ class XCreature : public XBaseObject
                     std::memcpy(event_handler, event.c_str(), event.size() + 1);
                 }
 
+                // lua_ints must be read back before firing: RestoreInt
+                // hands its contents out sequentially as the handler runs.
+                ar(lua_ints);
                 NotifyLuaEventHandler(LE_LOAD);
             } else {
                 ar(std::string(event_handler ? event_handler : ""));
+
+                // Cleared first in case this creature was saved before,
+                // earlier in the same run - firing appends to it via
+                // StoreInt, so a stale leftover would double up.
+                lua_ints.clear();
                 NotifyLuaEventHandler(LE_SAVE);
+                ar(lua_ints);
             }
         }
 

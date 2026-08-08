@@ -25,7 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 
 #include "engine/xarchive.h"
-#include "engine/xfile.h"
 #include "game/game.h"
 #include "game/quest.h"
 #include "game/xtime.h"
@@ -41,21 +40,9 @@ constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 int XArchive::StoreGame()
 {
-    // Location.StoreInt/RestoreInt (Lua bindings, game/location.cpp) still
-    // go through the legacy raw-binary XFile mechanism - a separate
-    // scratch file for that, since it's an incompatible format from the
-    // JSON archive below.
-    XFile lua_file;
-    XLocation::svg_file = &lua_file;
-
-    if (!lua_file.Open(vMakePath(HOME_DIR, "avanor_lua.svg"), "wb")) {
-        return 0;
-    }
-
     std::ofstream file(vMakePath(HOME_DIR, "avanor.svg"));
 
     if (!file.is_open()) {
-        lua_file.Close();
         return 0;
     }
 
@@ -94,24 +81,14 @@ int XArchive::StoreGame()
         ar(SAVE_GAME_CONTROL);
     }
 
-    lua_file.Close();
-
     return 1;
 }
 
 int XArchive::RestoreGame()
 {
-    XFile lua_file;
-    XLocation::svg_file = &lua_file;
-
-    if (!lua_file.Open(vMakePath(HOME_DIR, "avanor_lua.svg"), "rb")) {
-        return 0;
-    }
-
     std::ifstream file(vMakePath(HOME_DIR, "avanor.svg"));
 
     if (!file.is_open()) {
-        lua_file.Close();
         return 0;
     }
 
@@ -122,7 +99,6 @@ int XArchive::RestoreGame()
         ar(version);
 
         if (version != SAVE_GAME_VERSION) {
-            lua_file.Close();
             return 0;
         }
 
@@ -160,11 +136,8 @@ int XArchive::RestoreGame()
     } catch (const cereal::Exception&) {
         // Malformed/foreign/truncated file - same graceful "nothing to
         // load" outcome as the version check above, not a hard failure.
-        lua_file.Close();
         return 0;
     }
-
-    lua_file.Close();
 
     return 1;
 }

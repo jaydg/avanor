@@ -23,9 +23,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cstring>
 #include <string>
+#include <vector>
 
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
 
 #include "engine/xobject.h"
 #include "helpers/rect.h"
@@ -98,10 +100,18 @@ class XAnyPlace : public XObject
                     std::memcpy(onEventLua, event.c_str(), event.size() + 1);
                 }
 
+                // lua_ints must be read back before firing: RestoreInt
+                // hands its contents out sequentially as the handler runs.
+                ar(lua_ints);
                 NotifyLuaEvent(true);
             } else {
+                // Cleared first in case this place was saved before,
+                // earlier in the same run - firing appends to it via
+                // StoreInt, so a stale leftover would double up.
+                lua_ints.clear();
                 NotifyLuaEvent(false);
                 ar(std::string(onEventLua ? onEventLua : ""));
+                ar(lua_ints);
             }
         }
 
@@ -110,13 +120,22 @@ class XAnyPlace : public XObject
         std::weak_ptr<XCreature> owner;
         char* onEventLua{};
 
+        // Backing store for onEventLua's Lua StoreInt/RestoreInt calls
+        // (see NotifyLuaEvent()) - filled by StoreInt during LE_SAVE,
+        // serialized, then read back and handed out via RestoreInt
+        // during LE_LOAD.
+        std::vector<int> lua_ints;
+
     private:
         // Takes a bool rather than the LUA_EVENT enum (LE_LOAD/LE_SAVE) to
         // avoid needing game/location.h's full declaration here - that
         // header already includes this one, so pulling it in would be
         // circular. Maps to LE_LOAD/LE_SAVE in the .cpp, where
         // game/location.h is fully visible.
-        void NotifyLuaEvent(bool is_load) const;
+        //
+        // Not const: hands lua_ints out as a mutable buffer for StoreInt
+        // to append to (see game/location.h/.cpp).
+        void NotifyLuaEvent(bool is_load);
 };
 
 #endif

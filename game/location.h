@@ -354,7 +354,16 @@ class XLocation : public XObject
         static int QuestModify(lua_State * L);
         static int QuestStatus(lua_State * L);
 
-        static XFile* svg_file;
+        // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
+        // the .cpp): whichever XCreature/XAnyPlace is currently firing
+        // its LE_SAVE/LE_LOAD Lua event handler points this at its own
+        // lua_ints buffer first (XCreature::NotifyLuaEventHandler(),
+        // XAnyPlace::NotifyLuaEvent()), so a script's StoreInt(x)/
+        // RestoreInt() calls append to (or sequentially read from) that
+        // object's own Cereal-serialized vector<int> instead of a
+        // separate raw file.
+        static std::vector<int>* lua_int_buffer;
+        static size_t lua_int_index;
         static int StoreInt(lua_State * L);
         static int RestoreInt(lua_State * L);
         static int BinaryAND(lua_State * L);

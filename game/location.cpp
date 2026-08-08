@@ -1346,20 +1346,20 @@ int XLocation::QuestStatus(lua_State * L)
     return 1;
 }
 
-XFile* XLocation::svg_file = nullptr;
+std::vector<int>* XLocation::lua_int_buffer = nullptr;
+size_t XLocation::lua_int_index = 0;
+
 int XLocation::StoreInt(lua_State * L)
 {
     int tx = lua_tonumber(L, 1);
-    svg_file->Write(&tx);
+    lua_int_buffer->push_back(tx);
 
     return 0;
 }
 
 int XLocation::RestoreInt(lua_State * L)
 {
-    int tx = 0;
-    svg_file->Read(&tx);
-    lua_pushnumber(L, tx);
+    lua_pushnumber(L, (*lua_int_buffer)[lua_int_index++]);
 
     return 1;
 }
