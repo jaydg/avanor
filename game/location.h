@@ -371,23 +371,6 @@ class XLocation : public XObject
         static int ExecuteAIScript(lua_State * L);
         static int CreateMushroom(lua_State * L);
 
-        static int CRVW(lua_State * L);
-        static int CRBA(lua_State * L);
-        static int CRBO(lua_State * L);
-        static int CRA(lua_State * L);
-        static int CRS(lua_State * L);
-        static int CRR(lua_State * L);
-        static int CRM(lua_State * L);
-        static int CRD(lua_State * L);
-        static int CRC(lua_State * L);
-        static int CRAT(lua_State * L);
-        static int CRAT2(lua_State * L);
-        static int CRL(lua_State * L);
-        static int CREQ(lua_State * L);
-        static int CREQ2(lua_State * L);
-        static int CRCOE(lua_State * L);
-        static int CRCOD(lua_State * L);
-
     protected:
         std::string brief_name; // max. 10 characters
         std::string full_name;  // max. 80 characters

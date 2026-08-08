@@ -41,10 +41,10 @@ function MakeAvanorValley()
 		AddTranslation("3", SAND)
 		AddTranslation("A", "Furniture(x, y, xBROWN, '~', 'plain bed')")
 		AddTranslation("S", "BuildShop(x, y, 8, 2, IM_FOOD, 'Nobel, the human shopkeeper')")
-		AddTranslation("P", "for i = 1, 4 do SetEventHandler(Guardian(CN_FARMER, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian(CN_GOODWIFE, GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end")
+		AddTranslation("P", "for i = 1, 4 do SetEventHandler(Guardian('farmer', GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end")
 		AddTranslation("E", "CreateElderGridor(x, y)")
 		AddTranslation("Y", "CreateJorgus(x, y)")
-		AddTranslation("F", "for i = 1, 5 do Guardian(CN_BANDIT, GID_FOREST_BROTHER, x, y, 12, 8, AIF_GUARD_AREA + AIF_PROTECT_AREA + AIF_RANDOM_MOVE) end")
+		AddTranslation("F", "for i = 1, 5 do Guardian('bandit', GID_FOREST_BROTHER, x, y, 12, 8, AIF_GUARD_AREA + AIF_PROTECT_AREA + AIF_RANDOM_MOVE) end")
 		AddTranslation(">", "Way(DOWN, L_MUSHROOMS_CAVE1, x, y)")
 		AddTranslation("*", "Way(DOWN, L_DWARFCITYCAVE1, x, y)")
 		AddTranslation("9", "Way(DOWN, L_SMALL_CAVE1, x, y)")
@@ -124,14 +124,14 @@ function MakeAvanorValley()
 		
 		AddTranslation("A", "Furniture(x, y, xLIGHTRED, '~', 'eternal flame')")
 		AddTranslation("B", "CreateGefeon(x, y)")
-		AddTranslation("C", "for i = 1, 5 do Guardian(CN_CITIZEN, GID_RODERICK_GUARDIAN, x, y, 30, 25) Guardian(CN_FCITIZEN, GID_RODERICK_GUARDIAN, x, y, 30, 25) end")
+		AddTranslation("C", "for i = 1, 5 do Guardian('citizen', GID_RODERICK_GUARDIAN, x, y, 30, 25) Guardian('fcitizen', GID_RODERICK_GUARDIAN, x, y, 30, 25) end")
 		AddTranslation("_", "Altar(x, y, D_LIFE)")
 		AddTranslation("E", "CreateHighPriest(x, y)")
 		AddTranslation("F", "Furniture(x, y, xBROWN, '~', 'pew')")
 		
 		AddTranslation("R", "CreateRoderik(x, y) Furniture(x, y, xYELLOW, '~', 'the throne of Avanor')")
-		AddTranslation("G", "Guardian(CN_ROYAL_GUARD, GID_RODERICK_GUARDIAN, x, y)")
-		AddTranslation("H", "Guardian(CN_ROYAL_GUARD, GID_RODERICK_GUARDIAN, x, y, 1, 1, AIF_NO_SWAP) Way(DOWN, L_KINGS_TREASURE, x, y)")
+		AddTranslation("G", "Guardian('royal_guard', GID_RODERICK_GUARDIAN, x, y)")
+		AddTranslation("H", "Guardian('royal_guard', GID_RODERICK_GUARDIAN, x, y, 1, 1, AIF_NO_SWAP) Way(DOWN, L_KINGS_TREASURE, x, y)")
 		
 		AddTranslation("Q", "Furniture(x, y, xLIGHTRED, '~', 'royal bed')")
 		AddTranslation("O", "Furniture(x, y, xBROWN, '~', 'dinner table')")
@@ -175,7 +175,7 @@ function MakeAvanorValley()
 		"              ########")
 		AddTranslation(".", CAVE_FLOOR)
 		AddTranslation(">", "Way(DOWN, L_UNDEADS_TOMB1, x, y)")
-		AddTranslation("U", "for i = 1, 20 do Creature(CN_SKELETON, x, y, 14, 4) end")
+		AddTranslation("U", "for i = 1, 20 do Creature('skeleton', x, y, 14, 4) end")
 		DrawPattern(100, 50)
 
 
@@ -294,10 +294,10 @@ function MakeAvanorValley()
 		AddTranslation("D", "Grave(x, y, 'Rodomir III (821-894)', 'AvanorDefenderGraveEvent')")
 		
 		DrawPattern(0, 0)
-		for i = 1, 20 do Creature(CN_GHOST) end
+		for i = 1, 20 do Creature("ghost") end
 		for i = 1, 10 do 
-			Creature(CN_SPECTRE) 
-			Creature(CN_DREAD)
+			Creature("spectre") 
+			Creature("dread")
 		end
 end
 
@@ -314,7 +314,7 @@ function FarmerHandler(e, t, p, v)
 end
 
 function CreateElderGridor(x, y)
-	local elder = Guardian(CN_ELDER_GRIDOR, GID_SMALL_VILLAGE_FARMER, x, y, 5, 1)
+	local elder = Guardian("elder_gridor", GID_SMALL_VILLAGE_FARMER, x, y, 5, 1)
 	SetEventHandler(elder, 'ElderGridorHandler')
 end
 
@@ -351,7 +351,7 @@ end
 
 
 function CreateJorgus(x, y)
-	local jorgus = Guardian(CN_JORGUS, GID_FOREST_BROTHER, x, y, 3, 2)
+	local jorgus = Guardian("jorgus", GID_FOREST_BROTHER, x, y, 3, 2)
 	SetEventHandler(jorgus, 'JorgusHandler')
 	GiveObjectToCreature(CreateObject('XForestBrotherCloak'), jorgus)
 end
@@ -391,7 +391,7 @@ orcs_live = 50
 
 
 function CreateOzorik(x, y)
-	local ozorik = Guardian(CN_OZORIK, GID_GUARDIAN, x, y, 3, 2)
+	local ozorik = Guardian("ozorik", GID_GUARDIAN, x, y, 3, 2)
 	SetEnemy(ozorik, CR_ORC)
 	SetEventHandler(ozorik, 'OzorikHandler')
 	GiveObjectToCreature(CreateObject('XGlamdring'), ozorik)
@@ -446,7 +446,7 @@ end
 
 function CreateGuardians(x, y)
 	for i = 1, 7 do 
-		local g = Guardian(CN_ROYAL_GUARD, GID_GUARDIAN, x, y, 14, 5, AIF_GUARD_AREA + AIF_RANDOM_MOVE)
+		local g = Guardian("royal_guard", GID_GUARDIAN, x, y, 14, 5, AIF_GUARD_AREA + AIF_RANDOM_MOVE)
 		SetEnemy(g, CR_ORC)
 		SetEventHandler(g, 'RoyalGuardHandler')
 	end
@@ -473,7 +473,7 @@ end
 
 
 function CreateGekta(x, y)
-	local gekta = Guardian(CN_GEKTA, GID_GUARDIAN, x, y, 14, 5)
+	local gekta = Guardian("gekta", GID_GUARDIAN, x, y, 14, 5)
 	SetEnemy(gekta, CR_ORC)
 	SetEventHandler(gekta, 'GektaHandler')
 end
@@ -512,7 +512,7 @@ end
 
 
 function CreateYohji(x, y)
-	local yohji = Guardian(CN_YOHJISHIRO, GID_NONE, x, y, 5, 5)
+	local yohji = Guardian("yohjishiro", GID_NONE, x, y, 5, 5)
 	SetEventHandler(yohji, 'YohjiHandler')
 end
 
@@ -578,17 +578,17 @@ end
 
 
 function CreateGefeon(x, y)
-	local gefeon = Guardian(CN_GEFEON, GID_RODERICK_GUARDIAN, x, y, 3, 4)
+	local gefeon = Guardian("gefeon", GID_RODERICK_GUARDIAN, x, y, 3, 4)
 	SetEventHandler(gefeon, '')
 end
 
 function CreateHighPriest(x, y)
-	local hp = Guardian(CN_HIGHPRIEST, GID_RODERICK_GUARDIAN, x, y, 3, 4)
+	local hp = Guardian("highpriest", GID_RODERICK_GUARDIAN, x, y, 3, 4)
 	SetEventHandler(hp, '')
 end
 
 function CreateRoderik(x, y)
-	local hp = Guardian(CN_RODERIK, GID_RODERICK_GUARDIAN, x, y, 1, 1, AIF_NO_SWAP)
+	local hp = Guardian("roderik", GID_RODERICK_GUARDIAN, x, y, 1, 1, AIF_NO_SWAP)
 	SetEventHandler(hp, '')
 end
 

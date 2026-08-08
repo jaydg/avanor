@@ -61,14 +61,14 @@ function MakeDwarvenCity()
 		AddTranslation(";", OBSIDIAN_FLOOR)
 		AddTranslation(":", BRIDGE)
 		AddTranslation("<", "Way(UP, L_DWARFCITYCAVE6, x, y)")
-		AddTranslation("A", "Guardian(CN_DWARF_GUARD, GID_DWARVEN_GUARDIAN, x, y)")
+		AddTranslation("A", "Guardian('dwarf_guard', GID_DWARVEN_GUARDIAN, x, y)")
 		AddTranslation("S", "BuildShop(x, y, 9, 3, IM_ARMOUR + IM_WEAPON + IM_POTION + IM_BOOK + IM_SCROLL + IM_NECK + IM_MISSILE + IM_MISSILEW, 'Toberin, the dwarwen shopkeeper')")
 		AddTranslation("B", "Furniture(x, y, xBROWN, '~', 'a dinner table')")
 		AddTranslation("C", "Furniture(x, y, xBROWN, '~', 'a round table')")
 		AddTranslation("D", "Furniture(x, y, xLIGHTRED, '~', 'a royal bed')")
 		AddTranslation("X", "CreateTorin(x, y) Furniture(x, y, xYELLOW, '~', 'the throne of the Dwarven Kingdom')")
 		AddTranslation("_", "Altar(x, y, D_LIFE)")
-		AddTranslation("P", "for i = 1, 6 do Guardian(CN_DWARF, GID_DWARVEN_GUARDIAN, x, y, 32, 16) end")
+		AddTranslation("P", "for i = 1, 6 do Guardian('dwarf', GID_DWARVEN_GUARDIAN, x, y, 32, 16) end")
 		AddTranslation("T", "CreateTodin(x, y)")
 		AddTranslation("E", "EventPlace(x - 1, y, 5, 2, 'DvCityEvent1')")
 		AddTranslation("F", "Way(DOWN, L_DWARFTREASURE, x, y)")
@@ -181,7 +181,7 @@ end
 
 
 function CreateTodin(x, y)
-	local todin = Guardian(CN_TODIN, GID_DWARVEN_GUARDIAN, x, y, 6, 4)
+	local todin = Guardian("todin", GID_DWARVEN_GUARDIAN, x, y, 6, 4)
 	SetEventHandler(todin, 'TodinHandler')
 end
 
@@ -222,7 +222,7 @@ function TodinHandler(e, t, p, v)
 end
 
 function CreateTorin(x, y)
-	local torin = Guardian(CN_TORIN, GID_DWARVEN_GUARDIAN, x, y)
+	local torin = Guardian("torin", GID_DWARVEN_GUARDIAN, x, y)
 	SetEventHandler(torin, 'TorinHandler')
 	local pickaxe = CreateObject('XPickAxe')
 	torin_award = GetObjectGUID(pickaxe)
@@ -275,13 +275,13 @@ function MakeMushroomCave()
 		Way(UP, L_MAIN)
 		Way(DOWN, L_MUSHROOMS_CAVE2)
 		Settle(CR_INSECT + CR_REPTILE, CRL_VERY_LOW)
-		Creature(CN_SMALL_SNAKE)
-		Creature(CN_SMALL_SNAKE)
-		Creature(CN_SMALL_SNAKE)
-		Creature(CN_SMALL_SNAKE)
-		Creature(CN_SPIDER)
-		Creature(CN_SPIDER)
-		Creature(CN_SPIDER)				
+		Creature("small_snake")
+		Creature("small_snake")
+		Creature("small_snake")
+		Creature("small_snake")
+		Creature("spider")
+		Creature("spider")
+		Creature("spider")				
 
 	CreateLocation(L_MUSHROOMS_CAVE2, "MC:2", "Mushroom Caves Level 2", CAVE)
 		Way(UP, L_MUSHROOMS_CAVE1)
@@ -298,7 +298,7 @@ function MakeMushroomCave()
 	CreateLocation(L_MUSHROOMS_CAVE4, "KC:2", "Kobold Cavern Level 2", CAVE)
 		Way(UP, L_MUSHROOMS_CAVE3)
 		Settle(CR_KOBOLD, CRL_LOW + CRL_VERY_LOW)
-		Creature(CN_MAGNUSH)
+		Creature("magnush")
 
 	CreateLocation(L_MUSHROOMS_CAVE5, "MC:3", "Mushroom Caves Level 3", CAVE)
 		Way(UP, L_MUSHROOMS_CAVE2)
@@ -326,7 +326,7 @@ function SpawnMushroomEvent(l)
 end
 
 function CreateBeelzevile()
-	local demon = Creature(CN_BEELZEVILE)
+	local demon = Creature("beelzevile")
 	SetEventHandler(demon, 'BeelzevileHandler')
 	GiveObjectToCreature(CreateObject('XGreatElementalRing'), demon)
 end
@@ -376,12 +376,12 @@ function MakeSmallCave()
 		AddTranslation("<", "Way(UP, L_SMALL_CAVE1, x, y)")
 		AddTranslation("S", "SmallCaveQuestPersons(x, y)")
 		DrawPattern(0, 0)			
---		Creature(CN_ROTMOTH)
+--		Creature("rotmoth")
 end
 
 function SmallCaveQuestPersons(x, y)
-	Guardian(CN_GIANA, GID_GIANA, x + 1, y, 8, 4)
-	Guardian(CN_ROTMOTH, GID_ROTMOTH, x + 1, y, 8, 4)
+	Guardian("giana", GID_GIANA, x + 1, y, 8, 4)
+	Guardian("rotmoth", GID_ROTMOTH, x + 1, y, 8, 4)
 	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
 end
 
@@ -462,8 +462,8 @@ function MakeRatCellar()
 		"################################################################################")
 		AddTranslation("<", "Way(UP, L_MAIN, x, y)")
 		AddTranslation("~", "Chest(x, y)")
-		AddTranslation("A", "for i = 1, 8 do Creature(CN_RAT, x, y, 12, 4) end")
-		AddTranslation("B", "for i = 1, 2 do Creature(CN_GHOST, x, y, 4, 4) end")
+		AddTranslation("A", "for i = 1, 8 do Creature('rat', x, y, 12, 4) end")
+		AddTranslation("B", "for i = 1, 2 do Creature('ghost', x, y, 4, 4) end")
 		local trnd = Rand(4)
 		if (trnd == 0) then 
 			AddTranslation("C", "DropItem(CreateObject('XForestBrotherCloak'), x, y)")
@@ -509,7 +509,7 @@ function MakeVulcano()
 		AddTranslation("<", "Way(UP, L_MAIN, x, y)")
 		AddTranslation("=", LAVA)
 		DrawPattern(0, 0)
-		GiveObjectToCreature(CreateObject('XBlackClub'), Creature(CN_XSHEE_VOO))
+		GiveObjectToCreature(CreateObject('XBlackClub'), Creature("xshee_voo"))
 end
 
 
@@ -566,16 +566,16 @@ function MakeWizardDungeon()
 		"################################################################################" ..
 		"################################################################################" )
 		AddTranslation("<", "Way(UP, L_WIZARD_DUNGEON5, x, y)")
-		AddTranslation("h", "Guardian(CN_DEATH_KNIGHT, GID_AHKULAN_GUARDIAN, x, y)")
+		AddTranslation("h", "Guardian('death_knight', GID_AHKULAN_GUARDIAN, x, y)")
 		AddTranslation("A", "CreateAhkUlan(x, y) Furniture(x, y, xDARKGRAY, '~', 'the black throne from pure obsidian')")
 		AddTranslation("_", "Altar(x, y, D_DEATH)")
-		AddTranslation("r", "Creature(CN_HUGE_RAT, x, y)")
+		AddTranslation("r", "Creature('huge_rat', x, y)")
 		DrawPattern(0, 0)
 		
 end
 
 function CreateAhkUlan(x, y)
-	local ahkulan = Guardian(CN_AHKULAN, GID_AHKULAN_GUARDIAN, x, y)
+	local ahkulan = Guardian("ahkulan", GID_AHKULAN_GUARDIAN, x, y)
 	SetEventHandler(ahkulan, 'AhkUlanHandler')
 end
 

@@ -94,8 +94,6 @@ struct _CREATURE {
 
 class XCreatureStorage
 {
-        static CREATURE_NAME last_name;
-
         // The 8 unique NPCs (Bandit, Shopkeeper, Gefeon, Roderick,
         // Beelzevile, HighPriest, Rotmoth, Giana) each have a hand-written
         // C++ subclass with real custom behavior (creature/unique.h/.cpp)
@@ -108,24 +106,6 @@ class XCreatureStorage
     public:
         static std::unordered_map<CREATURE_NAME, _CREATURE> creature_storage;
         static CREATURE_SET_REC creature_set[32];
-
-        static void View(CREATURE_NAME cn, const char* name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class, CREATURE_NAME cn_instance = CN_NONE);
-        static void Basic(const char* speed, const char* base_energy, const char* combat_energy, CREATURE_SIZE csize, const char* weight);
-        static void Body(const char* body, int prob = 0, unsigned int gen_flags = 0);
-        static void SetAI(unsigned int aif);
-        static void S(const char* stats);
-        static void R(const char* resists);
-        static void Combat(const char* hit, const char* dice);
-        static void Melee(BRAND_TYPE br, int prob);
-        static void Melee(EXTENDED_ATTACK ea, int prob);
-        static void Main(const char* dv, const char* pv, const char* hp, const char* pp);
-        static void D(const char* descr);
-        static void Learn(XSkill::Skill skt, int lvl);
-        static void Learn(SPELL_NAME spn);
-        static void Equip(unsigned int mask, int count, int prob);
-        static void Equip(unsigned int mask, ITEM_TYPE it, int prob);
-        static void Corpse(int rotting_time, FOOD_TYPE ft);
-        static void CorpseEffects(CORPSE_EFFECT_TYPE cet, int val);
 
         static void CreateQuickBase();
 

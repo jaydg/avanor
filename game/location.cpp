@@ -561,51 +561,16 @@ int XLocation::Settle(lua_State * L)
     return 0;
 }
 
-// Interim only, until world/creatures.lua and its callers are rewritten
-// to pass real string ids directly (a later commit in the Sol2 plan):
-// converts the old numeric creature id - still what world/ids.lua's
-// CN_* Lua globals, and so every world script, pass today - to the
-// CREATURE_NAME string XCreatureStorage now actually keys on. The
-// handful of ids C++ itself references by name (creature/cr_defs.h,
-// e.g. CN_RAT/CN_BANDIT) already resolve to their real, final string id
-// here, so anycr.cpp's/xpotion.cpp's checks against those constants -
-// and XCreatureStorage::Create()'s unique-NPC registry lookup - work
-// correctly even before the Lua-side rewrite. Every other (ordinary,
-// Lua-only) monster gets its old numeric value stringified as a
-// placeholder key instead - internally consistent (a definition and a
-// later spawn call for the same monster always stringify the same
-// number the same way), just not yet a readable name.
-static CREATURE_NAME LuaCreatureName(int n)
-{
-    switch (n) {
-        case 1: return CN_RAT;
-        case 2: return CN_LARGE_RAT;
-        case 10: return CN_BAT;
-        case 11: return CN_HUGE_BAT;
-        case 30: return CN_DOG;
-        case 180: return CN_SKELETON;
-        case 302: return CN_BANDIT;
-        case 303: return CN_SHOPKEEPER;
-        case 305: return CN_GEFEON;
-        case 307: return CN_RODERIK;
-        case 312: return CN_BEELZEVILE;
-        case 316: return CN_HIGHPRIEST;
-        case 317: return CN_ROTMOTH;
-        case 318: return CN_GIANA;
-        default: return std::to_string(n);
-    }
-}
-
-//cr = Creature(CN_ROTMOTH)
-//cr = Creature(CN_RAT, [x, y, [w, h]])
+//cr = Creature("rotmoth")
+//cr = Creature("rat", [x, y, [w, h]])
 int XLocation::Creature(lua_State * L)
 {
-    int crn = lua_tonumber(L, 1);
+    CREATURE_NAME crn = lua_tostring(L, 1);
     int n = lua_gettop(L);
     XCreature * cr = nullptr;
 
     if (n == 1) {
-        cr = current_location->NewCreature(LuaCreatureName(crn));
+        cr = current_location->NewCreature(crn);
     } else {
         XRect rect;
         int tx = lua_tonumber(L, 2);
@@ -619,17 +584,17 @@ int XLocation::Creature(lua_State * L)
             rect = XRect(tx, ty, tx + tw, ty + th);
         }
 
-        cr = current_location->NewCreature(LuaCreatureName(crn), rect);
+        cr = current_location->NewCreature(crn, rect);
     }
 
     lua_pushlightuserdata(L, cr);
     return 1;
 }
 
-//cr = Guardian(CN_DWARF_GUARD, GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
+//cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
 int XLocation::Guardian(lua_State * L)
 {
-    CREATURE_NAME crn = LuaCreatureName(lua_tonumber(L, 1));
+    CREATURE_NAME crn = lua_tostring(L, 1);
     GROUP_ID gid = (GROUP_ID)lua_tonumber(L, 2);
     XRect rect;
     int tx = lua_tonumber(L, 3);
@@ -1461,161 +1426,6 @@ int XLocation::CreateMushroom(lua_State * L)
     return 0;
 }
 
-////// SCRIPT PORT ///////
-
-int XLocation::CRVW(lua_State * L)
-{
-    CREATURE_NAME cn = LuaCreatureName(lua_tonumber(L, 1));
-    const char* name = lua_tostring(L, 2);
-    const char* view = lua_tostring(L, 3);
-    int color = lua_tonumber(L, 4);
-    CR_PERSON_TYPE crpt = (CR_PERSON_TYPE)lua_tonumber(L, 5);
-    CREATURE_LEVEL crl = (CREATURE_LEVEL)lua_tonumber(L, 6);
-    CREATURE_CLASS crc = (CREATURE_CLASS)lua_tonumber(L, 7);
-    CREATURE_NAME cn_instance = CN_NONE;
-
-    if (lua_gettop(L) == 8) {
-        cn_instance = LuaCreatureName(lua_tonumber(L, 8));
-    }
-
-    XCreatureStorage::View(cn, name, view[0], color, crpt, crl, crc, cn_instance);
-    return 0;
-}
-
-int XLocation::CRBA(lua_State * L)
-{
-    const char* speed = lua_tostring(L, 1);
-    const char* energy = lua_tostring(L, 2);
-    const char* combat_energy = lua_tostring(L, 3);
-    CREATURE_SIZE crs = (CREATURE_SIZE)lua_tonumber(L, 4);
-    const char* weight = lua_tostring(L, 5);
-    XCreatureStorage::Basic(speed, energy, combat_energy, crs, weight);
-    return 0;
-}
-
-int XLocation::CRBO(lua_State * L)
-{
-    const char* body = lua_tostring(L, 1);
-
-    int prob = 0;
-    int flg = 0;
-    int n = lua_gettop(L);
-
-    if (n > 1) {
-        prob = lua_tonumber(L, 2);
-
-        if (n > 2) {
-            flg = lua_tonumber(L, 3);
-        }
-    }
-
-    XCreatureStorage::Body(body, prob, flg);
-    return 0;
-}
-
-int XLocation::CRA(lua_State * L)
-{
-    int flg = lua_tonumber(L, 1);
-    XCreatureStorage::SetAI(flg);
-    return 0;
-}
-
-int XLocation::CRS(lua_State * L)
-{
-    const char* s = lua_tostring(L, 1);
-    XCreatureStorage::S(s);
-    return 0;
-}
-
-int XLocation::CRR(lua_State * L)
-{
-    const char* r = lua_tostring(L, 1);
-    XCreatureStorage::R(r);
-    return 0;
-}
-
-int XLocation::CRM(lua_State * L)
-{
-    const char* dv = lua_tostring(L, 1);
-    const char* pv = lua_tostring(L, 2);
-    const char* hp = lua_tostring(L, 3);
-    const char* pp = lua_tostring(L, 4);
-    XCreatureStorage::Main(dv, pv, hp, pp);
-    return 0;
-}
-
-int XLocation::CRD(lua_State * L)
-{
-    const char* descr = lua_tostring(L, 1);
-    XCreatureStorage::D(descr);
-    return 0;
-}
-
-int XLocation::CRC(lua_State * L)
-{
-    const char* hit = lua_tostring(L, 1);
-    const char* dice = lua_tostring(L, 2);
-    XCreatureStorage::Combat(hit, dice);
-    return 0;
-}
-
-int XLocation::CRAT(lua_State * L)
-{
-    BRAND_TYPE brt = (BRAND_TYPE)lua_tonumber(L, 1);
-    int prob = lua_tonumber(L, 2);
-    XCreatureStorage::Melee(brt, prob);
-    return 0;
-}
-
-int XLocation::CRAT2(lua_State * L)
-{
-    EXTENDED_ATTACK ea = (EXTENDED_ATTACK)lua_tonumber(L, 1);
-    int prob = lua_tonumber(L, 2);
-    XCreatureStorage::Melee(ea, prob);
-    return 0;
-}
-
-int XLocation::CRL(lua_State * L)
-{
-    SPELL_NAME spn = (SPELL_NAME)lua_tonumber(L, 1);
-    XCreatureStorage::Learn(spn);
-    return 0;
-}
-
-int XLocation::CREQ(lua_State * L)
-{
-    int mask = lua_tonumber(L, 1);
-    ITEM_TYPE it = (ITEM_TYPE)lua_tonumber(L, 2);
-    int prob = lua_tonumber(L, 3);
-    XCreatureStorage::Equip(mask, it, prob);
-    return 0;
-}
-
-int XLocation::CREQ2(lua_State * L)
-{
-    int mask = lua_tonumber(L, 1);
-    int count = lua_tonumber(L, 2);
-    int prob = lua_tonumber(L, 3);
-    XCreatureStorage::Equip(mask, count, prob);
-    return 0;
-}
-
-int XLocation::CRCOE(lua_State * L)
-{
-    CORPSE_EFFECT_TYPE cet = (CORPSE_EFFECT_TYPE)lua_tonumber(L, 1);
-    int val = lua_tonumber(L, 2);
-    XCreatureStorage::CorpseEffects(cet, val);
-    return 0;
-}
-
-int XLocation::CRCOD(lua_State * L)
-{
-    int roat_time = lua_tonumber(L, 1);
-    FOOD_TYPE ft = (FOOD_TYPE)lua_tonumber(L, 2);
-    XCreatureStorage::Corpse(roat_time, ft);
-    return 0;
-}
-
 #define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); luaL_dostring(L, buf); }
 #define LUA_REG_ALTNAME(name, value) { char buf[256]; sprintf(buf, #name "=%d", value); luaL_dostring(L, buf); }
 
@@ -2102,23 +1912,6 @@ void XLocation::CommonLuaInitialization()
 
     lua_register(L, "ExecuteAIScript", ExecuteAIScript);
     lua_register(L, "CreateMushroom", CreateMushroom);
-
-    lua_register(L, "CRVW", CRVW);
-    lua_register(L, "CRBA", CRBA);
-    lua_register(L, "CRBO", CRBO);
-    lua_register(L, "CRA", CRA);
-    lua_register(L, "CRS", CRS);
-    lua_register(L, "CRR", CRR);
-    lua_register(L, "CRM", CRM);
-    lua_register(L, "CRD", CRD);
-    lua_register(L, "CRC", CRC);
-    lua_register(L, "CRAT", CRAT);
-    lua_register(L, "CRAT2", CRAT2);
-    lua_register(L, "CRL", CRL);
-    lua_register(L, "CREQ", CREQ);
-    lua_register(L, "CREQ2", CREQ2);
-    lua_register(L, "CRCOE", CRCOE);
-    lua_register(L, "CRCOD", CRCOD);
 
     luaopen_base(L);
     luaopen_string(L);
