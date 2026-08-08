@@ -222,8 +222,6 @@ class XObject : public std::enable_shared_from_this<XObject>
             objects[xguid] = this;
         }
 
-        static void StorePointer(XFile * f, XObject * p);
-        static XObject* RestorePointer(XFile * f, void* owner);
         static void InvalidateAllObjects();
         static XObject* GetObject(XGUID guid) {
             if (const auto it = objects.find(guid); it != objects.end()) {

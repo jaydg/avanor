@@ -357,8 +357,6 @@ class XLocation : public XObject
         static XFile* svg_file;
         static int StoreInt(lua_State * L);
         static int RestoreInt(lua_State * L);
-        static int StoreObject(lua_State * L);
-        static int RestoreObject(lua_State * L);
         static int BinaryAND(lua_State * L);
 
         static int ExecuteAIScript(lua_State * L);

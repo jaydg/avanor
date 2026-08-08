@@ -1364,23 +1364,6 @@ int XLocation::RestoreInt(lua_State * L)
     return 1;
 }
 
-int XLocation::StoreObject(lua_State * L)
-{
-    XObject * p = (XObject*)lua_topointer(L, 1);
-    StorePointer(svg_file, p);
-
-    return 0;
-
-}
-
-int XLocation::RestoreObject(lua_State * L)
-{
-    XObject * p = RestorePointer(svg_file, nullptr);
-    lua_pushlightuserdata(L, p);
-
-    return 1;
-}
-
 int XLocation::BinaryAND(lua_State * L)
 {
     int v1 = lua_tonumber(L, 1);
@@ -2078,8 +2061,6 @@ void XLocation::CommonLuaInitialization()
 
     lua_register(L, "StoreInt", StoreInt);
     lua_register(L, "RestoreInt", RestoreInt);
-    lua_register(L, "StoreObject", StoreObject);
-    lua_register(L, "RestoreObject", RestoreObject);
     lua_register(L, "BinaryAND", BinaryAND);
 
     lua_register(L, "ExecuteAIScript", ExecuteAIScript);

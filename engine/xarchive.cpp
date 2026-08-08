@@ -41,10 +41,10 @@ constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 int XArchive::StoreGame()
 {
-    // Location.StoreObject/RestoreObject (Lua bindings, game/location.cpp)
-    // still go through the legacy XFile-based StorePointer/RestorePointer
-    // mechanism - a separate scratch file for that, since it's an
-    // incompatible (raw binary) format from the JSON archive below.
+    // Location.StoreInt/RestoreInt (Lua bindings, game/location.cpp) still
+    // go through the legacy raw-binary XFile mechanism - a separate
+    // scratch file for that, since it's an incompatible format from the
+    // JSON archive below.
     XFile lua_file;
     XLocation::svg_file = &lua_file;
 
@@ -86,10 +86,9 @@ int XArchive::StoreGame()
         // main_creature is a raw XCreature* (used pervasively as one
         // throughout gameplay code, not worth converting) - saved as a
         // weak_ptr so it resolves via the same shared_ptr identity
-        // tracking as everything else in this archive, replacing the
-        // old guid-registry-based StorePointer/RestorePointer. Must
-        // come after Game.locations above: that's what actually
-        // registers this creature's shared_ptr id with Cereal.
+        // tracking as everything else in this archive. Must come after
+        // Game.locations above: that's what actually registers this
+        // creature's shared_ptr id with Cereal.
         ar(XCreature::ToWeakPtr(XCreature::main_creature));
 
         ar(SAVE_GAME_CONTROL);

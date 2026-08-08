@@ -95,34 +95,6 @@ void XObject::InvalidateAllObjects()
     }
 }
 
-void XObject::StorePointer(XFile * f, XObject * p)
-{
-    // Default to storing -1 to show that we later
-    // need to restore this pointer value as nullptr
-    long guid = -1;
-
-    if (p != nullptr) {
-        guid = p->guid();
-    }
-
-    f->Write(&guid, sizeof(guid));
-}
-
-XObject* XObject::RestorePointer(XFile * f, void* owner)
-{
-    long guid;
-
-    f->Read(&guid, sizeof(guid));
-
-    if (guid == -1) {
-        return nullptr;
-    }
-    else
-    {
-        return objects[guid];
-    }
-}
-
 void XObject::DumpAll()
 {
     XFile file;
