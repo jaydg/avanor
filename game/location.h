@@ -325,45 +325,45 @@ class XLocation : public XObject
         static void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
         static void CreateMushroom(void* location);
 
-        static int InflictDamage(lua_State * L);
-        static int ChangeStats(lua_State * L);
-        static int GetStats(lua_State * L);
-        static int Rand(lua_State * L);
-        static int SetEventHandler(lua_State * L);
-        static int CreateTimerEvent(lua_State * L);
+        static void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg);
+        static void ChangeStats(void* cr, int st, int val);
+        static int GetStats(void* cr, int st);
+        static int Rand(int val);
+        static void SetEventHandler(void* cr, const std::string& event);
+        static void CreateTimerEvent(const std::string& event, int ttm);
 
-        static int GetSkill(lua_State * L);
-        static int LearnSkill(lua_State * L);
-        static int MoneyOperation(lua_State * L);
+        static int GetSkill(void* cr, int skill);
+        static void LearnSkill(void* cr, int skill, int val);
+        static int MoneyOperation(void* cr, int val);
 
-        static int SetName(lua_State * L);
-        static int SetView(lua_State * L);
-        static int GetView(lua_State * L);
+        static void SetName(void* obj, const std::string& name);
+        static void SetView(void* obj, const std::string& view, int color);
+        static std::string GetView(void* obj);
 
-        static int isHero(lua_State * L);
-        static int isEnemy(lua_State * L);
-        static int SetItEnemyFor(lua_State * L);
-        static int SetEnemy(lua_State * L);
-        static int FindCreature(lua_State * L);
-        static int AddMessage(lua_State * L);
-        static int AskQuestion(lua_State * L);
-        static int Gender(lua_State * L);
+        static bool isHero(void* cr);
+        static bool isEnemy(void* cr1, void* cr2);
+        static void SetItEnemyFor(void* cr1, void* cr2);
+        static void SetEnemy(void* cr, int cr_class);
+        static void* FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+        static void AddMessage(const std::string& str);
+        static std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
+        static int Gender(void* cr);
 
-        static int GetObjectGUID(lua_State * L);
-        static int GetItemParam(lua_State * L);
-        static int SetItemBrand(lua_State * L);
+        static XGUID GetObjectGUID(void* obj);
+        static std::tuple<int, int, int, int, int, std::string> GetItemParam(void* item);
+        static void SetItemBrand(void* item, int br);
 
-        static int MakeEffect(lua_State * L);
-        static int DestroyObject(lua_State * L);
+        static int MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power);
+        static void DestroyObject(void* item);
 
-        static int SetCompanion(lua_State * L);
+        static void SetCompanion(void* owner, void* slave, bool flag);
 
-        static int GiveObjectToCreature(lua_State * L);
-        static int GiveAward(lua_State * L);
+        static void GiveObjectToCreature(void* item, void* cr);
+        static bool GiveAward(void* owner, XGUID aguid, void* target);
 
-        static int Quest(lua_State * L);
-        static int QuestModify(lua_State * L);
-        static int QuestStatus(lua_State * L);
+        static void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed);
+        static void QuestModify(int id, int status);
+        static int QuestStatus(int id);
 
         // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
         // the .cpp): whichever XCreature/XAnyPlace is currently firing
@@ -377,9 +377,9 @@ class XLocation : public XObject
         static size_t lua_int_index;
         static int StoreInt(lua_State * L);
         static int RestoreInt(lua_State * L);
-        static int BinaryAND(lua_State * L);
+        static bool BinaryAND(int v1, int v2);
 
-        static int ExecuteAIScript(lua_State * L);
+        static void ExecuteAIScript();
 
     protected:
         std::string brief_name; // max. 10 characters

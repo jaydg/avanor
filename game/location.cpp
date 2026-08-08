@@ -739,132 +739,84 @@ void XLocation::EventPlaceArea(int x, int y, int w, int h, const std::string& ev
     new XAnyPlace(area, current_location, (char*)event.c_str());
 }
 
-int XLocation::GetSkill(lua_State * L)
+int XLocation::GetSkill(void* cr, int skill)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int skill = lua_tonumber(L, 2);
-    XSkill * sk = p->sk->GetSkill((XSkill::Skill)skill);
-
-    if (sk) {
-        lua_pushnumber(L, sk->GetLevel());
-    } else {
-        lua_pushnumber(L, 0);
-    }
-
-    return 1;
+    XSkill * sk = ((XCreature*)cr)->sk->GetSkill((XSkill::Skill)skill);
+    return sk ? sk->GetLevel() : 0;
 }
 
-int XLocation::LearnSkill(lua_State * L)
+void XLocation::LearnSkill(void* cr, int skill, int val)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int skill = lua_tonumber(L, 2);
-    int val = lua_tonumber(L, 3);
+    XCreature * p = (XCreature*)cr;
 
     if (!p->sk->GetSkill((XSkill::Skill)skill)) {
         p->sk->Learn((XSkill::Skill)skill, val);
     }
-
-    return 0;
 }
 
-int XLocation::MoneyOperation(lua_State * L)
+int XLocation::MoneyOperation(void* cr, int val)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int val = lua_tonumber(L, 2);
-    lua_pushnumber(L, p->MoneyOp(val));
-    return 1;
+    return ((XCreature*)cr)->MoneyOp(val);
 }
 
-int XLocation::CreateTimerEvent(lua_State * L)
+void XLocation::CreateTimerEvent(const std::string& event, int ttm)
 {
-    current_location->event = lua_tostring(L, 1);
-    current_location->ttm = lua_tonumber(L, 2);
+    current_location->event = event;
+    current_location->ttm = ttm;
     current_location->ttmb = current_location->ttm;
     Game.Scheduler.Add(current_location);
-    return 0;
 }
 
 //InflictDamage (target, dmg, RESISTANCE_TYPE, creature ["msg"])
-int XLocation::InflictDamage(lua_State * L)
+void XLocation::InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int dmg = lua_tonumber(L, 2);
-    int resist = lua_tonumber(L, 3);
+    XCreature * p = (XCreature*)target;
     dmg = p->onMagicDamage(dmg, (RESISTANCE)resist);
     p->_HP -= dmg;
 
-    if (p->_HP < 0) {
-        if (lua_isstring(L, 4)) {
-            const char* str = lua_tostring(L, 4);
-            XFakeCreature * tcr = new XFakeCreature((char*)str);
-            p->Die(tcr);
-            tcr->Invalidate();
-        } else {
-        }
+    if (p->_HP < 0 && msg) {
+        XFakeCreature * tcr = new XFakeCreature((char*)msg->c_str());
+        p->Die(tcr);
+        tcr->Invalidate();
     }
-
-    return 0;
 }
 
-int XLocation::ChangeStats(lua_State * L)
+void XLocation::ChangeStats(void* cr, int st, int val)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int st = lua_tonumber(L, 2);
-    int val = lua_tonumber(L, 3);
-    p->GainAttr((STATS)st, val);
-    return 0;
+    ((XCreature*)cr)->GainAttr((STATS)st, val);
 }
 
-int XLocation::GetStats(lua_State * L)
+int XLocation::GetStats(void* cr, int st)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int st = lua_tonumber(L, 2);
-    int val = p->GetStats((STATS)st);
-    lua_pushnumber(L, val);
-    return 1;
+    return ((XCreature*)cr)->GetStats((STATS)st);
 }
 
-int XLocation::Rand(lua_State * L)
+int XLocation::Rand(int val)
 {
-    int val = lua_tonumber(L, 1);
-    lua_pushnumber(L, vRand(val));
-    return 1;
+    return vRand(val);
 }
 
-int XLocation::isHero(lua_State * L)
+bool XLocation::isHero(void* cr)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    lua_pushboolean(L, p->isHero());
-    return 1;
+    return ((XCreature*)cr)->isHero();
 }
 
-int XLocation::isEnemy(lua_State * L)
+bool XLocation::isEnemy(void* cr1, void* cr2)
 {
-    XCreature * p1 = (XCreature*)lua_topointer(L, 1);
-    XCreature * p2 = (XCreature*)lua_topointer(L, 2);
-
-    if (p1 && p2) {
-        lua_pushboolean(L, p1->xai->isEnemy(p2));
-    } else {
-        lua_pushboolean(L, false);
-    }
-
-    return 1;
+    XCreature * p1 = (XCreature*)cr1;
+    XCreature * p2 = (XCreature*)cr2;
+    return p1 && p2 && p1->xai->isEnemy(p2);
 }
 
-int XLocation::FindCreature(lua_State * L)
+void* XLocation::FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
-    int l_id = lua_tonumber(L, 1);
-    int gid = lua_tonumber(L, 2);
-    int n = lua_gettop(L);
-
     XRect rect(0, 0, Game.locations[l_id]->map->len, Game.locations[l_id]->map->hgt);
 
-    if (n == 6) {
-        rect.left = lua_tonumber(L, 3);
-        rect.top = lua_tonumber(L, 4);
-        rect.right = rect.left + lua_tonumber(L, 5);
-        rect.bottom = rect.top + lua_tonumber(L, 6);
+    if (x) {
+        rect.left = *x;
+        rect.top = *y;
+        rect.right = rect.left + *w;
+        rect.bottom = rect.top + *h;
     }
 
     for (int i = rect.left; i < rect.right; i++)
@@ -872,78 +824,52 @@ int XLocation::FindCreature(lua_State * L)
             XCreature* cr = Game.locations[l_id]->map->GetMonster(i, j);
 
             if (cr && cr->groupID() == gid) {
-                lua_pushlightuserdata(L, cr);
-                return 1;
+                return cr;
             }
         }
 
-    lua_pushlightuserdata(L, nullptr);
-    return 1;
+    return nullptr;
 }
 
-int XLocation::SetItEnemyFor(lua_State * L)
+void XLocation::SetItEnemyFor(void* cr1, void* cr2)
 {
-    XCreature * p1 = (XCreature*)lua_topointer(L, 1);
+    XCreature * p1 = (XCreature*)cr1;
+    XCreature * p2 = (XCreature*)cr2;
 
-    if (lua_islightuserdata(L, 2)) {
-        XCreature * p2 = (XCreature*)lua_topointer(L, 2);
-
-        if (p2 && p1) {
-            p2->xai->AddPersonalEnemy(p1);
-            p2->xai->SetGroupEnemy(p1);
-        }
+    if (p1 && p2) {
+        p2->xai->AddPersonalEnemy(p1);
+        p2->xai->SetGroupEnemy(p1);
     }
-
-    return 0;
 }
 
-int XLocation::SetEnemy(lua_State * L)
+void XLocation::SetEnemy(void* cr, int cr_class)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int cr_class = lua_tonumber(L, 2);
-    p->xai->SetEnemyClass((CREATURE_CLASS)cr_class);
-    return 0;
+    ((XCreature*)cr)->xai->SetEnemyClass((CREATURE_CLASS)cr_class);
 }
 
-int XLocation::Gender(lua_State * L)
+int XLocation::Gender(void* cr)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    int gender = p->GetGender();
-    lua_pushnumber(L, gender);
-    return 1;
+    return ((XCreature*)cr)->GetGender();
 }
 
-int XLocation::SetName(lua_State * L)
+void XLocation::SetName(void* obj, const std::string& name)
 {
-    XMapObject * p = (XMapObject*)lua_topointer(L, 1);
-    const char* str = lua_tostring(L, 2);
-    p->SetName(str);
-    return 0;
+    ((XMapObject*)obj)->SetName(name.c_str());
 }
 
-int XLocation::SetView(lua_State * L)
+void XLocation::SetView(void* obj, const std::string& view, int color)
 {
-    XMapObject * p = (XMapObject*)lua_topointer(L, 1);
-    const char* view = lua_tostring(L, 2);
-    int color = lua_tonumber(L, 3);
-    p->SetView(view[0], color);
-    return 0;
+    ((XMapObject*)obj)->SetView(view[0], color);
 }
 
-int XLocation::GetView(lua_State * L)
+std::string XLocation::GetView(void* obj)
 {
-    XMapObject * p = (XMapObject*)lua_topointer(L, 1);
-    char buf[2] = "A";
-    buf[0] = p->view;
-    lua_pushstring(L, buf);
-    return 1;
+    return std::string(1, ((XMapObject*)obj)->view);
 }
 
-int XLocation::AddMessage(lua_State * L)
+void XLocation::AddMessage(const std::string& str)
 {
-    const char* str = lua_tostring(L, 1);
     msgwin.Add(str);
-    return 0;
 }
 
 //AskQuestion("Are you sure?", "yn", "Yes", "No")
@@ -952,10 +878,8 @@ struct ASK_QUESTION_REC {
     int key;
 };
 
-int XLocation::AskQuestion(lua_State * L)
+std::string XLocation::AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va)
 {
-    const char* msg = lua_tostring(L, 1);
-    const char* key = lua_tostring(L, 2);
     msgwin.Add(msg);
 
     std::string out = "[";
@@ -966,7 +890,7 @@ int XLocation::AskQuestion(lua_State * L)
 
     std::vector<ASK_QUESTION_REC> keys;
 
-    while (sscanf(key + offs, "%s10%n", key_value, &offs) > 0) {
+    while (sscanf(key.c_str() + offs, "%s10%n", key_value, &offs) > 0) {
         ASK_QUESTION_REC aqr;
         std::string variant;
 
@@ -979,7 +903,7 @@ int XLocation::AskQuestion(lua_State * L)
             aqr.key = KEY_ENTER;
             aqr.val = "enter";
         } else {
-            variant = lua_tostring(L, 3 + index);
+            variant = va[index].get<std::string>();
             index++;
             char substring[] = "x";
             substring[0] = key_value[0];
@@ -1013,108 +937,77 @@ int XLocation::AskQuestion(lua_State * L)
 
     for (auto it: keys) {
         if (ch == it.key) {
-            lua_pushstring(L, it.val.c_str());
-            return 1;
+            return it.val;
         }
     }
 
-    lua_pushstring(L, keys.front().val.c_str());
-    return 1;
+    return keys.front().val;
 }
 
-int XLocation::SetEventHandler(lua_State * L)
+void XLocation::SetEventHandler(void* cr, const std::string& event)
 {
-    XCreature * p = (XCreature*)lua_topointer(L, 1);
-    const char* event = lua_tostring(L, 2);
-    p->SetEventHandler(event);
-    return 1;
+    ((XCreature*)cr)->SetEventHandler(event.c_str());
 }
 
-int XLocation::GetObjectGUID(lua_State * L)
+XGUID XLocation::GetObjectGUID(void* obj)
 {
-    XObject * p = (XObject*)lua_topointer(L, 1);
-    lua_pushnumber(L, p->guid());
-    return 1;
+    return ((XObject*)obj)->guid();
 }
 
-int XLocation::GetItemParam(lua_State * L)
+std::tuple<int, int, int, int, int, std::string> XLocation::GetItemParam(void* item)
 {
-    XItem * p = (XItem*)lua_topointer(L, 1);
-
-    lua_pushnumber(L, p->im);
-    lua_pushnumber(L, p->brt);
-    lua_pushnumber(L, p->wt);
-    lua_pushnumber(L, p->it);
-    lua_pushnumber(L, p->quantity);
-    lua_pushstring(L, p->name.c_str());
-
-    return 6;
+    XItem * p = (XItem*)item;
+    return {p->im, p->brt, p->wt, p->it, p->quantity, p->name};
 }
 
-int XLocation::SetItemBrand(lua_State * L)
+void XLocation::SetItemBrand(void* item, int br)
 {
-    XItem * p = (XItem*)lua_topointer(L, 1);
-    int br = lua_tonumber(L, 2);
-    p->brt = (BRAND_TYPE)br;
-    return 0;
+    ((XItem*)item)->brt = (BRAND_TYPE)br;
 }
 
-int XLocation::MakeEffect(lua_State * L)
+int XLocation::MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power)
 {
     EFFECT_DATA ed;
-    ed.effect = (EFFECT)lua_tonumber(L, 1);
-    ed.caller = (XCreature*)lua_topointer(L, 2);
-    ed.l = (XLocation*)lua_topointer(L, 3);
-    ed.call_x = lua_tonumber(L, 4);
-    ed.call_y = lua_tonumber(L, 5);
-    ed.target = (XCreature*)lua_topointer(L, 6);
-    ed.target_x = lua_tonumber(L, 7);
-    ed.target_y = lua_tonumber(L, 8);
-    ed.power = lua_tonumber(L, 9);
+    ed.effect = (EFFECT)effect;
+    ed.caller = (XCreature*)caller;
+    ed.l = (XLocation*)location;
+    ed.call_x = call_x;
+    ed.call_y = call_y;
+    ed.target = (XCreature*)target;
+    ed.target_x = target_x;
+    ed.target_y = target_y;
+    ed.power = power;
 
-    lua_pushnumber(L, XEffect::Make(&ed));
-
-    return 1;
+    return XEffect::Make(&ed);
 }
 
-int XLocation::DestroyObject(lua_State * L)
+void XLocation::DestroyObject(void* item)
 {
-    XItem * it = (XItem*)lua_topointer(L, 1);
-    it->Invalidate();
-
-    return 0;
+    ((XItem*)item)->Invalidate();
 }
 
-int XLocation::SetCompanion(lua_State * L)
+void XLocation::SetCompanion(void* owner, void* slave, bool flag)
 {
-    XCreature * owner = (XCreature*)lua_topointer(L, 1);
-    XCreature * slave = (XCreature*)lua_topointer(L, 2);
-    bool flag = lua_toboolean(L, 3);
+    XCreature * pOwner = (XCreature*)owner;
+    XCreature * pSlave = (XCreature*)slave;
 
     if (flag) {
-        slave->xai->SetCompanion(owner);
-        slave->xai->companion_command = CC_FOLLOW;
+        pSlave->xai->SetCompanion(pOwner);
+        pSlave->xai->companion_command = CC_FOLLOW;
     } else {
-        slave->xai->SetCompanion(nullptr);
+        pSlave->xai->SetCompanion(nullptr);
     }
-
-    return 0;
 }
 
-int XLocation::GiveObjectToCreature(lua_State * L)
+void XLocation::GiveObjectToCreature(void* item, void* cr)
 {
-    XItem * p = (XItem*)lua_topointer(L, 1);
-    XCreature * cr = (XCreature*)lua_topointer(L, 2);
-    cr->ContainItem(p);
-
-    return 0;
+    ((XCreature*)cr)->ContainItem((XItem*)item);
 }
 
-int XLocation::GiveAward(lua_State * L)
+bool XLocation::GiveAward(void* owner_ptr, XGUID aguid, void* target_ptr)
 {
-    const auto owner = (XCreature*)lua_topointer(L, 1);
-    const XGUID aguid = lua_tonumber(L, 2);
-    const auto target = (XCreature*)lua_topointer(L, 3);
+    const auto owner = (XCreature*)owner_ptr;
+    const auto target = (XCreature*)target_ptr;
     auto item = dynamic_cast<XItem *>(GetObject(aguid));
 
     // Keep a live shared_ptr across the whole transfer below - owner's
@@ -1149,51 +1042,36 @@ int XLocation::GiveAward(lua_State * L)
             owner->DropItem(item);
         }
 
-        lua_pushboolean(L, true);
-    } else {
-        lua_pushboolean(L, false);
+        return true;
     }
 
-    return 1;
+    return false;
 }
 
-int XLocation::Quest(lua_State * L)
+void XLocation::Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed)
 {
     auto qr = std::make_unique<XQuestRec>();
-    qr->quest_id = lua_tonumber(L, 1);
-    qr->status = (QUEST)lua_tonumber(L, 2);
-    qr->know = lua_tostring(L, 3);
-    qr->complete = lua_tostring(L, 4);
-    qr->closed = lua_tostring(L, 5);
+    qr->quest_id = quest_id;
+    qr->status = (QUEST)status;
+    qr->know = know;
+    qr->complete = complete;
+    qr->closed = closed;
     XQuest::quest.quests.push_back(std::move(qr));
-
-    return 0;
 }
 
-int XLocation::QuestModify(lua_State * L)
+void XLocation::QuestModify(int id, int status)
 {
-    int id = lua_tonumber(L, 1);
     XQuestRec * qr = XQuest::quest.Find(id);
 
     if (qr) {
-        qr->status = (QUEST)lua_tonumber(L, 2);
+        qr->status = (QUEST)status;
     }
-
-    return 0;
 }
 
-int XLocation::QuestStatus(lua_State * L)
+int XLocation::QuestStatus(int id)
 {
-    int id = lua_tonumber(L, 1);
     XQuestRec * qr = XQuest::quest.Find(id);
-
-    if (qr) {
-        lua_pushnumber(L, qr->status);
-    } else {
-        lua_pushnumber(L, Q_UNKNOWN);
-    }
-
-    return 1;
+    return qr ? qr->status : Q_UNKNOWN;
 }
 
 std::vector<int>* XLocation::lua_int_buffer = nullptr;
@@ -1214,16 +1092,12 @@ int XLocation::RestoreInt(lua_State * L)
     return 1;
 }
 
-int XLocation::BinaryAND(lua_State * L)
+bool XLocation::BinaryAND(int v1, int v2)
 {
-    int v1 = lua_tonumber(L, 1);
-    int v2 = lua_tonumber(L, 2);
-    lua_pushboolean(L, (v1 & v2));
-
-    return 1;
+    return v1 & v2;
 }
 
-int XLocation::ExecuteAIScript(lua_State * L)
+void XLocation::ExecuteAIScript()
 {
     std::vector<SCRIPT_CMD> script;
     SCRIPT_CMD cmd;
@@ -1260,8 +1134,6 @@ int XLocation::ExecuteAIScript(lua_State * L)
             creature->xai->ExecuteScript(script);
         }
     }
-
-    return 0;
 }
 
 void XLocation::CreateMushroom(void* location)
@@ -1695,50 +1567,8 @@ void XLocation::CommonLuaInitialization()
     LUA_REG(E_COLD_RESISTANCE);
     LUA_REG(E_POISON_RESISTANCE);
 
-    lua_register(L, "isHero", isHero);
-    lua_register(L, "isEnemy", isEnemy);
-    lua_register(L, "FindCreature", FindCreature);
-
-    lua_register(L, "AddMessage", AddMessage);
-    lua_register(L, "AskQuestion", AskQuestion);
-
-    lua_register(L, "SetItEnemyFor", SetItEnemyFor);
-    lua_register(L, "SetEnemy", SetEnemy);
-    lua_register(L, "ChangeStats", ChangeStats);
-    lua_register(L, "GetStats", GetStats);
-    lua_register(L, "InflictDamage", InflictDamage);
-    lua_register(L, "Rand", Rand);
-    lua_register(L, "SetEventHandler", SetEventHandler);
-    lua_register(L, "CreateTimerEvent", CreateTimerEvent);
-
-    lua_register(L, "GetSkill", GetSkill);
-    lua_register(L, "LearnSkill", LearnSkill);
-    lua_register(L, "MoneyOperation", MoneyOperation);
-
-    lua_register(L, "SetName", SetName);
-    lua_register(L, "SetView", SetView);
-    lua_register(L, "GetView", GetView);
-
-    lua_register(L, "GetObjectGUID", GetObjectGUID);
-    lua_register(L, "GetItemParam", GetItemParam);
-    lua_register(L, "SetItemBrand", SetItemBrand);
-    lua_register(L, "GiveObjectToCreature", GiveObjectToCreature);
-    lua_register(L, "GiveAward", GiveAward);
-
-    lua_register(L, "MakeEffect", MakeEffect);
-    lua_register(L, "DestroyObject", DestroyObject);
-    lua_register(L, "SetCompanion", SetCompanion);
-
-    lua_register(L, "Quest", Quest);
-    lua_register(L, "QuestModify", QuestModify);
-    lua_register(L, "QuestStatus", QuestStatus);
-    lua_register(L, "Gender", Gender);
-
     lua_register(L, "StoreInt", StoreInt);
     lua_register(L, "RestoreInt", RestoreInt);
-    lua_register(L, "BinaryAND", BinaryAND);
-
-    lua_register(L, "ExecuteAIScript", ExecuteAIScript);
 
     luaopen_base(L);
     luaopen_string(L);
@@ -1795,6 +1625,52 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("Trap", &XLocation::Trap);
         lua.set_function("EventPlace", sol::overload(&XLocation::EventPlace, &XLocation::EventPlaceArea));
         lua.set_function("CreateMushroom", &XLocation::CreateMushroom);
+    }
+
+    {
+        sol::state_view lua(L);
+        lua.set_function("isHero", &XLocation::isHero);
+        lua.set_function("isEnemy", &XLocation::isEnemy);
+        lua.set_function("FindCreature", &XLocation::FindCreature);
+
+        lua.set_function("AddMessage", &XLocation::AddMessage);
+        lua.set_function("AskQuestion", &XLocation::AskQuestion);
+
+        lua.set_function("SetItEnemyFor", &XLocation::SetItEnemyFor);
+        lua.set_function("SetEnemy", &XLocation::SetEnemy);
+        lua.set_function("ChangeStats", &XLocation::ChangeStats);
+        lua.set_function("GetStats", &XLocation::GetStats);
+        lua.set_function("InflictDamage", &XLocation::InflictDamage);
+        lua.set_function("Rand", &XLocation::Rand);
+        lua.set_function("SetEventHandler", &XLocation::SetEventHandler);
+        lua.set_function("CreateTimerEvent", &XLocation::CreateTimerEvent);
+
+        lua.set_function("GetSkill", &XLocation::GetSkill);
+        lua.set_function("LearnSkill", &XLocation::LearnSkill);
+        lua.set_function("MoneyOperation", &XLocation::MoneyOperation);
+
+        lua.set_function("SetName", &XLocation::SetName);
+        lua.set_function("SetView", &XLocation::SetView);
+        lua.set_function("GetView", &XLocation::GetView);
+
+        lua.set_function("GetObjectGUID", &XLocation::GetObjectGUID);
+        lua.set_function("GetItemParam", &XLocation::GetItemParam);
+        lua.set_function("SetItemBrand", &XLocation::SetItemBrand);
+        lua.set_function("GiveObjectToCreature", &XLocation::GiveObjectToCreature);
+        lua.set_function("GiveAward", &XLocation::GiveAward);
+
+        lua.set_function("MakeEffect", &XLocation::MakeEffect);
+        lua.set_function("DestroyObject", &XLocation::DestroyObject);
+        lua.set_function("SetCompanion", &XLocation::SetCompanion);
+
+        lua.set_function("Quest", &XLocation::Quest);
+        lua.set_function("QuestModify", &XLocation::QuestModify);
+        lua.set_function("QuestStatus", &XLocation::QuestStatus);
+        lua.set_function("Gender", &XLocation::Gender);
+
+        lua.set_function("BinaryAND", &XLocation::BinaryAND);
+
+        lua.set_function("ExecuteAIScript", &XLocation::ExecuteAIScript);
     }
 
     luaL_dofile(L, "./world/init.lua");
