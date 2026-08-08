@@ -45,6 +45,8 @@ extern "C"
 #include "lualib.h"
 }
 
+#include <sol/sol.hpp>
+
 int XLocation::rand_location_count = L_RANDOM;
 
 REGISTER_CLASS(XLocation);
@@ -2090,6 +2092,15 @@ void XLocation::CommonLuaInitialization()
 
     luaL_dostring(L, "LoadScripts()");
     XCreatureStorage::CreateQuickBase();
+
+    // Additive only: nothing above depends on this, and nothing
+    // below reads Sol2Ping.
+    {
+        sol::state_view lua(L);
+        lua.set_function("Sol2Ping", [](int x) { return x + 1; });
+        assert(lua["Sol2Ping"](41).get<int>() == 42);
+        assert(lua.script("return Sol2Ping(99)").get<int>() == 100);
+    }
 }
 
 void XLocation::Restoration()
