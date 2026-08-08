@@ -391,6 +391,25 @@ class XCreature : public XBaseObject
         void FixupCreatureInfo();
         void NotifyLuaEventHandler(LUA_EVENT event) const;
 
+        // Also defined in creature.cpp. This header does #include
+        // "creature/std_ai.h" above (needed regardless: ar(xai) below
+        // requires XStandardAI complete for Cereal to resolve its
+        // serialize(), in every TU that instantiates this template) -
+        // but that alone isn't enough to call xai->SetOwner(this)
+        // directly here. It's a non-dependent expression (doesn't
+        // mention Archive), so GCC resolves it eagerly, at the textual
+        // point this template is first parsed - and in any TU that
+        // reaches std_ai.h before creature.h (std_ai.h includes this
+        // header back; the include guard makes that nested include a
+        // no-op, so creature.h's own body gets parsed, StandardAI and
+        // all, before std_ai.h reaches its own class XStandardAI
+        // definition), that point still sees it incomplete, regardless
+        // of it becoming complete later in the same file. ar(xai) above
+        // doesn't hit this: Cereal's dispatch is a dependent expression,
+        // resolved at instantiation time, by which point the whole TU
+        // (and so std_ai.h, however it got there) has been seen.
+        void FixupXaiOwner();
+
         // magic/modifier.h can't be #included here (magic/modifiers.h
         // includes this header right back, and unlike XCreatureStorage/
         // Lua above, `md` actually needs dereferencing inline in
@@ -503,9 +522,7 @@ class XCreature : public XBaseObject
             ar(xai);
 
             if constexpr (Archive::is_loading::value) {
-                if (xai) {
-                    xai->SetOwner(this);
-                }
+                FixupXaiOwner();
             }
 
             ar(action_data);

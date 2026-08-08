@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/anycr.h"
 #include "creature/creature.h"
 #include "creature/los.h"
+#include "creature/std_ai.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
@@ -1622,6 +1623,13 @@ void XCreature::FixupCreatureInfo()
 {
     if (!isHero()) { //skip restoing of descriptions and other for hero
         XCreatureStorage::RestoreCreatureInfo(this);
+    }
+}
+
+void XCreature::FixupXaiOwner()
+{
+    if (xai) {
+        xai->SetOwner(this);
     }
 }
 
