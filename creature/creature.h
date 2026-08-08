@@ -117,8 +117,9 @@ struct ACTION_DATA {
     // See XItem::Own().
     std::shared_ptr<XItem> item;
 
-    // `item` was never actually persisted even before Cereal (see the
-    // FIXME still in Store/Restore) - new real persistence.
+    // `item` was never actually persisted even before Cereal (the
+    // legacy XFile-based Store/Restore, since removed, left it as a
+    // FIXME) - new real persistence.
     template<class Archive>
     void serialize(Archive& ar)
     {
@@ -414,18 +415,19 @@ class XCreature : public XBaseObject
         // for non-hero creatures, same as the existing Restore().
         //
         // event_handler mirrors XOuterObject::onEventLua (an owned heap
-        // char*, not std::string) but also fires the same Lua
-        // LE_SAVE/LE_LOAD notification the existing Store/Restore
-        // already do, via NotifyLuaEventHandler() (kept out of this
-        // header since it needs the Lua C headers, which nothing else
-        // here requires).
+        // char*, not std::string), firing the same Lua LE_SAVE/LE_LOAD
+        // notification the legacy Store/Restore (since removed) used
+        // to, via NotifyLuaEventHandler() (kept out of this header
+        // since it needs the Lua C headers, which nothing else here
+        // requires).
         //
         // xai's ai_owner isn't part of XStandardAI::serialize() (see
         // std_ai.h) - fixed up here immediately after loading it.
         //
         // contain/components/xai/sk/m/md/wsk were all entirely unsaved
-        // before this (see the FIXMEs still in Store/Restore) - new
-        // real persistence, not a mechanical port.
+        // before this (the legacy Store/Restore, since removed, left
+        // them as FIXMEs) - new real persistence, not a mechanical
+        // port.
         //
         // One symmetric serialize() rather than a split save()/load()
         // pair: a base class (XBaseObject) has its own member

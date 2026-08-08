@@ -137,18 +137,18 @@ class XStandardAI
         void AddPersonalEnemy(XCreature * cr);
         void RemovePersonalEnemy(const XCreature* cr);
 
-        // Matches Store/Restore's actual current scope, not just what's
-        // convenient - companion/ordered_enemy/personal_enemy/last_enemy
-        // (all weak_ptr<XCreature>, easy to serialize) and script were
-        // never persisted even before Cereal, a pre-existing design
-        // choice rather than a migration regression, so left alone here
-        // too. last_moved_way/known_traps (raw XMapObject* - Store
-        // already writes last_moved_way but Restore's read side is
-        // commented out, and known_traps is a live FIXME) are also
-        // deliberately deferred - XMapObject-derived types aren't part
-        // of the shared_ptr graph yet (see the map_objects.h commit),
-        // so there's no Cereal-trackable identity to resolve a raw
-        // cross-reference to them against until that happens.
+        // Matches the legacy Store/Restore's actual scope, not just
+        // what's convenient - companion/ordered_enemy/personal_enemy/
+        // last_enemy (all weak_ptr<XCreature>, easy to serialize) and
+        // script were never persisted even before Cereal, a
+        // pre-existing design choice rather than a migration
+        // regression, so left alone here too. last_moved_way/
+        // known_traps (raw XMapObject*) are also still deliberately
+        // unpersisted - unlike XShopKeeperAI::shop (see
+        // XLocation::FixupShops()), nothing currently re-derives these
+        // structurally after load, so a restored creature's AI starts
+        // with no memory of traps it had already found. Worth
+        // revisiting, but out of scope here.
         //
         // ai_owner isn't serialized here either - XStandardAI always
         // lives 1:1 inside its owning XCreature (see xai), so it's

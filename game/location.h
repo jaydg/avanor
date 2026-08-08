@@ -184,12 +184,12 @@ class XLocation : public XObject
         // unique_ptr-owned homes (XStairWay via a map cell's
         // pSpecialObject, or an XAnyPlace via `places`) - not something
         // Cereal can track identity for directly, so it's rebuilt
-        // structurally after load instead of persisted. This is the same
-        // reconstruction the legacy Restore() already did for the
-        // `places`-derived half (see the FIXME'd Restore() below); the
+        // structurally after load instead of persisted. This is the
+        // same reconstruction the legacy Restore() (since removed)
+        // already did for the `places`-derived half; the
         // pSpecialObject-derived half (from NewWay()) was never
-        // reconstructed by the old system at all - real persistence, not
-        // a mechanical port.
+        // reconstructed by the old system at all - real persistence,
+        // not a mechanical port.
         void FixupWaysList();
 
         // XMapTile::pMonster/item_list round-trip a creature's/item's own

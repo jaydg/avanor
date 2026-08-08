@@ -158,8 +158,8 @@ class XMagic
 
         std::vector<std::unique_ptr<XSpell>> spells;
 
-        // Store/Restore above are already entirely stubbed out (see the
-        // FIXME in magic.cpp) - this is new real persistence, not a
+        // The legacy Store/Restore (since removed) were already
+        // entirely stubbed out - this is new real persistence, not a
         // mechanical port.
         template<class Archive>
         void serialize(Archive& ar)

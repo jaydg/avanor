@@ -139,9 +139,9 @@ class XBasicModifier
         }
 
         // `setter` was never actually persisted even before the
-        // shared_ptr migration (Store/Restore only ever wrote val/mdt -
-        // see the FIXME left in place in modifiers.cpp) - this is new
-        // real persistence, not a mechanical port.
+        // shared_ptr migration (the legacy Store/Restore, since
+        // removed, only ever wrote val/mdt) - this is new real
+        // persistence, not a mechanical port.
         template<class Archive>
         void serialize(Archive& ar)
         {

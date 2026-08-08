@@ -28,9 +28,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // None of these are XObject-derived, so there's no REGISTER_CLASS/
 // DYNCREATE entry to sit next to - this polymorphic hierarchy (held as
 // vector<unique_ptr<XBasicModifier>> in XModifier::ml) never had a
-// working save-time type tag at all; XModifier::Store/Restore and
-// XBasicModifier::Store/Restore were already stubbed out/incomplete
-// before this (see the FIXMEs still in this file) - Cereal's own
+// working save-time type tag at all; the legacy XModifier::Store/
+// Restore and XBasicModifier::Store/Restore (since removed) were
+// already stubbed out/incomplete before this - Cereal's own
 // polymorphic registration is what makes real persistence here possible
 // for the first time, not a mechanical port.
 //
