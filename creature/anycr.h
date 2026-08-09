@@ -59,7 +59,7 @@ enum GENERATION_FLAGS {
 void RegisterGenerationFlagsEnum(sol::state_view& lua);
 
 
-struct _CREATURE {
+struct CREATURE_DEF {
     //view
     std::string name;               // "kobold"
     char view;                      // 'k'
@@ -105,15 +105,15 @@ class XCreatureStorage
         // replacing the old switch(cn) over a small numeric range
         // (cn >= CN_UNIQUE). Every other monster, no matter what its
         // XCreature::unique flag says, gets the generic XAnyCreature.
-        static const std::unordered_map<CREATURE_NAME, XCreature*(*)(_CREATURE*)> unique_creators;
+        static const std::unordered_map<CREATURE_NAME, XCreature*(*)(CREATURE_DEF*)> unique_creators;
 
     public:
-        static std::unordered_map<CREATURE_NAME, _CREATURE> creature_storage;
+        static std::unordered_map<CREATURE_NAME, CREATURE_DEF> creature_storage;
         static CREATURE_SET_REC creature_set[32];
 
         static void CreateQuickBase();
 
-        static _CREATURE* GetCreatureData(CREATURE_NAME cn);
+        static CREATURE_DEF* GetCreatureData(CREATURE_NAME cn);
         static XCreature* Create(CREATURE_NAME cn);
         static XCreature* CreateRnd(CREATURE_CLASS cc, int lvl = CRL_ANY);
         static void RestoreCreatureInfo(XCreature * cr);
@@ -148,13 +148,13 @@ class MonsterBuilder
     private:
         CREATURE_NAME id;
 
-        // {}, not left default-initialized: _CREATURE's plain int/enum
+        // {}, not left default-initialized: CREATURE_DEF's plain int/enum
         // members (ai_flags, cr_class, ...) have no default constructor
         // of their own to zero them, unlike its std::string/XDice/vector
         // members - value-initializing here matches what
         // creature_storage[cn] (an unordered_map) already does for a
         // fresh entry.
-        _CREATURE cr{};
+        CREATURE_DEF cr{};
 };
 
 class XAnyCreature : public XCreature
@@ -165,7 +165,7 @@ class XAnyCreature : public XCreature
 
     public:
         DECLARE_CREATOR(XAnyCreature, XCreature);
-        explicit XAnyCreature(_CREATURE * cr);
+        explicit XAnyCreature(CREATURE_DEF * cr);
         void Die(XCreature * killer) override;
 
         template<class Archive>

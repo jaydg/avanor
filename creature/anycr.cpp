@@ -41,21 +41,21 @@ REGISTER_CLASS(XAnyCreature);
 CEREAL_REGISTER_TYPE(XAnyCreature);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XAnyCreature);
 
-std::unordered_map<CREATURE_NAME, _CREATURE> XCreatureStorage::creature_storage;
+std::unordered_map<CREATURE_NAME, CREATURE_DEF> XCreatureStorage::creature_storage;
 CREATURE_SET_REC XCreatureStorage::creature_set[32];
 
-const std::unordered_map<CREATURE_NAME, XCreature*(*)(_CREATURE*)> XCreatureStorage::unique_creators = {
-    {CN_BANDIT,     [](_CREATURE* cr) -> XCreature* { return new XBandit(cr); }},
-    {CN_SHOPKEEPER, [](_CREATURE* cr) -> XCreature* { return new XShopkeeper(cr); }},
-    {CN_GEFEON,     [](_CREATURE* cr) -> XCreature* { return new XGefeon(cr); }},
-    {CN_RODERIK,    [](_CREATURE* cr) -> XCreature* { return new XRoderick(cr); }},
-    {CN_BEELZEVILE, [](_CREATURE* cr) -> XCreature* { return new XBeelzvile(cr); }},
-    {CN_HIGHPRIEST, [](_CREATURE* cr) -> XCreature* { return new XHighPriest(cr); }},
-    {CN_ROTMOTH,    [](_CREATURE* cr) -> XCreature* { return new XRotmoth(cr); }},
-    {CN_GIANA,      [](_CREATURE* cr) -> XCreature* { return new XGiana(cr); }},
+const std::unordered_map<CREATURE_NAME, XCreature*(*)(CREATURE_DEF*)> XCreatureStorage::unique_creators = {
+    {CN_BANDIT,     [](CREATURE_DEF* cr) -> XCreature* { return new XBandit(cr); }},
+    {CN_SHOPKEEPER, [](CREATURE_DEF* cr) -> XCreature* { return new XShopkeeper(cr); }},
+    {CN_GEFEON,     [](CREATURE_DEF* cr) -> XCreature* { return new XGefeon(cr); }},
+    {CN_RODERIK,    [](CREATURE_DEF* cr) -> XCreature* { return new XRoderick(cr); }},
+    {CN_BEELZEVILE, [](CREATURE_DEF* cr) -> XCreature* { return new XBeelzvile(cr); }},
+    {CN_HIGHPRIEST, [](CREATURE_DEF* cr) -> XCreature* { return new XHighPriest(cr); }},
+    {CN_ROTMOTH,    [](CREATURE_DEF* cr) -> XCreature* { return new XRotmoth(cr); }},
+    {CN_GIANA,      [](CREATURE_DEF* cr) -> XCreature* { return new XGiana(cr); }},
 };
 
-XAnyCreature::XAnyCreature(_CREATURE * cr)
+XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
 {
     view = cr->view;
     color = cr->color;
@@ -271,7 +271,7 @@ void XAnyCreature::Die(XCreature * killer)
     XCreature::Die(killer);
 }
 
-_CREATURE* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
+CREATURE_DEF* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 {
     return &creature_storage.at(cn);
 }
@@ -285,7 +285,7 @@ void XCreatureStorage::CreateQuickBase()
 
 XCreature* XCreatureStorage::Create(const CREATURE_NAME cn)
 {
-    _CREATURE * cr = &creature_storage.at(cn);
+    CREATURE_DEF * cr = &creature_storage.at(cn);
     XCreature * tcr = nullptr;
 
     if (auto it = unique_creators.find(cn); it != unique_creators.end()) {
@@ -329,7 +329,7 @@ void XCreatureStorage::RestoreCreatureInfo(XCreature* cr)
     // FixupCreatureInfo(), which calls this too). True for a hand-
     // written unique-NPC class (registry membership) or a generic
     // monster explicitly marked unique in its own definition (see
-    // _CREATURE::unique) - either can be true without the other.
+    // CREATURE_DEF::unique) - either can be true without the other.
     cr->unique = unique_creators.find(cr->creature_name) != unique_creators.end()
         || creature_storage[cr->creature_name].unique;
 }

@@ -40,7 +40,7 @@ REGISTER_CLASS(XBeelzvile);
 CEREAL_REGISTER_TYPE(XBeelzvile);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBeelzvile);
 
-XBeelzvile::XBeelzvile(_CREATURE * cr) : XAnyCreature(cr)
+XBeelzvile::XBeelzvile(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
     if (XSettings::isDemo) {
         XCreature::main_creature = this;
@@ -76,7 +76,7 @@ void XBeelzvile::Move()
 REGISTER_CLASS(XGefeon);
 CEREAL_REGISTER_TYPE(XGefeon);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGefeon);
-XGefeon::XGefeon(_CREATURE * cr) : XAnyCreature(cr) { }
+XGefeon::XGefeon(CREATURE_DEF * cr) : XAnyCreature(cr) { }
 
 int XGefeon::Chat(XCreature * chatter, const char* msg)
 {
@@ -113,7 +113,7 @@ int XGefeon::Chat(XCreature * chatter, const char* msg)
 REGISTER_CLASS(XRoderick);
 CEREAL_REGISTER_TYPE(XRoderick);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XRoderick);
-XRoderick::XRoderick(_CREATURE * cr) : XAnyCreature(cr)
+XRoderick::XRoderick(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
     XPotion * pt = new XPotion(PN_HEALING);
     ContainItem(pt);
@@ -204,7 +204,7 @@ int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 REGISTER_CLASS(XHighPriest);
 CEREAL_REGISTER_TYPE(XHighPriest);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XHighPriest);
-XHighPriest::XHighPriest(_CREATURE * cr) : XAnyCreature(cr)
+XHighPriest::XHighPriest(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
     XPotion * pt = new XPotion(PN_HEALING);
     ContainItem(pt);
@@ -287,7 +287,7 @@ CEREAL_REGISTER_TYPE(XRotmoth);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XRotmoth);
 CEREAL_REGISTER_TYPE(XRotmothAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XRotmothAI);
-XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
+XRotmoth::XRotmoth(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XRotmothAI>(this);
     xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
@@ -354,7 +354,7 @@ void XRotmothAI::onWasAttacked(XCreature * attacker)
 REGISTER_CLASS(XGiana);
 CEREAL_REGISTER_TYPE(XGiana);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGiana);
-XGiana::XGiana(_CREATURE * cr) : XAnyCreature(cr)
+XGiana::XGiana(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
 }
 
@@ -394,7 +394,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBandit);
 CEREAL_REGISTER_TYPE(XBanditAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XBanditAI);
 
-XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
+XBandit::XBandit(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XBanditAI>(this);
     xai->SetAIFlag(XStandardAI::GUARD_AREA);
@@ -442,7 +442,7 @@ REGISTER_CLASS(XShopkeeper);
 CEREAL_REGISTER_TYPE(XShopkeeper);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XShopkeeper);
 
-XShopkeeper::XShopkeeper(_CREATURE * cr) : XAnyCreature(cr)
+XShopkeeper::XShopkeeper(CREATURE_DEF * cr) : XAnyCreature(cr)
 {
     // Wear() puts the item in the inventory itself now (see
     // XBodyPart::Wear()), so the explicit CarryItem() calls that used to
