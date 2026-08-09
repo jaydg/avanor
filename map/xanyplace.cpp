@@ -26,14 +26,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map.h"
 #include "map/xanyplace.h"
 
+#include <sol/sol.hpp>
+
 REGISTER_CLASS(XAnyPlace);
 CEREAL_REGISTER_TYPE(XAnyPlace);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XObject, XAnyPlace);
-
-extern "C"
-{
-#include "lauxlib.h"
-}
 
 void XAnyPlace::NotifyLuaEvent(bool is_load)
 {
@@ -44,12 +41,8 @@ void XAnyPlace::NotifyLuaEvent(bool is_load)
         return;
     }
 
-    lua_pushstring(XLocation::L, onEventLua);
-    lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-    lua_pushnumber(XLocation::L, is_load ? LE_LOAD : LE_SAVE);
-    lua_call(XLocation::L, 1, 1);
-    lua_tonumber(XLocation::L, 2);
-    lua_pop(XLocation::L, 1);
+    sol::state_view lua(XLocation::L);
+    lua[onEventLua](is_load ? LE_LOAD : LE_SAVE);
 }
 
 XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc) : area(_area)
@@ -77,53 +70,51 @@ XAnyPlace::~XAnyPlace()
 
 int XAnyPlace::onCreatureMove(XCreature* cr)
 {
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_MOVE);
-        lua_pushlightuserdata(XLocation::L, cr);
-        lua_call(XLocation::L, 2, 1);
-        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
-        lua_pop(XLocation::L, 1);
-
-        return res;
+    if (!onEventLua) {
+        return 0;
     }
 
-    return 0;
+    // cr stays void*, not XCreature* - Sol2 pushes void* as light userdata
+    sol::state_view lua(XLocation::L);
+    sol::protected_function_result result = lua[onEventLua](LE_MOVE, (void*)cr);
+
+    if (!result.valid()) {
+        return 0;
+    }
+
+    return result.get<sol::optional<int>>().value_or(0);
 }
 
 int XAnyPlace::onCreatureEnter(XCreature* cr)
 {
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_MOVE_IN);
-        lua_pushlightuserdata(XLocation::L, cr);
-        lua_call(XLocation::L, 2, 1);
-        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
-        lua_pop(XLocation::L, 1);
-
-        return res;
+    if (!onEventLua) {
+        return 0;
     }
 
-    return 0;
+    sol::state_view lua(XLocation::L);
+    sol::protected_function_result result = lua[onEventLua](LE_MOVE_IN, (void*)cr);
+
+    if (!result.valid()) {
+        return 0;
+    }
+
+    return result.get<sol::optional<int>>().value_or(0);
 }
 
 int XAnyPlace::onCreatureLeave(XCreature* cr)
 {
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_MOVE_OUT);
-        lua_pushlightuserdata(XLocation::L, cr);
-        lua_call(XLocation::L, 2, 1);
-        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
-        lua_pop(XLocation::L, 1);
-
-        return res;
+    if (!onEventLua) {
+        return 0;
     }
 
-    return 0;
+    sol::state_view lua(XLocation::L);
+    sol::protected_function_result result = lua[onEventLua](LE_MOVE_OUT, (void*)cr);
+
+    if (!result.valid()) {
+        return 0;
+    }
+
+    return result.get<sol::optional<int>>().value_or(0);
 }
 
 void XAnyPlace::Invalidate()

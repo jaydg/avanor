@@ -30,10 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-extern "C"
-{
-#include "lauxlib.h"
-}
+#include <sol/sol.hpp>
 
 REGISTER_CLASS(XTrap);
 CEREAL_REGISTER_TYPE(XTrap);
@@ -656,19 +653,17 @@ XOuterObject::~XOuterObject()
 
 int XOuterObject::onOuterUse(XCreature* cr)
 {
-    if (onEventLua) {
-        lua_pushstring(XLocation::L, onEventLua);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_OUTER_USE);
-        lua_pushlightuserdata(XLocation::L, cr);
-        lua_pushlightuserdata(XLocation::L, this);
-        lua_call(XLocation::L, 3, 1);
-        const int res = static_cast<int>(lua_tonumber(XLocation::L, 2));
-        lua_pop(XLocation::L, 1);
-
-        return res;
+    if (!onEventLua) {
+        return XMapObject::onOuterUse(cr);
     }
 
-    return XMapObject::onOuterUse(cr);
+    sol::state_view lua(XLocation::L);
+    sol::protected_function_result result = lua[onEventLua](LE_OUTER_USE, (void*)cr, (void*)this);
+
+    if (!result.valid()) {
+        return 0;
+    }
+
+    return result.get<sol::optional<int>>().value_or(0);
 }
 

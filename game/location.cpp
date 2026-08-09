@@ -158,14 +158,15 @@ void XLocation::Invalidate()
 bool XLocation::Run()
 {
     if (event.size()) {
-        lua_pushstring(XLocation::L, event.c_str());
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushlightuserdata(XLocation::L, this);
-        lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 3);
-        lua_pop(XLocation::L, 1);
+        sol::state_view lua(XLocation::L);
+        sol::protected_function_result result = lua[event]((void*)this);
         ttm = ttmb;
-        return res;
+
+        if (!result.valid()) {
+            return true;
+        }
+
+        return result.get<sol::optional<int>>().value_or(0) != 0;
     }
 
     return true;
