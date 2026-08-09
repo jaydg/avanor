@@ -28,7 +28,7 @@ CEREAL_REGISTER_TYPE(XScroll);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XScroll);
 
 struct SCROLL_REC {
-    SCROLL_REC(const char* rn, EFFECT eff, SCROLL_NAME scrn, int val, int rar) //generate scroll name
+    SCROLL_REC(const char* rn, XEffect::Id eff, SCROLL_NAME scrn, int val, int rar) //generate scroll name
     {
         real_name = rn;
         effect = eff;
@@ -66,7 +66,7 @@ struct SCROLL_REC {
         }
     };
 
-    EFFECT effect;
+    XEffect::Id effect;
     SCROLL_NAME scroll_name;
     int identify;
     std::string name;
@@ -92,25 +92,25 @@ struct SCROLL_REC {
 int SCROLL_REC::total_value = 0;
 
 SCROLL_REC scroll_descr[] = {
-    SCROLL_REC("healing",	E_HEAL,	SCROLL_HEALING,	200,	10),
-    SCROLL_REC("burning hands",	E_BURNING_HANDS,	SCROLL_BURNING_HANDS,	20,	100),
-    SCROLL_REC("ice touch",	E_ICE_TOUCH,	SCROLL_ICE_TOUCH,	20,	100),
-    SCROLL_REC("heroism",	E_HEROISM,	SCROLL_HEROISM,	25,	100),
-    SCROLL_REC("power",	E_POWER,	SCROLL_POWER,	15,	100),
-    SCROLL_REC("identify",	E_IDENTIFY,	SCROLL_IDENTIFY,	100,	30),
-    SCROLL_REC("magic arrow",	E_MAGIC_ARROW,	SCROLL_MAGIC_ARROW,	15,	200),
-    SCROLL_REC("fire bolt",	E_FIRE_BOLT,	SCROLL_FIRE_BOLT,	50,	60),
-    SCROLL_REC("ice bolt",	E_ICE_BOLT,	SCROLL_ICE_BOLT,	50,	60),
-    SCROLL_REC("lightning bolt", E_LIGHTNING_BOLT,	SCROLL_LIGHTNING_BOLT,	100,	20),
-    SCROLL_REC("acid bolt",	E_ACID_BOLT,	SCROLL_ACID_BOLT,	150,	15),
-    SCROLL_REC("summon monsters", E_SUMMON_MONSTER,	SCROLL_SUMMON_MONSTER,	10,	100),
-    SCROLL_REC("create item",	E_CREATE_ITEM,	SCROLL_CREATE_ITEM,	200,	25),
-    SCROLL_REC("cure disease",	E_CURE_DISEASE,	SCROLL_CURE_DISEASE,	40,	100),
-    SCROLL_REC("cure poison",	E_CURE_POISON,	SCROLL_CURE_POISON,	40,	100),
-    SCROLL_REC("blink",	E_BLINK,	SCROLL_BLINK,	70,	30),
-    SCROLL_REC("self knowledge", E_SELF_KNOWLEDGE,	SCROLL_SELF_KNOWLEDGE,	150,	10),
-    SCROLL_REC("see invisible", E_SEE_INVISIBLE,	SCROLL_SEE_INVISIBLE,	40,	50),
-    SCROLL_REC("recipe",	E_NONE,	SCROLL_RECIPIE,	30,	25),
+    SCROLL_REC("healing",	XEffect::HEAL,	SCROLL_HEALING,	200,	10),
+    SCROLL_REC("burning hands",	XEffect::BURNING_HANDS,	SCROLL_BURNING_HANDS,	20,	100),
+    SCROLL_REC("ice touch",	XEffect::ICE_TOUCH,	SCROLL_ICE_TOUCH,	20,	100),
+    SCROLL_REC("heroism",	XEffect::HEROISM,	SCROLL_HEROISM,	25,	100),
+    SCROLL_REC("power",	XEffect::POWER,	SCROLL_POWER,	15,	100),
+    SCROLL_REC("identify",	XEffect::IDENTIFY,	SCROLL_IDENTIFY,	100,	30),
+    SCROLL_REC("magic arrow",	XEffect::MAGIC_ARROW,	SCROLL_MAGIC_ARROW,	15,	200),
+    SCROLL_REC("fire bolt",	XEffect::FIRE_BOLT,	SCROLL_FIRE_BOLT,	50,	60),
+    SCROLL_REC("ice bolt",	XEffect::ICE_BOLT,	SCROLL_ICE_BOLT,	50,	60),
+    SCROLL_REC("lightning bolt", XEffect::LIGHTNING_BOLT,	SCROLL_LIGHTNING_BOLT,	100,	20),
+    SCROLL_REC("acid bolt",	XEffect::ACID_BOLT,	SCROLL_ACID_BOLT,	150,	15),
+    SCROLL_REC("summon monsters", XEffect::SUMMON_MONSTER,	SCROLL_SUMMON_MONSTER,	10,	100),
+    SCROLL_REC("create item",	XEffect::CREATE_ITEM,	SCROLL_CREATE_ITEM,	200,	25),
+    SCROLL_REC("cure disease",	XEffect::CURE_DISEASE,	SCROLL_CURE_DISEASE,	40,	100),
+    SCROLL_REC("cure poison",	XEffect::CURE_POISON,	SCROLL_CURE_POISON,	40,	100),
+    SCROLL_REC("blink",	XEffect::BLINK,	SCROLL_BLINK,	70,	30),
+    SCROLL_REC("self knowledge", XEffect::SELF_KNOWLEDGE,	SCROLL_SELF_KNOWLEDGE,	150,	10),
+    SCROLL_REC("see invisible", XEffect::SEE_INVISIBLE,	SCROLL_SEE_INVISIBLE,	40,	50),
+    SCROLL_REC("recipe",	XEffect::NONE,	SCROLL_RECIPIE,	30,	25),
 };
 
 int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
@@ -203,7 +203,7 @@ int XScroll::onRead(XCreature * cr)
     char buf[256];
     int flag = 0;
 
-    if (scroll_descr[descr].effect != E_NONE) {
+    if (scroll_descr[descr].effect != XEffect::NONE) {
         if (cr->isHero()) {
             msgwin.Add(fmt::format("You read the {}.", toString()));
         } else if (cr->isVisible()) {

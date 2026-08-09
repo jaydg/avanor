@@ -26,7 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/magic.h"
 
 struct SPELL_REC {
-    EFFECT effect;
+    XEffect::Id effect;
     MAGIC_SCHOOL school;
     int cost;
     std::string name;
@@ -37,132 +37,132 @@ SPELL_REC spell_db[SPELL_EOF];
 
 SPELL_REC::SPELL_REC()
 {
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].effect	= E_CURE_LIGHT_WOUNDS;
+    spell_db[SPELL_CURE_LIGHT_WOUNDS].effect	= XEffect::CURE_LIGHT_WOUNDS;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].school	= MS_BODY;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].cost	= 5;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].name	= "cure light wounds";
 
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].effect	= E_CURE_SERIOUS_WOUNDS;
+    spell_db[SPELL_CURE_SERIOUS_WOUNDS].effect	= XEffect::CURE_SERIOUS_WOUNDS;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].school	= MS_BODY;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].cost	= 10;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].name	= "cure serious wounds";
 
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].effect = E_CURE_CRITICAL_WOUNDS;
+    spell_db[SPELL_CURE_CRITICAL_WOUNDS].effect = XEffect::CURE_CRITICAL_WOUNDS;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].school = MS_BODY;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].cost	= 15;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].name	= "cure critical wounds";
 
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].effect	= E_CURE_MORTAL_WOUNDS;
+    spell_db[SPELL_CURE_MORTAL_WOUNDS].effect	= XEffect::CURE_MORTAL_WOUNDS;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].school	= MS_BODY;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].cost	= 20;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].name	= "cure mortal wounds";
 
-    spell_db[SPELL_HEAL].effect	= E_HEAL;
+    spell_db[SPELL_HEAL].effect	= XEffect::HEAL;
     spell_db[SPELL_HEAL].school	= MS_BODY;
     spell_db[SPELL_HEAL].cost	= 30;
     spell_db[SPELL_HEAL].name	= "heal";
 
-    spell_db[SPELL_HEROISM].effect	= E_HEROISM;
+    spell_db[SPELL_HEROISM].effect	= XEffect::HEROISM;
     spell_db[SPELL_HEROISM].school	= MS_BODY;
     spell_db[SPELL_HEROISM].cost	= 5;
     spell_db[SPELL_HEROISM].name	= "heroism";
 
-    spell_db[SPELL_CURE_POISON].effect	= E_CURE_POISON;
+    spell_db[SPELL_CURE_POISON].effect	= XEffect::CURE_POISON;
     spell_db[SPELL_CURE_POISON].school	= MS_BODY;
     spell_db[SPELL_CURE_POISON].cost	= 15;
     spell_db[SPELL_CURE_POISON].name	= "cure poison";
 
-    spell_db[SPELL_CURE_DISEASE].effect	= E_CURE_DISEASE;
+    spell_db[SPELL_CURE_DISEASE].effect	= XEffect::CURE_DISEASE;
     spell_db[SPELL_CURE_DISEASE].school	= MS_BODY;
     spell_db[SPELL_CURE_DISEASE].cost	= 20;
     spell_db[SPELL_CURE_DISEASE].name	= "cure disease";
 
-    spell_db[SPELL_BURNING_HANDS].effect	= E_BURNING_HANDS;
+    spell_db[SPELL_BURNING_HANDS].effect	= XEffect::BURNING_HANDS;
     spell_db[SPELL_BURNING_HANDS].school	= MS_ELEMENTAL;
     spell_db[SPELL_BURNING_HANDS].cost	= 7;
     spell_db[SPELL_BURNING_HANDS].name	= "burning hands";
 
-    spell_db[SPELL_ICE_TOUCH].effect	= E_ICE_TOUCH;
+    spell_db[SPELL_ICE_TOUCH].effect	= XEffect::ICE_TOUCH;
     spell_db[SPELL_ICE_TOUCH].school	= MS_ELEMENTAL;
     spell_db[SPELL_ICE_TOUCH].cost	= 7;
     spell_db[SPELL_ICE_TOUCH].name	= "ice touch";
 
-    spell_db[SPELL_MAGIC_ARROW].effect	= E_MAGIC_ARROW;
+    spell_db[SPELL_MAGIC_ARROW].effect	= XEffect::MAGIC_ARROW;
     spell_db[SPELL_MAGIC_ARROW].school	= MS_ELEMENTAL;
     spell_db[SPELL_MAGIC_ARROW].cost	= 5;
     spell_db[SPELL_MAGIC_ARROW].name	= "magic arrow";
 
-    spell_db[SPELL_FIRE_BOLT].effect	= E_FIRE_BOLT;
+    spell_db[SPELL_FIRE_BOLT].effect	= XEffect::FIRE_BOLT;
     spell_db[SPELL_FIRE_BOLT].school	= MS_ELEMENTAL;
     spell_db[SPELL_FIRE_BOLT].cost	= 12;
     spell_db[SPELL_FIRE_BOLT].name	= "fire bolt";
 
-    spell_db[SPELL_ICE_BOLT].effect	= E_ICE_BOLT;
+    spell_db[SPELL_ICE_BOLT].effect	= XEffect::ICE_BOLT;
     spell_db[SPELL_ICE_BOLT].school	= MS_ELEMENTAL;
     spell_db[SPELL_ICE_BOLT].cost	= 12;
     spell_db[SPELL_ICE_BOLT].name	= "ice bolt";
 
-    spell_db[SPELL_LIGHTNING_BOLT].effect	= E_LIGHTNING_BOLT;
+    spell_db[SPELL_LIGHTNING_BOLT].effect	= XEffect::LIGHTNING_BOLT;
     spell_db[SPELL_LIGHTNING_BOLT].school	= MS_ELEMENTAL;
     spell_db[SPELL_LIGHTNING_BOLT].cost	= 18;
     spell_db[SPELL_LIGHTNING_BOLT].name	= "lightning bolt";
 
-    spell_db[SPELL_DRAIN_LIFE].effect	= E_DRAIN_LIFE;
+    spell_db[SPELL_DRAIN_LIFE].effect	= XEffect::DRAIN_LIFE;
     spell_db[SPELL_DRAIN_LIFE].school	= MS_DEATH;
     spell_db[SPELL_DRAIN_LIFE].cost	= 7;
     spell_db[SPELL_DRAIN_LIFE].name	= "drain life";
 
-    spell_db[SPELL_ACID_BOLT].effect	= E_ACID_BOLT;
+    spell_db[SPELL_ACID_BOLT].effect	= XEffect::ACID_BOLT;
     spell_db[SPELL_ACID_BOLT].school	= MS_DEATH;
     spell_db[SPELL_ACID_BOLT].cost	= 25;
     spell_db[SPELL_ACID_BOLT].name	= "acid bolt";
 
-    spell_db[SPELL_IDENTIFY].effect	= E_IDENTIFY;
+    spell_db[SPELL_IDENTIFY].effect	= XEffect::IDENTIFY;
     spell_db[SPELL_IDENTIFY].school	= MS_SURVIVING;
     spell_db[SPELL_IDENTIFY].cost	= 25;
     spell_db[SPELL_IDENTIFY].name	= "identify";
 
-    spell_db[SPELL_SUMMON_MONSTER].effect	= E_SUMMON_MONSTER;
+    spell_db[SPELL_SUMMON_MONSTER].effect	= XEffect::SUMMON_MONSTER;
     spell_db[SPELL_SUMMON_MONSTER].school	= MS_SURVIVING;
     spell_db[SPELL_SUMMON_MONSTER].cost	= 15;
     spell_db[SPELL_SUMMON_MONSTER].name	= "summon monster";
 
-    spell_db[SPELL_CREATE_ITEM].effect	= E_CREATE_ITEM;
+    spell_db[SPELL_CREATE_ITEM].effect	= XEffect::CREATE_ITEM;
     spell_db[SPELL_CREATE_ITEM].school	= MS_SURVIVING;
     spell_db[SPELL_CREATE_ITEM].cost	= 100;
     spell_db[SPELL_CREATE_ITEM].name	= "create item";
 
-    spell_db[SPELL_BLINK].effect	= E_BLINK;
+    spell_db[SPELL_BLINK].effect	= XEffect::BLINK;
     spell_db[SPELL_BLINK].school	= MS_SURVIVING;
     spell_db[SPELL_BLINK].cost	= 15;
     spell_db[SPELL_BLINK].name	= "blink";
 
-    spell_db[SPELL_SELF_KNOWLEDGE].effect	= E_SELF_KNOWLEDGE;
+    spell_db[SPELL_SELF_KNOWLEDGE].effect	= XEffect::SELF_KNOWLEDGE;
     spell_db[SPELL_SELF_KNOWLEDGE].school	= MS_SURVIVING;
     spell_db[SPELL_SELF_KNOWLEDGE].cost	= 25;
     spell_db[SPELL_SELF_KNOWLEDGE].name	= "self knowledge";
 
-    spell_db[SPELL_SEE_INVISIBLE].effect	= E_SEE_INVISIBLE;
+    spell_db[SPELL_SEE_INVISIBLE].effect	= XEffect::SEE_INVISIBLE;
     spell_db[SPELL_SEE_INVISIBLE].school	= MS_PROTECTION;
     spell_db[SPELL_SEE_INVISIBLE].cost	= 15;
     spell_db[SPELL_SEE_INVISIBLE].name	= "see invisible";
 
-    spell_db[SPELL_ACID_RESISTANCE].effect	= E_ACID_RESISTANCE;
+    spell_db[SPELL_ACID_RESISTANCE].effect	= XEffect::ACID_RESISTANCE;
     spell_db[SPELL_ACID_RESISTANCE].school	= MS_PROTECTION;
     spell_db[SPELL_ACID_RESISTANCE].cost	= 20;
     spell_db[SPELL_ACID_RESISTANCE].name	= "acid resistance";
 
-    spell_db[SPELL_FIRE_RESISTANCE].effect	= E_FIRE_RESISTANCE;
+    spell_db[SPELL_FIRE_RESISTANCE].effect	= XEffect::FIRE_RESISTANCE;
     spell_db[SPELL_FIRE_RESISTANCE].school	= MS_PROTECTION;
     spell_db[SPELL_FIRE_RESISTANCE].cost	= 15;
     spell_db[SPELL_FIRE_RESISTANCE].name	= "fire resistance";
 
-    spell_db[SPELL_COLD_RESISTANCE].effect	= E_COLD_RESISTANCE;
+    spell_db[SPELL_COLD_RESISTANCE].effect	= XEffect::COLD_RESISTANCE;
     spell_db[SPELL_COLD_RESISTANCE].school	= MS_PROTECTION;
     spell_db[SPELL_COLD_RESISTANCE].cost	= 15;
     spell_db[SPELL_COLD_RESISTANCE].name	= "cold resistance";
 
-    spell_db[SPELL_POISON_RESISTANCE].effect	= E_POISON_RESISTANCE;
+    spell_db[SPELL_POISON_RESISTANCE].effect	= XEffect::POISON_RESISTANCE;
     spell_db[SPELL_POISON_RESISTANCE].school	= MS_PROTECTION;
     spell_db[SPELL_POISON_RESISTANCE].cost	= 15;
     spell_db[SPELL_POISON_RESISTANCE].name	= "poison resistance";
@@ -188,7 +188,7 @@ void XSpell::Cast()
     }
 }
 
-EFFECT XSpell::GetEffect() const
+XEffect::Id XSpell::GetEffect() const
 {
     return spell_db[spell_name].effect;
 }

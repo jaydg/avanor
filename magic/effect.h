@@ -33,54 +33,71 @@ enum EFFECT_REQ {
     ER_ITEM	= 4,
 };
 
-enum EFFECT {
-    E_NONE	= -1,
-    E_CURE_LIGHT_WOUNDS	= 0, //0
-    E_CURE_SERIOUS_WOUNDS,
-    E_CURE_CRITICAL_WOUNDS,
-    E_CURE_MORTAL_WOUNDS,
-    E_HEAL,
-    E_ULTRAHEAL,
-    E_POWER,
-    E_ULTRAPOWER,
-    E_RESTORATION,
-    E_CURE_POISON,
-    E_CURE_DISEASE,
-
-    E_BURNING_HANDS,
-    E_ICE_TOUCH,
-    E_DRAIN_LIFE,
-
-    E_MAGIC_ARROW,
-    E_FIRE_BOLT,
-    E_ICE_BOLT,
-    E_LIGHTNING_BOLT,
-    E_ACID_BOLT,
-
-    E_HEROISM,
-    E_IDENTIFY,
-    E_GREAT_IDENTIFY,
-    E_SUMMON_MONSTER,
-    E_CREATE_ITEM,
-    E_BLINK,
-    E_TELEPORT,
-    E_SELF_KNOWLEDGE,
-    E_SEE_INVISIBLE,
-    E_ACID_RESISTANCE,
-    E_FIRE_RESISTANCE,
-    E_COLD_RESISTANCE,
-    E_POISON_RESISTANCE,
-};
-
-// Registers this enum as the Lua table EFFECT.MEMBER.
-void RegisterEffectEnum(sol::state_view& lua);
-
 class XCreature;
 class XItem;
 class XLocation;
+struct EFFECT_DATA;
+
+class XEffect
+{
+    public:
+        enum Id {
+            NONE	= -1,
+            CURE_LIGHT_WOUNDS	= 0, //0
+            CURE_SERIOUS_WOUNDS,
+            CURE_CRITICAL_WOUNDS,
+            CURE_MORTAL_WOUNDS,
+            HEAL,
+            ULTRAHEAL,
+            POWER,
+            ULTRAPOWER,
+            RESTORATION,
+            CURE_POISON,
+            CURE_DISEASE,
+
+            BURNING_HANDS,
+            ICE_TOUCH,
+            DRAIN_LIFE,
+
+            MAGIC_ARROW,
+            FIRE_BOLT,
+            ICE_BOLT,
+            LIGHTNING_BOLT,
+            ACID_BOLT,
+
+            HEROISM,
+            IDENTIFY,
+            GREAT_IDENTIFY,
+            SUMMON_MONSTER,
+            CREATE_ITEM,
+            BLINK,
+            TELEPORT,
+            SELF_KNOWLEDGE,
+            SEE_INVISIBLE,
+            ACID_RESISTANCE,
+            FIRE_RESISTANCE,
+            COLD_RESISTANCE,
+            POISON_RESISTANCE,
+        };
+
+        // Registers this enum as the Lua table XEffect.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
+
+    private:
+        static int Heal(XCreature * caster, int X, int Y, int Z);
+        static int Cure(XCreature * caster, int X, int Y, int Z);
+        static int Mana(XCreature * caster, int X, int Y, int Z);
+        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
+        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
+    public:
+        static int Make(const EFFECT_DATA* pData);
+        static RESULT Make(XCreature * caster, Id effect, int power);
+        static EFFECT_REQ GetReq(Id effect);
+        static int GetRange(Id effect, int power);
+};
 
 struct EFFECT_DATA {
-    EFFECT effect;
+    XEffect::Id effect;
 
     // In many case effects fill caller, but not when cause by a trap.
     XCreature* caller;
@@ -99,20 +116,6 @@ struct EFFECT_DATA {
 
     // power == willpower
     int power;
-};
-
-class XEffect
-{
-        static int Heal(XCreature * caster, int X, int Y, int Z);
-        static int Cure(XCreature * caster, int X, int Y, int Z);
-        static int Mana(XCreature * caster, int X, int Y, int Z);
-        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
-        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
-    public:
-        static int Make(const EFFECT_DATA* pData);
-        static RESULT Make(XCreature * caster, EFFECT effect, int power);
-        static EFFECT_REQ GetReq(EFFECT effect);
-        static int GetRange(EFFECT effect, int power);
 };
 
 #endif

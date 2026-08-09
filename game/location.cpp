@@ -962,7 +962,7 @@ void XLocation::SetItemBrand(void* item, int br)
 int XLocation::MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power)
 {
     EFFECT_DATA ed;
-    ed.effect = (EFFECT)effect;
+    ed.effect = (XEffect::Id)effect;
     ed.caller = (XCreature*)caller;
     ed.l = (XLocation*)location;
     ed.call_x = call_x;
@@ -1209,7 +1209,7 @@ void XLocation::CommonLuaInitialization()
     XStats::RegisterLua(lua);
     XSkill::RegisterLua(lua);
     RegisterQuestEnum(lua);
-    RegisterEffectEnum(lua);
+    XEffect::RegisterLua(lua);
 
     lua_register(L, "StoreInt", StoreInt);
     lua_register(L, "RestoreInt", RestoreInt);

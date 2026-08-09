@@ -558,7 +558,7 @@ function YohjiHandler(e, t, p, v)
 				QuestModify(QUEST_YOHJI_RAT, QUEST.Q_UNKNOWN)
 			elseif (it == ITEM_TYPE.IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == QUEST.Q_KNOWN) then
 				AddMessage("'Oh, thank you!'")
-				MakeEffect(EFFECT.E_GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
+				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify(QUEST_YOHJI_BAT, QUEST.Q_UNKNOWN)
 			else
 				if (MoneyOperation(t, -50 * count) >= 0) then

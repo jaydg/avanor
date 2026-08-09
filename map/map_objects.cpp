@@ -221,23 +221,23 @@ int XTrap::Activate(XCreature* cr)
 
         switch (trap_type) {
             case TT_MAGICARROW:
-                ed.effect = E_MAGIC_ARROW;
+                ed.effect = XEffect::MAGIC_ARROW;
                 break;
 
             case TT_FIREBOLT:
-                ed.effect = E_FIRE_BOLT;
+                ed.effect = XEffect::FIRE_BOLT;
                 break;
 
             case TT_ACIDBOLT:
-                ed.effect = E_ACID_BOLT;
+                ed.effect = XEffect::ACID_BOLT;
                 break;
 
             case TT_TELEPORT:
-                ed.effect = E_TELEPORT;
+                ed.effect = XEffect::TELEPORT;
                 break;
 
             default:
-                ed.effect = E_MAGIC_ARROW;
+                ed.effect = XEffect::MAGIC_ARROW;
 
         }
 

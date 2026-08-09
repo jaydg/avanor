@@ -29,83 +29,83 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/effect.h"
 #include "magic/modifier.h"
 
-void RegisterEffectEnum(sol::state_view& lua)
+void XEffect::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("EFFECT",
-        "E_CURE_LIGHT_WOUNDS", E_CURE_LIGHT_WOUNDS,
-        "E_CURE_SERIOUS_WOUNDS", E_CURE_SERIOUS_WOUNDS,
-        "E_CURE_CRITICAL_WOUNDS", E_CURE_CRITICAL_WOUNDS,
-        "E_CURE_MORTAL_WOUNDS", E_CURE_MORTAL_WOUNDS,
-        "E_HEAL", E_HEAL,
-        "E_ULTRAHEAL", E_ULTRAHEAL,
-        "E_POWER", E_POWER,
-        "E_ULTRAPOWER", E_ULTRAPOWER,
-        "E_RESTORATION", E_RESTORATION,
-        "E_CURE_POISON", E_CURE_POISON,
-        "E_CURE_DISEASE", E_CURE_DISEASE,
-        "E_BURNING_HANDS", E_BURNING_HANDS,
-        "E_ICE_TOUCH", E_ICE_TOUCH,
-        "E_DRAIN_LIFE", E_DRAIN_LIFE,
-        "E_MAGIC_ARROW", E_MAGIC_ARROW,
-        "E_FIRE_BOLT", E_FIRE_BOLT,
-        "E_ICE_BOLT", E_ICE_BOLT,
-        "E_LIGHTNING_BOLT", E_LIGHTNING_BOLT,
-        "E_ACID_BOLT", E_ACID_BOLT,
-        "E_HEROISM", E_HEROISM,
-        "E_IDENTIFY", E_IDENTIFY,
-        "E_GREAT_IDENTIFY", E_GREAT_IDENTIFY,
-        "E_SUMMON_MONSTER", E_SUMMON_MONSTER,
-        "E_CREATE_ITEM", E_CREATE_ITEM,
-        "E_BLINK", E_BLINK,
-        "E_TELEPORT", E_TELEPORT,
-        "E_SELF_KNOWLEDGE", E_SELF_KNOWLEDGE,
-        "E_SEE_INVISIBLE", E_SEE_INVISIBLE,
-        "E_ACID_RESISTANCE", E_ACID_RESISTANCE,
-        "E_FIRE_RESISTANCE", E_FIRE_RESISTANCE,
-        "E_COLD_RESISTANCE", E_COLD_RESISTANCE,
-        "E_POISON_RESISTANCE", E_POISON_RESISTANCE
+    lua.new_enum("XEffect",
+        "CURE_LIGHT_WOUNDS", XEffect::CURE_LIGHT_WOUNDS,
+        "CURE_SERIOUS_WOUNDS", XEffect::CURE_SERIOUS_WOUNDS,
+        "CURE_CRITICAL_WOUNDS", XEffect::CURE_CRITICAL_WOUNDS,
+        "CURE_MORTAL_WOUNDS", XEffect::CURE_MORTAL_WOUNDS,
+        "HEAL", XEffect::HEAL,
+        "ULTRAHEAL", XEffect::ULTRAHEAL,
+        "POWER", XEffect::POWER,
+        "ULTRAPOWER", XEffect::ULTRAPOWER,
+        "RESTORATION", XEffect::RESTORATION,
+        "CURE_POISON", XEffect::CURE_POISON,
+        "CURE_DISEASE", XEffect::CURE_DISEASE,
+        "BURNING_HANDS", XEffect::BURNING_HANDS,
+        "ICE_TOUCH", XEffect::ICE_TOUCH,
+        "DRAIN_LIFE", XEffect::DRAIN_LIFE,
+        "MAGIC_ARROW", XEffect::MAGIC_ARROW,
+        "FIRE_BOLT", XEffect::FIRE_BOLT,
+        "ICE_BOLT", XEffect::ICE_BOLT,
+        "LIGHTNING_BOLT", XEffect::LIGHTNING_BOLT,
+        "ACID_BOLT", XEffect::ACID_BOLT,
+        "HEROISM", XEffect::HEROISM,
+        "IDENTIFY", XEffect::IDENTIFY,
+        "GREAT_IDENTIFY", XEffect::GREAT_IDENTIFY,
+        "SUMMON_MONSTER", XEffect::SUMMON_MONSTER,
+        "CREATE_ITEM", XEffect::CREATE_ITEM,
+        "BLINK", XEffect::BLINK,
+        "TELEPORT", XEffect::TELEPORT,
+        "SELF_KNOWLEDGE", XEffect::SELF_KNOWLEDGE,
+        "SEE_INVISIBLE", XEffect::SEE_INVISIBLE,
+        "ACID_RESISTANCE", XEffect::ACID_RESISTANCE,
+        "FIRE_RESISTANCE", XEffect::FIRE_RESISTANCE,
+        "COLD_RESISTANCE", XEffect::COLD_RESISTANCE,
+        "POISON_RESISTANCE", XEffect::POISON_RESISTANCE
     );
 }
 
-EFFECT_REQ XEffect::GetReq(EFFECT effect)
+EFFECT_REQ XEffect::GetReq(XEffect::Id effect)
 {
     switch (effect) {
-        case E_NONE:
-        case E_CURE_LIGHT_WOUNDS:
-        case E_CURE_SERIOUS_WOUNDS:
-        case E_CURE_CRITICAL_WOUNDS:
-        case E_CURE_MORTAL_WOUNDS:
-        case E_HEAL:
-        case E_HEROISM:
-        case E_POWER:
-        case E_RESTORATION:
-        case E_SUMMON_MONSTER:
-        case E_CREATE_ITEM:
-        case E_CURE_POISON:
-        case E_CURE_DISEASE:
-        case E_BLINK:
-        case E_SELF_KNOWLEDGE:
-        case E_SEE_INVISIBLE:
-        case E_ACID_RESISTANCE:
-        case E_FIRE_RESISTANCE:
-        case E_COLD_RESISTANCE:
-        case E_POISON_RESISTANCE:
+        case XEffect::NONE:
+        case XEffect::CURE_LIGHT_WOUNDS:
+        case XEffect::CURE_SERIOUS_WOUNDS:
+        case XEffect::CURE_CRITICAL_WOUNDS:
+        case XEffect::CURE_MORTAL_WOUNDS:
+        case XEffect::HEAL:
+        case XEffect::HEROISM:
+        case XEffect::POWER:
+        case XEffect::RESTORATION:
+        case XEffect::SUMMON_MONSTER:
+        case XEffect::CREATE_ITEM:
+        case XEffect::CURE_POISON:
+        case XEffect::CURE_DISEASE:
+        case XEffect::BLINK:
+        case XEffect::SELF_KNOWLEDGE:
+        case XEffect::SEE_INVISIBLE:
+        case XEffect::ACID_RESISTANCE:
+        case XEffect::FIRE_RESISTANCE:
+        case XEffect::COLD_RESISTANCE:
+        case XEffect::POISON_RESISTANCE:
             return ER_NONE;
 
-        case E_BURNING_HANDS:
-        case E_ICE_TOUCH:
-        case E_DRAIN_LIFE:
+        case XEffect::BURNING_HANDS:
+        case XEffect::ICE_TOUCH:
+        case XEffect::DRAIN_LIFE:
             return ER_DIRECTION;
 
-        case E_IDENTIFY:
+        case XEffect::IDENTIFY:
             return ER_ITEM;
 
-        case E_MAGIC_ARROW:
-        case E_FIRE_BOLT:
-        case E_ICE_BOLT:
-        case E_LIGHTNING_BOLT:
-        case E_ACID_BOLT:
-        case E_TELEPORT:
+        case XEffect::MAGIC_ARROW:
+        case XEffect::FIRE_BOLT:
+        case XEffect::ICE_BOLT:
+        case XEffect::LIGHTNING_BOLT:
+        case XEffect::ACID_BOLT:
+        case XEffect::TELEPORT:
             return ER_TARGET;
 
         default:
@@ -113,23 +113,23 @@ EFFECT_REQ XEffect::GetReq(EFFECT effect)
     }
 }
 
-int XEffect::GetRange(EFFECT effect, int power)
+int XEffect::GetRange(XEffect::Id effect, int power)
 {
     switch (effect) {
-        case E_MAGIC_ARROW:
+        case XEffect::MAGIC_ARROW:
             return power / 4 + 2;
 
-        case E_FIRE_BOLT:
-        case E_ICE_BOLT:
+        case XEffect::FIRE_BOLT:
+        case XEffect::ICE_BOLT:
             return power / 6 + 2;
 
-        case E_LIGHTNING_BOLT:
+        case XEffect::LIGHTNING_BOLT:
             return power / 7 + 2;
 
-        case E_ACID_BOLT:
+        case XEffect::ACID_BOLT:
             return power / 8 + 2;
 
-        case E_TELEPORT:
+        case XEffect::TELEPORT:
             return 1;
 
         default:
@@ -263,7 +263,7 @@ int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRA
     return 0;
 }
 
-RESULT XEffect::Make(XCreature * caster, EFFECT effect, int power)
+RESULT XEffect::Make(XCreature * caster, XEffect::Id effect, int power)
 {
     EFFECT_DATA ed{};
     ed.caller	= caster;
@@ -304,94 +304,94 @@ int XEffect::Make(const EFFECT_DATA* pData)
 {
     switch (pData->effect) {
         // healing and restoration
-        case E_CURE_LIGHT_WOUNDS:
+        case XEffect::CURE_LIGHT_WOUNDS:
             return Heal(pData->caller, 1, pData->power / 2, 3) ||
                 Cure(pData->caller, 1, pData->power / 10, 1);
 
-        case E_CURE_SERIOUS_WOUNDS:
+        case XEffect::CURE_SERIOUS_WOUNDS:
             return Heal(pData->caller, 1, pData->power, 5) ||
                 Cure(pData->caller, 1, pData->power / 5, 2);
 
-        case E_CURE_CRITICAL_WOUNDS:
+        case XEffect::CURE_CRITICAL_WOUNDS:
             return Heal(pData->caller, 2, pData->power, 5) ||
                 Cure(pData->caller, 1, pData->power / 2, 3);
 
-        case E_CURE_MORTAL_WOUNDS:
+        case XEffect::CURE_MORTAL_WOUNDS:
             return Heal(pData->caller, 3, pData->power, 10) ||
                 Cure(pData->caller, 3, pData->power, 10);
 
-        case E_HEAL:
+        case XEffect::HEAL:
             return Heal(pData->caller, 5, pData->power, 20) ||
                 Cure(pData->caller, 5, pData->power, 20);
 
-        case E_POWER:
+        case XEffect::POWER:
             return Mana(pData->caller, 3, pData->power, 20);
 
-        case E_RESTORATION:
+        case XEffect::RESTORATION:
             return Heal(pData->caller, 5, pData->power, 20) ||
                 Cure(pData->caller, 5, pData->power, 20) ||
                     Mana(pData->caller, 5, pData->power, 20);
 
-        case E_ULTRAHEAL:
+        case XEffect::ULTRAHEAL:
             return Heal(pData->caller, 7, pData->power, 20) ||
                 Cure(pData->caller, 7, pData->power, 20);
 
-        case E_ULTRAPOWER:
+        case XEffect::ULTRAPOWER:
             return Mana(pData->caller, 5, pData->power, 20);
 
 
-        case E_CURE_POISON: {
+        case XEffect::CURE_POISON: {
             XDice d(1, pData->power, 5);
             pData->caller->md->Add(MOD_POISON, -d.GetResult(), pData->caller);
         }
         break;
 
-        case E_CURE_DISEASE: {
+        case XEffect::CURE_DISEASE: {
             XDice d(1, pData->power, 3);
             pData->caller->md->Add(MOD_DISEASE, -d.GetResult(), pData->caller);
         }
         break;
 
         // combat - touch
-        case E_BURNING_HANDS:
+        case XEffect::BURNING_HANDS:
             return Touch(pData, 1, pData->power, 5, xRED, BR_FIRE, "the ball of fire");
 
-        case E_ICE_TOUCH:
+        case XEffect::ICE_TOUCH:
             return Touch(pData, 1, pData->power, 7, xWHITE, BR_COLD, "the cone of ice");
 
-        case E_DRAIN_LIFE:
+        case XEffect::DRAIN_LIFE:
             return Touch(pData, 1, pData->power, 9, xDARKGRAY, BR_DRAIN_LIFE, "the black sphere");
 
         // combat - bolts
-        case E_MAGIC_ARROW:
+        case XEffect::MAGIC_ARROW:
             return Bolt(pData, 1, pData->power / 2, 0, xBROWN, BR_EARTH, "the small arrow");
 
-        case E_FIRE_BOLT:
+        case XEffect::FIRE_BOLT:
             return Bolt(pData, 1, pData->power, 3, xRED, BR_FIRE, "the small ball of fire");
 
-        case E_ICE_BOLT:
+        case XEffect::ICE_BOLT:
             return Bolt(pData, 1, pData->power, 5, xWHITE, BR_COLD, "the small cone of ice");
 
-        case E_LIGHTNING_BOLT:
+        case XEffect::LIGHTNING_BOLT:
             return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, BR_LIGHTNING, "the bright spark");
 
-        case E_ACID_BOLT:
+        case XEffect::ACID_BOLT:
             return Bolt(pData, 3, pData->power, 15, xGREEN, BR_ACID, "the small ball of viscous liquid");
 
         // Misc	modifiers
-        case E_HEROISM: {
+        case XEffect::HEROISM: {
             XDice d(2, pData->power, 5);
             pData->caller->md->Add(MOD_HEROISM, d.GetResult(), pData->caller);
         }
         break;
 
-        case E_SELF_KNOWLEDGE:
+        case XEffect::SELF_KNOWLEDGE:
             if (pData->caller->im & IM_HERO) {
                 dynamic_cast<XHero *>(pData->caller)->ShowResistance();
             }
             break;
 
-        case E_IDENTIFY: {
+        case XEffect::IDENTIFY: {
             if (auto it = pData->caller->onIdentifyItem()) {
                 if (it->isIdentifed()) {
                     if (pData->caller->isVisible()) {
@@ -416,7 +416,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
             return 0;
         }
 
-        case E_GREAT_IDENTIFY: {
+        case XEffect::GREAT_IDENTIFY: {
             for (auto i : pData->target->contain) {
                 i->Identify(1);
             }
@@ -438,7 +438,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
             return 1;
         }
 
-        case E_SUMMON_MONSTER: {
+        case XEffect::SUMMON_MONSTER: {
             int flg = 0;
             int tx = 0;
             int ty = 0;
@@ -470,7 +470,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
             }
         }
 
-        case E_CREATE_ITEM: {
+        case XEffect::CREATE_ITEM: {
             XItem * item = ICREATEA(IM_ITEM);
             pData->caller->DropItem(item);
 
@@ -482,7 +482,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
             return 1;
         };
 
-        case E_BLINK: {
+        case XEffect::BLINK: {
             XPoint pt;
             XRect rect(pData->caller->x - 5, pData->caller->y - 5, pData->caller->x + 5, pData->caller->y + 5);
             pData->l->GetFreeXY(&pt, &rect);
@@ -503,7 +503,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
             return 1;
         };
 
-        case E_TELEPORT: {
+        case XEffect::TELEPORT: {
             XPoint pt;
             pData->l->GetFreeXY(&pt);
 
@@ -527,19 +527,19 @@ int XEffect::Make(const EFFECT_DATA* pData)
             return 1;
         };
 
-        case E_SEE_INVISIBLE:
+        case XEffect::SEE_INVISIBLE:
             return pData->caller->md->Add(MOD_SEE_INVISIBLE, pData->power, pData->caller);
 
-        case E_ACID_RESISTANCE:
+        case XEffect::ACID_RESISTANCE:
             return pData->caller->md->Add(MOD_ACID_RESISTANCE, pData->power, pData->caller);
 
-        case E_FIRE_RESISTANCE:
+        case XEffect::FIRE_RESISTANCE:
             return pData->caller->md->Add(MOD_FIRE_RESISTANCE, pData->power, pData->caller);
 
-        case E_POISON_RESISTANCE:
+        case XEffect::POISON_RESISTANCE:
             return pData->caller->md->Add(MOD_POISON_RESISTANCE, pData->power, pData->caller);
 
-        case E_COLD_RESISTANCE:
+        case XEffect::COLD_RESISTANCE:
             return pData->caller->md->Add(MOD_COLD_RESISTANCE, pData->power, pData->caller);
 
         default:

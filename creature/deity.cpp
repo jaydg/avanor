@@ -236,52 +236,52 @@ int XReligion::GetAvailHelp(const XDeity::Id deity, DEITY_HELP** help) const
 
 int XReligion::Pray(XDeity::Id deity, DEITY_HELP * pray, XCreature * prayer)
 {
-    EFFECT effect = E_CURE_LIGHT_WOUNDS;
+    XEffect::Id effect = XEffect::CURE_LIGHT_WOUNDS;
 
     switch (pray->pray) {
         case PRAY_CURE_LIGHT_WOUNDS:
-            effect = E_CURE_LIGHT_WOUNDS;
+            effect = XEffect::CURE_LIGHT_WOUNDS;
             break;
 
         case PRAY_CURE_CRITICAL_WOUNDS:
-            effect = E_CURE_CRITICAL_WOUNDS;
+            effect = XEffect::CURE_CRITICAL_WOUNDS;
             break;
 
         case PRAY_RESTORATION:
-            effect = E_RESTORATION;
+            effect = XEffect::RESTORATION;
             break;
 
         case PRAY_IDENTIFY:
-            effect = E_IDENTIFY;
+            effect = XEffect::IDENTIFY;
             break;
 
         case PRAY_SELF_KNOWLEDGE:
-            effect = E_SELF_KNOWLEDGE;
+            effect = XEffect::SELF_KNOWLEDGE;
             break;
 
         case PRAY_CURE_POISON:
-            effect = E_CURE_POISON;
+            effect = XEffect::CURE_POISON;
             break;
 
         case PRAY_HEROISM:
-            effect = E_HEROISM;
+            effect = XEffect::HEROISM;
             break;
 
         case PRAY_TELEPORT:
-            effect = E_TELEPORT;
+            effect = XEffect::TELEPORT;
             break;
 
         case PRAY_MINOR_PUNISHMENT:
         case PRAY_MINOR_INTERVENTION:
-            effect = E_MAGIC_ARROW;
+            effect = XEffect::MAGIC_ARROW;
             break;
 
         case PRAY_INTERVENTION:
-            effect = vRand(2) == 0 ? E_FIRE_BOLT : E_ICE_BOLT;
+            effect = vRand(2) == 0 ? XEffect::FIRE_BOLT : XEffect::ICE_BOLT;
             break;
 
         case PRAY_MAJOR_INTERVENTION:
-            effect = vRand(2) == 0 ? E_LIGHTNING_BOLT : E_ACID_BOLT;
+            effect = vRand(2) == 0 ? XEffect::LIGHTNING_BOLT : XEffect::ACID_BOLT;
             break;
     }
 

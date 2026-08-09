@@ -107,39 +107,39 @@ POTION_COLOR POTION_REC::SelectColor(POTION_COLOR pnc)
 }
 
 POTION_REC potion_descr[] = {
-    {PN_WATER,	"water",	E_NONE,	100,	1,	1,	POTION_REC::SelectColor(PNC_CLEAR),	0},
-    {PN_APPLEJUCE,	"apple juice",	E_NONE,	95,	1,	2,	POTION_REC::SelectColor(PNC_YELLOW),	0},
-    {PN_ORANGEJUCE,	"orange juice",	E_NONE,	95,	1,	3,	POTION_REC::SelectColor(PNC_ORANGE),	0},
-    {PN_HEALING,	"healing",	E_HEAL,	10,	4,	200, POTION_REC::SelectColor(PNC_WHITE),	0},
-    {PN_CURE_LIGHT_WOUNDS,	"cure light wounds",	E_CURE_LIGHT_WOUNDS,	80,	2,	15,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_SERIOUS_WOUNDS, "cure serious wounds",	E_CURE_SERIOUS_WOUNDS,	70,	2,	40,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_CRITICAL_WOUNDS, "cure critical wounds", E_CURE_CRITICAL_WOUNDS,	40,	3,	60,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_MORTAL_WOUNDS,	"cure mortal wounds",	E_CURE_MORTAL_WOUNDS,	20,	3,	100, POTION_REC::SelectColor(),	0},
-    {PN_POWER,	"power",	E_POWER,	80,	2,	15,	POTION_REC::SelectColor(),	0},
-    {PN_RESTORATION,	"restoration",	E_RESTORATION,	5,	5,	400, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_STRENGTH,	"strength",	E_NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_WILLPOWER,	"willpower",	E_NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_MANA,	"mana",	E_NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_TOUGHNESS,	"toughness",	E_NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_DEXTERITY,	"swiftness",	E_NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_POISON,	"poison",	E_NONE,	150,	1,	5,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_POISON,	"cure poison",	E_CURE_POISON,	80,	3,	25, POTION_REC::SelectColor(),	0},
-    {PN_BLEEDNESS,	"bleeding",	E_NONE,	300,	1,	1, POTION_REC::SelectColor(),	0},
-    {PN_DISEASE,	"disease",	E_NONE,	200,	1,	1, POTION_REC::SelectColor(),	0},
-    {PN_CURE_DISEASE,	"cure disease",	E_CURE_DISEASE,	50,	3,	50, POTION_REC::SelectColor(),	0},
-    {PN_HEROISM,	"heroism",	E_HEROISM,	75,	2,	20, POTION_REC::SelectColor(),	0},
-    {PN_SEE_INVISIBLE,	"see invisible",	E_SEE_INVISIBLE,	30,	3,	30,	POTION_REC::SelectColor(),	0},
-    {PN_WEAKNESS,	"weakness",	E_NONE,	70,	1,	5,	POTION_REC::SelectColor(),	0},
-    {PN_CLUMSINESS,	"clumsiness",	E_NONE,	70,	1,	5,	POTION_REC::SelectColor(),	0},
-    {PN_DEATH,	"death",	E_NONE,	1,	2,	5,	POTION_REC::SelectColor(),	0},
-    {PN_SATIATION,	"satiation",	E_NONE,	50,	2,	15,	POTION_REC::SelectColor(),	0},
-    {PN_STARVATION,	"starvation",	E_NONE,	40,	3,	15,	POTION_REC::SelectColor(),	0},
-    {PN_BOOST_SPEED,	"boost speed",	E_NONE,	30,	3,	100, POTION_REC::SelectColor(),	0},
-    {PN_SLOWNESS,	"slowness",	E_NONE,	150,	1,	2,	POTION_REC::SelectColor(),	0},
-    {PN_ACID_RESISTANCE,	"acid resistance",	E_ACID_RESISTANCE,	35,	3,	70,	POTION_REC::SelectColor(),	0},
-    {PN_FIRE_RESISTANCE,	"fire resistance",	E_FIRE_RESISTANCE,	45,	2,	50,	POTION_REC::SelectColor(),	0},
-    {PN_COLD_RESISTANCE,	"cold resistance",	E_COLD_RESISTANCE,	45,	2,	50,	POTION_REC::SelectColor(),	0},
-    {PN_POISON_RESISTANCE,	"poison resistance",	E_POISON_RESISTANCE,	40,	3,	50,	POTION_REC::SelectColor(),	0},
+    {PN_WATER,	"water",	XEffect::NONE,	100,	1,	1,	POTION_REC::SelectColor(PNC_CLEAR),	0},
+    {PN_APPLEJUCE,	"apple juice",	XEffect::NONE,	95,	1,	2,	POTION_REC::SelectColor(PNC_YELLOW),	0},
+    {PN_ORANGEJUCE,	"orange juice",	XEffect::NONE,	95,	1,	3,	POTION_REC::SelectColor(PNC_ORANGE),	0},
+    {PN_HEALING,	"healing",	XEffect::HEAL,	10,	4,	200, POTION_REC::SelectColor(PNC_WHITE),	0},
+    {PN_CURE_LIGHT_WOUNDS,	"cure light wounds",	XEffect::CURE_LIGHT_WOUNDS,	80,	2,	15,	POTION_REC::SelectColor(),	0},
+    {PN_CURE_SERIOUS_WOUNDS, "cure serious wounds",	XEffect::CURE_SERIOUS_WOUNDS,	70,	2,	40,	POTION_REC::SelectColor(),	0},
+    {PN_CURE_CRITICAL_WOUNDS, "cure critical wounds", XEffect::CURE_CRITICAL_WOUNDS,	40,	3,	60,	POTION_REC::SelectColor(),	0},
+    {PN_CURE_MORTAL_WOUNDS,	"cure mortal wounds",	XEffect::CURE_MORTAL_WOUNDS,	20,	3,	100, POTION_REC::SelectColor(),	0},
+    {PN_POWER,	"power",	XEffect::POWER,	80,	2,	15,	POTION_REC::SelectColor(),	0},
+    {PN_RESTORATION,	"restoration",	XEffect::RESTORATION,	5,	5,	400, POTION_REC::SelectColor(),	0},
+    {PN_GAIN_STRENGTH,	"strength",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
+    {PN_GAIN_WILLPOWER,	"willpower",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
+    {PN_GAIN_MANA,	"mana",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
+    {PN_GAIN_TOUGHNESS,	"toughness",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
+    {PN_GAIN_DEXTERITY,	"swiftness",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
+    {PN_POISON,	"poison",	XEffect::NONE,	150,	1,	5,	POTION_REC::SelectColor(),	0},
+    {PN_CURE_POISON,	"cure poison",	XEffect::CURE_POISON,	80,	3,	25, POTION_REC::SelectColor(),	0},
+    {PN_BLEEDNESS,	"bleeding",	XEffect::NONE,	300,	1,	1, POTION_REC::SelectColor(),	0},
+    {PN_DISEASE,	"disease",	XEffect::NONE,	200,	1,	1, POTION_REC::SelectColor(),	0},
+    {PN_CURE_DISEASE,	"cure disease",	XEffect::CURE_DISEASE,	50,	3,	50, POTION_REC::SelectColor(),	0},
+    {PN_HEROISM,	"heroism",	XEffect::HEROISM,	75,	2,	20, POTION_REC::SelectColor(),	0},
+    {PN_SEE_INVISIBLE,	"see invisible",	XEffect::SEE_INVISIBLE,	30,	3,	30,	POTION_REC::SelectColor(),	0},
+    {PN_WEAKNESS,	"weakness",	XEffect::NONE,	70,	1,	5,	POTION_REC::SelectColor(),	0},
+    {PN_CLUMSINESS,	"clumsiness",	XEffect::NONE,	70,	1,	5,	POTION_REC::SelectColor(),	0},
+    {PN_DEATH,	"death",	XEffect::NONE,	1,	2,	5,	POTION_REC::SelectColor(),	0},
+    {PN_SATIATION,	"satiation",	XEffect::NONE,	50,	2,	15,	POTION_REC::SelectColor(),	0},
+    {PN_STARVATION,	"starvation",	XEffect::NONE,	40,	3,	15,	POTION_REC::SelectColor(),	0},
+    {PN_BOOST_SPEED,	"boost speed",	XEffect::NONE,	30,	3,	100, POTION_REC::SelectColor(),	0},
+    {PN_SLOWNESS,	"slowness",	XEffect::NONE,	150,	1,	2,	POTION_REC::SelectColor(),	0},
+    {PN_ACID_RESISTANCE,	"acid resistance",	XEffect::ACID_RESISTANCE,	35,	3,	70,	POTION_REC::SelectColor(),	0},
+    {PN_FIRE_RESISTANCE,	"fire resistance",	XEffect::FIRE_RESISTANCE,	45,	2,	50,	POTION_REC::SelectColor(),	0},
+    {PN_COLD_RESISTANCE,	"cold resistance",	XEffect::COLD_RESISTANCE,	45,	2,	50,	POTION_REC::SelectColor(),	0},
+    {PN_POISON_RESISTANCE,	"poison resistance",	XEffect::POISON_RESISTANCE,	40,	3,	50,	POTION_REC::SelectColor(),	0},
 };
 
 int POTION_REC::potion_total_value = 0;
@@ -270,7 +270,7 @@ int XPotion::onDrink(XCreature * cr)
 
     int flag{};
 
-    if (pdescr->effect > E_NONE) {
+    if (pdescr->effect > XEffect::NONE) {
         flag = XEffect::Make(cr, pdescr->effect, 30);
     } else {
         switch (pn) {

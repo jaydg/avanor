@@ -117,7 +117,7 @@ enum POTION_NAME {
 struct POTION_REC {
     POTION_NAME pn;
     const char* name;
-    EFFECT effect;
+    XEffect::Id effect;
     int rarity;
     int alchemy_power;
     int value; // how much it cost for one potion_power //value * potion_power * [spell_cost]

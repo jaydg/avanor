@@ -88,7 +88,7 @@ class XSpell
             return spell_name;
         }
 
-        [[nodiscard]] EFFECT GetEffect() const;
+        [[nodiscard]] XEffect::Id GetEffect() const;
 
         // called after successful casting of spell
         void Cast();
