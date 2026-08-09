@@ -350,6 +350,21 @@ class XLocation : public XObject
         static void SetItEnemyFor(void* cr1, void* cr2);
         static void SetEnemy(void* cr, int cr_class);
         static void* FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+        static std::vector<void*> FindCreatures(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+
+        // Builds a SCRIPT_CMD queue from `script` (an array of tables,
+        // each {cmd = ScriptCommand.X, pt_x = .., pt_y = .., ln = .., kind = ..}
+        // - only the fields the given cmd actually uses need to be set)
+        // and hands it to `cr`'s XStandardAI via ExecuteScript(), same as
+        // any other AI-flag-driven behavior (see XStandardAI::EXECUTE_SCRIPT).
+        static void ExecuteCreatureScript(void* cr, sol::table script);
+
+        // Position of the first entry in a location's ways_list (e.g. the
+        // stairway Way(UP, ...) auto-places at a random free spot when
+        // called without explicit x/y) - there's no other way for a
+        // script to learn where that ended up.
+        static std::tuple<int, int> GetWayXY(int l_id);
+
         static void AddMessage(const std::string& str);
         static std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
         static int Gender(void* cr);

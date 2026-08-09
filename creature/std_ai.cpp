@@ -57,6 +57,14 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "HUMAN", XStandardAI::HUMAN,
         "GHOST", XStandardAI::GHOST
     );
+
+    lua.new_enum("ScriptCommand",
+        "NONE", SCC_NONE,
+        "MOVE_POINT", SCC_MOVE_POINT,
+        "MOVE_LOCATION", SCC_MOVE_LOCATION,
+        "COLLECT_MUSHROOM", SCC_COLLECT_MUSHROOM,
+        "DROP_ITEM", SCC_DROP_ITEM
+    );
 }
 
 // Directly instantiable (not just an abstract base for XShopKeeperAI),

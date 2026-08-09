@@ -826,6 +826,55 @@ void* XLocation::FindCreature(int l_id, int gid, sol::optional<int> x, sol::opti
     return nullptr;
 }
 
+std::vector<void*> XLocation::FindCreatures(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
+{
+    XRect rect(0, 0, Game.locations[l_id]->map->len, Game.locations[l_id]->map->hgt);
+
+    if (x) {
+        rect.left = *x;
+        rect.top = *y;
+        rect.right = rect.left + *w;
+        rect.bottom = rect.top + *h;
+    }
+
+    std::vector<void*> result;
+
+    for (int i = rect.left; i < rect.right; i++)
+        for (int j = rect.top; j < rect.bottom; j++) {
+            XCreature* cr = Game.locations[l_id]->map->GetMonster(i, j);
+
+            if (cr && cr->groupID() == gid) {
+                result.push_back(cr);
+            }
+        }
+
+    return result;
+}
+
+void XLocation::ExecuteCreatureScript(void* cr, sol::table script)
+{
+    std::vector<SCRIPT_CMD> cmds;
+
+    for (auto& [key, value] : script) {
+        sol::table row = value;
+        SCRIPT_CMD cmd{};
+        cmd.cmd = row.get_or("cmd", SCC_NONE);
+        cmd.pt_x = row.get_or("pt_x", 0);
+        cmd.pt_y = row.get_or("pt_y", 0);
+        cmd.ln = row.get_or("ln", XLocation::UNKNOWN);
+        cmd.kind = row.get_or("kind", ItemKind::UNKNOWN);
+        cmds.push_back(cmd);
+    }
+
+    ((XCreature*)cr)->xai->ExecuteScript(cmds);
+}
+
+std::tuple<int, int> XLocation::GetWayXY(int l_id)
+{
+    XStairWay* way = (XStairWay*)*Game.locations[l_id]->ways_list.begin();
+    return {way->x, way->y};
+}
+
 void XLocation::SetItEnemyFor(void* cr1, void* cr2)
 {
     XCreature * p1 = (XCreature*)cr1;
@@ -1275,6 +1324,9 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("isHero", &XLocation::isHero);
         lua.set_function("isEnemy", &XLocation::isEnemy);
         lua.set_function("FindCreature", &XLocation::FindCreature);
+        lua.set_function("FindCreatures", &XLocation::FindCreatures);
+        lua.set_function("ExecuteCreatureScript", &XLocation::ExecuteCreatureScript);
+        lua.set_function("GetWayXY", &XLocation::GetWayXY);
 
         lua.set_function("AddMessage", &XLocation::AddMessage);
         lua.set_function("AskQuestion", &XLocation::AskQuestion);
