@@ -298,7 +298,7 @@ void XCave::Draw(XLocation * l)
             }
 
             for (int i = 0; i < 10; i++) {
-                l->NewCreature(crc, r, GID_RANDOM_GUARDIAN, AIF_GUARD_AREA);
+                l->NewCreature(crc, r, GID_RANDOM_GUARDIAN, XStandardAI::GUARD_AREA);
             }
         }
     }

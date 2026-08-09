@@ -488,7 +488,7 @@ void XHero::NewMove()
             msgwin.Add(fmt::format("Are you sure you want to attack {}", cr->name));
 
             if (!GetTarget(TR_YES_NO)) {
-                if ((cr->xai->GetAIFlag() & AIF_NO_SWAP)) { //we can't swap with some guardians
+                if ((cr->xai->GetAIFlag() & XStandardAI::NO_SWAP)) { //we can't swap with some guardians
                     nx = x;
                     ny = y;
                 } else {
@@ -2688,7 +2688,7 @@ int XHero::OrderCompanion()
         msgwin.Add(tgt->GetNameEx(CRN_T1));
         slave->xai->SetOrderedEnemy(tgt);
         slave->xai->companion_command = CC_ATTACK;
-        slave->xai->ResAIFlag(AIF_GUARD_AREA);
+        slave->xai->ResAIFlag(XStandardAI::GUARD_AREA);
         return 1;
     } else if (ch == 'f' || ch == 'F') {
         msgwin.Add("You command");
@@ -2696,7 +2696,7 @@ int XHero::OrderCompanion()
         msgwin.Add("to come to you.");
         slave->xai->SetOrderedEnemy(nullptr);
         slave->xai->companion_command = CC_FOLLOW;
-        slave->xai->ResAIFlag(AIF_GUARD_AREA);
+        slave->xai->ResAIFlag(XStandardAI::GUARD_AREA);
         return 1;
     } else if (ch == 'w' || ch == 'W') {
         msgwin.Add("You command");
@@ -2706,7 +2706,7 @@ int XHero::OrderCompanion()
         slave->xai->companion_command = CC_WAIT;
         XRect tr(slave->x, slave->y, slave->x + 1, slave->y + 1);
         slave->xai->SetArea(tr, slave->l->ln);
-        slave->xai->SetAIFlag(AIF_GUARD_AREA);
+        slave->xai->SetAIFlag(XStandardAI::GUARD_AREA);
         return 1;
     }
 

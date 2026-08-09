@@ -97,7 +97,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     melee_attack = &cr->melee_attack;
 
     // Setup AI
-    xai->SetAIFlag(static_cast<AI_FLAG>(cr->ai_flags));
+    xai->SetAIFlag(static_cast<XStandardAI::Flag>(cr->ai_flags));
 
     // EQUIP CREATURE
     for (auto [mask, count, probability, it] : cr->equipment) {

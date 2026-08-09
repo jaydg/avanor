@@ -44,7 +44,7 @@ function MakeAvanorValley()
 		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
-		AddTranslation("F", function(x, y) for i = 1, 5 do Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, AI_FLAG.AIF_GUARD_AREA + AI_FLAG.AIF_PROTECT_AREA + AI_FLAG.AIF_RANDOM_MOVE) end end)
+		AddTranslation("F", function(x, y) for i = 1, 5 do Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE) end end)
 		AddTranslation(">", function(x, y) Way(DOWN, XLocation.MUSHROOMS_CAVE1, x, y) end)
 		AddTranslation("*", function(x, y) Way(DOWN, XLocation.DWARFCITYCAVE1, x, y) end)
 		AddTranslation("9", function(x, y) Way(DOWN, L_SMALL_CAVE1, x, y) end)
@@ -131,7 +131,7 @@ function MakeAvanorValley()
 		
 		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
 		AddTranslation("G", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y) end)
-		AddTranslation("H", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, AI_FLAG.AIF_NO_SWAP) Way(DOWN, XLocation.KINGS_TREASURE, x, y) end)
+		AddTranslation("H", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, XStandardAI.NO_SWAP) Way(DOWN, XLocation.KINGS_TREASURE, x, y) end)
 		
 		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
 		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
@@ -446,7 +446,7 @@ end
 
 function CreateGuardians(x, y)
 	for i = 1, 7 do 
-		local g = Guardian("royal_guard", GROUP_ID.GID_GUARDIAN, x, y, 14, 5, AI_FLAG.AIF_GUARD_AREA + AI_FLAG.AIF_RANDOM_MOVE)
+		local g = Guardian("royal_guard", GROUP_ID.GID_GUARDIAN, x, y, 14, 5, XStandardAI.GUARD_AREA + XStandardAI.RANDOM_MOVE)
 		SetEnemy(g, CREATURE_CLASS.CR_ORC)
 		SetEventHandler(g, 'RoyalGuardHandler')
 	end
@@ -588,7 +588,7 @@ function CreateHighPriest(x, y)
 end
 
 function CreateRoderik(x, y)
-	local hp = Guardian("roderik", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, AI_FLAG.AIF_NO_SWAP)
+	local hp = Guardian("roderik", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, XStandardAI.NO_SWAP)
 	SetEventHandler(hp, '')
 end
 

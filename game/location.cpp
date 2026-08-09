@@ -363,7 +363,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
     XCreature * cr = XCreatureStorage::Create(cn);
     cr->setGroupID(gid);
 
-    if (cr->xai->GetAIFlag() & AIF_PEACEFUL) {
+    if (cr->xai->GetAIFlag() & XStandardAI::PEACEFUL) {
         cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
     }
 
@@ -384,12 +384,12 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, u
     GetFreeXY(&pt, &rect);
     XCreature * cr = NewCreature(cn, pt.x, pt.y, gid);
 
-    if (ai_flags & AIF_GUARD_AREA) {
+    if (ai_flags & XStandardAI::GUARD_AREA) {
         cr->xai->SetArea(rect, ln);
         cr->xai->LearnTraps();
     }
 
-    cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
+    cr->xai->SetAIFlag((XStandardAI::Flag)(ai_flags));
 
     return cr;
 }
@@ -412,18 +412,18 @@ XCreature* XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid,
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
     cr->setGroupID(gid);
 
-    if (cr->xai->GetAIFlag() & AIF_PEACEFUL) {
+    if (cr->xai->GetAIFlag() & XStandardAI::PEACEFUL) {
         cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
     }
 
     Game.NewCreature(cr, pt.x, pt.y, this);
 
-    if (ai_flags & AIF_GUARD_AREA) {
+    if (ai_flags & XStandardAI::GUARD_AREA) {
         cr->xai->SetArea(rect, ln);
         cr->xai->LearnTraps();
     }
 
-    cr->xai->SetAIFlag((AI_FLAG)(ai_flags));
+    cr->xai->SetAIFlag((XStandardAI::Flag)(ai_flags));
     return cr;
 }
 
@@ -567,7 +567,7 @@ void* XLocation::Creature(const std::string& crn, sol::optional<int> x, sol::opt
 void* XLocation::Guardian(const std::string& crn, int gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
 {
     XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
-    int flag = AIF_GUARD_AREA;
+    int flag = XStandardAI::GUARD_AREA;
 
     if (flags) {
         flag |= *flags;
@@ -1199,7 +1199,7 @@ void XLocation::CommonLuaInitialization()
     RegisterGenerationFlagsEnum(lua);
     RegisterCrDefsEnums(lua);
     XTileType::RegisterLua(lua);
-    RegisterAiFlagEnum(lua);
+    XStandardAI::RegisterLua(lua);
     RegisterItemMaskEnum(lua);
     XWarSkills::RegisterLua(lua);
     RegisterItemDefEnums(lua);

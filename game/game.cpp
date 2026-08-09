@@ -363,8 +363,8 @@ void XGame::CreateHero()
         hero->l->GetFreeXY(&dog_point, &tr);
         XCreature * cr = hero->l->NewCreature(CN_DOG, dog_point.x, dog_point.y);
         cr->xai->SetCompanion(hero);
-        cr->xai->SetAIFlag(AIF_ALLOW_MOVE_OUT);
-        cr->xai->SetAIFlag(AIF_PEACEFUL);
+        cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_OUT);
+        cr->xai->SetAIFlag(XStandardAI::PEACEFUL);
         cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_KOBOLD | CR_GOBLIN | CR_UNDEAD | CR_INSECT | CR_BLOB | CR_CANINE | CR_FELINE | CR_RAT | CR_REPTILE | CR_ORC));
     }
 
@@ -376,7 +376,7 @@ void XGame::CreateHero()
     locations[XLocation::DEBUG1]->map->Center(hero->x, hero->y);
 
     XRect gr(pt.x + 2, pt.y + 2, pt.x + 3, pt.y + 3);
-    locations[XLocation::DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->AddPersonalEnemy(hero);
+    locations[XLocation::DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, XStandardAI::GUARD_AREA)->xai->AddPersonalEnemy(hero);
 #endif
     XCreature::main_creature = hero;
 }

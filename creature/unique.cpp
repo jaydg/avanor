@@ -291,7 +291,7 @@ XRotmoth::XRotmoth(_CREATURE * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XRotmothAI>(this);
     xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
-    xai->SetAIFlag(AIF_RANDOM_MOVE);
+    xai->SetAIFlag(XStandardAI::RANDOM_MOVE);
 
 }
 
@@ -397,8 +397,8 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XBanditAI);
 XBandit::XBandit(_CREATURE * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XBanditAI>(this);
-    xai->SetAIFlag(AIF_GUARD_AREA);
-    xai->SetAIFlag(AIF_PROTECT_AREA);
+    xai->SetAIFlag(XStandardAI::GUARD_AREA);
+    xai->SetAIFlag(XStandardAI::PROTECT_AREA);
     xai->SetEnemyClass(CR_NONE);
     XBodyPart * cloak = GetBodyPart(BP_CLOAK, 0);
 

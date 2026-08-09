@@ -64,13 +64,13 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
         _shop->SetShopkeeper(shopkeeper);
 
         SetArea(shop->GetArea(), shop->location->ln);
-        SetAIFlag(AIF_GUARD_AREA);
-        SetAIFlag(AIF_GUARD_AREA);
-        SetAIFlag(AIF_COWARD);
-        SetAIFlag(AIF_RANDOM_MOVE);
+        SetAIFlag(XStandardAI::GUARD_AREA);
+        SetAIFlag(XStandardAI::GUARD_AREA);
+        SetAIFlag(XStandardAI::COWARD);
+        SetAIFlag(XStandardAI::RANDOM_MOVE);
         SetEnemyClass(CR_NONE);
 
-        ResAIFlag(AIF_ALLOW_PICK_UP);
+        ResAIFlag(XStandardAI::ALLOW_PICK_UP);
     }
 }
 

@@ -60,7 +60,7 @@ bool XUniversalGen::Run()
         XPoint pt;
         l->GetFreeXY(&pt);
         Game.NewCreature(cr, pt.x, pt.y, l);
-        cr->xai->SetAIFlag(AIF_ALLOW_MOVE_WAY_DOWN);
+        cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
     }
 
     ttm = ttmb;
