@@ -28,7 +28,7 @@ REGISTER_CLASS(XMissileWeapon);
 CEREAL_REGISTER_TYPE(XMissileWeapon);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissileWeapon);
 
-_MAIN_ITEM_STRUCT MWEAPON_STRUCT[] = {
+ItemTemplate MWEAPON_STRUCT[] = {
     {ItemType::LONGBOW,	"long bow",	'{',	"",	"",	"1d3+2",	"1d6", "1d3+2",	"1d1+2",	ISET_BOW,	20,	10,	30,	IQ_FAIR,	""},
     {ItemType::SHORTBOW,	"short bow",	'{',	"",	"",	"1d2",	"1d4", "1d2",	"1d2",	ISET_BOW,	10,	5,	150,	IQ_AVG,	""},
     {ItemType::LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",	"1d2",	"1d5", "1d3",	"1d2",	ISET_BOW,	10,	5,	120,	IQ_AVG,	""},

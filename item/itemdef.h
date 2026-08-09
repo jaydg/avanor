@@ -128,7 +128,7 @@ enum ITEM_SET {
 };
 
 // Free-standing rather than nested in XItem, same reason as ItemKind
-// (see item/itemkind.h): item/itemdb.h's _MAIN_ITEM_STRUCT::it needs it
+// (see item/itemkind.h): item/itemdb.h's ItemTemplate::it needs it
 // before class XItem is declared.
 enum class ItemType {
     UNKNOWN = 0,

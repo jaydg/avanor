@@ -164,7 +164,7 @@ void XItem::Invalidate()
 
 int XItem::BasicFill(ItemType it, XItemBasicStructure * pData)
 {
-    _MAIN_ITEM_STRUCT * x_struct = pData->pFirstItem;
+    ItemTemplate* x_struct = pData->pFirstItem;
 
     if (it == ItemType::RANDOM) {
         int r_val = vRand(pData->total_prob);
@@ -199,7 +199,7 @@ int XItem::BasicFill(ItemType it, XItemBasicStructure * pData)
     }
 }
 
-void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
+void XItem::MainFill(ItemTemplate *is)
 {
     name = is->name;
     it = is->it;

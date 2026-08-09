@@ -25,7 +25,7 @@ REGISTER_CLASS(XArmor);
 CEREAL_REGISTER_TYPE(XArmor);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XArmor);
 
-_MAIN_ITEM_STRUCT ARMOR_STRUCT[] = {
+ItemTemplate ARMOR_STRUCT[] = {
     {ItemType::CLOTHES,	"clothes",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	3,	5,	100,	IQ_POOR,	""},
     {ItemType::DRESS,	"dress",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	3,	5,	100,	IQ_POOR,	""},
     {ItemType::ROBE,	"robe",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	5,	9,	150,	IQ_POOR,	""},

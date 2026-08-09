@@ -29,7 +29,7 @@ REGISTER_CLASS(XMissile);
 CEREAL_REGISTER_TYPE(XMissile);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissile);
 
-_MAIN_ITEM_STRUCT MISSILE_STRUCT[] = {
+ItemTemplate MISSILE_STRUCT[] = {
     {ItemType::ARROW,	"arrow",	'\\',	"",	"",	"1d2", "1d4", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
     {ItemType::QUARREL,	"quarrel",	'\\',	"",	"",	"1d2", "1d6", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
     {ItemType::SLINGBULLET, "sling bullet",	'\\',	"",	"",	"1d2", "1d5", "1d2", "1d2+3",	ISET_MISSILE,	1,	1,	30,	IQ_FAIR, ""},

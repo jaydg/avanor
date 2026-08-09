@@ -55,7 +55,7 @@ class XItem : public XBaseObject
         DECLARE_CREATOR(XItem, XBaseObject);
 
         std::string StatsToString();
-        void MainFill(_MAIN_ITEM_STRUCT * is);
+        void MainFill(ItemTemplate* is);
         XItem();
         XItem(XItem * copy);
         XObject* MakeCopy() override

@@ -29,7 +29,7 @@ REGISTER_CLASS(XWeapon);
 CEREAL_REGISTER_TYPE(XWeapon);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XWeapon);
 
-_MAIN_ITEM_STRUCT weapon_db[] = {
+ItemTemplate weapon_db[] = {
     {ItemType::CLUB,	"club",	'/',	"",	"",	"",	"1d3", "",	"",	ISET_WOODSTONE,	1,	10,	200,	IQ_POOR,	""},
     {ItemType::WARHAMMER,	"war hammer",	'/',	"",	"",	"1d2-1", "1d7", "1d4",	"",	ISET_HARDMETAL,	12,	10,	50,	IQ_AVG,	""},
 

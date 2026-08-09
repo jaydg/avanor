@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DB_PROP_SZ	15 // number of materials!
 #define ENH_DB_SZ	20 // number of special powers ("of Strength")
 
-struct _MAIN_ITEM_STRUCT {
+struct ItemTemplate {
     ItemType it;
     std::string name;
     char view;
@@ -49,7 +49,7 @@ struct _MAIN_ITEM_STRUCT {
 class XItemBasicStructure
 {
     public:
-        XItemBasicStructure(_MAIN_ITEM_STRUCT * pIt, int count)
+        XItemBasicStructure(ItemTemplate* pIt, int count)
         {
             total_prob = 0;
             pFirstItem = pIt;
@@ -63,7 +63,7 @@ class XItemBasicStructure
 
         int total_prob;
         int total_item;
-        _MAIN_ITEM_STRUCT* pFirstItem;
+        ItemTemplate* pFirstItem;
 };
 
 struct ENHANCE_STRUCT {
@@ -84,7 +84,7 @@ struct ENHANCE_STRUCT {
     const char* r; //resists
 };
 
-typedef _MAIN_ITEM_STRUCT XITEM_STRUCT[];
+typedef ItemTemplate XITEM_STRUCT[];
 typedef XITEM_STRUCT* ITEM_STRUCT;
 
 extern _ITEMPROP item_prop[DB_PROP_SZ];

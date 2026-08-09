@@ -25,7 +25,7 @@ REGISTER_CLASS(XGloves);
 CEREAL_REGISTER_TYPE(XGloves);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XGloves);
 
-_MAIN_ITEM_STRUCT GLOVES_STRUCT[] = {
+ItemTemplate GLOVES_STRUCT[] = {
 
     {ItemType::GLOVES,	"gloves",	']',	"1d2",	"1d2",	"1d3",	"1d1",	"1d1",	"1d2-1", ISET_ALLLEATHER,	2,	1,	100,	IQ_AVG,	""},
     {ItemType::GAUNTLETS,	"gauntlets",	']',	"1d3+1",	"1d3+1",	"1d3+1",	"1d1",	"1d2",	"1d3-1", ISET_ALLMETAL,	3,	1,	10,	IQ_FAIR, ""},

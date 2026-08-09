@@ -27,7 +27,7 @@ REGISTER_CLASS(XShield);
 CEREAL_REGISTER_TYPE(XShield);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XShield);
 
-_MAIN_ITEM_STRUCT SHIELD_STRUCT[] = {
+ItemTemplate SHIELD_STRUCT[] = {
 
     {ItemType::SMALLSHIELD, "small shield",	')',	"0d0+2",	"1d2",	"",	"1d2",	"",	"",	ISET_SHIELD,	3,	3,	200,	IQ_POOR,	""},
     {ItemType::MEDIUMSHIELD, "medium shield", ')',	"0d0+3",	"1d2",	"",	"1d3",	"",	"",	ISET_SHIELD,	5,	5,	100,	IQ_AVG,	""},
