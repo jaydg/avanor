@@ -38,13 +38,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xherb.h"
 #include "map/map_objects.h"
 
-//Location Script Support
-extern "C"
-{
-#include "lauxlib.h"
-#include "lualib.h"
-}
-
 #include <sol/sol.hpp>
 
 int XLocation::rand_location_count = L_RANDOM;
@@ -1145,14 +1138,15 @@ void XLocation::CreateMushroom(void* location)
     new XMushSpawn(pt.x, pt.y, p);
 }
 
-#define LUA_REG(x) { char buf[256]; sprintf(buf, #x "=%d", x); luaL_dostring(L, buf); }
-#define LUA_REG_ALTNAME(name, value) { char buf[256]; sprintf(buf, #name "=%d", value); luaL_dostring(L, buf); }
+#define LUA_REG(x) lua[#x] = x;
+#define LUA_REG_ALTNAME(name, value) lua[#name] = value;
 
 lua_State* XLocation::L = nullptr;
 
 void XLocation::CommonLuaInitialization()
 {
     L = lua_open();
+    sol::state_view lua(L);
 
     LUA_REG(L_MAIN);
 
@@ -1571,13 +1565,11 @@ void XLocation::CommonLuaInitialization()
     lua_register(L, "StoreInt", StoreInt);
     lua_register(L, "RestoreInt", RestoreInt);
 
-    luaopen_base(L);
-    luaopen_string(L);
+    lua.open_libraries(sol::lib::base, sol::lib::string);
 
     // Sol2-bound Monster builder - registered before world scripts
     // load below, since world/creatures.lua calls it while loading.
     {
-        sol::state_view lua(L);
         lua.new_usertype<MonsterBuilder>("Monster",
             sol::constructors<MonsterBuilder(CREATURE_NAME), MonsterBuilder(CREATURE_NAME, CREATURE_NAME)>(),
             "View", &MonsterBuilder::View,
@@ -1606,7 +1598,6 @@ void XLocation::CommonLuaInitialization()
     // Registered before world scripts load below, since
     // locations.lua/valley.lua call these while loading.
     {
-        sol::state_view lua(L);
         lua.set_function("CreateLocation", &XLocation::CreateLocation);
         lua.set_function("Settle", &XLocation::Settle);
         lua.set_function("Creature", &XLocation::Creature);
@@ -1629,7 +1620,6 @@ void XLocation::CommonLuaInitialization()
     }
 
     {
-        sol::state_view lua(L);
         lua.set_function("isHero", &XLocation::isHero);
         lua.set_function("isEnemy", &XLocation::isEnemy);
         lua.set_function("FindCreature", &XLocation::FindCreature);
@@ -1674,19 +1664,11 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("ExecuteAIScript", &XLocation::ExecuteAIScript);
     }
 
-    luaL_dofile(L, "./world/init.lua");
+    lua.script_file("./world/init.lua");
 
-    luaL_dostring(L, "LoadScripts()");
+    // Catch Lua errors loading data
+    assert(lua["LoadScripts"]().valid());
     XCreatureStorage::CreateQuickBase();
-
-    // Additive only: nothing above depends on this, and nothing
-    // below reads Sol2Ping.
-    {
-        sol::state_view lua(L);
-        lua.set_function("Sol2Ping", [](int x) { return x + 1; });
-        assert(lua["Sol2Ping"](41).get<int>() == 42);
-        assert(lua.script("return Sol2Ping(99)").get<int>() == 100);
-    }
 }
 
 void XLocation::Restoration()
@@ -1697,12 +1679,13 @@ void XLocation::Restoration()
 void XLocation::CreateNewGame()
 {
     CommonLuaInitialization();
-    luaL_dostring(L, "MakeAvanorValley()");
-    luaL_dostring(L, "MakeSmallCave()");
-    luaL_dostring(L, "MakeMushroomCave()");
-    luaL_dostring(L, "MakeDwarvenCity()");
-    luaL_dostring(L, "MakeRatCellar()");
-    luaL_dostring(L, "MakeVulcano()");
-    luaL_dostring(L, "MakeWizardDungeon()");
-    luaL_dostring(L, "CreateAllQuests()");
+    sol::state_view lua(L);
+    assert(lua["MakeAvanorValley"]().valid());
+    assert(lua["MakeSmallCave"]().valid());
+    assert(lua["MakeMushroomCave"]().valid());
+    assert(lua["MakeDwarvenCity"]().valid());
+    assert(lua["MakeRatCellar"]().valid());
+    assert(lua["MakeVulcano"]().valid());
+    assert(lua["MakeWizardDungeon"]().valid());
+    assert(lua["CreateAllQuests"]().valid());
 }
