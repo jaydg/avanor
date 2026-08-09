@@ -25,11 +25,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
+#include <sol/forward.hpp>
 
 #include "creature/bodypart.h"
 #include "engine/xbaseobj.h"
 #include "item/itemdb.h"
 #include "item/itemdef.h"
+#include "item/itemkind.h"
 #include "item/itemlist.h"
 #include "magic/wskills.h"
 
@@ -80,6 +82,7 @@ class XItem : public XBaseObject
         ITEM_TYPE it;   // main type of item such IT_POTION
         XWarSkills::Type wt;  // weapon skill of item
         ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
+        ItemKind kind;
 
         int durability; // DUR_INFINITE - infinite, Other - finite 1Dur == 1000 turn
         int ModifyDur(int val);
@@ -125,7 +128,7 @@ class XItem : public XBaseObject
             ar(
                 owner, bp, it, wt, quality, durability, identify,
                 is_selected, value, special_property, special_number,
-                brt, material_index, quantity
+                brt, material_index, quantity, kind
             );
         }
 
@@ -139,6 +142,8 @@ class XItem : public XBaseObject
 
         static std::weak_ptr<XItem> ToWeakPtr(XItem * it);
         static std::shared_ptr<XItem> Own(XItem * raw);
+
+        static void RegisterLua(sol::state_view& lua);
 
     protected:
         [[nodiscard]] std::string GetFullName();

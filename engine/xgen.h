@@ -41,7 +41,6 @@ class XGenerator : public XMapObject
             ttm = ttmb;
             x = -1;
             y = -1;
-            kind = IM_UNKNOWN;
         }
 
         bool Run() override

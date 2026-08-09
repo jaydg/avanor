@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/types/set.hpp>
 
+#include "item/itemkind.h"
 #include "item/xanyfood.h"
 
 class XBatWing : public XAnyFood

@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/base_class.hpp>
 
 #include "game/location.h"
+#include "item/itemkind.h"
 #include "map/xanyplace.h"
 
 class XShop : public XAnyPlace

@@ -118,7 +118,6 @@ XLocation::XLocation(XLocation::Id location)
 
     ttmb = 1000000;
     ttm = ttmb;
-    kind = IM_UNKNOWN;
 }
 
 void XLocation::Invalidate()
@@ -1202,7 +1201,7 @@ void XLocation::CommonLuaInitialization()
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
-    RegisterItemKindEnum(lua);
+    XItem::RegisterLua(lua);
     XWarSkills::RegisterLua(lua);
     RegisterItemDefEnums(lua);
     XResistance::RegisterLua(lua);

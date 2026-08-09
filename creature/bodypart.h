@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/xmapobj.h"
 #include "engine/xobject.h"
+#include "item/itemkind.h"
 
 class XItem;
 class XCreature;

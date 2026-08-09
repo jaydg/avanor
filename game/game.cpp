@@ -199,9 +199,9 @@ void XGame::RunWithoutHero()
                 std::vector<TMP> ia;
 
                 for (const auto& [key, pItem] : XObject::objects) {
-                    if (pItem && pItem->kind & IM_ITEM) {
+                    if (auto* it = dynamic_cast<XItem*>(pItem); it && it->kind & IM_ITEM) {
                         TMP entry;
-                        entry.pI = static_cast<XItem*>(pItem);
+                        entry.pI = it;
                         entry.val = entry.pI->GetValue();
                         ia.push_back(entry);
                     }

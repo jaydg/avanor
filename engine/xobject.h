@@ -29,47 +29,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
-#include <sol/forward.hpp>
-
-enum ItemKind {
-    IM_UNKNOWN = 0x00000000,
-
-    IM_HAT = 0x00000100,
-    IM_NECK = 0x00000200,
-    IM_BODY = 0x00000400,
-    IM_CLOAK = 0x00000800,
-    IM_WEAPON = 0x00001000,
-    IM_SHIELD = 0x00002000,
-    IM_HAND = IM_WEAPON | IM_SHIELD, // for a bodyparts
-    IM_GLOVES = 0x00004000,
-    IM_RING = 0x00008000,
-    IM_BOOTS = 0x00010000,
-    IM_MISSILEW = 0x00020000,
-    IM_MISSILE = 0x00040000,
-    IM_POTION = 0x00100000,
-    IM_SCROLL = 0x00200000,
-    IM_BOOK = 0x00400000,
-    IM_WAND = 0x00800000,
-    IM_FOOD = 0x01000000,
-    IM_OTHER = 0x02000000, // reuses the bit IM_HERB used to occupy
-    IM_LIGHTSOURCE = 0x04000000,
-    IM_TOOL = 0x08000000,
-    IM_GEM = 0x10000000,
-    IM_MONEY = 0x20000000,
-    IM_STACKABLE = 0x40000000, // for spells
-    IM_CHEST = 0x80000000,
-    IM_ITEM = 0x2FFFFF00, // all items!
-
-    IM_TOHIT = IM_HAT | IM_NECK | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS | IM_RING | IM_WEAPON,
-    IM_ARMOUR = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS,
-    IM_VALUEDICE = IM_WEAPON | IM_MISSILEW | IM_MISSILE,
-    IM_VALUEDVPV = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_SHIELD | IM_BOOTS | IM_WEAPON,
-    IM_VALUEHITDMG = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_BOOTS | IM_WEAPON,
-    IM_ALL = 0xFFFFFFFF
-};
-
-// Registers this enum as the Lua table ItemKind.MEMBER
-void RegisterItemKindEnum(sol::state_view& lua);
 
 class XObject;
 // next code is for creating class by it name
@@ -197,8 +156,6 @@ class XObject : public std::enable_shared_from_this<XObject>
         friend class XModSlowness;
 
     public:
-        ItemKind kind;
-
         const XGUID guid()
         {
             return xguid;
@@ -237,12 +194,12 @@ class XObject : public std::enable_shared_from_this<XObject>
             Create();
         }
 
-        XObject() : xguid(::guid++), kind(IM_UNKNOWN), is_valid(1)
+        XObject() : xguid(::guid++), is_valid(1)
         {
             Create();
         }
 
-        XObject(XObject * o) : xguid(::guid++), kind(o->kind), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
+        XObject(XObject * o) : xguid(::guid++), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
 
         {
             Create();
@@ -333,7 +290,6 @@ class XObject : public std::enable_shared_from_this<XObject>
 
             ar(
                 cereal::make_nvp("guid", xguid),
-                kind,
                 ttm,
                 ttmb
             );

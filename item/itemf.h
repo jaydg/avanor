@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define ITEM_FACTORY_H
 
 #include "item/incl_i.h"
+#include "item/itemkind.h"
 
 class XItemFactory
 {

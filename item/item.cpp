@@ -22,9 +22,41 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/creature.h"
 #include "item/item.h"
+
+void XItem::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("ItemKind",
+        "HAT", IM_HAT,
+        "NECK", IM_NECK,
+        "BODY", IM_BODY,
+        "CLOAK", IM_CLOAK,
+        "WEAPON", IM_WEAPON,
+        "SHIELD", IM_SHIELD,
+        "HAND", IM_HAND,
+        "GLOVES", IM_GLOVES,
+        "RING", IM_RING,
+        "BOOTS", IM_BOOTS,
+        "MISSILEW", IM_MISSILEW,
+        "MISSILE", IM_MISSILE,
+        "POTION", IM_POTION,
+        "SCROLL", IM_SCROLL,
+        "BOOK", IM_BOOK,
+        "WAND", IM_WAND,
+        "FOOD", IM_FOOD,
+        "LIGHTSOURCE", IM_LIGHTSOURCE,
+        "TOOL", IM_TOOL,
+        "GEM", IM_GEM,
+        "MONEY", IM_MONEY,
+        "STACKABLE", IM_STACKABLE,
+        "CHEST", IM_CHEST,
+        "ARMOUR", IM_ARMOUR,
+        "ITEM", IM_ITEM
+    );
+}
 
 // XItem is never itself a dynamic type either (every actual item is a
 // concrete subclass, each with its own CEREAL_REGISTER_TYPE against
@@ -315,6 +347,7 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
     identify = copy->identify;
     is_selected = copy->is_selected;
     it = copy->it;
+    kind = copy->kind;
     material_index = copy->material_index;
     special_number = copy->special_number;
     special_property = copy->special_property;

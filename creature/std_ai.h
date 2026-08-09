@@ -31,6 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/cr_defs.h"
 #include "helpers/rect.h"
 #include "item/item.h"
+#include "item/itemkind.h"
 
 enum COMPANION_COMMAND {
     CC_NONE,
