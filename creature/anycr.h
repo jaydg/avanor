@@ -50,16 +50,15 @@ struct EQUIP_REC {
     ITEM_TYPE it;
 };
 
-enum GENERATION_FLAGS {
-    GFS_SUPRESS_INVIS = 0x0001,
-    GFS_SEE_INVIS = 0x0002,
-};
-
-// Registers this enum as the Lua table GENERATION_FLAGS.MEMBER.
-void RegisterGenerationFlagsEnum(sol::state_view& lua);
-
-
 struct CREATURE_DEF {
+    enum GenerationFlag {
+        SUPPRESS_INVIS = 0x0001,
+        SEE_INVIS = 0x0002,
+    };
+
+    // Registers this enum as the Lua table CREATURE_DEF.MEMBER
+    static void RegisterLua(sol::state_view& lua);
+
     //view
     std::string name;               // "kobold"
     char view;                      // 'k'

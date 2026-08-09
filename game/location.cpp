@@ -1196,7 +1196,7 @@ void XLocation::CommonLuaInitialization()
 
     XLocation::RegisterLua(lua);
     RegisterLuaEventEnum(lua);
-    RegisterGenerationFlagsEnum(lua);
+    CREATURE_DEF::RegisterLua(lua);
     RegisterCrDefsEnums(lua);
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);

@@ -29,11 +29,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_misc.h"
 #include "item/itemf.h"
 
-void RegisterGenerationFlagsEnum(sol::state_view& lua)
+void CREATURE_DEF::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("GENERATION_FLAGS",
-        "GFS_SUPRESS_INVIS", GFS_SUPRESS_INVIS,
-        "GFS_SEE_INVIS", GFS_SEE_INVIS
+    lua.new_enum("CREATURE_DEF",
+        "SUPPRESS_INVIS", CREATURE_DEF::SUPPRESS_INVIS,
+        "SEE_INVIS", CREATURE_DEF::SEE_INVIS
     );
 }
 
@@ -181,7 +181,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
         old_item->Invalidate();
     };
 
-    if (cr->generation_flags & GFS_SUPRESS_INVIS) {
+    if (cr->generation_flags & CREATURE_DEF::SUPPRESS_INVIS) {
         if (neck && neck->Item() && neck->Item()->resistances->GetResistance(XResistance::INVISIBLE) > 0) {
             unwear_and_invalidate(neck);
         }
@@ -195,7 +195,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
         }
     }
 
-    if (cr->generation_flags & GFS_SEE_INVIS) {
+    if (cr->generation_flags & CREATURE_DEF::SEE_INVIS) {
         while (true) {
             if (neck && neck->Item() && neck->Item()->resistances->GetResistance(XResistance::SEE_INVISIBLE)) {
                 break;
