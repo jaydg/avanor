@@ -160,7 +160,7 @@ torin_award = 0;
 
 function GasMineEvent(e, p)
 	if (e == LUA_EVENT.LE_MOVE) then
-		if (QuestStatus(QUEST_TORIN) < QUEST.Q_COMPLETE and Rand(3) == 0) then
+		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE and Rand(3) == 0) then
 			InflictDamage(p, Rand(5) + 2, XResistance.POISON, "mysterious gas")
 		end
 	end
@@ -169,9 +169,9 @@ end
 
 function GasPumpEvent(e, p)	
 	if (e == LUA_EVENT.LE_OUTER_USE) then
-		if (QuestStatus(QUEST_TORIN) < QUEST.Q_COMPLETE) then
+		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE) then
 			AddMessage('You hear hollow rumble as the pump starts.')
-			QuestModify(QUEST_TORIN, QUEST.Q_COMPLETE)
+			QuestModify(QUEST_TORIN, XQuest.COMPLETE)
 		else
 			AddMessage('You can\'t seem to stop the pump.')
 		end
@@ -235,14 +235,14 @@ end
 function TorinHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_TORIN)	
-		if (qs == QUEST.Q_UNKNOWN) then
+		if (qs == XQuest.UNKNOWN) then
 			AddMessage("Hello, brave hero. As you know, we dwarves mine our treasures deep from the ground. Some time ago, one of our mine was filled by a mysterious gas, which slowly kills all living things. It is oozing from the rocks. We have gas pump there, but there is no one who can switch this pump on. Please solve this problem.")
-			QuestModify(QUEST_TORIN, QUEST.Q_KNOWN)
-		elseif (qs == QUEST.Q_KNOWN) then
+			QuestModify(QUEST_TORIN, XQuest.KNOWN)
+		elseif (qs == XQuest.KNOWN) then
 			AddMessage("You haven\'t completed my previous request? Hmm... GET OUT OF HERE!")
-		elseif (qs == QUEST.Q_COMPLETE) then
+		elseif (qs == XQuest.COMPLETE) then
 			AddMessage("Thank you for your great help.")
-			QuestModify(QUEST_TORIN, QUEST.Q_CLOSED)
+			QuestModify(QUEST_TORIN, XQuest.CLOSED)
 			if (GiveAward(t, torin_award, p)) then
 				AddMessage('Take this tool as a reward.')
 			end
@@ -333,7 +333,7 @@ end
 
 function BeelzevileHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_DIE) then
-		QuestModify(QUEST_ELDER, QUEST.Q_COMPLETE)
+		QuestModify(QUEST_ELDER, XQuest.COMPLETE)
 	end
 	return 0
 end
@@ -583,14 +583,14 @@ end
 function AhkUlanHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_ANCIENT_PART)
-		if (qs == QUEST.Q_UNKNOWN) then
+		if (qs == XQuest.UNKNOWN) then
 			AddMessage("Hello, brave hero.")
 			AddMessage("Some years ago, some evil wizards destroyed my tower.")
 			AddMessage("Now I wait here gaining strength and planning my revenge.")
 			AddMessage("I am searching for 3 parts to an ancient machine.")
 			AddMessage("Bring them to me and I will reward you well.")
-			QuestModify(QUEST_ANCIENT_PART, QUEST.Q_KNOWN)
-		elseif (qs == QUEST.Q_KNOWN) then
+			QuestModify(QUEST_ANCIENT_PART, XQuest.KNOWN)
+		elseif (qs == XQuest.KNOWN) then
 			AddMessage("Don't disturb me before completing my quest, puny mortal!")
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
@@ -598,7 +598,7 @@ function AhkUlanHandler(e, t, p, v)
 		if (it == ITEM_TYPE.IT_ANCIENTMACHINEPART) then
 			if (count == 3) then
 				AddMessage("Very nice job, servant!")
-				QuestModify(QUEST_ANCIENT_PART, QUEST.Q_CLOSED)
+				QuestModify(QUEST_ANCIENT_PART, XQuest.CLOSED)
 				return 1
 			else
 				AddMessage("PLEASE! Return with THREE... THREE parts of an ancient machine!")

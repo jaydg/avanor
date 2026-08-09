@@ -25,14 +25,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/quest.h"
 #include "helpers/xgui.h"
 
-void RegisterQuestEnum(sol::state_view& lua)
+void XQuest::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("QUEST",
-        "Q_UNKNOWN", Q_UNKNOWN,
-        "Q_KNOWN", Q_KNOWN,
-        "Q_COMPLETE", Q_COMPLETE,
-        "Q_CLOSED", Q_CLOSED,
-        "Q_FAIL", Q_FAIL
+    lua.new_enum("XQuest",
+        "UNKNOWN", XQuest::UNKNOWN,
+        "KNOWN", XQuest::KNOWN,
+        "COMPLETE", XQuest::COMPLETE,
+        "CLOSED", XQuest::CLOSED,
+        "FAIL", XQuest::FAIL
     );
 }
 
@@ -46,7 +46,7 @@ void XQuest::ShowQuests()
     int flag = 1;
 
     for (auto& quest: quests) {
-        if (quest->status == Q_KNOWN) {
+        if (quest->status == XQuest::KNOWN) {
             list.AddItem(new XGuiItem_Text(quest->know.c_str()));
             flag = 0;
         }
@@ -104,22 +104,22 @@ void XQuest::ShowQuests()
 void XQuest::Take(int id)
 {
     XQuestRec * qr = Find(id);
-    qr->status = Q_KNOWN;
+    qr->status = XQuest::KNOWN;
 }
 
 void XQuest::Complete(int id)
 {
     XQuestRec * qr = Find(id);
-    qr->status = Q_COMPLETE;
+    qr->status = XQuest::COMPLETE;
 }
 
 void XQuest::Close(int id)
 {
     XQuestRec * qr = Find(id);
-    qr->status = Q_CLOSED;
+    qr->status = XQuest::CLOSED;
 }
 
-QUEST XQuest::Status(int id)
+XQuest::Id XQuest::Status(int id)
 {
     XQuestRec * qr = Find(id);
     return qr->status;

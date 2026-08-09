@@ -304,7 +304,7 @@ end
 function FarmerHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
-		if (qs == QUEST.Q_COMPLETE or qs == QUEST.Q_CLOSED) then
+		if (qs == XQuest.COMPLETE or qs == XQuest.CLOSED) then
 			AddMessage("'Thank you, great hero!'")
 		else
 			AddMessage("'Please speak with our elder. He lives in the stone house.'")
@@ -322,18 +322,18 @@ end
 function ElderGridorHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
-		if (qs == QUEST.Q_UNKNOWN) then
+		if (qs == XQuest.UNKNOWN) then
 			AddMessage('Good day, friend! All that we have are our mushrooms.')
 			AddMessage('We collect them in the cave to the west of the village.')
 			AddMessage('But a short time ago, an evil monster occupied the cave.')
 			AddMessage('It looks like a demon and is very dangerous.')
 			AddMessage('Maybe the people who live to the south of the lake can help.')
-			QuestModify(QUEST_ELDER, QUEST.Q_KNOWN)
-		elseif (qs == QUEST.Q_KNOWN) then
+			QuestModify(QUEST_ELDER, XQuest.KNOWN)
+		elseif (qs == XQuest.KNOWN) then
 			AddMessage('The evil monster is still there.')
-		elseif (qs == QUEST.Q_COMPLETE) then
+		elseif (qs == XQuest.COMPLETE) then
 			AddMessage('Thank you for your great help! Now, our farmers can collect mushrooms.')
-			QuestModify(QUEST_ELDER, QUEST.Q_CLOSED)
+			QuestModify(QUEST_ELDER, XQuest.CLOSED)
 			ExecuteAIScript()
 		else
 			AddMessage('Have a nice day,')
@@ -405,24 +405,24 @@ function OzorikHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_OZORIK)
 		local demon_quest = QuestStatus(QUEST_ELDER)
-		if (orcs_live > 0 and qs < QUEST.Q_COMPLETE) then
-			if (qs == QUEST.Q_UNKNOWN) then
-				if (demon_quest == QUEST.Q_KNOWN) then
+		if (orcs_live > 0 and qs < XQuest.COMPLETE) then
+			if (qs == XQuest.UNKNOWN) then
+				if (demon_quest == XQuest.KNOWN) then
 					AddMessage("'Demons? We are mighty enough to slay them, but now another problem approaches from the south - an orc war-party!'")
-				elseif (demon_quest == QUEST.Q_UNKNOWN) then
+				elseif (demon_quest == XQuest.UNKNOWN) then
 					AddMessage("'Sorry, but I'm really busy now. The orc war-party will be here soon!'")
 				end
-				QuestModify(QUEST_OZORIK, QUEST.Q_KNOWN)
+				QuestModify(QUEST_OZORIK, XQuest.KNOWN)
 			else
 				AddMessage("'Sorry, but I'm really busy right now. The orc war-party will be here soon!'")
 			end
 		else
-			if (qs < QUEST.Q_CLOSED) then
+			if (qs < XQuest.CLOSED) then
 				AddMessage("'You gained us victory!'")
 				if (GiveAward(t, ozorik_award, p)) then
 					AddMessage('Take this dagger as a reward!')
 				end
-				QuestModify(QUEST_OZORIK, QUEST.Q_CLOSED)
+				QuestModify(QUEST_OZORIK, XQuest.CLOSED)
 			else
 				AddMessage('Good day, hero!')
 			end
@@ -460,8 +460,8 @@ function RoyalGuardHandler(e, t, p, v)
 		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(im, ITEM_MASK.IM_WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Thank you!'")
-			if (QuestStatus(QUEST_OZORIK) < QUEST.Q_COMPLETE) then
-				QuestModify(QUEST_OZORIK, QUEST.Q_COMPLETE)
+			if (QuestStatus(QUEST_OZORIK) < XQuest.COMPLETE) then
+				QuestModify(QUEST_OZORIK, XQuest.COMPLETE)
 			end
 		else
 			AddMessage("'I do not need this!'")
@@ -526,13 +526,13 @@ function YohjiHandler(e, t, p, v)
 			result = 'q'
 		end
 		if (result == 'q') then
-			if (QuestStatus(QUEST_YOHJI_BAT) ~= QUEST.Q_KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= QUEST.Q_KNOWN) then
+			if (QuestStatus(QUEST_YOHJI_BAT) ~= XQuest.KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= XQuest.KNOWN) then
 				if (Rand(2) == 1) then
 					AddMessage("'I can identify all items in your inventory, if you bring me a bat wing.'")
-					QuestModify(QUEST_YOHJI_BAT, QUEST.Q_KNOWN)
+					QuestModify(QUEST_YOHJI_BAT, XQuest.KNOWN)
 				else
 					AddMessage("'I can identify all items in your inventory, if you bring me a rat tail.'")
-					QuestModify(QUEST_YOHJI_RAT, QUEST.Q_KNOWN)
+					QuestModify(QUEST_YOHJI_RAT, XQuest.KNOWN)
 				end
 			else
 				AddMessage("'Please, complete my last request first'")
@@ -553,13 +553,13 @@ function YohjiHandler(e, t, p, v)
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local im, brt, wt, it, count, name = GetItemParam(v)
 		if (it == ITEM_TYPE.IT_RATTAIL or it == ITEM_TYPE.IT_BATWING) then
-			if (it == ITEM_TYPE.IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == QUEST.Q_KNOWN) then
+			if (it == ITEM_TYPE.IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
 				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory.")
-				QuestModify(QUEST_YOHJI_RAT, QUEST.Q_UNKNOWN)
-			elseif (it == ITEM_TYPE.IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == QUEST.Q_KNOWN) then
+				QuestModify(QUEST_YOHJI_RAT, XQuest.UNKNOWN)
+			elseif (it == ITEM_TYPE.IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
 				AddMessage("'Oh, thank you!'")
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
-				QuestModify(QUEST_YOHJI_BAT, QUEST.Q_UNKNOWN)
+				QuestModify(QUEST_YOHJI_BAT, XQuest.UNKNOWN)
 			else
 				if (MoneyOperation(t, -50 * count) >= 0) then
 					AddMessage(string.format("'I hope %d gp will be enough for this.'", 50 * count))

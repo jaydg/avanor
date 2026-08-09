@@ -1046,7 +1046,7 @@ void XLocation::Quest(int quest_id, int status, const std::string& know, const s
 {
     auto qr = std::make_unique<XQuestRec>();
     qr->quest_id = quest_id;
-    qr->status = (QUEST)status;
+    qr->status = (XQuest::Id)status;
     qr->know = know;
     qr->complete = complete;
     qr->closed = closed;
@@ -1058,14 +1058,14 @@ void XLocation::QuestModify(int id, int status)
     XQuestRec * qr = XQuest::quest.Find(id);
 
     if (qr) {
-        qr->status = (QUEST)status;
+        qr->status = (XQuest::Id)status;
     }
 }
 
 int XLocation::QuestStatus(int id)
 {
     XQuestRec * qr = XQuest::quest.Find(id);
-    return qr ? qr->status : Q_UNKNOWN;
+    return qr ? qr->status : XQuest::UNKNOWN;
 }
 
 std::vector<int>* XLocation::lua_int_buffer = nullptr;
@@ -1208,7 +1208,7 @@ void XLocation::CommonLuaInitialization()
     XDeity::RegisterLua(lua);
     XStats::RegisterLua(lua);
     XSkill::RegisterLua(lua);
-    RegisterQuestEnum(lua);
+    XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
 
     lua_register(L, "StoreInt", StoreInt);

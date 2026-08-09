@@ -34,35 +34,22 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemdef.h"
 
 class XCreature;
-
-enum QUEST {
-    Q_UNKNOWN	= 0,
-    Q_KNOWN	= 1,
-    Q_COMPLETE	= 2,
-    Q_CLOSED	= 3,
-    Q_FAIL	= 4,
-};
-
-// Registers this enum as the Lua table QUEST.MEMBER.
-void RegisterQuestEnum(sol::state_view& lua);
-
-struct XQuestRec {
-    std::string know;
-    std::string complete;
-    std::string closed;
-    QUEST status;
-    int quest_id;
-
-    template<class Archive>
-    void serialize(Archive& ar)
-    {
-        ar(know, complete, closed, status, quest_id);
-    }
-};
+struct XQuestRec;
 
 class XQuest
 {
     public:
+        enum Id {
+            UNKNOWN	= 0,
+            KNOWN	= 1,
+            COMPLETE	= 2,
+            CLOSED	= 3,
+            FAIL	= 4,
+        };
+
+        // Registers this enum as the Lua table XQuest.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
+
         XQuest()
         {
             beelzvile_killed = 0;
@@ -122,7 +109,7 @@ class XQuest
         static void Take(int id);
         static void Complete(int id);
         static void Close(int id);
-        static QUEST Status(int id);
+        static Id Status(int id);
         static XQuestRec* Find(int id);
 
         template<class Archive>
@@ -140,6 +127,20 @@ class XQuest
             ar(rotmoth_status, kidnapped_girl_status);
             ar(hero_die, hero_win);
         }
+};
+
+struct XQuestRec {
+    std::string know;
+    std::string complete;
+    std::string closed;
+    XQuest::Id status;
+    int quest_id;
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(know, complete, closed, status, quest_id);
+    }
 };
 
 #endif
