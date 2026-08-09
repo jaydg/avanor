@@ -62,7 +62,7 @@ XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, std::str
     flag = flg;
 }
 
-#define HISCORE_VERSION 0xFFEEEE0C
+#define HISCORE_VERSION 0xFFEEEE0D
 
 XHiScore::XHiScore()
 {
@@ -74,14 +74,24 @@ XHiScore::XHiScore()
     }
 
     // file exists, we can read it
-    cereal::JSONInputArchive archive(file);
+    try {
+        cereal::JSONInputArchive archive(file);
 
-    int version;
+        int version;
+        archive(version);
 
-    archive(
-        version,
-        items
-    );
+        // an older or otherwise incompatible on-disk format:
+        // discard rather than misinterpret its fields.
+        if (version != HISCORE_VERSION) {
+            return;
+        }
+
+        archive(items);
+    } catch (const cereal::Exception&) {
+        // corrupt or unreadable file - start with an empty score list
+        // instead of crashing.
+        items.clear();
+    }
 }
 
 XHiScore::~XHiScore()
