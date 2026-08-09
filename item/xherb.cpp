@@ -242,8 +242,9 @@ int XHerbBush::CountNeighbours(int x, int y)
             }
 
             XMapObject * obj = l->map->GetSpecial(i, j);
+            XHerbBush * bush = dynamic_cast<XHerbBush *>(obj);
 
-            if (obj == 0 || !obj->isValid() || obj->im != IM_HERB) {
+            if (!bush || !bush->isValid()) {
                 continue;
             }
 
