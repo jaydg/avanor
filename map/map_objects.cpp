@@ -44,7 +44,6 @@ CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XTrap, serialize);
 XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature* _owner, XItem* items)
 {
     SetLocation(_l);
-    im = IM_TRAP;
     x = _x;
     y = _y;
     owner = XCreature::ToWeakPtr(_owner);
@@ -425,7 +424,6 @@ XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const XLocation
     ln = _ln;
     ttm = 0;
     color = xLIGHTGRAY;
-    im = IM_WAY;
     l = loc;
 
     assert(loc->map->GetSpecial(x, y) == nullptr);
@@ -470,7 +468,6 @@ XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const XLocation
     ln = _ln;
     ttm = 0;
     color = xWHITE;
-    im = IM_TELEPORT;
     l = loc;
     assert(loc->map->GetSpecial(x, y) == nullptr);
 
@@ -500,7 +497,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XDoor);
 XDoor::XDoor(const int _x, const int _y, const int flg, XLocation* _l)
 {
     SetLocation(_l);
-    im = IM_DOOR;
     x = _x;
     y = _y;
     isOpened = !flg;
@@ -530,7 +526,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XAltar);
 XAltar::XAltar(const int _x, const int _y, const XDeity::Id deity, XLocation* _l)
 {
     SetLocation(_l);
-    im = IM_ALTAR;
     x = _x;
     y = _y;
 
@@ -554,7 +549,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XGrave);
 XGrave::XGrave(const int _x, const int _y, char* subscr, XLocation* _l)
 {
     SetLocation(_l);
-    im = IM_MISC;
     x = _x;
     y = _y;
     color = xLIGHTGRAY;
@@ -613,7 +607,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XFurniture);
 XFurniture::XFurniture(const int _x, const int _y, const int _c, const char _v, const char* subscr, XLocation* _l)
 {
     SetLocation(_l);
-    im = IM_MISC;
     x = _x;
     y = _y;
     color = _c;
@@ -629,7 +622,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XOuterObject);
 XOuterObject::XOuterObject(const int _x, const int _y, const int _c, const char _v, const char* subscr, XLocation* _l, const char* event)
 {
     SetLocation(_l);
-    im = IM_MISC;
     x = _x;
     y = _y;
 

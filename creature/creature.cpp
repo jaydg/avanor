@@ -99,7 +99,6 @@ XCreature::XCreature()
     creature_size = CS_NORMAL;
     creature_person_type = XCreature::HE;
 
-    im = IM_CREATURE;
     xai = std::make_unique<XStandardAI>(this);
     md = new XModifier();
     m = new XMagic();

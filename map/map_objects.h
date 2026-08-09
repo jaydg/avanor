@@ -201,9 +201,7 @@ class XDoor final : public XMapObject
         }
 
     protected:
-        XDoor() : isOpened(0) {
-            im = IM_DOOR;
-        }
+        XDoor() : isOpened(0) {}
         friend class cereal::access;
 };
 
@@ -234,10 +232,7 @@ class XAltar final : public XMapObject
         }
 
     protected:
-        XAltar()
-        {
-            im = IM_ALTAR;
-        }
+        XAltar() {}
         friend class cereal::access;
 };
 
@@ -263,9 +258,7 @@ class XGrave: public XMapObject
         }
 
     protected:
-        XGrave() : isOpened(0) {
-            im = IM_MISC;
-        }
+        XGrave() : isOpened(0) {}
         friend class cereal::access;
 };
 
@@ -285,10 +278,7 @@ class XFurniture: public XMapObject
         }
 
     protected:
-        XFurniture()
-        {
-            im = IM_MISC;
-        }
+        XFurniture() {}
         friend class cereal::access;
 };
 
@@ -337,9 +327,7 @@ class XOuterObject final : public XMapObject
         }
 
     protected:
-        XOuterObject() : onEventLua(nullptr) {
-            im = IM_MISC;
-        }
+        XOuterObject() : onEventLua(nullptr) {}
         friend class cereal::access;
 };
 

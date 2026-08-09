@@ -61,7 +61,6 @@ XHero::XHero(int flag)
     name = "-=RET=-";
     RNG = 5;
     target.reset();
-    im = IM_HERO;
 
     auto *d = new XDice("1d3");
     _DV = d->Throw();
