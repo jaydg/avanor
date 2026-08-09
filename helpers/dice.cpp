@@ -20,14 +20,28 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 #include <cassert>
+#include <charconv>
 #include <cmath>
-#include <regex>
 #include <stdexcept>
 
 #include "engine/global.h"
 #include "helpers/dice.h"
 
-// Parses expressions like "XdY", "XdY+Z" or "XdY - Z".
+namespace {
+    bool isDigit(char c)
+    {
+        return c >= '0' && c <= '9';
+    }
+}
+
+// Parses expressions like "XdY" or "XdY+Z"/"XdY-Z" (e.g. "2d6", "4d12+30",
+// "1d8-2") - hand-rolled rather than std::regex, since MainFill() runs this
+// on every item creation (up to 6 fields each) and the grammar is trivial
+// enough that a regex engine's generality buys nothing here. Matches
+// ^(\d*)d(\d+)([+-]\d+)?$ exactly, including its quirks: no whitespace
+// tolerance anywhere (despite what the old regex's doc comment implied -
+// "2d6 - 5" never actually matched it either), and no leading sign on the
+// count/sides groups even though std::from_chars would otherwise accept one.
 void XDice::Setup(const std::string& str)
 {
     if (str.empty()) {
@@ -36,16 +50,64 @@ void XDice::Setup(const std::string& str)
         return;
     }
 
-    static const std::regex pattern(R"(^(\d*)d(\d+)([+-]\d+)?$)");
-    std::smatch match;
+    const char* cur = str.data();
+    const char* const end = cur + str.size();
 
-    if (!std::regex_match(str, match, pattern)) {
+    int count = 1; // \d* - optional, defaults to 1 when absent
+
+    if (cur != end && isDigit(*cur)) {
+        const auto res = std::from_chars(cur, end, count);
+
+        if (res.ec != std::errc()) {
+            throw std::invalid_argument("Invalid dice format");
+        }
+
+        cur = res.ptr;
+    }
+
+    if (cur == end || *cur != 'd') {
         throw std::invalid_argument("Invalid dice format");
     }
 
-    count_ = match[1].matched ? std::stoi(match[1].str()) : 1;
-    sides_ = std::stoi(match[2].str());
-    bonus_ = match[3].matched ? std::stoi(match[3].str()) : 0;
+    ++cur;
+
+    int sides = 0; // \d+ - required, no leading sign allowed
+
+    if (cur == end || !isDigit(*cur)) {
+        throw std::invalid_argument("Invalid dice format");
+    }
+
+    {
+        const auto res = std::from_chars(cur, end, sides);
+
+        if (res.ec != std::errc()) {
+            throw std::invalid_argument("Invalid dice format");
+        }
+
+        cur = res.ptr;
+    }
+
+    int bonus = 0; // ([+-]\d+)? - optional
+
+    if (cur != end) {
+        // from_chars parses a leading '-' itself, but not '+' - skip it
+        // manually so both signs land on the same parse call.
+        const char* bonus_start = (*cur == '+') ? cur + 1 : cur;
+
+        if (*cur != '+' && *cur != '-') {
+            throw std::invalid_argument("Invalid dice format");
+        }
+
+        const auto res = std::from_chars(bonus_start, end, bonus);
+
+        if (res.ec != std::errc() || res.ptr != end) {
+            throw std::invalid_argument("Invalid dice format");
+        }
+    }
+
+    count_ = count;
+    sides_ = sides;
+    bonus_ = bonus;
 
     Throw();
 }

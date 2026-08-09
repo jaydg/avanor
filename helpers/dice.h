@@ -41,7 +41,8 @@ public:
         Setup(*d);
     }
 
-    // Accepts "XdY+Z" expressions, e.g. "2d6 - 5" or "4d12 + 30"
+    // Accepts "XdY+Z" expressions, e.g. "2d6-5" or "4d12+30" - no
+    // whitespace tolerance anywhere in the expression.
     explicit XDice(const std::string& str)
     {
         Setup(str);

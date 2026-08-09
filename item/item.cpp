@@ -208,27 +208,24 @@ void XItem::MainFill(_MAIN_ITEM_STRUCT *is)
     value = is->value;
     quality = is->iq;
 
-    XDice * d;
+    XDice d(is->dv);
+    _DV = d.NThrow();
 
-    d = new XDice(is->dv);
-    _DV = d->NThrow();
+    d.Setup(is->pv);
+    _PV = d.NThrow();
 
-    d->Setup(is->pv);
-    _PV = d->NThrow();
+    d.Setup(is->hit);
+    _HIT = d.NThrow();
 
-    d->Setup(is->hit);
-    _HIT = d->NThrow();
+    d.Setup(is->dice);
+    int tx = d.GetCount();
+    int ty = d.GetSides();
 
-    d->Setup(is->dice);
-    int tx = d->GetCount();
-    int ty = d->GetSides();
+    d.Setup(is->z);
+    dice.Setup(tx, ty, d.NThrow());
 
-    d->Setup(is->z);
-    dice.Setup(tx, ty, d->NThrow());
-
-    d->Setup(is->r);
-    RNG = d->NThrow();
-    delete d;
+    d.Setup(is->r);
+    RNG = d.NThrow();
 }
 
 void XItem::PropFill(ITEM_SET is, int val)
