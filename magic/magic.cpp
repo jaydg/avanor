@@ -205,7 +205,7 @@ MAGIC_SCHOOL XSpell::GetSchool() const
 
 std::string XSpell::toString() const
 {
-    return fmt::format(MSG_YELLOW "{<21s} " MSG_LIGHTGRAY ": " MSG_YELLOW "{}" MSG_LIGHTGRAY "pp  {Eff - {}} (to next level: {})",
+    return fmt::format(MSG_YELLOW "{:<21s} " MSG_LIGHTGRAY ": " MSG_YELLOW "{}" MSG_LIGHTGRAY "pp  (Eff - {}) (to next level: {})",
         spell_db[spell_name].name,
         GetManaCost(),
         GetEffectivity(),
