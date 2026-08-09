@@ -24,39 +24,21 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void RegisterCrDefsEnums(sol::state_view& lua)
 {
-    lua.new_enum("CREATURE_CLASS",
-        "CR_RAT", CR_RAT,
-        "CR_FELINE", CR_FELINE,
-        "CR_CANINE", CR_CANINE,
-        "CR_REPTILE", CR_REPTILE,
-        "CR_INSECT", CR_INSECT,
-        "CR_HUMAN", CR_HUMAN,
-        "CR_ORC", CR_ORC,
-        "CR_GIANT", CR_GIANT,
-        "CR_KOBOLD", CR_KOBOLD,
-        "CR_UNDEAD", CR_UNDEAD,
-        "CR_GOBLIN", CR_GOBLIN,
-        "CR_DEMON", CR_DEMON,
-        "CR_HUMANOID", CR_HUMANOID,
-        "CR_BLOB", CR_BLOB
-    );
-
-    lua.new_enum("CREATURE_LEVEL",
-        "CRL_VERY_LOW", CRL_VERY_LOW,
-        "CRL_LOW", CRL_LOW,
-        "CRL_ABOVE_LOW", CRL_ABOVE_LOW,
-        "CRL_AVG", CRL_AVG,
-        "CRL_ABOVE_AVG", CRL_ABOVE_AVG,
-        "CRL_HI", CRL_HI,
-        "CRL_ABOVE_HI", CRL_ABOVE_HI,
-        "CRL_VERY_HI", CRL_VERY_HI,
-        "CRL_EXTREM_HI", CRL_EXTREM_HI,
-        "CRL_UNIQUE", CRL_UNIQUE,
-        "CRL_ANY", CRL_ANY,
-        "CRL_VL", CRL_VL,
-        "CRL_LA", CRL_LA,
-        "CRL_AH", CRL_AH,
-        "CRL_HVH", CRL_HVH
+    lua.new_enum("CreatureClass",
+        "RAT", CreatureClass::RAT,
+        "FELINE", CreatureClass::FELINE,
+        "CANINE", CreatureClass::CANINE,
+        "REPTILE", CreatureClass::REPTILE,
+        "INSECT", CreatureClass::INSECT,
+        "HUMAN", CreatureClass::HUMAN,
+        "ORC", CreatureClass::ORC,
+        "GIANT", CreatureClass::GIANT,
+        "KOBOLD", CreatureClass::KOBOLD,
+        "UNDEAD", CreatureClass::UNDEAD,
+        "GOBLIN", CreatureClass::GOBLIN,
+        "DEMON", CreatureClass::DEMON,
+        "HUMANOID", CreatureClass::HUMANOID,
+        "BLOB", CreatureClass::BLOB
     );
 
     lua.new_enum("GROUP_ID",

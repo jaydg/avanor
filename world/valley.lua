@@ -392,7 +392,7 @@ orcs_live = 50
 
 function CreateOzorik(x, y)
 	local ozorik = Guardian("ozorik", GROUP_ID.GID_GUARDIAN, x, y, 3, 2)
-	SetEnemy(ozorik, CREATURE_CLASS.CR_ORC)
+	SetEnemy(ozorik, CreatureClass.ORC)
 	SetEventHandler(ozorik, 'OzorikHandler')
 	GiveObjectToCreature(CreateObject('XGlamdring'), ozorik)
 	local death_hack = CreateObject('XDeathHack')
@@ -447,7 +447,7 @@ end
 function CreateGuardians(x, y)
 	for i = 1, 7 do 
 		local g = Guardian("royal_guard", GROUP_ID.GID_GUARDIAN, x, y, 14, 5, XStandardAI.GUARD_AREA + XStandardAI.RANDOM_MOVE)
-		SetEnemy(g, CREATURE_CLASS.CR_ORC)
+		SetEnemy(g, CreatureClass.ORC)
 		SetEventHandler(g, 'RoyalGuardHandler')
 	end
 end
@@ -474,7 +474,7 @@ end
 
 function CreateGekta(x, y)
 	local gekta = Guardian("gekta", GROUP_ID.GID_GUARDIAN, x, y, 14, 5)
-	SetEnemy(gekta, CREATURE_CLASS.CR_ORC)
+	SetEnemy(gekta, CreatureClass.ORC)
 	SetEventHandler(gekta, 'GektaHandler')
 end
 

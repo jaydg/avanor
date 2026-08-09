@@ -68,7 +68,7 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
         SetAIFlag(XStandardAI::GUARD_AREA);
         SetAIFlag(XStandardAI::COWARD);
         SetAIFlag(XStandardAI::RANDOM_MOVE);
-        SetEnemyClass(CR_NONE);
+        SetEnemyClass(CreatureClass::NONE);
 
         ResAIFlag(XStandardAI::ALLOW_PICK_UP);
     }

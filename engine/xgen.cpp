@@ -42,7 +42,7 @@ bool XUniversalGen::Run()
         auto* cr = dynamic_cast<XCreature *>(obj);
 
         if (cr && !cr->isHero() && cr->l == l) {
-            int n = vGetHighBitNum(cr->creature_class);
+            int n = vGetHighBitNum(static_cast<unsigned int>(cr->creature_class));
             cr_count[n]++;
         }
     }
@@ -57,7 +57,7 @@ bool XUniversalGen::Run()
         }
     }
 
-    if (auto n_mask = static_cast<CREATURE_CLASS>(cmask & crc)) {
+    if (auto n_mask = static_cast<CreatureClass>(cmask & static_cast<int>(crc)); n_mask != CreatureClass::NONE) {
         XCreature * cr = XCreatureStorage::CreateRnd(n_mask, crl);
         XPoint pt;
         l->GetFreeXY(&pt);
@@ -85,7 +85,7 @@ bool XMainLocationGen::Run()
         for (const auto& [key, obj] : XObject::objects) {
             auto* cr = dynamic_cast<XCreature *>(obj);
 
-            if (cr && !cr->isHero() && cr->creature_class & CR_ORC) {
+            if (cr && !cr->isHero() && cr->creature_class & CreatureClass::ORC) {
                 cr->xai->SetArea(small_town_area, XLocation::MAIN);
             }
         }

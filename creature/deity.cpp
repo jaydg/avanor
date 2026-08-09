@@ -76,7 +76,7 @@ void XReligion::KillCreature(XCreature * killer, XCreature * victim)
     int bad = life_deity_act[val].bad;
     int good = life_deity_act[val].good;
 
-    if (victim->creature_class == CR_UNDEAD) {
+    if (victim->creature_class == CreatureClass::UNDEAD) {
         death_act += bad;
         life_act += good;
     } else {

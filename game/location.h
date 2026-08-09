@@ -280,15 +280,15 @@ class XLocation : public XObject
         int visited_by_hero;
         void DumpLocation(std::ofstream &file);
 
-        int GetCreatureCount(unsigned int creature_class); //count of such creatures on this level (need for quests)
+        int GetCreatureCount(CreatureClass creature_class); //count of such creatures on this level (need for quests)
 
         static void CreateRandomCave();
 
         XCreature* NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid = GID_NONE);
         XCreature* NewCreature(CREATURE_NAME cn);
         XCreature* NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
-        XCreature* NewCreature(CREATURE_CLASS crc);
-        XCreature* NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
+        XCreature* NewCreature(CreatureClass crc);
+        XCreature* NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
         XStairWay* NewWay(Id target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
         XStairWay* NewWay(int x, int y, Id target_ln, STAIRWAY_TYPE s_type);
@@ -305,7 +305,7 @@ class XLocation : public XObject
         static int pat_offs_y;
 
         static void CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type);
-        static void Settle(int crc, int crl);
+        static void Settle(CreatureClass crc, int crl);
 
         static void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
         static void* Guardian(const std::string& crn, int gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);

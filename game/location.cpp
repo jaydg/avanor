@@ -364,7 +364,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
     cr->setGroupID(gid);
 
     if (cr->xai->GetAIFlag() & XStandardAI::PEACEFUL) {
-        cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
+        cr->xai->SetEnemyClass(CreatureClass::NONE); //by default all creatures in pease with others.
     }
 
     Game.NewCreature(cr, x, y, this);
@@ -394,7 +394,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, u
     return cr;
 }
 
-XCreature* XLocation::NewCreature(CREATURE_CLASS crc)
+XCreature* XLocation::NewCreature(CreatureClass crc)
 {
     XPoint pt;
     GetFreeXY(&pt, nullptr);
@@ -405,7 +405,7 @@ XCreature* XLocation::NewCreature(CREATURE_CLASS crc)
     return cr;
 }
 
-XCreature* XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
+XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
 {
     XPoint pt;
     GetFreeXY(&pt, &rect);
@@ -413,7 +413,7 @@ XCreature* XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid,
     cr->setGroupID(gid);
 
     if (cr->xai->GetAIFlag() & XStandardAI::PEACEFUL) {
-        cr->xai->SetEnemyClass(CR_NONE); //by default all creatures in pease with others.
+        cr->xai->SetEnemyClass(CreatureClass::NONE); //by default all creatures in pease with others.
     }
 
     Game.NewCreature(cr, pt.x, pt.y, this);
@@ -449,7 +449,7 @@ void XLocation::CreateShop(unsigned int kind, XRect& rect, char* sk_name, SHOP_D
     ((XShopkeeper*)cr)->SetShop(sk_name, shop);
 }
 
-int XLocation::GetCreatureCount(unsigned int creature_class)
+int XLocation::GetCreatureCount(CreatureClass creature_class)
 {
     int count = 0;
 
@@ -476,7 +476,7 @@ void XLocation::CreateRandomCave()
 {
     int deep = vRand(6) + 5;
     int view = (vRand(2) == 1);
-    int start_cr_lvl = vRand(CRL_AVG);
+    int start_cr_lvl = vRand(static_cast<int>(CreatureTemplate::Level::AVG));
 
     XRect tr(115, 60, 180, 80);
     Game.locations[XLocation::MAIN]->NewWay((XLocation::Id)rand_location_count, STW_DOWN, &tr);
@@ -513,7 +513,7 @@ XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, i
         NewWay((XLocation::Id)way_down, STW_DOWN, nullptr);
     }
 
-    Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
+    Game.Scheduler.Add(new XUniversalGen(this, CreatureClass::UNDEAD | CreatureClass::BLOB | CreatureClass::INSECT | CreatureClass::REPTILE | CreatureClass::RAT | CreatureClass::ALL_IMPL, static_cast<CreatureTemplate::Level>(cr_lvl), 4, 50000));
 }
 
 XLocation* XLocation::current_location = nullptr;
@@ -540,10 +540,10 @@ void XLocation::CreateLocation(int loc_id, const std::string& lbrief, const std:
     }
 }
 
-//Settle(CR_RAT + CR_FELINE + CR_INSECT, CRL_VERY_LOW)
-void XLocation::Settle(int crc, int crl)
+//Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
+void XLocation::Settle(CreatureClass crc, int crl)
 {
-    Game.Scheduler.Add(new XUniversalGen(current_location, (CREATURE_CLASS)(crc), (CREATURE_LEVEL)(crl), 5, 25000));
+    Game.Scheduler.Add(new XUniversalGen(current_location, crc, static_cast<CreatureTemplate::Level>(crl), 5, 25000));
 }
 
 //cr = Creature("rotmoth")
@@ -575,7 +575,7 @@ void* XLocation::Guardian(const std::string& crn, int gid, int x, int y, sol::op
     }
 
     XCreature * cr = current_location->NewCreature(crn, rect, (GROUP_ID)gid, flag);
-    cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+    cr->xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
     return cr;
 }
 
@@ -839,7 +839,7 @@ void XLocation::SetItEnemyFor(void* cr1, void* cr2)
 
 void XLocation::SetEnemy(void* cr, int cr_class)
 {
-    ((XCreature*)cr)->xai->SetEnemyClass((CREATURE_CLASS)cr_class);
+    ((XCreature*)cr)->xai->SetEnemyClass((CreatureClass)cr_class);
 }
 
 int XLocation::Gender(void* cr)
@@ -1197,7 +1197,7 @@ void XLocation::CommonLuaInitialization()
 
     XLocation::RegisterLua(lua);
     RegisterLuaEventEnum(lua);
-    CREATURE_DEF::RegisterLua(lua);
+    CreatureTemplate::RegisterLua(lua);
     RegisterCrDefsEnums(lua);
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);

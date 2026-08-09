@@ -25,26 +25,50 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
-enum CREATURE_CLASS {
-    CR_NONE     = 0x00000000,
-    CR_RAT      = 0x00000001,
-    CR_FELINE	= 0x00000002,
-    CR_CANINE	= 0x00000004,
-    CR_REPTILE	= 0x00000008,
-    CR_INSECT	= 0x00000010,
-    CR_HUMAN	= 0x00000020,
-    CR_ORC      = 0x00000040,
-    CR_GIANT	= 0x00000080,
-    CR_KOBOLD	= 0x00000100,
-    CR_UNDEAD	= 0x00000200,
-    CR_GOBLIN	= 0x00000400,
-    CR_DEMON	= 0x00000800,
-    CR_HUMANOID	= 0x00001000,
-    CR_BLOB     = 0x00002000, // warm mass, ooze
-    CR_OTHER	= 0x00004000,
-    CR_ALL      = CR_HUMAN | CR_INSECT | CR_KOBOLD | CR_UNDEAD | CR_GOBLIN | CR_REPTILE | CR_FELINE | CR_RAT | CR_CANINE | CR_HUMANOID,
-    CR_ALL_IMPL = CR_RAT | CR_FELINE | CR_CANINE | CR_REPTILE | CR_KOBOLD | CR_INSECT | CR_GOBLIN | CR_UNDEAD,
+enum class CreatureClass : unsigned int {
+    NONE     = 0x00000000,
+    RAT      = 0x00000001,
+    FELINE   = 0x00000002,
+    CANINE   = 0x00000004,
+    REPTILE  = 0x00000008,
+    INSECT   = 0x00000010,
+    HUMAN    = 0x00000020,
+    ORC      = 0x00000040,
+    GIANT    = 0x00000080,
+    KOBOLD   = 0x00000100,
+    UNDEAD   = 0x00000200,
+    GOBLIN   = 0x00000400,
+    DEMON    = 0x00000800,
+    HUMANOID = 0x00001000,
+    BLOB     = 0x00002000, // warm mass, ooze
+    OTHER    = 0x00004000,
+    ALL      = HUMAN | INSECT | KOBOLD | UNDEAD | GOBLIN | REPTILE | FELINE | RAT | CANINE | HUMANOID,
+    ALL_IMPL = RAT | FELINE | CANINE | REPTILE | KOBOLD | INSECT | GOBLIN | UNDEAD,
 };
+
+// Combines flags - e.g. CreatureClass::RAT | CreatureClass::FELINE.
+constexpr CreatureClass operator|(CreatureClass a, CreatureClass b)
+{
+    return static_cast<CreatureClass>(static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
+}
+
+// Excludes flags - e.g. CreatureClass::ALL ^ CreatureClass::HUMAN, the
+// only real use case found for this operator (SetEnemyClass() callers
+// building "everything except X").
+constexpr CreatureClass operator^(CreatureClass a, CreatureClass b)
+{
+    return static_cast<CreatureClass>(static_cast<unsigned int>(a) ^ static_cast<unsigned int>(b));
+}
+
+// Every `creature_class & mask` site in this codebase is a truthy
+// intersection test, never a value kept for further bit manipulation -
+// returning bool directly here, instead of the conventional same-type
+// CreatureClass, means every one of those call sites keeps working
+// unchanged, with no separate `!= CreatureClass::NONE` needed anywhere.
+constexpr bool operator&(CreatureClass a, CreatureClass b)
+{
+    return (static_cast<unsigned int>(a) & static_cast<unsigned int>(b)) != 0;
+}
 
 // A monster's identity, everywhere: XCreatureStorage::creature_storage's
 // key, XCreature::creature_name/XCorpse::cn (both persisted via Cereal),
@@ -83,24 +107,6 @@ inline constexpr const char* CN_BEELZEVILE = "beelzevile";
 inline constexpr const char* CN_HIGHPRIEST = "highpriest";
 inline constexpr const char* CN_ROTMOTH = "rotmoth";
 inline constexpr const char* CN_GIANA = "giana";
-
-enum CREATURE_LEVEL	{
-    CRL_VERY_LOW  = 0x0001,
-    CRL_LOW       = 0x0002,
-    CRL_ABOVE_LOW = 0x0004,
-    CRL_AVG       = 0x0008,
-    CRL_ABOVE_AVG = 0x0010,
-    CRL_HI        = 0x0020,
-    CRL_ABOVE_HI  = 0x0040,
-    CRL_VERY_HI   = 0x0080,
-    CRL_EXTREM_HI = 0x0100,
-    CRL_UNIQUE    = 0x0200,
-    CRL_ANY       = CRL_VERY_LOW | CRL_LOW | CRL_AVG | CRL_HI | CRL_VERY_HI,
-    CRL_VL        = CRL_VERY_LOW | CRL_LOW,
-    CRL_LA        = CRL_LOW | CRL_AVG,
-    CRL_AH        = CRL_AVG | CRL_HI,
-    CRL_HVH       = CRL_HI | CRL_VERY_HI
-};
 
 enum CREATURE_EXP {
     CRE_NONE = 0x0001,
@@ -155,7 +161,7 @@ enum CR_ATTACK_TYPE {
     CRAT_BOTH
 };
 
-// Registers CREATURE_CLASS, CREATURE_LEVEL and GROUP_ID as Lua tables.
+// Registers CreatureClass and GROUP_ID as Lua tables.
 void RegisterCrDefsEnums(sol::state_view& lua);
 
 #endif

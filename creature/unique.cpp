@@ -40,7 +40,7 @@ REGISTER_CLASS(XBeelzvile);
 CEREAL_REGISTER_TYPE(XBeelzvile);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBeelzvile);
 
-XBeelzvile::XBeelzvile(CREATURE_DEF * cr) : XAnyCreature(cr)
+XBeelzvile::XBeelzvile(CreatureTemplate * cr) : XAnyCreature(cr)
 {
     if (XSettings::isDemo) {
         XCreature::main_creature = this;
@@ -76,7 +76,7 @@ void XBeelzvile::Move()
 REGISTER_CLASS(XGefeon);
 CEREAL_REGISTER_TYPE(XGefeon);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGefeon);
-XGefeon::XGefeon(CREATURE_DEF * cr) : XAnyCreature(cr) { }
+XGefeon::XGefeon(CreatureTemplate * cr) : XAnyCreature(cr) { }
 
 int XGefeon::Chat(XCreature * chatter, const char* msg)
 {
@@ -113,7 +113,7 @@ int XGefeon::Chat(XCreature * chatter, const char* msg)
 REGISTER_CLASS(XRoderick);
 CEREAL_REGISTER_TYPE(XRoderick);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XRoderick);
-XRoderick::XRoderick(CREATURE_DEF * cr) : XAnyCreature(cr)
+XRoderick::XRoderick(CreatureTemplate * cr) : XAnyCreature(cr)
 {
     XPotion * pt = new XPotion(PN_HEALING);
     ContainItem(pt);
@@ -157,7 +157,7 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
                 "Clear the crypt and I will reward you. It lies to the south-west of the city.");
             XQuest::quest.roderick_quest2 = 1;
         } else if (XQuest::quest.roderick_quest2 == 1) {
-            if (Game.locations[XLocation::UNDEADS_TOMB1]->GetCreatureCount(CR_UNDEAD) == 0) {
+            if (Game.locations[XLocation::UNDEADS_TOMB1]->GetCreatureCount(CreatureClass::UNDEAD) == 0) {
                 msgwin.Add(
                     "Thank you for destroying the evil in our crypt. "
                     "Please accept these coins and my gratitude for a job well done.");
@@ -204,7 +204,7 @@ int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 REGISTER_CLASS(XHighPriest);
 CEREAL_REGISTER_TYPE(XHighPriest);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XHighPriest);
-XHighPriest::XHighPriest(CREATURE_DEF * cr) : XAnyCreature(cr)
+XHighPriest::XHighPriest(CreatureTemplate * cr) : XAnyCreature(cr)
 {
     XPotion * pt = new XPotion(PN_HEALING);
     ContainItem(pt);
@@ -287,10 +287,10 @@ CEREAL_REGISTER_TYPE(XRotmoth);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XRotmoth);
 CEREAL_REGISTER_TYPE(XRotmothAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XRotmothAI);
-XRotmoth::XRotmoth(CREATURE_DEF * cr) : XAnyCreature(cr)
+XRotmoth::XRotmoth(CreatureTemplate * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XRotmothAI>(this);
-    xai->SetEnemyClass((CREATURE_CLASS)(CR_ALL ^ (CR_HUMAN | CR_HUMANOID)));
+    xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
     xai->SetAIFlag(XStandardAI::RANDOM_MOVE);
 
 }
@@ -354,7 +354,7 @@ void XRotmothAI::onWasAttacked(XCreature * attacker)
 REGISTER_CLASS(XGiana);
 CEREAL_REGISTER_TYPE(XGiana);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGiana);
-XGiana::XGiana(CREATURE_DEF * cr) : XAnyCreature(cr)
+XGiana::XGiana(CreatureTemplate * cr) : XAnyCreature(cr)
 {
 }
 
@@ -394,12 +394,12 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBandit);
 CEREAL_REGISTER_TYPE(XBanditAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XBanditAI);
 
-XBandit::XBandit(CREATURE_DEF * cr) : XAnyCreature(cr)
+XBandit::XBandit(CreatureTemplate * cr) : XAnyCreature(cr)
 {
     xai = std::make_unique<XBanditAI>(this);
     xai->SetAIFlag(XStandardAI::GUARD_AREA);
     xai->SetAIFlag(XStandardAI::PROTECT_AREA);
-    xai->SetEnemyClass(CR_NONE);
+    xai->SetEnemyClass(CreatureClass::NONE);
     XBodyPart * cloak = GetBodyPart(BP_CLOAK, 0);
 
     if (cloak->Item()) {
@@ -442,7 +442,7 @@ REGISTER_CLASS(XShopkeeper);
 CEREAL_REGISTER_TYPE(XShopkeeper);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XShopkeeper);
 
-XShopkeeper::XShopkeeper(CREATURE_DEF * cr) : XAnyCreature(cr)
+XShopkeeper::XShopkeeper(CreatureTemplate * cr) : XAnyCreature(cr)
 {
     // Wear() puts the item in the inventory itself now (see
     // XBodyPart::Wear()), so the explicit CarryItem() calls that used to

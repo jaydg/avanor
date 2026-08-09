@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
 
+#include "creature/anycr.h"
 #include "engine/xmapobj.h"
 #include "map/map.h"
 
@@ -99,7 +100,7 @@ class XUniversalGen final : public XGenerator
 
     public:
         DECLARE_CREATOR(XUniversalGen, XGenerator);
-        XUniversalGen(XLocation * loc, CREATURE_CLASS _crc, CREATURE_LEVEL _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
+        XUniversalGen(XLocation * loc, CreatureClass _crc, CreatureTemplate::Level _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
         {
             l = loc;
             crl = _crl;
@@ -116,8 +117,8 @@ class XUniversalGen final : public XGenerator
             ar(crl, crc, max_creature);
         }
     protected:
-        CREATURE_LEVEL crl;
-        CREATURE_CLASS crc;
+        CreatureTemplate::Level crl;
+        CreatureClass crc;
         unsigned int max_creature{};
 };
 

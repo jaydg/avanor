@@ -32,7 +32,7 @@ class XBeelzvile : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XBeelzvile, XAnyCreature);
-        XBeelzvile(CREATURE_DEF * cr);
+        XBeelzvile(CreatureTemplate * cr);
         void NewMove() override;
         void Move() override;
 
@@ -51,7 +51,7 @@ class XGefeon : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XGefeon, XAnyCreature);
-        XGefeon(CREATURE_DEF * cr);
+        XGefeon(CreatureTemplate * cr);
         int Chat(XCreature * chatter, const char* msg) override;
 
         template<class Archive>
@@ -68,7 +68,7 @@ class XAhkUlan : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XAhkUlan, XAnyCreature);
-        XAhkUlan(CREATURE_DEF * cr);
+        XAhkUlan(CreatureTemplate * cr);
         int Chat(XCreature * chatter, const char* msg) override;
         void Die(XCreature * killer) override;
         int onGiveItem(XCreature * giver, XItem * item) override;
@@ -84,7 +84,7 @@ class XRoderick : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XRoderick, XAnyCreature);
-        XRoderick(CREATURE_DEF * cr);
+        XRoderick(CreatureTemplate * cr);
         int Chat(XCreature * chatter, const char* msg) override;
         void Die(XCreature * killer) override;
         int onGiveItem(XCreature * giver, XItem * item) override;
@@ -109,7 +109,7 @@ class XHighPriest : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XHighPriest, XAnyCreature);
-        XHighPriest(CREATURE_DEF * cr);
+        XHighPriest(CreatureTemplate * cr);
         int Chat(XCreature * chatter, const char* msg) override;
         void Die(XCreature * killer) override;
         int onGiveItem(XCreature * giver, XItem * item) override;
@@ -129,7 +129,7 @@ class XRotmoth : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XRotmoth, XAnyCreature);
-        XRotmoth(CREATURE_DEF * cr);
+        XRotmoth(CreatureTemplate * cr);
         int Chat(XCreature * chatter, const char* msg) override;
 
         template<class Archive>
@@ -169,7 +169,7 @@ class XGiana : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XGiana, XAnyCreature);
-        XGiana(CREATURE_DEF * cr);
+        XGiana(CreatureTemplate * cr);
         int Chat(XCreature * chatter, const char* msg) override;
         void FirstStep(int _x, int _y, XLocation * _l) override;
 
@@ -188,7 +188,7 @@ class XBandit : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XBandit, XAnyCreature);
-        XBandit(CREATURE_DEF * cr);
+        XBandit(CreatureTemplate * cr);
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -224,8 +224,8 @@ class XShopkeeper : public XAnyCreature
 
     public:
         DECLARE_CREATOR(XShopkeeper, XAnyCreature);
-        XShopkeeper(CREATURE_DEF *cr);
-        XShopkeeper(char* _name, XShop * shop, CREATURE_LEVEL crl, CREATURE_EXP cre) {}
+        XShopkeeper(CreatureTemplate *cr);
+        XShopkeeper(char* _name, XShop * shop, CreatureTemplate::Level crl, CREATURE_EXP cre) {}
 
         std::string StdAnswer() override;
         void Die(XCreature * killer) override;

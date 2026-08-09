@@ -454,7 +454,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
             }
 
             if (flg) {
-                XCreature * cr = pData->l->NewCreature(CR_UNDEAD);
+                XCreature * cr = pData->l->NewCreature(CreatureClass::UNDEAD);
                 cr->LastStep();
                 cr->FirstStep(tx, ty, pData->l);
 

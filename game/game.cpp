@@ -365,7 +365,7 @@ void XGame::CreateHero()
         cr->xai->SetCompanion(hero);
         cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_OUT);
         cr->xai->SetAIFlag(XStandardAI::PEACEFUL);
-        cr->xai->SetEnemyClass((CREATURE_CLASS)(CR_KOBOLD | CR_GOBLIN | CR_UNDEAD | CR_INSECT | CR_BLOB | CR_CANINE | CR_FELINE | CR_RAT | CR_REPTILE | CR_ORC));
+        cr->xai->SetEnemyClass(CreatureClass::KOBOLD | CreatureClass::GOBLIN | CreatureClass::UNDEAD | CreatureClass::INSECT | CreatureClass::BLOB | CreatureClass::CANINE | CreatureClass::FELINE | CreatureClass::RAT | CreatureClass::REPTILE | CreatureClass::ORC);
     }
 
 #else

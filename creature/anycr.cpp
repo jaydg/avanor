@@ -30,11 +30,26 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemf.h"
 #include "magic/attack_effect_type.h"
 
-void CREATURE_DEF::RegisterLua(sol::state_view& lua)
+void CreatureTemplate::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("CREATURE_DEF",
-        "SUPPRESS_INVIS", CREATURE_DEF::SUPPRESS_INVIS,
-        "SEE_INVIS", CREATURE_DEF::SEE_INVIS
+    lua.new_enum("CreatureTemplate",
+        "SUPPRESS_INVIS", CreatureTemplate::SUPPRESS_INVIS,
+        "SEE_INVIS", CreatureTemplate::SEE_INVIS,
+        "VERY_LOW", CreatureTemplate::Level::VERY_LOW,
+        "LOW", CreatureTemplate::Level::LOW,
+        "ABOVE_LOW", CreatureTemplate::Level::ABOVE_LOW,
+        "AVG", CreatureTemplate::Level::AVG,
+        "ABOVE_AVG", CreatureTemplate::Level::ABOVE_AVG,
+        "HI", CreatureTemplate::Level::HI,
+        "ABOVE_HI", CreatureTemplate::Level::ABOVE_HI,
+        "VERY_HI", CreatureTemplate::Level::VERY_HI,
+        "EXTREM_HI", CreatureTemplate::Level::EXTREM_HI,
+        "UNIQUE", CreatureTemplate::Level::UNIQUE,
+        "ANY", CreatureTemplate::Level::ANY,
+        "VL", CreatureTemplate::Level::VL,
+        "LA", CreatureTemplate::Level::LA,
+        "AH", CreatureTemplate::Level::AH,
+        "HVH", CreatureTemplate::Level::HVH
     );
 }
 
@@ -42,21 +57,21 @@ REGISTER_CLASS(XAnyCreature);
 CEREAL_REGISTER_TYPE(XAnyCreature);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XAnyCreature);
 
-std::unordered_map<CREATURE_NAME, CREATURE_DEF> XCreatureStorage::creature_storage;
+std::unordered_map<CREATURE_NAME, CreatureTemplate> XCreatureStorage::creature_storage;
 CREATURE_SET_REC XCreatureStorage::creature_set[32];
 
-const std::unordered_map<CREATURE_NAME, XCreature*(*)(CREATURE_DEF*)> XCreatureStorage::unique_creators = {
-    {CN_BANDIT,     [](CREATURE_DEF* cr) -> XCreature* { return new XBandit(cr); }},
-    {CN_SHOPKEEPER, [](CREATURE_DEF* cr) -> XCreature* { return new XShopkeeper(cr); }},
-    {CN_GEFEON,     [](CREATURE_DEF* cr) -> XCreature* { return new XGefeon(cr); }},
-    {CN_RODERIK,    [](CREATURE_DEF* cr) -> XCreature* { return new XRoderick(cr); }},
-    {CN_BEELZEVILE, [](CREATURE_DEF* cr) -> XCreature* { return new XBeelzvile(cr); }},
-    {CN_HIGHPRIEST, [](CREATURE_DEF* cr) -> XCreature* { return new XHighPriest(cr); }},
-    {CN_ROTMOTH,    [](CREATURE_DEF* cr) -> XCreature* { return new XRotmoth(cr); }},
-    {CN_GIANA,      [](CREATURE_DEF* cr) -> XCreature* { return new XGiana(cr); }},
+const std::unordered_map<CREATURE_NAME, XCreature*(*)(CreatureTemplate*)> XCreatureStorage::unique_creators = {
+    {CN_BANDIT,     [](CreatureTemplate* cr) -> XCreature* { return new XBandit(cr); }},
+    {CN_SHOPKEEPER, [](CreatureTemplate* cr) -> XCreature* { return new XShopkeeper(cr); }},
+    {CN_GEFEON,     [](CreatureTemplate* cr) -> XCreature* { return new XGefeon(cr); }},
+    {CN_RODERIK,    [](CreatureTemplate* cr) -> XCreature* { return new XRoderick(cr); }},
+    {CN_BEELZEVILE, [](CreatureTemplate* cr) -> XCreature* { return new XBeelzvile(cr); }},
+    {CN_HIGHPRIEST, [](CreatureTemplate* cr) -> XCreature* { return new XHighPriest(cr); }},
+    {CN_ROTMOTH,    [](CreatureTemplate* cr) -> XCreature* { return new XRotmoth(cr); }},
+    {CN_GIANA,      [](CreatureTemplate* cr) -> XCreature* { return new XGiana(cr); }},
 };
 
-XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
+XAnyCreature::XAnyCreature(CreatureTemplate * cr)
 {
     view = cr->view;
     color = cr->color;
@@ -182,7 +197,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
         old_item->Invalidate();
     };
 
-    if (cr->generation_flags & CREATURE_DEF::SUPPRESS_INVIS) {
+    if (cr->generation_flags & CreatureTemplate::SUPPRESS_INVIS) {
         if (neck && neck->Item() && neck->Item()->resistances->GetResistance(XResistance::INVISIBLE) > 0) {
             unwear_and_invalidate(neck);
         }
@@ -196,7 +211,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
         }
     }
 
-    if (cr->generation_flags & CREATURE_DEF::SEE_INVIS) {
+    if (cr->generation_flags & CreatureTemplate::SEE_INVIS) {
         while (true) {
             if (neck && neck->Item() && neck->Item()->resistances->GetResistance(XResistance::SEE_INVISIBLE)) {
                 break;
@@ -221,7 +236,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
 
     // Create money if components more than 2
     if (components.size() > 2 && vRand(3) == 0) {
-        for (int i = 0; i < vGetHighBitNum(cr->crl) + 1; i++) {
+        for (int i = 0; i < vGetHighBitNum(static_cast<unsigned int>(cr->crl)) + 1; i++) {
             XItem * it = ICREATEA(ItemKind::MONEY);
             ContainItem(it);
         }
@@ -240,14 +255,14 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
 
 void XAnyCreature::Die(XCreature * killer)
 {
-    if (creature_class == CR_UNDEAD) {
+    if (creature_class == CreatureClass::UNDEAD) {
         if (creature_name == CN_SKELETON && vRand() % 12 == 0) {
             XItem * it = new XBone();
             it->Drop(l, x, y);
         }
     }
 
-    if (creature_class == CR_ORC) {
+    if (creature_class == CreatureClass::ORC) {
         if (killer && killer->isHero()) {
             XQuest::quest.orcs_killed++;
         }
@@ -255,7 +270,7 @@ void XAnyCreature::Die(XCreature * killer)
         XQuest::quest.total_orcs_killed++;
     }
 
-    if (creature_class == CR_RAT && vRand(40) == 0) {
+    if (creature_class == CreatureClass::RAT && vRand(40) == 0) {
         if (creature_name == CN_RAT || creature_name == CN_LARGE_RAT) {
             XItem * it = new XRatTail();
             DropItem(it);
@@ -265,14 +280,14 @@ void XAnyCreature::Die(XCreature * killer)
         }
     }
 
-    if (vRand(5) == 0 && !(creature_class & CR_UNDEAD)) {
+    if (vRand(5) == 0 && !(creature_class & CreatureClass::UNDEAD)) {
         DropItem(new XCorpse(this, &super_info->pCorpseData));
     }
 
     XCreature::Die(killer);
 }
 
-CREATURE_DEF* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
+CreatureTemplate* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 {
     return &creature_storage.at(cn);
 }
@@ -280,13 +295,13 @@ CREATURE_DEF* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 void XCreatureStorage::CreateQuickBase()
 {
     for (auto& [cn, cr] : creature_storage) {
-        creature_set[vGetBitNumber(cr.cr_class)].cn.push_back(cn);
+        creature_set[vGetBitNumber(static_cast<unsigned int>(cr.cr_class))].cn.push_back(cn);
     }
 }
 
 XCreature* XCreatureStorage::Create(const CREATURE_NAME cn)
 {
-    CREATURE_DEF * cr = &creature_storage.at(cn);
+    CreatureTemplate * cr = &creature_storage.at(cn);
     XCreature * tcr = nullptr;
 
     if (auto it = unique_creators.find(cn); it != unique_creators.end()) {
@@ -300,9 +315,9 @@ XCreature* XCreatureStorage::Create(const CREATURE_NAME cn)
     return tcr;
 }
 
-XCreature* XCreatureStorage::CreateRnd(const CREATURE_CLASS cc, const int lvl)
+XCreature* XCreatureStorage::CreateRnd(const CreatureClass cc, const CreatureTemplate::Level lvl)
 {
-    const int set = vGetBitNumber(vGetRandomBit(cc));
+    const int set = vGetBitNumber(vGetRandomBit(static_cast<unsigned int>(cc)));
     int count = 100;
 
     while (count > 0) {
@@ -330,7 +345,7 @@ void XCreatureStorage::RestoreCreatureInfo(XCreature* cr)
     // FixupCreatureInfo(), which calls this too). True for a hand-
     // written unique-NPC class (registry membership) or a generic
     // monster explicitly marked unique in its own definition (see
-    // CREATURE_DEF::unique) - either can be true without the other.
+    // CreatureTemplate::unique) - either can be true without the other.
     cr->unique = unique_creators.find(cr->creature_name) != unique_creators.end()
         || creature_storage[cr->creature_name].unique;
 }
@@ -342,7 +357,7 @@ MonsterBuilder::MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base) : id(id)
     }
 }
 
-MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, XCreature::PersonType person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class)
+MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, CreatureClass cr_class)
 {
     cr.name = name;
     cr.view = view;

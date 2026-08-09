@@ -77,7 +77,7 @@ XStandardAI::XStandardAI(XCreature* _cr) : guard_area(1, 1, 2, 3),
     ai_owner = _cr;
     ai_flag = XStandardAI::NONE; //(XStandardAI::Flag)(XStandardAI::RANDOM_MOVE | XStandardAI::ALLOW_PICK_UP);
 
-    enemy_class = CR_ALL;
+    enemy_class = CreatureClass::ALL;
     last_moved_way = nullptr;
 
     companion_command = CC_NONE;
@@ -579,7 +579,7 @@ void XStandardAI::ResAIFlag(XStandardAI::Flag aif)
     ai_flag = static_cast<XStandardAI::Flag>((ai_flag | aif) ^ aif);
 }
 
-void XStandardAI::SetEnemyClass(CREATURE_CLASS cr_class)
+void XStandardAI::SetEnemyClass(CreatureClass cr_class)
 {
     enemy_class = cr_class;
 }

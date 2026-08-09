@@ -148,11 +148,11 @@ int XCreature::CauseEffect(int dmg, AttackEffectType aet, XCreature * attacker)
             damage += onMagicDamage(dmg, XResistance::AIR);
         }
 
-        if ((aet & AttackEffectType::DEMONSLAYER) != AttackEffectType::NONE && creature_class & CR_DEMON) {
+        if ((aet & AttackEffectType::DEMONSLAYER) != AttackEffectType::NONE && creature_class & CreatureClass::DEMON) {
             damage += dmg * 3;
         }
 
-        if ((aet & AttackEffectType::ORCSLAYER) != AttackEffectType::NONE && creature_class & CR_ORC) {
+        if ((aet & AttackEffectType::ORCSLAYER) != AttackEffectType::NONE && creature_class & CreatureClass::ORC) {
             damage += dmg * 3;
         }
 
@@ -524,7 +524,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 // and kill IT!!!
                 if ((vis1 || vis2) && !isHero()) {
                     auto str = fmt::format("and {} {}.",
-                        creature_class & CR_UNDEAD
+                        creature_class & CreatureClass::UNDEAD
                             ? (pData->attack_name ? pData->attacker->GetVerb("destroy") : "destroys")
                             : (pData->attack_name ? pData->attacker->GetVerb("kill") : "kills"),
                         GetNameEx(CRN_T3)

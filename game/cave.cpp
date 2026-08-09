@@ -281,19 +281,19 @@ void XCave::Draw(XLocation * l)
         }
 
         if (random_caves[rct].cf & CREATE_GUARD_ON_ROOM) {
-            CREATURE_CLASS crc = CR_UNDEAD;
+            CreatureClass crc = CreatureClass::UNDEAD;
 
             switch (vRand(3)) {
                 case 0:
-                    crc = CR_UNDEAD;
+                    crc = CreatureClass::UNDEAD;
                     break;
 
                 case 1:
-                    crc = CR_GOBLIN;
+                    crc = CreatureClass::GOBLIN;
                     break;
 
                 case 2:
-                    crc = CR_KOBOLD;
+                    crc = CreatureClass::KOBOLD;
                     break;
             }
 

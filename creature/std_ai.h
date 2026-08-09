@@ -137,7 +137,7 @@ class XStandardAI
             return ai_flag;
         }
 
-        void SetEnemyClass(CREATURE_CLASS cr_class);
+        void SetEnemyClass(CreatureClass cr_class);
 
         void AddPersonalEnemy(XCreature * cr);
         void RemovePersonalEnemy(const XCreature* cr);
@@ -205,7 +205,7 @@ class XStandardAI
 
         Flag ai_flag;
         XCreature* ai_owner;
-        CREATURE_CLASS enemy_class;
+        CreatureClass enemy_class;
 
         XRect guard_area;
         XLocation::Id guard_area_location;

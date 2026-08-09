@@ -97,7 +97,7 @@ XHero::XHero(int flag)
     run_way_count = 0;
     target.reset();
 
-    creature_class = CR_HUMAN;
+    creature_class = CreatureClass::HUMAN;
 
     base_nutrio = 1000;
     nutrio = 10000;

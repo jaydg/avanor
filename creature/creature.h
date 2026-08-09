@@ -196,7 +196,7 @@ struct DAMAGE_DATA_EX {
     XItem* weapon;             // used only in melee combat (can be undefined if attack_name is defined)
 };
 
-struct CREATURE_DEF;
+struct CreatureTemplate;
 
 typedef std::map<GROUP_ID, XCreature*> XCreatureGroupMap;
 
@@ -250,7 +250,7 @@ class XCreature : public XBaseObject
         PersonType creature_person_type;
         const char* creature_description;
         CREATURE_NAME creature_name; // allow to store less info into save file
-        const CREATURE_DEF* super_info; // full information about Creature Creation struct...
+        const CreatureTemplate* super_info; // full information about Creature Creation struct...
 
         // Is this one of the small set of unique NPCs with a hand-written
         // C++ subclass (see XCreatureStorage::unique_creators)? Not
@@ -609,7 +609,7 @@ class XCreature : public XBaseObject
             }
         }
 
-        CREATURE_CLASS creature_class;
+        CreatureClass creature_class;
 
         virtual std::string StdAnswer()
         {

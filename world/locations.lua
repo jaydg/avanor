@@ -6,32 +6,32 @@ function MakeDwarvenCity()
 	CreateLocation(XLocation.DWARFCITYCAVE1, "PDC:1", "Path to the Dwarven City Level 1", DUNGEON)
 		Way(UP, XLocation.MAIN)
 		Way(DOWN, XLocation.DWARFCITYCAVE2)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.DWARFCITYCAVE2, "PDC:2", "Path to the Dwarven City Level 2", DUNGEON)
 		Way(UP, XLocation.DWARFCITYCAVE1)
 		Way(DOWN, XLocation.DWARFCITYCAVE3)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
 	CreateLocation(XLocation.DWARFCITYCAVE3, "PDC:3", "Path to the Dwarven City Level 3", DUNGEON)
 		Way(UP, XLocation.DWARFCITYCAVE2)
 		Way(DOWN, XLocation.DWARFCITYCAVE4)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
 	CreateLocation(XLocation.DWARFCITYCAVE4, "PDC:4", "Path to the Dwarven City Level 4", DUNGEON)
 		Way(UP, XLocation.DWARFCITYCAVE3)
 		Way(DOWN, XLocation.DWARFCITYCAVE5)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
 	CreateLocation(XLocation.DWARFCITYCAVE5, "PDC:5", "Path to the Dwarven City Level 5", DUNGEON)
 		Way(UP, XLocation.DWARFCITYCAVE4)
 		Way(DOWN, XLocation.DWARFCITYCAVE6)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
 	CreateLocation(XLocation.DWARFCITYCAVE6, "PDC:6", "Path to the Dwarven City Level 6", DUNGEON)
 		Way(UP, XLocation.DWARFCITYCAVE5)
 		Way(DOWN, XLocation.DWARFCITY)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE + CREATURE_CLASS.CR_GOBLIN + CREATURE_CLASS.CR_KOBOLD, CREATURE_LEVEL.CRL_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE + CreatureClass.GOBLIN + CreatureClass.KOBOLD, CreatureTemplate.LOW)
 		DropItem(CreateObject("XCookingSet"))
 
 
@@ -103,27 +103,27 @@ function MakeDwarvenCity()
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("A", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
 		DrawPattern(0, 0)
-		
+
 
 	CreateLocation(XLocation.GASMINE1, "GM:1", "Gassed Mine level 1", DUNGEON)
 		Way(UP, XLocation.DWARFCITY)
 		Way(DOWN, XLocation.GASMINE2)
---		Settle(CREATURE_CLASS.CR_BLOB, CREATURE_LEVEL.CRL_VERY_LOW)
+--		Settle(CreatureClass.BLOB, CreatureTemplate.VERY_LOW)
 		EventPlace('GasMineEvent')
 
 	CreateLocation(XLocation.GASMINE2, "GM:2", "Gassed Mine level 2", DUNGEON)
 		Way(UP, XLocation.GASMINE1)
 		Way(DOWN, XLocation.GASMINE3)
---		Settle(CREATURE_CLASS.CR_BLOB, CREATURE_LEVEL.CRL_VERY_LOW)
+--		Settle(CreatureClass.BLOB, CreatureTemplate.VERY_LOW)
 		EventPlace('GasMineEvent')
 
 	CreateLocation(XLocation.GASMINE3, "GM:3", "Gassed Mine level 3", DUNGEON)
 		Way(UP, XLocation.GASMINE2)
---		Settle(CREATURE_CLASS.CR_BLOB, CREATURE_LEVEL.CRL_VERY_LOW)
+--		Settle(CreatureClass.BLOB, CreatureTemplate.VERY_LOW)
 		EventPlace('GasMineEvent')
 		OuterObject(xColor.xBLUE, '#', 'a gas pump', 'GasPumpEvent')
 end
-	
+
 
 DvCityEventMoveCount = 0
 
@@ -167,7 +167,7 @@ function GasMineEvent(e, p)
 end
 
 
-function GasPumpEvent(e, p)	
+function GasPumpEvent(e, p)
 	if (e == LuaEvent.OUTER_USE) then
 		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE) then
 			AddMessage('You hear hollow rumble as the pump starts.')
@@ -203,7 +203,7 @@ function TodinHandler(e, t, p, v)
 							SetItemBrand(v, AttackEffectType.COLD)
 						elseif (res == 1) then
 							SetItemBrand(v, AttackEffectType.FIRE)
-						else 
+						else
 							SetItemBrand(v, AttackEffectType.ORCSLAYER)
 						end
 						AddMessage("'Thank you!'")
@@ -234,7 +234,7 @@ end
 
 function TorinHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		local qs = QuestStatus(QUEST_TORIN)	
+		local qs = QuestStatus(QUEST_TORIN)
 		if (qs == XQuest.UNKNOWN) then
 			AddMessage("Hello, brave hero. As you know, we dwarves mine our treasures deep from the ground. Some time ago, one of our mine was filled by a mysterious gas, which slowly kills all living things. It is oozing from the rocks. We have gas pump there, but there is no one who can switch this pump on. Please solve this problem.")
 			QuestModify(QUEST_TORIN, XQuest.KNOWN)
@@ -264,8 +264,8 @@ end
 --           000  entr cave(1)
 --            |
 --           000  demon cave (2)
---          / |  
--- misc(3)000 | 
+--          / |
+-- misc(3)000 |
 --         | 000 mushroom cave (5)
 --         |
 --        000 kobold cave (4)
@@ -274,35 +274,35 @@ function MakeMushroomCave()
 	CreateLocation(XLocation.MUSHROOMS_CAVE1, "MC:1", "Mushroom Caves Level 1", CAVE)
 		Way(UP, XLocation.MAIN)
 		Way(DOWN, XLocation.MUSHROOMS_CAVE2)
-		Settle(CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.INSECT + CreatureClass.REPTILE, CreatureTemplate.VERY_LOW)
 		Creature("small_snake")
 		Creature("small_snake")
 		Creature("small_snake")
 		Creature("small_snake")
 		Creature("spider")
 		Creature("spider")
-		Creature("spider")				
+		Creature("spider")
 
 	CreateLocation(XLocation.MUSHROOMS_CAVE2, "MC:2", "Mushroom Caves Level 2", CAVE)
 		Way(UP, XLocation.MUSHROOMS_CAVE1)
 		Way(DOWN, XLocation.MUSHROOMS_CAVE3)
 		Way(DOWN, XLocation.MUSHROOMS_CAVE5)
 		CreateBeelzevile()
-		Settle(CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.INSECT + CreatureClass.REPTILE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.MUSHROOMS_CAVE3, "KC:1", "Kobold Cavern Level 1", CAVE)
 		Way(UP, XLocation.MUSHROOMS_CAVE2)
 		Way(DOWN, XLocation.MUSHROOMS_CAVE4)
-		Settle(CREATURE_CLASS.CR_KOBOLD + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.KOBOLD + CreatureClass.INSECT + CreatureClass.REPTILE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.MUSHROOMS_CAVE4, "KC:2", "Kobold Cavern Level 2", CAVE)
 		Way(UP, XLocation.MUSHROOMS_CAVE3)
-		Settle(CREATURE_CLASS.CR_KOBOLD, CREATURE_LEVEL.CRL_LOW + CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.KOBOLD, CreatureTemplate.LOW + CreatureTemplate.VERY_LOW)
 		Creature("magnush")
 
 	CreateLocation(XLocation.MUSHROOMS_CAVE5, "MC:3", "Mushroom Caves Level 3", CAVE)
 		Way(UP, XLocation.MUSHROOMS_CAVE2)
-		EventPlace('MushroomCaveEvent')	
+		EventPlace('MushroomCaveEvent')
 		CreateTimerEvent('SpawnMushroomEvent', 40000)
 end
 
@@ -344,7 +344,7 @@ function MakeSmallCave()
 	CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
 		Way(UP, XLocation.MAIN)
 		Way(DOWN, L_SMALL_CAVE2)
---		Settle(CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_INSECT, CREATURE_LEVEL.CRL_VERY_LOW)
+--		Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(L_SMALL_CAVE2, "SmCv:2", "Small Cave Level 2", CAVE)
 		SetPattern(80, 20,
@@ -368,14 +368,14 @@ function MakeSmallCave()
 		"################################################################################" ..
 		"################################################################################" ..
 		"################################################################################" )
-	
+
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a table') end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a bed') end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 20) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("<", function(x, y) Way(UP, L_SMALL_CAVE1, x, y) end)
 		AddTranslation("S", function(x, y) SmallCaveQuestPersons(x, y) end)
-		DrawPattern(0, 0)			
+		DrawPattern(0, 0)
 --		Creature("rotmoth")
 end
 
@@ -389,13 +389,13 @@ small_cave_first_visit = 0
 
 function SmallCaveEvent(e, p)
 
-	if (not isHero(p)) then 
-		return 
+	if (not isHero(p)) then
+		return
 	end
-	
+
 	local bandit = FindCreature(L_SMALL_CAVE2, GID_ROTMOTH)
 	local giana = FindCreature(L_SMALL_CAVE2, GID_GIANA)
-	
+
 	if (e == LuaEvent.MOVE and isHero(p)) then
 --[[		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
@@ -408,7 +408,7 @@ function SmallCaveEvent(e, p)
 				SetItEnemyFor(p, c)
 			end
 		end
-]]--		
+]]--
 	elseif (e == LuaEvent.MOVE_IN and isHero(p)) then
 		if (small_cave_first_visit == 0) then
 			AddMessage("Halt! Don't move anymore or I'll kill her!")
@@ -420,9 +420,9 @@ function SmallCaveEvent(e, p)
 				end
 			end
 		else
-			
+
 		end
-		
+
 	elseif (e == LuaEvent.MOVE_OUT and isHero(p)) then
 		if (small_cave_first_visit == 1) then
 			AddMessage("Remember! 150 golden coins!")
@@ -465,7 +465,7 @@ function MakeRatCellar()
 		AddTranslation("A", function(x, y) for i = 1, 8 do Creature('rat', x, y, 12, 4) end end)
 		AddTranslation("B", function(x, y) for i = 1, 2 do Creature('ghost', x, y, 4, 4) end end)
 		local trnd = Rand(4)
-		if (trnd == 0) then 
+		if (trnd == 0) then
 			AddTranslation("C", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
 		elseif (trnd == 1) then
 			AddTranslation("D", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
@@ -475,8 +475,8 @@ function MakeRatCellar()
 			AddTranslation("F", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
 		end
 		DrawPattern(0, 0)
-		Settle(CREATURE_CLASS.CR_RAT, CREATURE_LEVEL.CRL_VERY_LOW)
-		
+		Settle(CreatureClass.RAT, CreatureTemplate.VERY_LOW)
+
 end
 
 
@@ -521,27 +521,27 @@ function MakeWizardDungeon()
 	CreateLocation(XLocation.WIZARD_DUNGEON1, "AD:1", "Ahk-Ulan's dungeons level 1", DUNGEON)
 		Way(UP, XLocation.MAIN)
 		Way(DOWN, XLocation.WIZARD_DUNGEON2)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.WIZARD_DUNGEON2, "AD:2", "Ahk-Ulan's dungeons level 2", DUNGEON)
 		Way(UP, XLocation.WIZARD_DUNGEON1)
 		Way(DOWN, XLocation.WIZARD_DUNGEON3)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.WIZARD_DUNGEON3, "AD:3", "Ahk-Ulan's dungeons level 3", DUNGEON)
 		Way(UP, XLocation.WIZARD_DUNGEON2)
 		Way(DOWN, XLocation.WIZARD_DUNGEON4)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.WIZARD_DUNGEON4, "AD:4", "Ahk-Ulan's dungeons level 4", DUNGEON)
 		Way(UP, XLocation.WIZARD_DUNGEON3)
 		Way(DOWN, XLocation.WIZARD_DUNGEON5)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.WIZARD_DUNGEON5, "AD:5", "Ahk-Ulan's dungeons level 5", DUNGEON)
 		Way(UP, XLocation.WIZARD_DUNGEON4)
 		Way(DOWN, XLocation.AHKULAN_CASTLE)
-		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
+		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
 	CreateLocation(XLocation.AHKULAN_CASTLE, "AC", "Ahk-Ulan's castle", CAVE)
 		SetPattern(80, 20,
@@ -571,7 +571,7 @@ function MakeWizardDungeon()
 		AddTranslation("_", function(x, y) Altar(x, y, XDeity.DEATH) end)
 		AddTranslation("r", function(x, y) Creature('huge_rat', x, y) end)
 		DrawPattern(0, 0)
-		
+
 end
 
 function CreateAhkUlan(x, y)
