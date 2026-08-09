@@ -48,6 +48,24 @@ XCreature* XCreature::main_creature = nullptr;
 
 XCreatureGroupMap XCreature::group_members = XCreatureGroupMap();
 
+void XCreature::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("Gender",
+        "MALE", XCreature::MALE,
+        "FEMALE", XCreature::FEMALE,
+        "NEUTER", XCreature::NEUTER
+    );
+
+    lua.new_enum("PersonType",
+        "IT", XCreature::IT,
+        "HE", XCreature::HE,
+        "SHE", XCreature::SHE,
+        "NAMED_HE", XCreature::NAMED_HE,
+        "NAMED_SHE", XCreature::NAMED_SHE,
+        "NAMED_IT", XCreature::NAMED_IT
+    );
+}
+
 XCreature::XCreature()
 {
     total_cr++;
@@ -70,7 +88,7 @@ XCreature::XCreature()
     RNG = 3;
 
     creature_size = CS_NORMAL;
-    creature_person_type = CPT_HE;
+    creature_person_type = XCreature::HE;
 
     im = IM_CREATURE;
     xai = std::make_unique<XStandardAI>(this);
@@ -1049,26 +1067,26 @@ int XCreature::PickUpItem(XItem * i)
     }
 }
 
-CR_GENDER XCreature::GetGender()
+XCreature::Gender XCreature::GetGender()
 {
     switch (creature_person_type) {
-        case CPT_HE:
-        case CPT_NAMED_HE:
-        case CPT_MALE_YOU:
-            return GEN_MALE;
+        case XCreature::HE:
+        case XCreature::NAMED_HE:
+        case XCreature::MALE_YOU:
+            return XCreature::MALE;
             break;
 
-        case CPT_SHE:
-        case CPT_NAMED_SHE:
-        case CPT_FEMALE_YOU:
-            return GEN_FEMALE;
+        case XCreature::SHE:
+        case XCreature::NAMED_SHE:
+        case XCreature::FEMALE_YOU:
+            return XCreature::FEMALE;
             break;
 
         default:
             break;
     }
 
-    return GEN_NEUTER;
+    return XCreature::NEUTER;
 }
 
 int XCreature::GetMaxHP()
@@ -1879,11 +1897,11 @@ int XCreature::MoneyOp(int money_count)
 
 const char* XCreature::GetGenderStr()
 {
-    CR_GENDER g = GetGender();
+    XCreature::Gender g = GetGender();
 
-    if (g == GEN_MALE) {
+    if (g == XCreature::MALE) {
         return "male";
-    } else if (g == GEN_FEMALE) {
+    } else if (g == XCreature::FEMALE) {
         return "female";
     } else {
         return "neuter";
@@ -1894,9 +1912,9 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
 {
     if (isVisible()) {
         switch (creature_person_type) {
-            case CPT_YOU:
-            case CPT_MALE_YOU:
-            case CPT_FEMALE_YOU:
+            case XCreature::YOU:
+            case XCreature::MALE_YOU:
+            case XCreature::FEMALE_YOU:
                 switch (crn) {
                     case CRN_T1:
                         return "you";
@@ -1911,7 +1929,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "your";
                 }
 
-            case CPT_NAMED_HE:
+            case XCreature::NAMED_HE:
                 switch (crn) {
                     case CRN_T1:
                         return name;
@@ -1926,7 +1944,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "his";
                 }
 
-            case CPT_NAMED_SHE:
+            case XCreature::NAMED_SHE:
                 switch (crn) {
                     case CRN_T1:
                         return name;
@@ -1941,7 +1959,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "hers";
                 }
 
-            case CPT_NAMED_IT:
+            case XCreature::NAMED_IT:
                 switch (crn) {
                     case CRN_T1:
                         return name;
@@ -1956,7 +1974,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "its";
                 }
 
-            case CPT_HE:
+            case XCreature::HE:
                 switch (crn) {
                     case CRN_T1:
                         return fmt::format("the {}", name);
@@ -1971,7 +1989,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "his";
                 }
 
-            case CPT_SHE:
+            case XCreature::SHE:
                 switch (crn) {
                     case CRN_T1:
                         return fmt::format("the female {]", name);
@@ -1986,7 +2004,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "hers";
                 }
 
-            case CPT_IT:
+            case XCreature::IT:
                 switch (crn) {
                     case CRN_T1:
                         return fmt::format("the {}", name);
@@ -2023,7 +2041,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
 
 std::string XCreature::GetVerb(std::string verb) const
 {
-    if (creature_person_type & CPT_YOU) {
+    if (creature_person_type & XCreature::YOU) {
         return verb;
     }
 

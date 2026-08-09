@@ -69,19 +69,4 @@ void RegisterCrDefsEnums(sol::state_view& lua)
         "GID_AHKULAN_GUARDIAN", GID_AHKULAN_GUARDIAN,
         "GID_RODERICK_GUARDIAN", GID_RODERICK_GUARDIAN
     );
-
-    lua.new_enum("CR_GENDER",
-        "GEN_MALE", GEN_MALE,
-        "GEN_FEMALE", GEN_FEMALE,
-        "GEN_NEUTER", GEN_NEUTER
-    );
-
-    lua.new_enum("CR_PERSON_TYPE",
-        "CPT_IT", CPT_IT,
-        "CPT_HE", CPT_HE,
-        "CPT_SHE", CPT_SHE,
-        "CPT_NAMED_HE", CPT_NAMED_HE,
-        "CPT_NAMED_SHE", CPT_NAMED_SHE,
-        "CPT_NAMED_IT", CPT_NAMED_IT
-    );
 }

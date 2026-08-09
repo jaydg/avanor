@@ -82,7 +82,7 @@ struct _CREATURE {
     XDice hp;
     XDice pp;
     CREATURE_LEVEL crl;
-    CR_PERSON_TYPE person;
+    XCreature::PersonType person;
     std::string creature_description;
     CORPSE_DATA pCorpseData;
     unsigned int ai_flags;
@@ -124,7 +124,7 @@ class MonsterBuilder
     public:
         explicit MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base = CN_NONE);
 
-        MonsterBuilder& View(const std::string& name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class);
+        MonsterBuilder& View(const std::string& name, char view, int color, XCreature::PersonType person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class);
         MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, CREATURE_SIZE size, const std::string& weight);
         MonsterBuilder& Body(const std::string& body, int prob, unsigned int gen_flags);
         MonsterBuilder& AI(unsigned int flags);

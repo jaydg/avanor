@@ -1198,6 +1198,7 @@ void XLocation::CommonLuaInitialization()
     RegisterLuaEventEnum(lua);
     RegisterGenerationFlagsEnum(lua);
     RegisterCrDefsEnums(lua);
+    XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
     RegisterItemMaskEnum(lua);

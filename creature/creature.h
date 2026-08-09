@@ -201,6 +201,41 @@ typedef std::map<GROUP_ID, XCreature*> XCreatureGroupMap;
 
 class XCreature : public XBaseObject
 {
+    public:
+        enum Gender {
+            NEUTER,
+            MALE,
+            FEMALE,
+
+            // TODO: Write code to pick a random gender if male & female flags on.
+            RANDOM = (FEMALE | MALE)
+        };
+
+        enum PersonType {
+            IT = NEUTER,  // It
+            HE = MALE,    // He
+            SHE = FEMALE, // She
+
+            // Default you
+            YOU = 0x08,
+
+            // Genderized you
+            MALE_YOU = (HE | YOU),
+            FEMALE_YOU = (SHE | YOU),
+
+            // Unique creatures
+            UNIQUE = 0x10,
+
+            // Backward compatibility
+            NAMED_HE = (HE | UNIQUE),   // Munch-Munch the Dread
+            NAMED_SHE = (SHE | UNIQUE), // Yohjishiro, the elven wizard
+            NAMED_IT = (IT | UNIQUE)    // Gekta, the sheep dog
+        };
+
+        // Registers Gender and PersonType as the Lua tables Gender.MEMBER
+        // and PersonType.MEMBER (e.g. PersonType.NAMED_SHE).
+        static void RegisterLua(sol::state_view& lua);
+
     private:
         // orc war party has id 1, bandits - id 2, etc
         GROUP_ID group_id;
@@ -211,7 +246,7 @@ class XCreature : public XBaseObject
     public:
         XItemList contain;
         std::vector<std::unique_ptr<XBodyPart>> components;
-        CR_PERSON_TYPE creature_person_type;
+        PersonType creature_person_type;
         const char* creature_description;
         CREATURE_NAME creature_name; // allow to store less info into save file
         const _CREATURE* super_info; // full information about Creature Creation struct...
@@ -268,7 +303,7 @@ class XCreature : public XBaseObject
 
         int GetSpeed();
 
-        CR_GENDER GetGender();
+        XCreature::Gender GetGender();
         const char* GetGenderStr();
 
         int lttm;      // long doing time to move

@@ -193,9 +193,9 @@ void XHero::EndGame(const char* end_msg)
 
     if (XQuest::quest.hero_win) {
         if (XQuest::quest.ahk_ulan_killed && XQuest::quest.roderick_killed) {
-            if (main_creature->GetGender() == GEN_MALE) {
+            if (main_creature->GetGender() == XCreature::MALE) {
                 list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new King of Avanor."));
-            } else if (main_creature->GetGender() == GEN_FEMALE) {
+            } else if (main_creature->GetGender() == XCreature::FEMALE) {
                 list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new Queen of Avanor."));
             }
 

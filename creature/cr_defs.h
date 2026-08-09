@@ -118,6 +118,11 @@ enum CARRY_STATE {
     CSTATE_DIE        = 0x005,
 };
 
+// Stays free-standing (not nested in XCreature) since it's needed as a
+// default-argument type in game/location.h, which is upstream of
+// creature.h in the include graph (creature.h -> bodypart.h ->
+// xmapobj.h -> location.h) - location.h can never see a complete
+// XCreature to resolve a nested type.
 enum GROUP_ID {
     GID_NONE,
     GID_ORCS_WAR_PARTY,
@@ -145,43 +150,12 @@ enum FOOD_FEELING {
     FF_SENSITIVE,
 };
 
-enum CR_GENDER {
-    GEN_NEUTER,
-    GEN_MALE,
-    GEN_FEMALE,
-
-    // TODO: Write code to pick a random gender if male & female flags on.
-    GEN_RANDOM = (GEN_FEMALE | GEN_MALE)
-};
-
-enum CR_PERSON_TYPE {
-    CPT_IT = GEN_NEUTER,  // It
-    CPT_HE = GEN_MALE,    // He
-    CPT_SHE = GEN_FEMALE, // She
-
-    // Default you
-    CPT_YOU = 0x08,
-
-    // Genderized you
-    CPT_MALE_YOU = (CPT_HE | CPT_YOU),
-    CPT_FEMALE_YOU = (CPT_SHE | CPT_YOU),
-
-    // Unique creatures
-    CPT_UNIQUE = 0x10,
-
-    // Backward compatibility
-    CPT_NAMED_HE = (CPT_HE | CPT_UNIQUE),   // Munch-Munch the Dread
-    CPT_NAMED_SHE = (CPT_SHE | CPT_UNIQUE), // Yohjishiro, the elven wizard
-    CPT_NAMED_IT = (CPT_IT | CPT_UNIQUE)    // Gekta, the sheep dog
-};
-
 enum CR_ATTACK_TYPE {
     CRAT_MELEE_ONLY,
     CRAT_BOTH
 };
 
-// Registers CREATURE_CLASS, CREATURE_LEVEL, GROUP_ID, CR_GENDER and
-// CR_PERSON_TYPE as Lua tables (CREATURE_CLASS.MEMBER, etc.).
+// Registers CREATURE_CLASS, CREATURE_LEVEL and GROUP_ID as Lua tables.
 void RegisterCrDefsEnums(sol::state_view& lua);
 
 #endif

@@ -337,7 +337,7 @@ function ElderGridorHandler(e, t, p, v)
 			ExecuteAIScript()
 		else
 			AddMessage('Have a nice day,')
-			if (Gender(p) == CR_GENDER.GEN_MALE) then
+			if (Gender(p) == Gender.MALE) then
 				AddMessage('sir!')
 			else
 				AddMessage("ma'am!")
@@ -359,7 +359,7 @@ end
 function JorgusHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		if (GetSkill(p, SKT_STEALING) > 0) then
-			if (Gender(p) == CR_GENDER.GEN_MALE) then
+			if (Gender(p) == Gender.MALE) then
 				AddMessage("Good day, brother!")
 			else
 				AddMessage("Good day, sister!")
@@ -369,7 +369,7 @@ function JorgusHandler(e, t, p, v)
 				if (MoneyOperation(p, -1000) >= 0) then
 					MoneyOperation(t, 1000)
 					LearnSkill(p, SKT_STEALING, 1)
-					if (Gender(p) == CR_GENDER.GEN_MALE) then
+					if (Gender(p) == Gender.MALE) then
 						AddMessage("You're welcome, brother!")
 					else
 						AddMessage("You're welcome, sister!")

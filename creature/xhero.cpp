@@ -50,7 +50,7 @@ XHero::XHero(int flag)
 {
     melee_attack = &hero_melee;
 
-    creature_person_type = CPT_YOU;
+    creature_person_type = XCreature::YOU;
     turn_count = 0;
     last_cast = nullptr;
 

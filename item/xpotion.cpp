@@ -332,16 +332,16 @@ int XPotion::onDrink(XCreature * cr)
                         msgwin.Add("seems to change");
 
                         switch (cr->creature_person_type) {
-                            case CPT_NAMED_HE:
-                            case CPT_HE:
+                            case XCreature::NAMED_HE:
+                            case XCreature::HE:
                                 msgwin.Add("his");
 
-                            case CPT_NAMED_SHE:
-                            case CPT_SHE:
+                            case XCreature::NAMED_SHE:
+                            case XCreature::SHE:
                                 msgwin.Add("her");
 
-                            case CPT_NAMED_IT:
-                            case CPT_IT:
+                            case XCreature::NAMED_IT:
+                            case XCreature::IT:
                                 msgwin.Add("its");
                         }
 

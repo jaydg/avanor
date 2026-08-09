@@ -313,7 +313,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
                         chatter->MoneyOp(-100);
                         MoneyOp(100);
 
-                        if (chatter->creature_person_type & CPT_HE) {
+                        if (chatter->creature_person_type & XCreature::HE) {
                             msgwin.Add("Thank you, boy!");
                         } else {
                             msgwin.Add("Thank you, girl!");

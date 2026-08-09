@@ -112,7 +112,7 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
                 }
 
                 if (item->im & IM_BODY && item->it == IT_DRESS
-                    && GetGender() == GEN_MALE) {
+                    && GetGender() == XCreature::MALE) {
                     // This is a kludge to prevent a "Roderick in a dress" scenario.
                     item->it = IT_CLOTHES;
                     item->name = "clothes";
@@ -341,7 +341,7 @@ MonsterBuilder::MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base) : id(id)
     }
 }
 
-MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, CR_PERSON_TYPE person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class)
+MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, XCreature::PersonType person, CREATURE_LEVEL crl, CREATURE_CLASS cr_class)
 {
     cr.name = name;
     cr.view = view;

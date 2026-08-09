@@ -233,9 +233,9 @@ void XHero::PlayerSetup()
             delete stmp;
 
             if (ch == 'a') {
-                creature_person_type = CPT_MALE_YOU;
+                creature_person_type = XCreature::MALE_YOU;
             } else if (ch == 'b') {
-                creature_person_type = CPT_FEMALE_YOU;
+                creature_person_type = XCreature::FEMALE_YOU;
             }
 
             vClrScr();
