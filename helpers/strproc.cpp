@@ -112,7 +112,7 @@ KEYWORD keywords[] = {
     {"acid",	R_ACID},
     {"cold",	R_COLD},
     {"poison",	R_POISON},
-    {"decease",	R_DISEASE},
+    {"disease",	R_DISEASE},
     {"paralyse",	R_PARALYSE},
     {"stun",	R_STUN},
     {"confuse",	R_CONFUSE},

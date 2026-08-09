@@ -33,7 +33,7 @@ RESIST_REC resists_data[] = {
     {"acid",	FLU_ALL},
     {"cold",	FLU_ALL},
     {"poison",	FLU_CREATURE},
-    {"decease",	FLU_CREATURE},
+    {"disease",	FLU_CREATURE},
     {"paralyse",	FLU_CREATURE},
     {"stun",	FLU_CREATURE},
     {"confuse",	FLU_CREATURE},
