@@ -31,7 +31,7 @@ void XWarSkills::RegisterLua(sol::state_view& lua)
     );
 }
 
-_SKILL_DB _skill_db[XWarSkills::ALL] = {
+WeaponSkillStats _skill_db[XWarSkills::ALL] = {
     // dv  hit dmg
     // r   hit dmg
     {

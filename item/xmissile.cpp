@@ -43,7 +43,7 @@ XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 // TODO: Bind launchers to missiles.
 // Rock is special b/c it can be used with or without a launcher...
 
- _WEAPON_BIND mbind[] = {
+ WeaponSkillBinding mbind[] = {
 {ItemType::LONGBOW,        XWarSkills::BOW},
 {ItemType::LIGHTCROSSBOW,  XWarSkills::CROSSBOW},
 {ItemType::SLING,          XWarSkills::SLING},

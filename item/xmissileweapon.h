@@ -25,8 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item.h"
 
-//struct _WEAPON_BIND;
-
 class XMissileWeapon : public XItem
 {
     public:

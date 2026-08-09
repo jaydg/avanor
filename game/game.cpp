@@ -95,7 +95,7 @@ void XGame::Create(char type_of_start)
 
         case 'N' :
             XAlchemy::Init();
-            _HERBS::Create();
+            HerbDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Generating game objects, please wait...")) / 2, size_y / 2);
             vPutS(MSG_LIGHTGRAY "Generating game objects, please wait...");
@@ -106,7 +106,7 @@ void XGame::Create(char type_of_start)
 
         case 'T' :
             XAlchemy::Init();
-            _HERBS::Create();
+            HerbDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Preparing for test, please wait...")) / 2, size_y / 2);
             vPutS(MSG_LIGHTGRAY "Preparing for test, please wait...");
@@ -117,7 +117,7 @@ void XGame::Create(char type_of_start)
 
         case 'D' :
             XAlchemy::Init();
-            _HERBS::Create();
+            HerbDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Preparing for demo, please wait...")) / 2, size_y / 2);
             vPutS(MSG_LIGHTGRAY "Preparing for demo, please wait...");

@@ -639,7 +639,7 @@ int XItem::onHit(XCreature * user, XCreature * target)
     return 1;
 }
 
-_ITEMPROP* XItem::GetMaterial(int index)
+ItemMaterial* XItem::GetMaterial(int index)
 {
     return &item_prop[index];
 }

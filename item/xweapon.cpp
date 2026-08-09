@@ -68,7 +68,7 @@ const int weapon_db_size = 26;
 
 XItemBasicStructure gi_weapon(weapon_db, weapon_db_size);
 
-_WEAPON_BIND wbind[weapon_db_size] = {
+WeaponSkillBinding wbind[weapon_db_size] = {
     {ItemType::CLUB,           XWarSkills::CLUB},
     {ItemType::WARHAMMER,      XWarSkills::CLUB},
 
@@ -156,7 +156,7 @@ int XWeapon::BindWeapon()
 
 std::string XWeapon::toString()
 {
-    _ITEMPROP* prop = GetMaterial(material_index);
+    ItemMaterial* prop = GetMaterial(material_index);
     std::string w_name = prop->propname;
 
     for (int i = 0; i < weapon_db_size; i++) {

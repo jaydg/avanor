@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define HERBS_COUNT 18
 
-_HERBS herbs[] = {
+HerbDefinition herbs[] = {
     {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PN_UNKNOWN,	0, 0},
     {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PN_UNKNOWN,	0, 0},
     {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PN_UNKNOWN,	0, 0},
@@ -50,7 +50,7 @@ _HERBS herbs[] = {
     {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PN_UNKNOWN,	0, 0},
 };
 
-void _HERBS::Create()
+void HerbDefinition::Create()
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         while (1) {
@@ -91,14 +91,14 @@ void _HERBS::Create()
     }
 }
 
-void _HERBS::SaveTable(cereal::JSONOutputArchive& ar)
+void HerbDefinition::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
     }
 }
 
-void _HERBS::LoadTable(cereal::JSONInputArchive& ar)
+void HerbDefinition::LoadTable(cereal::JSONInputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
@@ -203,7 +203,7 @@ const std::string XHerbBush::GetName(XCreature *viewer)
         val += xsk->GetLevel();
     }
 
-    _HERBS * herb_data = &herbs[herb_index];
+    HerbDefinition * herb_data = &herbs[herb_index];
 
     const char* size_name = "";
 
@@ -335,7 +335,7 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 
 const std::string XMushSpawn::GetName(XCreature *viewer)
 {
-    _HERBS * herb_data = &herbs[mush_index];
+    HerbDefinition * herb_data = &herbs[mush_index];
     return herb_data->bush_name;
 }
 

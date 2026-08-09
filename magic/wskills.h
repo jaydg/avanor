@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/cereal.hpp>
 #include <sol/forward.hpp>
 
-struct _SKILL_DB {
+struct WeaponSkillStats {
     const char* name;
     int base_dv[16];
     int base_hit[16];

@@ -63,7 +63,7 @@ int XArchive::StoreGame()
         XScroll::SaveTable(ar);
         XAmulet::SaveTable(ar);
         XRing::SaveTable(ar);
-        _HERBS::SaveTable(ar);
+        HerbDefinition::SaveTable(ar);
 
         XTime::serialize(ar);
 
@@ -115,7 +115,7 @@ int XArchive::RestoreGame()
         XScroll::LoadTable(ar);
         XAmulet::LoadTable(ar);
         XRing::LoadTable(ar);
-        _HERBS::LoadTable(ar);
+        HerbDefinition::LoadTable(ar);
 
         XTime::serialize(ar);
 

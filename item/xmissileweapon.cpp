@@ -39,7 +39,7 @@ ItemTemplate MWEAPON_STRUCT[] = {
 
 XItemBasicStructure gi_missilew(MWEAPON_STRUCT, 6);
 
-_WEAPON_BIND mwbind[] = {
+WeaponSkillBinding mwbind[] = {
     {ItemType::LONGBOW,       XWarSkills::BOW},
     {ItemType::SHORTBOW,      XWarSkills::BOW},
     {ItemType::LIGHTCROSSBOW, XWarSkills::CROSSBOW},

@@ -109,7 +109,7 @@ class XItem : public XBaseObject
         int special_number; // number of a struct with extension name such a "of Strength"
         AttackEffectType aet;
         int material_index; // reference to material;
-        _ITEMPROP* GetMaterial(int index);
+        ItemMaterial* GetMaterial(int index);
 
         void Drop(XLocation * location, int _x, int _y);
         void Pickup(XCreature * picker);

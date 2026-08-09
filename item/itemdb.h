@@ -87,7 +87,7 @@ struct ENHANCE_STRUCT {
 typedef ItemTemplate XITEM_STRUCT[];
 typedef XITEM_STRUCT* ITEM_STRUCT;
 
-extern _ITEMPROP item_prop[DB_PROP_SZ];
+extern ItemMaterial item_prop[DB_PROP_SZ];
 extern ENHANCE_STRUCT ienh_db[ENH_DB_SZ];
 
 #endif

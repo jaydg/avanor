@@ -31,7 +31,7 @@ enum HERB_TYPE {
     HT_MUSHROOM,
 };
 
-struct _HERBS {
+struct HerbDefinition {
     const char* herb_name;
     const char* bush_name;
     const char* post_eat;

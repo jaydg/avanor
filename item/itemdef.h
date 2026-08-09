@@ -70,7 +70,7 @@ enum ITEM_QUALITY {
     IQ_SUPERB	= 4,
 };
 
-struct _ITEMPROP {
+struct ItemMaterial {
     std::string propname; //wooden, metall,
     int color;
     const char* dv; //modifers....

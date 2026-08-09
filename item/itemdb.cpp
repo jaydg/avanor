@@ -27,7 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // hit, dice, z, r = armor
 //WARNING!!! after adding new 'element' please change
 
-_ITEMPROP item_prop[DB_PROP_SZ] = {
+ItemMaterial item_prop[DB_PROP_SZ] = {
 
     {
         "cloth",	xWHITE,	"1d1", "1d1",
