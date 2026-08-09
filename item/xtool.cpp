@@ -172,7 +172,7 @@ RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
             break;
 
         case PROGRESS:
-            rock_resist -= (dice.Throw() + cr->sk->GetLevel(XSkill::Skill::MINING) * 5 + cr->GetStats(S_STR) / 2);
+            rock_resist -= (dice.Throw() + cr->sk->GetLevel(XSkill::Skill::MINING) * 5 + cr->GetStats(XStats::STR) / 2);
 
             if (rock_resist < 0) {
                 if (cr->isHero()) {

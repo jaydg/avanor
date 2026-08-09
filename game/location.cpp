@@ -777,12 +777,12 @@ void XLocation::InflictDamage(void* target, int dmg, int resist, sol::optional<s
 
 void XLocation::ChangeStats(void* cr, int st, int val)
 {
-    ((XCreature*)cr)->GainAttr((STATS)st, val);
+    ((XCreature*)cr)->GainAttr((XStats::Id)st, val);
 }
 
 int XLocation::GetStats(void* cr, int st)
 {
-    return ((XCreature*)cr)->GetStats((STATS)st);
+    return ((XCreature*)cr)->GetStats((XStats::Id)st);
 }
 
 int XLocation::Rand(int val)
@@ -1206,7 +1206,7 @@ void XLocation::CommonLuaInitialization()
     RegisterResistanceEnum(lua);
     RegisterColorEnum(lua);
     XDeity::RegisterLua(lua);
-    RegisterStatsEnum(lua);
+    XStats::RegisterLua(lua);
     XSkill::RegisterLua(lua);
     RegisterQuestEnum(lua);
     RegisterEffectEnum(lua);

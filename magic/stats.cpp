@@ -23,18 +23,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/strproc.h"
 #include "magic/stats.h"
 
-void RegisterStatsEnum(sol::state_view& lua)
+void XStats::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("STATS",
-        "S_STR", S_STR,
-        "S_DEX", S_DEX,
-        "S_TOU", S_TOU,
-        "S_LEN", S_LEN,
-        "S_WIL", S_WIL,
-        "S_MAN", S_MAN,
-        "S_PER", S_PER,
-        "S_CHR", S_CHR,
-        "S_EOF", S_EOF
+    lua.new_enum("XStats",
+        "STR", XStats::STR,
+        "DEX", XStats::DEX,
+        "TOU", XStats::TOU,
+        "LEN", XStats::LEN,
+        "WIL", XStats::WIL,
+        "MAN", XStats::MAN,
+        "PER", XStats::PER,
+        "CHR", XStats::CHR,
+        "COUNT", XStats::COUNT
     );
 }
 
@@ -64,7 +64,7 @@ const char* stats_full_str[] = {
 
 XStats::XStats()
 {
-    for (int i = S_STR; i < S_EOF; i++) {
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
         stats[i] = 0;
     }
 }
@@ -72,14 +72,14 @@ XStats::XStats()
 XStats::XStats(const XStats* xs)
 {
     if (xs)
-        for (int i = S_STR; i < S_EOF; i++) {
-            stats[i] = xs->Get(static_cast<STATS>(i));
+        for (int i = XStats::STR; i < XStats::COUNT; i++) {
+            stats[i] = xs->Get(static_cast<XStats::Id>(i));
         }
 }
 
 XStats::XStats(const char* str)
 {
-    for (int i = S_STR; i < S_EOF; i++) {
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
         stats[i] = 0;
     }
 
@@ -95,35 +95,35 @@ void XStats::Set(const char* str)
     }
 }
 
-const char* XStats::GetFullName(STATS s)
+const char* XStats::GetFullName(XStats::Id s)
 {
     return stats_full_str[s];
 }
 
 void XStats::Add(const XStats* s)
 {
-    for (int i = S_STR; i < S_EOF; i++) {
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
         stats[i] += s->stats[i];
     }
 }
 
 void XStats::Sub(const XStats* s)
 {
-    for (int i = S_STR; i < S_EOF; i++) {
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
         stats[i] -= s->stats[i];
     }
 }
 
 void XStats::Set(const XStats* s)
 {
-    for (int i = S_STR; i < S_EOF; i++) {
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
         stats[i] = s->stats[i];
     }
 }
 
 bool XStats::isEqual(const XStats* s) const
 {
-    for (int i = S_STR; i < S_EOF; i++)
+    for (int i = XStats::STR; i < XStats::COUNT; i++)
         if (stats[i] != s->stats[i]) {
             return false;
         }
@@ -133,7 +133,7 @@ bool XStats::isEqual(const XStats* s) const
 
 XStatsGenerator::XStatsGenerator()
 {
-    for (int i = S_STR; i < S_EOF; i++) {
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
         stats[i].Setup(0, 0, 0);
     }
 }
@@ -151,8 +151,8 @@ std::unique_ptr<XStats> XStatsGenerator::Generate()
 {
     auto s = std::make_unique<XStats>();
 
-    for (int i = S_STR; i < S_EOF; i++) {
-        s->SetStat(static_cast<STATS>(i), stats[i].Throw());
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
+        s->SetStat(static_cast<XStats::Id>(i), stats[i].Throw());
     }
 
     return s;

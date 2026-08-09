@@ -29,16 +29,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "helpers/dice.h"
 
-enum STATS {S_UNKNOWN = -1, S_STR, S_DEX, S_TOU, S_LEN, S_WIL, S_MAN, S_PER, S_CHR, S_EOF};
-
-// Registers this enum as the Lua table STATS.MEMBER.
-void RegisterStatsEnum(sol::state_view& lua);
-
 extern const char* stats_str[];
 
 class XStats
 {
     public:
+        enum Id {UNKNOWN = -1, STR, DEX, TOU, LEN, WIL, MAN, PER, CHR, COUNT};
+
+        // Registers this enum as the Lua table XStats.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
+
         // must be the same! "St:1d2 Dx:1d4 To:2d5"
         explicit XStats(const char* str);
 
@@ -47,29 +47,29 @@ class XStats
         // all stats == 0 by default
         XStats();
 
-        [[nodiscard]] int Get(const STATS s) const
+        [[nodiscard]] int Get(const Id s) const
         {
             return stats[s] / 100;
         }
 
-        static std::string GetName(const STATS s)
+        static std::string GetName(const Id s)
         {
             return stats_str[s];
         }
 
-        static const char* GetFullName(STATS s);
+        static const char* GetFullName(Id s);
 
-        void SetStat(const STATS s, const int val)
+        void SetStat(const Id s, const int val)
         {
             stats[s] = val * 100;
         }
 
-        void Modify(const STATS s, const int val)
+        void Modify(const Id s, const int val)
         {
             stats[s] += val * 100;
         }
 
-        void AddFract(const STATS s, const int val)
+        void AddFract(const Id s, const int val)
         {
             stats[s] += val;
         }
@@ -86,18 +86,18 @@ class XStats
             ar(stats);
         }
 
-        static STATS Random()
+        static Id Random()
         {
-            return static_cast<STATS>(vRand(S_EOF));
+            return static_cast<Id>(vRand(COUNT));
         }
 
     protected:
-        int stats[S_EOF]{};
+        int stats[COUNT]{};
 };
 
 class XStatsGenerator
 {
-        XDice stats[S_EOF];
+        XDice stats[XStats::COUNT];
     public:
         XStatsGenerator();
         void Init(const char* str);

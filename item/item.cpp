@@ -383,8 +383,8 @@ int XItem::GetValue()
     int i;
 
     if (stats)
-        for (i = S_STR; i < S_EOF; i++) {
-            xstats += stats->Get((STATS)i);
+        for (i = XStats::STR; i < XStats::COUNT; i++) {
+            xstats += stats->Get((XStats::Id)i);
         }
 
     int xresist = 0;
@@ -443,15 +443,15 @@ std::string XItem::StatsToString()
     int flag = 0;
 
     if (stats) {
-        for (int stat = S_STR; stat < S_EOF; stat++) {
-            if (stats->Get(static_cast<STATS>(stat)) != 0) {
+        for (int stat = XStats::STR; stat < XStats::COUNT; stat++) {
+            if (stats->Get(static_cast<XStats::Id>(stat)) != 0) {
                 if (flag) {
                     str.append(" ");
                 }
 
                 str.append(fmt::format("{}: {}",
-                    stats->GetName(static_cast<STATS>(stat)),
-                    stats->Get(static_cast<STATS>(stat))));
+                    stats->GetName(static_cast<XStats::Id>(stat)),
+                    stats->Get(static_cast<XStats::Id>(stat))));
 
                 flag++;
             }

@@ -223,13 +223,13 @@ int will_div[10] = {50, 25, 20, 15, 10, 8, 6, 3, 2, 1};
 
 int XMagic::GetSpellRange(const XSpell* spell, XCreature* caster)
 {
-    int power = caster->GetStats(S_WIL) + spell->GetEffectivity();
+    int power = caster->GetStats(XStats::WIL) + spell->GetEffectivity();
     return XEffect::GetRange(spell->GetEffect(), power);
 }
 
 RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
 {
-    const int power = caster->GetStats(S_WIL) + spell->GetEffectivity();
+    const int power = caster->GetStats(XStats::WIL) + spell->GetEffectivity();
 
     if (caster->_PP - spell->GetManaCost() >= 0) {
         if (caster->isInVisibleArea() && !caster->isHero()) {

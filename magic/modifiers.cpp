@@ -117,7 +117,7 @@ MODIFIER_RESULT XBasicModifier::Run(XCreature * owner)
 
 MODIFIER_RESULT XModWound::Run(XCreature * owner)
 {
-    val -= (owner->GetStats(S_TOU) / 10 + owner->sk->GetLevel(XSkill::Skill::FIRST_AID));
+    val -= (owner->GetStats(XStats::TOU) / 10 + owner->sk->GetLevel(XSkill::Skill::FIRST_AID));
     owner->sk->UseSkill(XSkill::Skill::FIRST_AID);
 
     if (val > 0) {
@@ -190,9 +190,9 @@ int XModDisease::onSet(XCreature * owner)
 {
     owner->added_DV -= 5;
     owner->added_HIT -= 5;
-    owner->added_stats.Modify(S_STR, -3);
-    owner->added_stats.Modify(S_DEX, -4);
-    owner->added_stats.Modify(S_TOU, -3);
+    owner->added_stats.Modify(XStats::STR, -3);
+    owner->added_stats.Modify(XStats::DEX, -4);
+    owner->added_stats.Modify(XStats::TOU, -3);
     return 1;
 }
 
@@ -200,9 +200,9 @@ int XModDisease::onRemove(XCreature * owner)
 {
     owner->added_DV += 5;
     owner->added_HIT += 5;
-    owner->added_stats.Modify(S_STR, +3);
-    owner->added_stats.Modify(S_DEX, +4);
-    owner->added_stats.Modify(S_TOU, +3);
+    owner->added_stats.Modify(XStats::STR, +3);
+    owner->added_stats.Modify(XStats::DEX, +4);
+    owner->added_stats.Modify(XStats::TOU, +3);
     return 1;
 }
 
@@ -210,15 +210,15 @@ MODIFIER_RESULT XModDisease::Run(XCreature * owner)
 {
     switch (vRand(300)) {
         case 0:
-            owner->GainAttr(S_STR, -1);
+            owner->GainAttr(XStats::STR, -1);
             break;
 
         case 1:
-            owner->GainAttr(S_DEX, -1);
+            owner->GainAttr(XStats::DEX, -1);
             break;
 
         case 2:
-            owner->GainAttr(S_TOU, -1);
+            owner->GainAttr(XStats::TOU, -1);
             break;
     }
 
@@ -227,13 +227,13 @@ MODIFIER_RESULT XModDisease::Run(XCreature * owner)
 
 int XModWeak::onSet(XCreature * owner)
 {
-    owner->added_stats.Modify(S_STR, -5);
+    owner->added_stats.Modify(XStats::STR, -5);
     return 1;
 }
 
 int XModWeak::onRemove(XCreature * owner)
 {
-    owner->added_stats.Modify(S_STR, +5);
+    owner->added_stats.Modify(XStats::STR, +5);
     return 1;
 }
 
@@ -241,7 +241,7 @@ MODIFIER_RESULT XModWeak::Run(XCreature * owner)
 {
     switch (vRand(100)) {
         case 0:
-            owner->GainAttr(S_STR, -1);
+            owner->GainAttr(XStats::STR, -1);
             break;
     }
 

@@ -158,7 +158,7 @@ int XTrap::MoveOut(XCreature* cr)
 {
     if (last_activator == cr->guid() && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
         // to climb out pits you should be lucky!
-        if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(S_DEX) * 2) {
+        if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(XStats::DEX) * 2) {
             cr->sk->UseSkill(XSkill::Skill::CLIMBING);
 
             if (cr->isVisible()) {
@@ -339,7 +339,7 @@ int XTrap::Check(XCreature* cr)
     }
 
     XSkill * skill = cr->sk->GetSkill(XSkill::Skill::DETECTTRAP);
-    int chance = cr->GetStats(S_PER) * 10;
+    int chance = cr->GetStats(XStats::PER) * 10;
 
     if (skill) {
         chance += skill->GetLevel() * 50;

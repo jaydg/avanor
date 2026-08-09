@@ -375,8 +375,8 @@ class XCreature : public XBaseObject
 
         int MoneyOp(int money_count); // if money_count >= 0 then add money, else sub.
 
-        int GetStats(STATS st);
-        int GainAttr(STATS st, int val);
+        int GetStats(XStats::Id st);
+        int GainAttr(XStats::Id st, int val);
         int GainResist(RESISTANCE rs, int val);
         int GetMaxHP();
         int GetMaxPP();

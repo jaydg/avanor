@@ -81,15 +81,15 @@ RESULT XCorpse::onEat(XCreature * eater)
         for (auto it: pCorpseData->effect) {
             switch (it.type) {
                 case CET_MODIFY_ST:
-                    eater->GainAttr(S_STR, it.value);
+                    eater->GainAttr(XStats::STR, it.value);
                     break;
 
                 case CET_MODIFY_TO:
-                    eater->GainAttr(S_TOU, it.value);
+                    eater->GainAttr(XStats::TOU, it.value);
                     break;
 
                 case CET_MODIFY_MA:
-                    eater->GainAttr(S_MAN, it.value);
+                    eater->GainAttr(XStats::MAN, it.value);
                     break;
 
                 case CET_MODIFY_R_FIRE:

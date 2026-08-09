@@ -94,14 +94,14 @@ struct KEYWORD {
 
 
 KEYWORD keywords[] = {
-    {"St", S_STR},
-    {"Dx", S_DEX},
-    {"To", S_TOU},
-    {"Le", S_LEN},
-    {"Wi", S_WIL},
-    {"Ma", S_MAN},
-    {"Pe", S_PER},
-    {"Ch", S_CHR},
+    {"St", XStats::STR},
+    {"Dx", XStats::DEX},
+    {"To", XStats::TOU},
+    {"Le", XStats::LEN},
+    {"Wi", XStats::WIL},
+    {"Ma", XStats::MAN},
+    {"Pe", XStats::PER},
+    {"Ch", XStats::CHR},
 
     {"white",	R_WHITE},
     {"black",	R_BLACK},

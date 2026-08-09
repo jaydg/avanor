@@ -262,9 +262,9 @@ void XHero::PlayerSetup()
             stats->Add(stmp);
             delete stmp;
 
-            for (int ii = S_STR; ii < S_EOF; ii++) {
-                if (stats->Get(static_cast<STATS>(ii)) < 1) {
-                    stats->SetStat(static_cast<STATS>(ii), 1);
+            for (int ii = XStats::STR; ii < XStats::COUNT; ii++) {
+                if (stats->Get(static_cast<XStats::Id>(ii)) < 1) {
+                    stats->SetStat(static_cast<XStats::Id>(ii), 1);
                 }
             }
 

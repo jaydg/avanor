@@ -182,7 +182,7 @@ int XBook::onRead(XCreature * reader)
     }
 
     XSkill * skill = reader->sk->GetSkill(XSkill::Skill::LITERACY);
-    left_to_read -= (skill->GetLevel() + reader->GetStats(S_LEN));
+    left_to_read -= (skill->GetLevel() + reader->GetStats(XStats::LEN));
 
     if (left_to_read <= 0) {
         reader->m->Learn(book_descr[descr].spell_name);

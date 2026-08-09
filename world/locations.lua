@@ -312,7 +312,7 @@ function MushroomCaveEvent(e, p)
 			AddMessage("You feel power swirling in the air...")
 		end
 		if (Rand(30) == 0) then
-			local st = Rand(STATS.S_EOF)
+			local st = Rand(XStats.COUNT)
 			if (GetStats(p, st) > 5) then
 				ChangeStats(p, st, -1)
 			end

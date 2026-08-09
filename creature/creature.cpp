@@ -312,11 +312,11 @@ bool XCreature::Run()
 
         if (GetCarryState() >= CSTATE_STRAINED) {
             if (vRand(3000 / (5 + athletics)) == 0) {
-                GainAttr(S_STR, 1);
+                GainAttr(XStats::STR, 1);
                 sk->UseSkill(XSkill::Skill::ATHLETICS, 10);
             }
         } else if (vRand(6000 / (5 + athletics)) == 0) {
-            GainAttr(S_DEX, 1);
+            GainAttr(XStats::DEX, 1);
             sk->UseSkill(XSkill::Skill::ATHLETICS, 10);
         }
 
@@ -489,14 +489,14 @@ void XCreature::PutStatus()
     vGotoXY(15, size_y - 3);
     vPutS(fmt::format(
         "St:{:<2} Dx:{:<2} To:{:<2} Le:{:<2} Wi:{:<2} Ma:{:<2} Pe:{:<2} Ch:{:<2} Sp:{:<3} L:{}",
-        GetStats(S_STR),
-        GetStats(S_DEX),
-        GetStats(S_TOU),
-        GetStats(S_LEN),
-        GetStats(S_WIL),
-        GetStats(S_MAN),
-        GetStats(S_PER),
-        GetStats(S_CHR),
+        GetStats(XStats::STR),
+        GetStats(XStats::DEX),
+        GetStats(XStats::TOU),
+        GetStats(XStats::LEN),
+        GetStats(XStats::WIL),
+        GetStats(XStats::MAN),
+        GetStats(XStats::PER),
+        GetStats(XStats::CHR),
         100000 / GetSpeed(),
         l->GetBriefName()));
     vClrEol();
@@ -602,7 +602,7 @@ int XCreature::GetSpeed()
         speed = (int)(speed * 1.1);
     }
 
-    int str = stats->Get(S_STR);
+    int str = stats->Get(XStats::STR);
 
     if (carried_weight >= str * 120 && carried_weight < str * 200) {
         speed = (int)(speed * 1.1);
@@ -668,23 +668,23 @@ int XCreature::GetTacticsDVBonus()
 {
     switch (tactics) {
         case TS_COWARD	:
-            return (3 * (GetStats(S_DEX) + sk->GetLevel(XSkill::Skill::TACTICS))) / 2;
+            return (3 * (GetStats(XStats::DEX) + sk->GetLevel(XSkill::Skill::TACTICS))) / 2;
             break;
 
         case TS_DEFENSIVE	:
-            return GetStats(S_DEX) + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::DEX) + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_NORMAL	:
-            return (2 * GetStats(S_DEX)) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return (2 * GetStats(XStats::DEX)) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_AGGRESSIVE	:
-            return GetStats(S_DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_BERSERKER	:
-            return GetStats(S_DEX) / 10 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::DEX) / 10 + sk->GetLevel(XSkill::Skill::TACTICS);
             break; //compensate DV given by Dx
 
         default	:
@@ -698,23 +698,23 @@ int XCreature::GetTacticsHITBonus()
 {
     switch (tactics) {
         case TS_COWARD	:
-            return GetStats(S_DEX) / 10 + sk->GetLevel(XSkill::Skill::TACTICS) - 5;
+            return GetStats(XStats::DEX) / 10 + sk->GetLevel(XSkill::Skill::TACTICS) - 5;
             break;
 
         case TS_DEFENSIVE	:
-            return GetStats(S_DEX) / 7 + sk->GetLevel(XSkill::Skill::TACTICS) - 3;
+            return GetStats(XStats::DEX) / 7 + sk->GetLevel(XSkill::Skill::TACTICS) - 3;
             break;
 
         case TS_NORMAL	:
-            return GetStats(S_DEX) / 4 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::DEX) / 4 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_AGGRESSIVE	:
-            return GetStats(S_DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::DEX) / 3 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_BERSERKER	:
-            return GetStats(S_DEX) / 2 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::DEX) / 2 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         default	:
@@ -728,23 +728,23 @@ int XCreature::GetTacticsDMGBonus()
 {
     switch (tactics) {
         case TS_COWARD	:
-            return GetStats(S_STR) / 20 + sk->GetLevel(XSkill::Skill::TACTICS) - 3;
+            return GetStats(XStats::STR) / 20 + sk->GetLevel(XSkill::Skill::TACTICS) - 3;
             break;
 
         case TS_DEFENSIVE	:
-            return GetStats(S_STR) / 10 + sk->GetLevel(XSkill::Skill::TACTICS) - 1;
+            return GetStats(XStats::STR) / 10 + sk->GetLevel(XSkill::Skill::TACTICS) - 1;
             break;
 
         case TS_NORMAL	:
-            return GetStats(S_STR) / 7 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::STR) / 7 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_AGGRESSIVE	:
-            return GetStats(S_STR) / 5 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::STR) / 5 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         case TS_BERSERKER	:
-            return GetStats(S_STR) / 2 + sk->GetLevel(XSkill::Skill::TACTICS);
+            return GetStats(XStats::STR) / 2 + sk->GetLevel(XSkill::Skill::TACTICS);
             break;
 
         default	:
@@ -756,10 +756,10 @@ int XCreature::GetTacticsDMGBonus()
 
 int XCreature::GetPV()
 {
-    return _PV + added_PV + GetStats(S_TOU) / 10;
+    return _PV + added_PV + GetStats(XStats::TOU) / 10;
 }
 
-int XCreature::GainAttr(STATS st, int val)
+int XCreature::GainAttr(XStats::Id st, int val)
 {
     int cur = stats->Get(st);
     int max = max_stats.Get(st);
@@ -774,35 +774,35 @@ int XCreature::GainAttr(STATS st, int val)
 
             if (isHero()) {
                 switch (st) {
-                    case S_STR:
+                    case XStats::STR:
                         msgwin.Add("You feel stronger!");
                         break;
 
-                    case S_DEX:
+                    case XStats::DEX:
                         msgwin.Add("You are becoming more graceful!");
                         break;
 
-                    case S_TOU:
+                    case XStats::TOU:
                         msgwin.Add("Your health increases!");
                         break;
 
-                    case S_MAN:
+                    case XStats::MAN:
                         msgwin.Add("You feel power surging through your body!");
                         break;
 
-                    case S_WIL:
+                    case XStats::WIL:
                         msgwin.Add("You feel more powerfull!");
                         break;
 
-                    case S_LEN:
+                    case XStats::LEN:
                         msgwin.Add("You feel smarter!");
                         break;
 
-                    case S_PER:
+                    case XStats::PER:
                         msgwin.Add("You feel more perceptive!");
                         break;
 
-                    case S_CHR:
+                    case XStats::CHR:
                         msgwin.Add("Your beauty improves!");
                         break;
                 }
@@ -816,35 +816,35 @@ int XCreature::GainAttr(STATS st, int val)
 
             if (isHero()) {
                 switch (st) {
-                    case S_STR:
+                    case XStats::STR:
                         msgwin.Add("Your muscles weaken!");
                         break;
 
-                    case S_DEX:
+                    case XStats::DEX:
                         msgwin.Add("You feel clumsy!");
                         break;
 
-                    case S_TOU:
+                    case XStats::TOU:
                         msgwin.Add("You feel like you might be getting sick!");
                         break;
 
-                    case S_MAN:
+                    case XStats::MAN:
                         msgwin.Add("You feel power draining from your body!");
                         break;
 
-                    case S_WIL:
+                    case XStats::WIL:
                         msgwin.Add("You feel diminished!");
                         break;
 
-                    case S_LEN:
+                    case XStats::LEN:
                         msgwin.Add("Thinking becomes more difficult!");
                         break;
 
-                    case S_PER:
+                    case XStats::PER:
                         msgwin.Add("Your senses dull!");
                         break;
 
-                    case S_CHR:
+                    case XStats::CHR:
                         msgwin.Add("Your features harden!");
                         break;
                 }
@@ -910,9 +910,9 @@ int XCreature::GainResist(RESISTANCE rs, int val)
     return 1;
 }
 
-int XCreature::GetStats(STATS st)
+int XCreature::GetStats(XStats::Id st)
 {
-    assert(st > S_UNKNOWN && st < S_EOF);
+    assert(st > XStats::UNKNOWN && st < XStats::COUNT);
 
     int res = stats->Get(st) + added_stats.Get(st);
     return res > 0 ? res : 1;
@@ -1073,12 +1073,12 @@ CR_GENDER XCreature::GetGender()
 
 int XCreature::GetMaxHP()
 {
-    return MAX_HP + (MAX_HP * GetStats(S_TOU)) / 20;
+    return MAX_HP + (MAX_HP * GetStats(XStats::TOU)) / 20;
 }
 
 int XCreature::GetMaxPP()
 {
-    return MAX_PP + (MAX_PP * GetStats(S_MAN)) / 10;
+    return MAX_PP + (MAX_PP * GetStats(XStats::MAN)) / 10;
 }
 
 int XCreature::GetExp() const
@@ -1097,8 +1097,8 @@ void XCreature::AddExp(unsigned long exp)
 
 void XCreature::IncLevel()
 {
-    MAX_HP += vRand((GetStats(S_TOU) / 5) + 1) + 1;
-    MAX_PP += vRand((GetStats(S_MAN) / 2) + 1) + 1;
+    MAX_HP += vRand((GetStats(XStats::TOU) / 5) + 1) + 1;
+    MAX_PP += vRand((GetStats(XStats::MAN) / 2) + 1) + 1;
     level++;
 }
 
@@ -1127,7 +1127,7 @@ int XCreature::GetHITFHBonus(XItem* weapon)
     XItem * h1 = GetItem(BP_HAND, 0);
     XItem * h2 = GetItem(BP_HAND, 1);
     int mult = (h1 && h2) ? 2 : 1;
-    float f = (float)(5.0 * log((300.0 * GetStats(S_STR)) / (10.0 * (weapon->weight) * mult)));
+    float f = (float)(5.0 * log((300.0 * GetStats(XStats::STR)) / (10.0 * (weapon->weight) * mult)));
     return std::min((int)f, 0);
 }
 
@@ -1291,8 +1291,8 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
 
     XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
 
-    int str = stats->Get(S_STR);
-    int dex = stats->Get(S_DEX);
+    int str = stats->Get(XStats::STR);
+    int dex = stats->Get(XStats::DEX);
 
     *range = missile->RNG;
     *hit = dex / 2 + missile->_HIT;
@@ -1549,7 +1549,7 @@ int XCreature::continueRead()
         action_data.item = nullptr;
 
         if (vRand(5) == 0) {
-            GainAttr(S_LEN, 1);
+            GainAttr(XStats::LEN, 1);
         }
     }
 
@@ -1575,7 +1575,7 @@ int XCreature::Read(XItem * item)
         item->Invalidate();
 
         if (vRand(10) == 0) {
-            GainAttr(S_LEN, 1);
+            GainAttr(XStats::LEN, 1);
         }
 
         return 1;
@@ -1734,7 +1734,7 @@ void XCreature::UnCarryItem(XItem * item)
 
 int XCreature::CarryValue(CARRY_STATE cs)
 {
-    int str = stats->Get(S_STR) + added_stats.Get(S_STR);
+    int str = stats->Get(XStats::STR) + added_stats.Get(XStats::STR);
 
     switch (cs) {
         case CSTATE_NORMAL :
@@ -1782,7 +1782,7 @@ CARRY_STATE XCreature::GetCarryState()
 
 int XCreature::GetVisibleRadius()
 {
-    int perception = stats->Get(S_PER);
+    int perception = stats->Get(XStats::PER);
 
     if (perception < 5) {
         return 3;

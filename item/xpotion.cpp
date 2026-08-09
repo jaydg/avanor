@@ -288,31 +288,31 @@ int XPotion::onDrink(XCreature * cr)
                 break;
 
             case PN_GAIN_STRENGTH:
-                cr->GainAttr(S_STR, 1);
+                cr->GainAttr(XStats::STR, 1);
                 break;
 
             case PN_GAIN_TOUGHNESS:
-                cr->GainAttr(S_TOU, 1);
+                cr->GainAttr(XStats::TOU, 1);
                 break;
 
             case PN_GAIN_WILLPOWER:
-                cr->GainAttr(S_WIL, 1);
+                cr->GainAttr(XStats::WIL, 1);
                 break;
 
             case PN_GAIN_DEXTERITY:
-                cr->GainAttr(S_DEX, 1);
+                cr->GainAttr(XStats::DEX, 1);
                 break;
 
             case PN_GAIN_MANA:
-                cr->GainAttr(S_MAN, 1);
+                cr->GainAttr(XStats::MAN, 1);
                 break;
 
             case PN_WEAKNESS:
-                cr->GainAttr(S_STR, -1);
+                cr->GainAttr(XStats::STR, -1);
                 break;
 
             case PN_CLUMSINESS:
-                cr->GainAttr(S_DEX, -1);
+                cr->GainAttr(XStats::DEX, -1);
                 break;
 
             case PN_DEATH:
@@ -356,14 +356,14 @@ int XPotion::onDrink(XCreature * cr)
                 }
 
                 flag = 1;
-                cr->GainAttr(S_STR, -1); // Weakness
-                cr->GainAttr(S_DEX, -1); // Damage
-                cr->GainAttr(S_TOU, -1); // Fatigue
-                cr->GainAttr(S_LEN, -1); // Can't learn if you're dead
-                cr->GainAttr(S_WIL, -1); // Lost the will to live
-                cr->GainAttr(S_MAN, -1); // Out of touch with nature
-                cr->GainAttr(S_PER, -1); // Senses are useless when dead
-                cr->GainAttr(S_CHR, -1); // Rotting is ugly
+                cr->GainAttr(XStats::STR, -1); // Weakness
+                cr->GainAttr(XStats::DEX, -1); // Damage
+                cr->GainAttr(XStats::TOU, -1); // Fatigue
+                cr->GainAttr(XStats::LEN, -1); // Can't learn if you're dead
+                cr->GainAttr(XStats::WIL, -1); // Lost the will to live
+                cr->GainAttr(XStats::MAN, -1); // Out of touch with nature
+                cr->GainAttr(XStats::PER, -1); // Senses are useless when dead
+                cr->GainAttr(XStats::CHR, -1); // Rotting is ugly
                 cr->md->Add(MOD_WOUND, 100, cr); // Ensure death
                 break;
 

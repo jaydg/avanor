@@ -235,7 +235,7 @@ int XSkill::UseSteal(XCreature * user)
                 return 1;
             }
 
-            double perception = 1 + cr->stats->Get(S_PER);
+            double perception = 1 + cr->stats->Get(XStats::PER);
             double stealing = 1 + user->sk->GetLevel(XSkill::Skill::STEALING);
             int p = (int)((stealing * 300) / perception);
 

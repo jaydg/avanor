@@ -83,10 +83,10 @@ XHero::XHero(int flag)
 
     PlayerSetup();
 
-    MAX_HP = stats->Get(S_TOU) / 2 + 3 + (XGame::isGodMode ? 1000 : 0);
+    MAX_HP = stats->Get(XStats::TOU) / 2 + 3 + (XGame::isGodMode ? 1000 : 0);
     _HP = GetMaxHP();
 
-    MAX_PP = stats->Get(S_MAN) / 2 + 1 + (XGame::isGodMode ? 1000 : 0);
+    MAX_PP = stats->Get(XStats::MAN) / 2 + 1 + (XGame::isGodMode ? 1000 : 0);
     _PP = GetMaxPP();
 
     base_exp = static_cast<int>(GetCreatureStrength() * 0.6);
@@ -648,20 +648,20 @@ void XHero::InfoList()
     vPutS(MSG_BROWN "--------------------------------");
     int i = 0;
 
-    for (i = 0; i < S_EOF; i++) {
+    for (i = 0; i < XStats::COUNT; i++) {
         vGotoXY(0, i + 3);
         vSetAttr(xBROWN);
-        vPutS(stats->GetFullName(static_cast<STATS>(i)));
-        auto stat = fmt::format("{}", stats->Get(static_cast<STATS>(i)));
+        vPutS(stats->GetFullName(static_cast<XStats::Id>(i)));
+        auto stat = fmt::format("{}", stats->Get(static_cast<XStats::Id>(i)));
         vSetAttr(xLIGHTGRAY);
         vGotoXY(15 - stat.size(), 3 + i);
         vPutS(stat);
-        stat = fmt::format("{}", max_stats.Get(static_cast<STATS>(i)));
+        stat = fmt::format("{}", max_stats.Get(static_cast<XStats::Id>(i)));
         vSetAttr(xBROWN);
         vGotoXY(20 - stat.size(), 3 + i);
         vPutS(stat);
 
-        int tres = added_stats.Get(static_cast<STATS>(i));
+        int tres = added_stats.Get(static_cast<XStats::Id>(i));
 
         if (tres != 0) {
             stat = fmt::format("{:+}", tres);
@@ -675,7 +675,7 @@ void XHero::InfoList()
             vPutS(stat);
         }
 
-        tres = stats->Get(static_cast<STATS>(i)) + added_stats.Get(static_cast<STATS>(i));
+        tres = stats->Get(static_cast<XStats::Id>(i)) + added_stats.Get(static_cast<XStats::Id>(i));
 
         if (tres <= 0) {
             tres = 1;
@@ -2116,7 +2116,7 @@ void XHero::IncLevel()
     vGetch();
     msgwin.ClrMsg();
 
-    int counter = stats->Get(S_LEN) / 5 + 1;
+    int counter = stats->Get(XStats::LEN) / 5 + 1;
 
     if (counter < 3) {
         counter = 3;
@@ -2298,14 +2298,14 @@ void XHero::LookAt()
         list.AddItem(new XGuiItem_Text("", 0), 0);
 
         str = fmt::format("St:{} Dx:{} To:{} Le:{} Wi:{} Ma:{} Pe:{} Ch:{} Sp:{}    ",
-            xcr->GetStats(S_STR),
-            xcr->GetStats(S_DEX),
-            xcr->GetStats(S_TOU),
-            xcr->GetStats(S_LEN),
-            xcr->GetStats(S_WIL),
-            xcr->GetStats(S_MAN),
-            xcr->GetStats(S_PER),
-            xcr->GetStats(S_CHR),
+            xcr->GetStats(XStats::STR),
+            xcr->GetStats(XStats::DEX),
+            xcr->GetStats(XStats::TOU),
+            xcr->GetStats(XStats::LEN),
+            xcr->GetStats(XStats::WIL),
+            xcr->GetStats(XStats::MAN),
+            xcr->GetStats(XStats::PER),
+            xcr->GetStats(XStats::CHR),
             100000 / xcr->GetSpeed());
         list.AddItem(new XGuiItem_Text(str, 0), 0);
 
