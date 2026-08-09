@@ -247,7 +247,7 @@ void XAnyCreature::Die(XCreature * killer)
     }
 
     if (creature_class == CR_ORC) {
-        if (killer && killer->im & IM_HERO) {
+        if (killer && killer->isHero()) {
             XQuest::quest.orcs_killed++;
         }
 

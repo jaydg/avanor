@@ -643,10 +643,7 @@ class XCreature : public XBaseObject
         bool isVisible() override;       // check if creature visible to add action message to msgwin
         static XCreature* main_creature; // at this time is used to determine visibility of msg
 
-        bool isHero() const
-        {
-            return (im & IM_HERO) > 0;
-        }
+        [[nodiscard]] bool isHero() const;
 
         const std::string GetNameEx(CR_NAME_TYPE crn);
 

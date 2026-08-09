@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/deity.h"
 #include "helpers/msgwin.h"
 #include "item/item.h"
+#include "map/map_objects.h"
 
 void XDeity::RegisterLua(sol::state_view& lua)
 {
@@ -97,8 +98,9 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
     }
 
     XMapObject * tmo = cr->l->map->GetSpecial(cr->x, cr->y);
+    bool at_altar = dynamic_cast<XAltar *>(tmo) != nullptr;
 
-    if (tmo && tmo->im & IM_ALTAR) {
+    if (at_altar) {
         if (tmo->color == xWHITE) {
             deity = XDeity::LIFE;
         } else {
@@ -123,7 +125,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
 
     cr->sk->UseSkill(XSkill::Skill::RELIGION);
 
-    if (tmo && tmo->im & IM_ALTAR) {
+    if (at_altar) {
         sacrifice_value *= 3;
         cr->sk->UseSkill(XSkill::Skill::RELIGION, 5);
     }

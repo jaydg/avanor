@@ -116,16 +116,15 @@ void XHero::NewMove()
     int moved = 0;
     int w_pressed = 0;
 
-    if (im & IM_HERO) {
+    if (isHero()) {
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++) {
                 XMapObject* obj = l->map->GetSpecial(x + i, y + j);
+                auto* trap = dynamic_cast<XTrap *>(obj);
 
-                if (obj && obj->im == IM_TRAP) {
-                    if (dynamic_cast<XTrap *>(obj)->Check(this)) {
-                        if (isDisturb > 0) {
-                            isDisturb = 0;
-                        }
+                if (trap && trap->Check(this)) {
+                    if (isDisturb > 0) {
+                        isDisturb = 0;
                     }
                 }
             }
@@ -213,7 +212,7 @@ void XHero::NewMove()
                 case '<' : {
                     XMapObject* spec = l->map->GetSpecial(x, y);
 
-                    if (spec && spec->im & IM_WAY && ((XStairWay*)spec)->view == '<') {
+                    if (dynamic_cast<XStairWay *>(spec) && spec->view == '<') {
                         for (int q = -10; q < 10; q++)
                             for (int w = -10; w < 10; w++) {
                                 l->map->ResVisible(x + w, y + q);
@@ -231,7 +230,7 @@ void XHero::NewMove()
                 case '>' : {
                     XMapObject* spec = l->map->GetSpecial(x, y);
 
-                    if (spec && spec->im & IM_WAY && ((XStairWay*)spec)->view == '>') {
+                    if (dynamic_cast<XStairWay *>(spec) && spec->view == '>') {
                         for (int q = -10; q < 10; q++)
                             for (int w = -10; w < 10; w++) {
                                 l->map->ResVisible(x + w, y + q);
@@ -515,8 +514,9 @@ void XHero::NewMove()
         action_data.action = A_ATTACK;
     } else {
         XMapObject* spec = l->map->GetSpecial(nx, ny);
+        auto* door = dynamic_cast<XDoor *>(spec);
 
-        if (spec && spec->im & IM_DOOR && !dynamic_cast<XDoor *>(spec)->isOpened) {
+        if (door && !door->isOpened) {
             OpenDoor();
             nx = x;
             ny = y;
@@ -1237,11 +1237,12 @@ void XHero::PickItem()
 
     if (tmpquae->empty()) {
         XMapObject* obj = l->map->GetSpecial(x, y);
+        XItem* picked = (obj && obj->isValid()) ? dynamic_cast<XItem *>(obj->Pick(this)) : nullptr;
 
-        if (obj == nullptr || !obj->isValid() || obj->im != IM_OTHER) {
+        if (!picked) {
             msgwin.Add("There is nothing to pick up here.");
         } else {
-            const auto tit = XItem::Own(dynamic_cast<XItem *>(obj->Pick(this)));
+            const auto tit = XItem::Own(picked);
 
             auto desc = tit->toString();
             if (PickUpItem(tit.get())) {
@@ -1346,7 +1347,7 @@ void XHero::OpenDoor()
 {
     XMapObject* spec = l->map->GetSpecial(x, y);
 
-    if (spec && spec->im & IM_MISC) {
+    if (spec && (dynamic_cast<XGrave *>(spec) || dynamic_cast<XFurniture *>(spec) || dynamic_cast<XOuterObject *>(spec))) {
         spec->onOuterUse(this);
         return;
     }
@@ -1360,12 +1361,13 @@ void XHero::OpenDoor()
         for (int j = -1; j < 2; j++) {
             if (!(i == 0 && j == 0)) {
                 XMapObject* door = l->map->GetSpecial(x + i, y + j);
+                auto* xdoor = dynamic_cast<XDoor *>(door);
 
-                if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened == 0) {
+                if (xdoor && xdoor->isOpened == 0) {
                     c_door++;
                     cd_x = x + i;
                     cd_y = y + j;
-                } else if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened == 1) {
+                } else if (xdoor && xdoor->isOpened == 1) {
                     o_door++;
                 }
             }
@@ -1405,11 +1407,13 @@ void XHero::OpenDoor()
             door = l->map->GetSpecial(nx, ny);
         }
 
-        if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened) {
+        auto* xdoor = dynamic_cast<XDoor *>(door);
+
+        if (xdoor && xdoor->isOpened) {
             msgwin.Add("The door is already opened.");
-        } else if (door && door->im & IM_DOOR && dynamic_cast<XDoor *>(door)->isOpened == 0) {
+        } else if (xdoor && xdoor->isOpened == 0) {
             msgwin.Add("You have opened the door.");
-            dynamic_cast<XDoor *>(door)->Switch();
+            xdoor->Switch();
         } else {
             msgwin.Add("There is no door here.");
         }
@@ -1427,12 +1431,13 @@ void XHero::CloseDoor()
         for (int j = -1; j < 2; j++) {
             if (!(i == 0 && j == 0)) {
                 XMapObject* spec = l->map->GetSpecial(x + i, y + j);
+                auto* xdoor = dynamic_cast<XDoor *>(spec);
 
-                if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened) {
+                if (xdoor && xdoor->isOpened) {
                     o_door++;
                     od_x = x + i;
                     od_y = y + j;
-                } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
+                } else if (xdoor && xdoor->isOpened == 0) {
                     c_door++;
                 }
             }
@@ -1468,13 +1473,14 @@ void XHero::CloseDoor()
         }
 
         XMapObject* spec = l->map->GetSpecial(x + pt.x, y + pt.y);
+        auto* xdoor = dynamic_cast<XDoor *>(spec);
 
-        if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
+        if (xdoor && xdoor->isOpened == 0) {
             msgwin.Add("The door is already closed.");
-        } else if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened) {
+        } else if (xdoor && xdoor->isOpened) {
             msgwin.Add("You have closed the door.");
             LastStep();
-            dynamic_cast<XDoor *>(spec)->Switch();
+            xdoor->Switch();
             FirstStep(x, y, l);
         } else {
             msgwin.Add("There is no door here.");
@@ -2591,8 +2597,8 @@ void XHero::ActivateTrap()
 {
     XMapObject* obj = l->map->GetSpecial(x, y);
 
-    if (obj && obj->im == IM_TRAP) {
-        dynamic_cast<XTrap *>(obj)->Activate(this);
+    if (auto* trap = dynamic_cast<XTrap *>(obj)) {
+        trap->Activate(this);
     }
 }
 

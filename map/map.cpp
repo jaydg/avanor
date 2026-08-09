@@ -265,8 +265,9 @@ int XMap::GetVisibility(const int x, const int y) const
     assert(y >= 0 && y < hgt);
 
     XMapObject* spec = map[x + y * len].pSpecialObject.get();
+    auto* xdoor = dynamic_cast<XDoor *>(spec);
 
-    if (spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0) {
+    if (xdoor && xdoor->isOpened == 0) {
         return 0;
     }
 
@@ -291,9 +292,9 @@ int XMap::GetMovability(const int x, const int y) const
     assert(y >= 0 && y < hgt);
 
     const XMapTile& _map = map[x + y * len];
+    auto* xdoor = dynamic_cast<XDoor *>(_map.pSpecialObject.get());
 
-    if (_map.pSpecialObject && (_map.pSpecialObject->im & IM_DOOR) &&
-        dynamic_cast<XDoor *>(_map.pSpecialObject.get())->isOpened == 0) {
+    if (xdoor && xdoor->isOpened == 0) {
         return MO_WALL;
     }
 
@@ -312,9 +313,10 @@ int XMap::XGetMovability(const int x, const int y) const
     }
 
     XMapObject* spec = map[x + y * len].pSpecialObject.get();
+    auto* xdoor = dynamic_cast<XDoor *>(spec);
 
     if (std_tile_data[m->n].movability < MO_UNWALKABLE
-        && !(spec && spec->im & IM_DOOR && dynamic_cast<XDoor *>(spec)->isOpened == 0)) {
+        && !(xdoor && xdoor->isOpened == 0)) {
         return 0;
     }
 
@@ -411,7 +413,9 @@ void XMap::Put(XCreature * cr) const
             XMapTile * tmap = &map[(i + wy) * len + j + wx];
 
             if (tmap->visible) {
-                if (tmap->pSpecialObject && !(tmap->pSpecialObject->im == IM_TRAP && !dynamic_cast<XTrap *>(tmap->pSpecialObject.get())->isVisible(nullptr))) {
+                auto* trap = dynamic_cast<XTrap *>(tmap->pSpecialObject.get());
+
+                if (tmap->pSpecialObject && !(trap && !trap->isVisible(nullptr))) {
                     vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
                     tmap->color = tmap->pSpecialObject->color;
                     tmap->known = tmap->pSpecialObject->view;

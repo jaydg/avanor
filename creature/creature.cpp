@@ -29,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "creature/los.h"
 #include "creature/std_ai.h"
+#include "creature/xhero.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
@@ -47,6 +48,14 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XBaseObject, XCreature);
 XCreature* XCreature::main_creature = nullptr;
 
 XCreatureGroupMap XCreature::group_members = XCreatureGroupMap();
+
+// Defined here rather than inline in creature.h: XHero derives from
+// XCreature, so creature.h can never see a complete XHero to dynamic_cast
+// against - same circular-include shape as XLocation::GroupId earlier.
+bool XCreature::isHero() const
+{
+    return dynamic_cast<const XHero*>(this) != nullptr;
+}
 
 void XCreature::RegisterLua(sol::state_view& lua)
 {
@@ -362,9 +371,9 @@ void XCreature::Move()
 
     XMapObject * tobj = l->map->GetSpecial(x, y);
 
-    if (tobj) {
+    if (auto* ttrap = dynamic_cast<XTrap *>(tobj)) {
         //we can move easy from pit or web
-        if (tobj->im == IM_TRAP && (nx != x || ny != y) && !((XTrap*)tobj)->MoveOut(this)) {
+        if ((nx != x || ny != y) && !ttrap->MoveOut(this)) {
             nx = x;
             ny = y;
 
@@ -406,14 +415,10 @@ void XCreature::Move()
     if (flag) {
         XMapObject * obj = l->map->GetSpecial(x, y);
 
-        if (obj) {
-            if (obj->im == IM_TRAP) {
-                ((XTrap*)obj)->MoveIn(this);
-            }
-
-            if (obj->im == IM_TELEPORT) {
-                ((XTeleport*)obj)->MoveIn(this);
-            }
+        if (auto* mtrap = dynamic_cast<XTrap *>(obj)) {
+            mtrap->MoveIn(this);
+        } else if (auto* mtel = dynamic_cast<XTeleport *>(obj)) {
+            mtel->MoveIn(this);
         }
     }
 }
@@ -1043,7 +1048,7 @@ int XCreature::PickUpItem(XItem * i)
 
             return 1;
         } else { //if we can't pick item, then drop it
-            if (im & IM_HERO) {
+            if (isHero()) {
                 msgwin.ClrMsg();
                 msgwin.Add(fmt::format("{} is to heavy for you!", i->toString()));
             }
@@ -1257,9 +1262,10 @@ void XCreature::MoveStairWay()
     XLocation * xl = l;
 
     XMapObject * spec = xl->map->GetSpecial(tc->x, tc->y);
+    XStairWay * way = dynamic_cast<XStairWay *>(spec);
 
-    if (spec && spec->im & IM_WAY) {
-        XLocation * tgtloc = Game.locations[((XStairWay*)spec)->ln].get();
+    if (way) {
+        XLocation * tgtloc = Game.locations[way->ln].get();
         int tgt_x = spec->nx;
         int tgt_y = spec->ny;
         int n_x = tgt_x;
@@ -1280,14 +1286,14 @@ void XCreature::MoveStairWay()
             tc->l = tgtloc;
             tc->action_data.action = A_MOVE;
 
-            if (tc->im & IM_HERO) {
+            if (tc->isHero()) {
                 tgtloc->visited_by_hero = 1;
                 tgtloc->map->Put(tc);
                 vRefresh();
             }
 
             return;
-        } else if (tc->im & IM_HERO) {
+        } else if (tc->isHero()) {
             msgwin.Add("The way is blocked.");
         }
     }
@@ -1579,7 +1585,7 @@ int XCreature::Read(XItem * item)
     XSkill * skill = sk->GetSkill(XSkill::Skill::LITERACY);
 
     if (!skill) {
-        if (im & IM_HERO) {
+        if (isHero()) {
             msgwin.Add("You are illiterate!");
         }
 

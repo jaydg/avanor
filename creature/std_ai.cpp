@@ -133,12 +133,13 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
 
     //test for ways
     XMapObject * spec = ai_owner->l->map->GetSpecial(j, i);
+    XStairWay * way = dynamic_cast<XStairWay *>(spec);
 
-    if (spec && spec->im & IM_WAY && (w < way_dist) && spec != last_moved_way &&
+    if (way && (w < way_dist) && spec != last_moved_way &&
         (((spec->view == '>') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_DOWN)) ||
         ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))
     ) {
-        if (dynamic_cast<XStairWay *>(spec)->ln != XLocation::MAIN || ai_flag & XStandardAI::ALLOW_MOVE_OUT) {
+        if (way->ln != XLocation::MAIN || ai_flag & XStandardAI::ALLOW_MOVE_OUT) {
             way_dist = w;
             way_x = j;
             way_y = i;
@@ -250,7 +251,7 @@ void XStandardAI::Move()
     {
         auto spec = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
 
-        if (spec && spec->im & IM_WAY &&
+        if (dynamic_cast<XStairWay *>(spec) &&
             (((spec->view == '>') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_DOWN)) ||
             ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))) {
             ai_owner->MoveStairWay();
@@ -1141,10 +1142,9 @@ void XStandardAI::RunScript()
 
         case SCC_COLLECT_MUSHROOM: {
             XMapObject* obj = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
+            auto* tit = (obj && obj->isValid()) ? dynamic_cast<XItem *>(obj->Pick(ai_owner)) : nullptr;
 
-            if (obj && obj->isValid() && obj->im == IM_OTHER) {
-                auto  tit = dynamic_cast<XItem *>(obj->Pick(ai_owner));
-
+            if (tit) {
                 if (ai_owner->PickUpItem(tit)) {
                     if (ai_owner->isVisible()) {
                         msgwin.Add(fmt::format("{} collects {}.",
@@ -1196,7 +1196,7 @@ void XStandardAI::LearnTraps()
         for (int j = guard_area.top; j < guard_area.bottom; j++) {
             XMapObject * pO = ai_owner->l->map->GetSpecial(i, j);
 
-            if (pO && pO->im & IM_TRAP) {
+            if (dynamic_cast<XTrap *>(pO)) {
                 known_traps.push_back(pO);
             }
         }

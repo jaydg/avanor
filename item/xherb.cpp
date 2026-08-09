@@ -176,7 +176,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XHerbBush);
 XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 {
     l = _l;
-    im = IM_OTHER;
     x = _x;
     y = _y;
     ttm = 1;
@@ -317,7 +316,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XMushSpawn);
 XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 {
     l = _l;
-    im = IM_OTHER;
     x = _x;
     y = _y;
     ttm = vRand(BASE_MUSH_REFRESH);

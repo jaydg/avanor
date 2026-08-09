@@ -39,8 +39,10 @@ bool XUniversalGen::Run()
     unsigned int cr_count[32] = {0};
 
     for (const auto& [key, obj] : objects) {
-        if ((obj->im & IM_CREATURE) && dynamic_cast<XCreature *>(obj)->l == l) {
-            int n = vGetHighBitNum((dynamic_cast<XCreature *>(obj)->creature_class));
+        auto* cr = dynamic_cast<XCreature *>(obj);
+
+        if (cr && !cr->isHero() && cr->l == l) {
+            int n = vGetHighBitNum(cr->creature_class);
             cr_count[n]++;
         }
     }
@@ -81,8 +83,10 @@ bool XMainLocationGen::Run()
         XRect small_town_area(20, 42, 28, 48);
 
         for (const auto& [key, obj] : XObject::objects) {
-            if ((obj->im & IM_CREATURE) && reinterpret_cast<XCreature *>(obj)->creature_class & CR_ORC) {
-                reinterpret_cast<XCreature *>(obj)->xai->SetArea(small_town_area, XLocation::MAIN);
+            auto* cr = dynamic_cast<XCreature *>(obj);
+
+            if (cr && !cr->isHero() && cr->creature_class & CR_ORC) {
+                cr->xai->SetArea(small_town_area, XLocation::MAIN);
             }
         }
     }

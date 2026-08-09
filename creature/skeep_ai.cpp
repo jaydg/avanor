@@ -105,7 +105,7 @@ void XShopKeeperAI::Move()
 
 int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
 {
-    if (!(customer->im & IM_HERO)) {
+    if (!customer->isHero()) {
         return 0;
     }
 
@@ -149,7 +149,7 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
     }
 
     //	Return taken and unpaid items back to the shop (only for HERO)
-    if (customer->im & IM_HERO) {
+    if (customer->isHero()) {
         auto it = debt.unpaid_items.begin();
 
         while (it != debt.unpaid_items.end()) {
@@ -179,12 +179,12 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
     ;
     int price = (item->GetValue() / 4 + 1) * item->quantity;
 
-    if ((customer->im & IM_HERO)) {
+    if (customer->isHero()) {
         msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_PRICE, price, item->toString()));
     }
 
     //if it is NPC or Hero asked YES
-    if (!(customer->im & IM_HERO) || customer->GetTarget(TR_NO_YES)) {
+    if (!customer->isHero() || customer->GetTarget(TR_NO_YES)) {
         int money_to_add = price;
 
         if (debt.debtor.lock().get() == customer) {
@@ -286,7 +286,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 
 void XShopKeeperAI::onCreatureEnterShop(XCreature * customer)
 {
-    if (customer->im & IM_HERO) {
+    if (customer->isHero()) {
         if (isEnemy(customer)) {
             msgwin.Add("Prepare to die!");
         } else {
@@ -305,7 +305,7 @@ void XShopKeeperAI::onCreatureEnterShop(XCreature * customer)
 
 void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
 {
-    if (!(customer->im & IM_HERO)) {
+    if (!customer->isHero()) {
         return;
     }
 

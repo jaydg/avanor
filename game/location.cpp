@@ -57,7 +57,7 @@ void XLocation::FixupWaysList()
     }
 
     for (auto& p : places) {
-        if (p && (p->im & IM_WAY)) {
+        if (dynamic_cast<XStairWay *>(p.get())) {
             ways_list.push_back(p.get());
         }
     }
@@ -454,8 +454,9 @@ int XLocation::GetCreatureCount(unsigned int creature_class)
     int count = 0;
 
     for (const auto& [key, obj] : objects) {
-        if ((obj->im & IM_CREATURE) && (((XCreature*)obj)->l->guid() == this->guid())
-                && (((XCreature*)obj)->creature_class) & creature_class) {
+        auto* cr = dynamic_cast<XCreature*>(obj);
+
+        if (cr && !cr->isHero() && cr->l->guid() == this->guid() && cr->creature_class & creature_class) {
             count++;
         }
     }
@@ -1119,10 +1120,10 @@ void XLocation::ExecuteAIScript()
     script.push_back(cmd);
 
     for (const auto& [key, obj] : objects) {
-        if (!(obj->im & IM_CREATURE))
-            continue;
-
         auto creature = dynamic_cast<XCreature *>(obj);
+
+        if (!creature || creature->isHero())
+            continue;
 
         if (creature->groupID() == GID_SMALL_VILLAGE_FARMER) {
             creature->xai->ExecuteScript(script);

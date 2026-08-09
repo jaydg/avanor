@@ -386,7 +386,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
         break;
 
         case XEffect::SELF_KNOWLEDGE:
-            if (pData->caller->im & IM_HERO) {
+            if (pData->caller->isHero()) {
                 dynamic_cast<XHero *>(pData->caller)->ShowResistance();
             }
             break;

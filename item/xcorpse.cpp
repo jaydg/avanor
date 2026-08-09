@@ -189,14 +189,14 @@ bool XCorpse::Run()
     }
 
     if (cc != GetCondition()) {
-        if (owner_sp && owner_sp->im & IM_HERO) {
+        if (owner_sp && owner_sp->isHero()) {
             msgwin.Add("Something in your backpack seems to rotting.");
         } else if (l && isInVisibleArea()) {
             msgwin.Add("Something seems to rotting.");
         }
     } else if (time_of_roating > pCorpseData->roating_time) {
         if (owner_sp) {
-            if (owner_sp->im & IM_HERO) {
+            if (owner_sp->isHero()) {
                 msgwin.Add("Suddenly your equipment weighs less.");
             }
 
