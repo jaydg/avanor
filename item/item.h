@@ -156,8 +156,8 @@ inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {
         return lhs->kind < rhs->kind;
     }
 
-    // `kind` is a broad category (every scroll shares IM_SCROLL, every
-    // ring shares IM_RING, ...), not a unique key - without this
+    // `kind` is a broad category (every scroll shares ItemKind::IM_SCROLL, every
+    // ring shares ItemKind::IM_RING, ...), not a unique key - without this
     // tiebreak, std::set treats any two items sharing a category as
     // "the same element" (its uniqueness test is exactly "neither
     // compares less than the other"), silently rejecting the second

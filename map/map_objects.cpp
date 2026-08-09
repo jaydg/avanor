@@ -83,7 +83,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
             color = xBROWN;
 
             if (trap_item == nullptr) {
-                trap_item = XItem::Own(ICREATEB(IM_MISSILE, IT_ARROW, 0, 100000));
+                trap_item = XItem::Own(ICREATEB(ItemKind::IM_MISSILE, IT_ARROW, 0, 100000));
                 trap_item->quantity = vRand(5) + 5;
             }
 
@@ -104,7 +104,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
             isMagic = false;
 
             if (trap_item == nullptr) {
-                trap_item = XItem::Own(ICREATEB(IM_WEAPON, IT_SHORTSPEAR, 0, 100000));
+                trap_item = XItem::Own(ICREATEB(ItemKind::IM_WEAPON, IT_SHORTSPEAR, 0, 100000));
                 trap_item->quantity = vRand(3) + 2;
             }
 

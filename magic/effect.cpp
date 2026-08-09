@@ -471,7 +471,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
         }
 
         case XEffect::CREATE_ITEM: {
-            XItem * item = ICREATEA(IM_ITEM);
+            XItem * item = ICREATEA(ItemKind::IM_ITEM);
             pData->caller->DropItem(item);
 
             if (pData->caller->isVisible()) {

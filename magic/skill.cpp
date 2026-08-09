@@ -322,7 +322,7 @@ struct TRAP_CREATE_REC {
 
 int TrapArrowsFiltr(XItem * item)
 {
-    if (item->kind & IM_MISSILE && (item->it == IT_ARROW || item->it == IT_QUARREL)) {
+    if (item->kind & ItemKind::IM_MISSILE && (item->it == IT_ARROW || item->it == IT_QUARREL)) {
         return 1;
     } else {
         return 0;
@@ -331,7 +331,7 @@ int TrapArrowsFiltr(XItem * item)
 
 int TrapSpearsFiltr(XItem * item)
 {
-    if (item->kind & IM_WEAPON && (item->it == IT_SHORTSPEAR || item->it == IT_LONGSPEAR)) {
+    if (item->kind & ItemKind::IM_WEAPON && (item->it == IT_SHORTSPEAR || item->it == IT_LONGSPEAR)) {
         return 1;
     } else {
         return 0;

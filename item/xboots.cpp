@@ -36,7 +36,7 @@ XItemBasicStructure gi_boots(BOOTS_STRUCT, 4);
 
 XBoots::XBoots(const ITEM_TYPE it)
 {
-    kind = IM_BOOTS;
+    kind = ItemKind::IM_BOOTS;
     BasicFill(it, &gi_boots);
     bp = BP_BOOTS;
     dice.SetBonus(0);

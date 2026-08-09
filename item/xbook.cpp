@@ -113,7 +113,7 @@ XBook::XBook(BOOK_NAME bn)
     value = 20000 / book_descr[descr].rarity;
     name = XSpell::GetName(book_descr[descr].spell_name);
 
-    kind = IM_BOOK;
+    kind = ItemKind::IM_BOOK;
     bp = BP_OTHER;
     it = IT_BOOK;
 

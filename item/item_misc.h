@@ -163,7 +163,7 @@ class XAncientMachinePart : public XItem
             name = "ancient machine part";
             value = 1000;
             weight = 15;
-            kind = IM_TOOL;
+            kind = ItemKind::IM_TOOL;
             bp = BP_OTHER;
             it = IT_ANCIENTMACHINEPART;
         }

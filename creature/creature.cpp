@@ -276,7 +276,7 @@ int XCreature::stopAction()
 int XCreature::continueEat()
 {
     XAnyFood * food = (XAnyFood*)action_data.item.get();
-    assert(food->kind & IM_FOOD);
+    assert(food->kind & ItemKind::IM_FOOD);
     int res = food->onEat(this);
 
     if (res != 2) {
@@ -664,7 +664,7 @@ int XCreature::GetShieldDVBonus()
     {
         XItem* i = xbp->Item();
 
-        if (i && i->kind == IM_SHIELD) {
+        if (i && i->kind == ItemKind::IM_SHIELD) {
             int shld_skl = wsk->GetDV(XWarSkills::SHIELD);
             int shield_dv = i->_DV;
 
@@ -1179,11 +1179,11 @@ XBodyPart* XCreature::GetRNDBodyPart()
 
 XBodyPart* XCreature::GetRNDBodyPart(ItemKind kind, RBP_FLAG rbpf)
 {
-    if (rbpf == RBP_BLOCK && kind & IM_SHIELD) {
+    if (rbpf == RBP_BLOCK && kind & ItemKind::IM_SHIELD) {
         auto bpi = std::find_if(
             components.begin(),
             components.end(),
-            [](const std::unique_ptr<XBodyPart>& xbp) { return xbp->Item() && xbp->Item()->kind & IM_SHIELD; }
+            [](const std::unique_ptr<XBodyPart>& xbp) { return xbp->Item() && xbp->Item()->kind & ItemKind::IM_SHIELD; }
         );
 
         if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(XWarSkills::SHIELD) + 5)) {
@@ -1591,7 +1591,7 @@ int XCreature::Read(XItem * item)
         return 0;
     }
 
-    if (item->kind & IM_SCROLL) {
+    if (item->kind & ItemKind::IM_SCROLL) {
         skill->UseSkill();
         ((XScroll*)item)->onRead(this);
         item->UnCarry();
@@ -1602,7 +1602,7 @@ int XCreature::Read(XItem * item)
         }
 
         return 1;
-    } else if (item->kind & IM_BOOK) {
+    } else if (item->kind & ItemKind::IM_BOOK) {
         ((XBook*)item)->onRead(this);
 
         if (((XBook*)item)->left_to_read <= 0) {
@@ -1843,7 +1843,7 @@ int XCreature::MoneyOp(int money_count)
     XItem* money = nullptr;
 
     for (auto it: contain) {
-        if (it->kind & IM_MONEY) {
+        if (it->kind & ItemKind::IM_MONEY) {
             money = it.get();
             break;
         }

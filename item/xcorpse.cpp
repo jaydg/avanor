@@ -34,7 +34,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCorpse);
 
 XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLAG cf)
 {
-    kind = IM_FOOD;
+    kind = ItemKind::IM_FOOD;
     view = '%';
     color = corpse_owner->color;
 

@@ -82,7 +82,7 @@ class XHero final : public XCreature
         void PlayerSetup();
         void NewMove() override;
         void Move() override;
-        std::shared_ptr<XItem> Inventory(XItemList* item_list, ItemKind mask = IM_ALL, INVENTORY_FLAG flag = IF_NONE,
+        std::shared_ptr<XItem> Inventory(XItemList* item_list, ItemKind mask = ItemKind::IM_ALL, INVENTORY_FLAG flag = IF_NONE,
                          int ret_item_count = 0, XItemFilter* ifiltr = nullptr,
                          std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt) const;
         void Equipment(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);

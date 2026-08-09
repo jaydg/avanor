@@ -30,31 +30,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 void XItem::RegisterLua(sol::state_view& lua)
 {
     lua.new_enum("ItemKind",
-        "HAT", IM_HAT,
-        "NECK", IM_NECK,
-        "BODY", IM_BODY,
-        "CLOAK", IM_CLOAK,
-        "WEAPON", IM_WEAPON,
-        "SHIELD", IM_SHIELD,
-        "HAND", IM_HAND,
-        "GLOVES", IM_GLOVES,
-        "RING", IM_RING,
-        "BOOTS", IM_BOOTS,
-        "MISSILEW", IM_MISSILEW,
-        "MISSILE", IM_MISSILE,
-        "POTION", IM_POTION,
-        "SCROLL", IM_SCROLL,
-        "BOOK", IM_BOOK,
-        "WAND", IM_WAND,
-        "FOOD", IM_FOOD,
-        "LIGHTSOURCE", IM_LIGHTSOURCE,
-        "TOOL", IM_TOOL,
-        "GEM", IM_GEM,
-        "MONEY", IM_MONEY,
-        "STACKABLE", IM_STACKABLE,
-        "CHEST", IM_CHEST,
-        "ARMOUR", IM_ARMOUR,
-        "ITEM", IM_ITEM
+        "HAT", ItemKind::IM_HAT,
+        "NECK", ItemKind::IM_NECK,
+        "BODY", ItemKind::IM_BODY,
+        "CLOAK", ItemKind::IM_CLOAK,
+        "WEAPON", ItemKind::IM_WEAPON,
+        "SHIELD", ItemKind::IM_SHIELD,
+        "HAND", ItemKind::IM_HAND,
+        "GLOVES", ItemKind::IM_GLOVES,
+        "RING", ItemKind::IM_RING,
+        "BOOTS", ItemKind::IM_BOOTS,
+        "MISSILEW", ItemKind::IM_MISSILEW,
+        "MISSILE", ItemKind::IM_MISSILE,
+        "POTION", ItemKind::IM_POTION,
+        "SCROLL", ItemKind::IM_SCROLL,
+        "BOOK", ItemKind::IM_BOOK,
+        "WAND", ItemKind::IM_WAND,
+        "FOOD", ItemKind::IM_FOOD,
+        "LIGHTSOURCE", ItemKind::IM_LIGHTSOURCE,
+        "TOOL", ItemKind::IM_TOOL,
+        "GEM", ItemKind::IM_GEM,
+        "MONEY", ItemKind::IM_MONEY,
+        "STACKABLE", ItemKind::IM_STACKABLE,
+        "CHEST", ItemKind::IM_CHEST,
+        "ARMOUR", ItemKind::IM_ARMOUR,
+        "ITEM", ItemKind::IM_ITEM
     );
 }
 
@@ -77,7 +77,7 @@ XItem::XItem()
     view = '*';
     color = xBLUE;
     it = IT_UNKNOWN;
-    kind = IM_UNKNOWN;
+    kind = ItemKind::IM_UNKNOWN;
     quantity = 1;
     wt = XWarSkills::OTHER;
     bp = BP_OTHER;
@@ -296,7 +296,7 @@ void XItem::SpecialFill()
 {
     int r_val;
 
-    if (kind & IM_WEAPON) {
+    if (kind & ItemKind::IM_WEAPON) {
         int uu = 0;
     }
 
@@ -403,19 +403,19 @@ int XItem::GetValue()
     int xdvpv = 0;
     int xhitdmg = 0;
 
-    if (kind & IM_VALUEDICE) {
+    if (kind & ItemKind::IM_VALUEDICE) {
         xdice = (dice.GetCount() * dice.GetSides() + dice.GetCount()) * 3;
     }
 
-    if (kind & IM_VALUEDVPV) {
+    if (kind & ItemKind::IM_VALUEDVPV) {
         xdvpv = (_DV + 6 * _PV) * 4;
     }
 
-    if (kind & IM_SHIELD) {
+    if (kind & ItemKind::IM_SHIELD) {
         xdvpv = xdvpv + _DV * 5;
     }
 
-    if (kind & IM_VALUEHITDMG) {
+    if (kind & ItemKind::IM_VALUEHITDMG) {
         xhitdmg = (_HIT + dice.GetBonus() * 3) * 3;
     }
 
@@ -468,7 +468,7 @@ int XItem::GetValue()
 
     int xval = brtval + value + xdice + xdvpv + xhitdmg + xstats * 150 + xresist + xrng;
 
-    if (kind & IM_MISSILE) {
+    if (kind & ItemKind::IM_MISSILE) {
         xval /= 7;
     }
 
@@ -515,7 +515,7 @@ std::string XItem::GetFullName()
         } else {
             fullname = fmt::format("heap of ({})", quantity);
 
-            if (kind & (IM_BOOTS | IM_GLOVES)) {
+            if (kind & (ItemKind::IM_BOOTS | ItemKind::IM_GLOVES)) {
                 fullname.append(fmt::format(ienh_db[special_number].name, name));
             } else {
                 fullname.append(fmt::format(ienh_db[special_number].name,
@@ -528,7 +528,7 @@ std::string XItem::GetFullName()
         if (quantity == 1) {
             fullname = name;
         } else {
-            if (kind & (IM_BOOTS | IM_GLOVES)) {
+            if (kind & (ItemKind::IM_BOOTS | ItemKind::IM_GLOVES)) {
                 fullname = fmt::format("heap of ({}) {} ", quantity, name);
             } else {
                 fullname = fmt::format("heap of ({}) {}s ", quantity, name);
@@ -554,7 +554,7 @@ std::string XItem::GetArtifactName(std::string real_name)
             str.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
         }
 
-        if (kind & IM_WEAPON) {
+        if (kind & ItemKind::IM_WEAPON) {
             str.append(fmt::format(
                 " ({:+}, {}d{}{:+})",
                 _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
@@ -573,17 +573,17 @@ int XItem::onWear(XCreature * cr)
     cr->added_stats.Add(stats.get()); // modify stats
     cr->added_resists.Add(resistances.get()); // modify resist
 
-    if (kind != IM_SHIELD) {
+    if (kind != ItemKind::IM_SHIELD) {
         cr->added_DV	+= _DV;
     }
 
     cr->added_PV	+= _PV;
 
-    if (kind & IM_TOHIT) {
+    if (kind & ItemKind::IM_TOHIT) {
         cr->added_HIT	+= _HIT;
     }
 
-    if (!(kind & (IM_WEAPON | IM_MISSILE | IM_MISSILEW))) {
+    if (!(kind & (ItemKind::IM_WEAPON | ItemKind::IM_MISSILE | ItemKind::IM_MISSILEW))) {
         cr->added_DMG	+= dice.GetBonus();
     }
 
@@ -600,17 +600,17 @@ int XItem::onUnWear(XCreature * cr)
     cr->added_stats.Sub(stats.get()); //modify stats;
     cr->added_resists.Sub(resistances.get()); //modify resist;
 
-    if (kind != IM_SHIELD) {
+    if (kind != ItemKind::IM_SHIELD) {
         cr->added_DV	-= _DV;
     }
 
     cr->added_PV	-= _PV;
 
-    if (kind & IM_TOHIT) {
+    if (kind & ItemKind::IM_TOHIT) {
         cr->added_HIT	-= _HIT;
     }
 
-    if (!(kind & IM_WEAPON | IM_MISSILE | IM_MISSILEW)) {
+    if (!(kind & (ItemKind::IM_WEAPON | ItemKind::IM_MISSILE | ItemKind::IM_MISSILEW))) {
         cr->added_DMG	-= dice.GetBonus();
     }
 

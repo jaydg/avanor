@@ -55,7 +55,7 @@ XChest::XChest(int item_count, ItemKind kind_mask, int low_v, int high_v)
     name = "chest";
     value = 50;
     weight = 100;
-    kind = IM_CHEST;
+    kind = ItemKind::IM_CHEST;
     bp = BP_OTHER;
 
     for (int i = 0; i < item_count; i++) {

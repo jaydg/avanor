@@ -51,7 +51,7 @@ XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 
 XMissile::XMissile(ITEM_TYPE _it)
 {
-    kind = IM_MISSILE;
+    kind = ItemKind::IM_MISSILE;
     bp = BP_MISSILE;
     BasicFill(_it, &gi_missile);
 

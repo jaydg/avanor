@@ -28,7 +28,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // unusable at both of those points. See XItem::RegisterLua() for the
 // Lua-facing ItemKind.MEMBER registration - kept next to XItem despite
 // the enum itself living here.
-enum ItemKind {
+//
+// `enum class` (not the codebase's usual bare nested enum) per the
+// standing "nest into the owning class, or make it an enum class when
+// nesting isn't possible" convention - every use site outside this file
+// spells enumerators as ItemKind::IM_X.
+enum class ItemKind : unsigned int {
     IM_UNKNOWN = 0x00000000,
 
     IM_HAT = 0x00000100,
@@ -64,5 +69,22 @@ enum ItemKind {
     IM_VALUEHITDMG = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_BOOTS | IM_WEAPON,
     IM_ALL = 0xFFFFFFFF
 };
+
+// Combines flags - e.g. ItemKind::IM_BOOTS | ItemKind::IM_GLOVES.
+constexpr ItemKind operator|(ItemKind a, ItemKind b)
+{
+    return static_cast<ItemKind>(static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
+}
+
+// Every `kind & mask` site in this codebase is a truthy intersection
+// test (`if (kind & IM_WEAPON)`), never a value kept for further bit
+// manipulation - returning bool directly here, instead of the
+// conventional same-type ItemKind, means every one of those call sites
+// keeps working unchanged (module the ItemKind:: qualification), with
+// no separate `!= ItemKind::IM_UNKNOWN` needed at each one.
+constexpr bool operator&(ItemKind a, ItemKind b)
+{
+    return (static_cast<unsigned int>(a) & static_cast<unsigned int>(b)) != 0;
+}
 
 #endif

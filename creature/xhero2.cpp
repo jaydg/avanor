@@ -283,66 +283,66 @@ void XHero::PlayerSetup()
                     switch (race_choice) {
                         case 'a':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_LONGSWORD, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_LONGSWORD, 1, 100));
 
                             pbp = GetBodyPart(BP_HAND, 1);
-                            pbp->Wear(ICREATEB(IM_SHIELD, IT_SMALLSHIELD, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_SHIELD, IT_SMALLSHIELD, 1, 100));
                             break;
 
                         case 'b':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_RAPIER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_RAPIER, 1, 100));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_SANDALS, 1, 20));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_SANDALS, 1, 20));
                             break;
 
                         case 'c':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_RAPIER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_RAPIER, 1, 100));
 
                             pbp = GetBodyPart(BP_CLOAK, 0);
-                            pbp->Wear(ICREATEB(IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
+                            pbp->Wear(ICREATEB(ItemKind::IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_SANDALS, 1, 20));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_SANDALS, 1, 20));
                             break;
 
                         case 'd':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_SHORTSWORD, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_SHORTSWORD, 1, 100));
 
                             pbp = GetBodyPart(BP_CLOAK, 0);
-                            pbp->Wear(ICREATEB(IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
+                            pbp->Wear(ICREATEB(ItemKind::IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
 
                             sk->Learn(XSkill::Skill::DISARMTRAP);
                             break;
 
                         case 'e':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_ORCISHAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_ORCISHAXE, 1, 100));
 
                             pbp = GetBodyPart(BP_HAND, 1);
-                            pbp->Wear(ICREATEB(IM_SHIELD, IT_MEDIUMSHIELD, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_SHIELD, IT_MEDIUMSHIELD, 1, 100));
                             break;
 
                         case 'f':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_BATTLEAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_BATTLEAXE, 1, 100));
 
                             pbp = GetBodyPart(BP_HAND, 1);
-                            pbp->Wear(ICREATEB(IM_SHIELD, IT_MEDIUMSHIELD, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_SHIELD, IT_MEDIUMSHIELD, 1, 100));
                             break;
 
                         case 'g':
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_WARAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_WARAXE, 1, 100));
 
                             pbp = GetBodyPart(BP_HAND, 1);
-                            pbp->Wear(ICREATEB(IM_SHIELD, IT_SMALLSHIELD, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_SHIELD, IT_SMALLSHIELD, 1, 100));
                             break;
 
                         default:
@@ -367,7 +367,7 @@ void XHero::PlayerSetup()
                 //************** wizard
                 case 'b' : {
                     pbp = GetBodyPart(BP_HAND, 0);
-                    pbp->Wear(ICREATEB(IM_WEAPON, IT_STAFF, 1, 100));
+                    pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_STAFF, 1, 100));
 
                     potion = new XPotion(PN_POWER);
                     potion->Identify(1);
@@ -393,7 +393,7 @@ void XHero::PlayerSetup()
                     book->Identify(1);
                     ContainItem(book);
 
-                    book = dynamic_cast<XBook *>(ICREATEA(IM_BOOK));
+                    book = dynamic_cast<XBook *>(ICREATEA(ItemKind::IM_BOOK));
                     book->Identify(1);
                     ContainItem(book);
 
@@ -409,98 +409,98 @@ void XHero::PlayerSetup()
                     switch (race_choice) {
                         case 'a':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_CROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_CROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_DAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_DAGGER, 1, 100));
                             break;
 
                         case 'b':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_ARROW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_ARROW, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_DAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_DAGGER, 1, 100));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_SANDALS, 1, 20));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_SANDALS, 1, 20));
                             break;
 
                         case 'c':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_ARROW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_ARROW, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_RAPIER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_RAPIER, 1, 100));
 
                             pbp = GetBodyPart(BP_CLOAK, 0);
-                            pbp->Wear(ICREATEB(IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
+                            pbp->Wear(ICREATEB(ItemKind::IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_SANDALS, 1, 20));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_SANDALS, 1, 20));
                             break;
 
                         case 'd':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_SLING, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_SLING, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_SLINGBULLET, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_SLINGBULLET, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_CLOAK, 0);
-                            pbp->Wear(ICREATEB(IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
+                            pbp->Wear(ICREATEB(ItemKind::IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
                             break;
 
                         case 'e':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_ORCISHDAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_ORCISHDAGGER, 1, 100));
                             break;
 
                         case 'f':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_WARAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_WARAXE, 1, 100));
                             break;
 
                         case 'g':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_LIGHTCROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_LIGHTCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_WARAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_WARAXE, 1, 100));
                             break;
 
                         default:
@@ -523,101 +523,101 @@ void XHero::PlayerSetup()
                     switch (race_choice) {
                         case 'a':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_CROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_CROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_DAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_DAGGER, 1, 100));
                             break;
 
                         case 'b':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_ARROW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_ARROW, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_DAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_DAGGER, 1, 100));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_SANDALS, 1, 20));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_SANDALS, 1, 20));
                             break;
 
                         case 'c':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_LONGBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_LONGBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_ARROW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_ARROW, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_RAPIER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_RAPIER, 1, 100));
 
                             pbp = GetBodyPart(BP_CLOAK, 0);
-                            pbp->Wear(ICREATEB(IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
+                            pbp->Wear(ICREATEB(ItemKind::IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_SANDALS, 1, 20));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_SANDALS, 1, 20));
                             break;
 
                         case 'd':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_SLING, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_SLING, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_SLINGBULLET, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_SLINGBULLET, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_LONGDAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_LONGDAGGER, 1, 100));
 
                             pbp = GetBodyPart(BP_CLOAK, 0);
-                            pbp->Wear(ICREATEB(IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
+                            pbp->Wear(ICREATEB(ItemKind::IM_CLOAK, IT_LIGHTCLOAK, 1, 50));
 
                             pbp = GetBodyPart(BP_BOOTS, 0);
-                            pbp->Wear(ICREATEB(IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
+                            pbp->Wear(ICREATEB(ItemKind::IM_BOOTS, IT_LIGHTBOOTS, 1, 40));
                             break;
 
                         case 'e':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_ORCISHDAGGER, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_ORCISHDAGGER, 1, 100));
                             break;
 
                         case 'f':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_HEAVYCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_WARAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_WARAXE, 1, 100));
                             break;
 
                         case 'g':
                             pbp = GetBodyPart(BP_MISSILE_WEAPON, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILEW, IT_LIGHTCROSSBOW, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILEW, IT_LIGHTCROSSBOW, 1, 100));
 
                             pbp = GetBodyPart(BP_MISSILE, 0);
-                            pbp->Wear(ICREATEB(IM_MISSILE, IT_QUARREL, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_MISSILE, IT_QUARREL, 1, 100));
                             pbp->Item()->quantity = vRand() % 10 + 10;
 
                             pbp = GetBodyPart(BP_HAND, 0);
-                            pbp->Wear(ICREATEB(IM_WEAPON, IT_WARAXE, 1, 100));
+                            pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_WARAXE, 1, 100));
                             break;
                     }
 
@@ -642,10 +642,10 @@ void XHero::PlayerSetup()
                 //*************** cleric
                 case 'e' :
                     pbp = GetBodyPart(BP_HAND, 0);
-                    pbp->Wear(ICREATEB(IM_WEAPON, IT_MACE, 10, 150));
+                    pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_MACE, 10, 150));
 
                     pbp = GetBodyPart(BP_HAND, 1);
-                    pbp->Wear(ICREATEB(IM_SHIELD, IT_SMALLSHIELD, 10, 150));
+                    pbp->Wear(ICREATEB(ItemKind::IM_SHIELD, IT_SMALLSHIELD, 10, 150));
 
                     scroll = new XScroll(SCROLL_BLINK);
                     scroll->Identify(1);
@@ -687,10 +687,10 @@ void XHero::PlayerSetup()
                 //*************** paladin
                 case 'f' :
                     pbp = GetBodyPart(BP_HAND, 0);
-                    pbp->Wear(ICREATEB(IM_WEAPON, IT_MACE, 10, 150));
+                    pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_MACE, 10, 150));
 
                     pbp = GetBodyPart(BP_HAND, 1);
-                    pbp->Wear(ICREATEB(IM_SHIELD, IT_LARGESHIELD, 10, 150));
+                    pbp->Wear(ICREATEB(ItemKind::IM_SHIELD, IT_LARGESHIELD, 10, 150));
 
                     scroll = new XScroll(SCROLL_BLINK);
                     scroll->Identify(1);
@@ -732,7 +732,7 @@ void XHero::PlayerSetup()
                 //*************** alchemist
                 case 'g' :
                     pbp = GetBodyPart(BP_HAND, 0);
-                    pbp->Wear(ICREATEB(IM_WEAPON, IT_DAGGER, 10, 150));
+                    pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_DAGGER, 10, 150));
 
                     scroll = new XScroll(SCROLL_BLINK);
                     scroll->Identify(1);
@@ -777,7 +777,7 @@ void XHero::PlayerSetup()
                 //*************** bard
                 case 'h' : {
                     pbp = GetBodyPart(BP_HAND, 0);
-                    pbp->Wear(ICREATEB(IM_WEAPON, IT_CLUB, 10, 150));
+                    pbp->Wear(ICREATEB(ItemKind::IM_WEAPON, IT_CLUB, 10, 150));
 
                     potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
@@ -801,7 +801,7 @@ void XHero::PlayerSetup()
 
     XBodyPart * bp = GetBodyPart(BP_HAND, 0);
 
-    if (bp->Item() && (bp->Item()->kind & IM_WEAPON)) {
+    if (bp->Item() && (bp->Item()->kind & ItemKind::IM_WEAPON)) {
         wsk->SetLevel(bp->Item()->wt, 2);
     }
 
@@ -812,9 +812,9 @@ void XHero::PlayerSetup()
     bp = GetBodyPart(BP_BODY, 0);
 
     if (vRand(2) == 0) {
-        bp->Wear(ICREATEB(IM_BODY, IT_CLOTHES, 1, 100));
+        bp->Wear(ICREATEB(ItemKind::IM_BODY, IT_CLOTHES, 1, 100));
     } else {
-        bp->Wear(ICREATEB(IM_BODY, IT_ROBE, 1, 100));
+        bp->Wear(ICREATEB(ItemKind::IM_BODY, IT_ROBE, 1, 100));
     }
 
     vClrScr();
