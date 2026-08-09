@@ -106,7 +106,7 @@ XHero::XHero(int flag)
     XItem * it = new XMoney(15 + vRand(10));
     ContainItem(it);
 
-    it = new XRation(IT_RATION);
+    it = new XRation(ItemType::RATION);
     ContainItem(it);
 }
 

@@ -45,7 +45,7 @@ XRing::XRing(Type enh) : XEnhance(enh)
 {
     kind = ItemKind::RING;
     bp = BP_RING;
-    it = IT_RING;
+    it = ItemType::RING;
     name = "ring";
     view = '=';
 }

@@ -26,7 +26,7 @@ CEREAL_REGISTER_TYPE(XRation);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRation);
 
 struct RationData {
-    ITEM_TYPE it;
+    ItemType it;
     FOOD_TYPE food_type;
     int color;
     std::string_view name;
@@ -39,7 +39,7 @@ constexpr int ration_db_sz = 4;
 
 RationData rations_db[ration_db_sz] = {
     {
-        IT_LARGERATION,
+        ItemType::LARGERATION,
         FT_NORMALFOOD,
         xLIGHTGRAY,
         "large ration",
@@ -48,7 +48,7 @@ RationData rations_db[ration_db_sz] = {
         100
     },
     {
-        IT_RATION,
+        ItemType::RATION,
         FT_NORMALFOOD,
         xBROWN,
         "ration",
@@ -57,7 +57,7 @@ RationData rations_db[ration_db_sz] = {
         70
     },
     {
-        IT_SMALLRATION,
+        ItemType::SMALLRATION,
         FT_NORMALFOOD,
         xBROWN,
         "small ration",
@@ -66,7 +66,7 @@ RationData rations_db[ration_db_sz] = {
         40
     },
     {
-        IT_ELVISHWAYBREAD,
+        ItemType::ELVISHWAYBREAD,
         FT_GOODFOOD,
         xYELLOW,
         "elvish waybread",
@@ -76,14 +76,14 @@ RationData rations_db[ration_db_sz] = {
     },
 };
 
-XRation::XRation(ITEM_TYPE _it)
+XRation::XRation(ItemType _it)
 {
     int idx;
 
-    if (_it == IT_RANDOM) {
+    if (_it == ItemType::RANDOM) {
         idx = vRand() % ration_db_sz;
     } else {
-        idx = _it - IT_LARGERATION;
+        idx = static_cast<int>(_it) - static_cast<int>(ItemType::LARGERATION);
     }
 
     it = rations_db[idx].it;

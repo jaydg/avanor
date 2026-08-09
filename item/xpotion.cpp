@@ -200,7 +200,7 @@ XPotion::XPotion(const POTION_NAME _pn)
 
     kind = ItemKind::POTION;
     bp = BP_OTHER;
-    it = IT_POTION;
+    it = ItemType::POTION;
     view = '!';
     color =	pnc_table[pdescr->force_color].color;
 

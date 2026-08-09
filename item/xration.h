@@ -29,7 +29,7 @@ class XRation : public XAnyFood
     public:
         DECLARE_CREATOR(XRation, XAnyFood);
 
-        explicit XRation(ITEM_TYPE it = IT_RANDOM);
+        explicit XRation(ItemType it = ItemType::RANDOM);
 
         explicit XRation(XRation* copy) : XAnyFood(static_cast<XAnyFood*>(copy)) {}
 

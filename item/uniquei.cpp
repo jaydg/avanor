@@ -25,10 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XGlamdring);
 CEREAL_REGISTER_TYPE(XGlamdring);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XGlamdring);
-XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)
+XGlamdring::XGlamdring() : XWeapon(ItemType::BROADSWORD)
 {
     name = "rune-covered broadsword";
-    it = IT_BROADSWORD;
+    it = ItemType::BROADSWORD;
     view = '|';
     weight = 700;
     value = 2000;
@@ -52,10 +52,10 @@ std::string XGlamdring::toString()
 REGISTER_CLASS(XDeathHack);
 CEREAL_REGISTER_TYPE(XDeathHack);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XDeathHack);
-XDeathHack::XDeathHack() : XWeapon(IT_LONGDAGGER)
+XDeathHack::XDeathHack() : XWeapon(ItemType::LONGDAGGER)
 {
     name = "rune-covered long dagger";
-    it = IT_LONGDAGGER;
+    it = ItemType::LONGDAGGER;
     weight = 70;
     value = 500;
     _DV = 0;
@@ -79,10 +79,10 @@ REGISTER_CLASS(XAvanorDefender);
 CEREAL_REGISTER_TYPE(XAvanorDefender);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAvanorDefender);
 XGUID XAvanorDefender::avanordefender_guid = 0;
-XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
+XAvanorDefender::XAvanorDefender() : XWeapon(ItemType::LONGSWORD)
 {
     name = "rune-covered long sword";
-    it = IT_LONGSWORD;
+    it = ItemType::LONGSWORD;
     weight = 110;
     value = 3000;
     _DV = 0;
@@ -106,10 +106,10 @@ std::string XAvanorDefender::toString()
 REGISTER_CLASS(XForestBrotherCloak);
 CEREAL_REGISTER_TYPE(XForestBrotherCloak);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XForestBrotherCloak);
-XForestBrotherCloak::XForestBrotherCloak() : XCloak(IT_CLOAK)
+XForestBrotherCloak::XForestBrotherCloak() : XCloak(ItemType::CLOAK)
 {
     name = "forest brother's cloak";
-    it = IT_FORESTBROTHERCLOAK;
+    it = ItemType::FORESTBROTHERCLOAK;
     color = xGREEN;
     weight = 20;
     value = 100;
@@ -143,10 +143,10 @@ XGreatElementalRing::XGreatElementalRing() : XRing()
 REGISTER_CLASS(XAvanorScepter);
 CEREAL_REGISTER_TYPE(XAvanorScepter);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAvanorScepter);
-XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
+XAvanorScepter::XAvanorScepter() : XWeapon(ItemType::CLUB)
 {
     name = "ancient scepter";
-    it = IT_CLUB;
+    it = ItemType::CLUB;
     view = '|';
     color = xYELLOW;
     weight = 400;
@@ -171,10 +171,10 @@ std::string XAvanorScepter::toString()
 REGISTER_CLASS(XAvanorCrown);
 CEREAL_REGISTER_TYPE(XAvanorCrown);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAvanorCrown);
-XAvanorCrown::XAvanorCrown() : XCap(IT_CAP)
+XAvanorCrown::XAvanorCrown() : XCap(ItemType::CAP)
 {
     name = "golden crown";
-    it = IT_CAP;
+    it = ItemType::CAP;
     view = '[';
     color = xYELLOW;
     weight = 100;
@@ -198,10 +198,10 @@ std::string XAvanorCrown::toString()
 REGISTER_CLASS(XAvanorMitre);
 CEREAL_REGISTER_TYPE(XAvanorMitre);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAvanorMitre);
-XAvanorMitre::XAvanorMitre() : XCap(IT_CAP)
+XAvanorMitre::XAvanorMitre() : XCap(ItemType::CAP)
 {
     name = "holy mitre";
-    it = IT_CAP;
+    it = ItemType::CAP;
     view = '[';
     color = xWHITE;
     weight = 100;
@@ -225,10 +225,10 @@ std::string XAvanorMitre::toString()
 REGISTER_CLASS(XTorinAxe);
 CEREAL_REGISTER_TYPE(XTorinAxe);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XTorinAxe);
-XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
+XTorinAxe::XTorinAxe() : XWeapon(ItemType::GREATAXE)
 {
     name = "ancient axe";
-    it = IT_GREATAXE;
+    it = ItemType::GREATAXE;
     view = '\\';
     weight = 1200;
     value = 12000;
@@ -252,10 +252,10 @@ std::string XTorinAxe::toString()
 REGISTER_CLASS(XTorinShield);
 CEREAL_REGISTER_TYPE(XTorinShield);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XTorinShield);
-XTorinShield::XTorinShield() : XShield(IT_MEDIUMSHIELD)
+XTorinShield::XTorinShield() : XShield(ItemType::MEDIUMSHIELD)
 {
     name = "ancient shield";
-    it = IT_MEDIUMSHIELD;
+    it = ItemType::MEDIUMSHIELD;
     view = ')';
     weight = 100;
     value = 8000;
@@ -278,10 +278,10 @@ std::string XTorinShield::toString()
 REGISTER_CLASS(XDwarfCrown);
 CEREAL_REGISTER_TYPE(XDwarfCrown);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XDwarfCrown);
-XDwarfCrown::XDwarfCrown() : XCap(IT_CAP)
+XDwarfCrown::XDwarfCrown() : XCap(ItemType::CAP)
 {
     name = "mithril crown";
-    it = IT_CAP;
+    it = ItemType::CAP;
     view = '[';
     color = xLIGHTCYAN;
     weight = 100;
@@ -305,10 +305,10 @@ std::string XDwarfCrown::toString()
 REGISTER_CLASS(XBlackClub);
 CEREAL_REGISTER_TYPE(XBlackClub);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBlackClub);
-XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
+XBlackClub::XBlackClub() : XWeapon(ItemType::CLUB)
 {
     name = "black club";
-    it = IT_CLUB;
+    it = ItemType::CLUB;
     view = '/';
     color = xDARKGRAY;
     weight = 8000;

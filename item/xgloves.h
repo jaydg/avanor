@@ -28,7 +28,7 @@ class XGloves : public XClothes
     public:
         DECLARE_CREATOR(XGloves, XClothes);
 
-        explicit XGloves(ITEM_TYPE it = IT_RANDOM);
+        explicit XGloves(ItemType it = ItemType::RANDOM);
 
         explicit XGloves(XGloves* gloves) : XClothes(static_cast<XClothes *>(gloves)) {}
 

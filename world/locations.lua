@@ -595,7 +595,7 @@ function AhkUlanHandler(e, t, p, v)
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (it == ITEM_TYPE.IT_ANCIENTMACHINEPART) then
+		if (it == ItemType.ANCIENTMACHINEPART) then
 			if (count == 3) then
 				AddMessage("Very nice job, servant!")
 				QuestModify(QUEST_ANCIENT_PART, XQuest.CLOSED)

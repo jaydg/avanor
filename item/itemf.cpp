@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xapi.h"
 #include "item/itemf.h"
 
-XItem* XItemFactory::CreateAnyItem(ItemKind kind, ITEM_TYPE _it, int low_v, int hi_v)
+XItem* XItemFactory::CreateAnyItem(ItemKind kind, ItemType _it, int low_v, int hi_v)
 {
     int n = 100;
 
@@ -38,7 +38,7 @@ XItem* XItemFactory::CreateAnyItem(ItemKind kind, ITEM_TYPE _it, int low_v, int 
     return XItemFactory::CreateItem(kind, _it);;
 }
 
-XItem* XItemFactory::CreateItem(ItemKind kind, ITEM_TYPE it)
+XItem* XItemFactory::CreateItem(ItemKind kind, ItemType it)
 {
     ItemKind picked_kind = static_cast<ItemKind>(vGetRandomBit(static_cast<unsigned int>(kind)));
 

@@ -51,7 +51,7 @@ XChest::XChest(int item_count, ItemKind kind_mask, int low_v, int high_v)
 {
     color = xLIGHTGRAY;
     view = '~';
-    it = IT_CHEST;
+    it = ItemType::CHEST;
     name = "chest";
     value = 50;
     weight = 100;

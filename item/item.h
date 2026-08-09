@@ -66,7 +66,7 @@ class XItem : public XBaseObject
 
         void Invalidate() override;
 
-        int BasicFill(ITEM_TYPE it, XItemBasicStructure * pData);
+        int BasicFill(ItemType it, XItemBasicStructure * pData);
         void PropFill(ITEM_SET is, int val = 1000);
         void SpecialFill();
 
@@ -80,7 +80,7 @@ class XItem : public XBaseObject
         void Concat(XItem *it);
 
         BODY_PART bp;    // fit to what bp???
-        ITEM_TYPE it;   // main type of item such IT_POTION
+        ItemType it;   // main type of item such ItemType::POTION
         XWarSkills::Type wt;  // weapon skill of item
         ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
         ItemKind kind;

@@ -309,20 +309,20 @@ struct TRAP_CREATE_REC {
     unsigned int var2;  // tools
 } trap_create_rec[] = {
 
-    {"Arrow trap",	false,	0, IT_ARROW,	0},
-    {"Spear trap",	false,	2, IT_SHORTSPEAR,	0},
+    {"Arrow trap",	false,	0, static_cast<unsigned int>(ItemType::ARROW),	0},
+    {"Spear trap",	false,	2, static_cast<unsigned int>(ItemType::SHORTSPEAR),	0},
     {"Magic Arrow trap",	true,	4, SPELL_MAGIC_ARROW,	0},
     {"Fire Bolt trap",	true,	6, SPELL_FIRE_BOLT,	0},
-    {"Pit",	false,	8, 0,	IT_PICKAXE},
+    {"Pit",	false,	8, 0,	static_cast<unsigned int>(ItemType::PICKAXE)},
     {"Acid Bolt trap",	true,	10, SPELL_ACID_BOLT,	0},
-    {"Spear Pit",	false,	12, IT_SHORTSPEAR,	IT_PICKAXE},
+    {"Spear Pit",	false,	12, static_cast<unsigned int>(ItemType::SHORTSPEAR),	static_cast<unsigned int>(ItemType::PICKAXE)},
     {nullptr, false, 1000, 0, 0}
 };
 
 
 int TrapArrowsFiltr(XItem * item)
 {
-    if (item->kind & ItemKind::MISSILE && (item->it == IT_ARROW || item->it == IT_QUARREL)) {
+    if (item->kind & ItemKind::MISSILE && (item->it == ItemType::ARROW || item->it == ItemType::QUARREL)) {
         return 1;
     } else {
         return 0;
@@ -331,7 +331,7 @@ int TrapArrowsFiltr(XItem * item)
 
 int TrapSpearsFiltr(XItem * item)
 {
-    if (item->kind & ItemKind::WEAPON && (item->it == IT_SHORTSPEAR || item->it == IT_LONGSPEAR)) {
+    if (item->kind & ItemKind::WEAPON && (item->it == ItemType::SHORTSPEAR || item->it == ItemType::LONGSPEAR)) {
         return 1;
     } else {
         return 0;
@@ -390,14 +390,14 @@ int XSkill::UseCreate(XCreature * user)
         // this trap created from items...
         std::shared_ptr<XItem> item;
 
-        if (trap_create_rec[ch].var == IT_ARROW) {
+        if (trap_create_rec[ch].var == static_cast<unsigned int>(ItemType::ARROW)) {
             item = user->SelectItem(&TrapArrowsFiltr, true);
-        } else if (trap_create_rec[ch].var == IT_SHORTSPEAR) {
+        } else if (trap_create_rec[ch].var == static_cast<unsigned int>(ItemType::SHORTSPEAR)) {
             item = user->SelectItem(&TrapSpearsFiltr, true);
         }
 
-        if (trap_create_rec[ch].var2 == IT_PICKAXE) {
-            if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == IT_PICKAXE) {
+        if (trap_create_rec[ch].var2 == static_cast<unsigned int>(ItemType::PICKAXE)) {
+            if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == ItemType::PICKAXE) {
                 if (item && trap_create_rec[ch].var > 0) {
                     new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item.get());
                     user->sk->UseSkill(XSkill::Skill::CREATETRAP, 20);

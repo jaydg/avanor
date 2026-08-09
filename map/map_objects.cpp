@@ -83,7 +83,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
             color = xBROWN;
 
             if (trap_item == nullptr) {
-                trap_item = XItem::Own(ICREATEB(ItemKind::MISSILE, IT_ARROW, 0, 100000));
+                trap_item = XItem::Own(ICREATEB(ItemKind::MISSILE, ItemType::ARROW, 0, 100000));
                 trap_item->quantity = vRand(5) + 5;
             }
 
@@ -104,7 +104,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
             isMagic = false;
 
             if (trap_item == nullptr) {
-                trap_item = XItem::Own(ICREATEB(ItemKind::WEAPON, IT_SHORTSPEAR, 0, 100000));
+                trap_item = XItem::Own(ICREATEB(ItemKind::WEAPON, ItemType::SHORTSPEAR, 0, 100000));
                 trap_item->quantity = vRand(3) + 2;
             }
 
@@ -261,16 +261,16 @@ int XTrap::Activate(XCreature* cr)
                 // general solution which returns the name of an item with
                 // or without 'a'
                 switch (drop_item->it) {
-                    case IT_ARROW:
+                    case ItemType::ARROW:
                         dd.attack_name = "the arrow";
                         break;
 
-                    case IT_QUARREL:
+                    case ItemType::QUARREL:
                         dd.attack_name = "the quarrel";
                         break;
 
-                    case IT_SHORTSPEAR:
-                    case IT_LONGSPEAR:
+                    case ItemType::SHORTSPEAR:
+                    case ItemType::LONGSPEAR:
                         dd.attack_name = "the spear";
                         break;
 

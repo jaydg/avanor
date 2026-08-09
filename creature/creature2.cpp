@@ -380,11 +380,11 @@ const char* XCreature::GetMeleeAttackMsg(XItem * weapon)
     if (weapon) {
         //very temporary solution
         //if we accept this feature we should add verb to the weapon table
-        if (weapon->it == IT_SMALLAXE ||
-            weapon->it == IT_WARAXE	||
-            weapon->it == IT_BATTLEAXE ||
-            weapon->it == IT_GREATAXE ||
-            weapon->it == IT_ORCISHAXE) {
+        if (weapon->it == ItemType::SMALLAXE ||
+            weapon->it == ItemType::WARAXE	||
+            weapon->it == ItemType::BATTLEAXE ||
+            weapon->it == ItemType::GREATAXE ||
+            weapon->it == ItemType::ORCISHAXE) {
             return "hack";
         } else {
             return "hit";

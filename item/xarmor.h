@@ -28,7 +28,7 @@ class XArmor: public XClothes
     public:
         DECLARE_CREATOR(XArmor, XClothes);
 
-        explicit XArmor(ITEM_TYPE it = IT_RANDOM);
+        explicit XArmor(ItemType it = ItemType::RANDOM);
 
         explicit XArmor(XArmor* armor) : XClothes(static_cast<XClothes *>(armor)) {}
 

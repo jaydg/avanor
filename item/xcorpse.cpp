@@ -51,7 +51,7 @@ XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLA
 
     ttmb = 1000;
     ttm = 1000;
-    it = IT_CORPSE;
+    it = ItemType::CORPSE;
     name = fmt::format("{} corpse", corpse_owner->name);
 
     corpse_flag = cf;

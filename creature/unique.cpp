@@ -185,7 +185,7 @@ void XRoderick::Die(XCreature * killer)
 
 int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 {
-    if (item->it == IT_EYEOFRAA) {
+    if (item->it == ItemType::EYEOFRAA) {
         msgwin.Add("Thank you for your great help. The citizens of Avanor never forget your exploits!");
         XQuest::quest.roderick_quest = 2;
         ContainItem(item);
@@ -427,7 +427,7 @@ bool XBanditAI::isEnemy(XCreature *cr)
 
     XBodyPart* bp = cr->GetBodyPart(BP_CLOAK);
 
-    if (bp && bp->Item() && bp->Item()->it == IT_FORESTBROTHERCLOAK) {
+    if (bp && bp->Item() && bp->Item()->it == ItemType::FORESTBROTHERCLOAK) {
         return false;
     }
 

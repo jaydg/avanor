@@ -1417,19 +1417,19 @@ int XCreature::Shoot(int tx, int ty)
         //temporary soulution, should be replaced in future on general solution
         //which returns name of item with or without 'a'
         switch (msl->it) {
-            case IT_ARROW:
+            case ItemType::ARROW:
                 dd.attack_name = "the arrow";
                 break;
 
-            case IT_QUARREL:
+            case ItemType::QUARREL:
                 dd.attack_name = "the quarell";
                 break;
 
-            case IT_SLINGBULLET:
+            case ItemType::SLINGBULLET:
                 dd.attack_name = "the sling bullet";
                 break;
 
-            case IT_ROCK:
+            case ItemType::ROCK:
                 dd.attack_name = "the rock";
                 break;
 

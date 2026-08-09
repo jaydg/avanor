@@ -106,23 +106,23 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
             if (vRand(100) < probability) {
                 XItem * item = nullptr;
 
-                if (it == IT_UNKNOWN) {
+                if (it == ItemType::UNKNOWN) {
                     item = ICREATEA((ItemKind)(mask));
                 } else {
                     item = ICREATEB((ItemKind)(mask), it, 0, 10000000);
                 }
 
-                if (item->kind & ItemKind::BODY && item->it == IT_DRESS
+                if (item->kind & ItemKind::BODY && item->it == ItemType::DRESS
                     && GetGender() == XCreature::MALE) {
                     // This is a kludge to prevent a "Roderick in a dress" scenario.
-                    item->it = IT_CLOTHES;
+                    item->it = ItemType::CLOTHES;
                     item->name = "clothes";
                 }
 
                 if (CanWear(item)) {
                     // Create proper ammo for missile weapons
                     if (item->kind & ItemKind::MISSILEW) {
-                        XItem * missile = ICREATEB(ItemKind::MISSILE, IT_ARROW, 0, 10000000);
+                        XItem * missile = ICREATEB(ItemKind::MISSILE, ItemType::ARROW, 0, 10000000);
                         ContainItem(missile);
                     }
 
@@ -446,7 +446,7 @@ MonsterBuilder& MonsterBuilder::LearnSpell(SPELL_NAME spn)
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::Equip(unsigned int mask, ITEM_TYPE it, int prob)
+MonsterBuilder& MonsterBuilder::Equip(unsigned int mask, ItemType it, int prob)
 {
     EQUIP_REC er{};
     er.mask = mask;
@@ -463,7 +463,7 @@ MonsterBuilder& MonsterBuilder::EquipCount(unsigned int mask, int count, int pro
     er.mask = mask;
     er.count = count;
     er.probability = prob;
-    er.it = IT_UNKNOWN;
+    er.it = ItemType::UNKNOWN;
     cr.equipment.push_back(er);
     return *this;
 }

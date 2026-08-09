@@ -29,7 +29,7 @@ class XShield : public XItem
 {
     public:
         DECLARE_CREATOR(XShield, XItem);
-        XShield(ITEM_TYPE it = IT_RANDOM);
+        XShield(ItemType it = ItemType::RANDOM);
         XShield(XShield * copy) : XItem((XItem*)copy) {}
 
         XObject* MakeCopy() override

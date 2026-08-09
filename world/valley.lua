@@ -485,7 +485,7 @@ function GektaHandler(e, t, p, v)
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (kind == ItemKind.FOOD) then
-			if (it == ITEM_TYPE.IT_BONE) then
+			if (it == ItemType.BONE) then
 				for i = 1, count do
 					if (Rand(7) == 0) then
 						 AddMessage("Gekta suddenly start to dig in the ground. She digs a pit. Gekta digs something up from the ground. After this, she puts a bone in the pit and buries it.")
@@ -552,11 +552,11 @@ function YohjiHandler(e, t, p, v)
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (it == ITEM_TYPE.IT_RATTAIL or it == ITEM_TYPE.IT_BATWING) then
-			if (it == ITEM_TYPE.IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
+		if (it == ItemType.RATTAIL or it == ItemType.BATWING) then
+			if (it == ItemType.RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
 				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory.")
 				QuestModify(QUEST_YOHJI_RAT, XQuest.UNKNOWN)
-			elseif (it == ITEM_TYPE.IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
+			elseif (it == ItemType.BATWING and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
 				AddMessage("'Oh, thank you!'")
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify(QUEST_YOHJI_BAT, XQuest.UNKNOWN)

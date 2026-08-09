@@ -29,7 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define ENH_DB_SZ	20 // number of special powers ("of Strength")
 
 struct _MAIN_ITEM_STRUCT {
-    ITEM_TYPE it;
+    ItemType it;
     std::string name;
     char view;
     const char* dv;

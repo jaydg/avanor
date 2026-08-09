@@ -30,38 +30,38 @@ CEREAL_REGISTER_TYPE(XWeapon);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XWeapon);
 
 _MAIN_ITEM_STRUCT weapon_db[] = {
-    {IT_CLUB,	"club",	'/',	"",	"",	"",	"1d3", "",	"",	ISET_WOODSTONE,	1,	10,	200,	IQ_POOR,	""},
-    {IT_WARHAMMER,	"war hammer",	'/',	"",	"",	"1d2-1", "1d7", "1d4",	"",	ISET_HARDMETAL,	12,	10,	50,	IQ_AVG,	""},
+    {ItemType::CLUB,	"club",	'/',	"",	"",	"",	"1d3", "",	"",	ISET_WOODSTONE,	1,	10,	200,	IQ_POOR,	""},
+    {ItemType::WARHAMMER,	"war hammer",	'/',	"",	"",	"1d2-1", "1d7", "1d4",	"",	ISET_HARDMETAL,	12,	10,	50,	IQ_AVG,	""},
 
-    {IT_DAGGER,	"dagger",	'/',	"",	"",	"",	"1d4", "",	"",	ISET_WEAPON,	2,	3,	150,	IQ_AVG,	""},
-    {IT_KNIFE,	"knife",	'/',	"",	"",	"1d2-2", "1d3", "",	"",	ISET_SIMPLEWEAPON,	1,	2,	200,	IQ_POOR,	""},
-    {IT_ORCISHDAGGER, "orcish dagger", '/',	"",	"",	"1d2+1", "1d3", "1d2+2", "",	ISET_STEEL,	3,	3,	70,	IQ_AVG,	""},
-    {IT_LONGDAGGER,	"long dagger",	'/',	"",	"",	"1d3",	"1d4", "1d2+1", "",	ISET_STEEL,	4,	3,	50,	IQ_FAIR,	""},
+    {ItemType::DAGGER,	"dagger",	'/',	"",	"",	"",	"1d4", "",	"",	ISET_WEAPON,	2,	3,	150,	IQ_AVG,	""},
+    {ItemType::KNIFE,	"knife",	'/',	"",	"",	"1d2-2", "1d3", "",	"",	ISET_SIMPLEWEAPON,	1,	2,	200,	IQ_POOR,	""},
+    {ItemType::ORCISHDAGGER, "orcish dagger", '/',	"",	"",	"1d2+1", "1d3", "1d2+2", "",	ISET_STEEL,	3,	3,	70,	IQ_AVG,	""},
+    {ItemType::LONGDAGGER,	"long dagger",	'/',	"",	"",	"1d3",	"1d4", "1d2+1", "",	ISET_STEEL,	4,	3,	50,	IQ_FAIR,	""},
 
-    {IT_SHORTSWORD,	"short sword",	'/',	"",	"",	"",	"1d5", "",	"",	ISET_OBSIMETAL,	6,	5,	150,	IQ_AVG,	""},
-    {IT_LONGSWORD,	"long sword",	'|',	"",	"",	"",	"2d4", "",	"",	ISET_OBSIMETAL,	18,	10,	60,	IQ_FAIR,	""},
-    {IT_BROADSWORD,	"broad sword",	'|',	"",	"",	"",	"2d5", "",	"",	ISET_OBSIMETAL,	20,	12,	30,	IQ_FAIR,	""},
-    {IT_RAPIER,	"rapier",	'|',	"",	"",	"1d3+2", "1d6", "",	"",	ISET_HARDMETAL,	7,	5,	80,	IQ_FAIR,	""},
-    {IT_SCIMITAR,	"scimitar",	'|',	"",	"",	"1d4-1", "1d6", "1d3",	"",	ISET_HARDMETAL,	7,	6,	80,	IQ_FAIR,	""},
-    {IT_KATANA,	"katana",	'|',	"",	"",	"1d5+5", "4d2", "1d3+2", "",	ISET_HARDMETAL,	50,	1,	50,	IQ_GOOD,	""},
-    {IT_WAKIZASHI,	"wakizashi",	'|',	"",	"",	"1d5+3", "3d2", "1d3+1", "",	ISET_HARDMETAL,	45,	1,	80,	IQ_FAIR,	""},
+    {ItemType::SHORTSWORD,	"short sword",	'/',	"",	"",	"",	"1d5", "",	"",	ISET_OBSIMETAL,	6,	5,	150,	IQ_AVG,	""},
+    {ItemType::LONGSWORD,	"long sword",	'|',	"",	"",	"",	"2d4", "",	"",	ISET_OBSIMETAL,	18,	10,	60,	IQ_FAIR,	""},
+    {ItemType::BROADSWORD,	"broad sword",	'|',	"",	"",	"",	"2d5", "",	"",	ISET_OBSIMETAL,	20,	12,	30,	IQ_FAIR,	""},
+    {ItemType::RAPIER,	"rapier",	'|',	"",	"",	"1d3+2", "1d6", "",	"",	ISET_HARDMETAL,	7,	5,	80,	IQ_FAIR,	""},
+    {ItemType::SCIMITAR,	"scimitar",	'|',	"",	"",	"1d4-1", "1d6", "1d3",	"",	ISET_HARDMETAL,	7,	6,	80,	IQ_FAIR,	""},
+    {ItemType::KATANA,	"katana",	'|',	"",	"",	"1d5+5", "4d2", "1d3+2", "",	ISET_HARDMETAL,	50,	1,	50,	IQ_GOOD,	""},
+    {ItemType::WAKIZASHI,	"wakizashi",	'|',	"",	"",	"1d5+3", "3d2", "1d3+1", "",	ISET_HARDMETAL,	45,	1,	80,	IQ_FAIR,	""},
 
-    {IT_SMALLAXE,	"small axe",	'\\',	"",	"",	"",	"1d6", "",	"",	ISET_OBSIMETAL,	10,	6,	120,	IQ_AVG,	""},
-    {IT_WARAXE,	"war axe",	'\\',	"",	"",	"1d3+1", "2d3", "",	"",	ISET_OBSIMETAL,	15,	7,	90,	IQ_AVG,	""},
-    {IT_BATTLEAXE,	"battle axe",	'\\',	"",	"",	"1d3+2", "2d5", "1d3+1", "",	ISET_HARDMETAL,	25,	12,	70,	IQ_FAIR,	""},
-    {IT_GREATAXE,	"great axe",	'\\',	"",	"",	"1d5-4", "3d4", "1d4+3", "",	ISET_HARDMETAL,	30,	20,	20,	IQ_GOOD,	""},
-    {IT_ORCISHAXE,	"orcish axe",	'\\',	"",	"",	"1d3+1", "2d4", "1d2+2", "",	ISET_OBSIMETAL,	10,	10,	90,	IQ_AVG,	""},
+    {ItemType::SMALLAXE,	"small axe",	'\\',	"",	"",	"",	"1d6", "",	"",	ISET_OBSIMETAL,	10,	6,	120,	IQ_AVG,	""},
+    {ItemType::WARAXE,	"war axe",	'\\',	"",	"",	"1d3+1", "2d3", "",	"",	ISET_OBSIMETAL,	15,	7,	90,	IQ_AVG,	""},
+    {ItemType::BATTLEAXE,	"battle axe",	'\\',	"",	"",	"1d3+2", "2d5", "1d3+1", "",	ISET_HARDMETAL,	25,	12,	70,	IQ_FAIR,	""},
+    {ItemType::GREATAXE,	"great axe",	'\\',	"",	"",	"1d5-4", "3d4", "1d4+3", "",	ISET_HARDMETAL,	30,	20,	20,	IQ_GOOD,	""},
+    {ItemType::ORCISHAXE,	"orcish axe",	'\\',	"",	"",	"1d3+1", "2d4", "1d2+2", "",	ISET_OBSIMETAL,	10,	10,	90,	IQ_AVG,	""},
 
-    {IT_MACE,	"mace",	'\\',	"",	"",	"",	"1d6", "",	"",	ISET_OBSIMETAL,	10,	7,	100,	IQ_AVG,	""},
-    {IT_FLAIL,	"flail",	'\\',	"",	"",	"",	"1d7", "",	"",	ISET_HARDMETAL,	15,	7,	80,	IQ_AVG,	""},
+    {ItemType::MACE,	"mace",	'\\',	"",	"",	"",	"1d6", "",	"",	ISET_OBSIMETAL,	10,	7,	100,	IQ_AVG,	""},
+    {ItemType::FLAIL,	"flail",	'\\',	"",	"",	"",	"1d7", "",	"",	ISET_HARDMETAL,	15,	7,	80,	IQ_AVG,	""},
 
-    {IT_SHORTSPEAR,	"short spear",	'/',	"",	"",	"",	"1d5", "",	"",	ISET_WOODSTONE,	3,	4,	300,	IQ_POOR,	""},
-    {IT_LONGSPEAR,	"long spear",	'/',	"",	"",	"",	"1d9", "",	"",	ISET_STEEL,	8,	6,	150,	IQ_AVG,	""},
-    {IT_PITCHFORK,	"pitchfork",	'/',	"",	"",	"1d2-2", "1d3", "",	"",	ISET_BLACKMETAL,	1,	3,	300,	IQ_POOR,	""},
-    {IT_PIKE,	"pike",	'/',	"",	"",	"1d3-2", "1d10", "1d4+2", "",	ISET_BLACKMETAL,	1,	3,	80,	IQ_AVG,	""},
-    {IT_HALBERD,	"halberd",	'/',	"",	"",	"1d3-3", "1d12", "1d4+3", "",	ISET_HARDMETAL,	1,	3,	30,	IQ_GOOD,	""},
+    {ItemType::SHORTSPEAR,	"short spear",	'/',	"",	"",	"",	"1d5", "",	"",	ISET_WOODSTONE,	3,	4,	300,	IQ_POOR,	""},
+    {ItemType::LONGSPEAR,	"long spear",	'/',	"",	"",	"",	"1d9", "",	"",	ISET_STEEL,	8,	6,	150,	IQ_AVG,	""},
+    {ItemType::PITCHFORK,	"pitchfork",	'/',	"",	"",	"1d2-2", "1d3", "",	"",	ISET_BLACKMETAL,	1,	3,	300,	IQ_POOR,	""},
+    {ItemType::PIKE,	"pike",	'/',	"",	"",	"1d3-2", "1d10", "1d4+2", "",	ISET_BLACKMETAL,	1,	3,	80,	IQ_AVG,	""},
+    {ItemType::HALBERD,	"halberd",	'/',	"",	"",	"1d3-3", "1d12", "1d4+3", "",	ISET_HARDMETAL,	1,	3,	30,	IQ_GOOD,	""},
 
-    {IT_STAFF,	"staff",	'/',	"",	"",	"1d2-1", "1d10", "1d2",	"", ISET_WOOD,	8,	3,	100,	IQ_AVG,	""},
+    {ItemType::STAFF,	"staff",	'/',	"",	"",	"1d2-1", "1d10", "1d2",	"", ISET_WOOD,	8,	3,	100,	IQ_AVG,	""},
 };
 
 const int weapon_db_size = 26;
@@ -69,38 +69,38 @@ const int weapon_db_size = 26;
 XItemBasicStructure gi_weapon(weapon_db, weapon_db_size);
 
 _WEAPON_BIND wbind[weapon_db_size] = {
-    {IT_CLUB,           XWarSkills::CLUB},
-    {IT_WARHAMMER,      XWarSkills::CLUB},
+    {ItemType::CLUB,           XWarSkills::CLUB},
+    {ItemType::WARHAMMER,      XWarSkills::CLUB},
 
-    {IT_DAGGER,         XWarSkills::DAGGER},
-    {IT_KNIFE,          XWarSkills::DAGGER},
-    {IT_ORCISHDAGGER,   XWarSkills::DAGGER},
-    {IT_LONGDAGGER,     XWarSkills::DAGGER},
+    {ItemType::DAGGER,         XWarSkills::DAGGER},
+    {ItemType::KNIFE,          XWarSkills::DAGGER},
+    {ItemType::ORCISHDAGGER,   XWarSkills::DAGGER},
+    {ItemType::LONGDAGGER,     XWarSkills::DAGGER},
 
-    {IT_SHORTSWORD, XWarSkills::SWORD},
-    {IT_LONGSWORD,  XWarSkills::SWORD},
-    {IT_BROADSWORD, XWarSkills::SWORD},
-    {IT_RAPIER,     XWarSkills::SWORD},
-    {IT_SCIMITAR,   XWarSkills::SWORD},
-    {IT_KATANA,     XWarSkills::SWORD},
-    {IT_WAKIZASHI,  XWarSkills::SWORD},
+    {ItemType::SHORTSWORD, XWarSkills::SWORD},
+    {ItemType::LONGSWORD,  XWarSkills::SWORD},
+    {ItemType::BROADSWORD, XWarSkills::SWORD},
+    {ItemType::RAPIER,     XWarSkills::SWORD},
+    {ItemType::SCIMITAR,   XWarSkills::SWORD},
+    {ItemType::KATANA,     XWarSkills::SWORD},
+    {ItemType::WAKIZASHI,  XWarSkills::SWORD},
 
-    {IT_SMALLAXE,   XWarSkills::AXE},
-    {IT_WARAXE,     XWarSkills::AXE},
-    {IT_BATTLEAXE,  XWarSkills::AXE},
-    {IT_GREATAXE,   XWarSkills::AXE},
-    {IT_ORCISHAXE,  XWarSkills::AXE},
+    {ItemType::SMALLAXE,   XWarSkills::AXE},
+    {ItemType::WARAXE,     XWarSkills::AXE},
+    {ItemType::BATTLEAXE,  XWarSkills::AXE},
+    {ItemType::GREATAXE,   XWarSkills::AXE},
+    {ItemType::ORCISHAXE,  XWarSkills::AXE},
 
-    {IT_MACE,       XWarSkills::MACE},
-    {IT_FLAIL,      XWarSkills::MACE},
+    {ItemType::MACE,       XWarSkills::MACE},
+    {ItemType::FLAIL,      XWarSkills::MACE},
 
-    {IT_SHORTSPEAR, XWarSkills::POLEARM},
-    {IT_LONGSPEAR,  XWarSkills::POLEARM},
-    {IT_PITCHFORK,  XWarSkills::POLEARM},
-    {IT_PIKE,       XWarSkills::POLEARM},
-    {IT_HALBERD,    XWarSkills::POLEARM},
+    {ItemType::SHORTSPEAR, XWarSkills::POLEARM},
+    {ItemType::LONGSPEAR,  XWarSkills::POLEARM},
+    {ItemType::PITCHFORK,  XWarSkills::POLEARM},
+    {ItemType::PIKE,       XWarSkills::POLEARM},
+    {ItemType::HALBERD,    XWarSkills::POLEARM},
 
-    {IT_STAFF,      XWarSkills::STAVE},
+    {ItemType::STAFF,      XWarSkills::STAVE},
 };
 
 
@@ -133,7 +133,7 @@ WEAPON_BRAND_TYPE_NAME weapon_brand_name_db[weapon_brand_name_db_size] = {
     {AttackEffectType::DEMONSLAYER,	"{} of Slay Demons"	},
 };
 
-XWeapon::XWeapon(ITEM_TYPE _it)
+XWeapon::XWeapon(ItemType _it)
 {
     kind = ItemKind::WEAPON;
     BasicFill(_it, &gi_weapon);

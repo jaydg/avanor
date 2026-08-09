@@ -26,14 +26,14 @@ CEREAL_REGISTER_TYPE(XCap);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCap);
 
 _MAIN_ITEM_STRUCT CAP_STRUCT[] = {
-    {IT_HAT,	"hat",	'[',	"1d1",	"0d0",	"",	"1d1",	"",	"",	ISET_SOFT,	1,	1,	100,	IQ_POOR,	""},
-    {IT_CAP,	"cap",	'[',	"1d2+1",	"1d2",	"",	"1d1", "", "",	ISET_ALLLEATHER,	2,	2,	50,	IQ_AVG,	""},
-    {IT_HELMET,	"helmet",	'[',	"1d3+2",	"1d3+1",	"",	"1d3", "",	"",	ISET_HARDMETAL,	3,	3,	10,	IQ_FAIR,	""},
+    {ItemType::HAT,	"hat",	'[',	"1d1",	"0d0",	"",	"1d1",	"",	"",	ISET_SOFT,	1,	1,	100,	IQ_POOR,	""},
+    {ItemType::CAP,	"cap",	'[',	"1d2+1",	"1d2",	"",	"1d1", "", "",	ISET_ALLLEATHER,	2,	2,	50,	IQ_AVG,	""},
+    {ItemType::HELMET,	"helmet",	'[',	"1d3+2",	"1d3+1",	"",	"1d3", "",	"",	ISET_HARDMETAL,	3,	3,	10,	IQ_FAIR,	""},
 };
 
 XItemBasicStructure gi_cap(CAP_STRUCT, 3);
 
-XCap::XCap(ITEM_TYPE _it)
+XCap::XCap(ItemType _it)
 {
     BasicFill(_it, &gi_cap);
     bp = BP_HEAD;

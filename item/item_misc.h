@@ -33,7 +33,7 @@ class XBatWing : public XAnyFood
         XBatWing()
         {
             color = xBROWN;
-            it = IT_BATWING;
+            it = ItemType::BATWING;
             food_nutrio = 10;
             consume_nutrio = 10;
             name = "bat wing";
@@ -63,7 +63,7 @@ class XRatTail : public XAnyFood
         XRatTail()
         {
             color = xBROWN;
-            it = IT_RATTAIL;
+            it = ItemType::RATTAIL;
             food_nutrio = 10;
             consume_nutrio = 10;
             name = "rat tail";
@@ -93,7 +93,7 @@ class XBone : public XAnyFood
         XBone()
         {
             color = xWHITE;
-            it = IT_BONE;
+            it = ItemType::BONE;
             food_nutrio = 10;
             consume_nutrio = 10;
             name = "bone";
@@ -165,7 +165,7 @@ class XAncientMachinePart : public XItem
             weight = 15;
             kind = ItemKind::TOOL;
             bp = BP_OTHER;
-            it = IT_ANCIENTMACHINEPART;
+            it = ItemType::ANCIENTMACHINEPART;
         }
 
         XAncientMachinePart(XAncientMachinePart * copy) : XItem(copy) {}

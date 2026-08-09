@@ -26,7 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 
 struct _WEAPON_BIND {
-    ITEM_TYPE it;
+    ItemType it;
     XWarSkills::Type ws;
 };
 
@@ -34,7 +34,7 @@ class XWeapon : public XItem
 {
     public:
         DECLARE_CREATOR(XWeapon, XItem);
-        XWeapon(ITEM_TYPE it = IT_RANDOM);
+        XWeapon(ItemType it = ItemType::RANDOM);
         XWeapon(XWeapon * copy) : XItem((XItem*)copy) {}
 
         XObject* MakeCopy() override

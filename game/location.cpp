@@ -952,7 +952,7 @@ XGUID XLocation::GetObjectGUID(void* obj)
 std::tuple<int, int, int, int, int, std::string> XLocation::GetItemParam(void* item)
 {
     XItem * p = (XItem*)item;
-    return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, p->it, p->quantity, p->name};
+    return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, static_cast<int>(p->it), p->quantity, p->name};
 }
 
 void XLocation::SetItemBrand(void* item, int br)

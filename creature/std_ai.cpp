@@ -658,7 +658,7 @@ int XStandardAI::Wear() const
             continue;
         }
 
-        if (item->kind & ItemKind::FOOD && item->it != IT_CORPSE) {
+        if (item->kind & ItemKind::FOOD && item->it != ItemType::CORPSE) {
             continue;
         }
 

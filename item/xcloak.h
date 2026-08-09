@@ -28,7 +28,7 @@ class XCloak : public XClothes
     public:
         DECLARE_CREATOR(XCloak, XClothes);
 
-        explicit XCloak(ITEM_TYPE it = IT_RANDOM);
+        explicit XCloak(ItemType it = ItemType::RANDOM);
 
         explicit XCloak(XCloak* copy) : XClothes(static_cast<XClothes *>(copy)) {}
 

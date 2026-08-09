@@ -48,7 +48,7 @@ struct EQUIP_REC {
     unsigned int mask;
     int count;
     int probability; // 0-100
-    ITEM_TYPE it;
+    ItemType it;
 };
 
 struct CREATURE_DEF {
@@ -137,7 +137,7 @@ class MonsterBuilder
         MonsterBuilder& MeleeExtra(EXTENDED_ATTACK ea, int prob);
         MonsterBuilder& LearnSkill(XSkill::Skill skt, int lvl);
         MonsterBuilder& LearnSpell(SPELL_NAME spn);
-        MonsterBuilder& Equip(unsigned int mask, ITEM_TYPE it, int prob);
+        MonsterBuilder& Equip(unsigned int mask, ItemType it, int prob);
         MonsterBuilder& EquipCount(unsigned int mask, int count, int prob);
         MonsterBuilder& Corpse(int rotting_time, FOOD_TYPE ft);
         MonsterBuilder& CorpseEffect(CORPSE_EFFECT_TYPE cet, int val);

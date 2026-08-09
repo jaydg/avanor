@@ -144,7 +144,7 @@ XScroll::XScroll(SCROLL_NAME scrn)
     value = scroll_descr[descr].value;
     kind = ItemKind::SCROLL;
     bp = BP_OTHER;
-    it = IT_SCROLL;
+    it = ItemType::SCROLL;
     view = '?';
     color =	xLIGHTGRAY;
     weight = 2;

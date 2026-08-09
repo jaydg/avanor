@@ -84,8 +84,8 @@ void XQuest::ShowQuests()
         flag = 0;
     }
 
-    if (yohjishiro_it_quest != IT_UNKNOWN) {
-        if (yohjishiro_it_quest == IT_RATTAIL) {
+    if (yohjishiro_it_quest != ItemType::UNKNOWN) {
+        if (yohjishiro_it_quest == ItemType::RATTAIL) {
             list.AddItem(new XGuiItem_Text("Yohjishiro asked you bring a rat tail."));
         } else {
             list.AddItem(new XGuiItem_Text("Yohjishiro asked you bring a bat wing."));

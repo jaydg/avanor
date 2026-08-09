@@ -59,7 +59,7 @@ class XQuest
             orcs_killed = 0;
             total_orcs_killed = 0;
             guards_get_orc_slay = 0;
-            yohjishiro_it_quest = IT_UNKNOWN;
+            yohjishiro_it_quest = ItemType::UNKNOWN;
             ahk_ulan_ordered = 0;
             ahk_ulan_killed = 0;
             ahk_ulan_quest = 0;
@@ -95,7 +95,7 @@ class XQuest
 
         int torin_quest;
 
-        ITEM_TYPE yohjishiro_it_quest;
+        ItemType yohjishiro_it_quest;
 
         std::weak_ptr<XCreature> kidnapped_girl;
         int rotmoth_status; // 0 - initial, 1 - killed, 2 - payed;

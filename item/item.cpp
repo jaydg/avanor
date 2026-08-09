@@ -77,7 +77,7 @@ XItem::XItem()
 
     view = '*';
     color = xBLUE;
-    it = IT_UNKNOWN;
+    it = ItemType::UNKNOWN;
     kind = ItemKind::UNKNOWN;
     quantity = 1;
     wt = XWarSkills::OTHER;
@@ -162,11 +162,11 @@ void XItem::Invalidate()
     }
 }
 
-int XItem::BasicFill(ITEM_TYPE it, XItemBasicStructure * pData)
+int XItem::BasicFill(ItemType it, XItemBasicStructure * pData)
 {
     _MAIN_ITEM_STRUCT * x_struct = pData->pFirstItem;
 
-    if (it == IT_RANDOM) {
+    if (it == ItemType::RANDOM) {
         int r_val = vRand(pData->total_prob);
 
         while (1) {

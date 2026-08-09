@@ -30,11 +30,11 @@ CEREAL_REGISTER_TYPE(XMissile);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissile);
 
 _MAIN_ITEM_STRUCT MISSILE_STRUCT[] = {
-    {IT_ARROW,	"arrow",	'\\',	"",	"",	"1d2", "1d4", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
-    {IT_QUARREL,	"quarrel",	'\\',	"",	"",	"1d2", "1d6", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
-    {IT_SLINGBULLET, "sling bullet",	'\\',	"",	"",	"1d2", "1d5", "1d2", "1d2+3",	ISET_MISSILE,	1,	1,	30,	IQ_FAIR, ""},
-    {IT_ROCK,	"rock",	'*',	"",	"",	"1d1", "1d3", "1d1", "1d2+2",	ISET_STONE,	1,	1,	300,	IQ_POOR, ""},
-    {IT_SHURIKEN,	"shuriken",	'*',	"",	"",	"1d2", "1d6", "1d4", "1d2+2",	ISET_METAL,	1,	1,	50,	IQ_FAIR, ""}
+    {ItemType::ARROW,	"arrow",	'\\',	"",	"",	"1d2", "1d4", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
+    {ItemType::QUARREL,	"quarrel",	'\\',	"",	"",	"1d2", "1d6", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
+    {ItemType::SLINGBULLET, "sling bullet",	'\\',	"",	"",	"1d2", "1d5", "1d2", "1d2+3",	ISET_MISSILE,	1,	1,	30,	IQ_FAIR, ""},
+    {ItemType::ROCK,	"rock",	'*',	"",	"",	"1d1", "1d3", "1d1", "1d2+2",	ISET_STONE,	1,	1,	300,	IQ_POOR, ""},
+    {ItemType::SHURIKEN,	"shuriken",	'*',	"",	"",	"1d2", "1d6", "1d4", "1d2+2",	ISET_METAL,	1,	1,	50,	IQ_FAIR, ""}
 };
 
 XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
@@ -44,19 +44,19 @@ XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
 // Rock is special b/c it can be used with or without a launcher...
 
  _WEAPON_BIND mbind[] = {
-{IT_LONGBOW,        XWarSkills::BOW},
-{IT_LIGHTCROSSBOW,  XWarSkills::CROSSBOW},
-{IT_SLING,          XWarSkills::SLING},
-{IT_SLING,          XWarSkills::THROW}
+{ItemType::LONGBOW,        XWarSkills::BOW},
+{ItemType::LIGHTCROSSBOW,  XWarSkills::CROSSBOW},
+{ItemType::SLING,          XWarSkills::SLING},
+{ItemType::SLING,          XWarSkills::THROW}
 };*/
 
-XMissile::XMissile(ITEM_TYPE _it)
+XMissile::XMissile(ItemType _it)
 {
     kind = ItemKind::MISSILE;
     bp = BP_MISSILE;
     BasicFill(_it, &gi_missile);
 
-    if (it == IT_ROCK) {
+    if (it == ItemType::ROCK) {
         name = "rock";
         view = '*';
         color = xDARKGRAY;
@@ -74,7 +74,7 @@ XMissile::XMissile(ITEM_TYPE _it)
 
     int rcount = 20;
 
-    if (vRand(20) == 0 && (it == IT_ARROW || it == IT_QUARREL || it == IT_SLINGBULLET)) { //something special...
+    if (vRand(20) == 0 && (it == ItemType::ARROW || it == ItemType::QUARREL || it == ItemType::SLINGBULLET)) { //something special...
         rcount = 10;
         int tr = vRand(4);
 
@@ -103,37 +103,37 @@ XMissile::XMissile(ITEM_TYPE _it)
         int xr = vRand(3);
 
         if (xr == 0) {
-            if (it == IT_ARROW) {
+            if (it == ItemType::ARROW) {
                 dice.Add(2, 2, 0);
                 RNG += 1;
                 name = "seeker arrow";
             }
 
-            if (it == IT_QUARREL) {
+            if (it == ItemType::QUARREL) {
                 dice.Add(2, 2, 0);
                 RNG += 1;
                 name = "seeker quarrel";
             }
         } else if (xr == 1) {
-            if (it == IT_ARROW) {
+            if (it == ItemType::ARROW) {
                 _HIT += 10;
                 RNG += 2;
                 name = "hunter arrow";
             }
 
-            if (it == IT_QUARREL) {
+            if (it == ItemType::QUARREL) {
                 _HIT += 10;
                 RNG += 2;
                 name = "hunter quarrel";
             }
         } else if (xr == 2) {
-            if (it == IT_ARROW) {
+            if (it == ItemType::ARROW) {
                 dice.Add(1, 1, 10);
                 RNG += 2;
                 name = "sharp arrow";
             }
 
-            if (it == IT_QUARREL) {
+            if (it == ItemType::QUARREL) {
                 dice.Add(1, 1, 10);
                 RNG += 2;
                 name = "sharp quarrel";
@@ -171,7 +171,7 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
     if (weapon) {
         switch (weapon->wt) {
             case XWarSkills::BOW:
-                if (missile->it == IT_ARROW) {
+                if (missile->it == ItemType::ARROW) {
                     return true;
                 } else {
                     return false;
@@ -180,7 +180,7 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
                 break;
 
             case XWarSkills::CROSSBOW:
-                if (missile->it == IT_QUARREL) {
+                if (missile->it == ItemType::QUARREL) {
                     return true;
                 } else {
                     return false;
@@ -189,7 +189,7 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
                 break;
 
             case XWarSkills::SLING:
-                if (missile->it == IT_ROCK || missile->it == IT_SLINGBULLET) {
+                if (missile->it == ItemType::ROCK || missile->it == ItemType::SLINGBULLET) {
                     return true;
                 } else {
                     return false;
