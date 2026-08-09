@@ -210,7 +210,7 @@ static bool TestRealCreature()
 
     std::shared_ptr<XCreature> original;
 
-    for (int li = 0; li < L_EOF && !original; li++) {
+    for (int li = 0; li < XLocation::COUNT && !original; li++) {
         auto& loc = Game.locations[li];
 
         if (!loc || !loc->map) {
@@ -304,10 +304,10 @@ static bool TestRealCreature()
 
 static bool TestRealLocation()
 {
-    std::shared_ptr<XLocation> original = Game.locations[L_MAIN];
+    std::shared_ptr<XLocation> original = Game.locations[XLocation::MAIN];
 
     if (!original || !original->map) {
-        std::cout << "TestRealLocation: L_MAIN not built, nothing to test with" << std::endl;
+        std::cout << "TestRealLocation: XLocation::MAIN not built, nothing to test with" << std::endl;
         return false;
     }
 
@@ -406,7 +406,7 @@ static bool TestRealLocation()
         << ", items " << original_item_count << " -> " << restored_item_count
         << std::endl;
 
-    // `original` is Game.locations[L_MAIN] itself, still live and
+    // `original` is Game.locations[XLocation::MAIN] itself, still live and
     // referenced there - must NOT be invalidated. `restored` is a
     // genuine orphan (this function is its only reference).
     if (restored) {

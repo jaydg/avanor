@@ -416,7 +416,7 @@ REGISTER_CLASS(XStairWay);
 CEREAL_REGISTER_TYPE(XStairWay);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XStairWay);
 
-XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const STAIRWAY_TYPE type)
+XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const STAIRWAY_TYPE type)
 {
     nx = -1;
     ny = -1;
@@ -461,7 +461,7 @@ REGISTER_CLASS(XTeleport);
 CEREAL_REGISTER_TYPE(XTeleport);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTeleport);
 
-XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const LOCATION _ln, const int _nx, const int _ny)
+XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const int _nx, const int _ny)
 {
     nx = _nx;
     ny = _ny;

@@ -50,59 +50,6 @@ enum SHOP_DOOR {
     SHOP_BUILD_IN,
 };
 
-enum LOCATION {
-    L_UNKNOWN = 0,
-    L_MAIN	= 1,
-    L_DWARFCITYCAVE1	= 2,
-    L_DWARFCITYCAVE2	= 3,
-    L_DWARFCITYCAVE3	= 4,
-    L_DWARFCITYCAVE4	= 5,
-    L_DWARFCITYCAVE5	= 6,
-    L_DWARFCITYCAVE6	= 7,
-    L_DWARFCITYCAVE7	= 8,
-    L_DWARFCITY	= 9,
-    L_DWARFTREASURE	= 10,
-
-    L_GASMINE1	= 15,
-    L_GASMINE2	= 16,
-    L_GASMINE3	= 17,
-
-    L_SMALLCAVE	= 18,
-    L_RATCELLAR	= 19,
-
-    L_MUSHROOMS_CAVE1	= 20, //first
-    L_MUSHROOMS_CAVE2	= 21, //demon
-    L_MUSHROOMS_CAVE3	= 22, //misc
-    L_MUSHROOMS_CAVE4	= 23, //kobolds
-    L_MUSHROOMS_CAVE5	= 24, //mushrooms
-
-    L_WIZARD_DUNGEON1	= 30,
-    L_WIZARD_DUNGEON2	= 31,
-    L_WIZARD_DUNGEON3	= 32,
-    L_WIZARD_DUNGEON4	= 33,
-    L_WIZARD_DUNGEON5	= 34,
-    L_AHKULAN_CASTLE	= 35,
-
-    L_UNDEADS_TOMB1	= 40,
-    L_UNDEADS_TOMB2	= 41,
-    L_UNDEADS_TOMB3	= 42,
-    L_UNDEADS_TOMB4	= 43,
-    L_UNDEADS_TOMB5	= 44,
-
-    L_EXTINCT_VOLCANO	= 45,
-
-    L_KINGS_TREASURE	= 46,
-
-    L_WIZTOWER_TOP	= 50,
-    L_SMALL_CAVE_1	= 55,
-    L_SMALL_CAVE_2	= 56,
-
-    L_DEBUG1	= 90,
-    L_DEBUG2	= 91,
-    L_RANDOM = 100,
-    L_EOF = 200,
-};
-
 enum LUA_EVENT {
     LE_MOVE	= 1,
     LE_MOVE_IN	= 2,
@@ -118,7 +65,6 @@ enum LUA_EVENT {
 
 // Registers LOCATION as the Lua table LOCATION.MEMBER
 // and LUA_EVENT as LUA_EVENT.MEMBER.
-void RegisterLocationEnums(sol::state_view& lua);
 
 enum PALETTE {
     PAL_UNKNOWN	= 0x0000,
@@ -164,17 +110,73 @@ class XLocation : public XObject
 {
         std::string event;
     public:
+        enum Id {
+            UNKNOWN = 0,
+            MAIN	= 1,
+            DWARFCITYCAVE1	= 2,
+            DWARFCITYCAVE2	= 3,
+            DWARFCITYCAVE3	= 4,
+            DWARFCITYCAVE4	= 5,
+            DWARFCITYCAVE5	= 6,
+            DWARFCITYCAVE6	= 7,
+            DWARFCITYCAVE7	= 8,
+            DWARFCITY	= 9,
+            DWARFTREASURE	= 10,
+
+            GASMINE1	= 15,
+            GASMINE2	= 16,
+            GASMINE3	= 17,
+
+            SMALLCAVE	= 18,
+            RATCELLAR	= 19,
+
+            MUSHROOMS_CAVE1	= 20, //first
+            MUSHROOMS_CAVE2	= 21, //demon
+            MUSHROOMS_CAVE3	= 22, //misc
+            MUSHROOMS_CAVE4	= 23, //kobolds
+            MUSHROOMS_CAVE5	= 24, //mushrooms
+
+            WIZARD_DUNGEON1	= 30,
+            WIZARD_DUNGEON2	= 31,
+            WIZARD_DUNGEON3	= 32,
+            WIZARD_DUNGEON4	= 33,
+            WIZARD_DUNGEON5	= 34,
+            AHKULAN_CASTLE	= 35,
+
+            UNDEADS_TOMB1	= 40,
+            UNDEADS_TOMB2	= 41,
+            UNDEADS_TOMB3	= 42,
+            UNDEADS_TOMB4	= 43,
+            UNDEADS_TOMB5	= 44,
+
+            EXTINCT_VOLCANO	= 45,
+
+            KINGS_TREASURE	= 46,
+
+            WIZTOWER_TOP	= 50,
+            SMALL_CAVE_1	= 55,
+            SMALL_CAVE_2	= 56,
+
+            DEBUG1	= 90,
+            DEBUG2	= 91,
+            RANDOM = 100,
+            COUNT = 200,
+        };
+
+        // Registers this enum as the Lua table XLocation.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
+
         bool Run() override;
 
         bool way_found_flag; //used for recursive way found alg...
 
         // ways list used for the AI.
         std::vector<XObject*> ways_list;
-        LOCATION ln;
+        Id ln;
 
         static int rand_location_count;
         DECLARE_CREATOR(XLocation, XObject);
-        XLocation(LOCATION location);
+        XLocation(Id location);
         XLocation(XLocation * copy)
         {
             assert(0);
@@ -289,8 +291,8 @@ class XLocation : public XObject
         XCreature* NewCreature(CREATURE_CLASS crc);
         XCreature* NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
-        XStairWay* NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
-        XStairWay* NewWay(int x, int y, LOCATION target_ln, STAIRWAY_TYPE s_type);
+        XStairWay* NewWay(Id target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
+        XStairWay* NewWay(int x, int y, Id target_ln, STAIRWAY_TYPE s_type);
 
         static void CreateNewGame();
         static void Restoration();
@@ -420,13 +422,13 @@ class XRandomLocation : public XLocation
 class XMainLocation : public XLocation
 {
     public:
-        XMainLocation(LOCATION tl);
+        XMainLocation(XLocation::Id tl);
 };
 
 class XExtinctVolcanoLocation : public XLocation
 {
     public:
-        XExtinctVolcanoLocation(LOCATION tl);
+        XExtinctVolcanoLocation(XLocation::Id tl);
 };
 
 #endif

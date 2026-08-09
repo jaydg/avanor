@@ -1,6 +1,6 @@
 
 function MakeAvanorValley()
-	CreateLocation(LOCATION.L_MAIN, "Valley", "Valley of Avanor", PLAIN)
+	CreateLocation(XLocation.MAIN, "Valley", "Valley of Avanor", PLAIN)
 
 -- SMALL VILLAGE --
 		SetPattern(55, 30,
@@ -45,8 +45,8 @@ function MakeAvanorValley()
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
 		AddTranslation("F", function(x, y) for i = 1, 5 do Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, AI_FLAG.AIF_GUARD_AREA + AI_FLAG.AIF_PROTECT_AREA + AI_FLAG.AIF_RANDOM_MOVE) end end)
-		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_MUSHROOMS_CAVE1, x, y) end)
-		AddTranslation("*", function(x, y) Way(DOWN, LOCATION.L_DWARFCITYCAVE1, x, y) end)
+		AddTranslation(">", function(x, y) Way(DOWN, XLocation.MUSHROOMS_CAVE1, x, y) end)
+		AddTranslation("*", function(x, y) Way(DOWN, XLocation.DWARFCITYCAVE1, x, y) end)
 		AddTranslation("9", function(x, y) Way(DOWN, L_SMALL_CAVE1, x, y) end)
 		DrawPattern(0, 0) 
 
@@ -77,7 +77,7 @@ function MakeAvanorValley()
 		AddTranslation("F", function(x, y) CreateGuardians(x, y) end)
 		AddTranslation("G", function(x, y) CreateGekta(x, y) end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ITEM_MASK.IM_ARMOUR + ITEM_MASK.IM_WEAPON + ITEM_MASK.IM_MISSILE + ITEM_MASK.IM_MISSILEW, 'Noberik, the human shopkeeper') end)
-		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_RATCELLAR, x, y) end)
+		AddTranslation(">", function(x, y) Way(DOWN, XLocation.RATCELLAR, x, y) end)
 		DrawPattern(10, 40)
 
 
@@ -131,7 +131,7 @@ function MakeAvanorValley()
 		
 		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
 		AddTranslation("G", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y) end)
-		AddTranslation("H", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, AI_FLAG.AIF_NO_SWAP) Way(DOWN, LOCATION.L_KINGS_TREASURE, x, y) end)
+		AddTranslation("H", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, AI_FLAG.AIF_NO_SWAP) Way(DOWN, XLocation.KINGS_TREASURE, x, y) end)
 		
 		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
 		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
@@ -158,7 +158,7 @@ function MakeAvanorValley()
 		AddTranslation(":", XTileType.LOW_MOUNTAIN)
 		AddTranslation(";", XTileType.MOUNTAIN)
 		AddTranslation("^", XTileType.HIGH_MOUNTAIN)
-		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_EXTINCT_VOLCANO, x, y) end)
+		AddTranslation(">", function(x, y) Way(DOWN, XLocation.EXTINCT_VOLCANO, x, y) end)
 		DrawPattern(46, 75)
 
 
@@ -194,7 +194,7 @@ function MakeAvanorValley()
 		"X...................X" ..
 		"....XX..X...X.....X..")
 		AddTranslation("#", XTileType.BLACK_MARBLE_WALL)
-		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_WIZARD_DUNGEON1, x, y) end)
+		AddTranslation(">", function(x, y) Way(DOWN, XLocation.WIZARD_DUNGEON1, x, y) end)
 		DrawPattern(155, 44)
 
 
@@ -215,12 +215,12 @@ function MakeAvanorValley()
 		AddTranslation("1", XTileType.ROAD)
 		AddTranslation("2", XTileType.GOLDEN_FLOOR)
 		AddTranslation("#", XTileType.MARBLE_WALL)
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_WIZTOWER_TOP, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.WIZTOWER_TOP, x, y) end)
 		DrawPattern(45, 25)
 
 
 -- KING'S TREASURE --
-	CreateLocation(LOCATION.L_KINGS_TREASURE, "RoyalTr", "Royal Treasure", PLAIN)
+	CreateLocation(XLocation.KINGS_TREASURE, "RoyalTr", "Royal Treasure", PLAIN)
 		SetPattern(21, 10,
 		"#####################" ..
 		"#######[~~~~[########" ..
@@ -237,11 +237,11 @@ function MakeAvanorValley()
 		AddTranslation("[", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 250) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.MAIN, x, y) end)
 
 
 -- YOHJI's TOWER SECOND FLOOR--
-	CreateLocation(LOCATION.L_WIZTOWER_TOP, "WzTwr", "Yohjishiro's Tower", PLAIN)
+	CreateLocation(XLocation.WIZTOWER_TOP, "WzTwr", "Yohjishiro's Tower", PLAIN)
 		SetPattern(21, 11,
 		"XXXXXXXXXXXXXXXXXXXXX" ..
 		"X......##333##......X" ..
@@ -258,7 +258,7 @@ function MakeAvanorValley()
 		AddTranslation("2", XTileType.GOLDEN_FLOOR)
 		AddTranslation("3", XTileType.WINDOW)
 		AddTranslation("#", XTileType.MARBLE_WALL)
-		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_MAIN, x, y) end)
+		AddTranslation(">", function(x, y) Way(DOWN, XLocation.MAIN, x, y) end)
 		AddTranslation("W", function(x, y) CreateYohji(x, y) end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'nice bed') end)
 		DrawPattern(45, 25)
@@ -287,7 +287,7 @@ function MakeAvanorValley()
 		"###################################################D,,,,,,,,####################" ..
 		"################################################################################" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.MAIN, x, y) end)
 		AddTranslation("A", function(x, y) Grave(x, y, 'Frederick III (760-805)', 'StandardGraveEvent') end)
 		AddTranslation("B", function(x, y) Grave(x, y, 'Frederick II (710-790)', 'StandardGraveEvent') end)
 		AddTranslation("C", function(x, y) Grave(x, y, 'Arthur IV (796-854)', 'StandardGraveEvent') end)

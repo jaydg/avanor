@@ -82,7 +82,7 @@ bool XMainLocationGen::Run()
 
         for (const auto& [key, obj] : XObject::objects) {
             if ((obj->im & IM_CREATURE) && reinterpret_cast<XCreature *>(obj)->creature_class & CR_ORC) {
-                reinterpret_cast<XCreature *>(obj)->xai->SetArea(small_town_area, L_MAIN);
+                reinterpret_cast<XCreature *>(obj)->xai->SetArea(small_town_area, XLocation::MAIN);
             }
         }
     }

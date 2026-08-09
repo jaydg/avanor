@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xherb.h"
 #include "map/map_objects.h"
 
-XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
+XMainLocation::XMainLocation(XLocation::Id tl) : XLocation(tl)
 {
     brief_name = "Valley";
     full_name = "Valley of Avanor";
@@ -111,8 +111,8 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     Game.Scheduler.Add(new XMainLocationGen(this));
 
     // teleports from small village to town and back
-    new XTeleport(23, 20, this, L_MAIN, 154, 13);
-    new XTeleport(154, 13, this, L_MAIN, 23, 20);
+    new XTeleport(23, 20, this, XLocation::MAIN, 154, 13);
+    new XTeleport(154, 13, this, XLocation::MAIN, 23, 20);
 
     for (i = 0; i < map->hgt; i++) {
         for (j = 0; j < map->len; j++) {
@@ -125,7 +125,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     }
 }
 
-XExtinctVolcanoLocation::XExtinctVolcanoLocation(LOCATION tl) : XLocation(tl)
+XExtinctVolcanoLocation::XExtinctVolcanoLocation(XLocation::Id tl) : XLocation(tl)
 {
     BuildCave();
 }

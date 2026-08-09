@@ -3,39 +3,39 @@
 -------------------- DWARVEN CITY -------------------------
 
 function MakeDwarvenCity()
-	CreateLocation(LOCATION.L_DWARFCITYCAVE1, "PDC:1", "Path to the Dwarven City Level 1", DUNGEON)
-		Way(UP, LOCATION.L_MAIN)
-		Way(DOWN, LOCATION.L_DWARFCITYCAVE2)
+	CreateLocation(XLocation.DWARFCITYCAVE1, "PDC:1", "Path to the Dwarven City Level 1", DUNGEON)
+		Way(UP, XLocation.MAIN)
+		Way(DOWN, XLocation.DWARFCITYCAVE2)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_DWARFCITYCAVE2, "PDC:2", "Path to the Dwarven City Level 2", DUNGEON)
-		Way(UP, LOCATION.L_DWARFCITYCAVE1)
-		Way(DOWN, LOCATION.L_DWARFCITYCAVE3)
+	CreateLocation(XLocation.DWARFCITYCAVE2, "PDC:2", "Path to the Dwarven City Level 2", DUNGEON)
+		Way(UP, XLocation.DWARFCITYCAVE1)
+		Way(DOWN, XLocation.DWARFCITYCAVE3)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
 
-	CreateLocation(LOCATION.L_DWARFCITYCAVE3, "PDC:3", "Path to the Dwarven City Level 3", DUNGEON)
-		Way(UP, LOCATION.L_DWARFCITYCAVE2)
-		Way(DOWN, LOCATION.L_DWARFCITYCAVE4)
+	CreateLocation(XLocation.DWARFCITYCAVE3, "PDC:3", "Path to the Dwarven City Level 3", DUNGEON)
+		Way(UP, XLocation.DWARFCITYCAVE2)
+		Way(DOWN, XLocation.DWARFCITYCAVE4)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
 
-	CreateLocation(LOCATION.L_DWARFCITYCAVE4, "PDC:4", "Path to the Dwarven City Level 4", DUNGEON)
-		Way(UP, LOCATION.L_DWARFCITYCAVE3)
-		Way(DOWN, LOCATION.L_DWARFCITYCAVE5)
+	CreateLocation(XLocation.DWARFCITYCAVE4, "PDC:4", "Path to the Dwarven City Level 4", DUNGEON)
+		Way(UP, XLocation.DWARFCITYCAVE3)
+		Way(DOWN, XLocation.DWARFCITYCAVE5)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
 
-	CreateLocation(LOCATION.L_DWARFCITYCAVE5, "PDC:5", "Path to the Dwarven City Level 5", DUNGEON)
-		Way(UP, LOCATION.L_DWARFCITYCAVE4)
-		Way(DOWN, LOCATION.L_DWARFCITYCAVE6)
+	CreateLocation(XLocation.DWARFCITYCAVE5, "PDC:5", "Path to the Dwarven City Level 5", DUNGEON)
+		Way(UP, XLocation.DWARFCITYCAVE4)
+		Way(DOWN, XLocation.DWARFCITYCAVE6)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_LOW)
 
-	CreateLocation(LOCATION.L_DWARFCITYCAVE6, "PDC:6", "Path to the Dwarven City Level 6", DUNGEON)
-		Way(UP, LOCATION.L_DWARFCITYCAVE5)
-		Way(DOWN, LOCATION.L_DWARFCITY)
+	CreateLocation(XLocation.DWARFCITYCAVE6, "PDC:6", "Path to the Dwarven City Level 6", DUNGEON)
+		Way(UP, XLocation.DWARFCITYCAVE5)
+		Way(DOWN, XLocation.DWARFCITY)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE + CREATURE_CLASS.CR_GOBLIN + CREATURE_CLASS.CR_KOBOLD, CREATURE_LEVEL.CRL_LOW)
 		DropItem(CreateObject("XCookingSet"))
 
 
-	CreateLocation(LOCATION.L_DWARFCITY, "DvCty", "Dwarven City", CAVE)
+	CreateLocation(XLocation.DWARFCITY, "DvCty", "Dwarven City", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"###############,,,,,,,############,,,,,,,####G####################,,,,##F++E,,A#" ..
@@ -60,7 +60,7 @@ function MakeDwarvenCity()
 		AddTranslation("1", XTileType.GOLDEN_FLOOR)
 		AddTranslation(";", XTileType.OBSIDIAN_FLOOR)
 		AddTranslation(":", XTileType.BRIDGE)
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_DWARFCITYCAVE6, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.DWARFCITYCAVE6, x, y) end)
 		AddTranslation("A", function(x, y) Guardian('dwarf_guard', GROUP_ID.GID_DWARVEN_GUARDIAN, x, y) end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ITEM_MASK.IM_ARMOUR + ITEM_MASK.IM_WEAPON + ITEM_MASK.IM_POTION + ITEM_MASK.IM_BOOK + ITEM_MASK.IM_SCROLL + ITEM_MASK.IM_NECK + ITEM_MASK.IM_MISSILE + ITEM_MASK.IM_MISSILEW, 'Toberin, the dwarwen shopkeeper') end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a dinner table') end)
@@ -71,11 +71,11 @@ function MakeDwarvenCity()
 		AddTranslation("P", function(x, y) for i = 1, 6 do Guardian('dwarf', GROUP_ID.GID_DWARVEN_GUARDIAN, x, y, 32, 16) end end)
 		AddTranslation("T", function(x, y) CreateTodin(x, y) end)
 		AddTranslation("E", function(x, y) EventPlace(x - 1, y, 5, 2, 'DvCityEvent1') end)
-		AddTranslation("F", function(x, y) Way(DOWN, LOCATION.L_DWARFTREASURE, x, y) end)
-		AddTranslation("G", function(x, y) Way(DOWN, LOCATION.L_GASMINE1, x, y) end)
+		AddTranslation("F", function(x, y) Way(DOWN, XLocation.DWARFTREASURE, x, y) end)
+		AddTranslation("G", function(x, y) Way(DOWN, XLocation.GASMINE1, x, y) end)
 		DrawPattern(0, 0)
 
-	CreateLocation(LOCATION.L_DWARFTREASURE, "DvTr", "Dwarven Treasure", CAVE)
+	CreateLocation(XLocation.DWARFTREASURE, "DvTr", "Dwarven Treasure", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..
@@ -98,27 +98,27 @@ function MakeDwarvenCity()
 		"################################################################################" ..
 		"################################################################################")
 		AddTranslation(".", XTileType.GOLDEN_FLOOR)
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_DWARFCITY, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.DWARFCITY, x, y) end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 500) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("A", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
 		DrawPattern(0, 0)
 		
 
-	CreateLocation(LOCATION.L_GASMINE1, "GM:1", "Gassed Mine level 1", DUNGEON)
-		Way(UP, LOCATION.L_DWARFCITY)
-		Way(DOWN, LOCATION.L_GASMINE2)
+	CreateLocation(XLocation.GASMINE1, "GM:1", "Gassed Mine level 1", DUNGEON)
+		Way(UP, XLocation.DWARFCITY)
+		Way(DOWN, XLocation.GASMINE2)
 --		Settle(CREATURE_CLASS.CR_BLOB, CREATURE_LEVEL.CRL_VERY_LOW)
 		EventPlace('GasMineEvent')
 
-	CreateLocation(LOCATION.L_GASMINE2, "GM:2", "Gassed Mine level 2", DUNGEON)
-		Way(UP, LOCATION.L_GASMINE1)
-		Way(DOWN, LOCATION.L_GASMINE3)
+	CreateLocation(XLocation.GASMINE2, "GM:2", "Gassed Mine level 2", DUNGEON)
+		Way(UP, XLocation.GASMINE1)
+		Way(DOWN, XLocation.GASMINE3)
 --		Settle(CREATURE_CLASS.CR_BLOB, CREATURE_LEVEL.CRL_VERY_LOW)
 		EventPlace('GasMineEvent')
 
-	CreateLocation(LOCATION.L_GASMINE3, "GM:3", "Gassed Mine level 3", DUNGEON)
-		Way(UP, LOCATION.L_GASMINE2)
+	CreateLocation(XLocation.GASMINE3, "GM:3", "Gassed Mine level 3", DUNGEON)
+		Way(UP, XLocation.GASMINE2)
 --		Settle(CREATURE_CLASS.CR_BLOB, CREATURE_LEVEL.CRL_VERY_LOW)
 		EventPlace('GasMineEvent')
 		OuterObject(xColor.xBLUE, '#', 'a gas pump', 'GasPumpEvent')
@@ -129,7 +129,7 @@ DvCityEventMoveCount = 0
 
 function DvCityEvent1(e, p)
 	if (e == LUA_EVENT.LE_MOVE and isHero(p)) then
-		local c = FindCreature(LOCATION.L_DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
 			if (DvCityEventMoveCount < 3) then
@@ -141,7 +141,7 @@ function DvCityEvent1(e, p)
 			end
 		end
 	elseif (e == LUA_EVENT.LE_MOVE_IN and isHero(p)) then
-		local c = FindCreature(LOCATION.L_DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			AddMessage("'Halt! You aren't allowed to enter.'")
 		end
@@ -271,9 +271,9 @@ end
 --        000 kobold cave (4)
 
 function MakeMushroomCave()
-	CreateLocation(LOCATION.L_MUSHROOMS_CAVE1, "MC:1", "Mushroom Caves Level 1", CAVE)
-		Way(UP, LOCATION.L_MAIN)
-		Way(DOWN, LOCATION.L_MUSHROOMS_CAVE2)
+	CreateLocation(XLocation.MUSHROOMS_CAVE1, "MC:1", "Mushroom Caves Level 1", CAVE)
+		Way(UP, XLocation.MAIN)
+		Way(DOWN, XLocation.MUSHROOMS_CAVE2)
 		Settle(CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE, CREATURE_LEVEL.CRL_VERY_LOW)
 		Creature("small_snake")
 		Creature("small_snake")
@@ -283,25 +283,25 @@ function MakeMushroomCave()
 		Creature("spider")
 		Creature("spider")				
 
-	CreateLocation(LOCATION.L_MUSHROOMS_CAVE2, "MC:2", "Mushroom Caves Level 2", CAVE)
-		Way(UP, LOCATION.L_MUSHROOMS_CAVE1)
-		Way(DOWN, LOCATION.L_MUSHROOMS_CAVE3)
-		Way(DOWN, LOCATION.L_MUSHROOMS_CAVE5)
+	CreateLocation(XLocation.MUSHROOMS_CAVE2, "MC:2", "Mushroom Caves Level 2", CAVE)
+		Way(UP, XLocation.MUSHROOMS_CAVE1)
+		Way(DOWN, XLocation.MUSHROOMS_CAVE3)
+		Way(DOWN, XLocation.MUSHROOMS_CAVE5)
 		CreateBeelzevile()
 		Settle(CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_MUSHROOMS_CAVE3, "KC:1", "Kobold Cavern Level 1", CAVE)
-		Way(UP, LOCATION.L_MUSHROOMS_CAVE2)
-		Way(DOWN, LOCATION.L_MUSHROOMS_CAVE4)
+	CreateLocation(XLocation.MUSHROOMS_CAVE3, "KC:1", "Kobold Cavern Level 1", CAVE)
+		Way(UP, XLocation.MUSHROOMS_CAVE2)
+		Way(DOWN, XLocation.MUSHROOMS_CAVE4)
 		Settle(CREATURE_CLASS.CR_KOBOLD + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_MUSHROOMS_CAVE4, "KC:2", "Kobold Cavern Level 2", CAVE)
-		Way(UP, LOCATION.L_MUSHROOMS_CAVE3)
+	CreateLocation(XLocation.MUSHROOMS_CAVE4, "KC:2", "Kobold Cavern Level 2", CAVE)
+		Way(UP, XLocation.MUSHROOMS_CAVE3)
 		Settle(CREATURE_CLASS.CR_KOBOLD, CREATURE_LEVEL.CRL_LOW + CREATURE_LEVEL.CRL_VERY_LOW)
 		Creature("magnush")
 
-	CreateLocation(LOCATION.L_MUSHROOMS_CAVE5, "MC:3", "Mushroom Caves Level 3", CAVE)
-		Way(UP, LOCATION.L_MUSHROOMS_CAVE2)
+	CreateLocation(XLocation.MUSHROOMS_CAVE5, "MC:3", "Mushroom Caves Level 3", CAVE)
+		Way(UP, XLocation.MUSHROOMS_CAVE2)
 		EventPlace('MushroomCaveEvent')	
 		CreateTimerEvent('SpawnMushroomEvent', 40000)
 end
@@ -342,7 +342,7 @@ end
 -------------------- SMALL CAVE ---------------------------
 function MakeSmallCave()
 	CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-		Way(UP, LOCATION.L_MAIN)
+		Way(UP, XLocation.MAIN)
 		Way(DOWN, L_SMALL_CAVE2)
 --		Settle(CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_INSECT, CREATURE_LEVEL.CRL_VERY_LOW)
 
@@ -397,7 +397,7 @@ function SmallCaveEvent(e, p)
 	local giana = FindCreature(L_SMALL_CAVE2, GID_GIANA)
 	
 	if (e == LUA_EVENT.LE_MOVE and isHero(p)) then
---[[		local c = FindCreature(LOCATION.L_DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+--[[		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
 			if (DvCityEventMoveCount < 3) then
@@ -438,7 +438,7 @@ end
 -----------------------------------------------------------
 -------------------- RAT'S CELLAR ---------------------------
 function MakeRatCellar()
-	CreateLocation(LOCATION.L_RATCELLAR, "RC:1", "Rat's cellar", CAVE)
+	CreateLocation(XLocation.RATCELLAR, "RC:1", "Rat's cellar", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"#A,,,,,,,,,,,######################################################A,,,,,,,,,,,#" ..
@@ -460,7 +460,7 @@ function MakeRatCellar()
 		"#,,,,,,,,,,,,+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,+,,,,,,,,,,,#" ..
 		"#,,,,,,,,,,,,#######################################################,,,,,,,,,,,#" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.MAIN, x, y) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("A", function(x, y) for i = 1, 8 do Creature('rat', x, y, 12, 4) end end)
 		AddTranslation("B", function(x, y) for i = 1, 2 do Creature('ghost', x, y, 4, 4) end end)
@@ -484,7 +484,7 @@ end
 ----------------------------------------------------------------
 -------------------- EXTINCT VULCANO ---------------------------
 function MakeVulcano()
-	CreateLocation(LOCATION.L_EXTINCT_VOLCANO, "Volcano", "Crater of an Extinct Volcano", CAVE)
+	CreateLocation(XLocation.EXTINCT_VOLCANO, "Volcano", "Crater of an Extinct Volcano", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"########################,#######################################################" ..
@@ -506,7 +506,7 @@ function MakeVulcano()
 		"#####,,#######################,,,,,,,,,,,,,,,,,,,,,,,####################,,#####" ..
 		"####,################################,,,,,,,,,,,,,,,#######################,,,,#" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.MAIN, x, y) end)
 		AddTranslation("=", XTileType.LAVA)
 		DrawPattern(0, 0)
 		GiveObjectToCreature(CreateObject('XBlackClub'), Creature("xshee_voo"))
@@ -518,32 +518,32 @@ end
 -------------------- AHK_ULAN CASTLE AND WAY  ---------------------------
 function MakeWizardDungeon()
 
-	CreateLocation(LOCATION.L_WIZARD_DUNGEON1, "AD:1", "Ahk-Ulan's dungeons level 1", DUNGEON)
-		Way(UP, LOCATION.L_MAIN)
-		Way(DOWN, LOCATION.L_WIZARD_DUNGEON2)
+	CreateLocation(XLocation.WIZARD_DUNGEON1, "AD:1", "Ahk-Ulan's dungeons level 1", DUNGEON)
+		Way(UP, XLocation.MAIN)
+		Way(DOWN, XLocation.WIZARD_DUNGEON2)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_WIZARD_DUNGEON2, "AD:2", "Ahk-Ulan's dungeons level 2", DUNGEON)
-		Way(UP, LOCATION.L_WIZARD_DUNGEON1)
-		Way(DOWN, LOCATION.L_WIZARD_DUNGEON3)
+	CreateLocation(XLocation.WIZARD_DUNGEON2, "AD:2", "Ahk-Ulan's dungeons level 2", DUNGEON)
+		Way(UP, XLocation.WIZARD_DUNGEON1)
+		Way(DOWN, XLocation.WIZARD_DUNGEON3)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_WIZARD_DUNGEON3, "AD:3", "Ahk-Ulan's dungeons level 3", DUNGEON)
-		Way(UP, LOCATION.L_WIZARD_DUNGEON2)
-		Way(DOWN, LOCATION.L_WIZARD_DUNGEON4)
+	CreateLocation(XLocation.WIZARD_DUNGEON3, "AD:3", "Ahk-Ulan's dungeons level 3", DUNGEON)
+		Way(UP, XLocation.WIZARD_DUNGEON2)
+		Way(DOWN, XLocation.WIZARD_DUNGEON4)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_WIZARD_DUNGEON4, "AD:4", "Ahk-Ulan's dungeons level 4", DUNGEON)
-		Way(UP, LOCATION.L_WIZARD_DUNGEON3)
-		Way(DOWN, LOCATION.L_WIZARD_DUNGEON5)
+	CreateLocation(XLocation.WIZARD_DUNGEON4, "AD:4", "Ahk-Ulan's dungeons level 4", DUNGEON)
+		Way(UP, XLocation.WIZARD_DUNGEON3)
+		Way(DOWN, XLocation.WIZARD_DUNGEON5)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_WIZARD_DUNGEON5, "AD:5", "Ahk-Ulan's dungeons level 5", DUNGEON)
-		Way(UP, LOCATION.L_WIZARD_DUNGEON4)
-		Way(DOWN, LOCATION.L_AHKULAN_CASTLE)
+	CreateLocation(XLocation.WIZARD_DUNGEON5, "AD:5", "Ahk-Ulan's dungeons level 5", DUNGEON)
+		Way(UP, XLocation.WIZARD_DUNGEON4)
+		Way(DOWN, XLocation.AHKULAN_CASTLE)
 		Settle(CREATURE_CLASS.CR_UNDEAD + CREATURE_CLASS.CR_BLOB + CREATURE_CLASS.CR_INSECT + CREATURE_CLASS.CR_REPTILE + CREATURE_CLASS.CR_RAT + CREATURE_CLASS.CR_FELINE + CREATURE_CLASS.CR_CANINE, CREATURE_LEVEL.CRL_VERY_LOW)
 
-	CreateLocation(LOCATION.L_AHKULAN_CASTLE, "AC", "Ahk-Ulan's castle", CAVE)
+	CreateLocation(XLocation.AHKULAN_CASTLE, "AC", "Ahk-Ulan's castle", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"##################==############################################################" ..
@@ -565,7 +565,7 @@ function MakeWizardDungeon()
 		"##,,,,####,,###,,,==############################################################" ..
 		"################################################################################" ..
 		"################################################################################" )
-		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_WIZARD_DUNGEON5, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, XLocation.WIZARD_DUNGEON5, x, y) end)
 		AddTranslation("h", function(x, y) Guardian('death_knight', GROUP_ID.GID_AHKULAN_GUARDIAN, x, y) end)
 		AddTranslation("A", function(x, y) CreateAhkUlan(x, y) Furniture(x, y, xColor.xDARKGRAY, '~', 'the black throne from pure obsidian') end)
 		AddTranslation("_", function(x, y) Altar(x, y, DEITY.D_DEATH) end)

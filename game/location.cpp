@@ -40,7 +40,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
-int XLocation::rand_location_count = L_RANDOM;
+int XLocation::rand_location_count = XLocation::RANDOM;
 
 REGISTER_CLASS(XLocation);
 CEREAL_REGISTER_TYPE(XLocation);
@@ -103,7 +103,7 @@ void XLocation::FixupShops()
     }
 }
 
-XLocation::XLocation(LOCATION location)
+XLocation::XLocation(XLocation::Id location)
 {
     visited_by_hero = 0;
     map = nullptr;	//map will created by XBuilder...
@@ -427,14 +427,14 @@ XCreature* XLocation::NewCreature(CREATURE_CLASS crc, XRect& rect, GROUP_ID gid,
     return cr;
 }
 
-XStairWay* XLocation::NewWay(LOCATION target_ln, STAIRWAY_TYPE s_type, XRect * area)
+XStairWay* XLocation::NewWay(XLocation::Id target_ln, STAIRWAY_TYPE s_type, XRect * area)
 {
     XPoint pt;
     GetFreeXY(&pt, area);
     return NewWay(pt.x, pt.y, target_ln, s_type);
 }
 
-XStairWay* XLocation::NewWay(int x, int y, LOCATION target_ln, STAIRWAY_TYPE s_type)
+XStairWay* XLocation::NewWay(int x, int y, XLocation::Id target_ln, STAIRWAY_TYPE s_type)
 {
     XStairWay * pWay = new XStairWay(x, y, this, target_ln, s_type);
     ways_list.push_back(pWay);
@@ -478,8 +478,8 @@ void XLocation::CreateRandomCave()
     int start_cr_lvl = vRand(CRL_AVG);
 
     XRect tr(115, 60, 180, 80);
-    Game.locations[L_MAIN]->NewWay((LOCATION)rand_location_count, STW_DOWN, &tr);
-    new XRandomLocation(1, view, L_MAIN, rand_location_count + 1, start_cr_lvl);
+    Game.locations[XLocation::MAIN]->NewWay((XLocation::Id)rand_location_count, STW_DOWN, &tr);
+    new XRandomLocation(1, view, XLocation::MAIN, rand_location_count + 1, start_cr_lvl);
     int i = 1;
 
     for (; i < deep - 1; i++) {
@@ -489,7 +489,7 @@ void XLocation::CreateRandomCave()
     new XRandomLocation(i + 1, view, rand_location_count - 1, 0, start_cr_lvl + (1 << i));
 }
 
-XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, int cr_lvl) : XLocation((LOCATION)(XLocation::rand_location_count))
+XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, int cr_lvl) : XLocation((XLocation::Id)(XLocation::rand_location_count))
 {
     XLocation::rand_location_count++;
     brief_name = fmt::format("Rnd{}", deep);
@@ -505,11 +505,11 @@ XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, i
     XPoint pt;
 
     if (way_up) {
-        NewWay((LOCATION)way_up, STW_UP, nullptr);
+        NewWay((XLocation::Id)way_up, STW_UP, nullptr);
     }
 
     if (way_down) {
-        NewWay((LOCATION)way_down, STW_DOWN, nullptr);
+        NewWay((XLocation::Id)way_down, STW_DOWN, nullptr);
     }
 
     Game.Scheduler.Add(new XUniversalGen(this, (CREATURE_CLASS)(CR_UNDEAD | CR_BLOB | CR_INSECT | CR_REPTILE | CR_RAT | CR_ALL_IMPL), (CREATURE_LEVEL)cr_lvl, 4, 50000));
@@ -526,7 +526,7 @@ std::vector<PALETTE_MAP> XLocation::pattern_translation;
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
 void XLocation::CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type)
 {
-    current_location = new XLocation((LOCATION)loc_id);
+    current_location = new XLocation((XLocation::Id)loc_id);
     current_location->brief_name = lbrief;
     current_location->full_name = lfull;
 
@@ -583,9 +583,9 @@ void* XLocation::Guardian(const std::string& crn, int gid, int x, int y, sol::op
 void XLocation::Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y)
 {
     if (x) {
-        current_location->NewWay(*x, *y, (LOCATION)loc_id, (STAIRWAY_TYPE)type);
+        current_location->NewWay(*x, *y, (XLocation::Id)loc_id, (STAIRWAY_TYPE)type);
     } else {
-        current_location->NewWay((LOCATION)loc_id, (STAIRWAY_TYPE)type);
+        current_location->NewWay((XLocation::Id)loc_id, (STAIRWAY_TYPE)type);
     }
 }
 
@@ -1100,9 +1100,9 @@ void XLocation::ExecuteAIScript()
 
     cmd.cmd = SCC_MOVE_POINT;
 
-    cmd.pt_x = ((XStairWay*)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->x;
-    cmd.pt_y = ((XStairWay*)(*Game.locations[L_MUSHROOMS_CAVE5]->ways_list.begin()))->y;
-    cmd.ln = L_MUSHROOMS_CAVE5;
+    cmd.pt_x = ((XStairWay*)(*Game.locations[XLocation::MUSHROOMS_CAVE5]->ways_list.begin()))->x;
+    cmd.pt_y = ((XStairWay*)(*Game.locations[XLocation::MUSHROOMS_CAVE5]->ways_list.begin()))->y;
+    cmd.ln = XLocation::MUSHROOMS_CAVE5;
     script.push_back(cmd);
 
     cmd.cmd = SCC_COLLECT_MUSHROOM;
@@ -1111,7 +1111,7 @@ void XLocation::ExecuteAIScript()
     cmd.cmd = SCC_MOVE_POINT;
     cmd.pt_x = 13;
     cmd.pt_y = 8;
-    cmd.ln = L_MAIN;
+    cmd.ln = XLocation::MAIN;
     script.push_back(cmd);
 
     cmd.cmd = SCC_DROP_ITEM;
@@ -1138,38 +1138,41 @@ void XLocation::CreateMushroom(void* location)
     new XMushSpawn(pt.x, pt.y, p);
 }
 
-void RegisterLocationEnums(sol::state_view& lua)
+void XLocation::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("LOCATION",
-        "L_MAIN", L_MAIN,
-        "L_MUSHROOMS_CAVE1", L_MUSHROOMS_CAVE1,
-        "L_MUSHROOMS_CAVE2", L_MUSHROOMS_CAVE2,
-        "L_MUSHROOMS_CAVE3", L_MUSHROOMS_CAVE3,
-        "L_MUSHROOMS_CAVE4", L_MUSHROOMS_CAVE4,
-        "L_MUSHROOMS_CAVE5", L_MUSHROOMS_CAVE5,
-        "L_DWARFCITYCAVE1", L_DWARFCITYCAVE1,
-        "L_DWARFCITYCAVE2", L_DWARFCITYCAVE2,
-        "L_DWARFCITYCAVE3", L_DWARFCITYCAVE3,
-        "L_DWARFCITYCAVE4", L_DWARFCITYCAVE4,
-        "L_DWARFCITYCAVE5", L_DWARFCITYCAVE5,
-        "L_DWARFCITYCAVE6", L_DWARFCITYCAVE6,
-        "L_DWARFCITY", L_DWARFCITY,
-        "L_DWARFTREASURE", L_DWARFTREASURE,
-        "L_GASMINE1", L_GASMINE1,
-        "L_GASMINE2", L_GASMINE2,
-        "L_GASMINE3", L_GASMINE3,
-        "L_RATCELLAR", L_RATCELLAR,
-        "L_EXTINCT_VOLCANO", L_EXTINCT_VOLCANO,
-        "L_WIZTOWER_TOP", L_WIZTOWER_TOP,
-        "L_KINGS_TREASURE", L_KINGS_TREASURE,
-        "L_WIZARD_DUNGEON1", L_WIZARD_DUNGEON1,
-        "L_WIZARD_DUNGEON2", L_WIZARD_DUNGEON2,
-        "L_WIZARD_DUNGEON3", L_WIZARD_DUNGEON3,
-        "L_WIZARD_DUNGEON4", L_WIZARD_DUNGEON4,
-        "L_WIZARD_DUNGEON5", L_WIZARD_DUNGEON5,
-        "L_AHKULAN_CASTLE", L_AHKULAN_CASTLE
+    lua.new_enum("XLocation",
+        "MAIN", XLocation::MAIN,
+        "MUSHROOMS_CAVE1", XLocation::MUSHROOMS_CAVE1,
+        "MUSHROOMS_CAVE2", XLocation::MUSHROOMS_CAVE2,
+        "MUSHROOMS_CAVE3", XLocation::MUSHROOMS_CAVE3,
+        "MUSHROOMS_CAVE4", XLocation::MUSHROOMS_CAVE4,
+        "MUSHROOMS_CAVE5", XLocation::MUSHROOMS_CAVE5,
+        "DWARFCITYCAVE1", XLocation::DWARFCITYCAVE1,
+        "DWARFCITYCAVE2", XLocation::DWARFCITYCAVE2,
+        "DWARFCITYCAVE3", XLocation::DWARFCITYCAVE3,
+        "DWARFCITYCAVE4", XLocation::DWARFCITYCAVE4,
+        "DWARFCITYCAVE5", XLocation::DWARFCITYCAVE5,
+        "DWARFCITYCAVE6", XLocation::DWARFCITYCAVE6,
+        "DWARFCITY", XLocation::DWARFCITY,
+        "DWARFTREASURE", XLocation::DWARFTREASURE,
+        "GASMINE1", XLocation::GASMINE1,
+        "GASMINE2", XLocation::GASMINE2,
+        "GASMINE3", XLocation::GASMINE3,
+        "RATCELLAR", XLocation::RATCELLAR,
+        "EXTINCT_VOLCANO", XLocation::EXTINCT_VOLCANO,
+        "WIZTOWER_TOP", XLocation::WIZTOWER_TOP,
+        "KINGS_TREASURE", XLocation::KINGS_TREASURE,
+        "WIZARD_DUNGEON1", XLocation::WIZARD_DUNGEON1,
+        "WIZARD_DUNGEON2", XLocation::WIZARD_DUNGEON2,
+        "WIZARD_DUNGEON3", XLocation::WIZARD_DUNGEON3,
+        "WIZARD_DUNGEON4", XLocation::WIZARD_DUNGEON4,
+        "WIZARD_DUNGEON5", XLocation::WIZARD_DUNGEON5,
+        "AHKULAN_CASTLE", XLocation::AHKULAN_CASTLE
     );
+}
 
+void RegisterLuaEventEnum(sol::state_view& lua)
+{
     lua.new_enum("LUA_EVENT",
         "LE_MOVE", LE_MOVE,
         "LE_MOVE_IN", LE_MOVE_IN,
@@ -1191,7 +1194,8 @@ void XLocation::CommonLuaInitialization()
     L = lua_open();
     sol::state_view lua(L);
 
-    RegisterLocationEnums(lua);
+    XLocation::RegisterLua(lua);
+    RegisterLuaEventEnum(lua);
     RegisterGenerationFlagsEnum(lua);
     RegisterCrDefsEnums(lua);
     XTileType::RegisterLua(lua);

@@ -86,7 +86,7 @@ struct SCRIPT_CMD {
     SCRIPT_COMMAND cmd;
     int pt_x;
     int pt_y;
-    LOCATION ln;
+    XLocation::Id ln;
     ITEM_MASK im;
 };
 
@@ -101,7 +101,7 @@ class XStandardAI
 
         virtual ~XStandardAI();
 
-        void SetArea(XRect& area, LOCATION ln);
+        void SetArea(XRect& area, XLocation::Id ln);
         void SetOwner(XCreature * cr)
         {
             ai_owner = cr;
@@ -207,7 +207,7 @@ class XStandardAI
         CREATURE_CLASS enemy_class;
 
         XRect guard_area;
-        LOCATION guard_area_location;
+        XLocation::Id guard_area_location;
 
         // currently targeted creature
         XCreature* enemy;

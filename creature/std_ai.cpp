@@ -138,7 +138,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
         (((spec->view == '>') && (ai_flag & AIF_ALLOW_MOVE_WAY_DOWN)) ||
         ((spec->view == '<') && (ai_flag & AIF_ALLOW_MOVE_WAY_UP)))
     ) {
-        if (dynamic_cast<XStairWay *>(spec)->ln != L_MAIN || ai_flag & AIF_ALLOW_MOVE_OUT) {
+        if (dynamic_cast<XStairWay *>(spec)->ln != XLocation::MAIN || ai_flag & AIF_ALLOW_MOVE_OUT) {
             way_dist = w;
             way_x = j;
             way_y = i;
@@ -977,7 +977,7 @@ int XStandardAI::PickUpItems() const
     return 1;
 }
 
-void XStandardAI::SetArea(XRect & area, LOCATION ln)
+void XStandardAI::SetArea(XRect & area, XLocation::Id ln)
 {
     guard_area.Setup(area);
     guard_area_location = ln;

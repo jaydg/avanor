@@ -44,7 +44,7 @@ int XGame::current_location = 0;
 
 XGame::XGame()
 {
-    for (int i = 0; i < L_EOF; i++)	{
+    for (int i = 0; i < XLocation::COUNT; i++)	{
         locations[i] = nullptr;
     }
 }
@@ -56,7 +56,7 @@ XGame::~XGame()
     // shared_ptr-driven: dropping this array's reference deletes a location
     // only once every other reference to it (the Scheduler's weak_ptr
     // doesn't count) is also gone.
-    for (int i = 0; i < L_EOF; i++) {
+    for (int i = 0; i < XLocation::COUNT; i++) {
         locations[i] = nullptr;
     }
 }
@@ -183,7 +183,7 @@ void XGame::RunWithoutHero()
             if (ch == 'L') {
                 std::ofstream f(vMakePath(HOME_DIR, "location.txt"));
 
-                for (int i = 0; i < L_EOF; i++) {
+                for (int i = 0; i < XLocation::COUNT; i++) {
                     if (locations[i]) {
                         locations[i]->DumpLocation(f);
                     }
@@ -318,12 +318,12 @@ void XGame::CreateLocations()
 #ifndef __DEBUG_L
     XLocation::CreateNewGame();
 #else
-    new XLDebug(L_DEBUG1);
-    new XLDebug(L_DEBUG2);
+    new XLDebug(XLocation::DEBUG1);
+    new XLDebug(XLocation::DEBUG2);
 #endif
 
     //	Bind ways
-    for (int i = 0; i < L_EOF; i++) {
+    for (int i = 0; i < XLocation::COUNT; i++) {
         if (locations[i]) {
             for (const auto it1: locations[i]->ways_list) {
                 auto way = dynamic_cast<XStairWay*>(it1);
@@ -332,7 +332,7 @@ void XGame::CreateLocations()
                     for (const auto it2: locations[way->ln]->ways_list) {
                         auto tmp_way = dynamic_cast<XStairWay*>(it2);
 
-                        if (tmp_way->nx < 0 && tmp_way->ny < 0 && tmp_way->ln == (LOCATION)i) {
+                        if (tmp_way->nx < 0 && tmp_way->ny < 0 && tmp_way->ln == (XLocation::Id)i) {
                             way->Bind(tmp_way);
                         }
                     }
@@ -348,10 +348,10 @@ void XGame::CreateHero()
     XRect hero_rect(26, 4, 32, 9);
     XPoint hero_point;
 
-    locations[L_MAIN]->GetFreeXY(&hero_point, &hero_rect);
+    locations[XLocation::MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
     XHero * hero = new XHero(1);
-    Game.NewCreature(hero, hero_point.x, hero_point.y, locations[L_MAIN].get());
+    Game.NewCreature(hero, hero_point.x, hero_point.y, locations[XLocation::MAIN].get());
 
     Game.NewCreature(hero, 57, 4, locations[56].get());
     hero->MoneyOp(2000);
@@ -370,13 +370,13 @@ void XGame::CreateHero()
 
 #else
     XPoint pt;
-    locations[L_DEBUG1]->GetFreeXY(&pt);
+    locations[XLocation::DEBUG1]->GetFreeXY(&pt);
     XHero * hero = new XHero(1);
-    Game.NewCreature(hero, pt.x, pt.y, locations[L_DEBUG1].get());
-    locations[L_DEBUG1]->map->Center(hero->x, hero->y);
+    Game.NewCreature(hero, pt.x, pt.y, locations[XLocation::DEBUG1].get());
+    locations[XLocation::DEBUG1]->map->Center(hero->x, hero->y);
 
     XRect gr(pt.x + 2, pt.y + 2, pt.x + 3, pt.y + 3);
-    locations[L_DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->AddPersonalEnemy(hero);
+    locations[XLocation::DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, AIF_GUARD_AREA)->xai->AddPersonalEnemy(hero);
 #endif
     XCreature::main_creature = hero;
 }

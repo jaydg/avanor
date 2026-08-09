@@ -157,7 +157,7 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
                 "Clear the crypt and I will reward you. It lies to the south-west of the city.");
             XQuest::quest.roderick_quest2 = 1;
         } else if (XQuest::quest.roderick_quest2 == 1) {
-            if (Game.locations[L_UNDEADS_TOMB1]->GetCreatureCount(CR_UNDEAD) == 0) {
+            if (Game.locations[XLocation::UNDEADS_TOMB1]->GetCreatureCount(CR_UNDEAD) == 0) {
                 msgwin.Add(
                     "Thank you for destroying the evil in our crypt. "
                     "Please accept these coins and my gratitude for a job well done.");
