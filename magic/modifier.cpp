@@ -33,7 +33,7 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
                 break;
 
             case MOD_POISON :
-                val = owner->onMagicDamage(val, R_POISON);
+                val = owner->onMagicDamage(val, XResistance::POISON);
 
                 if (val > 0) {
                     xbm = std::make_unique<XModPoison>(val, cr);
@@ -44,7 +44,7 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
                 break;
 
             case MOD_CONFUSE :
-                val = owner->onMagicDamage(val, R_CONFUSE);
+                val = owner->onMagicDamage(val, XResistance::CONFUSE);
 
                 if (val > 0) {
                     xbm = std::make_unique<XModConfuse>(val, cr);
@@ -55,7 +55,7 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
                 break;
 
             case MOD_STUN :
-                val = owner->onMagicDamage(val, R_STUN);
+                val = owner->onMagicDamage(val, XResistance::STUN);
 
                 if (val > 0) {
                     xbm = std::make_unique<XModStun>(val, cr);

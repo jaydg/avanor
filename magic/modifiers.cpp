@@ -268,13 +268,13 @@ MODIFIER_RESULT XModDelayed::Run(XCreature * owner)
 
 int XModSeeInvisible::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_SEE_INVISIBLE, 10);
+    owner->added_resists.ChangeResistance(XResistance::SEE_INVISIBLE, 10);
     return 1;
 }
 
 int XModSeeInvisible::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_SEE_INVISIBLE, -10);
+    owner->added_resists.ChangeResistance(XResistance::SEE_INVISIBLE, -10);
     return 1;
 }
 
@@ -304,48 +304,48 @@ int XModSlowness::onRemove(XCreature * owner)
 
 int XModAcidResistance::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_ACID, 40);
+    owner->added_resists.ChangeResistance(XResistance::ACID, 40);
     return 1;
 }
 
 int XModAcidResistance::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_ACID, -40);
+    owner->added_resists.ChangeResistance(XResistance::ACID, -40);
     return 1;
 }
 
 int XModFireResistance::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_FIRE, 40);
+    owner->added_resists.ChangeResistance(XResistance::FIRE, 40);
     return 1;
 }
 
 int XModFireResistance::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_FIRE, -40);
+    owner->added_resists.ChangeResistance(XResistance::FIRE, -40);
     return 1;
 }
 
 int XModColdResistance::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_COLD, 40);
+    owner->added_resists.ChangeResistance(XResistance::COLD, 40);
     return 1;
 }
 
 int XModColdResistance::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_COLD, -40);
+    owner->added_resists.ChangeResistance(XResistance::COLD, -40);
     return 1;
 }
 
 int XModPoisonResistance::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_POISON, 40);
+    owner->added_resists.ChangeResistance(XResistance::POISON, 40);
     return 1;
 }
 
 int XModPoisonResistance::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance(R_POISON, -40);
+    owner->added_resists.ChangeResistance(XResistance::POISON, -40);
     return 1;
 }

@@ -115,7 +115,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     return res;
 }
 
-int XCreature::onMagicDamage(const int dmg, const RESISTANCE tr)
+int XCreature::onMagicDamage(const int dmg, const XResistance::Id tr)
 {
     assert(isValid());
     const int damage = dmg - (dmg * GetResistance(tr)) / 100;
@@ -128,23 +128,23 @@ int XCreature::CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker)
 
     if (brt > BR_NONE) {
         if (brt & BR_FIRE) {
-            damage += onMagicDamage(dmg, R_FIRE);
+            damage += onMagicDamage(dmg, XResistance::FIRE);
         }
 
         if (brt & BR_COLD) {
-            damage += onMagicDamage(dmg, R_COLD);
+            damage += onMagicDamage(dmg, XResistance::COLD);
         }
 
         if (brt & BR_ACID) {
-            damage += onMagicDamage(dmg, R_ACID);
+            damage += onMagicDamage(dmg, XResistance::ACID);
         }
 
         if (brt & BR_EARTH) {
-            damage += onMagicDamage(dmg, R_EARTH);
+            damage += onMagicDamage(dmg, XResistance::EARTH);
         }
 
         if (brt & BR_LIGHTNING) {
-            damage += onMagicDamage(dmg, R_AIR);
+            damage += onMagicDamage(dmg, XResistance::AIR);
         }
 
         if (brt & BR_DEMONSLAYER && creature_class & CR_DEMON) {
@@ -351,7 +351,7 @@ int XCreature::isCreatureVisible(XCreature * cr)
         return 0;
     }
 
-    if ((cr->GetResistance(R_INVISIBLE) <= GetResistance(R_SEE_INVISIBLE)) || cr == this) {
+    if ((cr->GetResistance(XResistance::INVISIBLE) <= GetResistance(XResistance::SEE_INVISIBLE)) || cr == this) {
         return 1;
     } else {
         return 0;

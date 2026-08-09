@@ -390,8 +390,8 @@ int XItem::GetValue()
     int xresist = 0;
 
     if (resistances)
-        for (i = R_WHITE; i < R_EOF; i++) {
-            int tr = resistances->GetResistance((RESISTANCE)i);
+        for (i = XResistance::WHITE; i < XResistance::COUNT; i++) {
+            int tr = resistances->GetResistance((XResistance::Id)i);
 
             if (tr < 10) {
                 xresist += tr * 2;
@@ -593,7 +593,7 @@ int XItem::onPutOn(XCreature * cr)
 int XItem::onHit(XCreature * user, XCreature * target)
 {
     if (ienh_db[special_number].brt & BR_FIRE) {
-        //	user->MagicAttack(target, dice.Throw(), R_FIRE);
+        //	user->MagicAttack(target, dice.Throw(), XResistance::FIRE);
     }
 
     return 1;

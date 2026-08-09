@@ -765,7 +765,7 @@ void XLocation::CreateTimerEvent(const std::string& event, int ttm)
 void XLocation::InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg)
 {
     XCreature * p = (XCreature*)target;
-    dmg = p->onMagicDamage(dmg, (RESISTANCE)resist);
+    dmg = p->onMagicDamage(dmg, (XResistance::Id)resist);
     p->_HP -= dmg;
 
     if (p->_HP < 0 && msg) {
@@ -1203,7 +1203,7 @@ void XLocation::CommonLuaInitialization()
     RegisterItemMaskEnum(lua);
     XWarSkills::RegisterLua(lua);
     RegisterItemDefEnums(lua);
-    RegisterResistanceEnum(lua);
+    XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     XDeity::RegisterLua(lua);
     XStats::RegisterLua(lua);

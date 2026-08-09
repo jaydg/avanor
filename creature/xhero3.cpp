@@ -335,8 +335,8 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
     int flag = 0;
     XResistance tr;
 
-    for (int i = 0; i < R_EOF; i++) {
-        const auto res = static_cast<RESISTANCE>(i);
+    for (int i = 0; i < XResistance::COUNT; i++) {
+        const auto res = static_cast<XResistance::Id>(i);
 
         tr.SetResistance(res, GetResistance(res));
 

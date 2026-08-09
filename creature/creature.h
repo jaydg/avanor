@@ -320,7 +320,7 @@ class XCreature : public XBaseObject
         int GetDV(XCreature* attacker = nullptr);
         int GetDMG();
         int GetPV();
-        int GetResistance(RESISTANCE tr);
+        int GetResistance(XResistance::Id tr);
         int GetVisibleRadius();
         int GetTacticsDVBonus();
         int GetTacticsHITBonus();
@@ -377,14 +377,14 @@ class XCreature : public XBaseObject
 
         int GetStats(XStats::Id st);
         int GainAttr(XStats::Id st, int val);
-        int GainResist(RESISTANCE rs, int val);
+        int GainResist(XResistance::Id rs, int val);
         int GetMaxHP();
         int GetMaxPP();
         int GetExp() const;
         int GetCreatureStrength();
 
         int InflictDamage(DAMAGE_DATA_EX* pData);
-        int onMagicDamage(int dmg, RESISTANCE tr);
+        int onMagicDamage(int dmg, XResistance::Id tr);
         int CauseEffect(int dmg, BRAND_TYPE brt, XCreature* attacker);
         void CausePostEffect(int dmg, BRAND_TYPE brt, XCreature* attacker);
 

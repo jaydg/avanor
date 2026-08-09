@@ -24,27 +24,27 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/strproc.h"
 #include "magic/resist.h"
 
-void RegisterResistanceEnum(sol::state_view& lua)
+void XResistance::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("RESISTANCE",
-        "R_WHITE", R_WHITE,
-        "R_BLACK", R_BLACK,
-        "R_FIRE", R_FIRE,
-        "R_WATER", R_WATER,
-        "R_AIR", R_AIR,
-        "R_EARTH", R_EARTH,
-        "R_ACID", R_ACID,
-        "R_COLD", R_COLD,
-        "R_POISON", R_POISON,
-        "R_DISEASE", R_DISEASE,
-        "R_PARALYSE", R_PARALYSE,
-        "R_STUN", R_STUN,
-        "R_CONFUSE", R_CONFUSE,
-        "R_BLIND", R_BLIND,
-        "R_LIGHT", R_LIGHT,
-        "R_DARKNESS", R_DARKNESS,
-        "R_INVISIBLE", R_INVISIBLE,
-        "R_SEE_INVISIBLE", R_SEE_INVISIBLE
+    lua.new_enum("XResistance",
+        "WHITE", XResistance::WHITE,
+        "BLACK", XResistance::BLACK,
+        "FIRE", XResistance::FIRE,
+        "WATER", XResistance::WATER,
+        "AIR", XResistance::AIR,
+        "EARTH", XResistance::EARTH,
+        "ACID", XResistance::ACID,
+        "COLD", XResistance::COLD,
+        "POISON", XResistance::POISON,
+        "DISEASE", XResistance::DISEASE,
+        "PARALYSE", XResistance::PARALYSE,
+        "STUN", XResistance::STUN,
+        "CONFUSE", XResistance::CONFUSE,
+        "BLIND", XResistance::BLIND,
+        "LIGHT", XResistance::LIGHT,
+        "DARKNESS", XResistance::DARKNESS,
+        "INVISIBLE", XResistance::INVISIBLE,
+        "SEE_INVISIBLE", XResistance::SEE_INVISIBLE
     );
 }
 
@@ -78,8 +78,8 @@ XResistance::XResistance(const XResistance* xr)
 
 XResistance::XResistance()
 {
-    for (int i = R_WHITE; i < R_EOF; i++) {
-        SetResistance(static_cast<RESISTANCE>(i), 0);
+    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
+        SetResistance(static_cast<XResistance::Id>(i), 0);
     }
 }
 
@@ -89,12 +89,12 @@ XResistance::XResistance(const char* str1)
     char buf[256];
     XDice d;
 
-    for (int i = R_WHITE; i < R_EOF; i++) {
+    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
         if (xsp1.GetParam(buf, resists_data[i + 1].name)) {
             d.Setup(buf);
-            SetResistance(static_cast<RESISTANCE>(i), d.Throw());
+            SetResistance(static_cast<XResistance::Id>(i), d.Throw());
         } else {
-            SetResistance(static_cast<RESISTANCE>(i), 0);
+            SetResistance(static_cast<XResistance::Id>(i), 0);
         }
     }
 }
@@ -102,15 +102,15 @@ XResistance::XResistance(const char* str1)
 void XResistance::Set(const XResistance* r)
 {
     if (r)
-        for (int i = R_WHITE; i < R_EOF; i++) {
-            SetResistance(static_cast<RESISTANCE>(i), r->GetResistance(static_cast<RESISTANCE>(i)));
+        for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
+            SetResistance(static_cast<XResistance::Id>(i), r->GetResistance(static_cast<XResistance::Id>(i)));
         }
 }
 
 void XResistance::Add(const XResistance* r)
 {
     if (r)
-        for (int i = R_WHITE; i < R_EOF; i++) {
+        for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
             resistances[i] += r->resistances[i];
         }
 }
@@ -118,14 +118,14 @@ void XResistance::Add(const XResistance* r)
 void XResistance::Sub(const XResistance* r)
 {
     if (r)
-        for (int i = R_WHITE; i < R_EOF; i++) {
+        for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
             resistances[i] -= r->resistances[i];
         }
 };
 
 bool XResistance::isEqual(const XResistance* xr) const
 {
-    for (int i = R_WHITE; i < R_EOF; i++)
+    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++)
         if (resistances[i] != xr->resistances[i]) {
             return false;
         }
@@ -154,7 +154,7 @@ const char* resist_name[] = {
     "See Invisible"
 };
 
-const char* XResistance::GetResistanceName(const RESISTANCE r)
+const char* XResistance::GetResistanceName(const XResistance::Id r)
 {
     return resist_name[r];
 }
@@ -170,7 +170,7 @@ const char* resist_level[] = {
     MSG_WHITE "complete"
 };
 
-const char* XResistance::GetResistanceLevel(const RESISTANCE r) const
+const char* XResistance::GetResistanceLevel(const XResistance::Id r) const
 {
     if (resistances[r] < -50) {
         return resist_level[0];
@@ -193,7 +193,7 @@ const char* XResistance::GetResistanceLevel(const RESISTANCE r) const
 
 XResistGenerator::XResistGenerator()
 {
-    for (int i = R_WHITE; i < R_EOF; i++) {
+    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
         resist[i].Setup(0, 0, 0);
     }
 }
@@ -211,8 +211,8 @@ std::unique_ptr<XResistance> XResistGenerator::Generate()
 {
     auto r = std::make_unique<XResistance>();
 
-    for (int i = R_WHITE; i < R_EOF; i++) {
-        r->SetResistance(static_cast<RESISTANCE>(i), resist[i].Throw());
+    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
+        r->SetResistance(static_cast<XResistance::Id>(i), resist[i].Throw());
     }
 
     return r;

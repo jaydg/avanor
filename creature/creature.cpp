@@ -857,51 +857,51 @@ int XCreature::GainAttr(XStats::Id st, int val)
     return 0;
 }
 
-int XCreature::GainResist(RESISTANCE rs, int val)
+int XCreature::GainResist(XResistance::Id rs, int val)
 {
     resistances->ChangeResistance(rs, val);
 
     if (val > 0) {
         switch (rs) {
-            case R_FIRE:
+            case XResistance::FIRE:
                 msgwin.Add("Your blood cools down!");
                 break;
 
-            case R_COLD:
+            case XResistance::COLD:
                 msgwin.Add("Your skin grows warm!");
                 break;
 
-            case R_ACID:
+            case XResistance::ACID:
                 msgwin.Add("Your stomach settles!");
                 break;
 
-            case R_POISON:
+            case XResistance::POISON:
                 msgwin.Add("Your flesh tingles!");
                 break;
 
-            case R_PARALYSE:
+            case XResistance::PARALYSE:
                 msgwin.Add("Your movements grow stronger!");
                 break;
         }
     } else {
         switch (rs) {
-            case R_FIRE:
+            case XResistance::FIRE:
                 msgwin.Add("Your blood warms up!");
                 break;
 
-            case R_COLD:
+            case XResistance::COLD:
                 msgwin.Add("Your skin grows cold!");
                 break;
 
-            case R_ACID:
+            case XResistance::ACID:
                 msgwin.Add("You feel a pain in your stomach!");
                 break;
 
-            case R_POISON:
+            case XResistance::POISON:
                 msgwin.Add("You feel vulnerable!");
                 break;
 
-            case R_PARALYSE:
+            case XResistance::PARALYSE:
                 msgwin.Add("Your movements are unsure!");
                 break;
         }
@@ -918,7 +918,7 @@ int XCreature::GetStats(XStats::Id st)
     return res > 0 ? res : 1;
 }
 
-int XCreature::GetResistance(RESISTANCE tr)
+int XCreature::GetResistance(XResistance::Id tr)
 {
     assert(resistances);
     return resistances->GetResistance(tr) + added_resists.GetResistance(tr);

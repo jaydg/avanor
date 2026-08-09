@@ -161,7 +161,7 @@ torin_award = 0;
 function GasMineEvent(e, p)
 	if (e == LUA_EVENT.LE_MOVE) then
 		if (QuestStatus(QUEST_TORIN) < QUEST.Q_COMPLETE and Rand(3) == 0) then
-			InflictDamage(p, Rand(5) + 2, RESISTANCE.R_POISON, "mysterious gas")
+			InflictDamage(p, Rand(5) + 2, XResistance.POISON, "mysterious gas")
 		end
 	end
 end

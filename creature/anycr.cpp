@@ -182,30 +182,30 @@ XAnyCreature::XAnyCreature(_CREATURE * cr)
     };
 
     if (cr->generation_flags & GFS_SUPRESS_INVIS) {
-        if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
+        if (neck && neck->Item() && neck->Item()->resistances->GetResistance(XResistance::INVISIBLE) > 0) {
             unwear_and_invalidate(neck);
         }
 
-        if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
+        if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(XResistance::INVISIBLE) > 0) {
             unwear_and_invalidate(ring1);
         }
 
-        if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_INVISIBLE) > 0) {
+        if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(XResistance::INVISIBLE) > 0) {
             unwear_and_invalidate(ring2);
         }
     }
 
     if (cr->generation_flags & GFS_SEE_INVIS) {
         while (true) {
-            if (neck && neck->Item() && neck->Item()->resistances->GetResistance(R_SEE_INVISIBLE)) {
+            if (neck && neck->Item() && neck->Item()->resistances->GetResistance(XResistance::SEE_INVISIBLE)) {
                 break;
             }
 
-            if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(R_SEE_INVISIBLE)) {
+            if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance(XResistance::SEE_INVISIBLE)) {
                 break;
             }
 
-            if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(R_SEE_INVISIBLE)) {
+            if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance(XResistance::SEE_INVISIBLE)) {
                 break;
             }
 

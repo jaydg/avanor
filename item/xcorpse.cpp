@@ -93,23 +93,23 @@ RESULT XCorpse::onEat(XCreature * eater)
                     break;
 
                 case CET_MODIFY_R_FIRE:
-                    eater->GainResist(R_FIRE, it.value);
+                    eater->GainResist(XResistance::FIRE, it.value);
                     break;
 
                 case CET_MODIFY_R_COLD:
-                    eater->GainResist(R_COLD, it.value);
+                    eater->GainResist(XResistance::COLD, it.value);
                     break;
 
                 case CET_MODIFY_R_ACID:
-                    eater->GainResist(R_ACID, it.value);
+                    eater->GainResist(XResistance::ACID, it.value);
                     break;
 
                 case CET_MODIFY_R_POISON:
-                    eater->GainResist(R_POISON, it.value);
+                    eater->GainResist(XResistance::POISON, it.value);
                     break;
 
                 case CET_MODIFY_R_PARALYSE:
-                    eater->GainResist(R_PARALYSE, it.value);
+                    eater->GainResist(XResistance::PARALYSE, it.value);
                     break;
 
                 case CET_POISON: {
