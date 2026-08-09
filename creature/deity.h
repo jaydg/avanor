@@ -1,4 +1,5 @@
 /*
+/*
 This file is part of "Avanor, the Land of Mystery" roguelike game
 Home page: http://www.avanor.com/
 Copyright (C) 2000-2003 Vadim Gaidukevich
@@ -27,13 +28,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XCreature;
 class XItem;
 
-enum DEITY {
-    D_LIFE = 0, D_DEATH = 1, D_UNKNOWN
-};
-
-// Registers this enum as the Lua table DEITY.MEMBER.
-void RegisterDeityEnum(sol::state_view& lua);
-
 enum DEITY_RELATION {
     DR_FALLEN_CHAMPION, // no way up
     DR_VERY_BAD,        // praying can kill
@@ -48,6 +42,13 @@ enum DEITY_RELATION {
 class XDeity
 {
     public:
+        enum Id {
+            LIFE = 0, DEATH = 1, UNKNOWN
+        };
+
+        // Registers this enum as the Lua table XDeity.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
+
         static XCreature* life;  // Tiamat
         static XCreature* death; // Murdok
         /*	static XCreature * fire;
@@ -87,12 +88,12 @@ class XReligion
         int life_act;   // killing undead
         int death_act;  // killing anyone, especially with life.
         void KillCreature(XCreature* killer, XCreature* victim);
-        int SacrificeItem(XCreature* cr, XItem* item, DEITY deity = D_UNKNOWN);
-        [[nodiscard]] DEITY_RELATION GetRelation(DEITY deity) const;
+        int SacrificeItem(XCreature* cr, XItem* item, XDeity::Id deity = XDeity::UNKNOWN);
+        [[nodiscard]] DEITY_RELATION GetRelation(XDeity::Id deity) const;
         static const char* GetRelationName(DEITY_RELATION dr);
-        static const char* GetDeityName(DEITY deity);
-        int GetAvailHelp(DEITY deity, DEITY_HELP** help) const;
-        int Pray(DEITY deity, DEITY_HELP* pray, XCreature* prayer);
+        static const char* GetDeityName(XDeity::Id deity);
+        int GetAvailHelp(XDeity::Id deity, DEITY_HELP** help) const;
+        int Pray(XDeity::Id deity, DEITY_HELP* pray, XCreature* prayer);
 
         template<class Archive>
         void serialize(Archive& ar)

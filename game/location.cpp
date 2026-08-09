@@ -696,10 +696,10 @@ void* XLocation::OuterObjectAt(int x, int y, int color, const std::string& view,
     return new XOuterObject(x, y, color, view[0], (char*)descr.c_str(), current_location, event ? event->c_str() : nullptr);
 }
 
-//Altar(x, y, D_LIFE)
+//Altar(x, y, XDeity::LIFE)
 void XLocation::Altar(int x, int y, int deity)
 {
-    new XAltar(x, y, (DEITY)deity, current_location);
+    new XAltar(x, y, (XDeity::Id)deity, current_location);
 }
 
 void XLocation::Treasure(int x, int y, int val)
@@ -1205,7 +1205,7 @@ void XLocation::CommonLuaInitialization()
     RegisterItemDefEnums(lua);
     RegisterResistanceEnum(lua);
     RegisterColorEnum(lua);
-    RegisterDeityEnum(lua);
+    XDeity::RegisterLua(lua);
     RegisterStatsEnum(lua);
     XSkill::RegisterLua(lua);
     RegisterQuestEnum(lua);

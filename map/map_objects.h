@@ -214,7 +214,7 @@ class XAltar final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XAltar, XMapObject);
-        XAltar(int _x, int _y, DEITY deity, XLocation* _l);
+        XAltar(int _x, int _y, XDeity::Id deity, XLocation* _l);
 
         // Pre-existing behaviour, not a shared_ptr-migration regression:
         // `deity` is only ever used to pick a color at construction time

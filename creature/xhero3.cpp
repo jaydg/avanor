@@ -130,11 +130,11 @@ void XHero::Pray()
     DEITY_HELP * pLifeHelp;
     DEITY_HELP * pDeathHelp;
 
-    DEITY_RELATION dr = religion.GetRelation(D_LIFE);
+    DEITY_RELATION dr = religion.GetRelation(XDeity::LIFE);
     std::string item_text = fmt::format(MSG_YELLOW "{} " MSG_LIGHTGRAY "({}" MSG_LIGHTGRAY ")",
-                                        XReligion::GetDeityName(D_LIFE), XReligion::GetRelationName(dr));
+                                        XReligion::GetDeityName(XDeity::LIFE), XReligion::GetRelationName(dr));
     list.AddItem(new XGuiItem_Text(item_text, 0));
-    const int life_count = religion.GetAvailHelp(D_LIFE, &pLifeHelp);
+    const int life_count = religion.GetAvailHelp(XDeity::LIFE, &pLifeHelp);
 
     if (life_count == 0) {
         list.AddItem(new XGuiItem_Text("< No help available >", 0));
@@ -146,10 +146,10 @@ void XHero::Pray()
 
     list.AddItem(new XGuiItem_Text("", 0));
 
-    dr = religion.GetRelation(D_DEATH);
-    item_text = fmt::format(MSG_YELLOW "{} " MSG_LIGHTGRAY "({}" MSG_LIGHTGRAY ")", XReligion::GetDeityName(D_DEATH), XReligion::GetRelationName(dr));
+    dr = religion.GetRelation(XDeity::DEATH);
+    item_text = fmt::format(MSG_YELLOW "{} " MSG_LIGHTGRAY "({}" MSG_LIGHTGRAY ")", XReligion::GetDeityName(XDeity::DEATH), XReligion::GetRelationName(dr));
     list.AddItem(new XGuiItem_Text(item_text, 0));
-    int death_count = religion.GetAvailHelp(D_DEATH, &pDeathHelp);
+    int death_count = religion.GetAvailHelp(XDeity::DEATH, &pDeathHelp);
 
     if (death_count == 0) {
         list.AddItem(new XGuiItem_Text("< No help available >", 0));
@@ -166,9 +166,9 @@ void XHero::Pray()
     }
 
     if (res < life_count) {
-        religion.Pray(D_LIFE, &pLifeHelp[res], this);
+        religion.Pray(XDeity::LIFE, &pLifeHelp[res], this);
     } else if (res < life_count + death_count) {
-        religion.Pray(D_DEATH, &pDeathHelp[res - life_count], this);
+        religion.Pray(XDeity::DEATH, &pDeathHelp[res - life_count], this);
     }
 }
 
@@ -222,14 +222,14 @@ void XHero::EndGame(const char* end_msg)
     score += place_count * 200;
     list.AddItem(new XGuiItem_Text(fmt::format("You visited {} places.", place_count)));
 
-    const DEITY_RELATION dr1 = main_creature->religion.GetRelation(D_LIFE);
-    const DEITY_RELATION dr2 = main_creature->religion.GetRelation(D_DEATH);
+    const DEITY_RELATION dr1 = main_creature->religion.GetRelation(XDeity::LIFE);
+    const DEITY_RELATION dr2 = main_creature->religion.GetRelation(XDeity::DEATH);
     int flag = 1;
 
     if (dr1 >= DR_ADEPT) {
         auto rel1 = fmt::format("You were a {} of {}",
             XReligion::GetRelationName(dr1),
-            XReligion::GetDeityName(D_LIFE));
+            XReligion::GetDeityName(XDeity::LIFE));
 
         list.AddItem(new XGuiItem_Text(rel1));
         flag = 0;
@@ -239,7 +239,7 @@ void XHero::EndGame(const char* end_msg)
     if (dr2 >= DR_ADEPT) {
         auto rel2 = fmt::format("You were a {} of {}",
             XReligion::GetRelationName(dr2),
-            XReligion::GetDeityName(D_DEATH));
+            XReligion::GetDeityName(XDeity::DEATH));
 
         list.AddItem(new XGuiItem_Text(rel2));
         score += dr2 * 300;

@@ -27,11 +27,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/item.h"
 
-void RegisterDeityEnum(sol::state_view& lua)
+void XDeity::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("DEITY",
-        "D_LIFE", D_LIFE,
-        "D_DEATH", D_DEATH
+    lua.new_enum("XDeity",
+        "LIFE", XDeity::LIFE,
+        "DEATH", XDeity::DEATH
     );
 }
 
@@ -84,15 +84,15 @@ void XReligion::KillCreature(XCreature * killer, XCreature * victim)
     }
 }
 
-int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
+int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
 {
     int val = cr->sk->GetLevel(XSkill::Skill::RELIGION);
 
-    if (deity == D_UNKNOWN) {
+    if (deity == XDeity::UNKNOWN) {
         if (life_act > death_act) {
-            deity = D_LIFE;
+            deity = XDeity::LIFE;
         } else {
-            deity = D_DEATH;
+            deity = XDeity::DEATH;
         }
     }
 
@@ -100,9 +100,9 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
 
     if (tmo && tmo->im & IM_ALTAR) {
         if (tmo->color == xWHITE) {
-            deity = D_LIFE;
+            deity = XDeity::LIFE;
         } else {
-            deity = D_DEATH;
+            deity = XDeity::DEATH;
         }
     }
 
@@ -131,7 +131,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     item->UnCarry();
     item->Invalidate();
 
-    if (deity == D_LIFE) {
+    if (deity == XDeity::LIFE) {
         life_act += sacrifice_value;
     } else {
         death_act += sacrifice_value;
@@ -148,16 +148,16 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, DEITY deity)
     return 1;
 }
 
-DEITY_RELATION XReligion::GetRelation(const DEITY deity) const
+DEITY_RELATION XReligion::GetRelation(const XDeity::Id deity) const
 {
     int val = 0;
 
     switch (deity) {
-        case D_LIFE:
+        case XDeity::LIFE:
             val = life_act;
             break;
 
-        case D_DEATH:
+        case XDeity::DEATH:
             val = death_act;
             break;
 
@@ -195,18 +195,18 @@ const char* XReligion::GetRelationName(DEITY_RELATION dr)
     return relation_name[dr];
 }
 
-const char* XReligion::GetDeityName(DEITY deity)
+const char* XReligion::GetDeityName(XDeity::Id deity)
 {
-    if (deity == D_LIFE) {
+    if (deity == XDeity::LIFE) {
         return "Tiamat";
     } else {
         return "Marduk";
     }
 }
 
-int XReligion::GetAvailHelp(const DEITY deity, DEITY_HELP** help) const
+int XReligion::GetAvailHelp(const XDeity::Id deity, DEITY_HELP** help) const
 {
-    if (deity == D_LIFE) {
+    if (deity == XDeity::LIFE) {
         *help = &life_help[0];
 
     } else {
@@ -234,7 +234,7 @@ int XReligion::GetAvailHelp(const DEITY deity, DEITY_HELP** help) const
     return 7;
 }
 
-int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
+int XReligion::Pray(XDeity::Id deity, DEITY_HELP * pray, XCreature * prayer)
 {
     EFFECT effect = E_CURE_LIGHT_WOUNDS;
 
@@ -288,7 +288,7 @@ int XReligion::Pray(DEITY deity, DEITY_HELP * pray, XCreature * prayer)
     RESULT res = XEffect::Make(prayer, effect, 50);
 
     if (res == SUCCESS) {
-        if (deity == D_LIFE) {
+        if (deity == XDeity::LIFE) {
             life_act -= pray->help_cost;
         } else {
             death_act -= pray->help_cost;

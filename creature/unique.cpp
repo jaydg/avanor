@@ -238,10 +238,10 @@ void XHighPriest::Die(XCreature * killer)
     std::string buf;
 
     if (killer->isHero()) {
-        buf = fmt::format("{} will not be pleased about this...", religion.GetDeityName(D_LIFE));
+        buf = fmt::format("{} will not be pleased about this...", religion.GetDeityName(XDeity::LIFE));
         msgwin.Add(buf);
     } else {
-        buf = fmt::format("{} seems to be trying to anger {}...", killer->name, religion.GetDeityName(D_LIFE));
+        buf = fmt::format("{} seems to be trying to anger {}...", killer->name, religion.GetDeityName(XDeity::LIFE));
         msgwin.Add(buf);
     }
 
@@ -254,7 +254,7 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
     int val = giver->sk->GetLevel(XSkill::Skill::RELIGION);
 
     msgwin.Add("Thank you for your charitable donation!");
-    msgwin.Add(fmt::format("{} prays to {}.", name, XReligion::GetDeityName(D_LIFE)));
+    msgwin.Add(fmt::format("{} prays to {}.", name, XReligion::GetDeityName(XDeity::LIFE)));
 
     if (1 /*TODO if hero can see...*/) {
         msgwin.Add(fmt::format("{} disappears in a bright light.",

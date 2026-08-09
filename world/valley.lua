@@ -125,7 +125,7 @@ function MakeAvanorValley()
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'eternal flame') end)
 		AddTranslation("B", function(x, y) CreateGefeon(x, y) end)
 		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 30, 25) Guardian('fcitizen', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 30, 25) end end)
-		AddTranslation("_", function(x, y) Altar(x, y, DEITY.D_LIFE) end)
+		AddTranslation("_", function(x, y) Altar(x, y, XDeity.LIFE) end)
 		AddTranslation("E", function(x, y) CreateHighPriest(x, y) end)
 		AddTranslation("F", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'pew') end)
 		

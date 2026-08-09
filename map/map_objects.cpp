@@ -527,14 +527,14 @@ REGISTER_CLASS(XAltar);
 CEREAL_REGISTER_TYPE(XAltar);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XAltar);
 
-XAltar::XAltar(const int _x, const int _y, const DEITY deity, XLocation* _l)
+XAltar::XAltar(const int _x, const int _y, const XDeity::Id deity, XLocation* _l)
 {
     SetLocation(_l);
     im = IM_ALTAR;
     x = _x;
     y = _y;
 
-    if (deity == D_LIFE) {
+    if (deity == XDeity::LIFE) {
         color = xWHITE;
     } else {
         color = xDARKGRAY;
