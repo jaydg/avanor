@@ -43,7 +43,7 @@ XGuiItem_Text* XHiScoreItem::toGuiItem()
         msg
     );
 
-    return new XGuiItem_Text(text.c_str());
+    return new XGuiItem_Text(text);
 }
 
 XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, std::string _name, std::string _msg, const int flg, const int last_record)

@@ -47,7 +47,7 @@ void XQuest::ShowQuests()
 
     for (auto& quest: quests) {
         if (quest->status == XQuest::KNOWN) {
-            list.AddItem(new XGuiItem_Text(quest->know.c_str()));
+            list.AddItem(new XGuiItem_Text(quest->know));
             flag = 0;
         }
     }

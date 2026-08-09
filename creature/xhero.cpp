@@ -1066,7 +1066,7 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             }
 
             const std::string buf = left + right;
-            list.AddItem(new XGuiItem_SimpleSelect(buf.c_str()));
+            list.AddItem(new XGuiItem_SimpleSelect(buf));
             counter++;
         }
 
@@ -1823,7 +1823,7 @@ int XHero::XCast(std::optional<std::reference_wrapper<std::ofstream>> file)
             list.AddItem(new XGuiItem_Text("You do not know any spells", 0));
         } else {
             for (auto& spell : m->spells) {
-                list.AddItem(new XGuiItem_SimpleSelect(spell->toString().c_str()), 0);
+                list.AddItem(new XGuiItem_SimpleSelect(spell->toString()), 0);
             }
         }
 
@@ -2079,7 +2079,7 @@ XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, std
                               skill->GetLevel(), skill->GetMaxLevel());
 
             const std::string buf = name_col + level_col + skill->GetSkillLevel();
-            list.AddItem(new XGuiItem_SimpleSelect(buf.c_str()), 0);
+            list.AddItem(new XGuiItem_SimpleSelect(buf), 0);
         }
 
         if (file) {

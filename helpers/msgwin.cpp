@@ -65,7 +65,7 @@ void XMsgWin::Add(std::string_view tstr, int flag)
     if (sentence_end != std::string::npos) {
         end_sent = true;
         sent_buf[0] = static_cast<char>(toupper(static_cast<unsigned char>(sent_buf[0])));
-        history_list->AddItem(new XGuiItem_Text(sent_buf.c_str()), 1);
+        history_list->AddItem(new XGuiItem_Text(sent_buf), 1);
         sent_buf.clear();
     }
 

@@ -165,7 +165,7 @@ void XGuiList::AddHtmlText(std::string_view text)
     // Flush the current accumulator as a new list item.
     const auto flush = [&]() {
         if (!out.empty()) {
-            AddItem(new XGuiItem_Text(out.c_str(), is_ref ? 1 : 0));
+            AddItem(new XGuiItem_Text(out, is_ref ? 1 : 0));
             out.clear();
         }
     };
