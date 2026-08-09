@@ -47,7 +47,6 @@ void RegisterItemMaskEnum(sol::state_view& lua)
         "IM_BOOK", IM_BOOK,
         "IM_WAND", IM_WAND,
         "IM_FOOD", IM_FOOD,
-        "IM_HERB", IM_HERB,
         "IM_LIGHTSOURCE", IM_LIGHTSOURCE,
         "IM_TOOL", IM_TOOL,
         "IM_GEM", IM_GEM,

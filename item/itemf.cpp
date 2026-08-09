@@ -86,7 +86,6 @@ XItem* XItemFactory::CreateItem(ITEM_MASK im, ITEM_TYPE it)
             return new XMissile(it);
 
         case IM_WAND:
-        case IM_HERB:
         case IM_TOOL:
         case IM_GEM:
         case IM_FOOD:

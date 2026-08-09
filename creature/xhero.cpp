@@ -846,14 +846,14 @@ ITEM_MASK imask[] = {
 ITEM_MASK output_items_mask[] = {
     IM_HAT, IM_BODY, IM_CLOAK, IM_GLOVES, IM_BOOTS, IM_SHIELD,
     IM_WEAPON, IM_NECK, IM_RING, IM_MISSILEW, IM_MISSILE, IM_POTION,
-    IM_SCROLL, IM_BOOK, IM_WAND, IM_FOOD, IM_HERB, IM_LIGHTSOURCE, IM_TOOL, IM_MONEY
+    IM_SCROLL, IM_BOOK, IM_WAND, IM_FOOD, IM_LIGHTSOURCE, IM_TOOL, IM_MONEY
 };
 
-auto output_items_ext = "[[[[[[|'={}!?\"\\%%]]$";
+auto output_items_ext = "[[[[[[|'={}!?\"\\%]]$";
 const char* output_items_name[] = {
     "Helmets", "Armours", "Cloaks", "Gloves", "Boots", "Shields",
     "Weapon", "Necklaces", "Rings", "Missile weapon", "Missiles", "Potions",
-    "Scrolls", "Books", "Wands", "Food", "Herbs", "Light sources", "Tools", "Money"
+    "Scrolls", "Books", "Wands", "Food", "Light sources", "Tools", "Money"
 };
 
 // first_item must be 0 if need to start from first item
