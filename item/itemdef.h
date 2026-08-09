@@ -25,41 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
-enum BRAND_TYPE {
-    BR_NONE	= 0x00000000,
-    BR_FIRE	= 0x00000001,
-    BR_HELLFIRE	= 0x00000002,
-    BR_COLD	= 0x00000004,
-    BR_ULTIMATECOLD	= 0x00000008,
-    BR_LIGHTNING	= 0x00000010,
-    BR_EARTH	= 0x00000020,
-    BR_ELEMENTAL_MASK	= 0x000000FF, //mask for 'elemental'
-
-    BR_ACID	= 0x00000100,
-    BR_POISON	= 0x00000200, //cause poison
-    BR_DEATH	= 0x00000400, //triple chance to score critical hit
-    BR_DISEASE	= 0x00000800, //cause disease
-    BR_PARALYSE	= 0x00001000,
-    BR_STUN	= 0x00002000,
-    BR_CONFUSE	= 0x00004000,
-    BR_DRAIN_LIFE	= 0x00008000,
-    BR_BLACK_MASK	= 0x0000FF00, //mask for black
-
-    BR_UNDEADSLAYER	= 0x00010000, //3x vs undead
-    BR_HUMANOIDSLAYER	= 0x00020000,
-    BR_ANIMALSLAYER	= 0x00040000,
-    BR_DRAGONSLAYER	= 0x00080000,
-    BR_GIANTSLAYER	= 0x00100000,
-    BR_ORCSLAYER	= 0x00200000,
-    BR_TROLLSLAYER	= 0x00400000,
-    BR_DEMONSLAYER	= 0x00800000,
-    BR_SLAYER_MASK	= 0x00FF0000,
-
-    BR_HOLYSLAYER	= BR_UNDEADSLAYER | BR_DEMONSLAYER,
-    BR_EVILSLAYER	= BR_DRAGONSLAYER | BR_GIANTSLAYER | BR_ORCSLAYER | BR_TROLLSLAYER,
-    BR_ANY	= 0xFFFF
-};
-
 enum CAN_FLAG {
     CAN_UNKNOWN	= 0x0000,
 
@@ -195,7 +160,7 @@ enum ITEM_TYPE {
     IT_EOF
 };
 
-// Registers BRAND_TYPE and ITEM_TYPE as Lua tables
+// Registers ITEM_TYPE as Lua tables
 void RegisterItemDefEnums(sol::state_view& lua);
 
 #endif

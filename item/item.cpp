@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "item/item.h"
+#include "magic/attack_effect_type.h"
 
 void XItem::RegisterLua(sol::state_view& lua)
 {
@@ -85,7 +86,7 @@ XItem::XItem()
     _DV = _PV = _HIT = RNG = 0;
     dice.Setup("0d0");
     special_number = -1;
-    brt = BR_NONE;
+    aet = AttackEffectType::NONE;
     owner.reset();
 }
 
@@ -335,7 +336,7 @@ void XItem::SpecialFill()
     resistances->Add(&xres);
     stats->Add(&xst);
 
-    brt = ienh_db[r_val].brt;
+    aet = ienh_db[r_val].brt;
 }
 
 XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
@@ -353,7 +354,7 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
     special_property = copy->special_property;
     value = copy->value;
     wt = copy->wt;
-    brt = copy->brt;
+    aet = copy->aet;
     owner = copy->owner;
     quantity = copy->quantity;
 }
@@ -370,7 +371,7 @@ int XItem::Compare(XObject * o)
     assert(dynamic_cast<XItem*>(o));
     XItem * tit = (XItem*)o;
 
-    if (it == tit->it && tit->brt == brt && XBaseObject::Compare(o) == 0) {
+    if (it == tit->it && tit->aet == aet && XBaseObject::Compare(o) == 0) {
         return 0;
     } else {
         return 1;
@@ -450,19 +451,19 @@ int XItem::GetValue()
 
     int brtval = 0;
 
-    if (brt & BR_FIRE) {
+    if ((aet & AttackEffectType::FIRE) != AttackEffectType::NONE) {
         brtval += 200;
     }
 
-    if (brt & BR_COLD) {
+    if ((aet & AttackEffectType::COLD) != AttackEffectType::NONE) {
         brtval += 150;
     }
 
-    if (brt & BR_ORCSLAYER) {
+    if ((aet & AttackEffectType::ORCSLAYER) != AttackEffectType::NONE) {
         brtval += 300;
     }
 
-    if (brt & BR_DEMONSLAYER) {
+    if ((aet & AttackEffectType::DEMONSLAYER) != AttackEffectType::NONE) {
         brtval += 220;
     }
 
@@ -634,7 +635,7 @@ int XItem::onPutOn(XCreature * cr)
 
 int XItem::onHit(XCreature * user, XCreature * target)
 {
-    if (ienh_db[special_number].brt & BR_FIRE) {
+    if ((ienh_db[special_number].brt & AttackEffectType::FIRE) != AttackEffectType::NONE) {
         //	user->MagicAttack(target, dice.Throw(), XResistance::FIRE);
     }
 

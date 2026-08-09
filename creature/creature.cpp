@@ -1438,9 +1438,9 @@ int XCreature::Shoot(int tx, int ty)
                 break;
         }
 
-        dd.attack_HIT	= hit;
-        dd.attack_brand	= msl->brt;
-        dd.flags	= DF_MAGIC_BOLT;
+        dd.attack_HIT = hit;
+        dd.attack_effect = msl->aet;
+        dd.flags = DF_MAGIC_BOLT;
         target->InflictDamage(&dd);
 
         //if successfull increase bow level

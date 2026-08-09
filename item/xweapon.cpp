@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xapi.h"
 #include "item/item_cereal.h"
 #include "item/xweapon.h"
+#include "magic/attack_effect_type.h"
 
 REGISTER_CLASS(XWeapon);
 CEREAL_REGISTER_TYPE(XWeapon);
@@ -104,32 +105,32 @@ _WEAPON_BIND wbind[weapon_db_size] = {
 
 
 struct WEAPON_BRAND_TYPE_NAME {
-    BRAND_TYPE brt;
+    AttackEffectType brt;
     std::string templ;
 };
 
 const int weapon_brand_name_db_size = 17;
 
 WEAPON_BRAND_TYPE_NAME weapon_brand_name_db[weapon_brand_name_db_size] = {
-    {BR_FIRE,	"{} of Fire",	},
-    {BR_HELLFIRE,	"{} of Hell Fire",	},
-    {BR_COLD,	"{} of Cold"	},
-    {BR_ULTIMATECOLD,	"{} of Ultimate Cold"	},
-    {BR_LIGHTNING,	"{} of Lightning"	},
+    {AttackEffectType::FIRE,	"{} of Fire",	},
+    {AttackEffectType::HELLFIRE,	"{} of Hell Fire",	},
+    {AttackEffectType::COLD,	"{} of Cold"	},
+    {AttackEffectType::ULTIMATECOLD,	"{} of Ultimate Cold"	},
+    {AttackEffectType::LIGHTNING,	"{} of Lightning"	},
 
-    {BR_ACID,	"{} of Acid"	},
-    {BR_POISON,	"{} of Poison"	},
-    {BR_DEATH,	"{} of Death"	},
+    {AttackEffectType::ACID,	"{} of Acid"	},
+    {AttackEffectType::POISON,	"{} of Poison"	},
+    {AttackEffectType::DEATH,	"{} of Death"	},
 
-    {BR_UNDEADSLAYER,	"{} of Slay Undead"	},
-    {BR_HUMANOIDSLAYER,	"{} of Slay Humanoids"	},
-    {BR_ANIMALSLAYER,	"{} of Slay Animals"	},
-    {BR_DRAGONSLAYER,	"{} of Dragon Slaying"	},
-    {BR_GIANTSLAYER,	"{} of Giant Slaying"	},
-    {BR_ORCSLAYER,	"{} of Slay Orcs"	},
-    {BR_TROLLSLAYER,	"{} of Slay Trolls"	},
-    {BR_TROLLSLAYER,	"{} of Slay Trolls"	},
-    {BR_DEMONSLAYER,	"{} of Slay Demons"	},
+    {AttackEffectType::UNDEADSLAYER,	"{} of Slay Undead"	},
+    {AttackEffectType::HUMANOIDSLAYER,	"{} of Slay Humanoids"	},
+    {AttackEffectType::ANIMALSLAYER,	"{} of Slay Animals"	},
+    {AttackEffectType::DRAGONSLAYER,	"{} of Dragon Slaying"	},
+    {AttackEffectType::GIANTSLAYER,	"{} of Giant Slaying"	},
+    {AttackEffectType::ORCSLAYER,	"{} of Slay Orcs"	},
+    {AttackEffectType::TROLLSLAYER,	"{} of Slay Trolls"	},
+    {AttackEffectType::TROLLSLAYER,	"{} of Slay Trolls"	},
+    {AttackEffectType::DEMONSLAYER,	"{} of Slay Demons"	},
 };
 
 XWeapon::XWeapon(ITEM_TYPE _it)
@@ -168,17 +169,17 @@ std::string XWeapon::toString()
 
     std::string brand_templ;
 
-    if (brt) {
-        int ec = vBitsCount(brt & BR_ELEMENTAL_MASK);
-        int bc = vBitsCount(brt & BR_BLACK_MASK);
-        int sc = vBitsCount(brt & BR_SLAYER_MASK);
+    if (aet != AttackEffectType::NONE) {
+        int ec = vBitsCount(static_cast<unsigned int>(aet & AttackEffectType::ELEMENTAL_MASK));
+        int bc = vBitsCount(static_cast<unsigned int>(aet & AttackEffectType::BLACK_MASK));
+        int sc = vBitsCount(static_cast<unsigned int>(aet & AttackEffectType::SLAYER_MASK));
 
         if (ec == 1 && bc == 0 && sc == 0) {
-            brand_templ = GetTemplate(brt & BR_ELEMENTAL_MASK);
+            brand_templ = GetTemplate(aet & AttackEffectType::ELEMENTAL_MASK);
         } else if (ec == 0 && bc == 0 && sc == 1) {
-            brand_templ = GetTemplate(brt & BR_SLAYER_MASK);
+            brand_templ = GetTemplate(aet & AttackEffectType::SLAYER_MASK);
         } else if (ec >= 1 && bc == 0 && sc == 1) {
-            brand_templ = fmt::format("Elemental {}", GetTemplate(brt & BR_SLAYER_MASK));
+            brand_templ = fmt::format("Elemental {}", GetTemplate(aet & AttackEffectType::SLAYER_MASK));
         } else if (ec >= 1 && bc == 0 && sc > 1) {
             brand_templ = "Elemental {} of Slaying";
         } else if (ec == 0 && bc == 0 && sc > 1) {
@@ -222,12 +223,12 @@ std::string XWeapon::toString()
     return fullname;
 }
 
-std::string XWeapon::GetTemplate(unsigned int mask, int isRight)
+std::string XWeapon::GetTemplate(AttackEffectType mask, int isRight)
 {
     std::string brand_templ = nullptr;
 
     for (int j = 0; j < weapon_brand_name_db_size; j++) {
-        if ((weapon_brand_name_db[j].brt ^ mask) == 0) {
+        if (weapon_brand_name_db[j].brt == mask) {
             brand_templ = weapon_brand_name_db[j].templ;
             break;
         }

@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/itemdef.h"
 #include "item/itemkind.h"
+#include "magic/attack_effect_type.h"
 
 #define DB_PROP_SZ	15 // number of materials!
 #define ENH_DB_SZ	20 // number of special powers ("of Strength")
@@ -76,7 +77,7 @@ struct ENHANCE_STRUCT {
     const char* rng;
     int val; // value
     ItemKind kind;
-    BRAND_TYPE brt;
+    AttackEffectType brt;
     CAN_FLAG res_flag;
     SPECIAL_PROPERTY spp;
     const char* s; //stats

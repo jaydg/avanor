@@ -429,7 +429,7 @@ function OzorikHandler(e, t, p, v)
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then		
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
 		else
 			AddMessage("'We are not looking for this.'")
@@ -458,7 +458,7 @@ function RoyalGuardHandler(e, t, p, v)
 		AddMessage("'Don't bother me!'")
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Thank you!'")
 			if (QuestStatus(QUEST_OZORIK) < XQuest.COMPLETE) then
 				QuestModify(QUEST_OZORIK, XQuest.COMPLETE)

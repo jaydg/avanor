@@ -24,38 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void RegisterItemDefEnums(sol::state_view& lua)
 {
-    lua.new_enum("BRAND_TYPE",
-        "BR_NONE", BR_NONE,
-        "BR_FIRE", BR_FIRE,
-        "BR_HELLFIRE", BR_HELLFIRE,
-        "BR_COLD", BR_COLD,
-        "BR_ULTIMATECOLD", BR_ULTIMATECOLD,
-        "BR_LIGHTNING", BR_LIGHTNING,
-        "BR_EARTH", BR_EARTH,
-        "BR_ELEMENTAL_MASK", BR_ELEMENTAL_MASK,
-        "BR_ACID", BR_ACID,
-        "BR_POISON", BR_POISON,
-        "BR_DEATH", BR_DEATH,
-        "BR_DISEASE", BR_DISEASE,
-        "BR_PARALYSE", BR_PARALYSE,
-        "BR_STUN", BR_STUN,
-        "BR_CONFUSE", BR_CONFUSE,
-        "BR_DRAIN_LIFE", BR_DRAIN_LIFE,
-        "BR_BLACK_MASK", BR_BLACK_MASK,
-        "BR_UNDEADSLAYER", BR_UNDEADSLAYER,
-        "BR_HUMANOIDSLAYER", BR_HUMANOIDSLAYER,
-        "BR_ANIMALSLAYER", BR_ANIMALSLAYER,
-        "BR_DRAGONSLAYER", BR_DRAGONSLAYER,
-        "BR_GIANTSLAYER", BR_GIANTSLAYER,
-        "BR_ORCSLAYER", BR_ORCSLAYER,
-        "BR_TROLLSLAYER", BR_TROLLSLAYER,
-        "BR_DEMONSLAYER", BR_DEMONSLAYER,
-        "BR_SLAYER_MASK", BR_SLAYER_MASK,
-        "BR_HOLYSLAYER", BR_HOLYSLAYER,
-        "BR_EVILSLAYER", BR_EVILSLAYER,
-        "BR_ANY", BR_ANY
-    );
-
     lua.new_enum("ITEM_TYPE",
         "IT_UNKNOWN", IT_UNKNOWN,
         "IT_HAT", IT_HAT,

@@ -61,6 +61,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xshield.cpp                \
        xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp wskills.cpp            \
        unique.cpp uniquei.cpp                                                 \
        strproc.cpp std_ai.cpp stats.cpp skills.cpp skill.cpp                  \
+       attack_effect_type.cpp                                                \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
        quest.cpp map_objects.cpp msgwin.cpp                                   \
        modifiers.cpp modifier.cpp map.cpp manual.cpp mainloc.cpp Main.cpp     \

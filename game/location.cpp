@@ -36,6 +36,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemf.h"
 #include "item/item_misc.h"
 #include "item/xherb.h"
+#include "magic/attack_effect_type.h"
 #include "map/map_objects.h"
 
 #include <sol/sol.hpp>
@@ -951,12 +952,12 @@ XGUID XLocation::GetObjectGUID(void* obj)
 std::tuple<int, int, int, int, int, std::string> XLocation::GetItemParam(void* item)
 {
     XItem * p = (XItem*)item;
-    return {static_cast<int>(p->kind), p->brt, p->wt, p->it, p->quantity, p->name};
+    return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, p->it, p->quantity, p->name};
 }
 
 void XLocation::SetItemBrand(void* item, int br)
 {
-    ((XItem*)item)->brt = (BRAND_TYPE)br;
+    ((XItem*)item)->aet = (AttackEffectType)br;
 }
 
 int XLocation::MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power)
@@ -1204,6 +1205,7 @@ void XLocation::CommonLuaInitialization()
     XItem::RegisterLua(lua);
     XWarSkills::RegisterLua(lua);
     RegisterItemDefEnums(lua);
+    RegisterAttackEffectTypeLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     XDeity::RegisterLua(lua);

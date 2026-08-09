@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item_cereal.h"
 #include "item/uniquei.h"
+#include "magic/attack_effect_type.h"
 
 REGISTER_CLASS(XGlamdring);
 CEREAL_REGISTER_TYPE(XGlamdring);
@@ -39,7 +40,7 @@ XGlamdring::XGlamdring() : XWeapon(IT_BROADSWORD)
 
     resistances = std::make_unique<XResistance>("poison:1d1+99 stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99");
     stats = std::make_unique<XStats>("St:1d1+9 Dx:1d1+9 To:1d1+9");
-    brt = (BRAND_TYPE)(BR_FIRE | BR_COLD | BR_DEMONSLAYER);
+    aet = AttackEffectType::FIRE | AttackEffectType::COLD | AttackEffectType::DEMONSLAYER;
     special_property = SPP_NONE;
 }
 
@@ -65,7 +66,7 @@ XDeathHack::XDeathHack() : XWeapon(IT_LONGDAGGER)
 
     resistances = std::make_unique<XResistance>("");
     stats = std::make_unique<XStats>("");
-    brt = (BRAND_TYPE)(BR_COLD | BR_DEMONSLAYER);
+    aet = AttackEffectType::COLD | AttackEffectType::DEMONSLAYER;
     special_property = SPP_NONE;
 }
 
@@ -92,7 +93,7 @@ XAvanorDefender::XAvanorDefender() : XWeapon(IT_LONGSWORD)
 
     resistances = std::make_unique<XResistance>("poison:0d0+100 stun:0d0+100 confuse:0d0+100 fire:0d0+100 cold:0d0+100");
     stats = std::make_unique<XStats>("St:0d0+10 To:0d0+10");
-    brt = (BRAND_TYPE)(BR_COLD | BR_FIRE | BR_DEMONSLAYER);
+    aet = AttackEffectType::COLD | AttackEffectType::FIRE | AttackEffectType::DEMONSLAYER;
     special_property = SPP_NONE;
     avanordefender_guid = guid();
 }
@@ -120,7 +121,7 @@ XForestBrotherCloak::XForestBrotherCloak() : XCloak(IT_CLOAK)
 
     resistances = std::make_unique<XResistance>("poison:0d0+20 stun:0d0+20");
     stats = std::make_unique<XStats>("");
-    brt = BR_NONE;
+    aet = AttackEffectType::NONE;
     special_property = SPP_NONE;
 }
 
@@ -158,7 +159,7 @@ XAvanorScepter::XAvanorScepter() : XWeapon(IT_CLUB)
 
     resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("St:1d1+15");
-    brt = (BRAND_TYPE)(BR_FIRE | BR_COLD | BR_DEMONSLAYER);
+    aet = AttackEffectType::FIRE | AttackEffectType::COLD | AttackEffectType::DEMONSLAYER;
     special_property = SPP_NONE;
 }
 
@@ -239,7 +240,7 @@ XTorinAxe::XTorinAxe() : XWeapon(IT_GREATAXE)
 
     resistances = std::make_unique<XResistance>("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20");
     stats = std::make_unique<XStats>("To:1d1+10");
-    brt = (BRAND_TYPE)(BR_COLD);
+    aet = AttackEffectType::COLD;
     special_property = SPP_NONE;
 }
 
@@ -320,7 +321,7 @@ XBlackClub::XBlackClub() : XWeapon(IT_CLUB)
 
     resistances = std::make_unique<XResistance>("fire:0d0+50");
     stats = std::make_unique<XStats>("");
-    brt = (BRAND_TYPE)(BR_FIRE);
+    aet = AttackEffectType::FIRE;
     special_property = SPP_NONE;
 }
 

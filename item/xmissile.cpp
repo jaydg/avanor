@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_cereal.h"
 #include "item/xmissile.h"
 #include "item/xweapon.h"
+#include "magic/attack_effect_type.h"
 
 REGISTER_CLASS(XMissile);
 CEREAL_REGISTER_TYPE(XMissile);
@@ -79,19 +80,19 @@ XMissile::XMissile(ITEM_TYPE _it)
 
         switch (tr) {
             case 0:
-                brt = BR_POISON;
+                aet = AttackEffectType::POISON;
                 break; //poisoned
 
             case 1:
-                brt = BR_FIRE;
+                aet = AttackEffectType::FIRE;
                 break; //hell arrows
 
             case 2:
-                brt = BR_UNDEADSLAYER;
+                aet = AttackEffectType::UNDEADSLAYER;
                 break; //
 
             case 3:
-                brt = BR_ORCSLAYER;
+                aet = AttackEffectType::ORCSLAYER;
                 break; //
         }
 
@@ -148,20 +149,20 @@ std::string XMissile::toString()
 {
     if (quantity == 1)
         return fmt::format("{}{}{} <{:+}>({:+}, {}d{}{:+}){}",
-            brt & BR_POISON ? "poisoned " : "",
-            brt & BR_UNDEADSLAYER ? "holy " : "",
+            (aet & AttackEffectType::POISON) != AttackEffectType::NONE ? "poisoned " : "",
+            (aet & AttackEffectType::UNDEADSLAYER) != AttackEffectType::NONE ? "holy " : "",
             name, RNG, _HIT,
             dice.GetCount(), dice.GetSides(), dice.GetBonus(),
-            brt & BR_FIRE ? " of fire" : ""
+            (aet & AttackEffectType::FIRE) != AttackEffectType::NONE ? " of fire" : ""
         );
 
     return fmt::format("heap of ({}) {}{}{}s <{:+}>({:+}, {}d{}{:+}){}",
         quantity,
-        brt & BR_POISON ? "poisoned " : "",
-        brt & BR_UNDEADSLAYER ? "holy " : "",
+        (aet & AttackEffectType::POISON) != AttackEffectType::NONE ? "poisoned " : "",
+        (aet & AttackEffectType::UNDEADSLAYER) != AttackEffectType::NONE ? "holy " : "",
         name, RNG, _HIT,
         dice.GetCount(), dice.GetSides(), dice.GetBonus(),
-        brt & BR_FIRE ? " of fire" : ""
+        (aet & AttackEffectType::FIRE) != AttackEffectType::NONE ? " of fire" : ""
     );
 }
 

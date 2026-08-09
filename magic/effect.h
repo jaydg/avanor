@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/forward.hpp>
 
 #include "engine/global.h"
-#include "item/itemdef.h"
+#include "magic/attack_effect_type.h"
 
 enum EFFECT_REQ {
     ER_NONE	= 0,
@@ -87,8 +87,8 @@ class XEffect
         static int Heal(XCreature * caster, int X, int Y, int Z);
         static int Cure(XCreature * caster, int X, int Y, int Z);
         static int Mana(XCreature * caster, int X, int Y, int Z);
-        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
-        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg);
+        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, AttackEffectType brt, const char* msg);
+        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, AttackEffectType brt, const char* msg);
     public:
         static int Make(const EFFECT_DATA* pData);
         static RESULT Make(XCreature * caster, Id effect, int power);

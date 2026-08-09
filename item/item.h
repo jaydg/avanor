@@ -33,6 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemdef.h"
 #include "item/itemkind.h"
 #include "item/itemlist.h"
+#include "magic/attack_effect_type.h"
 #include "magic/wskills.h"
 
 #define DUR_INFINITE 65535
@@ -106,7 +107,7 @@ class XItem : public XBaseObject
 
         SPECIAL_PROPERTY special_property; // slow digestion and other propertyes
         int special_number; // number of a struct with extension name such a "of Strength"
-        BRAND_TYPE brt;
+        AttackEffectType aet;
         int material_index; // reference to material;
         _ITEMPROP* GetMaterial(int index);
 
@@ -128,7 +129,7 @@ class XItem : public XBaseObject
             ar(
                 owner, bp, it, wt, quality, durability, identify,
                 is_selected, value, special_property, special_number,
-                brt, material_index, quantity, kind
+                aet, material_index, quantity, kind
             );
         }
 

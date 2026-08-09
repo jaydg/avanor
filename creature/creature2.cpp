@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
+#include "magic/attack_effect_type.h"
 #include "magic/modifier.h"
 
 void XCreature::Attack()
@@ -63,22 +64,22 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     int res = 0;
     int tohit;
     int tdam;
-    unsigned int brt;
+    AttackEffectType aet;
 
     if (weapon) {
         res += (wsk->GetUseTime(weapon->wt) * GetSpeed()) / 1000;
         tohit = GetHIT() + wsk->GetHIT(weapon->wt) + GetHITFHBonus(weapon);
         tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetDMGFHBonus(weapon) + GetDMG();
-        brt = weapon->brt;
+        aet = weapon->aet;
     } else {
         res += (wsk->GetUseTime(XWarSkills::UNARMED) * GetSpeed()) / 1000;
         tohit = GetHIT() + wsk->GetHIT(XWarSkills::UNARMED);
         tdam = dice.Throw() + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED);
-        brt = BR_NONE;
+        aet = AttackEffectType::NONE;
 
         for (const auto tit: *melee_attack) {
             if (vRand(100) < tit.prob) {
-                brt = brt | tit.br_attack;
+                aet = aet | tit.br_attack;
             }
         }
     }
@@ -88,7 +89,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     dd.attacker	= this;
     dd.attack_name	= nullptr;
     dd.attack_HIT	= tohit;
-    dd.attack_brand	= static_cast<BRAND_TYPE>(brt);
+    dd.attack_effect	= aet;
     dd.flags	= DF_MAGIC_BOLT;
     dd.weapon	= weapon;
 
@@ -122,36 +123,36 @@ int XCreature::onMagicDamage(const int dmg, const XResistance::Id tr)
     return damage < 0 ? 0 : damage;
 }
 
-int XCreature::CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker)
+int XCreature::CauseEffect(int dmg, AttackEffectType aet, XCreature * attacker)
 {
     int damage = 0;
 
-    if (brt > BR_NONE) {
-        if (brt & BR_FIRE) {
+    if (aet > AttackEffectType::NONE) {
+        if ((aet & AttackEffectType::FIRE) != AttackEffectType::NONE) {
             damage += onMagicDamage(dmg, XResistance::FIRE);
         }
 
-        if (brt & BR_COLD) {
+        if ((aet & AttackEffectType::COLD) != AttackEffectType::NONE) {
             damage += onMagicDamage(dmg, XResistance::COLD);
         }
 
-        if (brt & BR_ACID) {
+        if ((aet & AttackEffectType::ACID) != AttackEffectType::NONE) {
             damage += onMagicDamage(dmg, XResistance::ACID);
         }
 
-        if (brt & BR_EARTH) {
+        if ((aet & AttackEffectType::EARTH) != AttackEffectType::NONE) {
             damage += onMagicDamage(dmg, XResistance::EARTH);
         }
 
-        if (brt & BR_LIGHTNING) {
+        if ((aet & AttackEffectType::LIGHTNING) != AttackEffectType::NONE) {
             damage += onMagicDamage(dmg, XResistance::AIR);
         }
 
-        if (brt & BR_DEMONSLAYER && creature_class & CR_DEMON) {
+        if ((aet & AttackEffectType::DEMONSLAYER) != AttackEffectType::NONE && creature_class & CR_DEMON) {
             damage += dmg * 3;
         }
 
-        if (brt & BR_ORCSLAYER && creature_class & CR_ORC) {
+        if ((aet & AttackEffectType::ORCSLAYER) != AttackEffectType::NONE && creature_class & CR_ORC) {
             damage += dmg * 3;
         }
 
@@ -165,26 +166,26 @@ int XCreature::CauseEffect(int dmg, BRAND_TYPE brt, XCreature * attacker)
     }
 }
 
-void XCreature::CausePostEffect(int dmg, BRAND_TYPE brt, XCreature * attacker)
+void XCreature::CausePostEffect(int dmg, AttackEffectType aet, XCreature * attacker)
 {
-    if (brt > BR_NONE) {
-        if (brt & BR_POISON) {
+    if (aet > AttackEffectType::NONE) {
+        if ((aet & AttackEffectType::POISON) != AttackEffectType::NONE) {
             md->Add(MOD_POISON, dmg, this, attacker);
         }
 
-        if (brt & BR_DISEASE) {
+        if ((aet & AttackEffectType::DISEASE) != AttackEffectType::NONE) {
             md->Add(MOD_DISEASE, dmg, this, attacker);
         }
 
-        if (brt & BR_PARALYSE) {
+        if ((aet & AttackEffectType::PARALYSE) != AttackEffectType::NONE) {
             md->Add(MOD_PARALYSE, dmg, this, attacker);
         }
 
-        if (brt & BR_STUN) {
+        if ((aet & AttackEffectType::STUN) != AttackEffectType::NONE) {
             md->Add(MOD_STUN, dmg, this, attacker);
         }
 
-        if (brt & BR_CONFUSE) {
+        if ((aet & AttackEffectType::CONFUSE) != AttackEffectType::NONE) {
             md->Add(MOD_CONFUSE, dmg, this, attacker);
         }
     }
@@ -448,9 +449,9 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         //calculates suposed damage counting creature type and resistance
         //also Adds modifers such 'Poison'
         if (pData->attack_name) { //this is poor magic
-            dmg = CauseEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
+            dmg = CauseEffect(dmg, pData->attack_effect, pData->attacker);
         } else { //this is hit with weapon or unarmed hit(snakes beat for example)
-            dmg += CauseEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
+            dmg += CauseEffect(dmg, pData->attack_effect, pData->attacker);
         }
 
         //always count intrinsic PV
@@ -518,7 +519,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                         GetNameEx(CRN_T3)));
                 }
 
-                CausePostEffect(dmg, (BRAND_TYPE)pData->attack_brand, pData->attacker);
+                CausePostEffect(dmg, pData->attack_effect, pData->attacker);
             } else {
                 // and kill IT!!!
                 if ((vis1 || vis2) && !isHero()) {

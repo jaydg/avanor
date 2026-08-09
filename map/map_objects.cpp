@@ -278,9 +278,9 @@ int XTrap::Activate(XCreature* cr)
                         break;
                 }
 
-                dd.attack_HIT	= 30;
-                dd.attack_brand	= drop_item->brt;
-                dd.flags	= DF_MAGIC_BOLT;
+                dd.attack_HIT = 30;
+                dd.attack_effect = drop_item->aet;
+                dd.flags = DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
                 break;
 
@@ -289,7 +289,7 @@ int XTrap::Activate(XCreature* cr)
                 dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the bottom of the pit";
                 dd.attack_HIT	= 10000;
-                dd.attack_brand	= 0;
+                dd.attack_effect	= AttackEffectType::NONE;
                 dd.flags	= DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
                 break;
@@ -304,7 +304,7 @@ int XTrap::Activate(XCreature* cr)
                 dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the spears in the pit";
                 dd.attack_HIT	= 10000;
-                dd.attack_brand	= 0;
+                dd.attack_effect	= AttackEffectType::NONE;
                 dd.flags	= DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
             }

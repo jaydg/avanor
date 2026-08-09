@@ -203,7 +203,7 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
     return 0;
 }
 
-int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
+int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, AttackEffectType brt, const char* msg)
 {
     XCreature * target = pData->l->map->GetMonster(pData->target_x, pData->target_y);
 
@@ -218,12 +218,12 @@ int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BR
         XDice d(X, Y, Z);
 
         DAMAGE_DATA_EX dd{};
-        dd.damage	= d.GetResult();
-        dd.attacker	= pData->caller;
-        dd.attack_name	= msg;
-        dd.attack_HIT	= 1000;
-        dd.attack_brand	= brt;
-        dd.flags	= DF_MAGIC_BOLT;
+        dd.damage = d.GetResult();
+        dd.attacker = pData->caller;
+        dd.attack_name = msg;
+        dd.attack_HIT = 1000;
+        dd.attack_effect = brt;
+        dd.flags = DF_MAGIC_BOLT;
         target->InflictDamage(&dd);
         return 1;
     } else {
@@ -232,7 +232,7 @@ int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BR
 }
 
 
-int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRAND_TYPE brt, const char* msg)
+int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, AttackEffectType brt, const char* msg)
 {
     MF_DATA mfd;
     mfd.arrow_type = MFT_BALL;
@@ -250,12 +250,12 @@ int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, BRA
     if ((target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y))) {
         XDice d(X, Y, Z);
         DAMAGE_DATA_EX dd{};
-        dd.damage	= d.GetResult();
-        dd.attacker	= pData->caller;
-        dd.attack_name	= msg;
-        dd.attack_HIT	= 1000;
-        dd.attack_brand	= brt;
-        dd.flags	= DF_MAGIC_BOLT;
+        dd.damage = d.GetResult();
+        dd.attacker = pData->caller;
+        dd.attack_name = msg;
+        dd.attack_HIT = 1000;
+        dd.attack_effect = brt;
+        dd.flags = DF_MAGIC_BOLT;
         target->InflictDamage(&dd);
         return 1;
     }
@@ -354,29 +354,29 @@ int XEffect::Make(const EFFECT_DATA* pData)
 
         // combat - touch
         case XEffect::BURNING_HANDS:
-            return Touch(pData, 1, pData->power, 5, xRED, BR_FIRE, "the ball of fire");
+            return Touch(pData, 1, pData->power, 5, xRED, AttackEffectType::FIRE, "the ball of fire");
 
         case XEffect::ICE_TOUCH:
-            return Touch(pData, 1, pData->power, 7, xWHITE, BR_COLD, "the cone of ice");
+            return Touch(pData, 1, pData->power, 7, xWHITE, AttackEffectType::COLD, "the cone of ice");
 
         case XEffect::DRAIN_LIFE:
-            return Touch(pData, 1, pData->power, 9, xDARKGRAY, BR_DRAIN_LIFE, "the black sphere");
+            return Touch(pData, 1, pData->power, 9, xDARKGRAY, AttackEffectType::DRAIN_LIFE, "the black sphere");
 
         // combat - bolts
         case XEffect::MAGIC_ARROW:
-            return Bolt(pData, 1, pData->power / 2, 0, xBROWN, BR_EARTH, "the small arrow");
+            return Bolt(pData, 1, pData->power / 2, 0, xBROWN, AttackEffectType::EARTH, "the small arrow");
 
         case XEffect::FIRE_BOLT:
-            return Bolt(pData, 1, pData->power, 3, xRED, BR_FIRE, "the small ball of fire");
+            return Bolt(pData, 1, pData->power, 3, xRED, AttackEffectType::FIRE, "the small ball of fire");
 
         case XEffect::ICE_BOLT:
-            return Bolt(pData, 1, pData->power, 5, xWHITE, BR_COLD, "the small cone of ice");
+            return Bolt(pData, 1, pData->power, 5, xWHITE, AttackEffectType::COLD, "the small cone of ice");
 
         case XEffect::LIGHTNING_BOLT:
-            return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, BR_LIGHTNING, "the bright spark");
+            return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, AttackEffectType::LIGHTNING, "the bright spark");
 
         case XEffect::ACID_BOLT:
-            return Bolt(pData, 3, pData->power, 15, xGREEN, BR_ACID, "the small ball of viscous liquid");
+            return Bolt(pData, 3, pData->power, 15, xGREEN, AttackEffectType::ACID, "the small ball of viscous liquid");
 
         // Misc	modifiers
         case XEffect::HEROISM: {

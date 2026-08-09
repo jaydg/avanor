@@ -41,6 +41,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/incl_i.h"
 #include "item/xanyfood.h"
 #include "item/xtool.h"
+#include "magic/attack_effect_type.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
 #include "magic/wskills.h"
@@ -97,7 +98,7 @@ enum EXTENDED_ATTACK {
 
 struct MELEE_ATTACK {
     EXTENDED_ATTACK e_attack;
-    BRAND_TYPE br_attack;
+    AttackEffectType br_attack;
     int prob; // 0..100
 };
 
@@ -190,7 +191,7 @@ struct DAMAGE_DATA_EX {
     const char* attack_name;   // Attacking item (e.g. Arrow, Bolt of Fire)
     int damage;                // supposed damage
     int attack_HIT;            // the target can avoid attack.
-    unsigned int attack_brand; // such a cold, demon slaying,
+    AttackEffectType attack_effect; // such a cold, demon slaying,
     unsigned int flags;        // see DAMAGE_FLAGS
     XItem* weapon;             // used only in melee combat (can be undefined if attack_name is defined)
 };
@@ -420,8 +421,8 @@ class XCreature : public XBaseObject
 
         int InflictDamage(DAMAGE_DATA_EX* pData);
         int onMagicDamage(int dmg, XResistance::Id tr);
-        int CauseEffect(int dmg, BRAND_TYPE brt, XCreature* attacker);
-        void CausePostEffect(int dmg, BRAND_TYPE brt, XCreature* attacker);
+        int CauseEffect(int dmg, AttackEffectType brt, XCreature* attacker);
+        void CausePostEffect(int dmg, AttackEffectType brt, XCreature* attacker);
 
         virtual const char* GetMeleeAttackMsg(XItem* weapon);
 

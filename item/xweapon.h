@@ -51,7 +51,7 @@ class XWeapon : public XItem
             ar(cereal::base_class<XItem>(this));
         }
     protected:
-        std::string GetTemplate(unsigned int mask, int isRight = 1);
+        std::string GetTemplate(AttackEffectType mask, int isRight = 1);
 };
 
 #endif

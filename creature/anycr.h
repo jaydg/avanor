@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/cr_defs.h"
 #include "creature/creature.h"
+#include "magic/attack_effect_type.h"
 #include "magic/resist.h"
 
 struct CREATURE_SET_REC {
@@ -132,7 +133,7 @@ class MonsterBuilder
         MonsterBuilder& Combat(const std::string& hit, const std::string& dice);
         MonsterBuilder& Main(const std::string& dv, const std::string& pv, const std::string& hp, const std::string& pp);
         MonsterBuilder& Description(const std::string& descr);
-        MonsterBuilder& Melee(BRAND_TYPE br, int prob);
+        MonsterBuilder& Melee(AttackEffectType br, int prob);
         MonsterBuilder& MeleeExtra(EXTENDED_ATTACK ea, int prob);
         MonsterBuilder& LearnSkill(XSkill::Skill skt, int lvl);
         MonsterBuilder& LearnSpell(SPELL_NAME spn);

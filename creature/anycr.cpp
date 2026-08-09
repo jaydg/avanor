@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/quest.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
+#include "magic/attack_effect_type.h"
 
 void CREATURE_DEF::RegisterLua(sol::state_view& lua)
 {
@@ -410,7 +411,7 @@ MonsterBuilder& MonsterBuilder::Description(const std::string& descr)
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::Melee(BRAND_TYPE br, int prob)
+MonsterBuilder& MonsterBuilder::Melee(AttackEffectType br, int prob)
 {
     MELEE_ATTACK ma{};
     ma.e_attack = EA_NONE;
@@ -424,7 +425,7 @@ MonsterBuilder& MonsterBuilder::MeleeExtra(EXTENDED_ATTACK ea, int prob)
 {
     MELEE_ATTACK ma{};
     ma.e_attack = ea;
-    ma.br_attack = BR_NONE;
+    ma.br_attack = AttackEffectType::NONE;
     ma.prob = prob;
     cr.melee_attack.push_back(ma);
     return *this;
