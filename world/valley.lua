@@ -1,6 +1,6 @@
 
 function MakeAvanorValley()
-	CreateLocation(L_MAIN, "Valley", "Valley of Avanor", PLAIN)
+	CreateLocation(LOCATION.L_MAIN, "Valley", "Valley of Avanor", PLAIN)
 
 -- SMALL VILLAGE --
 		SetPattern(55, 30,
@@ -35,18 +35,18 @@ function MakeAvanorValley()
 		"             =======================                   " ..
 		"                   ============                        " ..
 		"                                                       ")
-		AddTranslation("@", WOOD_WALL)
-		AddTranslation("1", ROAD)
-		AddTranslation("2", BRIDGE)
-		AddTranslation("3", SAND)
-		AddTranslation("A", function(x, y) Furniture(x, y, xBROWN, '~', 'plain bed') end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, IM_FOOD, 'Nobel, the human shopkeeper') end)
-		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end end)
+		AddTranslation("@", XTileType.WOOD_WALL)
+		AddTranslation("1", XTileType.ROAD)
+		AddTranslation("2", XTileType.BRIDGE)
+		AddTranslation("3", XTileType.SAND)
+		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ITEM_MASK.IM_FOOD, 'Nobel, the human shopkeeper') end)
+		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
-		AddTranslation("F", function(x, y) for i = 1, 5 do Guardian('bandit', GID_FOREST_BROTHER, x, y, 12, 8, AIF_GUARD_AREA + AIF_PROTECT_AREA + AIF_RANDOM_MOVE) end end)
-		AddTranslation(">", function(x, y) Way(DOWN, L_MUSHROOMS_CAVE1, x, y) end)
-		AddTranslation("*", function(x, y) Way(DOWN, L_DWARFCITYCAVE1, x, y) end)
+		AddTranslation("F", function(x, y) for i = 1, 5 do Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, AI_FLAG.AIF_GUARD_AREA + AI_FLAG.AIF_PROTECT_AREA + AI_FLAG.AIF_RANDOM_MOVE) end end)
+		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_MUSHROOMS_CAVE1, x, y) end)
+		AddTranslation("*", function(x, y) Way(DOWN, LOCATION.L_DWARFCITYCAVE1, x, y) end)
 		AddTranslation("9", function(x, y) Way(DOWN, L_SMALL_CAVE1, x, y) end)
 		DrawPattern(0, 0) 
 
@@ -68,16 +68,16 @@ function MakeAvanorValley()
 		".###########.................................." ..
 		"..............................................")
 		
-		AddTranslation("1", ROAD)
-		AddTranslation("A", function(x, y) Furniture(x, y, xBROWN, '~', 'plain bed') end)
-		AddTranslation("B", function(x, y) Furniture(x, y, xBROWN, '~', 'table') end)
-		AddTranslation("C", function(x, y) Furniture(y, y, xBROWN, '~', 'desk') end)
-		AddTranslation("D", function(x, y) Furniture(x, y, xLIGHTRED, '~', 'bed') end)
+		AddTranslation("1", XTileType.ROAD)
+		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
+		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'table') end)
+		AddTranslation("C", function(x, y) Furniture(y, y, xColor.xBROWN, '~', 'desk') end)
+		AddTranslation("D", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'bed') end)
 		AddTranslation("E", function(x, y) CreateOzorik(x, y) end)
 		AddTranslation("F", function(x, y) CreateGuardians(x, y) end)
 		AddTranslation("G", function(x, y) CreateGekta(x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, IM_ARMOUR + IM_WEAPON + IM_MISSILE + IM_MISSILEW, 'Noberik, the human shopkeeper') end)
-		AddTranslation(">", function(x, y) Way(DOWN, L_RATCELLAR, x, y) end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ITEM_MASK.IM_ARMOUR + ITEM_MASK.IM_WEAPON + ITEM_MASK.IM_MISSILE + ITEM_MASK.IM_MISSILEW, 'Noberik, the human shopkeeper') end)
+		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_RATCELLAR, x, y) end)
 		DrawPattern(10, 40)
 
 
@@ -115,33 +115,33 @@ function MakeAvanorValley()
 		"   ==##2##  ===========111====         =============================" ..
 		"    ==========         ;;;=================    ==           =====   ")
 
-		AddTranslation("1", BRIDGE)
-		AddTranslation("2", WINDOW)
-		AddTranslation("3", GOLDEN_FLOOR)
-		AddTranslation("M", MOUNTAIN)
-		AddTranslation("W", MARBLE_WALL)
-		AddTranslation("X", GOLDEN_FENCE)
+		AddTranslation("1", XTileType.BRIDGE)
+		AddTranslation("2", XTileType.WINDOW)
+		AddTranslation("3", XTileType.GOLDEN_FLOOR)
+		AddTranslation("M", XTileType.MOUNTAIN)
+		AddTranslation("W", XTileType.MARBLE_WALL)
+		AddTranslation("X", XTileType.GOLDEN_FENCE)
 		
-		AddTranslation("A", function(x, y) Furniture(x, y, xLIGHTRED, '~', 'eternal flame') end)
+		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'eternal flame') end)
 		AddTranslation("B", function(x, y) CreateGefeon(x, y) end)
-		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', GID_RODERICK_GUARDIAN, x, y, 30, 25) Guardian('fcitizen', GID_RODERICK_GUARDIAN, x, y, 30, 25) end end)
-		AddTranslation("_", function(x, y) Altar(x, y, D_LIFE) end)
+		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 30, 25) Guardian('fcitizen', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 30, 25) end end)
+		AddTranslation("_", function(x, y) Altar(x, y, DEITY.D_LIFE) end)
 		AddTranslation("E", function(x, y) CreateHighPriest(x, y) end)
-		AddTranslation("F", function(x, y) Furniture(x, y, xBROWN, '~', 'pew') end)
+		AddTranslation("F", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'pew') end)
 		
-		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xYELLOW, '~', 'the throne of Avanor') end)
-		AddTranslation("G", function(x, y) Guardian('royal_guard', GID_RODERICK_GUARDIAN, x, y) end)
-		AddTranslation("H", function(x, y) Guardian('royal_guard', GID_RODERICK_GUARDIAN, x, y, 1, 1, AIF_NO_SWAP) Way(DOWN, L_KINGS_TREASURE, x, y) end)
+		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
+		AddTranslation("G", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y) end)
+		AddTranslation("H", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, AI_FLAG.AIF_NO_SWAP) Way(DOWN, LOCATION.L_KINGS_TREASURE, x, y) end)
 		
-		AddTranslation("Q", function(x, y) Furniture(x, y, xLIGHTRED, '~', 'royal bed') end)
-		AddTranslation("O", function(x, y) Furniture(x, y, xBROWN, '~', 'dinner table') end)
-		AddTranslation("U", function(x, y) Furniture(x, y, xBROWN, '~', 'round table') end)
+		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
+		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
+		AddTranslation("U", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'round table') end)
 		
-		AddTranslation("K", function(x, y) Furniture(x, y, xBROWN, '~', 'table') end)
-		AddTranslation("N", function(x, y) Furniture(x, y, xBROWN, '~', 'bed') end)
+		AddTranslation("K", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'table') end)
+		AddTranslation("N", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'bed') end)
 		
 		
-		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, IM_BOOK + IM_SCROLL + IM_POTION, 'Toberik, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ITEM_MASK.IM_BOOK + ITEM_MASK.IM_SCROLL + ITEM_MASK.IM_POTION, 'Toberik, the human shopkeeper') end)
 		DrawPattern(129, 2)
 
 
@@ -154,11 +154,11 @@ function MakeAvanorValley()
 		" ,,,:;^::  :::::" ..
 		"   ,,:;:::::    " ..
 		"      :,,,      " )
-		AddTranslation(",", HILL)
-		AddTranslation(":", LOW_MOUNTAIN)
-		AddTranslation(";", MOUNTAIN)
-		AddTranslation("^", HIGH_MOUNTAIN)
-		AddTranslation(">", function(x, y) Way(DOWN, L_EXTINCT_VOLCANO, x, y) end)
+		AddTranslation(",", XTileType.HILL)
+		AddTranslation(":", XTileType.LOW_MOUNTAIN)
+		AddTranslation(";", XTileType.MOUNTAIN)
+		AddTranslation("^", XTileType.HIGH_MOUNTAIN)
+		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_EXTINCT_VOLCANO, x, y) end)
 		DrawPattern(46, 75)
 
 
@@ -173,7 +173,7 @@ function MakeAvanorValley()
 		"    #,,,,,,,,,,,,,,,##" ..
 		"    ###########,,,,,,#" ..
 		"              ########")
-		AddTranslation(".", CAVE_FLOOR)
+		AddTranslation(".", XTileType.CAVE_FLOOR)
 		AddTranslation(">", function(x, y) Way(DOWN, L_UNDEADS_TOMB1, x, y) end)
 		AddTranslation("U", function(x, y) for i = 1, 20 do Creature('skeleton', x, y, 14, 4) end end)
 		DrawPattern(100, 50)
@@ -193,8 +193,8 @@ function MakeAvanorValley()
 		"X...................." ..
 		"X...................X" ..
 		"....XX..X...X.....X..")
-		AddTranslation("#", BLACK_MARBLE_WALL)
-		AddTranslation(">", function(x, y) Way(DOWN, L_WIZARD_DUNGEON1, x, y) end)
+		AddTranslation("#", XTileType.BLACK_MARBLE_WALL)
+		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_WIZARD_DUNGEON1, x, y) end)
 		DrawPattern(155, 44)
 
 
@@ -212,15 +212,15 @@ function MakeAvanorValley()
 		"X......###/###......X" ..
 		"X........111........X" ..
 		"XXXXXXXXX111XXXXXXXXX")
-		AddTranslation("1", ROAD)
-		AddTranslation("2", GOLDEN_FLOOR)
-		AddTranslation("#", MARBLE_WALL)
-		AddTranslation("<", function(x, y) Way(UP, L_WIZTOWER_TOP, x, y) end)
+		AddTranslation("1", XTileType.ROAD)
+		AddTranslation("2", XTileType.GOLDEN_FLOOR)
+		AddTranslation("#", XTileType.MARBLE_WALL)
+		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_WIZTOWER_TOP, x, y) end)
 		DrawPattern(45, 25)
 
 
 -- KING'S TREASURE --
-	CreateLocation(L_KINGS_TREASURE, "RoyalTr", "Royal Treasure", PLAIN)
+	CreateLocation(LOCATION.L_KINGS_TREASURE, "RoyalTr", "Royal Treasure", PLAIN)
 		SetPattern(21, 10,
 		"#####################" ..
 		"#######[~~~~[########" ..
@@ -237,11 +237,11 @@ function MakeAvanorValley()
 		AddTranslation("[", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 250) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
-		AddTranslation("<", function(x, y) Way(UP, L_MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_MAIN, x, y) end)
 
 
 -- YOHJI's TOWER SECOND FLOOR--
-	CreateLocation(L_WIZTOWER_TOP, "WzTwr", "Yohjishiro's Tower", PLAIN)
+	CreateLocation(LOCATION.L_WIZTOWER_TOP, "WzTwr", "Yohjishiro's Tower", PLAIN)
 		SetPattern(21, 11,
 		"XXXXXXXXXXXXXXXXXXXXX" ..
 		"X......##333##......X" ..
@@ -254,13 +254,13 @@ function MakeAvanorValley()
 		"X.....###222###.....X" ..
 		"X......##333##......X" ..
 		"XXXXXXXXX111XXXXXXXXX")
-		AddTranslation("1", ROAD)
-		AddTranslation("2", GOLDEN_FLOOR)
-		AddTranslation("3", WINDOW)
-		AddTranslation("#", MARBLE_WALL)
-		AddTranslation(">", function(x, y) Way(DOWN, L_MAIN, x, y) end)
+		AddTranslation("1", XTileType.ROAD)
+		AddTranslation("2", XTileType.GOLDEN_FLOOR)
+		AddTranslation("3", XTileType.WINDOW)
+		AddTranslation("#", XTileType.MARBLE_WALL)
+		AddTranslation(">", function(x, y) Way(DOWN, LOCATION.L_MAIN, x, y) end)
 		AddTranslation("W", function(x, y) CreateYohji(x, y) end)
-		AddTranslation("B", function(x, y) Furniture(x, y, xLIGHTRED, '~', 'nice bed') end)
+		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'nice bed') end)
 		DrawPattern(45, 25)
 
 
@@ -287,7 +287,7 @@ function MakeAvanorValley()
 		"###################################################D,,,,,,,,####################" ..
 		"################################################################################" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, L_MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, LOCATION.L_MAIN, x, y) end)
 		AddTranslation("A", function(x, y) Grave(x, y, 'Frederick III (760-805)', 'StandardGraveEvent') end)
 		AddTranslation("B", function(x, y) Grave(x, y, 'Frederick II (710-790)', 'StandardGraveEvent') end)
 		AddTranslation("C", function(x, y) Grave(x, y, 'Arthur IV (796-854)', 'StandardGraveEvent') end)
@@ -302,9 +302,9 @@ function MakeAvanorValley()
 end
 
 function FarmerHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
-		if (qs == Q_COMPLETE or qs == Q_CLOSED) then
+		if (qs == QUEST.Q_COMPLETE or qs == QUEST.Q_CLOSED) then
 			AddMessage("'Thank you, great hero!'")
 		else
 			AddMessage("'Please speak with our elder. He lives in the stone house.'")
@@ -314,52 +314,52 @@ function FarmerHandler(e, t, p, v)
 end
 
 function CreateElderGridor(x, y)
-	local elder = Guardian("elder_gridor", GID_SMALL_VILLAGE_FARMER, x, y, 5, 1)
+	local elder = Guardian("elder_gridor", GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 5, 1)
 	SetEventHandler(elder, 'ElderGridorHandler')
 end
 
 
 function ElderGridorHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
-		if (qs == Q_UNKNOWN) then
+		if (qs == QUEST.Q_UNKNOWN) then
 			AddMessage('Good day, friend! All that we have are our mushrooms.')
 			AddMessage('We collect them in the cave to the west of the village.')
 			AddMessage('But a short time ago, an evil monster occupied the cave.')
 			AddMessage('It looks like a demon and is very dangerous.')
 			AddMessage('Maybe the people who live to the south of the lake can help.')
-			QuestModify(QUEST_ELDER, Q_KNOWN)
-		elseif (qs == Q_KNOWN) then
+			QuestModify(QUEST_ELDER, QUEST.Q_KNOWN)
+		elseif (qs == QUEST.Q_KNOWN) then
 			AddMessage('The evil monster is still there.')
-		elseif (qs == Q_COMPLETE) then
+		elseif (qs == QUEST.Q_COMPLETE) then
 			AddMessage('Thank you for your great help! Now, our farmers can collect mushrooms.')
-			QuestModify(QUEST_ELDER, Q_CLOSED)
+			QuestModify(QUEST_ELDER, QUEST.Q_CLOSED)
 			ExecuteAIScript()
 		else
 			AddMessage('Have a nice day,')
-			if (Gender(p) == GEN_MALE) then
+			if (Gender(p) == CR_GENDER.GEN_MALE) then
 				AddMessage('sir!')
 			else
 				AddMessage("ma'am!")
 			end
 		end
-	elseif (e == LE_SAVE) then
-	elseif (e == LE_LOAD) then
+	elseif (e == LUA_EVENT.LE_SAVE) then
+	elseif (e == LUA_EVENT.LE_LOAD) then
 	end
 	return 1
 end
 
 
 function CreateJorgus(x, y)
-	local jorgus = Guardian("jorgus", GID_FOREST_BROTHER, x, y, 3, 2)
+	local jorgus = Guardian("jorgus", GROUP_ID.GID_FOREST_BROTHER, x, y, 3, 2)
 	SetEventHandler(jorgus, 'JorgusHandler')
 	GiveObjectToCreature(CreateObject('XForestBrotherCloak'), jorgus)
 end
 
 function JorgusHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		if (GetSkill(p, SKT_STEALING) > 0) then
-			if (Gender(p) == GEN_MALE) then
+			if (Gender(p) == CR_GENDER.GEN_MALE) then
 				AddMessage("Good day, brother!")
 			else
 				AddMessage("Good day, sister!")
@@ -369,7 +369,7 @@ function JorgusHandler(e, t, p, v)
 				if (MoneyOperation(p, -1000) >= 0) then
 					MoneyOperation(t, 1000)
 					LearnSkill(p, SKT_STEALING, 1)
-					if (Gender(p) == GEN_MALE) then
+					if (Gender(p) == CR_GENDER.GEN_MALE) then
 						AddMessage("You're welcome, brother!")
 					else
 						AddMessage("You're welcome, sister!")
@@ -391,8 +391,8 @@ orcs_live = 50
 
 
 function CreateOzorik(x, y)
-	local ozorik = Guardian("ozorik", GID_GUARDIAN, x, y, 3, 2)
-	SetEnemy(ozorik, CR_ORC)
+	local ozorik = Guardian("ozorik", GROUP_ID.GID_GUARDIAN, x, y, 3, 2)
+	SetEnemy(ozorik, CREATURE_CLASS.CR_ORC)
 	SetEventHandler(ozorik, 'OzorikHandler')
 	GiveObjectToCreature(CreateObject('XGlamdring'), ozorik)
 	local death_hack = CreateObject('XDeathHack')
@@ -402,42 +402,42 @@ end
 
 
 function OzorikHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		local qs = QuestStatus(QUEST_OZORIK)
 		local demon_quest = QuestStatus(QUEST_ELDER)
-		if (orcs_live > 0 and qs < Q_COMPLETE) then
-			if (qs == Q_UNKNOWN) then
-				if (demon_quest == Q_KNOWN) then
+		if (orcs_live > 0 and qs < QUEST.Q_COMPLETE) then
+			if (qs == QUEST.Q_UNKNOWN) then
+				if (demon_quest == QUEST.Q_KNOWN) then
 					AddMessage("'Demons? We are mighty enough to slay them, but now another problem approaches from the south - an orc war-party!'")
-				elseif (demon_quest == Q_UNKNOWN) then
+				elseif (demon_quest == QUEST.Q_UNKNOWN) then
 					AddMessage("'Sorry, but I'm really busy now. The orc war-party will be here soon!'")
 				end
-				QuestModify(QUEST_OZORIK, Q_KNOWN)
+				QuestModify(QUEST_OZORIK, QUEST.Q_KNOWN)
 			else
 				AddMessage("'Sorry, but I'm really busy right now. The orc war-party will be here soon!'")
 			end
 		else
-			if (qs < Q_CLOSED) then
+			if (qs < QUEST.Q_CLOSED) then
 				AddMessage("'You gained us victory!'")
 				if (GiveAward(t, ozorik_award, p)) then
 					AddMessage('Take this dagger as a reward!')
 				end
-				QuestModify(QUEST_OZORIK, Q_CLOSED)
+				QuestModify(QUEST_OZORIK, QUEST.Q_CLOSED)
 			else
 				AddMessage('Good day, hero!')
 			end
 		end
-	elseif (e == LE_GIVE_ITEM) then		
+	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then		
 		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(im, IM_WEAPON) and BinaryAND(brt, BR_ORCSLAYER) and wt == WSK_SWORD) then
+		if (BinaryAND(im, ITEM_MASK.IM_WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
 		else
 			AddMessage("'We are not looking for this.'")
 			return 0
 		end
-	elseif (e == LE_SAVE) then
+	elseif (e == LUA_EVENT.LE_SAVE) then
 		StoreInt(ozorik_award)
-	elseif (e == LE_LOAD) then
+	elseif (e == LUA_EVENT.LE_LOAD) then
 		ozorik_award = RestoreInt()
 	end
 	return 1
@@ -446,22 +446,22 @@ end
 
 function CreateGuardians(x, y)
 	for i = 1, 7 do 
-		local g = Guardian("royal_guard", GID_GUARDIAN, x, y, 14, 5, AIF_GUARD_AREA + AIF_RANDOM_MOVE)
-		SetEnemy(g, CR_ORC)
+		local g = Guardian("royal_guard", GROUP_ID.GID_GUARDIAN, x, y, 14, 5, AI_FLAG.AIF_GUARD_AREA + AI_FLAG.AIF_RANDOM_MOVE)
+		SetEnemy(g, CREATURE_CLASS.CR_ORC)
 		SetEventHandler(g, 'RoyalGuardHandler')
 	end
 end
 
 
 function RoyalGuardHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		AddMessage("'Don't bother me!'")
-	elseif (e == LE_GIVE_ITEM) then
+	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(im, IM_WEAPON) and BinaryAND(brt, BR_ORCSLAYER) and wt == WSK_SWORD) then
+		if (BinaryAND(im, ITEM_MASK.IM_WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Thank you!'")
-			if (QuestStatus(QUEST_OZORIK) < Q_COMPLETE) then
-				QuestModify(QUEST_OZORIK, Q_COMPLETE)
+			if (QuestStatus(QUEST_OZORIK) < QUEST.Q_COMPLETE) then
+				QuestModify(QUEST_OZORIK, QUEST.Q_COMPLETE)
 			end
 		else
 			AddMessage("'I do not need this!'")
@@ -473,23 +473,23 @@ end
 
 
 function CreateGekta(x, y)
-	local gekta = Guardian("gekta", GID_GUARDIAN, x, y, 14, 5)
-	SetEnemy(gekta, CR_ORC)
+	local gekta = Guardian("gekta", GROUP_ID.GID_GUARDIAN, x, y, 14, 5)
+	SetEnemy(gekta, CREATURE_CLASS.CR_ORC)
 	SetEventHandler(gekta, 'GektaHandler')
 end
 
 
 function GektaHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		AddMessage("'Woof! Woof! Woof'");
-	elseif (e == LE_GIVE_ITEM) then
+	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (im == IM_FOOD) then
-			if (it == IT_BONE) then
+		if (im == ITEM_MASK.IM_FOOD) then
+			if (it == ITEM_TYPE.IT_BONE) then
 				for i = 1, count do
 					if (Rand(7) == 0) then
 						 AddMessage("Gekta suddenly start to dig in the ground. She digs a pit. Gekta digs something up from the ground. After this, she puts a bone in the pit and buries it.")
-						 DropItem(CreateObject(IM_ITEM - IM_FOOD, 20, 500), t)
+						 DropItem(CreateObject(ITEM_MASK.IM_ITEM - ITEM_MASK.IM_FOOD, 20, 500), t)
 					else
 						AddMessage(string.format("Gekta eats the %s.", name))
 					end
@@ -518,7 +518,7 @@ end
 
 
 function YohjiHandler(e, t, p, v)
-	if (e == LE_CHAT) then
+	if (e == LUA_EVENT.LE_CHAT) then
 		local result
 		if (GetSkill(p, SKT_LITERACY) == 0) then
 			result = AskQuestion("What do you wish to speak about?", "esc q l", "quest", "learn")
@@ -526,13 +526,13 @@ function YohjiHandler(e, t, p, v)
 			result = 'q'
 		end
 		if (result == 'q') then
-			if (QuestStatus(QUEST_YOHJI_BAT) ~= Q_KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= Q_KNOWN) then
+			if (QuestStatus(QUEST_YOHJI_BAT) ~= QUEST.Q_KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= QUEST.Q_KNOWN) then
 				if (Rand(2) == 1) then
 					AddMessage("'I can identify all items in your inventory, if you bring me a bat wing.'")
-					QuestModify(QUEST_YOHJI_BAT, Q_KNOWN)
+					QuestModify(QUEST_YOHJI_BAT, QUEST.Q_KNOWN)
 				else
 					AddMessage("'I can identify all items in your inventory, if you bring me a rat tail.'")
-					QuestModify(QUEST_YOHJI_RAT, Q_KNOWN)
+					QuestModify(QUEST_YOHJI_RAT, QUEST.Q_KNOWN)
 				end
 			else
 				AddMessage("'Please, complete my last request first'")
@@ -550,16 +550,16 @@ function YohjiHandler(e, t, p, v)
 				AddMessage("'As you wish.'")
 			end
 		end
-	elseif (e == LE_GIVE_ITEM) then
+	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
 		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (it == IT_RATTAIL or it == IT_BATWING) then
-			if (it == IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == Q_KNOWN) then
+		if (it == ITEM_TYPE.IT_RATTAIL or it == ITEM_TYPE.IT_BATWING) then
+			if (it == ITEM_TYPE.IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == QUEST.Q_KNOWN) then
 				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory.")
-				QuestModify(QUEST_YOHJI_RAT, Q_UNKNOWN)
-			elseif (it == IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == Q_KNOWN) then
+				QuestModify(QUEST_YOHJI_RAT, QUEST.Q_UNKNOWN)
+			elseif (it == ITEM_TYPE.IT_BATWING and QuestStatus(QUEST_YOHJI_BAT) == QUEST.Q_KNOWN) then
 				AddMessage("'Oh, thank you!'")
-				MakeEffect(E_GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
-				QuestModify(QUEST_YOHJI_BAT, Q_UNKNOWN)
+				MakeEffect(EFFECT.E_GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
+				QuestModify(QUEST_YOHJI_BAT, QUEST.Q_UNKNOWN)
 			else
 				if (MoneyOperation(t, -50 * count) >= 0) then
 					AddMessage(string.format("'I hope %d gp will be enough for this.'", 50 * count))
@@ -578,30 +578,30 @@ end
 
 
 function CreateGefeon(x, y)
-	local gefeon = Guardian("gefeon", GID_RODERICK_GUARDIAN, x, y, 3, 4)
+	local gefeon = Guardian("gefeon", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 3, 4)
 	SetEventHandler(gefeon, '')
 end
 
 function CreateHighPriest(x, y)
-	local hp = Guardian("highpriest", GID_RODERICK_GUARDIAN, x, y, 3, 4)
+	local hp = Guardian("highpriest", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 3, 4)
 	SetEventHandler(hp, '')
 end
 
 function CreateRoderik(x, y)
-	local hp = Guardian("roderik", GID_RODERICK_GUARDIAN, x, y, 1, 1, AIF_NO_SWAP)
+	local hp = Guardian("roderik", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, AI_FLAG.AIF_NO_SWAP)
 	SetEventHandler(hp, '')
 end
 
 
 function Grave(x, y, s, e)
-	OuterObject(x, y, xLIGHTGRAY, "+", string.format("the grave signed '%s'", s), e)
+	OuterObject(x, y, xColor.xLIGHTGRAY, "+", string.format("the grave signed '%s'", s), e)
 end
 
 function StandardGraveEvent(e, cr, o)	
-	if (e == LE_OUTER_USE) then
+	if (e == LUA_EVENT.LE_OUTER_USE) then
 		if (GetView(o) == "+") then
 			AddMessage('You move the headstone. Something glimmers in the dark.')
-			SetView(o, '-', xLIGHTGRAY);
+			SetView(o, '-', xColor.xLIGHTGRAY);
 			SetName(o, 'the desecrated grave');
 			for i = 1, Rand(3) + 2 do 
 				DropItem(CreateObject('XBone'), o)
@@ -614,7 +614,7 @@ function StandardGraveEvent(e, cr, o)
 end
 
 function AvanorDefenderGraveEvent(e, cr, o)
-	if (e == LE_OUTER_USE and GetView(o) == "+") then
+	if (e == LUA_EVENT.LE_OUTER_USE and GetView(o) == "+") then
 		DropItem(CreateObject('XAvanorDefender'), o)
 	end
 	return StandardGraveEvent(e, cr, o)

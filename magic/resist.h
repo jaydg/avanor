@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 #include "helpers/dice.h"
 
@@ -49,6 +50,10 @@ enum RESISTANCE {
     R_SEE_INVISIBLE,
     R_EOF
 };
+
+// Registers this enum as the Lua table RESISTANCE.MEMBER - see the Sol2
+// plan.
+void RegisterResistanceEnum(sol::state_view& lua);
 
 enum FLUENCE {
     FLU_NONE = 0,

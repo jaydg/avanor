@@ -21,11 +21,45 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fstream>
 
 #include <cereal/types/polymorphic.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/creature.h"
 #include "item/item.h"
 #include "map/map.h"
 #include "map/map_objects.h"
+
+void XTileType::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("XTileType",
+        "GREEN_GRASS", XTileType::GREEN_GRASS,
+        "TREE", XTileType::TREE,
+        "SAND", XTileType::SAND,
+        "WINDOW", XTileType::WINDOW,
+        "MAGMA", XTileType::MAGMA,
+        "QUARTZ", XTileType::QUARTZ,
+        "CAVE_FLOOR", XTileType::CAVE_FLOOR,
+        "STONE_FLOOR", XTileType::STONE_FLOOR,
+        "PATH", XTileType::PATH,
+        "WOOD_WALL", XTileType::WOOD_WALL,
+        "STONE_WALL", XTileType::STONE_WALL,
+        "WATER", XTileType::WATER,
+        "DEEP_WATER", XTileType::DEEP_WATER,
+        "LAVA", XTileType::LAVA,
+        "HILL", XTileType::HILL,
+        "LOW_MOUNTAIN", XTileType::LOW_MOUNTAIN,
+        "MOUNTAIN", XTileType::MOUNTAIN,
+        "HIGH_MOUNTAIN", XTileType::HIGH_MOUNTAIN,
+        "BRIDGE", XTileType::BRIDGE,
+        "ROAD", XTileType::ROAD,
+        "OBSIDIAN_FLOOR", XTileType::OBSIDIAN_FLOOR,
+        "FENCE", XTileType::FENCE,
+        "GOLDEN_FLOOR", XTileType::GOLDEN_FLOOR,
+        "MARBLE_WALL", XTileType::MARBLE_WALL,
+        "BLACK_MARBLE_WALL", XTileType::BLACK_MARBLE_WALL,
+        "GOLDEN_FENCE", XTileType::GOLDEN_FENCE,
+        "TELEPORT_WHITE", XTileType::TELEPORT_WHITE
+    );
+}
 
 XTileType std_tile_data[] = {
     {' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},
@@ -60,7 +94,7 @@ XTileType std_tile_data[] = {
 
 XMapTile::XMapTile()
 {
-    n = XTileType::GREEN_GRAS;
+    n = XTileType::GREEN_GRASS;
     pMonster = nullptr;
     pSpecialObject = nullptr;
     visible = false;

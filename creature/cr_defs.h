@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string>
 
+#include <sol/forward.hpp>
+
 enum CREATURE_CLASS {
     CR_NONE     = 0x00000000,
     CR_RAT      = 0x00000001,
@@ -177,5 +179,9 @@ enum CR_ATTACK_TYPE {
     CRAT_MELEE_ONLY,
     CRAT_BOTH
 };
+
+// Registers CREATURE_CLASS, CREATURE_LEVEL, GROUP_ID, CR_GENDER and
+// CR_PERSON_TYPE as Lua tables (CREATURE_CLASS.MEMBER, etc.).
+void RegisterCrDefsEnums(sol::state_view& lua);
 
 #endif

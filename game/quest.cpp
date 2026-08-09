@@ -19,10 +19,22 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fmt/format.h>
+#include <sol/sol.hpp>
 
 #include "engine/global.h"
 #include "game/quest.h"
 #include "helpers/xgui.h"
+
+void RegisterQuestEnum(sol::state_view& lua)
+{
+    lua.new_enum("QUEST",
+        "Q_UNKNOWN", Q_UNKNOWN,
+        "Q_KNOWN", Q_KNOWN,
+        "Q_COMPLETE", Q_COMPLETE,
+        "Q_CLOSED", Q_CLOSED,
+        "Q_FAIL", Q_FAIL
+    );
+}
 
 XQuest XQuest::quest;
 

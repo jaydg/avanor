@@ -39,7 +39,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
             if (vRand() % 3) {
-                map->SetXY(j, i, XTileType::GREEN_GRAS);
+                map->SetXY(j, i, XTileType::GREEN_GRASS);
             } else {
                 map->SetXY(j, i, XTileType::TREE);
             }
@@ -117,7 +117,7 @@ XMainLocation::XMainLocation(LOCATION tl) : XLocation(tl)
     for (i = 0; i < map->hgt; i++) {
         for (j = 0; j < map->len; j++) {
             if (vRand(18) == 0) {
-                if (map->GetXY(j, i) == XTileType::GREEN_GRAS && map->GetSpecial(j, i) == nullptr) {
+                if (map->GetXY(j, i) == XTileType::GREEN_GRASS && map->GetSpecial(j, i) == nullptr) {
                     new XHerbBush(j, i, this);
                 }
             }

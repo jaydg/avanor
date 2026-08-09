@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DEITY_H
 
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 class XCreature;
 class XItem;
@@ -29,6 +30,9 @@ class XItem;
 enum DEITY {
     D_LIFE = 0, D_DEATH = 1, D_UNKNOWN
 };
+
+// Registers this enum as the Lua table DEITY.MEMBER.
+void RegisterDeityEnum(sol::state_view& lua);
 
 enum DEITY_RELATION {
     DR_FALLEN_CHAMPION, // no way up

@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SKILL_H
 
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 struct SKILL_DB {
     const char* name;
@@ -72,6 +73,9 @@ class XSkill
             ATHLETICS,
             CLIMBING,      // at this time from pits only...
         };
+
+        // Registers this enum as the Lua table XSkill.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
 
         XSkill() = delete;
 

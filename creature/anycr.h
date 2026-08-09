@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <vector>
 
 #include <cereal/types/base_class.hpp>
+#include <sol/forward.hpp>
 
 #include "creature/cr_defs.h"
 #include "creature/creature.h"
@@ -53,6 +54,9 @@ enum GENERATION_FLAGS {
     GFS_SUPRESS_INVIS = 0x0001,
     GFS_SEE_INVIS = 0x0002,
 };
+
+// Registers this enum as the Lua table GENERATION_FLAGS.MEMBER.
+void RegisterGenerationFlagsEnum(sol::state_view& lua);
 
 
 struct _CREATURE {

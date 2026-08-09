@@ -116,6 +116,10 @@ enum LUA_EVENT {
     LE_LOAD	= 99
 };
 
+// Registers LOCATION as the Lua table LOCATION.MEMBER
+// and LUA_EVENT as LUA_EVENT.MEMBER.
+void RegisterLocationEnums(sol::state_view& lua);
+
 enum PALETTE {
     PAL_UNKNOWN	= 0x0000,
     PAL_SMALL_TOWN	= 0x0001,

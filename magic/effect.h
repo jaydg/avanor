@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef EFFECT_H
 #define EFFECT_H
 
+#include <sol/forward.hpp>
+
 #include "engine/global.h"
 #include "item/itemdef.h"
 
@@ -69,6 +71,9 @@ enum EFFECT {
     E_COLD_RESISTANCE,
     E_POISON_RESISTANCE,
 };
+
+// Registers this enum as the Lua table EFFECT.MEMBER.
+void RegisterEffectEnum(sol::state_view& lua);
 
 class XCreature;
 class XItem;

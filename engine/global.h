@@ -24,6 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fstream>
 #include <string_view>
 
+#include <sol/forward.hpp>
+
 #ifdef WIN32
     #define XWIN32
 #else
@@ -94,6 +96,9 @@ enum xColor {
     xYELLOW,
     xWHITE = 15
 };
+
+// Registers this enum as the Lua table xColor.MEMBER (e.g. xColor.xBLUE)
+void RegisterColorEnum(sol::state_view& lua);
 
 #define MSG_BLACK          "\x1F\x00"
 #define MSG_BLUE           "\x1F\x01"

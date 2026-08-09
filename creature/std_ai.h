@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <vector>
 
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 #include "creature/creature.h"
 #include "creature/cr_defs.h"
@@ -60,6 +61,9 @@ enum AI_FLAG {
     AIF_HUMAN               = AIF_ALLOW_PICK_UP | AIF_ALLOW_WEAR_ITEM | AIF_FREE_MOVE | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
     AIF_GHOST               = AIF_FREE_WAY | AIF_RANDOM_MOVE | AIF_FIND_WAY | AIF_COWARD,
 };
+
+// Registers this enum as the Lua table AI_FLAG.MEMBER.
+void RegisterAiFlagEnum(sol::state_view& lua);
 
 enum COMPANION_COMMAND {
     CC_NONE,

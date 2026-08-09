@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/memory.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
+#include <sol/forward.hpp>
 
 #include "creature/creature.h"
 #include "item/itemdef.h"
@@ -41,6 +42,9 @@ enum QUEST {
     Q_CLOSED	= 3,
     Q_FAIL	= 4,
 };
+
+// Registers this enum as the Lua table QUEST.MEMBER.
+void RegisterQuestEnum(sol::state_view& lua);
 
 struct XQuestRec {
     std::string know;

@@ -18,9 +18,35 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <sol/sol.hpp>
+
 #include "engine/global.h"
 #include "helpers/strproc.h"
 #include "magic/resist.h"
+
+void RegisterResistanceEnum(sol::state_view& lua)
+{
+    lua.new_enum("RESISTANCE",
+        "R_WHITE", R_WHITE,
+        "R_BLACK", R_BLACK,
+        "R_FIRE", R_FIRE,
+        "R_WATER", R_WATER,
+        "R_AIR", R_AIR,
+        "R_EARTH", R_EARTH,
+        "R_ACID", R_ACID,
+        "R_COLD", R_COLD,
+        "R_POISON", R_POISON,
+        "R_DISEASE", R_DISEASE,
+        "R_PARALYSE", R_PARALYSE,
+        "R_STUN", R_STUN,
+        "R_CONFUSE", R_CONFUSE,
+        "R_BLIND", R_BLIND,
+        "R_LIGHT", R_LIGHT,
+        "R_DARKNESS", R_DARKNESS,
+        "R_INVISIBLE", R_INVISIBLE,
+        "R_SEE_INVISIBLE", R_SEE_INVISIBLE
+    );
+}
 
 RESIST_REC resists_data[] = {
     {"unknown",	FLU_NONE},

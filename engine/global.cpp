@@ -24,7 +24,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fstream>
 #include <string>
 
+#include <sol/sol.hpp>
+
 #include "engine/global.h"
+
+void RegisterColorEnum(sol::state_view& lua)
+{
+    lua.new_enum("xColor",
+        "xBLACK", xBLACK,
+        "xBLUE", xBLUE,
+        "xGREEN", xGREEN,
+        "xCYAN", xCYAN,
+        "xRED", xRED,
+        "xMAGENTA", xMAGENTA,
+        "xBROWN", xBROWN,
+        "xLIGHTGRAY", xLIGHTGRAY,
+        "xDARKGRAY", xDARKGRAY,
+        "xLIGHTBLUE", xLIGHTBLUE,
+        "xLIGHTGREEN", xLIGHTGREEN,
+        "xLIGHTCYAN", xLIGHTCYAN,
+        "xLIGHTRED", xLIGHTRED,
+        "xLIGHTMAGENTA", xLIGHTMAGENTA,
+        "xYELLOW", xYELLOW,
+        "xWHITE", xWHITE
+    );
+}
 
 unsigned long total_cr = 0;
 unsigned long total_it = 0;

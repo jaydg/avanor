@@ -22,12 +22,42 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/std_ai.h"
 #include "engine/xapi.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "map/map_objects.h"
+
+void RegisterAiFlagEnum(sol::state_view& lua)
+{
+    lua.new_enum("AI_FLAG",
+        "AIF_ALLOW_PICK_UP", AIF_ALLOW_PICK_UP,
+        "AIF_ALLOW_MOVE_WAY_UP", AIF_ALLOW_MOVE_WAY_UP,
+        "AIF_ALLOW_MOVE_WAY_DOWN", AIF_ALLOW_MOVE_WAY_DOWN,
+        "AIF_FREE_WAY", AIF_FREE_WAY,
+        "AIF_ALLOW_MOVE_OUT", AIF_ALLOW_MOVE_OUT,
+        "AIF_FREE_MOVE", AIF_FREE_MOVE,
+        "AIF_FIND_WAY", AIF_FIND_WAY,
+        "AIF_PEACEFUL", AIF_PEACEFUL,
+        "AIF_COWARD", AIF_COWARD,
+        "AIF_ALLOW_PACK", AIF_ALLOW_PACK,
+        "AIF_ALLOW_WEAR_ITEM", AIF_ALLOW_WEAR_ITEM,
+        "AIF_GUARD_AREA", AIF_GUARD_AREA,
+        "AIF_PROTECT_AREA", AIF_PROTECT_AREA,
+        "AIF_RANDOM_MOVE", AIF_RANDOM_MOVE,
+        "AIF_EXPLORER_MOVE", AIF_EXPLORER_MOVE,
+        "AIF_EXECUTE_SCRIPT", AIF_EXECUTE_SCRIPT,
+        "AIF_NO_SWAP", AIF_NO_SWAP,
+        "AIF_INSECT", AIF_INSECT,
+        "AIF_LO_ANIMAL", AIF_LO_ANIMAL,
+        "AIF_HI_ANIMAL", AIF_HI_ANIMAL,
+        "AIF_CREATURE", AIF_CREATURE,
+        "AIF_HUMAN", AIF_HUMAN,
+        "AIF_GHOST", AIF_GHOST
+    );
+}
 
 // Directly instantiable (not just an abstract base for XShopKeeperAI),
 // but still polymorphic (virtual destructor/methods), so Cereal's

@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <sol/sol.hpp>
+
 #include "creature/creature.h"
 #include "creature/xhero.h"
 #include "game/game.h"
@@ -26,6 +28,44 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemf.h"
 #include "magic/effect.h"
 #include "magic/modifier.h"
+
+void RegisterEffectEnum(sol::state_view& lua)
+{
+    lua.new_enum("EFFECT",
+        "E_CURE_LIGHT_WOUNDS", E_CURE_LIGHT_WOUNDS,
+        "E_CURE_SERIOUS_WOUNDS", E_CURE_SERIOUS_WOUNDS,
+        "E_CURE_CRITICAL_WOUNDS", E_CURE_CRITICAL_WOUNDS,
+        "E_CURE_MORTAL_WOUNDS", E_CURE_MORTAL_WOUNDS,
+        "E_HEAL", E_HEAL,
+        "E_ULTRAHEAL", E_ULTRAHEAL,
+        "E_POWER", E_POWER,
+        "E_ULTRAPOWER", E_ULTRAPOWER,
+        "E_RESTORATION", E_RESTORATION,
+        "E_CURE_POISON", E_CURE_POISON,
+        "E_CURE_DISEASE", E_CURE_DISEASE,
+        "E_BURNING_HANDS", E_BURNING_HANDS,
+        "E_ICE_TOUCH", E_ICE_TOUCH,
+        "E_DRAIN_LIFE", E_DRAIN_LIFE,
+        "E_MAGIC_ARROW", E_MAGIC_ARROW,
+        "E_FIRE_BOLT", E_FIRE_BOLT,
+        "E_ICE_BOLT", E_ICE_BOLT,
+        "E_LIGHTNING_BOLT", E_LIGHTNING_BOLT,
+        "E_ACID_BOLT", E_ACID_BOLT,
+        "E_HEROISM", E_HEROISM,
+        "E_IDENTIFY", E_IDENTIFY,
+        "E_GREAT_IDENTIFY", E_GREAT_IDENTIFY,
+        "E_SUMMON_MONSTER", E_SUMMON_MONSTER,
+        "E_CREATE_ITEM", E_CREATE_ITEM,
+        "E_BLINK", E_BLINK,
+        "E_TELEPORT", E_TELEPORT,
+        "E_SELF_KNOWLEDGE", E_SELF_KNOWLEDGE,
+        "E_SEE_INVISIBLE", E_SEE_INVISIBLE,
+        "E_ACID_RESISTANCE", E_ACID_RESISTANCE,
+        "E_FIRE_RESISTANCE", E_FIRE_RESISTANCE,
+        "E_COLD_RESISTANCE", E_COLD_RESISTANCE,
+        "E_POISON_RESISTANCE", E_POISON_RESISTANCE
+    );
+}
 
 EFFECT_REQ XEffect::GetReq(EFFECT effect)
 {

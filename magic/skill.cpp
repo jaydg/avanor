@@ -19,12 +19,42 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fmt/format.h>
+#include <sol/sol.hpp>
 
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "helpers/xgui.h"
 #include "magic/skill.h"
 #include "map/map_objects.h"
+
+void XSkill::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("XSkill",
+        "ARCHERY", XSkill::ARCHERY,
+        "FINDWEAKNESS", XSkill::FINDWEAKNESS,
+        "HEALING", XSkill::HEALING,
+        "CONCENTRATION", XSkill::CONCENTRATION,
+        "DODGE", XSkill::DODGE,
+        "TRADING", XSkill::TRADING,
+        "STEALING", XSkill::STEALING,
+        "LITERACY", XSkill::LITERACY,
+        "DETECTTRAP", XSkill::DETECTTRAP,
+        "DISARMTRAP", XSkill::DISARMTRAP,
+        "COOKING", XSkill::COOKING,
+        "MINING", XSkill::MINING,
+        "HERBALISM", XSkill::HERBALISM,
+        "RELIGION", XSkill::RELIGION,
+        "BACKSTABBING", XSkill::BACKSTABBING,
+        "FIRST_AID", XSkill::FIRST_AID,
+        "TACTICS", XSkill::TACTICS,
+        "ALCHEMY", XSkill::ALCHEMY,
+        "WOODCRAFT", XSkill::WOODCRAFT,
+        "CREATETRAP", XSkill::CREATETRAP,
+        "NECROMANCY", XSkill::NECROMANCY,
+        "ATHLETICS", XSkill::ATHLETICS,
+        "CLIMBING", XSkill::CLIMBING
+    );
+}
 
 SKILL_DB skill_db[] = {
     {"Archery", 1},

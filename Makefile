@@ -64,9 +64,9 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xshield.cpp                \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
        quest.cpp map_objects.cpp msgwin.cpp                                   \
        modifiers.cpp modifier.cpp map.cpp manual.cpp mainloc.cpp Main.cpp     \
-       magic.cpp los.cpp location.cpp lbuilderpalette.cpp                     \
+       magic.cpp los.cpp location.cpp lbuilderpalette.cpp itemdef.cpp         \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
-       game.cpp effect.cpp dice.cpp deity.cpp                                 \
+       game.cpp effect.cpp dice.cpp deity.cpp cr_defs.cpp                     \
        creature2.cpp creature.cpp cbuilder.cpp cave.cpp                       \
        bodypart.cpp anycr.cpp ai_view.cpp
 

@@ -28,6 +28,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/memory.hpp>
 #include <cereal/types/set.hpp>
 
+#include <sol/forward.hpp>
+
 #include "helpers/rect.h"
 #include "item/itemlist.h"
 #include "map/xanyplace.h"
@@ -68,7 +70,7 @@ enum VISIBILITY {
 struct XTileType {
     enum Type {
         UNKNOWN,
-        GREEN_GRAS,
+        GREEN_GRASS,
         TREE,
         SAND,
         WINDOW,
@@ -96,6 +98,9 @@ struct XTileType {
         GOLDEN_FENCE,
         TELEPORT_WHITE
     };
+
+    // Registers this enum as the Lua table XTileType.MEMBER.
+    static void RegisterLua(sol::state_view& lua);
 
     char view;
     char color;

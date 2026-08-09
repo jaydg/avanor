@@ -18,8 +18,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <sol/sol.hpp>
+
 #include "helpers/strproc.h"
 #include "magic/stats.h"
+
+void RegisterStatsEnum(sol::state_view& lua)
+{
+    lua.new_enum("STATS",
+        "S_STR", S_STR,
+        "S_DEX", S_DEX,
+        "S_TOU", S_TOU,
+        "S_LEN", S_LEN,
+        "S_WIL", S_WIL,
+        "S_MAN", S_MAN,
+        "S_PER", S_PER,
+        "S_CHR", S_CHR,
+        "S_EOF", S_EOF
+    );
+}
 
 const char* stats_str[] = {
     "St",

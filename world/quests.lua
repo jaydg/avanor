@@ -8,32 +8,32 @@ QUEST_ANCIENT_PART	= 6
 
 function CreateAllQuests()
 
-	Quest(QUEST_ELDER, Q_UNKNOWN, 
+	Quest(QUEST_ELDER, QUEST.Q_UNKNOWN, 
 		"The Village Elder asked you to kill the demon who attacks villagers and has occupied the caves to the west of the village.", 
 		"", 
 		"")
 
-	Quest(QUEST_TORIN, Q_UNKNOWN, 
+	Quest(QUEST_TORIN, QUEST.Q_UNKNOWN, 
 		"Torin, the Dwarven King asked you to switch on the gas pump at the bottom of gold mine.",
 		"", 
 		"")
 
-	Quest(QUEST_OZORIK, Q_UNKNOWN, 
+	Quest(QUEST_OZORIK, QUEST.Q_UNKNOWN, 
 		"Ozorick, the royal guard captain, has problems with an orcish war-party.",
 		"", 
 		"")
 
-	Quest(QUEST_YOHJI_BAT, Q_UNKNOWN, 
+	Quest(QUEST_YOHJI_BAT, QUEST.Q_UNKNOWN, 
 		"Yohjishiro, the elven wizard asked you bring a bat wing.", 
 		"", 
 		"")
 
-	Quest(QUEST_YOHJI_RAT, Q_UNKNOWN, 
+	Quest(QUEST_YOHJI_RAT, QUEST.Q_UNKNOWN, 
 		"Yohjishiro, the elven wizard asked you bring a rat tail.", 
 		"", 
 		"")
 
-	Quest(QUEST_ANCIENT_PART, Q_UNKNOWN, 
+	Quest(QUEST_ANCIENT_PART, QUEST.Q_UNKNOWN, 
 		"Ahk-Ulan asked you to bring 3 parts of ancient machine.", 
 		"", 
 		"")

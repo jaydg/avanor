@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/anycr.h"
 #include "creature/unique.h"
@@ -27,6 +28,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/quest.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
+
+void RegisterGenerationFlagsEnum(sol::state_view& lua)
+{
+    lua.new_enum("GENERATION_FLAGS",
+        "GFS_SUPRESS_INVIS", GFS_SUPRESS_INVIS,
+        "GFS_SEE_INVIS", GFS_SEE_INVIS
+    );
+}
 
 REGISTER_CLASS(XAnyCreature);
 CEREAL_REGISTER_TYPE(XAnyCreature);

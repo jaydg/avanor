@@ -24,11 +24,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 #include "engine/global.h"
 #include "helpers/dice.h"
 
 enum STATS {S_UNKNOWN = -1, S_STR, S_DEX, S_TOU, S_LEN, S_WIL, S_MAN, S_PER, S_CHR, S_EOF};
+
+// Registers this enum as the Lua table STATS.MEMBER.
+void RegisterStatsEnum(sol::state_view& lua);
 
 extern const char* stats_str[];
 

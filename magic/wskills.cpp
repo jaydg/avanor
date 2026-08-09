@@ -20,7 +20,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cmath>
 
+#include <sol/sol.hpp>
+
 #include "magic/wskills.h"
+
+void XWarSkills::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("XWarSkills",
+        "SWORD", XWarSkills::SWORD
+    );
+}
 
 _SKILL_DB _skill_db[XWarSkills::ALL] = {
     // dv  hit dmg

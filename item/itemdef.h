@@ -23,6 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <string>
 
+#include <sol/forward.hpp>
+
 enum BRAND_TYPE {
     BR_NONE	= 0x00000000,
     BR_FIRE	= 0x00000001,
@@ -192,5 +194,8 @@ enum ITEM_TYPE {
     IT_RANDOM,
     IT_EOF
 };
+
+// Registers BRAND_TYPE and ITEM_TYPE as Lua tables
+void RegisterItemDefEnums(sol::state_view& lua);
 
 #endif

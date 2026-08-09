@@ -29,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 enum ITEM_MASK {
     IM_UNKNOWN = 0x00000000,
@@ -76,6 +77,10 @@ enum ITEM_MASK {
     IM_VALUEHITDMG = IM_HAT | IM_BODY | IM_CLOAK | IM_GLOVES | IM_BOOTS | IM_WEAPON,
     IM_ALL = 0xFFFFFFFF
 };
+
+// Registers this enum as the Lua table ITEM_MASK.MEMBER - see the Sol2
+// plan.
+void RegisterItemMaskEnum(sol::state_view& lua);
 
 class XObject;
 // next code is for creating class by it name

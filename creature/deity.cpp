@@ -20,11 +20,20 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cmath>
 #include <fmt/format.h>
+#include <sol/sol.hpp>
 
 #include "creature/creature.h"
 #include "creature/deity.h"
 #include "helpers/msgwin.h"
 #include "item/item.h"
+
+void RegisterDeityEnum(sol::state_view& lua)
+{
+    lua.new_enum("DEITY",
+        "D_LIFE", D_LIFE,
+        "D_DEATH", D_DEATH
+    );
+}
 
 XCreature* XDeity::death = nullptr;
 XCreature* XDeity::life = nullptr;

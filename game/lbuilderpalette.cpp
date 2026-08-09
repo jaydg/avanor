@@ -35,7 +35,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // '^' - TRAP DOOR
 
 XTileType::Type best_fit_terrain_table[] = {
-    XTileType::GREEN_GRAS,
+    XTileType::GREEN_GRASS,
     XTileType::SAND,
     XTileType::PATH,
     XTileType::ROAD,
@@ -84,7 +84,7 @@ void XLocation::PutPalette(int x, int y)
                         break;
 
                     case '.':
-                        map->SetXY(x + j, y + i, XTileType::GREEN_GRAS);
+                        map->SetXY(x + j, y + i, XTileType::GREEN_GRASS);
                         break;
 
                     case ',':

@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define WSKILLS_H
 
 #include <cereal/cereal.hpp>
+#include <sol/forward.hpp>
 
 struct _SKILL_DB {
     const char* name;
@@ -51,6 +52,12 @@ class XWarSkills
             ALL,
             OTHER
         };
+
+        // Registers this enum as the Lua table XWarSkills.MEMBER.
+        // Only the members actually referenced from Lua today are
+        // registered (just SWORD), matching the old LUA_REG_ALTNAME
+        // scope exactly.
+        static void RegisterLua(sol::state_view& lua);
 
         XWarSkills();
         int GetLevel(Type wt);
