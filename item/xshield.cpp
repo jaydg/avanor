@@ -39,7 +39,7 @@ XItemBasicStructure gi_shield(SHIELD_STRUCT, 4);
 
 XShield::XShield(ITEM_TYPE _it)
 {
-    im = IM_SHIELD;
+    kind = IM_SHIELD;
     BasicFill(_it, &gi_shield);
     _PV = 0;
     bp = BP_HAND;

@@ -41,7 +41,7 @@ const char* bp_names[] = {
     "eof"
 };
 
-ITEM_MASK bpim[] = {
+ItemKind bpim[] = {
     IM_OTHER,
     IM_HAT,
     IM_NECK,
@@ -71,7 +71,7 @@ void XBodyPart::SetOwner(XCreature* o)
     owner = XCreature::ToWeakPtr(o);
 }
 
-ITEM_MASK XBodyPart::GetProperIM() const
+ItemKind XBodyPart::GetProperKind() const
 {
     return bpim[bp_uin];
 }

@@ -43,7 +43,7 @@ void XAmulet::LoadTable(cereal::JSONInputArchive& ar)
 
 XAmulet::XAmulet(Type enh) : XEnhance(enh)
 {
-    im = IM_NECK;
+    kind = IM_NECK;
     bp = BP_NECK;
     name = "amulet";
     it = IT_AMULET;

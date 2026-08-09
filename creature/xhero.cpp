@@ -756,7 +756,7 @@ void XHero::InfoList()
     const XBodyPart* hand_1 = GetBodyPart(BP_HAND, 0);
     const XBodyPart* hand_2 = GetBodyPart(BP_HAND, 1);
 
-    if (hand_1->Item() && hand_1->Item()->im & IM_WEAPON) {
+    if (hand_1->Item() && hand_1->Item()->kind & IM_WEAPON) {
         vGotoXY(0, 17);
         vPutS(fmt::format("Left hand:  (" MSG_YELLOW "{:+}" MSG_BROWN ", "
             MSG_YELLOW"{}" MSG_BROWN "d" MSG_YELLOW "{}{:+}" MSG_BROWN ")",
@@ -765,7 +765,7 @@ void XHero::InfoList()
             hand_1->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)));
     }
 
-    if (hand_2->Item() && hand_2->Item()->im & IM_WEAPON) {
+    if (hand_2->Item() && hand_2->Item()->kind & IM_WEAPON) {
         vGotoXY(0, 18);
         vPutS(fmt::format("Right hand: (" MSG_YELLOW "{:+}" MSG_BROWN ", "
             MSG_YELLOW"{}" MSG_BROWN "d" MSG_YELLOW "{} {:+}" MSG_BROWN ")",
@@ -834,15 +834,15 @@ void XHero::ExpList() const
 
 auto empty = "                                                                 ";
 auto smask = "[|{}'=!?\"\\%]]$X";
-ITEM_MASK imask[] = {
-    static_cast<ITEM_MASK>(IM_HAT | IM_BODY | IM_BOOTS | IM_GLOVES | IM_CLOAK | IM_SHIELD),
+ItemKind kind_list[] = {
+    static_cast<ItemKind>(IM_HAT | IM_BODY | IM_BOOTS | IM_GLOVES | IM_CLOAK | IM_SHIELD),
     IM_WEAPON, IM_MISSILEW, IM_MISSILE,
     IM_NECK, IM_RING, IM_POTION, IM_SCROLL, IM_BOOK,
     IM_WAND, IM_FOOD, IM_LIGHTSOURCE,
     IM_TOOL, IM_MONEY, IM_ALL
 };
 
-ITEM_MASK output_items_mask[] = {
+ItemKind output_items_mask[] = {
     IM_HAT, IM_BODY, IM_CLOAK, IM_GLOVES, IM_BOOTS, IM_SHIELD,
     IM_WEAPON, IM_NECK, IM_RING, IM_MISSILEW, IM_MISSILE, IM_POTION,
     IM_SCROLL, IM_BOOK, IM_WAND, IM_FOOD, IM_LIGHTSOURCE, IM_TOOL, IM_MONEY
@@ -859,7 +859,7 @@ const char* output_items_name[] = {
 static int first_item = 0;
 static XItemList* pLastList = nullptr;
 
-std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, const INVENTORY_FLAG flag, const int ret_item_count,
+std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, const INVENTORY_FLAG flag, const int ret_item_count,
     XItemFilter* ifiltr, const std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
     while (true) {
@@ -877,7 +877,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, co
         int all_item_count = 0;
 
         for (const auto it : *item_list) {
-            if ((ifiltr && ifiltr(it.get())) || it->im & mask) {
+            if ((ifiltr && ifiltr(it.get())) || it->kind & mask) {
                 all_item_count++;
             }
         }
@@ -903,18 +903,18 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, co
                 }
             }
         } else {
-            ITEM_MASK last_mask = IM_UNKNOWN;
+            ItemKind last_mask = IM_UNKNOWN;
 
             for (const auto item: *item_list) {
-                if ((ifiltr && ifiltr(item.get())) || (item->im & mask)) {
+                if ((ifiltr && ifiltr(item.get())) || (item->kind & mask)) {
                     // we need to show item group name (e.g. boots, weapons etc.)
-                    if (item->im != last_mask) {
+                    if (item->kind != last_mask) {
                         // skip output empty string for first item in inventory
                         if (last_mask != IM_UNKNOWN) {
                             list.AddItem(new XGuiItem_Text(""), 0);
                         }
 
-                        last_mask = item->im;
+                        last_mask = item->kind;
 
                         for (int oi = 0; oi < std::size(output_items_name); oi++) {
                             if (output_items_mask[oi] & last_mask) {
@@ -952,7 +952,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, co
             if (!(flag & IF_FIXED_MASK)) {
                 for (unsigned int i = 0; i < strlen(smask); i++)
                     if (ch == smask[i]) {
-                        mask = imask[i];
+                        mask = kind_list[i];
                     }
             }
 
@@ -964,7 +964,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ITEM_MASK mask, co
             int stop_flag = -1;
 
             while (true) {
-                if ((ifiltr && ifiltr(selected_it->get())) || ((*selected_it)->im & mask)) {
+                if ((ifiltr && ifiltr(selected_it->get())) || ((*selected_it)->kind & mask)) {
                     stop_flag++;
                 }
 
@@ -1097,7 +1097,7 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
                 // IF_NO_ERASE: picking something to wear must not remove
                 // it from contain - it's meant to stay visible there,
                 // worn or not.
-                std::shared_ptr<XItem> picked = Inventory(&contain, xqsa[n]->GetProperIM(), static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
+                std::shared_ptr<XItem> picked = Inventory(&contain, xqsa[n]->GetProperKind(), static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
 
                 if (picked) {
                     if (xqsa[n]->bp_uin == BP_HAND) {
@@ -1153,14 +1153,14 @@ int XHero::stopAction()
 void XHero::ReadAll()
 {
     first_item = 0;
-    std::shared_ptr<XItem> item = Inventory(&contain, static_cast<ITEM_MASK>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
+    std::shared_ptr<XItem> item = Inventory(&contain, static_cast<ItemKind>(IM_BOOK | IM_SCROLL), IF_FIXED_MASK, 1);
 
     if (item) {
-        if (item->im & IM_SCROLL) {
+        if (item->kind & IM_SCROLL) {
             if (!XCreature::Read(item.get())) {
                 contain.insert(item);
             }
-        } else if (item->im & IM_BOOK) {
+        } else if (item->kind & IM_BOOK) {
             if (!XCreature::Read(item.get())) {
                 contain.insert(item);
             }
@@ -1289,7 +1289,7 @@ void XHero::OpenChest()
     XChest* last_chest = nullptr;
 
     for (const auto& it : *tq) {
-        if (it->im == IM_CHEST) {
+        if (it->kind == IM_CHEST) {
             last_chest = dynamic_cast<XChest *>(it.get());
             chest_count++;
         }
@@ -1519,7 +1519,7 @@ int XHero::XShoot()
     // if no missile, try to load them
     if (!missile) {
         for (auto it: contain) {
-            if (it->im & IM_MISSILE && XMissile::isProperWeapon(it.get(), missile_w)) {
+            if (it->kind & IM_MISSILE && XMissile::isProperWeapon(it.get(), missile_w)) {
                 msgwin.ClrMsg();
                 msgwin.Add(fmt::format("Load {}", it->toString()));
                 msgwin.Add("["
@@ -2452,7 +2452,7 @@ void XHero::GiveItem()
             return;
         }
 
-        if (item->im & IM_MONEY) {
+        if (item->kind & IM_MONEY) {
             contain.insert(item);
             last_creature->xai->onGiveItem(this, item.get());
         } else {

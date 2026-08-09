@@ -613,7 +613,7 @@ int XStandardAI::Wear() const
             old_item_val = old_item->GetValue();
         }
 
-        if ((old_item_val >= new_item_val) || !(xbp->GetProperIM() & item->im)) {
+        if ((old_item_val >= new_item_val) || !(xbp->GetProperKind() & item->kind)) {
             continue;
         }
 
@@ -629,7 +629,7 @@ int XStandardAI::Wear() const
         if (ai_owner->isVisible()) {
             std::string str;
 
-            switch (item->im) {
+            switch (item->kind) {
                 case IM_WEAPON :
                 case IM_MISSILEW :
                     str = fmt::format("{} has wielded {}.", ai_owner->name, item->toString());
@@ -658,11 +658,11 @@ int XStandardAI::Wear() const
             continue;
         }
 
-        if (item->im & IM_FOOD && item->it != IT_CORPSE) {
+        if (item->kind & IM_FOOD && item->it != IT_CORPSE) {
             continue;
         }
 
-        if (item->im & (IM_SCROLL | IM_BOOK | IM_POTION | IM_MISSILE | IM_MONEY)) {
+        if (item->kind & (IM_SCROLL | IM_BOOK | IM_POTION | IM_MISSILE | IM_MONEY)) {
             continue;
         }
 
@@ -865,7 +865,7 @@ int XStandardAI::CastSpell() const {
 int XStandardAI::ReadScroll() const
 {
     for (auto item: ai_owner->contain) {
-        if (!(item->im & IM_SCROLL)) {
+        if (!(item->kind & IM_SCROLL)) {
             continue;
         }
 
@@ -894,7 +894,7 @@ int XStandardAI::DrinkPotion() const
 {
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
         for (const auto it: ai_owner->contain) {
-            if (it->im & IM_POTION) {
+            if (it->kind & IM_POTION) {
                 auto pot = dynamic_cast<XPotion *>(it.get());
 
                 if (pot->pn == PN_HEALING ||
@@ -945,7 +945,7 @@ int XStandardAI::PickUpItems() const
     bool item_picked = false;
 
     for (auto it = item_list->begin(); it != item_list->end(); ) {
-        if ((*it)->im & IM_CHEST) {
+        if ((*it)->kind & IM_CHEST) {
             break;
         }
 
@@ -1170,7 +1170,7 @@ void XStandardAI::RunScript()
             // very next increment. Use the erase-returns-next-iterator form
             // instead.
             for (auto it = ai_owner->contain.begin(); it != ai_owner->contain.end();) {
-                if ((*it)->im & cmd.im) {
+                if ((*it)->kind & cmd.kind) {
                     auto item = *it;
                     it = ai_owner->contain.erase(it);
                     ai_owner->DropItem(item.get());

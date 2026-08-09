@@ -263,7 +263,7 @@ int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
 
     int sacrifice_value;
 
-    if (item->im & IM_MONEY) {
+    if (item->kind & IM_MONEY) {
         sacrifice_value = (int)(sqrt((float)item->quantity) + 1) * (val / 4 + 1);
     } else {
         sacrifice_value = (int)((sqrt((float)item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);

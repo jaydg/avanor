@@ -124,7 +124,7 @@ class XChest : public XItem
             assert(0);
         }
 
-        XChest(int item_count, ITEM_MASK imask, int low_v, int high_v);
+        XChest(int item_count, ItemKind kind_mask, int low_v, int high_v);
         XChest(XChest * copy)
         {
             assert(0);
@@ -162,7 +162,7 @@ class XAncientMachinePart : public XItem
             name = "ancient machine part";
             value = 1000;
             weight = 15;
-            im = IM_TOOL;
+            kind = IM_TOOL;
             bp = BP_OTHER;
             it = IT_ANCIENTMACHINEPART;
         }

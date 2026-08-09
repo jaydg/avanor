@@ -142,7 +142,7 @@ XScroll::XScroll(SCROLL_NAME scrn)
     sc_name = scroll_descr[descr].scroll_name;
     name = scroll_descr[descr].real_name;
     value = scroll_descr[descr].value;
-    im = IM_SCROLL;
+    kind = IM_SCROLL;
     bp = BP_OTHER;
     it = IT_SCROLL;
     view = '?';

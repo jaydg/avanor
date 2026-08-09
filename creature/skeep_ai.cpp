@@ -109,7 +109,7 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
         return 0;
     }
 
-    if (!(shop->shop_mask & item->im)) {
+    if (!(shop->shop_mask & item->kind)) {
         return 1;
     }
 
@@ -143,7 +143,7 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
 int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
 {
     //	Shopkeeper takes only items of appropriate type
-    if (!(item->im & shop->shop_mask)) {
+    if (!(item->kind & shop->shop_mask)) {
         msgwin.Add(GMSG_SHOPKEEPER_REJECT_ITEM);
         return 0;
     }
@@ -153,7 +153,7 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
         auto it = debt.unpaid_items.begin();
 
         while (it != debt.unpaid_items.end()) {
-            if (item->im != (*it)->im || item->Compare(it->get()) != 0) {
+            if (item->kind != (*it)->kind || item->Compare(it->get()) != 0) {
                 it++;
                 continue;
             }
@@ -216,7 +216,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 {
     //	Attempt to give item to the shopkeeper results in selling
     //	of that item (by dropping it to the ground)
-    if (!(item->im & IM_MONEY)) {
+    if (!(item->kind & IM_MONEY)) {
         int res = onAnyoneDropItem(giver, item);
 
         if (res) {

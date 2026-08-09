@@ -118,7 +118,7 @@ XLocation::XLocation(XLocation::Id location)
 
     ttmb = 1000000;
     ttm = ttmb;
-    im = IM_UNKNOWN;
+    kind = IM_UNKNOWN;
 }
 
 void XLocation::Invalidate()
@@ -441,9 +441,9 @@ XStairWay* XLocation::NewWay(int x, int y, XLocation::Id target_ln, STAIRWAY_TYP
     return pWay;
 }
 
-void XLocation::CreateShop(unsigned int im, XRect& rect, char* sk_name, SHOP_DOOR sd)
+void XLocation::CreateShop(unsigned int kind, XRect& rect, char* sk_name, SHOP_DOOR sd)
 {
-    XShop * shop = new XShop(rect, (ITEM_MASK)im, this, sd);
+    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd);
     AddPlace(shop);
     XCreature * cr = NewCreature(CN_SHOPKEEPER, rect);
     ((XShopkeeper*)cr)->SetShop(sk_name, shop);
@@ -599,7 +599,7 @@ void* XLocation::CreateObjectByName(const std::string& name)
 //CreateObject(IM_ITEM - IM_FOOD, 20, 500)
 void* XLocation::CreateObjectByMask(int flag, int min_val, int max_val)
 {
-    return ICREATE((ITEM_MASK)(flag), min_val, max_val);
+    return ICREATE((ItemKind)(flag), min_val, max_val);
 }
 
 //DropItem(item, 0, 0)
@@ -711,7 +711,7 @@ void XLocation::Treasure(int x, int y, int val)
 
 void XLocation::Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval)
 {
-    XChest * tchest = new XChest(cnt.value_or(5), (ITEM_MASK)flg.value_or(IM_ITEM), mnval.value_or(100), mxval.value_or(25000));
+    XChest * tchest = new XChest(cnt.value_or(5), (ItemKind)flg.value_or(IM_ITEM), mnval.value_or(100), mxval.value_or(25000));
     tchest->Drop(current_location, x, y);
 }
 
@@ -952,7 +952,7 @@ XGUID XLocation::GetObjectGUID(void* obj)
 std::tuple<int, int, int, int, int, std::string> XLocation::GetItemParam(void* item)
 {
     XItem * p = (XItem*)item;
-    return {p->im, p->brt, p->wt, p->it, p->quantity, p->name};
+    return {p->kind, p->brt, p->wt, p->it, p->quantity, p->name};
 }
 
 void XLocation::SetItemBrand(void* item, int br)
@@ -1116,7 +1116,7 @@ void XLocation::ExecuteAIScript()
     script.push_back(cmd);
 
     cmd.cmd = SCC_DROP_ITEM;
-    cmd.im = IM_FOOD;
+    cmd.kind = IM_FOOD;
     script.push_back(cmd);
 
     for (const auto& [key, obj] : objects) {
@@ -1202,7 +1202,7 @@ void XLocation::CommonLuaInitialization()
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
-    RegisterItemMaskEnum(lua);
+    RegisterItemKindEnum(lua);
     XWarSkills::RegisterLua(lua);
     RegisterItemDefEnums(lua);
     XResistance::RegisterLua(lua);

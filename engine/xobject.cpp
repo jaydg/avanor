@@ -27,34 +27,34 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/xobject.h"
 
-void RegisterItemMaskEnum(sol::state_view& lua)
+void RegisterItemKindEnum(sol::state_view& lua)
 {
-    lua.new_enum("ITEM_MASK",
-        "IM_HAT", IM_HAT,
-        "IM_NECK", IM_NECK,
-        "IM_BODY", IM_BODY,
-        "IM_CLOAK", IM_CLOAK,
-        "IM_WEAPON", IM_WEAPON,
-        "IM_SHIELD", IM_SHIELD,
-        "IM_HAND", IM_HAND,
-        "IM_GLOVES", IM_GLOVES,
-        "IM_RING", IM_RING,
-        "IM_BOOTS", IM_BOOTS,
-        "IM_MISSILEW", IM_MISSILEW,
-        "IM_MISSILE", IM_MISSILE,
-        "IM_POTION", IM_POTION,
-        "IM_SCROLL", IM_SCROLL,
-        "IM_BOOK", IM_BOOK,
-        "IM_WAND", IM_WAND,
-        "IM_FOOD", IM_FOOD,
-        "IM_LIGHTSOURCE", IM_LIGHTSOURCE,
-        "IM_TOOL", IM_TOOL,
-        "IM_GEM", IM_GEM,
-        "IM_MONEY", IM_MONEY,
-        "IM_STACKABLE", IM_STACKABLE,
-        "IM_CHEST", IM_CHEST,
-        "IM_ARMOUR", IM_ARMOUR,
-        "IM_ITEM", IM_ITEM
+    lua.new_enum("ItemKind",
+        "HAT", IM_HAT,
+        "NECK", IM_NECK,
+        "BODY", IM_BODY,
+        "CLOAK", IM_CLOAK,
+        "WEAPON", IM_WEAPON,
+        "SHIELD", IM_SHIELD,
+        "HAND", IM_HAND,
+        "GLOVES", IM_GLOVES,
+        "RING", IM_RING,
+        "BOOTS", IM_BOOTS,
+        "MISSILEW", IM_MISSILEW,
+        "MISSILE", IM_MISSILE,
+        "POTION", IM_POTION,
+        "SCROLL", IM_SCROLL,
+        "BOOK", IM_BOOK,
+        "WAND", IM_WAND,
+        "FOOD", IM_FOOD,
+        "LIGHTSOURCE", IM_LIGHTSOURCE,
+        "TOOL", IM_TOOL,
+        "GEM", IM_GEM,
+        "MONEY", IM_MONEY,
+        "STACKABLE", IM_STACKABLE,
+        "CHEST", IM_CHEST,
+        "ARMOUR", IM_ARMOUR,
+        "ITEM", IM_ITEM
     );
 }
 

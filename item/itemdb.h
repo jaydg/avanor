@@ -74,7 +74,7 @@ struct ENHANCE_STRUCT {
     const char* z; //random z to dice;
     const char* rng;
     int val; // value
-    ITEM_MASK im;
+    ItemKind kind;
     BRAND_TYPE brt;
     CAN_FLAG res_flag;
     SPECIAL_PROPERTY spp;

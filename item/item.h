@@ -147,16 +147,16 @@ class XItem : public XBaseObject
 };
 
 inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {
-    if (lhs->im != rhs->im) {
-        return lhs->im < rhs->im;
+    if (lhs->kind != rhs->kind) {
+        return lhs->kind < rhs->kind;
     }
 
-    // `im` is a broad category (every scroll shares IM_SCROLL, every
+    // `kind` is a broad category (every scroll shares IM_SCROLL, every
     // ring shares IM_RING, ...), not a unique key - without this
     // tiebreak, std::set treats any two items sharing a category as
     // "the same element" (its uniqueness test is exactly "neither
     // compares less than the other"), silently rejecting the second
-    // one on insert. `im` still determines the primary sort order
+    // one on insert. `kind` still determines the primary sort order
     // (grouping same-category items together for iteration/display);
     // this just keeps every distinct item its own key within that
     // group instead of colliding with the first.
@@ -199,7 +199,7 @@ inline XItemList::iterator XItemList::TryMerge(const std::shared_ptr<XItem>& ite
                 return it;
             }
 
-            if ((*it)->im == item->im && (*it)->Compare(item.get()) == 0) {
+            if ((*it)->kind == item->kind && (*it)->Compare(item.get()) == 0) {
                 (*it)->Concat(item.get());
                 return it;
             }

@@ -801,7 +801,7 @@ void XHero::PlayerSetup()
 
     XBodyPart * bp = GetBodyPart(BP_HAND, 0);
 
-    if (bp->Item() && (bp->Item()->im & IM_WEAPON)) {
+    if (bp->Item() && (bp->Item()->kind & IM_WEAPON)) {
         wsk->SetLevel(bp->Item()->wt, 2);
     }
 

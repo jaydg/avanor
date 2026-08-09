@@ -43,7 +43,7 @@ void XRing::LoadTable(cereal::JSONInputArchive& ar)
 
 XRing::XRing(Type enh) : XEnhance(enh)
 {
-    im = IM_RING;
+    kind = IM_RING;
     bp = BP_RING;
     it = IT_RING;
     name = "ring";

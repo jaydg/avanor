@@ -62,7 +62,7 @@ function MakeDwarvenCity()
 		AddTranslation(":", XTileType.BRIDGE)
 		AddTranslation("<", function(x, y) Way(UP, XLocation.DWARFCITYCAVE6, x, y) end)
 		AddTranslation("A", function(x, y) Guardian('dwarf_guard', GROUP_ID.GID_DWARVEN_GUARDIAN, x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ITEM_MASK.IM_ARMOUR + ITEM_MASK.IM_WEAPON + ITEM_MASK.IM_POTION + ITEM_MASK.IM_BOOK + ITEM_MASK.IM_SCROLL + ITEM_MASK.IM_NECK + ITEM_MASK.IM_MISSILE + ITEM_MASK.IM_MISSILEW, 'Toberin, the dwarwen shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.POTION + ItemKind.BOOK + ItemKind.SCROLL + ItemKind.NECK + ItemKind.MISSILE + ItemKind.MISSILEW, 'Toberin, the dwarwen shopkeeper') end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a dinner table') end)
 		AddTranslation("C", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a round table') end)
 		AddTranslation("D", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'a royal bed') end)
@@ -190,8 +190,8 @@ function TodinHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		AddMessage("'Give me your weapon, and I'll make it the best!'")
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
-		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(im, ITEM_MASK.IM_WEAPON)) then
+		local kind, brt, wt, it, count, name = GetItemParam(v)
+		if (BinaryAND(kind, ItemKind.WEAPON)) then
 			if (BinaryAND(brt, BRAND_TYPE.BR_COLD + BRAND_TYPE.BR_FIRE + BRAND_TYPE.BR_ORCSLAYER)) then
 				AddMessage("'This weapon's good enough!'")
 			else
@@ -594,7 +594,7 @@ function AhkUlanHandler(e, t, p, v)
 			AddMessage("Don't disturb me before completing my quest, puny mortal!")
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
-		local im, brt, wt, it, count, name = GetItemParam(v)
+		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == ITEM_TYPE.IT_ANCIENTMACHINEPART) then
 			if (count == 3) then
 				AddMessage("Very nice job, servant!")

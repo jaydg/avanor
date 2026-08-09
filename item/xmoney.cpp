@@ -32,7 +32,7 @@ XMoney::XMoney(int _quantity)
     assert(_quantity > 0);
     quantity = _quantity;
 
-    im = IM_MONEY;
+    kind = IM_MONEY;
     view = '$';
     color = xYELLOW;
     it = IT_MONEY;

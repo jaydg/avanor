@@ -346,7 +346,7 @@ class XCreature : public XBaseObject
         virtual void Attack();
         virtual void Die(XCreature * killer);
 
-        XBodyPart* GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf);
+        XBodyPart* GetRNDBodyPart(ItemKind kind, RBP_FLAG rbpf);
         XBodyPart* GetRNDBodyPart();
         int GetHITFHBonus(XItem* weapon);
         int GetShieldDVBonus();

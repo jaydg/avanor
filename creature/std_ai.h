@@ -54,7 +54,7 @@ struct SCRIPT_CMD {
     int pt_x;
     int pt_y;
     XLocation::Id ln;
-    ITEM_MASK im;
+    ItemKind kind;
 };
 
 #define ENEMY_LIST_SIZE	5

@@ -83,7 +83,7 @@ static bool TestPolymorphicItem()
     const bool pass = restored
         && restored.get() != original.get()
         && dynamic_cast<XMoney*>(restored.get()) != nullptr
-        && restored->im == original->im
+        && restored->kind == original->kind
         && restored->quantity == original->quantity
         && restored->value == original->value
         && restored->guid() == original->guid();
@@ -235,7 +235,7 @@ static bool TestRealCreature()
     std::cout << "TestRealCreature: runtime type is " << typeid(*original).name() << std::endl;
 
     const auto original_guid = original->guid();
-    const auto original_im = original->im;
+    const auto original_im = original->kind;
     const auto original_contain_size = original->contain.size();
     const auto original_components_size = original->components.size();
 
@@ -266,7 +266,7 @@ static bool TestRealCreature()
     bool pass = restored
         && restored.get() != original.get()
         && restored->guid() == original_guid
-        && restored->im == original_im
+        && restored->kind == original_im
         && restored->contain.size() == original_contain_size
         && restored->components.size() == original_components_size;
 

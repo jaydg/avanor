@@ -134,7 +134,7 @@ WEAPON_BRAND_TYPE_NAME weapon_brand_name_db[weapon_brand_name_db_size] = {
 
 XWeapon::XWeapon(ITEM_TYPE _it)
 {
-    im = IM_WEAPON;
+    kind = IM_WEAPON;
     BasicFill(_it, &gi_weapon);
     bp = BP_HAND;
     RNG = 0;

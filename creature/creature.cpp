@@ -276,7 +276,7 @@ int XCreature::stopAction()
 int XCreature::continueEat()
 {
     XAnyFood * food = (XAnyFood*)action_data.item.get();
-    assert(food->im & IM_FOOD);
+    assert(food->kind & IM_FOOD);
     int res = food->onEat(this);
 
     if (res != 2) {
@@ -664,7 +664,7 @@ int XCreature::GetShieldDVBonus()
     {
         XItem* i = xbp->Item();
 
-        if (i && i->im == IM_SHIELD) {
+        if (i && i->kind == IM_SHIELD) {
             int shld_skl = wsk->GetDV(XWarSkills::SHIELD);
             int shield_dv = i->_DV;
 
@@ -1177,13 +1177,13 @@ XBodyPart* XCreature::GetRNDBodyPart()
     return nullptr;
 }
 
-XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
+XBodyPart* XCreature::GetRNDBodyPart(ItemKind kind, RBP_FLAG rbpf)
 {
-    if (rbpf == RBP_BLOCK && xim & IM_SHIELD) {
+    if (rbpf == RBP_BLOCK && kind & IM_SHIELD) {
         auto bpi = std::find_if(
             components.begin(),
             components.end(),
-            [](const std::unique_ptr<XBodyPart>& xbp) { return xbp->Item() && xbp->Item()->im & IM_SHIELD; }
+            [](const std::unique_ptr<XBodyPart>& xbp) { return xbp->Item() && xbp->Item()->kind & IM_SHIELD; }
         );
 
         if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(XWarSkills::SHIELD) + 5)) {
@@ -1193,7 +1193,7 @@ XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
 
     int count = 0;
     for (auto& xbp: components) {
-        if (xbp->GetProperIM() & xim) {
+        if (xbp->GetProperKind() & kind) {
             count++;
         }
     }
@@ -1206,7 +1206,7 @@ XBodyPart* XCreature::GetRNDBodyPart(ITEM_MASK xim, RBP_FLAG rbpf)
 
     count = 0;
     for (const auto& xbp: components) {
-        if (xbp->GetProperIM() & xim) {
+        if (xbp->GetProperKind() & kind) {
             if (n == count) {
                 return xbp.get();
             }
@@ -1591,7 +1591,7 @@ int XCreature::Read(XItem * item)
         return 0;
     }
 
-    if (item->im & IM_SCROLL) {
+    if (item->kind & IM_SCROLL) {
         skill->UseSkill();
         ((XScroll*)item)->onRead(this);
         item->UnCarry();
@@ -1602,7 +1602,7 @@ int XCreature::Read(XItem * item)
         }
 
         return 1;
-    } else if (item->im & IM_BOOK) {
+    } else if (item->kind & IM_BOOK) {
         ((XBook*)item)->onRead(this);
 
         if (((XBook*)item)->left_to_read <= 0) {
@@ -1843,7 +1843,7 @@ int XCreature::MoneyOp(int money_count)
     XItem* money = nullptr;
 
     for (auto it: contain) {
-        if (it->im & IM_MONEY) {
+        if (it->kind & IM_MONEY) {
             money = it.get();
             break;
         }
@@ -1876,7 +1876,7 @@ int XCreature::MoneyOp(int money_count)
             // deleter on a still-valid item, re-entering Invalidate() while
             // we're still about to call it ourselves below. Invalidate()
             // itself doesn't free money - contain still holds it alive at
-            // that point - so money->im stays safe to read for the erase's
+            // that point - so money->kind stays safe to read for the erase's
             // tree walk immediately after.
             money->Invalidate();
 

@@ -37,7 +37,7 @@ XCap::XCap(ITEM_TYPE _it)
 {
     BasicFill(_it, &gi_cap);
     bp = BP_HEAD;
-    im = IM_HAT;
+    kind = IM_HAT;
     _HIT = 0;
     dice.SetBonus(0);
     RNG = 0;

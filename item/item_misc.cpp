@@ -42,12 +42,12 @@ REGISTER_CLASS(XChest);
 CEREAL_REGISTER_TYPE(XChest);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XChest);
 // XChest()'s only no-args constructor is an assert(0) guard - real
-// instances always come from XChest(int, ITEM_MASK, int, int), so
+// instances always come from XChest(int, ItemKind, int, int), so
 // route Cereal's load-time construction through the DUMMY_STRUCT idiom
 // instead of that assert.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XChest, serialize);
 
-XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
+XChest::XChest(int item_count, ItemKind kind_mask, int low_v, int high_v)
 {
     color = xLIGHTGRAY;
     view = '~';
@@ -55,11 +55,11 @@ XChest::XChest(int item_count, ITEM_MASK imask, int low_v, int high_v)
     name = "chest";
     value = 50;
     weight = 100;
-    im = IM_CHEST;
+    kind = IM_CHEST;
     bp = BP_OTHER;
 
     for (int i = 0; i < item_count; i++) {
-        XItem * it = ICREATE(imask, low_v, high_v);
+        XItem * it = ICREATE(kind_mask, low_v, high_v);
         weight += it->weight;
         contain.insert(XItem::Own(it));
     }

@@ -31,7 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/cereal.hpp>
 #include <sol/forward.hpp>
 
-enum ITEM_MASK {
+enum ItemKind {
     IM_UNKNOWN = 0x00000000,
 
     IM_HAT = 0x00000100,
@@ -68,9 +68,8 @@ enum ITEM_MASK {
     IM_ALL = 0xFFFFFFFF
 };
 
-// Registers this enum as the Lua table ITEM_MASK.MEMBER - see the Sol2
-// plan.
-void RegisterItemMaskEnum(sol::state_view& lua);
+// Registers this enum as the Lua table ItemKind.MEMBER
+void RegisterItemKindEnum(sol::state_view& lua);
 
 class XObject;
 // next code is for creating class by it name
@@ -198,8 +197,7 @@ class XObject : public std::enable_shared_from_this<XObject>
         friend class XModSlowness;
 
     public:
-        // many years ago it was item mask, now it is mask for all!
-        ITEM_MASK im;
+        ItemKind kind;
 
         const XGUID guid()
         {
@@ -239,12 +237,12 @@ class XObject : public std::enable_shared_from_this<XObject>
             Create();
         }
 
-        XObject() : xguid(::guid++), im(IM_UNKNOWN), is_valid(1)
+        XObject() : xguid(::guid++), kind(IM_UNKNOWN), is_valid(1)
         {
             Create();
         }
 
-        XObject(XObject * o) : xguid(::guid++), im(o->im), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
+        XObject(XObject * o) : xguid(::guid++), kind(o->kind), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
 
         {
             Create();
@@ -335,7 +333,7 @@ class XObject : public std::enable_shared_from_this<XObject>
 
             ar(
                 cereal::make_nvp("guid", xguid),
-                im,
+                kind,
                 ttm,
                 ttmb
             );

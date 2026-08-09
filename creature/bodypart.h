@@ -93,7 +93,7 @@ class XBodyPart
         void SetOwner(XCreature* o);
 
         int GetPartSize() const;
-        ITEM_MASK GetProperIM() const;
+        ItemKind GetProperKind() const;
 
         // `item` is a weak observing reference into XCreature::contain,
         // the item's real owner (see the comment above) - it resolves

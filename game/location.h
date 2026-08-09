@@ -400,7 +400,7 @@ class XLocation : public XObject
         void CreateTraps();
         void CreateChests();
 
-        void CreateShop(unsigned int im, XRect& rect, char* sk_name, SHOP_DOOR sd = SHOP_DOOR_UP);
+        void CreateShop(unsigned int kind, XRect& rect, char* sk_name, SHOP_DOOR sd = SHOP_DOOR_UP);
 };
 
 // Both of XLocation's no-args-shaped constructors assert(0) - route

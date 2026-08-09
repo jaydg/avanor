@@ -35,12 +35,12 @@ void XCreature::Attack()
     int flag = 0;
     int ttm_res = 0;
 
-    if (it1 && it1->im & IM_WEAPON) {
+    if (it1 && it1->kind & IM_WEAPON) {
         ttm_res += MeleeAttack(target, it1);
         flag++;
     }
 
-    if (it2 && it2->im & IM_WEAPON && target->isValid()) {
+    if (it2 && it2->kind & IM_WEAPON && target->isValid()) {
         ttm_res += MeleeAttack(target, it2);
         flag++;
     }
@@ -305,7 +305,7 @@ int XCreature::continueUseItem()
 {
     assert(isValid());
     auto tool = dynamic_cast<XTool *>(action_data.item.get());
-    assert(tool->im & IM_TOOL);
+    assert(tool->kind & IM_TOOL);
     RESULT res = tool->onUse(XTool::PROGRESS, this);
 
     if (res != CONTINUE) {

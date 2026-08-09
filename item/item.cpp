@@ -45,7 +45,7 @@ XItem::XItem()
     view = '*';
     color = xBLUE;
     it = IT_UNKNOWN;
-    im = IM_UNKNOWN;
+    kind = IM_UNKNOWN;
     quantity = 1;
     wt = XWarSkills::OTHER;
     bp = BP_OTHER;
@@ -264,13 +264,13 @@ void XItem::SpecialFill()
 {
     int r_val;
 
-    if (im & IM_WEAPON) {
+    if (kind & IM_WEAPON) {
         int uu = 0;
     }
 
     r_val = vRand() % ENH_DB_SZ;
 
-    if (!(ienh_db[r_val].val < vRand() % 101 && (im & ienh_db[r_val].im))) {
+    if (!(ienh_db[r_val].val < vRand() % 101 && (kind & ienh_db[r_val].kind))) {
         return;
     }
 
@@ -370,19 +370,19 @@ int XItem::GetValue()
     int xdvpv = 0;
     int xhitdmg = 0;
 
-    if (im & IM_VALUEDICE) {
+    if (kind & IM_VALUEDICE) {
         xdice = (dice.GetCount() * dice.GetSides() + dice.GetCount()) * 3;
     }
 
-    if (im & IM_VALUEDVPV) {
+    if (kind & IM_VALUEDVPV) {
         xdvpv = (_DV + 6 * _PV) * 4;
     }
 
-    if (im & IM_SHIELD) {
+    if (kind & IM_SHIELD) {
         xdvpv = xdvpv + _DV * 5;
     }
 
-    if (im & IM_VALUEHITDMG) {
+    if (kind & IM_VALUEHITDMG) {
         xhitdmg = (_HIT + dice.GetBonus() * 3) * 3;
     }
 
@@ -435,7 +435,7 @@ int XItem::GetValue()
 
     int xval = brtval + value + xdice + xdvpv + xhitdmg + xstats * 150 + xresist + xrng;
 
-    if (im & IM_MISSILE) {
+    if (kind & IM_MISSILE) {
         xval /= 7;
     }
 
@@ -482,7 +482,7 @@ std::string XItem::GetFullName()
         } else {
             fullname = fmt::format("heap of ({})", quantity);
 
-            if (im & (IM_BOOTS | IM_GLOVES)) {
+            if (kind & (IM_BOOTS | IM_GLOVES)) {
                 fullname.append(fmt::format(ienh_db[special_number].name, name));
             } else {
                 fullname.append(fmt::format(ienh_db[special_number].name,
@@ -495,7 +495,7 @@ std::string XItem::GetFullName()
         if (quantity == 1) {
             fullname = name;
         } else {
-            if (im & (IM_BOOTS | IM_GLOVES)) {
+            if (kind & (IM_BOOTS | IM_GLOVES)) {
                 fullname = fmt::format("heap of ({}) {} ", quantity, name);
             } else {
                 fullname = fmt::format("heap of ({}) {}s ", quantity, name);
@@ -521,7 +521,7 @@ std::string XItem::GetArtifactName(std::string real_name)
             str.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
         }
 
-        if (im & IM_WEAPON) {
+        if (kind & IM_WEAPON) {
             str.append(fmt::format(
                 " ({:+}, {}d{}{:+})",
                 _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
@@ -540,17 +540,17 @@ int XItem::onWear(XCreature * cr)
     cr->added_stats.Add(stats.get()); // modify stats
     cr->added_resists.Add(resistances.get()); // modify resist
 
-    if (im != IM_SHIELD) {
+    if (kind != IM_SHIELD) {
         cr->added_DV	+= _DV;
     }
 
     cr->added_PV	+= _PV;
 
-    if (im & IM_TOHIT) {
+    if (kind & IM_TOHIT) {
         cr->added_HIT	+= _HIT;
     }
 
-    if (!(im & (IM_WEAPON | IM_MISSILE | IM_MISSILEW))) {
+    if (!(kind & (IM_WEAPON | IM_MISSILE | IM_MISSILEW))) {
         cr->added_DMG	+= dice.GetBonus();
     }
 
@@ -567,17 +567,17 @@ int XItem::onUnWear(XCreature * cr)
     cr->added_stats.Sub(stats.get()); //modify stats;
     cr->added_resists.Sub(resistances.get()); //modify resist;
 
-    if (im != IM_SHIELD) {
+    if (kind != IM_SHIELD) {
         cr->added_DV	-= _DV;
     }
 
     cr->added_PV	-= _PV;
 
-    if (im & IM_TOHIT) {
+    if (kind & IM_TOHIT) {
         cr->added_HIT	-= _HIT;
     }
 
-    if (!(im & IM_WEAPON | IM_MISSILE | IM_MISSILEW)) {
+    if (!(kind & IM_WEAPON | IM_MISSILE | IM_MISSILEW)) {
         cr->added_DMG	-= dice.GetBonus();
     }
 

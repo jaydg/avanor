@@ -37,10 +37,10 @@ void XShop::SetShopkeeper(XCreature * shopkeeper)
     owner = XCreature::ToWeakPtr(shopkeeper);
 }
 
-XShop::XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd)
+XShop::XShop(XRect& _area, ItemKind _kind, XLocation * _loc, SHOP_DOOR sd)
     : XAnyPlace(_area, _loc)
 {
-    shop_mask = _im;
+    shop_mask = _kind;
 
     if (sd != SHOP_BUILD_IN) {
         int dx = 0;

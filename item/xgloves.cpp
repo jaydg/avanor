@@ -36,7 +36,7 @@ XItemBasicStructure gi_gloves(GLOVES_STRUCT, 3);
 
 XGloves::XGloves(ITEM_TYPE it)
 {
-    im = IM_GLOVES;
+    kind = IM_GLOVES;
     BasicFill(it, &gi_gloves);
     bp = BP_GLOVES;
     dice.SetBonus(0);

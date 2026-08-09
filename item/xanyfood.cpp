@@ -34,7 +34,7 @@ XAnyFood::XAnyFood()
     consume_nutrio = 100;
     view = '%';
     color = xBROWN;
-    im = IM_FOOD;
+    kind = IM_FOOD;
     consumed_food = 0;
 }
 

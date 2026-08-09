@@ -40,7 +40,7 @@ function MakeAvanorValley()
 		AddTranslation("2", XTileType.BRIDGE)
 		AddTranslation("3", XTileType.SAND)
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ITEM_MASK.IM_FOOD, 'Nobel, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ItemKind.FOOD, 'Nobel, the human shopkeeper') end)
 		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
@@ -76,7 +76,7 @@ function MakeAvanorValley()
 		AddTranslation("E", function(x, y) CreateOzorik(x, y) end)
 		AddTranslation("F", function(x, y) CreateGuardians(x, y) end)
 		AddTranslation("G", function(x, y) CreateGekta(x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ITEM_MASK.IM_ARMOUR + ITEM_MASK.IM_WEAPON + ITEM_MASK.IM_MISSILE + ITEM_MASK.IM_MISSILEW, 'Noberik, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW, 'Noberik, the human shopkeeper') end)
 		AddTranslation(">", function(x, y) Way(DOWN, XLocation.RATCELLAR, x, y) end)
 		DrawPattern(10, 40)
 
@@ -141,7 +141,7 @@ function MakeAvanorValley()
 		AddTranslation("N", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'bed') end)
 		
 		
-		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ITEM_MASK.IM_BOOK + ITEM_MASK.IM_SCROLL + ITEM_MASK.IM_POTION, 'Toberik, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ItemKind.BOOK + ItemKind.SCROLL + ItemKind.POTION, 'Toberik, the human shopkeeper') end)
 		DrawPattern(129, 2)
 
 
@@ -428,8 +428,8 @@ function OzorikHandler(e, t, p, v)
 			end
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then		
-		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(im, ITEM_MASK.IM_WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
+		local kind, brt, wt, it, count, name = GetItemParam(v)
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
 		else
 			AddMessage("'We are not looking for this.'")
@@ -457,8 +457,8 @@ function RoyalGuardHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		AddMessage("'Don't bother me!'")
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
-		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(im, ITEM_MASK.IM_WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
+		local kind, brt, wt, it, count, name = GetItemParam(v)
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, BRAND_TYPE.BR_ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Thank you!'")
 			if (QuestStatus(QUEST_OZORIK) < XQuest.COMPLETE) then
 				QuestModify(QUEST_OZORIK, XQuest.COMPLETE)
@@ -483,13 +483,13 @@ function GektaHandler(e, t, p, v)
 	if (e == LUA_EVENT.LE_CHAT) then
 		AddMessage("'Woof! Woof! Woof'");
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
-		local im, brt, wt, it, count, name = GetItemParam(v)
-		if (im == ITEM_MASK.IM_FOOD) then
+		local kind, brt, wt, it, count, name = GetItemParam(v)
+		if (kind == ItemKind.FOOD) then
 			if (it == ITEM_TYPE.IT_BONE) then
 				for i = 1, count do
 					if (Rand(7) == 0) then
 						 AddMessage("Gekta suddenly start to dig in the ground. She digs a pit. Gekta digs something up from the ground. After this, she puts a bone in the pit and buries it.")
-						 DropItem(CreateObject(ITEM_MASK.IM_ITEM - ITEM_MASK.IM_FOOD, 20, 500), t)
+						 DropItem(CreateObject(ItemKind.ITEM - ItemKind.FOOD, 20, 500), t)
 					else
 						AddMessage(string.format("Gekta eats the %s.", name))
 					end
@@ -551,7 +551,7 @@ function YohjiHandler(e, t, p, v)
 			end
 		end
 	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
-		local im, brt, wt, it, count, name = GetItemParam(v)
+		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == ITEM_TYPE.IT_RATTAIL or it == ITEM_TYPE.IT_BATWING) then
 			if (it == ITEM_TYPE.IT_RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
 				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory.")

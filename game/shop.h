@@ -34,7 +34,7 @@ class XShop : public XAnyPlace
 
     public:
         DECLARE_CREATOR(XShop, XAnyPlace);
-        XShop(XRect& _area, ITEM_MASK _im, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
+        XShop(XRect& _area, ItemKind _kind, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
 
         int onCreatureEnter(XCreature * cr) override;
         int onCreatureLeave(XCreature * cr) override;
@@ -58,7 +58,7 @@ class XShop : public XAnyPlace
             }
         }
 
-        ITEM_MASK shop_mask;
+        ItemKind shop_mask;
     protected:
         int hero_in;
 };

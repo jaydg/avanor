@@ -106,12 +106,12 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
                 XItem * item = nullptr;
 
                 if (it == IT_UNKNOWN) {
-                    item = ICREATEA((ITEM_MASK)(mask));
+                    item = ICREATEA((ItemKind)(mask));
                 } else {
-                    item = ICREATEB((ITEM_MASK)(mask), it, 0, 10000000);
+                    item = ICREATEB((ItemKind)(mask), it, 0, 10000000);
                 }
 
-                if (item->im & IM_BODY && item->it == IT_DRESS
+                if (item->kind & IM_BODY && item->it == IT_DRESS
                     && GetGender() == XCreature::MALE) {
                     // This is a kludge to prevent a "Roderick in a dress" scenario.
                     item->it = IT_CLOTHES;
@@ -120,7 +120,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
 
                 if (CanWear(item)) {
                     // Create proper ammo for missile weapons
-                    if (item->im & IM_MISSILEW) {
+                    if (item->kind & IM_MISSILEW) {
                         XItem * missile = ICREATEB(IM_MISSILE, IT_ARROW, 0, 10000000);
                         ContainItem(missile);
                     }
@@ -147,7 +147,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
             } else if (bp->bp_uin == BP_MISSILE) {
                 continue;
             } else {
-                bp->Wear(ICREATE(bp->GetProperIM(), 0, 1000000));
+                bp->Wear(ICREATE(bp->GetProperKind(), 0, 1000000));
             }
         }
     }

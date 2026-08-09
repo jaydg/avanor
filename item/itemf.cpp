@@ -21,12 +21,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xapi.h"
 #include "item/itemf.h"
 
-XItem* XItemFactory::CreateAnyItem(ITEM_MASK im, ITEM_TYPE _it, int low_v, int hi_v)
+XItem* XItemFactory::CreateAnyItem(ItemKind kind, ITEM_TYPE _it, int low_v, int hi_v)
 {
     int n = 100;
 
     while (n-- > 0) {
-        XItem * it = XItemFactory::CreateItem(im, _it);
+        XItem * it = XItemFactory::CreateItem(kind, _it);
 
         if (it->GetValue() >= low_v && it->GetValue() <= hi_v) {
             return it;
@@ -35,14 +35,14 @@ XItem* XItemFactory::CreateAnyItem(ITEM_MASK im, ITEM_TYPE _it, int low_v, int h
         }
     }
 
-    return XItemFactory::CreateItem(im, _it);;
+    return XItemFactory::CreateItem(kind, _it);;
 }
 
-XItem* XItemFactory::CreateItem(ITEM_MASK im, ITEM_TYPE it)
+XItem* XItemFactory::CreateItem(ItemKind kind, ITEM_TYPE it)
 {
-    ITEM_MASK nim = (ITEM_MASK)vGetRandomBit(im);
+    ItemKind picked_kind = (ItemKind)vGetRandomBit(kind);
 
-    switch (nim) {
+    switch (picked_kind) {
         case IM_HAT:
             return new XCap(it);
             break;
