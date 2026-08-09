@@ -1141,45 +1141,6 @@ bool XLocation::BinaryAND(int v1, int v2)
     return v1 & v2;
 }
 
-void XLocation::ExecuteAIScript()
-{
-    std::vector<SCRIPT_CMD> script;
-    SCRIPT_CMD cmd;
-
-    XPoint pt;
-
-    cmd.cmd = SCC_MOVE_POINT;
-
-    cmd.pt_x = ((XStairWay*)(*Game.locations[XLocation::MUSHROOMS_CAVE5]->ways_list.begin()))->x;
-    cmd.pt_y = ((XStairWay*)(*Game.locations[XLocation::MUSHROOMS_CAVE5]->ways_list.begin()))->y;
-    cmd.ln = XLocation::MUSHROOMS_CAVE5;
-    script.push_back(cmd);
-
-    cmd.cmd = SCC_COLLECT_MUSHROOM;
-    script.push_back(cmd);
-
-    cmd.cmd = SCC_MOVE_POINT;
-    cmd.pt_x = 13;
-    cmd.pt_y = 8;
-    cmd.ln = XLocation::MAIN;
-    script.push_back(cmd);
-
-    cmd.cmd = SCC_DROP_ITEM;
-    cmd.kind = ItemKind::FOOD;
-    script.push_back(cmd);
-
-    for (const auto& [key, obj] : objects) {
-        auto creature = dynamic_cast<XCreature *>(obj);
-
-        if (!creature || creature->isHero())
-            continue;
-
-        if (creature->groupID() == GID_SMALL_VILLAGE_FARMER) {
-            creature->xai->ExecuteScript(script);
-        }
-    }
-}
-
 void XLocation::CreateMushroom(void* location)
 {
     XLocation * p = (XLocation*)location;
@@ -1365,7 +1326,6 @@ void XLocation::CommonLuaInitialization()
 
         lua.set_function("BinaryAND", &XLocation::BinaryAND);
 
-        lua.set_function("ExecuteAIScript", &XLocation::ExecuteAIScript);
     }
 
     lua.script_file("./world/init.lua");

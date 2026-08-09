@@ -301,6 +301,20 @@ function MakeAvanorValley()
 		end
 end
 
+function SendFarmersToCollectMushrooms()
+	local cave_x, cave_y = GetWayXY(XLocation.MUSHROOMS_CAVE5)
+	local script = {
+		{cmd = ScriptCommand.MOVE_POINT, pt_x = cave_x, pt_y = cave_y, ln = XLocation.MUSHROOMS_CAVE5},
+		{cmd = ScriptCommand.COLLECT_MUSHROOM},
+		{cmd = ScriptCommand.MOVE_POINT, pt_x = 13, pt_y = 8, ln = XLocation.MAIN},
+		{cmd = ScriptCommand.DROP_ITEM, kind = ItemKind.FOOD},
+	}
+
+	for _, farmer in ipairs(FindCreatures(XLocation.MAIN, GROUP_ID.GID_SMALL_VILLAGE_FARMER)) do
+		ExecuteCreatureScript(farmer, script)
+	end
+end
+
 function FarmerHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
@@ -334,7 +348,7 @@ function ElderGridorHandler(e, t, p, v)
 		elseif (qs == XQuest.COMPLETE) then
 			AddMessage('Thank you for your great help! Now, our farmers can collect mushrooms.')
 			QuestModify(QUEST_ELDER, XQuest.CLOSED)
-			ExecuteAIScript()
+			SendFarmersToCollectMushrooms()
 		else
 			AddMessage('Have a nice day,')
 			if (Gender(p) == Gender.MALE) then

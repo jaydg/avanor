@@ -399,8 +399,6 @@ class XLocation : public XObject
         static int RestoreInt(lua_State * L);
         static bool BinaryAND(int v1, int v2);
 
-        static void ExecuteAIScript();
-
     protected:
         std::string brief_name; // max. 10 characters
         std::string full_name;  // max. 80 characters
