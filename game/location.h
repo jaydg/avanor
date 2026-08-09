@@ -50,21 +50,20 @@ enum SHOP_DOOR {
     SHOP_BUILD_IN,
 };
 
-enum LUA_EVENT {
-    LE_MOVE	= 1,
-    LE_MOVE_IN	= 2,
-    LE_MOVE_OUT	= 3,
-    LE_OUTER_USE	= 4,
-    LE_CHAT	= 10,
-    LE_GIVE_ITEM	= 11,
-    LE_DIE	= 12,
-    LE_EVENT_SET	= 97,
-    LE_SAVE	= 98,
-    LE_LOAD	= 99
+enum class LuaEvent {
+    MOVE = 1,
+    MOVE_IN = 2,
+    MOVE_OUT = 3,
+    OUTER_USE = 4,
+    CHAT = 10,
+    GIVE_ITEM = 11,
+    DIE = 12,
+    EVENT_SET = 97,
+    SAVE = 98,
+    LOAD = 99
 };
 
-// Registers LOCATION as the Lua table LOCATION.MEMBER
-// and LUA_EVENT as LUA_EVENT.MEMBER.
+void RegisterLuaEventEnum(sol::state_view& lua);
 
 enum PALETTE {
     PAL_UNKNOWN	= 0x0000,
@@ -373,7 +372,7 @@ class XLocation : public XObject
 
         // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
         // the .cpp): whichever XCreature/XAnyPlace is currently firing
-        // its LE_SAVE/LE_LOAD Lua event handler points this at its own
+        // its LuaEvent::SAVE/LuaEvent::LOAD Lua event handler points this at its own
         // lua_ints buffer first (XCreature::NotifyLuaEventHandler(),
         // XAnyPlace::NotifyLuaEvent()), so a script's StoreInt(x)/
         // RestoreInt() calls append to (or sequentially read from) that

@@ -302,7 +302,7 @@ function MakeAvanorValley()
 end
 
 function FarmerHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
 		if (qs == XQuest.COMPLETE or qs == XQuest.CLOSED) then
 			AddMessage("'Thank you, great hero!'")
@@ -320,7 +320,7 @@ end
 
 
 function ElderGridorHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
 		if (qs == XQuest.UNKNOWN) then
 			AddMessage('Good day, friend! All that we have are our mushrooms.')
@@ -343,8 +343,8 @@ function ElderGridorHandler(e, t, p, v)
 				AddMessage("ma'am!")
 			end
 		end
-	elseif (e == LUA_EVENT.LE_SAVE) then
-	elseif (e == LUA_EVENT.LE_LOAD) then
+	elseif (e == LuaEvent.SAVE) then
+	elseif (e == LuaEvent.LOAD) then
 	end
 	return 1
 end
@@ -357,7 +357,7 @@ function CreateJorgus(x, y)
 end
 
 function JorgusHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		if (GetSkill(p, SKT_STEALING) > 0) then
 			if (Gender(p) == Gender.MALE) then
 				AddMessage("Good day, brother!")
@@ -402,7 +402,7 @@ end
 
 
 function OzorikHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_OZORIK)
 		local demon_quest = QuestStatus(QUEST_ELDER)
 		if (orcs_live > 0 and qs < XQuest.COMPLETE) then
@@ -427,7 +427,7 @@ function OzorikHandler(e, t, p, v)
 				AddMessage('Good day, hero!')
 			end
 		end
-	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then		
+	elseif (e == LuaEvent.GIVE_ITEM) then		
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
@@ -435,9 +435,9 @@ function OzorikHandler(e, t, p, v)
 			AddMessage("'We are not looking for this.'")
 			return 0
 		end
-	elseif (e == LUA_EVENT.LE_SAVE) then
+	elseif (e == LuaEvent.SAVE) then
 		StoreInt(ozorik_award)
-	elseif (e == LUA_EVENT.LE_LOAD) then
+	elseif (e == LuaEvent.LOAD) then
 		ozorik_award = RestoreInt()
 	end
 	return 1
@@ -454,9 +454,9 @@ end
 
 
 function RoyalGuardHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		AddMessage("'Don't bother me!'")
-	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
+	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == WSK_SWORD) then
 			AddMessage("'Thank you!'")
@@ -480,9 +480,9 @@ end
 
 
 function GektaHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		AddMessage("'Woof! Woof! Woof'");
-	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
+	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (kind == ItemKind.FOOD) then
 			if (it == ItemType.BONE) then
@@ -518,7 +518,7 @@ end
 
 
 function YohjiHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		local result
 		if (GetSkill(p, SKT_LITERACY) == 0) then
 			result = AskQuestion("What do you wish to speak about?", "esc q l", "quest", "learn")
@@ -550,7 +550,7 @@ function YohjiHandler(e, t, p, v)
 				AddMessage("'As you wish.'")
 			end
 		end
-	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
+	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == ItemType.RATTAIL or it == ItemType.BATWING) then
 			if (it == ItemType.RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
@@ -598,7 +598,7 @@ function Grave(x, y, s, e)
 end
 
 function StandardGraveEvent(e, cr, o)	
-	if (e == LUA_EVENT.LE_OUTER_USE) then
+	if (e == LuaEvent.OUTER_USE) then
 		if (GetView(o) == "+") then
 			AddMessage('You move the headstone. Something glimmers in the dark.')
 			SetView(o, '-', xColor.xLIGHTGRAY);
@@ -614,7 +614,7 @@ function StandardGraveEvent(e, cr, o)
 end
 
 function AvanorDefenderGraveEvent(e, cr, o)
-	if (e == LUA_EVENT.LE_OUTER_USE and GetView(o) == "+") then
+	if (e == LuaEvent.OUTER_USE and GetView(o) == "+") then
 		DropItem(CreateObject('XAvanorDefender'), o)
 	end
 	return StandardGraveEvent(e, cr, o)

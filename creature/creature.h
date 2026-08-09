@@ -265,8 +265,8 @@ class XCreature : public XBaseObject
 
         // Backing store for event_handler's Lua StoreInt/RestoreInt calls
         // (see NotifyLuaEventHandler()) - filled by StoreInt during
-        // LE_SAVE, serialized, then read back and handed out via
-        // RestoreInt during LE_LOAD.
+        // LuaEvent::SAVE, serialized, then read back and handed out via
+        // RestoreInt during LuaEvent::LOAD.
         std::vector<int> lua_ints;
     public:
         DECLARE_CREATOR(XCreature, XBaseObject);
@@ -439,7 +439,7 @@ class XCreature : public XBaseObject
         void FixupCreatureInfo();
         // Not const: hands lua_ints out as a mutable buffer for
         // StoreInt to append to (see game/location.h/.cpp).
-        void NotifyLuaEventHandler(LUA_EVENT event);
+        void NotifyLuaEventHandler(LuaEvent event);
 
         // Also defined in creature.cpp. This header does #include
         // "creature/std_ai.h" above (needed regardless: ar(xai) below
@@ -484,7 +484,7 @@ class XCreature : public XBaseObject
         // for non-hero creatures, same as the existing Restore().
         //
         // event_handler mirrors XOuterObject::onEventLua (an owned heap
-        // char*, not std::string), firing the same Lua LE_SAVE/LE_LOAD
+        // char*, not std::string), firing the same Lua LuaEvent::SAVE/LuaEvent::LOAD
         // notification the legacy Store/Restore (since removed) used
         // to, via NotifyLuaEventHandler() (kept out of this header
         // since it needs the Lua C headers, which nothing else here
@@ -596,7 +596,7 @@ class XCreature : public XBaseObject
                 // lua_ints must be read back before firing: RestoreInt
                 // hands its contents out sequentially as the handler runs.
                 ar(lua_ints);
-                NotifyLuaEventHandler(LE_LOAD);
+                NotifyLuaEventHandler(LuaEvent::LOAD);
             } else {
                 ar(std::string(event_handler ? event_handler : ""));
 
@@ -604,7 +604,7 @@ class XCreature : public XBaseObject
                 // earlier in the same run - firing appends to it via
                 // StoreInt, so a stale leftover would double up.
                 lua_ints.clear();
-                NotifyLuaEventHandler(LE_SAVE);
+                NotifyLuaEventHandler(LuaEvent::SAVE);
                 ar(lua_ints);
             }
         }

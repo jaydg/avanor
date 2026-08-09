@@ -650,7 +650,7 @@ int XOuterObject::onOuterUse(XCreature* cr)
     }
 
     sol::state_view lua(XLocation::L);
-    sol::protected_function_result result = lua[onEventLua](LE_OUTER_USE, (void*)cr, (void*)this);
+    sol::protected_function_result result = lua[onEventLua](LuaEvent::OUTER_USE, (void*)cr, (void*)this);
 
     if (!result.valid()) {
         return 0;

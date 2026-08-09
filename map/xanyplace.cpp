@@ -42,7 +42,7 @@ void XAnyPlace::NotifyLuaEvent(bool is_load)
     }
 
     sol::state_view lua(XLocation::L);
-    lua[onEventLua](is_load ? LE_LOAD : LE_SAVE);
+    lua[onEventLua](is_load ? LuaEvent::LOAD : LuaEvent::SAVE);
 }
 
 XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc) : area(_area)
@@ -74,7 +74,7 @@ int XAnyPlace::onCreatureMove(XCreature* cr)
 
     // cr stays void*, not XCreature* - Sol2 pushes void* as light userdata
     sol::state_view lua(XLocation::L);
-    sol::protected_function_result result = lua[onEventLua](LE_MOVE, (void*)cr);
+    sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE, (void*)cr);
 
     if (!result.valid()) {
         return 0;
@@ -90,7 +90,7 @@ int XAnyPlace::onCreatureEnter(XCreature* cr)
     }
 
     sol::state_view lua(XLocation::L);
-    sol::protected_function_result result = lua[onEventLua](LE_MOVE_IN, (void*)cr);
+    sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE_IN, (void*)cr);
 
     if (!result.valid()) {
         return 0;
@@ -106,7 +106,7 @@ int XAnyPlace::onCreatureLeave(XCreature* cr)
     }
 
     sol::state_view lua(XLocation::L);
-    sol::protected_function_result result = lua[onEventLua](LE_MOVE_OUT, (void*)cr);
+    sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE_OUT, (void*)cr);
 
     if (!result.valid()) {
         return 0;

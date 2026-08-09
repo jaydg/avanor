@@ -128,7 +128,7 @@ end
 DvCityEventMoveCount = 0
 
 function DvCityEvent1(e, p)
-	if (e == LUA_EVENT.LE_MOVE and isHero(p)) then
+	if (e == LuaEvent.MOVE and isHero(p)) then
 		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
@@ -140,17 +140,17 @@ function DvCityEvent1(e, p)
 				SetItEnemyFor(p, c)
 			end
 		end
-	elseif (e == LUA_EVENT.LE_MOVE_IN and isHero(p)) then
+	elseif (e == LuaEvent.MOVE_IN and isHero(p)) then
 		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			AddMessage("'Halt! You aren't allowed to enter.'")
 		end
 		DvCityEventMoveCount = 1
-	elseif (e == LUA_EVENT.LE_MOVE_OUT and isHero(p)) then
+	elseif (e == LuaEvent.MOVE_OUT and isHero(p)) then
 		DvCityEventMoveCount = 0
-	elseif (e == LUA_EVENT.LE_SAVE) then
+	elseif (e == LuaEvent.SAVE) then
 		StoreInt(DvCityEventMoveCount)
-	elseif (e == LUA_EVENT.LE_LOAD) then
+	elseif (e == LuaEvent.LOAD) then
 		DvCityEventMoveCount = RestoreInt()
 	end
 
@@ -159,7 +159,7 @@ end
 torin_award = 0;
 
 function GasMineEvent(e, p)
-	if (e == LUA_EVENT.LE_MOVE) then
+	if (e == LuaEvent.MOVE) then
 		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE and Rand(3) == 0) then
 			InflictDamage(p, Rand(5) + 2, XResistance.POISON, "mysterious gas")
 		end
@@ -168,7 +168,7 @@ end
 
 
 function GasPumpEvent(e, p)	
-	if (e == LUA_EVENT.LE_OUTER_USE) then
+	if (e == LuaEvent.OUTER_USE) then
 		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE) then
 			AddMessage('You hear hollow rumble as the pump starts.')
 			QuestModify(QUEST_TORIN, XQuest.COMPLETE)
@@ -187,9 +187,9 @@ end
 
 
 function TodinHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		AddMessage("'Give me your weapon, and I'll make it the best!'")
-	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
+	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(kind, ItemKind.WEAPON)) then
 			if (BinaryAND(brt, AttackEffectType.COLD + AttackEffectType.FIRE + AttackEffectType.ORCSLAYER)) then
@@ -233,7 +233,7 @@ function CreateTorin(x, y)
 end
 
 function TorinHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_TORIN)	
 		if (qs == XQuest.UNKNOWN) then
 			AddMessage("Hello, brave hero. As you know, we dwarves mine our treasures deep from the ground. Some time ago, one of our mine was filled by a mysterious gas, which slowly kills all living things. It is oozing from the rocks. We have gas pump there, but there is no one who can switch this pump on. Please solve this problem.")
@@ -249,9 +249,9 @@ function TorinHandler(e, t, p, v)
 		else
 			AddMessage("Thank you for your help.")
 		end
-	elseif (e == LUA_EVENT.LE_SAVE) then
+	elseif (e == LuaEvent.SAVE) then
 		StoreInt(torin_award)
-	elseif (e == LUA_EVENT.LE_LOAD) then
+	elseif (e == LuaEvent.LOAD) then
 		torin_award = RestoreInt()
 	end
 	return 1
@@ -307,7 +307,7 @@ function MakeMushroomCave()
 end
 
 function MushroomCaveEvent(e, p)
-	if (e == LUA_EVENT.LE_MOVE) then
+	if (e == LuaEvent.MOVE) then
 		if (isHero(p) and Rand(3) == 0) then
 			AddMessage("You feel power swirling in the air...")
 		end
@@ -332,7 +332,7 @@ function CreateBeelzevile()
 end
 
 function BeelzevileHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_DIE) then
+	if (e == LuaEvent.DIE) then
 		QuestModify(QUEST_ELDER, XQuest.COMPLETE)
 	end
 	return 0
@@ -396,7 +396,7 @@ function SmallCaveEvent(e, p)
 	local bandit = FindCreature(L_SMALL_CAVE2, GID_ROTMOTH)
 	local giana = FindCreature(L_SMALL_CAVE2, GID_GIANA)
 	
-	if (e == LUA_EVENT.LE_MOVE and isHero(p)) then
+	if (e == LuaEvent.MOVE and isHero(p)) then
 --[[		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
@@ -409,7 +409,7 @@ function SmallCaveEvent(e, p)
 			end
 		end
 ]]--		
-	elseif (e == LUA_EVENT.LE_MOVE_IN and isHero(p)) then
+	elseif (e == LuaEvent.MOVE_IN and isHero(p)) then
 		if (small_cave_first_visit == 0) then
 			AddMessage("Halt! Don't move anymore or I'll kill her!")
 			AddMessage("Bring me 150 golden coins, run away quikly and I probably give her a mercy!")
@@ -423,14 +423,14 @@ function SmallCaveEvent(e, p)
 			
 		end
 		
-	elseif (e == LUA_EVENT.LE_MOVE_OUT and isHero(p)) then
+	elseif (e == LuaEvent.MOVE_OUT and isHero(p)) then
 		if (small_cave_first_visit == 1) then
 			AddMessage("Remember! 150 golden coins!")
 		else
 		end
-	elseif (e == LUA_EVENT.LE_SAVE) then
+	elseif (e == LuaEvent.SAVE) then
 		StoreInt(small_cave_first_visit)
-	elseif (e == LUA_EVENT.LE_LOAD) then
+	elseif (e == LuaEvent.LOAD) then
 		small_cave_first_visit = RestoreInt()
 	end
 end
@@ -581,7 +581,7 @@ end
 
 
 function AhkUlanHandler(e, t, p, v)
-	if (e == LUA_EVENT.LE_CHAT) then
+	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_ANCIENT_PART)
 		if (qs == XQuest.UNKNOWN) then
 			AddMessage("Hello, brave hero.")
@@ -593,7 +593,7 @@ function AhkUlanHandler(e, t, p, v)
 		elseif (qs == XQuest.KNOWN) then
 			AddMessage("Don't disturb me before completing my quest, puny mortal!")
 		end
-	elseif (e == LUA_EVENT.LE_GIVE_ITEM) then
+	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == ItemType.ANCIENTMACHINEPART) then
 			if (count == 3) then

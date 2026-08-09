@@ -336,7 +336,7 @@ static bool TestRealLocation()
     }
 
     // A creature reachable from this location's map can carry a custom
-    // Lua event handler that, via NotifyLuaEventHandler(LE_SAVE/LE_LOAD)
+    // Lua event handler that, via NotifyLuaEventHandler(LuaEvent::SAVE/LuaEvent::LOAD)
     // inside XCreature::serialize(), calls back into Location.StoreInt/
     // RestoreInt - Lua bindings backed by XLocation::lua_int_buffer, a
     // pointer NotifyLuaEventHandler/NotifyLuaEvent point at that object's

@@ -121,16 +121,16 @@ class XAnyPlace : public XObject
         char* onEventLua{};
 
         // Backing store for onEventLua's Lua StoreInt/RestoreInt calls
-        // (see NotifyLuaEvent()) - filled by StoreInt during LE_SAVE,
+        // (see NotifyLuaEvent()) - filled by StoreInt during LuaEvent::SAVE,
         // serialized, then read back and handed out via RestoreInt
-        // during LE_LOAD.
+        // during LuaEvent::LOAD.
         std::vector<int> lua_ints;
 
     private:
-        // Takes a bool rather than the LUA_EVENT enum (LE_LOAD/LE_SAVE) to
+        // Takes a bool rather than the LuaEvent enum (LuaEvent::LOAD/LuaEvent::SAVE) to
         // avoid needing game/location.h's full declaration here - that
         // header already includes this one, so pulling it in would be
-        // circular. Maps to LE_LOAD/LE_SAVE in the .cpp, where
+        // circular. Maps to LuaEvent::LOAD/LuaEvent::SAVE in the .cpp, where
         // game/location.h is fully visible.
         //
         // Not const: hands lua_ints out as a mutable buffer for StoreInt

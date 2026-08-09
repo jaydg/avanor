@@ -1174,17 +1174,17 @@ void XLocation::RegisterLua(sol::state_view& lua)
 
 void RegisterLuaEventEnum(sol::state_view& lua)
 {
-    lua.new_enum("LUA_EVENT",
-        "LE_MOVE", LE_MOVE,
-        "LE_MOVE_IN", LE_MOVE_IN,
-        "LE_MOVE_OUT", LE_MOVE_OUT,
-        "LE_OUTER_USE", LE_OUTER_USE,
-        "LE_CHAT", LE_CHAT,
-        "LE_GIVE_ITEM", LE_GIVE_ITEM,
-        "LE_DIE", LE_DIE,
-        "LE_EVENT_SET", LE_EVENT_SET,
-        "LE_SAVE", LE_SAVE,
-        "LE_LOAD", LE_LOAD
+    lua.new_enum("LuaEvent",
+        "MOVE", LuaEvent::MOVE,
+        "MOVE_IN", LuaEvent::MOVE_IN,
+        "MOVE_OUT", LuaEvent::MOVE_OUT,
+        "OUTER_USE", LuaEvent::OUTER_USE,
+        "CHAT", LuaEvent::CHAT,
+        "GIVE_ITEM", LuaEvent::GIVE_ITEM,
+        "DIE", LuaEvent::DIE,
+        "EVENT_SET", LuaEvent::EVENT_SET,
+        "SAVE", LuaEvent::SAVE,
+        "LOAD", LuaEvent::LOAD
     );
 }
 

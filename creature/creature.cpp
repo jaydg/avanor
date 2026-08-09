@@ -960,7 +960,7 @@ void XCreature::Die(XCreature* killer)
         // this/killer stay void*, not XCreature* -  killer can legitimately be
         // nullptr (e.g. DecNutrio()'s Die(nullptr))
         sol::state_view lua(XLocation::L);
-        lua[event_handler](LE_DIE, (void*)this, (void*)killer);
+        lua[event_handler](LuaEvent::DIE, (void*)this, (void*)killer);
     }
 
     // Unwear everything first, firing onUnWear() side effects - the items
@@ -1650,7 +1650,7 @@ void XCreature::FixupXaiOwner()
     }
 }
 
-void XCreature::NotifyLuaEventHandler(LUA_EVENT event)
+void XCreature::NotifyLuaEventHandler(LuaEvent event)
 {
     XLocation::lua_int_buffer = &lua_ints;
     XLocation::lua_int_index = 0;
@@ -1709,7 +1709,7 @@ int XCreature::Chat(XCreature * chatter, const char* msg)
     }
 
     sol::state_view lua(XLocation::L);
-    sol::protected_function_result result = lua[event_handler](LE_CHAT, (void*)this, (void*)chatter, std::string(msg));
+    sol::protected_function_result result = lua[event_handler](LuaEvent::CHAT, (void*)this, (void*)chatter, std::string(msg));
 
     if (!result.valid()) {
         return 0;
@@ -1829,7 +1829,7 @@ int XCreature::onGiveItem(XCreature* giver, XItem* item)
     }
 
     sol::state_view lua(XLocation::L);
-    sol::protected_function_result result = lua[event_handler](LE_GIVE_ITEM, (void*)this, (void*)giver, (void*)item);
+    sol::protected_function_result result = lua[event_handler](LuaEvent::GIVE_ITEM, (void*)this, (void*)giver, (void*)item);
 
     if (!result.valid()) {
         return 0;
