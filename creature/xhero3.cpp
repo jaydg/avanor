@@ -93,7 +93,7 @@ void XHero::doSacrifice()
 
 std::shared_ptr<XItem> XHero::SelectItem(XItemFilter* filter, const bool isGetAll)
 {
-    return Inventory(&contain, ItemKind::IM_UNKNOWN, IF_NONE, !isGetAll, filter);
+    return Inventory(&contain, ItemKind::UNKNOWN, IF_NONE, !isGetAll, filter);
 }
 
 void XHero::DumpVBuffer(std::ofstream& file)
@@ -314,7 +314,7 @@ void XHero::EndGame(const char* end_msg)
         }
 
         dynamic_cast<XHero *>(main_creature)->Inventory(
-            &main_creature->contain, ItemKind::IM_ALL, IF_NONE, 0, nullptr, file);
+            &main_creature->contain, ItemKind::ALL, IF_NONE, 0, nullptr, file);
 
         vClrScr();
     }
@@ -392,11 +392,11 @@ void XHero::ShowReception() const {
 
 void XHero::MixPotions()
 {
-    auto item1 = Inventory(&contain, ItemKind::IM_POTION, IF_FIXED_MASK, 1);
+    auto item1 = Inventory(&contain, ItemKind::POTION, IF_FIXED_MASK, 1);
     auto pot1 = dynamic_cast<XPotion *>(item1.get());
 
     if (pot1) {
-        auto item2 = Inventory(&contain, ItemKind::IM_POTION, IF_FIXED_MASK, 1);
+        auto item2 = Inventory(&contain, ItemKind::POTION, IF_FIXED_MASK, 1);
         auto pot2 = dynamic_cast<XPotion *>(item2.get());
 
         if (pot2) {

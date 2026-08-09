@@ -140,7 +140,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of fire resistance",	xRED,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_FIRERESIST,
         SPP_NONE,
@@ -150,7 +150,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of cold resistance",	xWHITE,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_COLDRESIST,
         SPP_NONE,
@@ -160,7 +160,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of air resistance",	xLIGHTBLUE,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_COLDRESIST,
         SPP_NONE,
@@ -170,7 +170,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of acid resistance",	xDARKGRAY,
         "",	"",	"",	"",	"",	"",	5,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_ACIDRESIST,
         SPP_NONE,
@@ -180,7 +180,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of poison resistance",	0,
         "",	"",	"",	"",	"",	"",	2,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_NONE,
@@ -190,7 +190,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of Resistance",	xDARKGRAY,
         "",	"",	"",	"",	"",	"",	80,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_NICEMETALLIKE,
         SPP_FASTDIGESTION,
@@ -200,7 +200,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the Magi",	0,
         "",	"",	"",	"",	"",	"",	50,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         (CAN_FLAG)(CAN_FIRERESIST | CAN_COLDRESIST),
         SPP_NONE,
@@ -210,7 +210,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of free action",	0,
         "",	"",	"",	"",	"",	"",	50,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         (CAN_FLAG)(CAN_FIRERESIST | CAN_COLDRESIST),
         SPP_NONE,
@@ -220,7 +220,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of slow digestion",	0,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_SLOWDIGESTION,
@@ -230,7 +230,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of Strength",	0,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_NONE,
@@ -240,7 +240,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of Swiftness",	0,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_NONE,
@@ -250,7 +250,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of Toughness",	0,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_NONE,
@@ -260,7 +260,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the Giants",	0,
         "",	"",	"",	"",	"",	"",	30,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_NONE,
@@ -270,7 +270,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the Titans",	xCYAN,
         "",	"",	"",	"",	"",	"",	60,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTALL,
         SPP_NONE,
@@ -280,7 +280,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTALL,
         SPP_NONE,
@@ -290,7 +290,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTALL,
         SPP_NONE,
@@ -300,7 +300,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTALL,
         SPP_NONE,
@@ -310,7 +310,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the High Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTALL,
         SPP_NONE,
@@ -320,7 +320,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "{} of the Elven Kings",	xWHITE,
         "",	"",	"",	"",	"",	"",	90,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTALL,
         SPP_NONE,
@@ -330,7 +330,7 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
     {
         "clean {}",	0,
         "",	"",	"",	"",	"",	"",	1,
-        ItemKind::IM_ARMOUR,
+        ItemKind::ARMOUR,
         BR_NONE,
         CAN_RESISTNONE,
         SPP_NONE,

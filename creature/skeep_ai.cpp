@@ -216,7 +216,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
 {
     //	Attempt to give item to the shopkeeper results in selling
     //	of that item (by dropping it to the ground)
-    if (!(item->kind & ItemKind::IM_MONEY)) {
+    if (!(item->kind & ItemKind::MONEY)) {
         int res = onAnyoneDropItem(giver, item);
 
         if (res) {

@@ -42,20 +42,20 @@ const char* bp_names[] = {
 };
 
 ItemKind bpim[] = {
-    ItemKind::IM_OTHER,
-    ItemKind::IM_HAT,
-    ItemKind::IM_NECK,
-    ItemKind::IM_BODY,
-    ItemKind::IM_CLOAK,
-    ItemKind::IM_HAND,
-    ItemKind::IM_RING,
-    ItemKind::IM_GLOVES,
-    ItemKind::IM_BOOTS,
-    ItemKind::IM_LIGHTSOURCE,
-    ItemKind::IM_TOOL,
-    ItemKind::IM_MISSILEW,
-    ItemKind::IM_MISSILE,
-    ItemKind::IM_ALL
+    ItemKind::OTHER,
+    ItemKind::HAT,
+    ItemKind::NECK,
+    ItemKind::BODY,
+    ItemKind::CLOAK,
+    ItemKind::HAND,
+    ItemKind::RING,
+    ItemKind::GLOVES,
+    ItemKind::BOOTS,
+    ItemKind::LIGHTSOURCE,
+    ItemKind::TOOL,
+    ItemKind::MISSILEW,
+    ItemKind::MISSILE,
+    ItemKind::ALL
 };
 
 XBodyPart::XBodyPart(XCreature* o, const BODY_PART bp)

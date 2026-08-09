@@ -102,7 +102,7 @@ static bool TestItemList()
 
     // XItemList::insert() (item.h) merges same-category, Compare() == 0
     // items into a single stack rather than adding a second entry - both
-    // XMoney(100) and XMoney(250) share ItemKind::IM_MONEY and always compare equal,
+    // XMoney(100) and XMoney(250) share ItemKind::MONEY and always compare equal,
     // so this confirms they combine into one element with the summed
     // quantity, not two.
     const size_t original_size = original_list.size();

@@ -50,7 +50,7 @@ _WEAPON_BIND mwbind[] = {
 
 XMissileWeapon::XMissileWeapon(ITEM_TYPE _it)
 {
-    kind = ItemKind::IM_MISSILEW;
+    kind = ItemKind::MISSILEW;
     BasicFill(_it, &gi_missilew);
     bp = BP_MISSILE_WEAPON;
     _DV = 0;

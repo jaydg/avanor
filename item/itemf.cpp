@@ -43,68 +43,68 @@ XItem* XItemFactory::CreateItem(ItemKind kind, ITEM_TYPE it)
     ItemKind picked_kind = static_cast<ItemKind>(vGetRandomBit(static_cast<unsigned int>(kind)));
 
     switch (picked_kind) {
-        case ItemKind::IM_HAT:
+        case ItemKind::HAT:
             return new XCap(it);
             break;
 
-        case ItemKind::IM_NECK:
+        case ItemKind::NECK:
             return new XAmulet();
             break;
 
-        case ItemKind::IM_RING:
+        case ItemKind::RING:
             return new XRing();
             break;
 
-        case ItemKind::IM_BODY:
+        case ItemKind::BODY:
             return new XArmor(it);
             break;
 
-        case ItemKind::IM_CLOAK:
+        case ItemKind::CLOAK:
             return new XCloak(it);
             break;
 
-        case ItemKind::IM_WEAPON:
+        case ItemKind::WEAPON:
             return new XWeapon(it);
             break;
 
-        case ItemKind::IM_SHIELD:
+        case ItemKind::SHIELD:
             return new XShield(it);
             break;
 
-        case ItemKind::IM_GLOVES:
+        case ItemKind::GLOVES:
             return new XGloves(it);
             break;
 
-        case ItemKind::IM_BOOTS:
+        case ItemKind::BOOTS:
             return new XBoots(it);
             break;
 
-        case ItemKind::IM_MISSILEW:
+        case ItemKind::MISSILEW:
             return new XMissileWeapon(it);
 
-        case ItemKind::IM_MISSILE:
+        case ItemKind::MISSILE:
             return new XMissile(it);
 
-        case ItemKind::IM_WAND:
-        case ItemKind::IM_TOOL:
-        case ItemKind::IM_GEM:
-        case ItemKind::IM_FOOD:
+        case ItemKind::WAND:
+        case ItemKind::TOOL:
+        case ItemKind::GEM:
+        case ItemKind::FOOD:
             return new XRation(it);
             break;
 
-        case ItemKind::IM_MONEY:
+        case ItemKind::MONEY:
             return new XMoney(vRand(40) + 1);
             break;
 
-        case ItemKind::IM_POTION:
+        case ItemKind::POTION:
             return new XPotion();
             break;
 
-        case ItemKind::IM_SCROLL:
+        case ItemKind::SCROLL:
             return new XScroll();
             break;
 
-        case ItemKind::IM_BOOK:
+        case ItemKind::BOOK:
             return new XBook();
             break;
             return new XCap();

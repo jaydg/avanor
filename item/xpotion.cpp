@@ -198,7 +198,7 @@ XPotion::XPotion(const POTION_NAME _pn)
 
     assert(pdescr);
 
-    kind = ItemKind::IM_POTION;
+    kind = ItemKind::POTION;
     bp = BP_OTHER;
     it = IT_POTION;
     view = '!';

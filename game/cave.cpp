@@ -260,7 +260,7 @@ void XCave::Draw(XLocation * l)
 
                     case '~': {
                         sm = XTileType::CAVE_FLOOR;
-                        XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::IM_ITEM, 1, 5000);
+                        XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::ITEM, 1, 5000);
                         ch1->Drop(l, j, i);
 
                         if ((random_caves[rct].cf & CREATE_TRAP_ON_CHEST)

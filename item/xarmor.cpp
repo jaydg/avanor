@@ -42,7 +42,7 @@ XArmor::XArmor(const ITEM_TYPE it)
 {
     BasicFill(it, &gi_armour);
     bp = BP_BODY;
-    kind = ItemKind::IM_BODY;
+    kind = ItemKind::BODY;
     dice.SetBonus(0);
     RNG = 0;
     _HIT = -(weight / 500);

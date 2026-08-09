@@ -351,7 +351,7 @@ void XLocation::CreateChests()
 
         for (int i = 0; i < vRand(4); i++) {
             GetFreeXY(&pt);
-            XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::IM_ITEM, 1, 5000);
+            XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::ITEM, 1, 5000);
             ch1->Drop(this, pt.x, pt.y);
         }
     }
@@ -595,7 +595,7 @@ void* XLocation::CreateObjectByName(const std::string& name)
     return XClassFactory::CreateNew((char*)name.c_str());
 }
 
-//CreateObject(ItemKind::IM_ITEM - ItemKind::IM_FOOD, 20, 500)
+//CreateObject(ItemKind::ITEM - ItemKind::FOOD, 20, 500)
 void* XLocation::CreateObjectByMask(int flag, int min_val, int max_val)
 {
     return ICREATE((ItemKind)(flag), min_val, max_val);
@@ -669,7 +669,7 @@ void XLocation::DrawPattern(int x, int y)
     current_location->PutPalette(x, y);
 }
 
-//BuildShop(x, y, 9, 3, ItemKind::IM_ARMOUR + ItemKind::IM_WEAPON + ItemKind::IM_POTION + ItemKind::IM_BOOK + ItemKind::IM_SCROLL + ItemKind::IM_NECK + ItemKind::IM_MISSILE + ItemKind::IM_MISSILEW, 'Toberin, the dwarwen shopkeeper')
+//BuildShop(x, y, 9, 3, ItemKind::ARMOUR + ItemKind::WEAPON + ItemKind::POTION + ItemKind::BOOK + ItemKind::SCROLL + ItemKind::NECK + ItemKind::MISSILE + ItemKind::MISSILEW, 'Toberin, the dwarwen shopkeeper')
 void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name)
 {
     XRect shop_rect(x, y, x + w, y + h);
@@ -710,7 +710,7 @@ void XLocation::Treasure(int x, int y, int val)
 
 void XLocation::Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval)
 {
-    XChest * tchest = new XChest(cnt.value_or(5), (ItemKind)flg.value_or(static_cast<int>(ItemKind::IM_ITEM)), mnval.value_or(100), mxval.value_or(25000));
+    XChest * tchest = new XChest(cnt.value_or(5), (ItemKind)flg.value_or(static_cast<int>(ItemKind::ITEM)), mnval.value_or(100), mxval.value_or(25000));
     tchest->Drop(current_location, x, y);
 }
 
@@ -1115,7 +1115,7 @@ void XLocation::ExecuteAIScript()
     script.push_back(cmd);
 
     cmd.cmd = SCC_DROP_ITEM;
-    cmd.kind = ItemKind::IM_FOOD;
+    cmd.kind = ItemKind::FOOD;
     script.push_back(cmd);
 
     for (const auto& [key, obj] : objects) {

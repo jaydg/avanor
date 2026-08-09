@@ -61,7 +61,7 @@ class XCookingSet : public XTool
             name = "cooking set";
             value = 150;
             weight = 100;
-            kind = ItemKind::IM_TOOL;
+            kind = ItemKind::TOOL;
             cooked_item = nullptr;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
@@ -123,7 +123,7 @@ class XPickAxe : public XTool
             name = "pickaxe";
             value = 150;
             weight = 100;
-            kind = ItemKind::IM_TOOL;
+            kind = ItemKind::TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
             resistances = std::make_unique<XResistance>();
@@ -162,7 +162,7 @@ class XEyeOfRaa : public XTool
             name = "Eye of Raa";
             value = 150;
             weight = 100;
-            kind = ItemKind::IM_TOOL;
+            kind = ItemKind::TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>("Ma:0d0+10 Wi:0d0+10");
             resistances = std::make_unique<XResistance>("air:100");
@@ -201,7 +201,7 @@ class XAlchemySet : public XTool
             name = "alchemy set";
             value = 150;
             weight = 100;
-            kind = ItemKind::IM_TOOL;
+            kind = ItemKind::TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>();
             resistances = std::make_unique<XResistance>();

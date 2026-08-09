@@ -38,7 +38,7 @@ XCloak::XCloak(const ITEM_TYPE it)
 {
     BasicFill(it, &gi_cloaks);
     bp = BP_CLOAK;
-    kind = ItemKind::IM_CLOAK;
+    kind = ItemKind::CLOAK;
     dice.SetBonus(0);
     RNG = 0;
     _HIT = 0;

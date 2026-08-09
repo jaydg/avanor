@@ -199,7 +199,7 @@ void XGame::RunWithoutHero()
                 std::vector<TMP> ia;
 
                 for (const auto& [key, pItem] : XObject::objects) {
-                    if (auto* it = dynamic_cast<XItem*>(pItem); it && it->kind & ItemKind::IM_ITEM) {
+                    if (auto* it = dynamic_cast<XItem*>(pItem); it && it->kind & ItemKind::ITEM) {
                         TMP entry;
                         entry.pI = it;
                         entry.val = entry.pI->GetValue();
@@ -216,7 +216,7 @@ void XGame::RunWithoutHero()
                 std::ofstream f(vMakePath(HOME_DIR, "items.txt"));
 
                 for (const auto& entry : ia) {
-                    if (entry.pI->kind & (ItemKind::IM_VALUEDICE | ItemKind::IM_ARMOUR)) {
+                    if (entry.pI->kind & (ItemKind::VALUEDICE | ItemKind::ARMOUR)) {
                         entry.pI->Identify(1);
                         f << fmt::format("{:<70}{}\n", entry.pI->toString(), entry.val);
                     }

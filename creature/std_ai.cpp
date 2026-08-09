@@ -630,12 +630,12 @@ int XStandardAI::Wear() const
             std::string str;
 
             switch (item->kind) {
-                case ItemKind::IM_WEAPON :
-                case ItemKind::IM_MISSILEW :
+                case ItemKind::WEAPON :
+                case ItemKind::MISSILEW :
                     str = fmt::format("{} has wielded {}.", ai_owner->name, item->toString());
                     break;
 
-                case ItemKind::IM_MISSILE :
+                case ItemKind::MISSILE :
                     str = fmt::format("{} has armed {}.", ai_owner->name, item->toString());
                     break;
 
@@ -658,11 +658,11 @@ int XStandardAI::Wear() const
             continue;
         }
 
-        if (item->kind & ItemKind::IM_FOOD && item->it != IT_CORPSE) {
+        if (item->kind & ItemKind::FOOD && item->it != IT_CORPSE) {
             continue;
         }
 
-        if (item->kind & (ItemKind::IM_SCROLL | ItemKind::IM_BOOK | ItemKind::IM_POTION | ItemKind::IM_MISSILE | ItemKind::IM_MONEY)) {
+        if (item->kind & (ItemKind::SCROLL | ItemKind::BOOK | ItemKind::POTION | ItemKind::MISSILE | ItemKind::MONEY)) {
             continue;
         }
 
@@ -865,7 +865,7 @@ int XStandardAI::CastSpell() const {
 int XStandardAI::ReadScroll() const
 {
     for (auto item: ai_owner->contain) {
-        if (!(item->kind & ItemKind::IM_SCROLL)) {
+        if (!(item->kind & ItemKind::SCROLL)) {
             continue;
         }
 
@@ -894,7 +894,7 @@ int XStandardAI::DrinkPotion() const
 {
     if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
         for (const auto it: ai_owner->contain) {
-            if (it->kind & ItemKind::IM_POTION) {
+            if (it->kind & ItemKind::POTION) {
                 auto pot = dynamic_cast<XPotion *>(it.get());
 
                 if (pot->pn == PN_HEALING ||
@@ -945,7 +945,7 @@ int XStandardAI::PickUpItems() const
     bool item_picked = false;
 
     for (auto it = item_list->begin(); it != item_list->end(); ) {
-        if ((*it)->kind & ItemKind::IM_CHEST) {
+        if ((*it)->kind & ItemKind::CHEST) {
             break;
         }
 

@@ -27,9 +27,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XItemFactory
 {
     public:
-        static XItem* CreateAnyItem(ItemKind kind = ItemKind::IM_ITEM, ITEM_TYPE it = IT_RANDOM, int low_v = 0, int hi_v = 10000);
+        static XItem* CreateAnyItem(ItemKind kind = ItemKind::ITEM, ITEM_TYPE it = IT_RANDOM, int low_v = 0, int hi_v = 10000);
 
-        static XItem* CreateItem(ItemKind kind = ItemKind::IM_ITEM, ITEM_TYPE it = IT_RANDOM);
+        static XItem* CreateItem(ItemKind kind = ItemKind::ITEM, ITEM_TYPE it = IT_RANDOM);
 };
 
 #define ICREATE(x, lv, hv) XItemFactory::CreateAnyItem(x, IT_RANDOM, lv, hv)

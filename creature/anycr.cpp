@@ -111,7 +111,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
                     item = ICREATEB((ItemKind)(mask), it, 0, 10000000);
                 }
 
-                if (item->kind & ItemKind::IM_BODY && item->it == IT_DRESS
+                if (item->kind & ItemKind::BODY && item->it == IT_DRESS
                     && GetGender() == XCreature::MALE) {
                     // This is a kludge to prevent a "Roderick in a dress" scenario.
                     item->it = IT_CLOTHES;
@@ -120,8 +120,8 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
 
                 if (CanWear(item)) {
                     // Create proper ammo for missile weapons
-                    if (item->kind & ItemKind::IM_MISSILEW) {
-                        XItem * missile = ICREATEB(ItemKind::IM_MISSILE, IT_ARROW, 0, 10000000);
+                    if (item->kind & ItemKind::MISSILEW) {
+                        XItem * missile = ICREATEB(ItemKind::MISSILE, IT_ARROW, 0, 10000000);
                         ContainItem(missile);
                     }
 
@@ -153,13 +153,13 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
     }
 
     if (hand_1) {
-        XItem * weapon = ICREATE(ItemKind::IM_WEAPON, 0, 10000000);
+        XItem * weapon = ICREATE(ItemKind::WEAPON, 0, 10000000);
         wsk->SetLevel(weapon->wt, 2); // just basic weapon level
         hand_1->Wear(weapon);
     }
 
     if (hand_2) {
-        hand_2->Wear(ICREATE(ItemKind::IM_SHIELD, 0, 10000000));
+        hand_2->Wear(ICREATE(ItemKind::SHIELD, 0, 10000000));
     }
 
     // supress invisibility, add see invisible
@@ -221,7 +221,7 @@ XAnyCreature::XAnyCreature(CREATURE_DEF * cr)
     // Create money if components more than 2
     if (components.size() > 2 && vRand(3) == 0) {
         for (int i = 0; i < vGetHighBitNum(cr->crl) + 1; i++) {
-            XItem * it = ICREATEA(ItemKind::IM_MONEY);
+            XItem * it = ICREATEA(ItemKind::MONEY);
             ContainItem(it);
         }
     }

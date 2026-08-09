@@ -115,7 +115,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
 
     int sacrifice_value;
 
-    if (item->kind & ItemKind::IM_MONEY) {
+    if (item->kind & ItemKind::MONEY) {
         sacrifice_value = static_cast<int>(std::sqrt(static_cast<float>(item->quantity)) + 1)
             * (val / 4 + 1);
     } else {
