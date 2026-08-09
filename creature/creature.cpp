@@ -39,6 +39,8 @@ extern "C"
 #include "lauxlib.h"
 }
 
+#include <sol/sol.hpp>
+
 // XCreature is never itself a dynamic type - every actual creature is
 // a concrete subclass (XAnyCreature, XHero, the uniques), each with
 // its own CEREAL_REGISTER_TYPE against XCreature - this just extends
@@ -1691,20 +1693,18 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject**
 
 int XCreature::Chat(XCreature * chatter, const char* msg)
 {
-    if (event_handler) {
-        lua_pushstring(XLocation::L, event_handler);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_CHAT);
-        lua_pushlightuserdata(XLocation::L, this);
-        lua_pushlightuserdata(XLocation::L, chatter);
-        lua_pushlightuserdata(XLocation::L, const_cast<char*>(msg));
-        lua_call(XLocation::L, 4, 1);
-        int res = lua_tonumber(XLocation::L, 3);
-        lua_pop(XLocation::L, 1);
-        return res;
+    if (!event_handler) {
+        return 0;
     }
 
-    return 0;
+    sol::state_view lua(XLocation::L);
+    sol::protected_function_result result = lua[event_handler](LE_CHAT, (void*)this, (void*)chatter, std::string(msg));
+
+    if (!result.valid()) {
+        return 0;
+    }
+
+    return result.get<sol::optional<int>>().value_or(0);
 }
 
 bool XCreature::ContainItem(XItem * item)
