@@ -46,6 +46,7 @@ XItem::XItem()
     color = xBLUE;
     it = IT_UNKNOWN;
     im = IM_UNKNOWN;
+    quantity = 1;
     wt = XWarSkills::OTHER;
     bp = BP_OTHER;
     identify = 1;
@@ -321,6 +322,14 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
     wt = copy->wt;
     brt = copy->brt;
     owner = copy->owner;
+    quantity = copy->quantity;
+}
+
+void XItem::Concat(XItem* it)
+{
+    assert(it->GetRef() == 0);
+    quantity += it->quantity;
+    it->Invalidate();
 }
 
 int XItem::Compare(XObject * o)

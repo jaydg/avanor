@@ -207,9 +207,6 @@ class XObject : public std::enable_shared_from_this<XObject>
         friend class XModSlowness;
 
     public:
-        // some objects can be stacked to a bundle: "bundle of 23 arrow (1d4)"
-        int quantity;
-
         // many years ago it was item mask, now it is mask for all!
         ITEM_MASK im;
 
@@ -251,12 +248,12 @@ class XObject : public std::enable_shared_from_this<XObject>
             Create();
         }
 
-        XObject() : xguid(::guid++), quantity(1), im(IM_UNKNOWN), is_valid(1)
+        XObject() : xguid(::guid++), im(IM_UNKNOWN), is_valid(1)
         {
             Create();
         }
 
-        XObject(XObject * o) : xguid(::guid++), quantity(o->quantity), im(o->im), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
+        XObject(XObject * o) : xguid(::guid++), im(o->im), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
 
         {
             Create();
@@ -324,13 +321,6 @@ class XObject : public std::enable_shared_from_this<XObject>
             return 1;
         }
 
-        virtual void Concat(XObject * o)
-        {
-            assert(o->reference == 0);
-            quantity += o->quantity;
-            o->Invalidate();
-        }
-
         virtual const std::string GetClassName()
         {
             return "XObject";
@@ -354,7 +344,6 @@ class XObject : public std::enable_shared_from_this<XObject>
 
             ar(
                 cereal::make_nvp("guid", xguid),
-                quantity,
                 im,
                 ttm,
                 ttmb

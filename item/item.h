@@ -69,6 +69,13 @@ class XItem : public XBaseObject
 
         std::string toString() override;
 
+        // items can be stacked to a bundle: "bundle of 23 arrow (1d4)"
+        int quantity;
+
+        // merges it into this item - adds it's quantity onto this one's
+        // and invalidates it.
+        void Concat(XItem *it);
+
         BODY_PART bp;    // fit to what bp???
         ITEM_TYPE it;   // main type of item such IT_POTION
         XWarSkills::Type wt;  // weapon skill of item
@@ -118,7 +125,7 @@ class XItem : public XBaseObject
             ar(
                 owner, bp, it, wt, quality, durability, identify,
                 is_selected, value, special_property, special_number,
-                brt, material_index
+                brt, material_index, quantity
             );
         }
 
