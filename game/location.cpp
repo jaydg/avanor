@@ -118,7 +118,7 @@ XLocation::XLocation(XLocation::Id location)
 
     ttmb = 1000000;
     ttm = ttmb;
-    im = IM_OTHER;
+    im = IM_UNKNOWN;
 }
 
 void XLocation::Invalidate()

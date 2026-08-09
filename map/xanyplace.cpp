@@ -48,14 +48,14 @@ void XAnyPlace::NotifyLuaEvent(bool is_load)
 XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc) : area(_area)
 {
     Setup(_loc);
-    im = IM_OTHER;
+    im = IM_UNKNOWN;
     onEventLua = nullptr;
 }
 
 XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc, const char* _onEventLua) : area(_area)
 {
     Setup(_loc);
-    im = IM_OTHER;
+    im = IM_UNKNOWN;
 
     if (_onEventLua) {
         onEventLua = new char[strlen(_onEventLua) + 1];

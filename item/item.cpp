@@ -45,7 +45,7 @@ XItem::XItem()
     view = '*';
     color = xBLUE;
     it = IT_UNKNOWN;
-    im = IM_OTHER;
+    im = IM_UNKNOWN;
     wt = XWarSkills::OTHER;
     bp = BP_OTHER;
     identify = 1;
