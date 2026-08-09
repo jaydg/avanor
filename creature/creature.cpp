@@ -34,11 +34,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 #include "map/map_objects.h"
 
-extern "C"
-{
-#include "lauxlib.h"
-}
-
 #include <sol/sol.hpp>
 
 // XCreature is never itself a dynamic type - every actual creature is
@@ -930,7 +925,7 @@ int XCreature::GetResistance(RESISTANCE tr)
 
 }
 
-void XCreature::Die(XCreature * killer)
+void XCreature::Die(XCreature* killer)
 {
     assert(isValid());
 
@@ -940,13 +935,10 @@ void XCreature::Die(XCreature * killer)
     auto self = shared_from_this();
 
     if (event_handler) {
-        lua_pushstring(XLocation::L, event_handler);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_DIE);
-        lua_pushlightuserdata(XLocation::L, this);
-        lua_pushlightuserdata(XLocation::L, killer);
-        lua_call(XLocation::L, 3, 1);
-        lua_pop(XLocation::L, 1);
+        // this/killer stay void*, not XCreature* -  killer can legitimately be
+        // nullptr (e.g. DecNutrio()'s Die(nullptr))
+        sol::state_view lua(XLocation::L);
+        lua[event_handler](LE_DIE, (void*)this, (void*)killer);
     }
 
     // Unwear everything first, firing onUnWear() side effects - the items
@@ -1641,12 +1633,8 @@ void XCreature::NotifyLuaEventHandler(LUA_EVENT event)
     XLocation::lua_int_index = 0;
 
     if (event_handler && strlen(event_handler)) {
-        lua_pushstring(XLocation::L, event_handler);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, event);
-        lua_call(XLocation::L, 1, 1);
-        int res = lua_tonumber(XLocation::L, 2);
-        lua_pop(XLocation::L, 1);
+        sol::state_view lua(XLocation::L);
+        lua[event_handler](event);
     }
 }
 
@@ -1811,22 +1799,20 @@ int XCreature::GetVisibleRadius()
     }
 }
 
-int XCreature::onGiveItem(XCreature * giver, XItem * item)
+int XCreature::onGiveItem(XCreature* giver, XItem* item)
 {
-    if (event_handler) {
-        lua_pushstring(XLocation::L, event_handler);
-        lua_gettable(XLocation::L, LUA_GLOBALSINDEX);
-        lua_pushnumber(XLocation::L, LE_GIVE_ITEM);
-        lua_pushlightuserdata(XLocation::L, this);
-        lua_pushlightuserdata(XLocation::L, giver);
-        lua_pushlightuserdata(XLocation::L, item);
-        lua_call(XLocation::L, 4, 1);
-        int res = lua_tonumber(XLocation::L, 3);
-        lua_pop(XLocation::L, 1);
-        return res;
+    if (!event_handler) {
+        return 0;
     }
 
-    return 0;
+    sol::state_view lua(XLocation::L);
+    sol::protected_function_result result = lua[event_handler](LE_GIVE_ITEM, (void*)this, (void*)giver, (void*)item);
+
+    if (!result.valid()) {
+        return 0;
+    }
+
+    return result.get<sol::optional<int>>().value_or(0);
 }
 
 int XCreature::MoneyOp(int money_count)
