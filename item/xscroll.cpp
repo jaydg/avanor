@@ -48,12 +48,12 @@ struct SCROLL_REC {
 
                 if (j % 2 == 0) {
                     constexpr char vowels[] = "euioa";
-                    letter = vowels[vRand() % sizeof(vowels)];
+                    letter = vowels[vRand() % (sizeof(vowels) - 1)];
                 } else {
                     letter = static_cast<char>(vRand() % 26 + 'a');
                 }
 
-                name.append(&letter);
+                name.push_back(letter);
             }
 
             if (i < words - 1) {
