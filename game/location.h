@@ -346,6 +346,12 @@ class XLocation : public XObject
         // fire far more often than Chat/Die/GiveItem, so they're not
         // dispatched to every event_handler-bearing creature by default).
         static void EnableMoveHandler(void* cr);
+
+        // Flags cr as the creature the display follows in demo/attract mode
+        // ("-demo") in place of a real hero (see XCreature::NewMove()/Move()) -
+        // a no-op outside demo mode, so it's safe for any world script to
+        // call unconditionally on whichever creature should play that role.
+        static void SetMainCreature(void* cr);
         static void CreateTimerEvent(const std::string& event, int ttm);
 
         static int GetSkill(void* cr, int skill);

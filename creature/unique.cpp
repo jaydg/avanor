@@ -23,47 +23,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/unique.h"
 #include "game/game.h"
 #include "game/quest.h"
-#include "game/setting.h"
-#include "helpers/msgwin.h"
 #include "item/uniquei.h"
 
-
-///////////////////////////////////////////////////////////////////////
-// Beelzevile
-///////////////////////////////////////////////////////////////////////
-REGISTER_CLASS(XBeelzvile);
-CEREAL_REGISTER_TYPE(XBeelzvile);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBeelzvile);
-
-XBeelzvile::XBeelzvile(CreatureTemplate * cr) : XAnyCreature(cr)
-{
-    if (XSettings::isDemo) {
-        XCreature::main_creature = this;
-    }
-}
-
-void XBeelzvile::NewMove()
-{
-    if (XSettings::isDemo) {
-        l->map->Center(x, y);
-        l->map->Put(this);
-        PutStatus();
-        vRefresh();
-        msgwin.ClrMsg();
-    }
-
-    XAnyCreature::NewMove();
-}
-
-void XBeelzvile::Move()
-{
-    if (XSettings::isDemo) {
-        HideOldView();
-        ShowNewView();
-    }
-
-    XAnyCreature::Move();
-}
 
 ///////////////////////////////////////////////////////////////////////
 // RODERICK, King of Avanor

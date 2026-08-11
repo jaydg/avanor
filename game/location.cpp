@@ -33,6 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "game/location.h"
 #include "game/quest.h"
+#include "game/setting.h"
 #include "game/shop.h"
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
@@ -1033,6 +1034,13 @@ void XLocation::EnableMoveHandler(void* cr)
     ((XCreature*)cr)->EnableMoveHandler();
 }
 
+void XLocation::SetMainCreature(void* cr)
+{
+    if (XSettings::isDemo) {
+        XCreature::main_creature = (XCreature*)cr;
+    }
+}
+
 XGUID XLocation::GetObjectGUID(void* obj)
 {
     return ((XObject*)obj)->guid();
@@ -1349,6 +1357,7 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("Rand", &XLocation::Rand);
         lua.set_function("SetEventHandler", &XLocation::SetEventHandler);
         lua.set_function("EnableMoveHandler", &XLocation::EnableMoveHandler);
+        lua.set_function("SetMainCreature", &XLocation::SetMainCreature);
         lua.set_function("CreateTimerEvent", &XLocation::CreateTimerEvent);
 
         lua.set_function("GetSkill", &XLocation::GetSkill);

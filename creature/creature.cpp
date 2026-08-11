@@ -31,6 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "creature/xhero.h"
 #include "game/game.h"
+#include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
 #include "map/map_objects.h"
@@ -430,6 +431,17 @@ void XCreature::DoMove()
 
 void XCreature::Move()
 {
+    // Demo/attract mode ("-demo") has no real hero - whichever creature is
+    // flagged main_creature (see SetMainCreature(), Lua-callable) stands in
+    // for one, so the same view-refresh sequence XHero drives itself needs
+    // to run here too. Was XBeelzvile-specific (creature/unique.cpp) before
+    // being generalized to any main_creature, since it's demo-mode
+    // plumbing, not creature-specific behavior.
+    if (XSettings::isDemo && this == main_creature) {
+        HideOldView();
+        ShowNewView();
+    }
+
     if (wants_move_hook && event_handler) {
         sol::state_view lua(XLocation::L);
         lua[event_handler](LuaEvent::PRE_MOVE, (void*)this);
@@ -676,6 +688,16 @@ void XCreature::PutStatus()
 
 void XCreature::NewMove()
 {
+    // See the matching comment in Move() - same demo-mode main_creature
+    // stand-in, same generalized-from-XBeelzvile reasoning.
+    if (XSettings::isDemo && this == main_creature) {
+        l->map->Center(x, y);
+        l->map->Put(this);
+        PutStatus();
+        vRefresh();
+        msgwin.ClrMsg();
+    }
+
     if (wants_move_hook && event_handler) {
         sol::state_view lua(XLocation::L);
         lua[event_handler](LuaEvent::AI_TURN, (void*)this);

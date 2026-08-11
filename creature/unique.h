@@ -25,24 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/anycr.h"
 
-class XBeelzvile : public XAnyCreature
-{
-        XBeelzvile() {}
-        friend class cereal::access;
-
-    public:
-        DECLARE_CREATOR(XBeelzvile, XAnyCreature);
-        XBeelzvile(CreatureTemplate * cr);
-        void NewMove() override;
-        void Move() override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyCreature>(this));
-        }
-};
-
 class XRoderick : public XAnyCreature
 {
     protected:
