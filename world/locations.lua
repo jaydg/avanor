@@ -380,9 +380,27 @@ function MakeSmallCave()
 end
 
 function SmallCaveQuestPersons(x, y)
-	Guardian("giana", GID_GIANA, x + 1, y, 8, 4)
+	local giana = Guardian("giana", GID_GIANA, x + 1, y, 8, 4)
+	SetEventHandler(giana, 'GianaHandler')
 	Guardian("rotmoth", GID_ROTMOTH, x + 1, y, 8, 4)
 	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
+end
+
+function GianaHandler(e, t, p, v)
+	if (e ~= LuaEvent.CHAT) then
+		return 0
+	end
+
+	local giana = AsCreature(t)
+	local chatter = AsCreature(p)
+
+	if (giana.xai:isEnemy(chatter)) then
+		AddMessage("Don't touch me!")
+	elseif (QuestState:GetFlag('rotmoth_status') < 2) then
+		AddMessage("Please, save me.")
+	end
+
+	return 1
 end
 
 small_cave_first_visit = 0

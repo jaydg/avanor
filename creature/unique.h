@@ -43,37 +43,6 @@ class XBeelzvile : public XAnyCreature
         }
 };
 
-class XGefeon : public XAnyCreature
-{
-    protected:
-        XGefeon() {}
-        friend class cereal::access;
-
-    public:
-        DECLARE_CREATOR(XGefeon, XAnyCreature);
-        XGefeon(CreatureTemplate * cr);
-        int Chat(XCreature * chatter, const char* msg) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyCreature>(this));
-        }
-};
-
-class XAhkUlan : public XAnyCreature
-{
-    protected:
-        XAhkUlan() {}
-
-    public:
-        DECLARE_CREATOR(XAhkUlan, XAnyCreature);
-        XAhkUlan(CreatureTemplate * cr);
-        int Chat(XCreature * chatter, const char* msg) override;
-        void Die(XCreature * killer) override;
-        int onGiveItem(XCreature * giver, XItem * item) override;
-};
-
 class XShop;
 
 class XRoderick : public XAnyCreature
@@ -170,7 +139,6 @@ class XGiana : public XAnyCreature
     public:
         DECLARE_CREATOR(XGiana, XAnyCreature);
         XGiana(CreatureTemplate * cr);
-        int Chat(XCreature * chatter, const char* msg) override;
         void FirstStep(int _x, int _y, XLocation * _l) override;
 
         template<class Archive>

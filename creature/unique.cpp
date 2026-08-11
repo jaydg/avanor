@@ -71,40 +71,6 @@ void XBeelzvile::Move()
 }
 
 ///////////////////////////////////////////////////////////////////////
-// Gefeon, great master of Fire
-///////////////////////////////////////////////////////////////////////
-REGISTER_CLASS(XGefeon);
-CEREAL_REGISTER_TYPE(XGefeon);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XGefeon);
-XGefeon::XGefeon(CreatureTemplate * cr) : XAnyCreature(cr) { }
-
-int XGefeon::Chat(XCreature * chatter, const char* msg)
-{
-    if (XQuest::quest.GetFlag("ahk_ulan_ordered") == 0 && XQuest::quest.GetFlag("ahk_ulan_killed") == 0) {
-        msgwin.Add("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.");
-        XQuest::quest.SetFlag("ahk_ulan_ordered", 1);
-        return 1;
-    }
-
-    if (XQuest::quest.GetFlag("ahk_ulan_ordered") == 1 && XQuest::quest.GetFlag("ahk_ulan_killed") == 0) {
-        msgwin.Add("And how is Ahk-Ulan? Still alive? That is very bad.");
-        return 1;
-    }
-
-    if (XQuest::quest.GetFlag("ahk_ulan_killed") == 1) {
-        if (XQuest::quest.GetFlag("roderick_killed") == 1) { // Kill all the competition and become king/queen.
-            msgwin.Add("Well, you killed the pretender and the King, I guess that makes you the new ruler!");
-        } else {
-            msgwin.Add("You did a great thing! You truly are the best!");
-        }
-
-        XQuest::quest.WinGame();
-    }
-
-    return 1;
-}
-
-///////////////////////////////////////////////////////////////////////
 // RODERICK, King of Avanor
 ///////////////////////////////////////////////////////////////////////
 
@@ -368,19 +334,6 @@ void XGiana::FirstStep(int _x, int _y, XLocation * _l)
     if (!XQuest::quest.GetCreatureRef("kidnapped_girl")) {
         XQuest::quest.SetCreatureRef("kidnapped_girl", this);
     }
-}
-
-int XGiana::Chat(XCreature * chatter, const char* msg)
-{
-    if (xai->isEnemy(chatter)) {
-        msgwin.Add("Don't touch me!");
-    } else {
-        if (XQuest::quest.GetFlag("rotmoth_status") < 2) {
-            msgwin.Add("Please, save me.");
-        }
-    }
-
-    return 1;
 }
 
 ///////////////////////////////////////////////////////////////////////
