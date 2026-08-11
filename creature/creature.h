@@ -408,8 +408,16 @@ class XCreature : public XBaseObject
         int added_PP;
         int added_speed;
 
-        // Adds item to creature inventory, increase carried weight.
-        bool ContainItem(XItem* item);
+        // Adds item to creature inventory, increase carried weight. Returns
+        // the surviving owned XItem, or nullptr if CarryItem() rejected it
+        // (e.g. a dying creature) - `item` itself is not necessarily that
+        // survivor: XItemList::insert() (see item/item.h) merges `item`
+        // into an already-carried, stackable-equal item instead of keeping
+        // it as its own entry when one exists, freeing `item` as part of
+        // the merge. Compare the result against `item` (by pointer) to
+        // tell "kept as-is" apart from "merged and freed" - never touch
+        // `item` again after calling this without doing that check first.
+        std::shared_ptr<XItem> ContainItem(XItem* item);
 
         int DropItem(XItem* i);
         int PickUpItem(XItem* i);

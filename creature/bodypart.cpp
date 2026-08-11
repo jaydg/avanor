@@ -124,15 +124,35 @@ int XBodyPart::Wear(XItem* new_item)
         // call even mid-construction, before the creature is
         // shared_from_this()-safe: owner_raw is a direct member access,
         // not gated on that (unlike owner.lock() below).
-        owner_raw->ContainItem(new_item);
-        item = XItem::ToWeakPtr(new_item);
+        //
+        // ContainItem can merge new_item into an already-carried,
+        // stackable-equal item instead of keeping it as its own entry
+        // (XItemList::insert's TryMerge/Concat, see item/item.h) - when
+        // that happens, new_item is freed as part of the merge, so it
+        // must never be dereferenced again afterward. The returned
+        // pointer is always the real surviving object; compare it against
+        // new_item to tell the two cases apart rather than assuming
+        // new_item itself is still alive.
+        auto owned = owner_raw->ContainItem(new_item);
+
+        if (owned.get() != new_item) {
+            // Either CarryItem() rejected it (owned is null) or it got
+            // merged into a different, already-associated item elsewhere
+            // (owned is that other item, not new_item) - this body part
+            // isn't holding a distinct item of its own in either case, so
+            // it stays empty rather than double-claiming someone else's
+            // item or touching a dangling new_item.
+            return 1;
+        }
+
+        item = owned;
 
         // owner can still be unresolved here if this is a creature
         // equipping its own starting gear from within its own constructor -
         // it isn't shared_from_this()-safe yet at that point. XCreature::
         // FirstStep() finishes this (onWear()) once it's safe.
         if (auto o = owner.lock()) {
-            new_item->onWear(o.get());
+            owned->onWear(o.get());
         }
 
         return 0;

@@ -1795,14 +1795,18 @@ int XCreature::Chat(XCreature * chatter, const char* msg)
     return result.get<sol::optional<int>>().value_or(0);
 }
 
-bool XCreature::ContainItem(XItem * item)
+std::shared_ptr<XItem> XCreature::ContainItem(XItem * item)
 {
     if (CarryItem(item)) {
-        contain.insert(XItem::Own(item));
-        return true;
-    } else {
-        return false;
+        // contain.insert() (XItemList::insert, item/item.h) returns an
+        // iterator to whichever XItem this ended up as: `item` itself on
+        // a fresh insert, or a pre-existing, stackable-equal item it got
+        // Concat()-ed into instead (see the declaration comment on
+        // ContainItem in creature.h for why that distinction matters).
+        return *contain.insert(XItem::Own(item)).first;
     }
+
+    return nullptr;
 }
 
 bool XCreature::CarryItem(XItem * item)
