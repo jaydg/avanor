@@ -310,17 +310,10 @@ void XGame::Run()
     vGetch();
 }
 
-//#define __DEBUG_L
-
 void XGame::CreateLocations()
 {
     //	Create locations
-#ifndef __DEBUG_L
     XLocation::CreateNewGame();
-#else
-    new XLDebug(XLocation::DEBUG1);
-    new XLDebug(XLocation::DEBUG2);
-#endif
 
     //	Bind ways
     for (int i = 0; i < XLocation::COUNT; i++) {
@@ -344,7 +337,6 @@ void XGame::CreateLocations()
 
 void XGame::CreateHero()
 {
-#ifndef __DEBUG_L
     XRect hero_rect(26, 4, 32, 9);
     XPoint hero_point;
 
@@ -368,16 +360,6 @@ void XGame::CreateHero()
         cr->xai->SetEnemyClass(CreatureClass::KOBOLD | CreatureClass::GOBLIN | CreatureClass::UNDEAD | CreatureClass::INSECT | CreatureClass::BLOB | CreatureClass::CANINE | CreatureClass::FELINE | CreatureClass::RAT | CreatureClass::REPTILE | CreatureClass::ORC);
     }
 
-#else
-    XPoint pt;
-    locations[XLocation::DEBUG1]->GetFreeXY(&pt);
-    XHero * hero = new XHero(1);
-    Game.NewCreature(hero, pt.x, pt.y, locations[XLocation::DEBUG1].get());
-    locations[XLocation::DEBUG1]->map->Center(hero->x, hero->y);
-
-    XRect gr(pt.x + 2, pt.y + 2, pt.x + 3, pt.y + 3);
-    locations[XLocation::DEBUG1]->NewCreature(CN_DWARF_GUARD, &gr, GID_DWARVEN_GUARDIAN, XStandardAI::GUARD_AREA)->xai->AddPersonalEnemy(hero);
-#endif
     XCreature::main_creature = hero;
 }
 
