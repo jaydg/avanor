@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/skeep_ai.h"
 #include "creature/unique.h"
-#include "creature/xhero.h"
 #include "game/game.h"
 #include "game/quest.h"
 #include "game/setting.h"
@@ -98,69 +97,6 @@ XRoderick::XRoderick(CreatureTemplate * cr) : XAnyCreature(cr)
     ContainItem(it);
 }
 
-int XRoderick::Chat(XCreature * chatter, const char* msg)
-{
-    XItem * it1 = chatter->GetBodyPart(BP_HAND, 0)->Item();
-    XItem * it2 = chatter->GetBodyPart(BP_HAND, 1)->Item();
-
-    if (xai->isEnemy(chatter)) {
-        msgwin.Add("No mercy!");
-    } else if ((it1 && it1->guid() == XAvanorDefender::avanordefender_guid) || (it2 && it2->guid() == XAvanorDefender::avanordefender_guid)) {
-        msgwin.Add(
-            "I recognize that sword in your hand. "
-            "You have looted the tomb of my ancestors! "
-            "Guards! Seize the traitor!");
-        xai->AddPersonalEnemy(chatter);
-        xai->SetGroupEnemy(chatter);
-    } else {
-        msgwin.Add("Hello, brave hero.");
-
-        if (XQuest::quest.GetFlag("roderick_quest2") == 0) {
-            msgwin.Add(
-                "I have heard that my family crypt has been occupied by a group of undead. "
-                "Clear the crypt and I will reward you. It lies to the south-west of the city.");
-            XQuest::quest.SetFlag("roderick_quest2", 1);
-        } else if (XQuest::quest.GetFlag("roderick_quest2") == 1) {
-            if (Game.locations[XLocation::UNDEADS_TOMB1]->GetCreatureCount(CreatureClass::UNDEAD) == 0) {
-                msgwin.Add(
-                    "Thank you for destroying the evil in our crypt. "
-                    "Please accept these coins and my gratitude for a job well done.");
-                XQuest::quest.SetFlag("roderick_quest2", 2);
-                chatter->MoneyOp(1000);
-            } else {
-                msgwin.Add("You still have not cleansed my ancestor's crypt.");
-            }
-        } else if (XQuest::quest.GetFlag("roderick_quest") == 0) {
-            msgwin.Add("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tried to hide it from me in one of the caves far south from here, but people say that he was killed while hiding it.  Could you return this artifact to me?");
-            XQuest::quest.SetFlag("roderick_quest", 1);
-        } else if (XQuest::quest.GetFlag("roderick_quest") == 1) {
-            msgwin.Add("Please, return the 'Eye of Raa' to me.");
-        }
-    }
-
-    return 1;
-}
-
-void XRoderick::Die(XCreature * killer)
-{
-    XQuest::quest.SetFlag("roderick_killed", 1);
-    XAnyCreature::Die(killer);
-}
-
-int XRoderick::onGiveItem(XCreature * giver, XItem * item)
-{
-    if (item->it == ItemType::EYEOFRAA) {
-        msgwin.Add("Thank you for your great help. The citizens of Avanor never forget your exploits!");
-        XQuest::quest.SetFlag("roderick_quest", 2);
-        ContainItem(item);
-        return 1;
-    } else {
-        msgwin.Add("I don't need this");
-    }
-
-    return 0;
-}
-
 ///////////////////////////////////////////////////////////////////////
 // HIGHT PRIEST
 ///////////////////////////////////////////////////////////////////////
@@ -186,62 +122,6 @@ XHighPriest::XHighPriest(CreatureTemplate * cr) : XAnyCreature(cr)
     ContainItem(it);
 }
 
-int XHighPriest::Chat(XCreature * chatter, const char* msg)
-{
-    if (xai->isEnemy(chatter)) {
-        msgwin.Add("Defiler, you must be punished!");
-    } else {
-        msgwin.Add("Blessings on you.");
-    }
-
-    return 1;
-}
-
-void XHighPriest::Die(XCreature * killer)
-{
-    std::string buf;
-
-    if (killer->isHero()) {
-        buf = fmt::format("{} will not be pleased about this...", religion.GetDeityName(XDeity::LIFE));
-        msgwin.Add(buf);
-    } else {
-        buf = fmt::format("{} seems to be trying to anger {}...", killer->name, religion.GetDeityName(XDeity::LIFE));
-        msgwin.Add(buf);
-    }
-
-    killer->religion.life_act -= 50;
-    XAnyCreature::Die(killer);
-}
-
-int XHighPriest::onGiveItem(XCreature * giver, XItem * item)
-{
-    int val = giver->sk->GetLevel(XSkill::Skill::RELIGION);
-
-    msgwin.Add("Thank you for your charitable donation!");
-    msgwin.Add(fmt::format("{} prays to {}.", name, XReligion::GetDeityName(XDeity::LIFE)));
-
-    if (1 /*TODO if hero can see...*/) {
-        msgwin.Add(fmt::format("{} disappears in a bright light.",
-            item->toString()));
-    }
-
-    int sacrifice_value;
-
-    if (item->kind & ItemKind::MONEY) {
-        sacrifice_value = (int)(sqrt((float)item->quantity) + 1) * (val / 4 + 1);
-    } else {
-        sacrifice_value = (int)((sqrt((float)item->GetValue()) * item->quantity) + 1) * (val / 4 + 1);
-    }
-
-    giver->sk->UseSkill(XSkill::Skill::RELIGION, 3);
-
-    giver->religion.life_act += 2 * sacrifice_value;
-
-    item->UnCarry();
-    item->Invalidate();
-    return 1;
-}
-
 ///////////////////////////////////////////////////////////////////////
 // ROTMOTH
 ///////////////////////////////////////////////////////////////////////
@@ -257,45 +137,6 @@ XRotmoth::XRotmoth(CreatureTemplate * cr) : XAnyCreature(cr)
     xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
     xai->SetAIFlag(XStandardAI::RANDOM_MOVE);
 
-}
-
-int XRotmoth::Chat(XCreature * chatter, const char* msg)
-{
-    if (xai->isEnemy(chatter)) {
-        msgwin.Add("You will be rewarded for your stupidness!");
-    } else {
-        if (XQuest::quest.GetFlag("rotmoth_status") == 0) {
-            auto girl = XQuest::quest.GetCreatureRef("kidnapped_girl");
-
-            if (girl && isCreatureVisible(girl)) {
-                msgwin.Add("I hope you'll bring 100 gold coins, otherwise this girl will die.");
-
-                if (chatter->MoneyOp(0) >= 100) {
-                    msgwin.Add("Pay him?");
-
-                    if (chatter->GetTarget(TR_YES_NO)) {
-                        chatter->MoneyOp(-100);
-                        MoneyOp(100);
-
-                        if (chatter->creature_person_type & XCreature::HE) {
-                            msgwin.Add("Thank you, boy!");
-                        } else {
-                            msgwin.Add("Thank you, girl!");
-                        }
-
-                        girl->xai->SetCompanion(chatter);
-                        XQuest::quest.SetFlag("rotmoth_status", 1);
-                    }
-                }
-            } else {
-                msgwin.Add("I dont know what you are asking about.");
-            }
-        } else {
-            msgwin.Add("Run away quickly before I change my mind!");
-        }
-    }
-
-    return 1;
 }
 
 void XRotmothAI::onWasAttacked(XCreature * attacker)

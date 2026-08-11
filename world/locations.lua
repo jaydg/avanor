@@ -382,8 +382,55 @@ end
 function SmallCaveQuestPersons(x, y)
 	local giana = Guardian("giana", GID_GIANA, x + 1, y, 8, 4)
 	SetEventHandler(giana, 'GianaHandler')
-	Guardian("rotmoth", GID_ROTMOTH, x + 1, y, 8, 4)
+	local rotmoth = Guardian("rotmoth", GID_ROTMOTH, x + 1, y, 8, 4)
+	SetEventHandler(rotmoth, 'RotmothHandler')
 	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
+end
+
+function RotmothHandler(e, t, p, v)
+	if (e ~= LuaEvent.CHAT) then
+		return 0
+	end
+
+	local rotmoth = AsCreature(t)
+	local chatter = AsCreature(p)
+
+	if (rotmoth.xai:isEnemy(chatter)) then
+		AddMessage("You will be rewarded for your stupidness!")
+		return 1
+	end
+
+	if (QuestState:GetFlag('rotmoth_status') ~= 0) then
+		AddMessage("Run away quickly before I change my mind!")
+		return 1
+	end
+
+	local girl = QuestState:GetCreatureRef('kidnapped_girl')
+
+	if (not girl or not rotmoth:IsCreatureVisible(girl)) then
+		AddMessage("I dont know what you are asking about.")
+		return 1
+	end
+
+	AddMessage("I hope you'll bring 100 gold coins, otherwise this girl will die.")
+
+	if (chatter:MoneyOp(0) >= 100) then
+		if (AskQuestion("Pay him?", "y n", "yes", "no") == 'y') then
+			chatter:MoneyOp(-100)
+			rotmoth:MoneyOp(100)
+
+			if (chatter:IsMale()) then
+				AddMessage("Thank you, boy!")
+			else
+				AddMessage("Thank you, girl!")
+			end
+
+			girl.xai:SetCompanion(chatter)
+			QuestState:SetFlag('rotmoth_status', 1)
+		end
+	end
+
+	return 1
 end
 
 function GianaHandler(e, t, p, v)

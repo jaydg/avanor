@@ -54,9 +54,6 @@ class XRoderick : public XAnyCreature
     public:
         DECLARE_CREATOR(XRoderick, XAnyCreature);
         XRoderick(CreatureTemplate * cr);
-        int Chat(XCreature * chatter, const char* msg) override;
-        void Die(XCreature * killer) override;
-        int onGiveItem(XCreature * giver, XItem * item) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -79,9 +76,6 @@ class XHighPriest : public XAnyCreature
     public:
         DECLARE_CREATOR(XHighPriest, XAnyCreature);
         XHighPriest(CreatureTemplate * cr);
-        int Chat(XCreature * chatter, const char* msg) override;
-        void Die(XCreature * killer) override;
-        int onGiveItem(XCreature * giver, XItem * item) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -99,7 +93,6 @@ class XRotmoth : public XAnyCreature
     public:
         DECLARE_CREATOR(XRotmoth, XAnyCreature);
         XRotmoth(CreatureTemplate * cr);
-        int Chat(XCreature * chatter, const char* msg) override;
 
         template<class Archive>
         void serialize(Archive& ar)
