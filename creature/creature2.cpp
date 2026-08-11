@@ -31,6 +31,15 @@ void XCreature::Attack()
     XCreature * target = l->map->GetMonster(nx, ny);
     assert(target);
 
+    // Keep target allocated for the rest of this function: the first
+    // MeleeAttack() below can kill it, and XCreature::Die() only keeps
+    // itself alive for the duration of its own call (see its `self =
+    // shared_from_this()`) - once it returns, target may already be fully
+    // delete()d via shared_ptr, not just marked invalid. target->isValid()
+    // further down needs a real, if now-invalidated, object to read rather
+    // than freed memory.
+    auto target_keepalive = XCreature::ToWeakPtr(target).lock();
+
     XItem * it1 = GetItem(BP_HAND, 0);
     XItem * it2 = GetItem(BP_HAND, 1);
     int flag = 0;

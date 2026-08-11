@@ -228,6 +228,14 @@ void XStandardAI::Move()
     assert(enemy != ai_owner);
 
     if (enemy) {
+        // Keep enemy allocated across AttackEnemy(): it can die from that
+        // very attack, and XCreature::Die()'s self-keepalive only covers
+        // its own call, not this caller (see the matching fix in
+        // XCreature::Attack(), creature2.cpp) - grab this reference now,
+        // while enemy is still known-alive, so the ToWeakPtr() call below
+        // has a real object to read even if enemy died in the meantime.
+        auto enemy_keepalive = XCreature::ToWeakPtr(enemy).lock();
+
         //second try to attack enemy
         was_attack = AttackEnemy(enemy->x, enemy->y);
 
