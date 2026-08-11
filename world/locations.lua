@@ -384,9 +384,31 @@ end
 function SmallCaveQuestPersons(x, y)
 	local giana = Guardian("giana", GID_GIANA, x + 1, y, 8, 4)
 	SetEventHandler(giana, 'GianaHandler')
+	-- Rotmoth's kidnap victim
+	QuestState:SetCreatureRef('kidnapped_girl', AsCreature(giana))
+
 	local rotmoth = Guardian("rotmoth", GID_ROTMOTH, x + 1, y, 8, 4)
 	SetEventHandler(rotmoth, 'RotmothHandler')
+	SetCreatureAI(rotmoth, 'RotmothAI')
+
 	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
+end
+
+-- Redirects retaliation for an attack onto the kidnapped girl
+-- instead of Rotmoth himself, as long as she's still around
+RotmothAI = {}
+function RotmothAI.onWasAttacked(self, attacker)
+	if isHero(attacker) then
+		local girl = QuestState:GetCreatureRef('kidnapped_girl')
+
+		if girl then
+			self.xai:ReactToAttacker(girl)
+			self.xai:AddPersonalEnemy(attacker)
+			return true
+		end
+	end
+
+	return false
 end
 
 function RotmothHandler(e, t, p, v)

@@ -116,10 +116,13 @@ struct CreatureTemplate {
 
 class XCreatureStorage
 {
-        // The 8 unique NPCs (Bandit, Shopkeeper, Gefeon, Roderick,
-        // Beelzevile, HighPriest, Rotmoth, Giana) each have a hand-written
-        // C++ subclass with real custom behavior (creature/unique.h/.cpp)
-        // - this is purely an implementation-dispatch table for those,
+        // XShopkeeper is the one unique NPC left with a hand-written C++
+        // subclass with real custom behavior (creature/shopkeeper.h/.cpp) -
+        // it's staying C++ and growing (debt tracking, buying/selling,
+        // XShop), unlike every other former unique.h class (Bandit,
+        // Gefeon, Roderick, Beelzevile, HighPriest, Rotmoth, Giana), whose
+        // dialogue/AI/item-giving all moved to world/*.lua. This map is
+        // purely an implementation-dispatch table for that one holdout,
         // replacing the old switch(cn) over a small numeric range
         // (cn >= CN_UNIQUE). Every other monster, no matter what its
         // XCreature::unique flag says, gets the generic XAnyCreature.

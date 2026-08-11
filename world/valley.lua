@@ -656,6 +656,11 @@ end
 function CreateHighPriest(x, y)
 	local hp = Guardian("highpriest", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 3, 4)
 	SetEventHandler(hp, 'HighPriestHandler')
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
+	GiveObjectToCreature(CreateObject('XAvanorMitre'), hp)
 end
 
 function HighPriestHandler(e, t, p, v)
@@ -701,6 +706,12 @@ end
 function CreateRoderik(x, y)
 	local roderik = Guardian("roderik", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, XStandardAI.NO_SWAP)
 	SetEventHandler(roderik, 'RoderikHandler')
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
+	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
+	GiveObjectToCreature(CreateObject('XAvanorCrown'), roderik)
+	GiveObjectToCreature(CreateObject('XAvanorScepter'), roderik)
 end
 
 function RoderikHandler(e, t, p, v)

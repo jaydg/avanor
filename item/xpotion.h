@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 #include <cereal/types/base_class.hpp>
+#include <sol/forward.hpp>
 
 #include "item/item.h"
 #include "magic/effect.h"
@@ -144,6 +145,15 @@ struct POTION_REC {
 class XPotion : public XItem
 {
     public:
+        // Registers POTION_NAME as the Lua table PotionName.MEMBER (prefix
+        // dropped, same convention as every other Lua-facing enum table) -
+        // lets world scripts create a specific potion (e.g. for a unique
+        // NPC's starting gear) via CreateObject(PotionName.HEALING), the
+        // only axis ItemKind/ItemType-based creation (ICREATEA/ICREATEB,
+        // see item/itemf.cpp) can't reach: every ItemKind::POTION item is
+        // created as `new XPotion()` (PN_RANDOM) regardless of ItemType.
+        static void RegisterLua(sol::state_view& lua);
+
         DECLARE_CREATOR(XPotion, XItem);
         XPotion(POTION_NAME _pn = PN_RANDOM);
         XPotion(XPotion * copy);

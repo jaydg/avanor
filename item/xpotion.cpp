@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fstream>
 #include <fmt/format.h>
+#include <sol/sol.hpp>
 
 #include "helpers/msgwin.h"
 #include "item/item_cereal.h"
@@ -29,6 +30,46 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XPotion);
 CEREAL_REGISTER_TYPE(XPotion);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPotion);
+
+void XPotion::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("PotionName",
+        "WATER", PN_WATER,
+        "APPLEJUCE", PN_APPLEJUCE,
+        "ORANGEJUCE", PN_ORANGEJUCE,
+        "HEALING", PN_HEALING,
+        "CURE_LIGHT_WOUNDS", PN_CURE_LIGHT_WOUNDS,
+        "CURE_SERIOUS_WOUNDS", PN_CURE_SERIOUS_WOUNDS,
+        "CURE_CRITICAL_WOUNDS", PN_CURE_CRITICAL_WOUNDS,
+        "CURE_MORTAL_WOUNDS", PN_CURE_MORTAL_WOUNDS,
+        "POWER", PN_POWER,
+        "RESTORATION", PN_RESTORATION,
+        "GAIN_STRENGTH", PN_GAIN_STRENGTH,
+        "GAIN_WILLPOWER", PN_GAIN_WILLPOWER,
+        "GAIN_MANA", PN_GAIN_MANA,
+        "GAIN_TOUGHNESS", PN_GAIN_TOUGHNESS,
+        "GAIN_DEXTERITY", PN_GAIN_DEXTERITY,
+        "CURE_POISON", PN_CURE_POISON,
+        "POISON", PN_POISON,
+        "BLEEDNESS", PN_BLEEDNESS,
+        "DISEASE", PN_DISEASE,
+        "CURE_DISEASE", PN_CURE_DISEASE,
+        "HEROISM", PN_HEROISM,
+        "SEE_INVISIBLE", PN_SEE_INVISIBLE,
+        "WEAKNESS", PN_WEAKNESS,
+        "CLUMSINESS", PN_CLUMSINESS,
+        "DEATH", PN_DEATH,
+        "SATIATION", PN_SATIATION,
+        "STARVATION", PN_STARVATION,
+        "BOOST_SPEED", PN_BOOST_SPEED,
+        "SLOWNESS", PN_SLOWNESS,
+        "ACID_RESISTANCE", PN_ACID_RESISTANCE,
+        "FIRE_RESISTANCE", PN_FIRE_RESISTANCE,
+        "COLD_RESISTANCE", PN_COLD_RESISTANCE,
+        "POISON_RESISTANCE", PN_POISON_RESISTANCE,
+        "RANDOM", PN_RANDOM
+    );
+}
 
 struct PN_COLORTABLE {
     const char* name;

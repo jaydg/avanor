@@ -27,7 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/skeep_ai.h"
 #include "creature/lua_ai.h"
 #include "creature/shopkeeper.h"
-#include "creature/unique.h"
 #include "engine/xgen.h"
 #include "game/cbuilder.h"
 #include "game/game.h"
@@ -40,6 +39,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_misc.h"
 #include "item/uniquei.h"
 #include "item/xherb.h"
+#include "item/xpotion.h"
 #include "magic/attack_effect_type.h"
 #include "map/map_objects.h"
 
@@ -604,6 +604,12 @@ void* XLocation::CreateObjectByName(const std::string& name)
 void* XLocation::CreateObjectByMask(int flag, int min_val, int max_val)
 {
     return ICREATE((ItemKind)(flag), min_val, max_val);
+}
+
+//CreateObject(PotionName.HEALING)
+void* XLocation::CreateObjectByPotion(int pn)
+{
+    return new XPotion(static_cast<POTION_NAME>(pn));
 }
 
 //DropItem(item, 0, 0)
@@ -1261,6 +1267,7 @@ void XLocation::CommonLuaInitialization()
     RegisterCrDefsEnums(lua);
     XItem::RegisterLua(lua);
     RegisterItemDefEnums(lua);
+    XPotion::RegisterLua(lua);
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
@@ -1317,7 +1324,7 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("Creature", &XLocation::Creature);
         lua.set_function("Guardian", &XLocation::Guardian);
         lua.set_function("Way", &XLocation::Way);
-        lua.set_function("CreateObject", sol::overload(&XLocation::CreateObjectByName, &XLocation::CreateObjectByMask));
+        lua.set_function("CreateObject", sol::overload(&XLocation::CreateObjectByName, &XLocation::CreateObjectByMask, &XLocation::CreateObjectByPotion));
         lua.set_function("DropItem", sol::overload(&XLocation::DropItem, &XLocation::DropItemAt));
         lua.set_function("SetPattern", &XLocation::SetPattern);
         lua.set_function("AddTranslation", &XLocation::AddTranslation);

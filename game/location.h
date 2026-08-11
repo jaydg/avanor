@@ -317,6 +317,12 @@ class XLocation : public XObject
         static void Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y);
         static void* CreateObjectByName(const std::string& name);
         static void* CreateObjectByMask(int flag, int min_val, int max_val);
+
+        // pn is really POTION_NAME - kept as a plain int here, same
+        // reasoning as CreateObjectByMask's ItemKind-as-int flag: pulling
+        // item/xpotion.h into this header breaks XLocation's own forward-
+        // declaration ordering for downstream includers.
+        static void* CreateObjectByPotion(int pn);
         static void DropItem(void* item, sol::optional<int> x, sol::optional<int> y);
         static void DropItemAt(void* item, void* object);
         static void SetPattern(int w, int h, const std::string& txt);

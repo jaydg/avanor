@@ -73,7 +73,8 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "AddPersonalEnemy", &XStandardAI::AddPersonalEnemy,
         "SetGroupEnemy", &XStandardAI::SetGroupEnemy,
         "isEnemy", &XStandardAI::isEnemy,
-        "SetCompanion", &XStandardAI::SetCompanion
+        "SetCompanion", &XStandardAI::SetCompanion,
+        "ReactToAttacker", &XStandardAI::ReactToAttacker
     );
 
 }
@@ -1022,6 +1023,11 @@ void XStandardAI::SetOrderedEnemy(XCreature * cr)
 }
 
 void XStandardAI::onWasAttacked(XCreature * attacker)
+{
+    ReactToAttacker(attacker);
+}
+
+void XStandardAI::ReactToAttacker(XCreature * attacker)
 {
     assert(attacker != ai_owner);
     AddPersonalEnemy(attacker);

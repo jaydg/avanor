@@ -116,6 +116,18 @@ class XStandardAI
         virtual bool isPersonalEnemy(XCreature *cr);
         virtual bool isEnemy(XCreature *cr);
         virtual void onWasAttacked(XCreature * attacker);
+
+        // The actual "someone attacked me" reaction, factored out of
+        // onWasAttacked() so it's directly callable (non-virtual, so no
+        // risk of re-entering an XLuaAI override) - lets a Lua AI hook run
+        // the standard reaction aimed at a stand-in target instead of the
+        // real attacker (e.g. RotmothAI redirecting retaliation onto a
+        // rescued companion, see world/locations.lua) without needing to
+        // reimplement last_enemy/invisible_hunting_mode tracking in Lua,
+        // neither of which is otherwise exposed. onWasAttacked() itself
+        // just forwards to this by default.
+        void ReactToAttacker(XCreature * attacker);
+
         virtual void onDie(XCreature * killer);
         virtual void onSteal(XCreature * rogue);
 
