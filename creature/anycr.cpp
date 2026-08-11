@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
+#include "creature/shopkeeper.h"
 #include "creature/unique.h"
 #include "engine/xapi.h"
 #include "game/quest.h"

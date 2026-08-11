@@ -43,8 +43,6 @@ class XBeelzvile : public XAnyCreature
         }
 };
 
-class XShop;
-
 class XRoderick : public XAnyCreature
 {
     protected:
@@ -133,28 +131,6 @@ class XGiana : public XAnyCreature
         DECLARE_CREATOR(XGiana, XAnyCreature);
         XGiana(CreatureTemplate * cr);
         void FirstStep(int _x, int _y, XLocation * _l) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyCreature>(this));
-        }
-};
-
-class XShopkeeper : public XAnyCreature
-{
-    protected:
-        XShopkeeper() {}
-        friend class cereal::access;
-
-    public:
-        DECLARE_CREATOR(XShopkeeper, XAnyCreature);
-        XShopkeeper(CreatureTemplate *cr);
-        XShopkeeper(char* _name, XShop * shop, CreatureTemplate::Level crl, CREATURE_EXP cre) {}
-
-        std::string StdAnswer() override;
-        void Die(XCreature * killer) override;
-        void SetShop(char* _name, XShop * shop);
 
         template<class Archive>
         void serialize(Archive& ar)
