@@ -85,6 +85,12 @@ class XReligion
     public:
         XReligion() : life_act(0), death_act(0) {}
 
+        // Registers the XReligion usertype (life_act, death_act,
+        // SacrificeItem, GetDeityName) - reachable from Lua as
+        // AsCreature(cr).religion, since religion is a plain member of the
+        // (also Lua-registered) XCreature.
+        static void RegisterLua(sol::state_view& lua);
+
         int life_act;   // killing undead
         int death_act;  // killing anyone, especially with life.
         void KillCreature(XCreature* killer, XCreature* victim);

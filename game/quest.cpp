@@ -21,9 +21,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 #include <sol/sol.hpp>
 
+#include "creature/xhero.h"
 #include "engine/global.h"
 #include "game/quest.h"
 #include "helpers/xgui.h"
+#include "item/itemdef.h"
 
 void XQuest::RegisterLua(sol::state_view& lua)
 {
@@ -34,9 +36,47 @@ void XQuest::RegisterLua(sol::state_view& lua)
         "CLOSED", XQuest::CLOSED,
         "FAIL", XQuest::FAIL
     );
+
+    lua.new_usertype<XQuest>("XQuestState",
+        "GetFlag", &XQuest::GetFlag,
+        "SetFlag", &XQuest::SetFlag,
+        "WinGame", &XQuest::WinGame,
+        "GetCreatureRef", &XQuest::GetCreatureRef,
+        "SetCreatureRef", &XQuest::SetCreatureRef
+    );
+
+    lua["QuestState"] = &XQuest::quest;
 }
 
 XQuest XQuest::quest;
+
+int XQuest::GetFlag(const std::string& name) const
+{
+    auto it = flags.find(name);
+    return it != flags.end() ? it->second : 0;
+}
+
+void XQuest::SetFlag(const std::string& name, int value)
+{
+    flags[name] = value;
+}
+
+void XQuest::WinGame()
+{
+    hero_win = 1;
+    XHero::EndGame("***WINNER***");
+}
+
+XCreature* XQuest::GetCreatureRef(const std::string& name) const
+{
+    auto it = creature_refs.find(name);
+    return it != creature_refs.end() ? it->second.lock().get() : nullptr;
+}
+
+void XQuest::SetCreatureRef(const std::string& name, XCreature* cr)
+{
+    creature_refs[name] = XCreature::ToWeakPtr(cr);
+}
 
 void XQuest::ShowQuests()
 {
@@ -52,40 +92,32 @@ void XQuest::ShowQuests()
         }
     }
 
-    if (ahk_ulan_ordered) {
+    if (GetFlag("ahk_ulan_ordered")) {
         list.AddItem(new XGuiItem_Text(
             "Gefeon asked you to kill Ahk-Ulan."));
         flag = 0;
     }
 
-    if (roderick_ordered) {
+    if (GetFlag("roderick_ordered")) {
         list.AddItem(new XGuiItem_Text(
             "Ahk-Ulan asked you to kill Roderick."));
         flag = 0;
     }
 
-    if (roderick_quest == 1) {
+    if (GetFlag("roderick_quest") == 1) {
         list.AddItem(new XGuiItem_Text(
             "Roderick, the King of Avanor has asked you to find an artifact called the 'Eye of Raa'"));
         flag = 0;
     }
 
-    if (roderick_quest2 == 1) {
+    if (GetFlag("roderick_quest2") == 1) {
         list.AddItem(new XGuiItem_Text(
             "Roderick, the King of Avanor has asked you to cleanse his family crypt."));
         flag = 0;
     }
 
-    if (ahk_ulan_quest) {
-        std::string quest_str = fmt::format(
-            "Ahk-Ulan asked you to bring 3 parts of ancient machine. There are {} more parts left.",
-            4 - ahk_ulan_quest);
-        list.AddItem(new XGuiItem_Text(quest_str));
-        flag = 0;
-    }
-
-    if (yohjishiro_it_quest != ItemType::UNKNOWN) {
-        if (yohjishiro_it_quest == ItemType::RATTAIL) {
+    if (const auto it_quest = static_cast<ItemType>(GetFlag("yohjishiro_it_quest")); it_quest != ItemType::UNKNOWN) {
+        if (it_quest == ItemType::RATTAIL) {
             list.AddItem(new XGuiItem_Text("Yohjishiro asked you bring a rat tail."));
         } else {
             list.AddItem(new XGuiItem_Text("Yohjishiro asked you bring a bat wing."));

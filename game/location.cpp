@@ -35,6 +35,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
 #include "item/item_misc.h"
+#include "item/uniquei.h"
 #include "item/xherb.h"
 #include "magic/attack_effect_type.h"
 #include "map/map_objects.h"
@@ -796,6 +797,31 @@ bool XLocation::isHero(void* cr)
     return ((XCreature*)cr)->isHero();
 }
 
+XCreature* XLocation::AsCreature(void* p)
+{
+    return (XCreature*)p;
+}
+
+XItem* XLocation::AsItem(void* p)
+{
+    return (XItem*)p;
+}
+
+int XLocation::CreatureCountInLocation(int l_id, CreatureClass cc)
+{
+    return Game.locations[l_id]->GetCreatureCount(cc);
+}
+
+bool XLocation::IsWearingAvanorDefender(void* cr)
+{
+    XCreature* p = (XCreature*)cr;
+    XItem* it1 = p->GetBodyPart(BP_HAND, 0)->Item();
+    XItem* it2 = p->GetBodyPart(BP_HAND, 1)->Item();
+
+    return (it1 && it1->guid() == XAvanorDefender::avanordefender_guid)
+        || (it2 && it2->guid() == XAvanorDefender::avanordefender_guid);
+}
+
 bool XLocation::isEnemy(void* cr1, void* cr2)
 {
     XCreature * p1 = (XCreature*)cr1;
@@ -1219,6 +1245,7 @@ void XLocation::CommonLuaInitialization()
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     XDeity::RegisterLua(lua);
+    XReligion::RegisterLua(lua);
     XStats::RegisterLua(lua);
     XSkill::RegisterLua(lua);
     XQuest::RegisterLua(lua);
@@ -1284,6 +1311,10 @@ void XLocation::CommonLuaInitialization()
     {
         lua.set_function("isHero", &XLocation::isHero);
         lua.set_function("isEnemy", &XLocation::isEnemy);
+        lua.set_function("AsCreature", &XLocation::AsCreature);
+        lua.set_function("AsItem", &XLocation::AsItem);
+        lua.set_function("GetCreatureCount", &XLocation::CreatureCountInLocation);
+        lua.set_function("IsWearingAvanorDefender", &XLocation::IsWearingAvanorDefender);
         lua.set_function("FindCreature", &XLocation::FindCreature);
         lua.set_function("FindCreatures", &XLocation::FindCreatures);
         lua.set_function("ExecuteCreatureScript", &XLocation::ExecuteCreatureScript);

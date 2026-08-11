@@ -80,27 +80,25 @@ XGefeon::XGefeon(CreatureTemplate * cr) : XAnyCreature(cr) { }
 
 int XGefeon::Chat(XCreature * chatter, const char* msg)
 {
-    if (XQuest::quest.ahk_ulan_ordered == 0 && XQuest::quest.ahk_ulan_killed == 0) {
+    if (XQuest::quest.GetFlag("ahk_ulan_ordered") == 0 && XQuest::quest.GetFlag("ahk_ulan_killed") == 0) {
         msgwin.Add("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.");
-        XQuest::quest.ahk_ulan_ordered = 1;
+        XQuest::quest.SetFlag("ahk_ulan_ordered", 1);
         return 1;
     }
 
-    if (XQuest::quest.ahk_ulan_ordered == 1 && XQuest::quest.ahk_ulan_killed == 0) {
+    if (XQuest::quest.GetFlag("ahk_ulan_ordered") == 1 && XQuest::quest.GetFlag("ahk_ulan_killed") == 0) {
         msgwin.Add("And how is Ahk-Ulan? Still alive? That is very bad.");
         return 1;
     }
 
-    if (XQuest::quest.ahk_ulan_killed == 1) {
-        if (XQuest::quest.roderick_killed == 1) { // Kill all the competition and become king/queen.
+    if (XQuest::quest.GetFlag("ahk_ulan_killed") == 1) {
+        if (XQuest::quest.GetFlag("roderick_killed") == 1) { // Kill all the competition and become king/queen.
             msgwin.Add("Well, you killed the pretender and the King, I guess that makes you the new ruler!");
         } else {
             msgwin.Add("You did a great thing! You truly are the best!");
         }
 
-        XQuest::quest.hero_win = 1;
-
-        XHero::EndGame("***WINNER***");
+        XQuest::quest.WinGame();
     }
 
     return 1;
@@ -151,25 +149,25 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
     } else {
         msgwin.Add("Hello, brave hero.");
 
-        if (XQuest::quest.roderick_quest2 == 0) {
+        if (XQuest::quest.GetFlag("roderick_quest2") == 0) {
             msgwin.Add(
                 "I have heard that my family crypt has been occupied by a group of undead. "
                 "Clear the crypt and I will reward you. It lies to the south-west of the city.");
-            XQuest::quest.roderick_quest2 = 1;
-        } else if (XQuest::quest.roderick_quest2 == 1) {
+            XQuest::quest.SetFlag("roderick_quest2", 1);
+        } else if (XQuest::quest.GetFlag("roderick_quest2") == 1) {
             if (Game.locations[XLocation::UNDEADS_TOMB1]->GetCreatureCount(CreatureClass::UNDEAD) == 0) {
                 msgwin.Add(
                     "Thank you for destroying the evil in our crypt. "
                     "Please accept these coins and my gratitude for a job well done.");
-                XQuest::quest.roderick_quest2 = 2;
+                XQuest::quest.SetFlag("roderick_quest2", 2);
                 chatter->MoneyOp(1000);
             } else {
                 msgwin.Add("You still have not cleansed my ancestor's crypt.");
             }
-        } else if (XQuest::quest.roderick_quest == 0) {
+        } else if (XQuest::quest.GetFlag("roderick_quest") == 0) {
             msgwin.Add("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tried to hide it from me in one of the caves far south from here, but people say that he was killed while hiding it.  Could you return this artifact to me?");
-            XQuest::quest.roderick_quest = 1;
-        } else if (XQuest::quest.roderick_quest == 1) {
+            XQuest::quest.SetFlag("roderick_quest", 1);
+        } else if (XQuest::quest.GetFlag("roderick_quest") == 1) {
             msgwin.Add("Please, return the 'Eye of Raa' to me.");
         }
     }
@@ -179,7 +177,7 @@ int XRoderick::Chat(XCreature * chatter, const char* msg)
 
 void XRoderick::Die(XCreature * killer)
 {
-    XQuest::quest.roderick_killed = 1;
+    XQuest::quest.SetFlag("roderick_killed", 1);
     XAnyCreature::Die(killer);
 }
 
@@ -187,7 +185,7 @@ int XRoderick::onGiveItem(XCreature * giver, XItem * item)
 {
     if (item->it == ItemType::EYEOFRAA) {
         msgwin.Add("Thank you for your great help. The citizens of Avanor never forget your exploits!");
-        XQuest::quest.roderick_quest = 2;
+        XQuest::quest.SetFlag("roderick_quest", 2);
         ContainItem(item);
         return 1;
     } else {
@@ -300,10 +298,10 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
     if (xai->isEnemy(chatter)) {
         msgwin.Add("You will be rewarded for your stupidness!");
     } else {
-        if (XQuest::quest.rotmoth_status == 0) {
-            auto girl = XQuest::quest.kidnapped_girl.lock();
+        if (XQuest::quest.GetFlag("rotmoth_status") == 0) {
+            auto girl = XQuest::quest.GetCreatureRef("kidnapped_girl");
 
-            if (girl && isCreatureVisible(girl.get())) {
+            if (girl && isCreatureVisible(girl)) {
                 msgwin.Add("I hope you'll bring 100 gold coins, otherwise this girl will die.");
 
                 if (chatter->MoneyOp(0) >= 100) {
@@ -320,7 +318,7 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
                         }
 
                         girl->xai->SetCompanion(chatter);
-                        XQuest::quest.rotmoth_status = 1;
+                        XQuest::quest.SetFlag("rotmoth_status", 1);
                     }
                 }
             } else {
@@ -337,8 +335,8 @@ int XRotmoth::Chat(XCreature * chatter, const char* msg)
 void XRotmothAI::onWasAttacked(XCreature * attacker)
 {
     if (attacker->isHero()) {
-        if (auto girl = XQuest::quest.kidnapped_girl.lock()) {
-            XStandardAI::onWasAttacked(girl.get());
+        if (auto girl = XQuest::quest.GetCreatureRef("kidnapped_girl")) {
+            XStandardAI::onWasAttacked(girl);
             AddPersonalEnemy(attacker);
             return;
         }
@@ -367,8 +365,8 @@ void XGiana::FirstStep(int _x, int _y, XLocation * _l)
     // first time (the constructor runs before that, so it can't be done
     // there). FirstStep() runs on every move, not just the first one, so
     // guard against re-registering on every subsequent step.
-    if (XQuest::quest.kidnapped_girl.expired()) {
-        XQuest::quest.kidnapped_girl = XCreature::ToWeakPtr(this);
+    if (!XQuest::quest.GetCreatureRef("kidnapped_girl")) {
+        XQuest::quest.SetCreatureRef("kidnapped_girl", this);
     }
 }
 
@@ -377,7 +375,7 @@ int XGiana::Chat(XCreature * chatter, const char* msg)
     if (xai->isEnemy(chatter)) {
         msgwin.Add("Don't touch me!");
     } else {
-        if (XQuest::quest.rotmoth_status < 2) {
+        if (XQuest::quest.GetFlag("rotmoth_status") < 2) {
             msgwin.Add("Please, save me.");
         }
     }

@@ -100,6 +100,7 @@ struct LOCATION_PATTERN {
 
 #define MAX_PLACES 8
 
+class XItem;
 class XMap;
 class XStairWay;
 
@@ -347,6 +348,27 @@ class XLocation : public XObject
 
         static bool isHero(void* cr);
         static bool isEnemy(void* cr1, void* cr2);
+
+        // Cast bridges from the existing opaque void* handles (event_handler
+        // dispatch, FindCreature/FindCreatures, ...) to the real
+        // XCreature/XItem usertypes (see XCreature::RegisterLua,
+        // XItem::RegisterLua) - lets Lua opt into the rich method/property
+        // API on an object it already has a void* handle for, without
+        // changing what type that handle actually is under the hood.
+        static XCreature* AsCreature(void* p);
+        static XItem* AsItem(void* p);
+
+        // Location-scoped creature count, e.g. for a "is this crypt clear
+        // of undead yet" quest check. Named distinctly from the instance
+        // method below (same name, different signature) - taking &XLocation
+        // ::GetCreatureCount is otherwise ambiguous for sol2's set_function.
+        static int CreatureCountInLocation(int l_id, CreatureClass cc);
+
+        // Roderick's ancestral-sword recognition check (both BP_HAND slots)
+        // - kept as one bespoke predicate rather than decomposed into
+        // generic Lua-side body-part/guid primitives, since that's a
+        // separate, larger "expose item identity generically" project.
+        static bool IsWearingAvanorDefender(void* cr);
         static void SetItEnemyFor(void* cr1, void* cr2);
         static void SetEnemy(void* cr, int cr_class);
         static void* FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);

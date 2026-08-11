@@ -65,6 +65,16 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "COLLECT_MUSHROOM", SCC_COLLECT_MUSHROOM,
         "DROP_ITEM", SCC_DROP_ITEM
     );
+
+    // Named "CreatureAI" rather than "XStandardAI" - that name is already
+    // taken above by the AI-flag enum table. Reachable from Lua as
+    // AsCreature(cr).xai.
+    lua.new_usertype<XStandardAI>("CreatureAI",
+        "AddPersonalEnemy", &XStandardAI::AddPersonalEnemy,
+        "SetGroupEnemy", &XStandardAI::SetGroupEnemy,
+        "isEnemy", &XStandardAI::isEnemy,
+        "SetCompanion", &XStandardAI::SetCompanion
+    );
 }
 
 // Directly instantiable (not just an abstract base for XShopKeeperAI),

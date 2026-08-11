@@ -192,7 +192,7 @@ void XHero::EndGame(const char* end_msg)
     list.AddItem(new XGuiItem_Text(fmt::format("You survived {} turns.", dynamic_cast<XHero *>(main_creature)->turn_count)));
 
     if (XQuest::quest.hero_win) {
-        if (XQuest::quest.ahk_ulan_killed && XQuest::quest.roderick_killed) {
+        if (XQuest::quest.GetFlag("ahk_ulan_killed") && XQuest::quest.GetFlag("roderick_killed")) {
             if (main_creature->GetGender() == XCreature::MALE) {
                 list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new King of Avanor."));
             } else if (main_creature->GetGender() == XCreature::FEMALE) {
@@ -200,7 +200,7 @@ void XHero::EndGame(const char* end_msg)
             }
 
             score += 30000;
-        } else if (XQuest::quest.ahk_ulan_killed) {
+        } else if (XQuest::quest.GetFlag("ahk_ulan_killed")) {
             list.AddItem(new XGuiItem_Text("You killed evil Ahk-Ulan and saved the Kingdom of Avanor from Ahk-Ulan's deadly plans."));
             score += 10000;
         } else {
@@ -250,32 +250,28 @@ void XHero::EndGame(const char* end_msg)
         list.AddItem(new XGuiItem_Text("You were not very religious."));
     }
 
-    if (XQuest::quest.beelzvile_killed) {
-        list.AddItem(new XGuiItem_Text("You killed an ancient demon."));
-    }
-
-    if (XQuest::quest.torin_quest == 2) {
+    if (XQuest::quest.GetFlag("torin_quest") == 2) {
         list.AddItem(new XGuiItem_Text("You helped to pump out gas from the dwarven golden mine."));
         score += 5000;
     }
 
-    if (XQuest::quest.guards_get_orc_slay) {
+    if (XQuest::quest.GetFlag("guards_get_orc_slay")) {
         list.AddItem(new XGuiItem_Text("You brought a useful thing to Ozorik."));
     }
 
-    if (XQuest::quest.roderick_quest == 2) {
+    if (XQuest::quest.GetFlag("roderick_quest") == 2) {
         list.AddItem(new XGuiItem_Text("You returned 'Eye of Raa' to Roderick."));
         score += 10000;
     }
 
-    if (XQuest::quest.roderick_quest2 == 2) {
+    if (XQuest::quest.GetFlag("roderick_quest2") == 2) {
         list.AddItem(new XGuiItem_Text("You cleansed the tomb of Roderick's ancestors."));
         score += 5000;
     }
 
-    if (XQuest::quest.orcs_killed > 0 && XQuest::quest.total_orcs_killed == 30) {
+    if (const int orcs_killed = XQuest::quest.GetFlag("orcs_killed"); orcs_killed > 0 && XQuest::quest.GetFlag("total_orcs_killed") == 30) {
         list.AddItem(new XGuiItem_Text("You helped to repulse an attack of orcs."));
-    } else if (XQuest::quest.orcs_killed > 0) {
+    } else if (orcs_killed > 0) {
         list.AddItem(new XGuiItem_Text("You tried to help to repulse an attack of orcs."));
     }
 

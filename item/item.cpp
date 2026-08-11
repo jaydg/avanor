@@ -57,6 +57,18 @@ void XItem::RegisterLua(sol::state_view& lua)
         "ARMOUR", ItemKind::ARMOUR,
         "ITEM", ItemKind::ITEM
     );
+
+    // Real C++ properties/methods, reachable from Lua via AsItem(void*) on
+    // any existing void* item handle (see XCreature::RegisterLua for why
+    // void* dispatch itself couldn't just switch to passing typed
+    // pointers).
+    lua.new_usertype<XItem>("XItem",
+        "it", &XItem::it,
+        "kind", &XItem::kind,
+        "quantity", &XItem::quantity,
+        "GetValue", &XItem::GetValue,
+        "guid", &XObject::guid
+    );
 }
 
 // XItem is never itself a dynamic type either (every actual item is a

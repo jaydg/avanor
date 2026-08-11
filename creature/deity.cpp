@@ -36,6 +36,16 @@ void XDeity::RegisterLua(sol::state_view& lua)
     );
 }
 
+void XReligion::RegisterLua(sol::state_view& lua)
+{
+    lua.new_usertype<XReligion>("XReligion",
+        "life_act", &XReligion::life_act,
+        "death_act", &XReligion::death_act,
+        "SacrificeItem", &XReligion::SacrificeItem,
+        "GetDeityName", &XReligion::GetDeityName
+    );
+}
+
 XCreature* XDeity::death = nullptr;
 XCreature* XDeity::life = nullptr;
 

@@ -264,10 +264,10 @@ void XAnyCreature::Die(XCreature * killer)
 
     if (creature_class == CreatureClass::ORC) {
         if (killer && killer->isHero()) {
-            XQuest::quest.orcs_killed++;
+            XQuest::quest.SetFlag("orcs_killed", XQuest::quest.GetFlag("orcs_killed") + 1);
         }
 
-        XQuest::quest.total_orcs_killed++;
+        XQuest::quest.SetFlag("total_orcs_killed", XQuest::quest.GetFlag("total_orcs_killed") + 1);
     }
 
     if (creature_class == CreatureClass::RAT && vRand(40) == 0) {

@@ -73,6 +73,23 @@ void XCreature::RegisterLua(sol::state_view& lua)
         "NAMED_SHE", XCreature::NAMED_SHE,
         "NAMED_IT", XCreature::NAMED_IT
     );
+
+    // Real C++ methods/properties, not one-off void*-taking free functions -
+    // reachable from Lua via AsCreature(void*) on any existing void* handle
+    // (event_handler dispatch, FindCreature, etc.), which still pass plain
+    // void* under the hood (verified: a usertype-wrapped pointer can't be
+    // read back correctly by a void*-parameter function, so the existing
+    // void* dispatch plumbing had to stay as-is rather than switch to
+    // passing real XCreature* to it).
+    lua.new_usertype<XCreature>("XCreature",
+        "MoneyOp", &XCreature::MoneyOp,
+        "IsCreatureVisible", [](XCreature& cr, XCreature* target) { return cr.isCreatureVisible(target) != 0; },
+        "isHero", &XCreature::isHero,
+        "name", &XMapObject::name,
+        "IsMale", [](XCreature& cr) { return static_cast<bool>(cr.creature_person_type & XCreature::HE); },
+        "xai", sol::property([](XCreature& cr) -> XStandardAI* { return cr.xai.get(); }),
+        "religion", &XCreature::religion
+    );
 }
 
 XCreature::XCreature()
