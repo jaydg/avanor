@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
 #include <cereal/types/memory.hpp>
+#include <sol/forward.hpp>
 
 #include "engine/xmapobj.h"
 #include "engine/xobject.h"
@@ -51,6 +52,9 @@ enum BODY_PART {
     BP_ONE_HANDED,
     BP_TWO_HANDED
 };
+
+// Registers this enum as the Lua table BodyPart.MEMBER.
+void RegisterBodyPartEnum(sol::state_view& lua);
 
 class XBodyPart
 {

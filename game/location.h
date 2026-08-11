@@ -33,6 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/cr_defs.h"
 #include "helpers/point.h"
+#include "item/itemdef.h"
 #include "map/map.h"
 #include "map/xanyplace.h"
 
@@ -55,6 +56,8 @@ enum class LuaEvent {
     MOVE_IN = 2,
     MOVE_OUT = 3,
     OUTER_USE = 4,
+    AI_TURN = 5,     // XCreature::NewMove() - fires before the AI decides what to do this turn
+    PRE_MOVE = 6,    // XCreature::Move() - fires before an already-decided move is executed
     CHAT = 10,
     GIVE_ITEM = 11,
     DIE = 12,
@@ -336,6 +339,13 @@ class XLocation : public XObject
         static int GetStats(void* cr, int st);
         static int Rand(int val);
         static void SetEventHandler(void* cr, const std::string& event);
+
+        // Opt-in gate for LuaEvent::AI_TURN/PRE_MOVE (see XCreature::
+        // wants_move_hook) - call once, alongside SetEventHandler, for any
+        // creature whose Lua handler wants a callback on every move (these
+        // fire far more often than Chat/Die/GiveItem, so they're not
+        // dispatched to every event_handler-bearing creature by default).
+        static void EnableMoveHandler(void* cr);
         static void CreateTimerEvent(const std::string& event, int ttm);
 
         static int GetSkill(void* cr, int skill);
@@ -348,6 +358,13 @@ class XLocation : public XObject
 
         static bool isHero(void* cr);
         static bool isEnemy(void* cr1, void* cr2);
+
+        // Swaps a freshly-created creature's AI to a Lua-driven XLuaAI
+        // (see creature/lua_ai.h), naming a global Lua table with optional
+        // isEnemy/onWasAttacked/onDie/onSteal hooks. Call right after
+        // creation, before anything else touches xai (SetAIFlag etc. set
+        // on the old XStandardAI would otherwise be lost).
+        static void SetCreatureAI(void* cr, const std::string& lua_class);
 
         // Cast bridges from the existing opaque void* handles (event_handler
         // dispatch, FindCreature/FindCreatures, ...) to the real
@@ -369,6 +386,7 @@ class XLocation : public XObject
         // generic Lua-side body-part/guid primitives, since that's a
         // separate, larger "expose item identity generically" project.
         static bool IsWearingAvanorDefender(void* cr);
+
         static void SetItEnemyFor(void* cr1, void* cr2);
         static void SetEnemy(void* cr, int cr_class);
         static void* FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);

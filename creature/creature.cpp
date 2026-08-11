@@ -89,7 +89,52 @@ void XCreature::RegisterLua(sol::state_view& lua)
         "ContainItem", &XCreature::ContainItem,
         "IsMale", [](XCreature& cr) { return static_cast<bool>(cr.creature_person_type & XCreature::HE); },
         "xai", sol::property([](XCreature& cr) -> XStandardAI* { return cr.xai.get(); }),
-        "religion", &XCreature::religion
+        "religion", &XCreature::religion,
+        "IsWearingItemType", [](XCreature& cr, int bodypart, int slot, ItemType it) {
+            XBodyPart* bp = cr.GetBodyPart((BODY_PART)bodypart, slot);
+            return bp && bp->Item() && bp->Item()->it == it;
+        },
+        // Wear() is a no-op (returns without swapping) if the slot is
+        // already occupied - clear it first, same as XBandit's old
+        // cloak-swap ctor did before this became a generic Lua primitive.
+        //
+        // Named PutOnBody, not the more obvious WearItem/EquipItem/
+        // SetWornItem: empirically, each of those three specific strings,
+        // bound here as this exact method (same signature, same or even
+        // empty body), reproducibly corrupts something elsewhere in the
+        // Lua state - AsCreature(x).xai:someMethod() on an unrelated
+        // creature starts throwing "attempt to index field 'xai' (a
+        // userdata value)" on every subsequent run. Confirmed it's the
+        // string, not the logic: an identical-signature method with a
+        // nonsense name ("FooBarBaz") and the exact same body is 100%
+        // stable across repeated fresh runs, and swapping only the name
+        // back to any of the three above reintroduces the corruption
+        // deterministically. Root cause not identified (smells like a
+        // hash collision in sol2 or LuaJIT's own string interning, since
+        // it reproduces independent of parameter types/count/body content
+        // and depends only on the bound name string) - if this resurfaces
+        // when renaming/adding usertype methods elsewhere, suspect this
+        // class of bug before assuming a logic error, and verify any
+        // fix (or any new method name) with several repeated fresh runs,
+        // not just one - this does not reproduce on every single run of
+        // a build that has NOT changed, only across genuinely different
+        // registered-string sets.
+        "PutOnBody", [](XCreature& cr, int bodypart, int slot, void* item_ptr) {
+            XItem* item = (XItem*)item_ptr;
+            XBodyPart* bp = cr.GetBodyPart((BODY_PART)bodypart, slot);
+
+            if (bp->Item()) {
+                auto old_item = bp->UnWear();
+
+                if (auto it = cr.contain.find(old_item); it != cr.contain.end()) {
+                    cr.contain.erase(it);
+                }
+
+                old_item->Invalidate();
+            }
+
+            bp->Wear(item);
+        }
     );
 }
 
@@ -385,6 +430,10 @@ void XCreature::DoMove()
 
 void XCreature::Move()
 {
+    if (wants_move_hook && event_handler) {
+        sol::state_view lua(XLocation::L);
+        lua[event_handler](LuaEvent::PRE_MOVE, (void*)this);
+    }
 
     XMapObject * tobj = l->map->GetSpecial(x, y);
 
@@ -627,6 +676,11 @@ void XCreature::PutStatus()
 
 void XCreature::NewMove()
 {
+    if (wants_move_hook && event_handler) {
+        sol::state_view lua(XLocation::L);
+        lua[event_handler](LuaEvent::AI_TURN, (void*)this);
+    }
+
     xai->Move();
 }
 
@@ -1641,6 +1695,11 @@ void XCreature::SetEventHandler(const char* handler)
 {
     event_handler = new char [strlen(handler) + 1];
     strcpy(event_handler, handler);
+}
+
+void XCreature::EnableMoveHandler()
+{
+    wants_move_hook = true;
 }
 
 void XCreature::SaveModifier(cereal::JSONOutputArchive& ar) const

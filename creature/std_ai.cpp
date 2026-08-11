@@ -75,6 +75,7 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "isEnemy", &XStandardAI::isEnemy,
         "SetCompanion", &XStandardAI::SetCompanion
     );
+
 }
 
 // Directly instantiable (not just an abstract base for XShopKeeperAI),

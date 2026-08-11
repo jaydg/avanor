@@ -21,8 +21,28 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sstream>
 #include <string>
 
+#include <sol/sol.hpp>
+
 #include "creature/bodypart.h"
 #include "creature/creature.h"
+
+void RegisterBodyPartEnum(sol::state_view& lua)
+{
+    lua.new_enum("BodyPart",
+        "HEAD", BP_HEAD,
+        "NECK", BP_NECK,
+        "BODY", BP_BODY,
+        "CLOAK", BP_CLOAK,
+        "HAND", BP_HAND,
+        "RING", BP_RING,
+        "GLOVES", BP_GLOVES,
+        "BOOTS", BP_BOOTS,
+        "LIGHT_SOURCE", BP_LIGHT_SOURCE,
+        "TOOL", BP_TOOL,
+        "MISSILE_WEAPON", BP_MISSILE_WEAPON,
+        "MISSILE", BP_MISSILE
+    );
+}
 
 const char* bp_names[] = {
     "",

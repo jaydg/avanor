@@ -61,7 +61,6 @@ std::unordered_map<CREATURE_NAME, CreatureTemplate> XCreatureStorage::creature_s
 CREATURE_SET_REC XCreatureStorage::creature_set[32];
 
 const std::unordered_map<CREATURE_NAME, XCreature*(*)(CreatureTemplate*)> XCreatureStorage::unique_creators = {
-    {CN_BANDIT,     [](CreatureTemplate* cr) -> XCreature* { return new XBandit(cr); }},
     {CN_SHOPKEEPER, [](CreatureTemplate* cr) -> XCreature* { return new XShopkeeper(cr); }},
     {CN_RODERIK,    [](CreatureTemplate* cr) -> XCreature* { return new XRoderick(cr); }},
     {CN_BEELZEVILE, [](CreatureTemplate* cr) -> XCreature* { return new XBeelzvile(cr); }},

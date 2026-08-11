@@ -263,6 +263,16 @@ class XCreature : public XBaseObject
         char* event_handler;
         void SetEventHandler(const char* handler);
 
+        // Opt-in gate for LuaEvent::AI_TURN/PRE_MOVE dispatch in NewMove()/
+        // Move() - both fire for every creature, every turn, so unlike
+        // Chat/Die/onGiveItem (rare, player-initiated) this can't just be
+        // gated on event_handler being set: every creature with a Chat
+        // handler (farmers, unique NPCs) would otherwise pay a Lua call on
+        // every single move. Only creatures that explicitly opt in via
+        // EnableMoveHandler() pay that cost.
+        bool wants_move_hook = false;
+        void EnableMoveHandler();
+
         // Backing store for event_handler's Lua StoreInt/RestoreInt calls
         // (see NotifyLuaEventHandler()) - filled by StoreInt during
         // LuaEvent::SAVE, serialized, then read back and handed out via
@@ -579,6 +589,7 @@ class XCreature : public XBaseObject
             ar(contain);
             ar(religion, max_stats);
             ar(creature_person_type, creature_name);
+            ar(wants_move_hook);
 
             if constexpr (Archive::is_loading::value) {
                 FixupCreatureInfo();

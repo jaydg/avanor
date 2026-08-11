@@ -178,55 +178,6 @@ void XGiana::FirstStep(int _x, int _y, XLocation * _l)
 }
 
 ///////////////////////////////////////////////////////////////////////
-// BANDIT
-///////////////////////////////////////////////////////////////////////
-REGISTER_CLASS(XBandit);
-CEREAL_REGISTER_TYPE(XBandit);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XBandit);
-CEREAL_REGISTER_TYPE(XBanditAI);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XBanditAI);
-
-XBandit::XBandit(CreatureTemplate * cr) : XAnyCreature(cr)
-{
-    xai = std::make_unique<XBanditAI>(this);
-    xai->SetAIFlag(XStandardAI::GUARD_AREA);
-    xai->SetAIFlag(XStandardAI::PROTECT_AREA);
-    xai->SetEnemyClass(CreatureClass::NONE);
-    XBodyPart * cloak = GetBodyPart(BP_CLOAK, 0);
-
-    if (cloak->Item()) {
-        auto old_cloak = cloak->UnWear();
-
-        // UnWear() doesn't remove it from contain anymore (worn items stay
-        // resident there - see XBodyPart::Wear()), so this must, or
-        // Invalidate() below leaves a zombie entry behind: still in
-        // contain, but invalid.
-        if (auto it = contain.find(old_cloak); it != contain.end()) {
-            contain.erase(it);
-        }
-
-        old_cloak->Invalidate();
-    }
-
-    cloak->Wear(new XForestBrotherCloak());
-}
-
-bool XBanditAI::isEnemy(XCreature *cr)
-{
-    if (isPersonalEnemy(cr)) {
-        return true;
-    }
-
-    XBodyPart* bp = cr->GetBodyPart(BP_CLOAK);
-
-    if (bp && bp->Item() && bp->Item()->it == ItemType::FORESTBROTHERCLOAK) {
-        return false;
-    }
-
-    return XStandardAI::isEnemy(cr);
-}
-
-///////////////////////////////////////////////////////////////////////
 // SHOPKEEPER
 ///////////////////////////////////////////////////////////////////////
 

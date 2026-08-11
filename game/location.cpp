@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 
 #include "creature/skeep_ai.h"
+#include "creature/lua_ai.h"
 #include "creature/unique.h"
 #include "engine/xgen.h"
 #include "game/cbuilder.h"
@@ -807,6 +808,12 @@ XItem* XLocation::AsItem(void* p)
     return (XItem*)p;
 }
 
+void XLocation::SetCreatureAI(void* cr, const std::string& lua_class)
+{
+    XCreature* p = (XCreature*)cr;
+    p->xai = std::make_unique<XLuaAI>(p, lua_class);
+}
+
 int XLocation::CreatureCountInLocation(int l_id, CreatureClass cc)
 {
     return Game.locations[l_id]->GetCreatureCount(cc);
@@ -821,6 +828,7 @@ bool XLocation::IsWearingAvanorDefender(void* cr)
     return (it1 && it1->guid() == XAvanorDefender::avanordefender_guid)
         || (it2 && it2->guid() == XAvanorDefender::avanordefender_guid);
 }
+
 
 bool XLocation::isEnemy(void* cr1, void* cr2)
 {
@@ -1019,6 +1027,11 @@ void XLocation::SetEventHandler(void* cr, const std::string& event)
     ((XCreature*)cr)->SetEventHandler(event.c_str());
 }
 
+void XLocation::EnableMoveHandler(void* cr)
+{
+    ((XCreature*)cr)->EnableMoveHandler();
+}
+
 XGUID XLocation::GetObjectGUID(void* obj)
 {
     return ((XObject*)obj)->guid();
@@ -1215,6 +1228,8 @@ void RegisterLuaEventEnum(sol::state_view& lua)
         "MOVE_IN", LuaEvent::MOVE_IN,
         "MOVE_OUT", LuaEvent::MOVE_OUT,
         "OUTER_USE", LuaEvent::OUTER_USE,
+        "AI_TURN", LuaEvent::AI_TURN,
+        "PRE_MOVE", LuaEvent::PRE_MOVE,
         "CHAT", LuaEvent::CHAT,
         "GIVE_ITEM", LuaEvent::GIVE_ITEM,
         "DIE", LuaEvent::DIE,
@@ -1235,15 +1250,16 @@ void XLocation::CommonLuaInitialization()
     RegisterLuaEventEnum(lua);
     CreatureTemplate::RegisterLua(lua);
     RegisterCrDefsEnums(lua);
+    XItem::RegisterLua(lua);
+    RegisterItemDefEnums(lua);
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
-    XItem::RegisterLua(lua);
     XWarSkills::RegisterLua(lua);
-    RegisterItemDefEnums(lua);
     RegisterAttackEffectTypeLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
+    RegisterBodyPartEnum(lua);
     XDeity::RegisterLua(lua);
     XReligion::RegisterLua(lua);
     XStats::RegisterLua(lua);
@@ -1311,6 +1327,7 @@ void XLocation::CommonLuaInitialization()
     {
         lua.set_function("isHero", &XLocation::isHero);
         lua.set_function("isEnemy", &XLocation::isEnemy);
+        lua.set_function("SetCreatureAI", &XLocation::SetCreatureAI);
         lua.set_function("AsCreature", &XLocation::AsCreature);
         lua.set_function("AsItem", &XLocation::AsItem);
         lua.set_function("GetCreatureCount", &XLocation::CreatureCountInLocation);
@@ -1330,6 +1347,7 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("InflictDamage", &XLocation::InflictDamage);
         lua.set_function("Rand", &XLocation::Rand);
         lua.set_function("SetEventHandler", &XLocation::SetEventHandler);
+        lua.set_function("EnableMoveHandler", &XLocation::EnableMoveHandler);
         lua.set_function("CreateTimerEvent", &XLocation::CreateTimerEvent);
 
         lua.set_function("GetSkill", &XLocation::GetSkill);

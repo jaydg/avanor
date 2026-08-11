@@ -141,42 +141,6 @@ class XGiana : public XAnyCreature
         }
 };
 
-class XBandit : public XAnyCreature
-{
-    protected:
-        XBandit() {}
-        friend class cereal::access;
-
-    public:
-        DECLARE_CREATOR(XBandit, XAnyCreature);
-        XBandit(CreatureTemplate * cr);
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyCreature>(this));
-        }
-};
-
-class XBanditAI : public XStandardAI
-{
-    public:
-        XBanditAI() = delete;
-        XBanditAI(XCreature * cr) : XStandardAI(cr) {}
-
-        bool isEnemy(XCreature *cr) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XStandardAI>(this));
-        }
-};
-
-// See the identical reasoning on XRotmothAI's own
-// CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT above.
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XBanditAI, serialize, nullptr);
-
 class XShopkeeper : public XAnyCreature
 {
     protected:

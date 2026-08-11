@@ -44,7 +44,7 @@ function MakeAvanorValley()
 		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
-		AddTranslation("F", function(x, y) for i = 1, 5 do Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE) end end)
+		AddTranslation("F", function(x, y) for i = 1, 5 do CreateBandit(x, y) end end)
 		AddTranslation(">", function(x, y) Way(DOWN, XLocation.MUSHROOMS_CAVE1, x, y) end)
 		AddTranslation("*", function(x, y) Way(DOWN, XLocation.DWARFCITYCAVE1, x, y) end)
 		AddTranslation("9", function(x, y) Way(DOWN, L_SMALL_CAVE1, x, y) end)
@@ -590,6 +590,34 @@ function YohjiHandler(e, t, p, v)
 	return 1
 end
 
+
+-- Recognizes fellow forest-brotherhood members by their cloak and never
+-- treats them as enemies, regardless of the usual class-based hostility
+-- rules (see BanditAI.isEnemy below). Guardian() already applies
+-- GUARD_AREA/PROTECT_AREA/RANDOM_MOVE and the enemy_class every other
+-- Guardian-created creature gets, so this only adds what used to be
+-- XBandit-specific: the cloak swap and the isEnemy override.
+function CreateBandit(x, y)
+	local bandit = Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
+	AsCreature(bandit):PutOnBody(BodyPart.CLOAK, 0, CreateObject('XForestBrotherCloak'))
+	SetCreatureAI(bandit, 'BanditAI')
+end
+
+-- Note: does not re-check personal-enemy status before the cloak check the
+-- way the original C++ XBanditAI::isEnemy did (isPersonalEnemy isn't
+-- exposed to Lua) - XStandardAI::isEnemy() still checks it as its own
+-- final fallback when this returns nil, so the only behavior gap is a
+-- forest-brother-cloaked creature that's *also* a declared personal enemy
+-- getting treated as non-hostile instead of hostile. Narrow edge case,
+-- accepted rather than adding new binding surface for it.
+BanditAI = {}
+function BanditAI.isEnemy(self, cr)
+	if cr:IsWearingItemType(BodyPart.CLOAK, 0, ItemType.FORESTBROTHERCLOAK) then
+		return false
+	end
+
+	return nil
+end
 
 function CreateGefeon(x, y)
 	local gefeon = Guardian("gefeon", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 3, 4)

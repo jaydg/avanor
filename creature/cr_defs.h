@@ -99,7 +99,6 @@ inline constexpr const char* CN_HUGE_BAT = "huge_bat";
 inline constexpr const char* CN_DOG = "dog";
 inline constexpr const char* CN_SKELETON = "skeleton";
 
-inline constexpr const char* CN_BANDIT = "bandit";
 inline constexpr const char* CN_SHOPKEEPER = "shopkeeper";
 inline constexpr const char* CN_RODERIK = "roderik"; // matches CN_RODERIK, not class XRoderick - a pre-existing spelling mismatch between the two
 inline constexpr const char* CN_BEELZEVILE = "beelzevile";
