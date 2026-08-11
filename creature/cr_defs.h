@@ -100,11 +100,6 @@ inline constexpr const char* CN_DOG = "dog";
 inline constexpr const char* CN_SKELETON = "skeleton";
 
 inline constexpr const char* CN_SHOPKEEPER = "shopkeeper";
-inline constexpr const char* CN_RODERIK = "roderik"; // matches CN_RODERIK, not class XRoderick - a pre-existing spelling mismatch between the two
-inline constexpr const char* CN_BEELZEVILE = "beelzevile";
-inline constexpr const char* CN_HIGHPRIEST = "highpriest";
-inline constexpr const char* CN_ROTMOTH = "rotmoth";
-inline constexpr const char* CN_GIANA = "giana";
 
 enum CREATURE_EXP {
     CRE_NONE = 0x0001,
