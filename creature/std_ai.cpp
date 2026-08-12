@@ -682,6 +682,15 @@ int XStandardAI::Wear() const
     for (const auto item: ai_owner->contain) {
         assert(item->isValid());
 
+        // Worn items stay resident in contain the whole time they're worn
+        // (see XBodyPart::Wear()) - without this check, a creature whose
+        // only body armor happens to be cheap (e.g. any "HUMAN"-flagged
+        // creature's starting dress/clothes) sacrifices its own equipped
+        // gear the very first turn nothing better is found to wear.
+        if (ai_owner->IsWorn(item.get())) {
+            continue;
+        }
+
         if (item->GetValue() > 800) {
             continue;
         }
