@@ -61,14 +61,14 @@ function MakeDwarvenCity()
 		AddTranslation(";", XTileType.OBSIDIAN_FLOOR)
 		AddTranslation(":", XTileType.BRIDGE)
 		AddTranslation("<", function(x, y) Way(UP, XLocation.DWARFCITYCAVE6, x, y) end)
-		AddTranslation("A", function(x, y) Guardian('dwarf_guard', GROUP_ID.GID_DWARVEN_GUARDIAN, x, y) end)
+		AddTranslation("A", function(x, y) Guardian('dwarf_guard', "dwarven_guardian", x, y) end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.POTION + ItemKind.BOOK + ItemKind.SCROLL + ItemKind.NECK + ItemKind.MISSILE + ItemKind.MISSILEW, 'Toberin, the dwarwen shopkeeper') end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a dinner table') end)
 		AddTranslation("C", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a round table') end)
 		AddTranslation("D", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'a royal bed') end)
 		AddTranslation("X", function(x, y) CreateTorin(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of the Dwarven Kingdom') end)
 		AddTranslation("_", function(x, y) Altar(x, y, XDeity.LIFE) end)
-		AddTranslation("P", function(x, y) for i = 1, 6 do Guardian('dwarf', GROUP_ID.GID_DWARVEN_GUARDIAN, x, y, 32, 16) end end)
+		AddTranslation("P", function(x, y) for i = 1, 6 do Guardian('dwarf', "dwarven_guardian", x, y, 32, 16) end end)
 		AddTranslation("T", function(x, y) CreateTodin(x, y) end)
 		AddTranslation("E", function(x, y) EventPlace(x - 1, y, 5, 2, 'DvCityEvent1') end)
 		AddTranslation("F", function(x, y) Way(DOWN, XLocation.DWARFTREASURE, x, y) end)
@@ -129,7 +129,7 @@ DvCityEventMoveCount = 0
 
 function DvCityEvent1(e, p)
 	if (e == LuaEvent.MOVE and isHero(p)) then
-		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+		local c = FindCreature(XLocation.DWARFCITY, "dwarven_guardian", 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
 			if (DvCityEventMoveCount < 3) then
@@ -141,7 +141,7 @@ function DvCityEvent1(e, p)
 			end
 		end
 	elseif (e == LuaEvent.MOVE_IN and isHero(p)) then
-		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+		local c = FindCreature(XLocation.DWARFCITY, "dwarven_guardian", 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			AddMessage("'Halt! You aren't allowed to enter.'")
 		end
@@ -181,7 +181,7 @@ end
 
 
 function CreateTodin(x, y)
-	local todin = Guardian("todin", GROUP_ID.GID_DWARVEN_GUARDIAN, x, y, 6, 4)
+	local todin = Guardian("todin", "dwarven_guardian", x, y, 6, 4)
 	SetEventHandler(todin, 'TodinHandler')
 end
 
@@ -222,7 +222,7 @@ function TodinHandler(e, t, p, v)
 end
 
 function CreateTorin(x, y)
-	local torin = Guardian("torin", GROUP_ID.GID_DWARVEN_GUARDIAN, x, y)
+	local torin = Guardian("torin", "dwarven_guardian", x, y)
 	SetEventHandler(torin, 'TorinHandler')
 	local pickaxe = CreateObject('XPickAxe')
 	torin_award = GetObjectGUID(pickaxe)
@@ -382,12 +382,12 @@ function MakeSmallCave()
 end
 
 function SmallCaveQuestPersons(x, y)
-	local giana = Guardian("giana", GID_GIANA, x + 1, y, 8, 4)
+	local giana = Guardian("giana", "giana", x + 1, y, 8, 4)
 	SetEventHandler(giana, 'GianaHandler')
 	-- Rotmoth's kidnap victim
 	QuestState:SetCreatureRef('kidnapped_girl', AsCreature(giana))
 
-	local rotmoth = Guardian("rotmoth", GID_ROTMOTH, x + 1, y, 8, 4)
+	local rotmoth = Guardian("rotmoth", "rotmoth", x + 1, y, 8, 4)
 	SetEventHandler(rotmoth, 'RotmothHandler')
 	SetCreatureAI(rotmoth, 'RotmothAI')
 
@@ -482,11 +482,11 @@ function SmallCaveEvent(e, p)
 		return
 	end
 
-	local bandit = FindCreature(L_SMALL_CAVE2, GID_ROTMOTH)
-	local giana = FindCreature(L_SMALL_CAVE2, GID_GIANA)
+	local bandit = FindCreature(L_SMALL_CAVE2, "rotmoth")
+	local giana = FindCreature(L_SMALL_CAVE2, "giana")
 
 	if (e == LuaEvent.MOVE and isHero(p)) then
---[[		local c = FindCreature(XLocation.DWARFCITY, GROUP_ID.GID_DWARVEN_GUARDIAN, 75, 1, 4, 2)
+--[[		local c = FindCreature(XLocation.DWARFCITY, "dwarven_guardian", 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
 			if (DvCityEventMoveCount < 3) then
@@ -655,7 +655,7 @@ function MakeWizardDungeon()
 		"################################################################################" ..
 		"################################################################################" )
 		AddTranslation("<", function(x, y) Way(UP, XLocation.WIZARD_DUNGEON5, x, y) end)
-		AddTranslation("h", function(x, y) Guardian('death_knight', GROUP_ID.GID_AHKULAN_GUARDIAN, x, y) end)
+		AddTranslation("h", function(x, y) Guardian('death_knight', "ahkulan_guardian", x, y) end)
 		AddTranslation("A", function(x, y) CreateAhkUlan(x, y) Furniture(x, y, xColor.xDARKGRAY, '~', 'the black throne from pure obsidian') end)
 		AddTranslation("_", function(x, y) Altar(x, y, XDeity.DEATH) end)
 		AddTranslation("r", function(x, y) Creature('huge_rat', x, y) end)
@@ -664,7 +664,7 @@ function MakeWizardDungeon()
 end
 
 function CreateAhkUlan(x, y)
-	local ahkulan = Guardian("ahkulan", GROUP_ID.GID_AHKULAN_GUARDIAN, x, y)
+	local ahkulan = Guardian("ahkulan", "ahkulan_guardian", x, y)
 	SetEventHandler(ahkulan, 'AhkUlanHandler')
 end
 

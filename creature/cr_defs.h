@@ -117,23 +117,15 @@ enum CARRY_STATE {
     CSTATE_DIE        = 0x005,
 };
 
-// Stays free-standing (not nested in XCreature) since it's needed as a
-// default-argument type in game/location.h, which is upstream of
-// creature.h in the include graph (creature.h -> bodypart.h ->
-// xmapobj.h -> location.h) - location.h can never see a complete
-// XCreature to resolve a nested type.
-enum GROUP_ID {
-    GID_NONE,
-    GID_ORCS_WAR_PARTY,
-    GID_FOREST_BROTHER,
-    GID_GUARDIAN,
-    GID_SMALL_VILLAGE_FARMER,
-    GID_TOWNEE_1,
-    GID_DWARVEN_GUARDIAN,
-    GID_AHKULAN_GUARDIAN,
-    GID_RODERICK_GUARDIAN,
-    GID_RANDOM_GUARDIAN,
-};
+// A free-form tag grouping creatures spawned together (see
+// XCreature::groupID/setGroupID, XCreatureGroupMap).
+using GROUP_ID = std::string;
+
+// GID_NONE is the only group id that earns a constant: it's a sentinel
+// ("this creature isn't in a group") compared at several C++ call sites
+// (XCreature::setGroupID/getGroupMembers, XStandardAI::onWasAttacked/
+// onDie), so a named symbol documents that repeated meaning.
+inline constexpr const char* GID_NONE = "";
 
 enum CREATURE_SIZE {
     CS_VERY_SMALL = 1, // insects like, rats, bats
@@ -154,7 +146,8 @@ enum CR_ATTACK_TYPE {
     CRAT_BOTH
 };
 
-// Registers CreatureClass and GROUP_ID as Lua tables.
+// Registers CreatureClass as a Lua table. GROUP_ID no longer gets one -
+// it's a plain string now, see the comment above it.
 void RegisterCrDefsEnums(sol::state_view& lua);
 
 #endif

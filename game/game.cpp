@@ -363,9 +363,3 @@ void XGame::CreateHero()
     XCreature::main_creature = hero;
 }
 
-/* TODO
-
-1) Orc party
-3) Belzvile killing
-
-*/

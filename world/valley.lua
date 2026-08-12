@@ -2,6 +2,16 @@
 function MakeAvanorValley()
 	CreateLocation(XLocation.MAIN, "Valley", "Valley of Avanor", PLAIN)
 
+	-- Orc war party and the village<->town teleports.
+	-- GuardianClass() picks a random ORC-class monster per spawn
+	-- (7 templates - orc, large orc, hill orc, ...).
+	for i = 1, 20 do
+		GuardianClass(CreatureClass.ORC, "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
+	end
+
+	Teleport(23, 20, XLocation.MAIN, 154, 13)
+	Teleport(154, 13, XLocation.MAIN, 23, 20)
+
 -- SMALL VILLAGE --
 		SetPattern(55, 30,
 		"                                                       " ..
@@ -41,7 +51,7 @@ function MakeAvanorValley()
 		AddTranslation("3", XTileType.SAND)
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ItemKind.FOOD, 'Nobel, the human shopkeeper') end)
-		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 20, 16), 'FarmerHandler') end end)
+		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', "small_village_farmer", x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', "small_village_farmer", x, y, 20, 16), 'FarmerHandler') end end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
 		AddTranslation("F", function(x, y) for i = 1, 5 do CreateBandit(x, y) end end)
@@ -124,14 +134,14 @@ function MakeAvanorValley()
 		
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'eternal flame') end)
 		AddTranslation("B", function(x, y) CreateGefeon(x, y) end)
-		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 30, 25) Guardian('fcitizen', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 30, 25) end end)
+		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', "roderick_guardian", x, y, 30, 25) Guardian('fcitizen', "roderick_guardian", x, y, 30, 25) end end)
 		AddTranslation("_", function(x, y) Altar(x, y, XDeity.LIFE) end)
 		AddTranslation("E", function(x, y) CreateHighPriest(x, y) end)
 		AddTranslation("F", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'pew') end)
 		
 		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
-		AddTranslation("G", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y) end)
-		AddTranslation("H", function(x, y) Guardian('royal_guard', GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, XStandardAI.NO_SWAP) Way(DOWN, XLocation.KINGS_TREASURE, x, y) end)
+		AddTranslation("G", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y) end)
+		AddTranslation("H", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP) Way(DOWN, XLocation.KINGS_TREASURE, x, y) end)
 		
 		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
 		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
@@ -218,6 +228,11 @@ function MakeAvanorValley()
 		AddTranslation("<", function(x, y) Way(UP, XLocation.WIZTOWER_TOP, x, y) end)
 		DrawPattern(45, 25)
 
+	-- Last thing done to the Valley itself, after every pattern is
+	-- stamped onto it - restored alongside the orc war party/teleports
+	-- above, see the comment there. Runs last so bushes don't end up
+	-- under a village/town/city wall drawn afterward.
+	ScatterHerbBushes()
 
 -- KING'S TREASURE --
 	CreateLocation(XLocation.KINGS_TREASURE, "RoyalTr", "Royal Treasure", PLAIN)
@@ -310,7 +325,7 @@ function SendFarmersToCollectMushrooms()
 		{cmd = ScriptCommand.DROP_ITEM, kind = ItemKind.FOOD},
 	}
 
-	for _, farmer in ipairs(FindCreatures(XLocation.MAIN, GROUP_ID.GID_SMALL_VILLAGE_FARMER)) do
+	for _, farmer in ipairs(FindCreatures(XLocation.MAIN, "small_village_farmer")) do
 		ExecuteCreatureScript(farmer, script)
 	end
 end
@@ -328,7 +343,7 @@ function FarmerHandler(e, t, p, v)
 end
 
 function CreateElderGridor(x, y)
-	local elder = Guardian("elder_gridor", GROUP_ID.GID_SMALL_VILLAGE_FARMER, x, y, 5, 1)
+	local elder = Guardian("elder_gridor", "small_village_farmer", x, y, 5, 1)
 	SetEventHandler(elder, 'ElderGridorHandler')
 end
 
@@ -365,7 +380,7 @@ end
 
 
 function CreateJorgus(x, y)
-	local jorgus = Guardian("jorgus", GROUP_ID.GID_FOREST_BROTHER, x, y, 3, 2)
+	local jorgus = Guardian("jorgus", "forest_brother", x, y, 3, 2)
 	SetEventHandler(jorgus, 'JorgusHandler')
 	GiveObjectToCreature(CreateObject('XForestBrotherCloak'), jorgus)
 end
@@ -405,7 +420,7 @@ orcs_live = 50
 
 
 function CreateOzorik(x, y)
-	local ozorik = Guardian("ozorik", GROUP_ID.GID_GUARDIAN, x, y, 3, 2)
+	local ozorik = Guardian("ozorik", "guardian", x, y, 3, 2)
 	SetEnemy(ozorik, CreatureClass.ORC)
 	SetEventHandler(ozorik, 'OzorikHandler')
 	GiveObjectToCreature(CreateObject('XGlamdring'), ozorik)
@@ -460,7 +475,7 @@ end
 
 function CreateGuardians(x, y)
 	for i = 1, 7 do 
-		local g = Guardian("royal_guard", GROUP_ID.GID_GUARDIAN, x, y, 14, 5, XStandardAI.GUARD_AREA + XStandardAI.RANDOM_MOVE)
+		local g = Guardian("royal_guard", "guardian", x, y, 14, 5, XStandardAI.GUARD_AREA + XStandardAI.RANDOM_MOVE)
 		SetEnemy(g, CreatureClass.ORC)
 		SetEventHandler(g, 'RoyalGuardHandler')
 	end
@@ -487,7 +502,7 @@ end
 
 
 function CreateGekta(x, y)
-	local gekta = Guardian("gekta", GROUP_ID.GID_GUARDIAN, x, y, 14, 5)
+	local gekta = Guardian("gekta", "guardian", x, y, 14, 5)
 	SetEnemy(gekta, CreatureClass.ORC)
 	SetEventHandler(gekta, 'GektaHandler')
 end
@@ -526,7 +541,7 @@ end
 
 
 function CreateYohji(x, y)
-	local yohji = Guardian("yohjishiro", GID_NONE, x, y, 5, 5)
+	local yohji = Guardian("yohjishiro", "", x, y, 5, 5)
 	SetEventHandler(yohji, 'YohjiHandler')
 end
 
@@ -598,7 +613,7 @@ end
 -- Guardian-created creature gets, so this only adds what used to be
 -- XBandit-specific: the cloak swap and the isEnemy override.
 function CreateBandit(x, y)
-	local bandit = Guardian('bandit', GROUP_ID.GID_FOREST_BROTHER, x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
+	local bandit = Guardian('bandit', "forest_brother", x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
 	AsCreature(bandit):PutOnBody(BodyPart.CLOAK, 0, CreateObject('XForestBrotherCloak'))
 	SetCreatureAI(bandit, 'BanditAI')
 end
@@ -620,7 +635,7 @@ function BanditAI.isEnemy(self, cr)
 end
 
 function CreateGefeon(x, y)
-	local gefeon = Guardian("gefeon", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 3, 4)
+	local gefeon = Guardian("gefeon", "roderick_guardian", x, y, 3, 4)
 	SetEventHandler(gefeon, 'GefeonHandler')
 end
 
@@ -654,7 +669,7 @@ function GefeonHandler(e, t, p, v)
 end
 
 function CreateHighPriest(x, y)
-	local hp = Guardian("highpriest", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 3, 4)
+	local hp = Guardian("highpriest", "roderick_guardian", x, y, 3, 4)
 	SetEventHandler(hp, 'HighPriestHandler')
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
@@ -704,7 +719,7 @@ function HighPriestHandler(e, t, p, v)
 end
 
 function CreateRoderik(x, y)
-	local roderik = Guardian("roderik", GROUP_ID.GID_RODERICK_GUARDIAN, x, y, 1, 1, XStandardAI.NO_SWAP)
+	local roderik = Guardian("roderik", "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP)
 	SetEventHandler(roderik, 'RoderikHandler')
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)

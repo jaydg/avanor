@@ -320,9 +320,9 @@ class XCreature : public XBaseObject
         int lttm;      // long doing time to move
         int isDisturb; // is creature disturbed during lttm
 
-        void setGroupID(GROUP_ID gid);
+        void setGroupID(const GROUP_ID& gid);
 
-        GROUP_ID groupID() {
+        const GROUP_ID& groupID() {
             return group_id;
         }
 

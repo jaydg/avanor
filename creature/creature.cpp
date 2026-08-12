@@ -299,7 +299,7 @@ int XCreature::onRestorePP(int _pp)
     return last_PP >= max_PP ? 0 : 1;
 }
 
-void XCreature::setGroupID(GROUP_ID gid)
+void XCreature::setGroupID(const GROUP_ID& gid)
 {
     if (gid == GID_NONE) return;
 

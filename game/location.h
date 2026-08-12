@@ -312,7 +312,25 @@ class XLocation : public XObject
         static void Settle(CreatureClass crc, int crl);
 
         static void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-        static void* Guardian(const std::string& crn, int gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
+        static void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
+
+        // Like Guardian(), but spawns a random creature of crc (see
+        // XCreatureStorage::CreateRnd) instead of one fixed name - for a
+        // group with several interchangeable member templates (e.g. the
+        // orc war party's 7 orc variants) where any one of them filling
+        // a given spot is fine.
+        static void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
+
+        // Places an instant same-or-cross-location jump pad at (x, y) in
+        // the current location, landing at (nx, ny) in target_loc_id.
+        static void Teleport(int x, int y, int target_loc_id, int nx, int ny);
+
+        // Scatters XHerbBush onto roughly 1-in-18 GREEN_GRASS tiles across
+        // the whole current location (skipping tiles that already have a
+        // special object) - a one-shot world-gen batch, not a per-tile Lua
+        // loop, since it's an 18000-tile scan for a 200x90 map like the
+        // Valley.
+        static void ScatterHerbBushes();
 
         static void Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y);
         static void* CreateObjectByName(const std::string& name);
@@ -401,8 +419,8 @@ class XLocation : public XObject
 
         static void SetItEnemyFor(void* cr1, void* cr2);
         static void SetEnemy(void* cr, int cr_class);
-        static void* FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-        static std::vector<void*> FindCreatures(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+        static void* FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+        static std::vector<void*> FindCreatures(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
 
         // Builds a SCRIPT_CMD queue from `script` (an array of tables,
         // each {cmd = ScriptCommand.X, pt_x = .., pt_y = .., ln = .., kind = ..}
@@ -479,20 +497,6 @@ class XRandomLocation : public XLocation
 {
     public:
         XRandomLocation(int deep, int view, int way_up, int way_down, int cr_lvl); //view 0 - labirinth, 1 - cave
-};
-
-////////////// ALL OTHER LOCATIONS /////////////////////
-
-class XMainLocation : public XLocation
-{
-    public:
-        XMainLocation(XLocation::Id tl);
-};
-
-class XExtinctVolcanoLocation : public XLocation
-{
-    public:
-        XExtinctVolcanoLocation(XLocation::Id tl);
 };
 
 #endif

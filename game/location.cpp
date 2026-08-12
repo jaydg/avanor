@@ -569,7 +569,7 @@ void* XLocation::Creature(const std::string& crn, sol::optional<int> x, sol::opt
 }
 
 //cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
-void* XLocation::Guardian(const std::string& crn, int gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
+void* XLocation::Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
 {
     XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
     int flag = XStandardAI::GUARD_AREA;
@@ -578,9 +578,43 @@ void* XLocation::Guardian(const std::string& crn, int gid, int x, int y, sol::op
         flag |= *flags;
     }
 
-    XCreature * cr = current_location->NewCreature(crn, rect, (GROUP_ID)gid, flag);
+    XCreature * cr = current_location->NewCreature(crn, rect, gid, flag);
     cr->xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
     return cr;
+}
+
+//GuardianClass(CreatureClass.ORC, "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
+void* XLocation::GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
+{
+    XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
+    int flag = XStandardAI::GUARD_AREA;
+
+    if (flags) {
+        flag |= *flags;
+    }
+
+    return current_location->NewCreature(crc, rect, gid, flag);
+}
+
+//Teleport(23, 20, XLocation.MAIN, 154, 13)
+void XLocation::Teleport(int x, int y, int target_loc_id, int nx, int ny)
+{
+    new XTeleport(x, y, current_location, (XLocation::Id)target_loc_id, nx, ny);
+}
+
+//ScatterHerbBushes()
+void XLocation::ScatterHerbBushes()
+{
+    for (int i = 0; i < current_location->map->hgt; i++) {
+        for (int j = 0; j < current_location->map->len; j++) {
+            if (vRand(18) == 0) {
+                if (current_location->map->GetXY(j, i) == XTileType::GREEN_GRASS
+                    && current_location->map->GetSpecial(j, i) == nullptr) {
+                    new XHerbBush(j, i, current_location);
+                }
+            }
+        }
+    }
 }
 
 //Way(DOWN, L_SMALL_CAVE2)
@@ -845,7 +879,7 @@ bool XLocation::isEnemy(void* cr1, void* cr2)
     return p1 && p2 && p1->xai->isEnemy(p2);
 }
 
-void* XLocation::FindCreature(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
+void* XLocation::FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XRect rect(0, 0, Game.locations[l_id]->map->len, Game.locations[l_id]->map->hgt);
 
@@ -868,7 +902,7 @@ void* XLocation::FindCreature(int l_id, int gid, sol::optional<int> x, sol::opti
     return nullptr;
 }
 
-std::vector<void*> XLocation::FindCreatures(int l_id, int gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
+std::vector<void*> XLocation::FindCreatures(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XRect rect(0, 0, Game.locations[l_id]->map->len, Game.locations[l_id]->map->hgt);
 
@@ -1323,6 +1357,9 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("Settle", &XLocation::Settle);
         lua.set_function("Creature", &XLocation::Creature);
         lua.set_function("Guardian", &XLocation::Guardian);
+        lua.set_function("GuardianClass", &XLocation::GuardianClass);
+        lua.set_function("Teleport", &XLocation::Teleport);
+        lua.set_function("ScatterHerbBushes", &XLocation::ScatterHerbBushes);
         lua.set_function("Way", &XLocation::Way);
         lua.set_function("CreateObject", sol::overload(&XLocation::CreateObjectByName, &XLocation::CreateObjectByMask, &XLocation::CreateObjectByPotion));
         lua.set_function("DropItem", sol::overload(&XLocation::DropItem, &XLocation::DropItemAt));

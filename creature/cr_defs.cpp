@@ -40,15 +40,4 @@ void RegisterCrDefsEnums(sol::state_view& lua)
         "HUMANOID", CreatureClass::HUMANOID,
         "BLOB", CreatureClass::BLOB
     );
-
-    lua.new_enum("GROUP_ID",
-        "GID_ORCS_WAR_PARTY", GID_ORCS_WAR_PARTY,
-        "GID_FOREST_BROTHER", GID_FOREST_BROTHER,
-        "GID_GUARDIAN", GID_GUARDIAN,
-        "GID_SMALL_VILLAGE_FARMER", GID_SMALL_VILLAGE_FARMER,
-        "GID_TOWNEE_1", GID_TOWNEE_1,
-        "GID_DWARVEN_GUARDIAN", GID_DWARVEN_GUARDIAN,
-        "GID_AHKULAN_GUARDIAN", GID_AHKULAN_GUARDIAN,
-        "GID_RODERICK_GUARDIAN", GID_RODERICK_GUARDIAN
-    );
 }
