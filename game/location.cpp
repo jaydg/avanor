@@ -853,7 +853,9 @@ XItem* XLocation::AsItem(void* p)
 void XLocation::SetCreatureAI(void* cr, const std::string& lua_class)
 {
     XCreature* p = (XCreature*)cr;
-    p->xai = std::make_unique<XLuaAI>(p, lua_class);
+    auto new_ai = std::make_unique<XLuaAI>(p, lua_class);
+    p->xai->CopyBaseStateTo(*new_ai);
+    p->xai = std::move(new_ai);
 }
 
 int XLocation::CreatureCountInLocation(int l_id, CreatureClass cc)

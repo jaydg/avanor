@@ -395,10 +395,10 @@ function SmallCaveQuestPersons(x, y)
 end
 
 -- Redirects retaliation for an attack onto the kidnapped girl
--- instead of Rotmoth himself, as long as she's still around
+-- instead of Rotmoth himself, as long as she's still around.
 RotmothAI = {}
 function RotmothAI.onWasAttacked(self, attacker)
-	if isHero(attacker) then
+	if attacker:isHero() then
 		local girl = QuestState:GetCreatureRef('kidnapped_girl')
 
 		if girl then

@@ -151,6 +151,23 @@ class XStandardAI
 
         void SetEnemyClass(CreatureClass cr_class);
 
+        // Carries ai_flag/enemy_class/guard_area(+location) forward onto a
+        // replacement AI object - SetCreatureAI() (see game/location.cpp)
+        // swaps in a brand-new XLuaAI, whose own constructor (via
+        // XStandardAI's) would otherwise silently reset all of this back
+        // to defaults (ai_flag=NONE, enemy_class=ALL, a placeholder
+        // guard_area), discarding whatever a prior Guardian()/NewCreature()
+        // call already set up. A member function rather than public
+        // getters/setters for each field, since it only needs to exist for
+        // this one purpose.
+        void CopyBaseStateTo(XStandardAI& other) const
+        {
+            other.ai_flag = ai_flag;
+            other.enemy_class = enemy_class;
+            other.guard_area = guard_area;
+            other.guard_area_location = guard_area_location;
+        }
+
         void AddPersonalEnemy(XCreature * cr);
         void RemovePersonalEnemy(const XCreature* cr);
 
