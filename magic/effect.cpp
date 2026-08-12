@@ -455,6 +455,17 @@ int XEffect::Make(const EFFECT_DATA* pData)
 
             if (flg) {
                 XCreature * cr = pData->l->NewCreature(CreatureClass::UNDEAD);
+
+                // NewCreature() already placed cr via its own FirstStep(),
+                // whose birth path makes the map cell cr's only strong
+                // owner (the scheduler only keeps a weak_ptr - see
+                // XScheduler::Add()). Without this, cr->LastStep() below
+                // drops that sole strong reference, and the following
+                // FirstStep() re-registers cr under a brand-new, separate
+                // control block - the same use-after-free class fixed for
+                // the hero-swap case in creature/xhero.cpp (see
+                // cr_keepalive there).
+                auto cr_keepalive = std::static_pointer_cast<XCreature>(cr->shared_from_this());
                 cr->LastStep();
                 cr->FirstStep(tx, ty, pData->l);
 
@@ -492,6 +503,10 @@ int XEffect::Make(const EFFECT_DATA* pData)
                 msgwin.Add("has suddenly disappered.");
             }
 
+            // See the SUMMON_MONSTER case above for why this keepalive is
+            // needed - pData->caller isn't necessarily the creature the
+            // scheduler currently holds a strong reference to.
+            auto caller_keepalive = std::static_pointer_cast<XCreature>(pData->caller->shared_from_this());
             pData->caller->LastStep();
             pData->caller->FirstStep(pt.x, pt.y, pData->l);
 
@@ -512,6 +527,11 @@ int XEffect::Make(const EFFECT_DATA* pData)
                 msgwin.Add("has suddenly disappered.");
             }
 
+            // See the SUMMON_MONSTER case above - pData->target is whoever
+            // the spell/trap is acting on, not necessarily the creature
+            // currently taking its own turn, so it isn't otherwise
+            // guaranteed to have a strong reference keeping it alive here.
+            auto target_keepalive = std::static_pointer_cast<XCreature>(pData->target->shared_from_this());
             pData->target->LastStep();
             pData->target->FirstStep(pt.x, pt.y, pData->l);
 
