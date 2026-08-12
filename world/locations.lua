@@ -387,9 +387,29 @@ function SmallCaveQuestPersons(x, y)
 	-- Rotmoth's kidnap victim
 	QuestState:SetCreatureRef('kidnapped_girl', AsCreature(giana))
 
+	-- Cheap per-turn check (see GianaHandler's AI_TURN case) for whether
+	-- she's made it home yet, once ransomed - only does real work (the
+	-- FindCreature map scan) once rotmoth_status reaches 1, and turns
+	-- itself back off via DisableMoveHandler() the moment she arrives, so
+	-- this isn't paid for the rest of the game.
+	EnableMoveHandler(giana)
+
 	local rotmoth = Guardian("rotmoth", "rotmoth", x + 1, y, 8, 4)
 	SetEventHandler(rotmoth, 'RotmothHandler')
 	SetCreatureAI(rotmoth, 'RotmothAI')
+
+	-- Giana is PEACEFUL, and PEACEFUL creatures proactively defend
+	-- themselves against anything non-PEACEFUL they can see (isEnemy(),
+	-- creature/std_ai.cpp) - Rotmoth is right there in the same small
+	-- room from the moment this location is built, so without this she
+	-- attacks her own captor before the hero ever arrives (that
+	-- self-defense clause is suppressed while a companion is set, see
+	-- the escort-gate fix). Marking Rotmoth as her "companion" here isn't
+	-- really about following him - it reuses that same suppression to
+	-- mean "captive, not fighting anyone right now". RotmothHandler's
+	-- ransom payment already overwrites this with SetCompanion(chatter),
+	-- which is the correct transition from captive to escorted anyway.
+	AsCreature(giana).xai:SetCompanion(AsCreature(rotmoth))
 
 	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
 end
@@ -458,6 +478,28 @@ function RotmothHandler(e, t, p, v)
 end
 
 function GianaHandler(e, t, p, v)
+	if (e == LuaEvent.AI_TURN) then
+		-- Once ransomed (rotmoth_status == 1, see RotmothHandler) she's
+		-- following whoever paid it - stop here and settle in the valley
+		-- the moment she's made it out of the cave and back home, rather
+		-- than trailing the hero around forever.
+		--
+		-- FindCreature() returns a raw void* (nullptr when nothing
+		-- matches) - unlike a typed pointer return (e.g. AsCreature's own
+		-- XCreature*), sol2 pushes that as a light userdata that Lua
+		-- treats as truthy even when it wraps a null pointer, so testing
+		-- it directly here was always true the instant rotmoth_status hit
+		-- 1, regardless of whether she'd actually reached the village -
+		-- wrap it in AsCreature() so a real miss becomes proper Lua nil.
+		if (QuestState:GetFlag('rotmoth_status') == 1 and AsCreature(FindCreature(XLocation.MAIN, "giana"))) then
+			AsCreature(t).xai:SetCompanion(nil)
+			QuestState:SetFlag('rotmoth_status', 2)
+			DisableMoveHandler(t)
+		end
+
+		return 0
+	end
+
 	if (e ~= LuaEvent.CHAT) then
 		return 0
 	end
@@ -469,6 +511,8 @@ function GianaHandler(e, t, p, v)
 		AddMessage("Don't touch me!")
 	elseif (QuestState:GetFlag('rotmoth_status') < 2) then
 		AddMessage("Please, save me.")
+	else
+		AddMessage("Thank you again for saving me. I'm happy to be back home.")
 	end
 
 	return 1

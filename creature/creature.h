@@ -273,6 +273,11 @@ class XCreature : public XBaseObject
         bool wants_move_hook = false;
         void EnableMoveHandler();
 
+        // Turns wants_move_hook back off - for a handler that only needs
+        // the per-turn callback for a bounded stretch of gameplay (e.g.
+        // escorting a rescued NPC home), not for the rest of the game.
+        void DisableMoveHandler();
+
         // Backing store for event_handler's Lua StoreInt/RestoreInt calls
         // (see NotifyLuaEventHandler()) - filled by StoreInt during
         // LuaEvent::SAVE, serialized, then read back and handed out via

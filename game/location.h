@@ -371,6 +371,11 @@ class XLocation : public XObject
         // dispatched to every event_handler-bearing creature by default).
         static void EnableMoveHandler(void* cr);
 
+        // Turns EnableMoveHandler() back off - for a handler that only
+        // needs the per-turn callback for a bounded stretch of gameplay,
+        // not for the rest of the game.
+        static void DisableMoveHandler(void* cr);
+
         // Flags cr as the creature the display follows in demo/attract mode
         // ("-demo") in place of a real hero (see XCreature::NewMove()/Move()) -
         // a no-op outside demo mode, so it's safe for any world script to

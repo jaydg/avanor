@@ -1087,6 +1087,11 @@ void XLocation::EnableMoveHandler(void* cr)
     ((XCreature*)cr)->EnableMoveHandler();
 }
 
+void XLocation::DisableMoveHandler(void* cr)
+{
+    ((XCreature*)cr)->DisableMoveHandler();
+}
+
 void XLocation::SetMainCreature(void* cr)
 {
     if (XSettings::isDemo) {
@@ -1414,6 +1419,7 @@ void XLocation::CommonLuaInitialization()
         lua.set_function("Rand", &XLocation::Rand);
         lua.set_function("SetEventHandler", &XLocation::SetEventHandler);
         lua.set_function("EnableMoveHandler", &XLocation::EnableMoveHandler);
+        lua.set_function("DisableMoveHandler", &XLocation::DisableMoveHandler);
         lua.set_function("SetMainCreature", &XLocation::SetMainCreature);
         lua.set_function("CreateTimerEvent", &XLocation::CreateTimerEvent);
 

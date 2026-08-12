@@ -1724,6 +1724,11 @@ void XCreature::EnableMoveHandler()
     wants_move_hook = true;
 }
 
+void XCreature::DisableMoveHandler()
+{
+    wants_move_hook = false;
+}
+
 void XCreature::SaveModifier(cereal::JSONOutputArchive& ar) const
 {
     ar(*md);
