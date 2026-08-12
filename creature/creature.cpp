@@ -2100,7 +2100,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
             case XCreature::SHE:
                 switch (crn) {
                     case CRN_T1:
-                        return fmt::format("the female {]", name);
+                        return fmt::format("the female {}", name);
 
                     case CRN_T2:
                         return "she";
