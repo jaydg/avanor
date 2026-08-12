@@ -1261,11 +1261,19 @@ void XHero::PickItem()
         }
     } else {
         std::shared_ptr<XItem> tit;
+        // The item actually picked up, tracked separately from the loop's
+        // own `tit` - the while condition's last assignment to `tit` is
+        // whatever made the loop exit (an empty shared_ptr from Inventory()
+        // when the player cancels selection, or a rejected-and-returned
+        // item), not necessarily the one successful pickup, so `nitem == 1`
+        // does not imply `tit` still points at it.
+        std::shared_ptr<XItem> last_picked;
         int nitem = 0;
 
         while (!tmpquae->empty() && (tit = Inventory(tmpquae))) {
             if (PickUpItem(tit.get())) {
                 nitem++;
+                last_picked = tit;
             } else {
                 // we can't pick item, so return it back
                 tmpquae->insert(tit);
@@ -1275,7 +1283,7 @@ void XHero::PickItem()
         }
 
         if (nitem == 1) {
-            msgwin.Add(fmt::format("You pick up a {}.", tit->toString()));
+            msgwin.Add(fmt::format("You pick up a {}.", last_picked->toString()));
         } else if (nitem > 1) {
             msgwin.Add("You pick up a heap of items.");
         }
