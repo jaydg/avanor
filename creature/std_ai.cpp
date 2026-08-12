@@ -240,7 +240,14 @@ void XStandardAI::Move()
         //second try to attack enemy
         was_attack = AttackEnemy(enemy->x, enemy->y);
 
-        if (was_attack) {
+        // A PEACEFUL creature fights whatever's currently in front of it
+        // (see the isEnemy() clause above) but doesn't give chase once
+        // that's no longer true - remembering last_enemy is what drives
+        // the MoveTo() pursuit below once `enemy` next comes up empty
+        // (out of sight/range), so skip it here for PEACEFUL creatures.
+        // Reactive pursuit after actually being attacked is skipped the
+        // same way in ReactToAttacker().
+        if (was_attack && !(ai_flag & XStandardAI::PEACEFUL)) {
             // enemy may have died from that very attack - only remember it
             // as last_enemy if it's still around.
             last_enemy = XCreature::ToWeakPtr(enemy);
@@ -581,6 +588,37 @@ bool XStandardAI::isEnemy(XCreature *cr)
         && cr->x < guard_area.right
         && cr->y >= guard_area.top
         && cr->y < guard_area.bottom) {
+        return true;
+    }
+
+    // A PEACEFUL creature still defends itself against anything that is
+    // itself not peaceful - PEACEFUL means "won't start a fight with
+    // civilized/harmless beings" (see enemy_class == NONE in
+    // XLocation::NewCreature()), not "will never fight back against real
+    // danger". Keying off the intruder's own disposition instead of its
+    // class means this works the same whether the intruder is a bandit
+    // invading the village or a monster encountered mid-journey (e.g. the
+    // mushroom-cave route) - no fixed "these are the monster classes"
+    // list to maintain, and it correctly leaves other non-monster,
+    // non-PEACEFUL classes (a hostile human, say) as a threat too. The
+    // hero is explicitly exempted so a PEACEFUL creature doesn't
+    // pre-emptively attack the player on sight - XStandardAI::
+    // ReactToAttacker()/isPersonalEnemy() below already covers the case
+    // where the hero attacks first.
+    //
+    // Skipped entirely while under escort (an active companion set, e.g.
+    // Giana following whoever ransomed her): picking a proactive fight
+    // with someone merely visible-and-hostile takes priority over
+    // MoveTo(companion) in Move()'s branch order, so without this guard
+    // an escortee that's still in sight of a non-PEACEFUL creature (their
+    // own former captor, say) gets stuck trying to fight instead of
+    // following their rescuer out. Reactive self-defense if actually
+    // attacked still works while escorted, via isPersonalEnemy() below.
+    if (ai_flag & XStandardAI::PEACEFUL
+        && !companion.lock()
+        && !cr->isHero()
+        && cr->groupID() != ai_owner->groupID()
+        && !(cr->xai->GetAIFlag() & XStandardAI::PEACEFUL)) {
         return true;
     }
 
@@ -1043,6 +1081,15 @@ void XStandardAI::ReactToAttacker(XCreature * attacker)
 
     if (ai_owner->groupID() != GID_NONE) {
         SetGroupEnemy(attacker);
+    }
+
+    // A PEACEFUL creature still remembers the attacker as a personal/group
+    // enemy above (so it'll fight back if it runs into them again), but it
+    // shouldn't gain long-distance pursuit capability just from having been
+    // attacked - that's what last_enemy/invisible_hunting_mode drive in
+    // Move(). See the matching skip there.
+    if (ai_flag & XStandardAI::PEACEFUL) {
+        return;
     }
 
     if (ai_owner->isCreatureVisible(attacker)) {

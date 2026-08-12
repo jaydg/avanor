@@ -579,7 +579,18 @@ void* XLocation::Guardian(const std::string& crn, const std::string& gid, int x,
     }
 
     XCreature * cr = current_location->NewCreature(crn, rect, gid, flag);
-    cr->xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
+
+    // NewCreature() already set enemy_class to NONE for a PEACEFUL
+    // creature (see its own comment) - respect that instead of
+    // unconditionally overwriting it here. Without this check, every
+    // Guardian()-spawned PEACEFUL creature (farmers, goodwives, and
+    // anyone else inheriting their template) ends up hostile to every
+    // non-human/humanoid class regardless, silently defeating the whole
+    // point of being flagged PEACEFUL.
+    if (!(cr->xai->GetAIFlag() & XStandardAI::PEACEFUL)) {
+        cr->xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
+    }
+
     return cr;
 }
 
