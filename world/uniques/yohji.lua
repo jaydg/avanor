@@ -1,3 +1,23 @@
+
+	Monster.new("yohjishiro")
+		:View("Yohjishiro, the elven wizard", 'h', xColor.xWHITE, PersonType.NAMED_SHE, CreatureTemplate.UNIQUE, CreatureClass.HUMANOID)
+		:Basic("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200")
+		:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
+		:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
+		:Stats("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5")
+		:Resist("see_invisible:0d0+100")
+		:Combat("1d3", "1d2")
+		:Main("1d4", "1d1", "1d5+10", "5d5+50")
+		:Description("Last of the elder wizards to live in the vale of Avanor, Yohjishiro quietly tends her herbs and gardens. Her white hair hangs down her back as she kneels down to look at one of her bushes.  Her pointed ears stick out from under a floppy hat that keeps the sun from her eyes.  As she walks through the garden, you notice plants sprouting wherever her feet touch the soil.  Truly she is a power of life.  Frail but intelligent, she remains apart from most of the happenings of Avanor.  Occasionally she will accept a pupil or give aid to those in need.")
+		:LearnSkill(SKT_HEALING, SKILL_MAX_LEVEL)
+		:LearnSpell(SPELL_LIGHTNING_BOLT)
+		:LearnSpell(SPELL_HEAL)
+		:Equip(ItemKind.HAT, ItemType.HAT, 100)
+		:Equip(ItemKind.WEAPON, ItemType.STAFF, 100)
+		:Unique()
+		:Register()
+
+
 function CreateYohji(x, y)
 	local yohji = Guardian("yohjishiro", "", x, y, 5, 5)
 	SetEventHandler(yohji, 'YohjiHandler')

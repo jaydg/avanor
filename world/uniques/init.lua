@@ -1,6 +1,9 @@
--- Central list of unique-NPC files (spawn + AI + event handler, one file
--- per unique). Loaded as a single dofile() from world/init.lua so adding
--- a new unique only means adding one line here, not touching init.lua.
+-- Central list of unique-NPC files (creature template + spawn + AI +
+-- event handler, one file per unique). Loaded as a single dofile() from
+-- world/init.lua so adding a new unique only means adding one line here.
+--
+-- Must load after world/creatures/init.lua - some of these Monster.new()
+-- calls inherit from a base template defined there.
 dofile("./world/uniques/ahkulan.lua")
 dofile("./world/uniques/beelzevile.lua")
 dofile("./world/uniques/elder_gridor.lua")

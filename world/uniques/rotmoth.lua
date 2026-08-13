@@ -1,3 +1,16 @@
+
+	Monster.new("rotmoth", "bandit")
+		:View("Rotmoth", 'p', xColor.xDARKGRAY, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.HUMAN)
+		:Description("A wiry, hollow-eyed man with a bandit's cunning and a coward's cruelty, Rotmoth long ago traded whatever honor he once had for easier profits.  He holds his captive in this cave not through any real strength of his own, but because he knows precisely what a frightened hostage is worth in gold - and precisely who to threaten if you come at him with steel drawn instead of coin.")
+		:Unique()
+		:Register()
+
+	Monster.new("giana", "goodwife")
+		:View("Giana", 'p', xColor.xLIGHTRED, PersonType.NAMED_SHE, CreatureTemplate.UNIQUE, CreatureClass.HUMAN)
+		:Description("Giana's dress is torn at the hem and her eyes dart toward the cave entrance at every sound, but there's a stubborn set to her jaw that captivity hasn't managed to break.  Snatched from the valley for ransom, she has spent her time here watching for any chance at rescue - and once freed, she intends to walk every step of the way home herself.")
+		:Unique()
+		:Register()
+
 function SmallCaveQuestPersons(x, y)
 	local giana = Guardian("giana", "giana", x + 1, y, 8, 4)
 	SetEventHandler(giana, 'GianaHandler')

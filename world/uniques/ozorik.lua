@@ -1,3 +1,20 @@
+
+	Monster.new("ozorik")
+		:View("Ozorick, the royal guard captain", 'p', xColor.xLIGHTBLUE, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.HUMAN)
+		:Basic("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200")
+		:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
+		:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
+		:Stats("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
+		:Resist("see_invisible:0d0+50")
+		:Combat("1d8", "2d2")
+		:Main("4d2", "1d3", "1d5+15", "1d3+5")
+		:Description("Standing just over five feet tall, Ozorick doesn't seem like such an imposing figure but the air of command about him is complete.  His thickly corded neck and arms lightly balance a huge broadsword covered with runes.  He swings it down as you enter and you can't help but gasp as the point cuts right through a stone in the floor and barely even slows.  No one who has seen him wield his mighty sword in battle would dream of opposing him.")
+		:LearnSkill(SKT_HEALING, 10)
+		:LearnSkill(SKT_FINDWEAKNESS, 10)
+		:Unique()
+		:Register()
+
+
 ozorik_award = 0
 orcs_live = 50
 
