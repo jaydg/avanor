@@ -8,7 +8,20 @@ function LoadScripts()
 	dofile("./world/quests.lua");
 end
 
+-- Actually builds the world (as opposed to LoadScripts(), which only
+-- defines functions/creature templates) - only called for a brand new
+-- game. A restored game skips this.
+function InitWorld()
+	MakeAvanorValley()
+	MakeSmallCave()
+	MakeMushroomCave()
+	MakeDwarvenCity()
+	MakeRatCellar()
+	MakeVulcano()
+	MakeWizardDungeon()
+	CreateAllQuests()
+end
+
 function r()
 	LoadScripts()
 end
-

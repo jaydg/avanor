@@ -1466,12 +1466,5 @@ void XLocation::CreateNewGame()
 {
     CommonLuaInitialization();
     sol::state_view lua(L);
-    assert(lua["MakeAvanorValley"]().valid());
-    assert(lua["MakeSmallCave"]().valid());
-    assert(lua["MakeMushroomCave"]().valid());
-    assert(lua["MakeDwarvenCity"]().valid());
-    assert(lua["MakeRatCellar"]().valid());
-    assert(lua["MakeVulcano"]().valid());
-    assert(lua["MakeWizardDungeon"]().valid());
-    assert(lua["CreateAllQuests"]().valid());
+    assert(lua["InitWorld"]().valid());
 }
