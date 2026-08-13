@@ -1,0 +1,23 @@
+------------------------------ BATS --------------------------------------
+
+	Monster.new("bat")
+		:View("bat", 'b', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.RAT)
+		:Basic("1d30+120", "0d0+1000", "1d200+800", CS_VERY_SMALL, "3d4")
+		:Body("", 0, 0)
+		:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
+		:Stats("St 1d1 Dx 1d4 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 3d10 Ch 1d1")
+		:Resist("fire:5d5-50 see_invisible:1d10+10")
+		:Combat("0d0", "1d2")
+		:Main("1d4", "0d0", "1d2", "0d0")
+		:Description("Flapping wings and squeaks in the darkness are a common sound to all who enter the caves of Avanor.  Usually bats leave travlers alone, but sickness and magic sometimes cause them to attack.")
+		:Register()
+
+	Monster.new("huge_bat", "bat")
+		:View("huge bat", 'b', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.RAT)
+		:Basic("1d30+150", "0d0+1000", "1d200+700", CS_VERY_SMALL, "10d4")
+		:Stats("St 1d4 Dx 1d6 To 1d2 Pe 4d10")
+		:Resist("see_invisible:1d10+20")
+		:Combat("1d2", "1d4")
+		:Main("1d4", "1d1", "1d6", "0d0")
+		:Description("With a wing span up to 10 feet, these bats can carry away much larger prey than their smaller cousins.  They have been seen carrying creatures as large as a wolf away to feed their young in the dark corners of their cave.  If they can they will take down any prey available and them dismember it with razor sharp teeth to make it easier to carry.")
+		:Register()
