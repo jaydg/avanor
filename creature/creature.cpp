@@ -210,6 +210,7 @@ void XCreature::Invalidate()
 
     if (event_handler) {
         delete[] event_handler;
+        event_handler = nullptr;
     }
 
     // remove perished creature from the group members list
@@ -1374,6 +1375,14 @@ void XCreature::MoveStairWay()
         }
 
         if (!tgtloc->map->GetMonster(n_x, n_y)) {
+            // tc is ordinarily the creature whose own turn is executing
+            // (protected by the scheduler's own strong ref for the
+            // duration of Run()), same as every other LastStep()-then-
+            // FirstStep() call site - but unlike those, this one is also
+            // reachable from XStandardAI::MoveTo()'s cross-location
+            // branch for a *companion* crossing a stairway to follow its
+            // leader.
+            auto tc_keepalive = std::static_pointer_cast<XCreature>(tc->shared_from_this());
             tc->LastStep();
             tc->FirstStep(n_x, n_y, tgtloc);
             tc->l = tgtloc;
