@@ -51,7 +51,19 @@ function MakeAvanorValley()
 		AddTranslation("3", XTileType.SAND)
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ItemKind.FOOD, 'Nobel, the human shopkeeper') end)
-		AddTranslation("P", function(x, y) for i = 1, 4 do SetEventHandler(Guardian('farmer', "small_village_farmer", x, y, 20, 16), 'FarmerHandler') SetEventHandler(Guardian('goodwife', "small_village_farmer", x, y, 20, 16), 'FarmerHandler') end end)
+		AddTranslation("P", function(x, y)
+			-- Single source of truth for the village's guard area - also
+			-- used to re-home Giana here once rescued (see GianaHandler,
+			-- world/uniques/rotmoth.lua), so she settles into exactly the
+			-- same area the farmers.
+			VILLAGE_GUARD_AREA = {x = x, y = y, w = 20, h = 16}
+			local area = VILLAGE_GUARD_AREA
+
+			for i = 1, 4 do
+				SetEventHandler(Guardian('farmer', "small_village_farmer", area.x, area.y, area.w, area.h), 'FarmerHandler')
+				SetEventHandler(Guardian('goodwife', "small_village_farmer", area.x, area.y, area.w, area.h), 'FarmerHandler')
+			end
+		end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
 		AddTranslation("F", function(x, y) for i = 1, 5 do CreateBandit(x, y) end end)

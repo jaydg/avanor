@@ -103,6 +103,20 @@ class XStandardAI
         virtual ~XStandardAI();
 
         void SetArea(XRect& area, XLocation::Id ln);
+
+        // Lua-friendly wrapper around SetArea() - takes plain ints (like
+        // Guardian()'s own x,y,w,h params) instead of an XRect, and also
+        // sets GUARD_AREA so the new area actually takes effect regardless
+        // of whether it was already set. Lets a script re-home a creature
+        // to a different guard area later in its life (e.g. Giana settling
+        // in the village once rescued) without needing to reconstruct an
+        // XRect from Lua.
+        void SetGuardArea(int x, int y, int w, int h, XLocation::Id ln)
+        {
+            XRect rect(x, y, x + w, y + h);
+            SetArea(rect, ln);
+            SetAIFlag(XStandardAI::GUARD_AREA);
+        }
         void SetOwner(XCreature * cr)
         {
             ai_owner = cr;

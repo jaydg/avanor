@@ -74,7 +74,9 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "SetGroupEnemy", &XStandardAI::SetGroupEnemy,
         "isEnemy", &XStandardAI::isEnemy,
         "SetCompanion", &XStandardAI::SetCompanion,
-        "ReactToAttacker", &XStandardAI::ReactToAttacker
+        "ReactToAttacker", &XStandardAI::ReactToAttacker,
+        "ResAIFlag", &XStandardAI::ResAIFlag,
+        "SetGuardArea", &XStandardAI::SetGuardArea
     );
 
 }

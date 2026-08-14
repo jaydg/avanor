@@ -122,7 +122,18 @@ function GianaHandler(e, t, p, v)
 		-- 1, regardless of whether she'd actually reached the village -
 		-- wrap it in AsCreature() so a real miss becomes proper Lua nil.
 		if (QuestState:GetFlag('rotmoth_status') == 1 and AsCreature(FindCreature(XLocation.MAIN, "giana"))) then
-			AsCreature(t).xai:SetCompanion(nil)
+			local giana = AsCreature(t)
+			giana.xai:SetCompanion(nil)
+
+			-- Re-home her to the exact same area the farmers themselves patrol
+			-- (VILLAGE_GUARD_AREA, set in world/valley.lua where they're
+			-- spawned) rather than just clearing GUARD_AREA outright, as
+			-- GUARD_AREA is ALSO the only thing suppressing a second, unrelated
+			-- behaviour: she inherits goodwife's HUMAN flag set, which includes
+			-- FREE_WAY (ALLOW_MOVE_WAY_UP|DOWN).
+			giana.xai:SetGuardArea(VILLAGE_GUARD_AREA.x, VILLAGE_GUARD_AREA.y,
+				VILLAGE_GUARD_AREA.w, VILLAGE_GUARD_AREA.h, XLocation.MAIN)
+
 			QuestState:SetFlag('rotmoth_status', 2)
 			DisableMoveHandler(t)
 		end
