@@ -5,7 +5,7 @@ function MakeSmallCave()
 	CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
 		Way(UP, XLocation.MAIN)
 		Way(DOWN, L_SMALL_CAVE2)
---		Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
+		Settle(CreatureClass.RAT + CreatureClass.INSECT, CreatureTemplate.LOW)
 
 	CreateLocation(L_SMALL_CAVE2, "SmCv:2", "Small Cave Level 2", CAVE)
 		SetPattern(80, 20,
@@ -37,6 +37,4 @@ function MakeSmallCave()
 		AddTranslation("<", function(x, y) Way(UP, L_SMALL_CAVE1, x, y) end)
 		AddTranslation("S", function(x, y) SmallCaveQuestPersons(x, y) end)
 		DrawPattern(0, 0)
---		Creature("rotmoth")
 end
-

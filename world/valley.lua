@@ -16,8 +16,8 @@ function MakeAvanorValley()
 		SetPattern(55, 30,
 		"                                                       " ..
 		"                        =======                        " ..
-		"       P  @@@@@@@  @@@@@@  9   ==                      " ..
-		"        ..@;;;;;@..@....@........=                     " ..
+		"       P  @@@@@@@  @@@@@@      ==        9             " ..
+		"        ..@;;B;;@..@....@........=                     " ..
 		"        ..@@@/@@@..@+@@@@.........=                    " ..
 		"        .....1......1.............=                    " ..
 		"   >111111111111111111111111111...=F                   " ..
@@ -64,6 +64,7 @@ function MakeAvanorValley()
 				SetEventHandler(Guardian('goodwife', "small_village_farmer", area.x, area.y, area.w, area.h), 'FarmerHandler')
 			end
 		end)
+		AddTranslation("B", function(x, y) CreateBrida(x, y) end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
 		AddTranslation("F", function(x, y) for i = 1, 5 do CreateBandit(x, y) end end)

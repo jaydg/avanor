@@ -344,8 +344,6 @@ void XGame::CreateHero()
 
     XHero * hero = new XHero(1);
     Game.NewCreature(hero, hero_point.x, hero_point.y, locations[XLocation::MAIN].get());
-
-    Game.NewCreature(hero, 57, 4, locations[56].get());
     hero->MoneyOp(2000);
 
     //if hero is a bard, than create a dog for him...

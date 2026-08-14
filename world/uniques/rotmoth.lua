@@ -11,6 +11,59 @@ Monster.new("giana", "goodwife")
 	:Unique()
 	:Register()
 
+Monster.new("brida", "goodwife")
+	:View("Brida", 'p', xColor.xLIGHTCYAN, PersonType.NAMED_SHE, CreatureTemplate.UNIQUE, CreatureClass.HUMAN)
+	:Description("Brida's eyes are red-rimmed and her hands won't sit still, wringing a scrap of cloth over and over as she paces the small room.  Her daughter Giana went out to the valley days ago and never came home - and every hour since has worn another line into her face.")
+	:Unique()
+	:Register()
+
+-- Quest-hook NPC: gives the player the reason to ever go looking for
+-- Rotmoth's cave in the first place, and closes the loop once Giana is
+-- safely home. Doesn't gate anything mechanically (the cave and its
+-- inhabitants already exist regardless of whether she's been spoken to -
+-- same as every other hand-placed location in this game), purely the
+-- narrative entry and exit point for the quest.
+function CreateBrida(x, y)
+	-- Her house is a single-row 5-tile room (see world/valley.lua's "B"
+	-- placement) - x,y is the exact spawn tile, so center the guard rect
+	-- on the room rather than just the one tile.
+	local brida = Guardian("brida", "small_village_farmer", x - 2, y, 5, 1)
+	SetEventHandler(brida, 'BridaHandler')
+end
+
+function BridaHandler(e, t, p, v)
+	if (e ~= LuaEvent.CHAT) then
+		return 0
+	end
+
+	local status = QuestState:GetFlag('rotmoth_status')
+
+	if (status == 0) then
+		AddMessage("'My Giana... she never came back from the valley!' Brida sobs.")
+		AddMessage("'A bandit - Rotmoth, he calls himself - is holding her in a cave east of here, past where the bandits lurk near the bridge. He wants 150 gold coins for her, but I have nothing left to give him.'")
+		AddMessage("'Please - if you have the coin, or the courage - bring my daughter home!'")
+		QuestModify(QUEST_GIANA, XQuest.KNOWN)
+	elseif (status == 1) then
+		AddMessage("'Is she safe? Please, hurry her home to me!'")
+	elseif (status == 2) then
+		if (QuestState:GetFlag('brida_reward_given') ~= 1) then
+			AddMessage("Brida pulls you into a fierce hug, tears streaming down her face.")
+			AddMessage("'Thank you, thank you! I have little to offer, but... here, take these. I brewed them myself, from what I still remember of my own mother's craft.'")
+
+			for i = 1, 3 do
+				GiveObjectToCreature(CreateObject(PotionName.CURE_LIGHT_WOUNDS), p)
+			end
+
+			QuestState:SetFlag('brida_reward_given', 1)
+			QuestModify(QUEST_GIANA, XQuest.CLOSED)
+		else
+			AddMessage("'Bless you, again and again, for bringing my Giana home.'")
+		end
+	end
+
+	return 1
+end
+
 function SmallCaveQuestPersons(x, y)
 	local giana = Guardian("giana", "giana", x + 1, y, 8, 4)
 	SetEventHandler(giana, 'GianaHandler')
@@ -42,6 +95,50 @@ function SmallCaveQuestPersons(x, y)
 	AsCreature(giana).xai:SetCompanion(AsCreature(rotmoth))
 
 	EventPlace(x, y, 5, 2, 'SmallCaveEvent')
+
+	-- Rotmoth's private quarters (bedroom, then treasure room) sit through
+	-- the door directly south of the starting room - previously nothing
+	-- stopped the hero from walking in and looting his chest before ever
+	-- paying (or even hearing) the ransom demand. Covers the door itself
+	-- plus everything behind it, so opening it (MOVE_IN) warns, and taking
+	-- even one more step deeper rather than backing out (MOVE) turns him
+	-- hostile.
+	EventPlace(x + 1, y + 4, 13, 10, 'RotmothGuardEvent')
+end
+
+function RotmothGuardEvent(e, p)
+	if (not isHero(p)) then
+		return
+	end
+
+	-- p arrives as a raw void* light userdata (this is an XAnyPlace/
+	-- event_handler-style dispatch, not an XLuaAI hook) - wrap it before
+	-- passing it to any usertype method (isEnemy/ReactToAttacker below).
+	-- Skipping this makes the call fail sol2's argument type check and get
+	-- silently swallowed by the protected_function_result in
+	-- XAnyPlace::onCreatureEnter/Move - no crash, no message, nothing.
+	-- p arrives as a raw void* light userdata (this is an XAnyPlace/
+	-- event_handler-style dispatch, not an XLuaAI hook) - wrap it before
+	-- passing it to any usertype method (isEnemy/ReactToAttacker below).
+	-- Skipping this doesn't throw - sol2 silently accepts it and the calls
+	-- below become no-ops - so this failure mode is invisible unless you
+	-- specifically check whether isEnemy() actually flips afterward.
+	local chatter = AsCreature(p)
+	local rotmoth = AsCreature(FindCreature(L_SMALL_CAVE2, "rotmoth"))
+
+	-- Nothing to guard with once he's dead, and no point re-warning someone
+	-- he's already fighting (isEnemy() is what ReactToAttacker below puts
+	-- them on, via the personal-enemy fallback in isEnemy()).
+	if (not rotmoth or rotmoth.xai:isEnemy(chatter)) then
+		return
+	end
+
+	if (e == LuaEvent.MOVE_IN) then
+		AddMessage("'Stay out of my quarters!' Rotmoth shouts from the next room.")
+	elseif (e == LuaEvent.MOVE) then
+		AddMessage("Rotmoth comes at you, furious!")
+		rotmoth.xai:ReactToAttacker(chatter)
+	end
 end
 
 -- Redirects retaliation for an attack onto the kidnapped girl
@@ -59,6 +156,22 @@ function RotmothAI.onWasAttacked(self, attacker)
 	end
 
 	return false
+end
+
+-- If Rotmoth dies before ransom was ever paid, Giana is still his captive
+-- (rotmoth_status == 0) - killing her captor is at least as good as paying
+-- him, so free her the same way RotmothHandler's ransom branch does rather
+-- than leaving her stuck waiting for a payment that can no longer happen.
+function RotmothAI.onDie(self, killer)
+	if (QuestState:GetFlag('rotmoth_status') == 0 and killer and killer:isHero()) then
+		local girl = QuestState:GetCreatureRef('kidnapped_girl')
+
+		if (girl) then
+			AddMessage("'Thank you for saving me!' Giana cries out.")
+			girl.xai:SetCompanion(killer)
+			QuestState:SetFlag('rotmoth_status', 1)
+		end
+	end
 end
 
 function RotmothHandler(e, t, p, v)
@@ -86,12 +199,12 @@ function RotmothHandler(e, t, p, v)
 		return 1
 	end
 
-	AddMessage("I hope you'll bring 100 gold coins, otherwise this girl will die.")
+	AddMessage("Bring me 150 gold coins, or the girl dies.")
 
-	if (chatter:MoneyOp(0) >= 100) then
+	if (chatter:MoneyOp(0) >= 150) then
 		if (AskQuestion("Pay him?", "y n", "yes", "no") == 'y') then
-			chatter:MoneyOp(-100)
-			rotmoth:MoneyOp(100)
+			chatter:MoneyOp(-150)
+			rotmoth:MoneyOp(150)
 
 			if (chatter:IsMale()) then
 				AddMessage("Thank you, boy!")
@@ -159,8 +272,6 @@ function GianaHandler(e, t, p, v)
 	return 1
 end
 
-small_cave_first_visit = 0
-
 function SmallCaveEvent(e, p)
 
 	if (not isHero(p)) then
@@ -184,10 +295,10 @@ function SmallCaveEvent(e, p)
 		end
 ]]--
 	elseif (e == LuaEvent.MOVE_IN and isHero(p)) then
-		if (small_cave_first_visit == 0) then
+		if (QuestState:GetFlag('rotmoth_status') == 0) then
 			AddMessage("Halt! Don't move anymore or I'll kill her!")
-			AddMessage("Bring me 150 golden coins, run away quikly and I probably give her a mercy!")
-			small_cave_first_visit = 1
+			AddMessage("Back off now, and bring me 150 golden coins - do that, and I might just show her mercy!")
+
 			if (MoneyOperation(p, 0) >= 150) then
 				if (AskQuestion("Pay him right now?", "esc y n", "yes", "no") == 'y') then
 					MoneyOperation(p, -150)
@@ -198,13 +309,8 @@ function SmallCaveEvent(e, p)
 		end
 
 	elseif (e == LuaEvent.MOVE_OUT and isHero(p)) then
-		if (small_cave_first_visit == 1) then
-			AddMessage("Remember! 150 golden coins!")
-		else
+		if (QuestState:GetFlag('rotmoth_status') == 0) then
+			AddMessage("Hurry! 150 golden coins!")
 		end
-	elseif (e == LuaEvent.SAVE) then
-		StoreInt(small_cave_first_visit)
-	elseif (e == LuaEvent.LOAD) then
-		small_cave_first_visit = RestoreInt()
 	end
 end
