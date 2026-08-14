@@ -146,6 +146,7 @@ extern int tri_table[120][10][2]; //120 a*3, 10 - r, 2 (0 - x, 1 - y)
 
 #undef KEY_ENTER
 #undef KEY_BACKSPACE
+#undef KEY_DEL
 
 #undef KEY_CTRL_Z
 #undef KEY_UNKNOWN
@@ -163,7 +164,8 @@ extern int tri_table[120][10][2]; //120 a*3, 10 - r, 2 (0 - x, 1 - y)
 #define KEY_CENTER        (KEY_EXTENDED_CODE | 76)
 
 #define KEY_ENTER         13
-#define KEY_BACKSPACE     9
+#define KEY_BACKSPACE     8
+#define KEY_DEL           127
 
 #define KEY_CTRL_Z		  26
 #define KEY_CTRL_T		  20

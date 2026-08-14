@@ -280,13 +280,17 @@ int vGetS(char* s, const int buffer_size)
             }
         }
 
-        if (ch == 8 && buffer_pos > 0) {
+        // Terminals vary in which code their Backspace key actually sends
+        // (ASCII BS or DEL) - accept both rather than just one, otherwise
+        // the code the terminal doesn't happen to use gets inserted into
+        // the string as a literal control character instead of deleting.
+        if ((ch == KEY_BACKSPACE || ch == KEY_DEL) && buffer_pos > 0) {
             s[buffer_pos - 1] = ' ';
             s[buffer_pos] = 0;
             vGotoXY(cx, cy);
             vPutS(s);
             buffer_pos--;
-        } else if (ch != 8) {
+        } else if (ch != KEY_BACKSPACE && ch != KEY_DEL) {
             buffer_pos++;
         }
 
