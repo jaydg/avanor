@@ -587,7 +587,7 @@ std::string vMakePath(std::string_view prefix, std::string_view filename)
 #ifdef XLINUX
     if (prefix[0] == '~') {
         path_buffer.assign(getenv("HOME"))
-            .append("/")
+            .append(prefix.substr(1))
             .append(filename);
     } else
 #endif
