@@ -33,7 +33,7 @@ class XRation : public XAnyFood
 
         explicit XRation(XRation* copy) : XAnyFood(static_cast<XAnyFood*>(copy)) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XRation(this);
         }

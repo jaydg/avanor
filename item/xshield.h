@@ -32,7 +32,7 @@ class XShield : public XItem
         XShield(ItemType it = ItemType::RANDOM);
         XShield(XShield * copy) : XItem((XItem*)copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XShield(this);
         }

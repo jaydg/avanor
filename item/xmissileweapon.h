@@ -33,7 +33,7 @@ class XMissileWeapon : public XItem
         std::string toString() override;
         XMissileWeapon(XMissileWeapon * copy) : XItem((XItem*)copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XMissileWeapon(this);
         }

@@ -43,7 +43,7 @@ class XAnyFood : public XItem
             consume_nutrio(food->consume_nutrio), consumed_food(food->consumed_food),
             XItem((XItem*)food) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XAnyFood(this);
         }

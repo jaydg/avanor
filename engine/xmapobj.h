@@ -41,10 +41,6 @@ class XMapObject : public XObject
         XMapObject() : l(nullptr), name{}, x(-1), y(-1), nx(-1), ny(-1), view(0), color(0) {}
 
         explicit XMapObject(XMapObject * copy);
-        virtual XObject* MakeCopy()
-        {
-            return new XMapObject(this);
-        }
 
     protected:
         // teardown hook, called by XObject::Invalidate()

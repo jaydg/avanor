@@ -37,7 +37,7 @@ class XWeapon : public XItem
         XWeapon(ItemType it = ItemType::RANDOM);
         XWeapon(XWeapon * copy) : XItem((XItem*)copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XWeapon(this);
         }

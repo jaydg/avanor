@@ -32,7 +32,7 @@ class XArmor: public XClothes
 
         explicit XArmor(XArmor* armor) : XClothes(static_cast<XClothes *>(armor)) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XArmor(this);
         }

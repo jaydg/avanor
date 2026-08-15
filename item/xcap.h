@@ -32,7 +32,7 @@ class XCap : public XClothes
 
         explicit XCap(XCap * cap) : XClothes(static_cast<XClothes *>(cap)) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XCap(this);
         }

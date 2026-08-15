@@ -44,7 +44,7 @@ class XBatWing : public XAnyFood
 
         XBatWing(XBatWing * copy) : XAnyFood(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XBatWing(this);
         }
@@ -74,7 +74,7 @@ class XRatTail : public XAnyFood
 
         XRatTail(XRatTail * copy) : XAnyFood(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XRatTail(this);
         }
@@ -103,7 +103,7 @@ class XBone : public XAnyFood
 
         XBone(XBone * copy) : XAnyFood(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XBone(this);
         }
@@ -136,7 +136,7 @@ class XChest : public XItem
             return -1;
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XChest(this);
         }
@@ -173,7 +173,7 @@ class XAncientMachinePart : public XItem
 
         XAncientMachinePart(XAncientMachinePart * copy) : XItem(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XAncientMachinePart(this);
         }

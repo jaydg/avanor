@@ -81,7 +81,7 @@ class XBook: public XItem
             left_to_read = copy->left_to_read;
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XBook(this);
         }

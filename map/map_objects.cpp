@@ -247,7 +247,7 @@ int XTrap::Activate(XCreature* cr)
 
         switch (trap_type) {
             case TT_ARROW:
-                drop_item = dynamic_cast<XItem*>(trap_item->MakeCopy());
+                drop_item = trap_item->MakeCopy();
                 drop_item->quantity = 1;
 
                 if (trap_item->quantity-- <= 1) {

@@ -211,7 +211,7 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
     }
 
     // hack!!!
-    auto titem = dynamic_cast<XItem *>(item->MakeCopy());
+    auto titem = item->MakeCopy();
     titem->x = -1;
     titem->y = -1;
 

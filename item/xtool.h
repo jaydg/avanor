@@ -73,7 +73,7 @@ class XCookingSet : public XTool
             assert(cooked_item == nullptr);
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XCookingSet(this);
         }
@@ -135,7 +135,7 @@ class XPickAxe : public XTool
 
         XPickAxe(XPickAxe* copy) : XTool(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XPickAxe(this);
         }
@@ -174,7 +174,7 @@ class XEyeOfRaa : public XTool
 
         XEyeOfRaa(XEyeOfRaa* copy) : XTool(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XEyeOfRaa(this);
         }
@@ -212,7 +212,7 @@ class XAlchemySet : public XTool
 
         XAlchemySet(XAlchemySet* copy) : XTool(copy) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XAlchemySet(this);
         }

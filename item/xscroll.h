@@ -61,7 +61,7 @@ class XScroll : public XItem
             sc_name = copy->sc_name;
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XScroll(this);
         }

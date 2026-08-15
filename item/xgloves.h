@@ -32,7 +32,7 @@ class XGloves : public XClothes
 
         explicit XGloves(XGloves* gloves) : XClothes(static_cast<XClothes *>(gloves)) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XGloves(this);
         }

@@ -36,7 +36,7 @@ class XRing : public XEnhance
 
         int isIdentifed() override;
         void Identify(int level) override;
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XRing(this);
         }

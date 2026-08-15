@@ -1486,7 +1486,7 @@ int XCreature::Shoot(int tx, int ty)
     }
 
     // split missile
-    XItem * msl = (XItem*)missile->MakeCopy();
+    XItem * msl = missile->MakeCopy();
     msl->quantity = 1;
 
     if (--missile->quantity <= 0) {

@@ -34,7 +34,7 @@ class XAmulet : public XEnhance
 
         explicit XAmulet(XAmulet* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XAmulet(this);
         }

@@ -60,7 +60,7 @@ class XHerb : public XAnyFood
             assert(0);
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XHerb(this);
         }

@@ -89,7 +89,7 @@ class XCorpse : public XAnyFood
             assert(0);
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XCorpse(this);
         }

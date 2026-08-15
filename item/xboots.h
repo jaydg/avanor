@@ -34,7 +34,7 @@ class XBoots: public XClothes
         {
         }
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XBoots(this);
         }

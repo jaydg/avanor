@@ -997,7 +997,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
                 return ritem;
             }
 
-            auto sitem = XItem::Own(dynamic_cast<XItem *>(ritem->MakeCopy()));
+            auto sitem = XItem::Own(ritem->MakeCopy());
             sitem->quantity = ret_item_count;
             ritem->quantity -= ret_item_count;
             item_list->insert(ritem);
@@ -1214,7 +1214,7 @@ void XHero::DropItem()
             }
 
             if (res != item->quantity) {
-                drop_item = XItem::Own(dynamic_cast<XItem *>(item->MakeCopy()));
+                drop_item = XItem::Own(item->MakeCopy());
                 drop_item->quantity = res;
                 item->quantity -= res;
                 contain.insert(item);
@@ -2527,7 +2527,7 @@ void XHero::GiveItem()
             std::shared_ptr<XItem> gitem;
 
             if (res < item->quantity && res > 0) {
-                gitem = XItem::Own(dynamic_cast<XItem *>(item->MakeCopy()));
+                gitem = XItem::Own(item->MakeCopy());
                 gitem->quantity = res;
                 item->quantity -= res;
                 contain.insert(item);

@@ -157,7 +157,7 @@ class XPotion : public XItem
         DECLARE_CREATOR(XPotion, XItem);
         XPotion(POTION_NAME _pn = PN_RANDOM);
         XPotion(XPotion * copy);
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XPotion(this);
         }

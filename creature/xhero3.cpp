@@ -77,7 +77,7 @@ void XHero::doSacrifice()
                 }
 
                 if (res != item->quantity) {
-                    drop_item = XItem::Own(dynamic_cast<XItem *>(item->MakeCopy()));
+                    drop_item = XItem::Own(item->MakeCopy());
                     drop_item->quantity = res;
                     item->quantity -= res;
                     contain.insert(item);

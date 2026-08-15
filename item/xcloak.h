@@ -32,7 +32,7 @@ class XCloak : public XClothes
 
         explicit XCloak(XCloak* copy) : XClothes(static_cast<XClothes *>(copy)) {}
 
-        XObject* MakeCopy() override
+        XItem* MakeCopy() override
         {
             return new XCloak(this);
         }

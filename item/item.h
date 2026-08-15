@@ -58,7 +58,8 @@ class XItem : public XBaseObject
         void MainFill(ItemTemplate* is);
         XItem();
         XItem(XItem * copy);
-        XObject* MakeCopy() override
+
+        virtual XItem* MakeCopy()
         {
             assert(0);
             return nullptr;
