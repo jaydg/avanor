@@ -131,7 +131,7 @@ typedef std::map<XGUID, class XObject*> XObjectMap;
 class XObject : public std::enable_shared_from_this<XObject>
 {
     private:
-        int is_valid;
+        bool is_valid;
 
         // counter of deleted objects
         static long invalid_count;
@@ -212,18 +212,17 @@ class XObject : public std::enable_shared_from_this<XObject>
         // belonged there. Assigning a fresh ::guid++ here instead
         // guarantees every DUMMY_STRUCT-constructed object starts under
         // a unique key of its own, exactly like the normal constructor.
-        XObject(DUMMY_STRUCT * ds) : xguid(::guid++), is_valid(1)
+        XObject(DUMMY_STRUCT* ds) : xguid(::guid++), is_valid(true)
         {
             Create();
         }
 
-        XObject() : xguid(::guid++), is_valid(1)
+        XObject() : xguid(::guid++), is_valid(true)
         {
             Create();
         }
 
-        XObject(XObject * o) : xguid(::guid++), is_valid(1),	ttm(o->ttm), ttmb(o->ttmb)
-
+        XObject(XObject* o) : xguid(::guid++), is_valid(true), ttm(o->ttm), ttmb(o->ttmb)
         {
             Create();
         }
@@ -258,7 +257,7 @@ class XObject : public std::enable_shared_from_this<XObject>
             // (a container erase that drops our last reference, a child
             // invalidating its parent, ...) is a no-op instead of a
             // second teardown.
-            is_valid = 0;
+            is_valid = false;
 
             // Erase by identity, not just by key: a Cereal-restored
             // object can end up assigned the same xguid as some other
@@ -290,7 +289,7 @@ class XObject : public std::enable_shared_from_this<XObject>
 
             // Otherwise `self` drops here. If it was the last reference,
             // the owning deleter destroys us now - and it sees
-            // is_valid == 0, so it plain-deletes instead of re-entering
+            // is_valid == false, so it plain-deletes instead of re-entering
             // Invalidate().
         }
 
@@ -347,7 +346,7 @@ class XObject : public std::enable_shared_from_this<XObject>
             }
         }
 
-        int isValid()
+        bool isValid() const
         {
             return is_valid;
         }
