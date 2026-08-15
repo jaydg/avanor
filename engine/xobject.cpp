@@ -84,15 +84,31 @@ XObject* XClassFactory::CreateNew(const std::string& name)
 
 void XObject::InvalidateAllObjects()
 {
-    // Invalidate() removes its own entry from objects and may cascade into
-    // deleting other objects, e.g. a location invalidating its places.
-    // Iterating objects directly, or even a pre-captured snapshot of it,
-    // risks either an invalidated loop iterator or a dangling pointer to
-    // an object that already got deleted.
+    // Erase-first, and always re-derive the next target from the live map:
+    // Invalidate() may cascade into deleting other objects (a location
+    // invalidating its places, say), so iterating `objects` directly - or
+    // even a pre-captured snapshot of it - risks an invalidated loop
+    // iterator or a dangling pointer to an object that is already gone.
     //
-    // Always re-derive the next target from the live map instead.
+    // Taking the entry out up front is what guarantees this terminates.
+    // The old form left removal entirely to Invalidate(), which erases by
+    // identity (`objects[xguid] == this`) and so declines to erase when an
+    // object's xguid no longer matches the key it is filed under - a
+    // Cereal-restored object can end up in exactly that state. Such an
+    // entry would never leave the map, while its already-invalid object
+    // made every further Invalidate() a no-op: teardown spinning forever
+    // on a full registry, the same shape of hang that used to happen in
+    // XMapTile's item loop. Erasing the iterator we already hold also
+    // sidesteps the identity question entirely - it is this object's own
+    // entry by construction.
     while (!objects.empty()) {
-        objects.begin()->second->Invalidate();
+        const auto it = objects.begin();
+        XObject* obj = it->second;
+        objects.erase(it);
+
+        // Safe to keep using obj: `objects` is a non-owning registry of
+        // raw pointers, so erasing the entry cannot destroy anything.
+        obj->Invalidate();
     }
 
     // The sweep above parks self-evicting map objects (see
