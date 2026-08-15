@@ -162,12 +162,38 @@ void XItem::OnInvalidate()
     // destruction happens after we return, not under our feet).
     XItemList* ground_list = (l && l->map && x >= 0 && y >= 0) ? l->map->GetItemList(x, y) : nullptr;
 
+    // The mirror image of the ground case, for an item being carried.
+    // A carried item has no `l`, so the lookup above finds nothing, and
+    // for a long time that meant nothing detached it from its carrier
+    // either: invalidating a carried item left a dead entry sitting in
+    // contain, which XCreature::Die() would then Drop() onto the floor -
+    // and a ground list can never clean such an item up again (it is the
+    // state that used to wedge ~XMapTile()'s teardown loop).
+    //
+    // Detach through the `owner` back-reference instead. Deliberately
+    // not a new "which list am I in" pointer on XItem: `owner` is
+    // already maintained by SetOwner()/CarryItem() and already survives
+    // a save/load, whereas a new back-pointer would need re-deriving
+    // after every load - the exact class of missing-back-reference bug
+    // this is meant to end. UnCarryItem() also repairs carried_weight
+    // and clears `owner`, so this is a no-op for the many callers that
+    // correctly uncarried the item before invalidating it.
+    const auto owner_sp = owner.lock();
+
     total_it--;
     XBaseObject::OnInvalidate();
 
     if (ground_list) {
         if (auto it = ground_list->find(this); it != ground_list->end()) {
             ground_list->erase(it);
+        }
+    }
+
+    if (owner_sp) {
+        owner_sp->UnCarryItem(this);
+
+        if (auto it = owner_sp->contain.find(this); it != owner_sp->contain.end()) {
+            owner_sp->contain.erase(it);
         }
     }
 }

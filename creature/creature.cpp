@@ -183,7 +183,14 @@ void XCreature::OnInvalidate()
 {
     components.clear();
 
-    for (auto item: contain) {
+    // Erase-first, not a range-for: XItem::OnInvalidate() now detaches a
+    // carried item from this very contain, so iterating it while
+    // invalidating would erase out from under the iterator. Taking each
+    // item out up front also guarantees progress whatever Invalidate()
+    // does, the same reasoning as XMapTile::~XMapTile()'s item loop.
+    while (!contain.empty()) {
+        const std::shared_ptr<XItem> item = *contain.begin();
+        contain.erase(contain.begin());
         item->Invalidate();
     }
 
@@ -1068,13 +1075,12 @@ void XCreature::Die(XCreature* killer)
     }
 
     for (auto item: contain) {
-        // Never drop an already-invalid item as loot. XItem::Invalidate()
-        // does not remove an item from a creature's contain (only from a
-        // ground list), so an item invalidated while still carried stays
-        // here - and putting one on the ground leaves a corpse-of-an-item
-        // in a cell's item_list that can never clean itself up again.
-        // ~XMapTile now tolerates that regardless, but there is no reason
-        // to manufacture it: contain.clear() below releases such items.
+        // Never drop an already-invalid item as loot - putting one on the
+        // ground leaves a corpse-of-an-item in a cell's item_list.
+        // XItem::OnInvalidate() now detaches carried items from contain
+        // itself, so this should be unreachable; kept as cheap
+        // defence-in-depth for the one state known to be unrecoverable
+        // downstream (~XMapTile tolerates it, but only just).
         if (item->isValid()) {
             item->Drop(l, x, y);
         }
