@@ -92,6 +92,13 @@ class XShopKeeperAI : public XStandardAI
         // never independently, so this is always safe to dereference for
         // as long as the shopkeeper itself is alive.
         XShop* shop = nullptr;
+
+        // Not persisted: guides a one-time narrowing of the inherited
+        // guard_area down to a small patch hugging the door, so the shopkeeper
+        // is never far enough from it to lose a race to block it. Deliberately
+        // left false after a load - cheap to redo on the shopkeeper's first
+        // post-load turn.
+        bool home_area_set = false;
 };
 
 // XShopKeeperAI() is deleted - real construction always takes an

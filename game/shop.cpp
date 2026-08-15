@@ -27,6 +27,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/skeep_ai.h"
 #include "game/shop.h"
 #include "item/itemf.h"
+#include "map/map.h"
+#include "map/map_objects.h"
 
 REGISTER_CLASS(XShop);
 CEREAL_REGISTER_TYPE(XShop);
@@ -35,6 +37,34 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XAnyPlace, XShop);
 void XShop::SetShopkeeper(XCreature * shopkeeper)
 {
     owner = XCreature::ToWeakPtr(shopkeeper);
+}
+
+std::optional<XPoint> XShop::FindDoor()
+{
+    if (door_search_done) {
+        return door_pos;
+    }
+
+    door_search_done = true;
+
+    XMap* map = location->map;
+
+    for (int x = area.left - 1; x <= area.right; x++) {
+        for (int y = area.top - 1; y <= area.bottom; y++) {
+            const bool on_ring = (x == area.left - 1 || x == area.right || y == area.top - 1 || y == area.bottom);
+
+            if (!on_ring) {
+                continue;
+            }
+
+            if (dynamic_cast<XDoor*>(map->GetSpecial(x, y))) {
+                door_pos = XPoint(x, y);
+                return door_pos;
+            }
+        }
+    }
+
+    return std::nullopt;
 }
 
 XShop::XShop(XRect& _area, ItemKind _kind, XLocation * _loc, SHOP_DOOR sd)

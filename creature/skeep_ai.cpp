@@ -30,6 +30,35 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 CEREAL_REGISTER_TYPE(XShopKeeperAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XShopKeeperAI);
 
+namespace {
+
+// Nudges a door position one step back inward, so it lands on the threshold
+// tile actually inside the shop. Only one of x/y is ever off the ring for a
+// normal mid-wall door, so only that axis moves; a door drawn exactly in a
+// corner would leave this pinned to the corner tile, which is still a
+// harmless, if inelegant, fallback.
+XPoint DoorThresholdPoint(const XPoint& door, const XRect& area)
+{
+    int x = door.x;
+    int y = door.y;
+
+    if (x == area.left - 1) {
+        x = area.left;
+    } else if (x == area.right) {
+        x = area.right - 1;
+    }
+
+    if (y == area.top - 1) {
+        y = area.top;
+    } else if (y == area.bottom) {
+        y = area.bottom - 1;
+    }
+
+    return XPoint(x, y);
+}
+
+}
+
 const char* GMSG_SHOPKEEPER_ATTACK = "'You were warned! Prepare to die!'";
 const char* GMSG_SHOPKEEPER_ATTACK2 = "'I'll kill you, you bastard!'";
 const char* GMSG_SHOPKEEPER_ASK_PRICE = "'I can give you " MSG_YELLOW "{}" MSG_YELLOW " gp for {}. Do you agree?'";
@@ -95,6 +124,73 @@ void XShopKeeperAI::Move()
         XItem * item = ICREATEA(shop->shop_mask);
         item->Identify(1);
         item->Drop(ai_owner->l, ai_owner->x, ai_owner->y);
+    }
+
+    // While there's an itemized unpaid debt, stand in the doorway instead of
+    // wandering, stopping the customer from just walking out with them. Only
+    // engages for the itemized list (still inside/near the shop) - once the
+    // customer actually leaves, unpaid_items collapses into and this stops.
+    if (!debt.unpaid_items.empty()) {
+        // Without this, declining the "are you sure you want to attack"
+        // prompt when walking into the shopkeeper doesn't just cancel the
+        // move, it swaps places with them - letting the customer walk
+        // straight through/past whoever's guarding the exit. Only held
+        // while debt is outstanding, so an innocently-wandering shopkeeper
+        // doesn't block the player's path the rest of the time.
+        SetAIFlag(XStandardAI::NO_SWAP);
+
+        if (const auto door = shop->FindDoor()) {
+            MoveTo(door->x, door->y);
+
+            // MoveTo() only knows the door tile is walkable terrain - it
+            // doesn't check who's standing on it. Left alone,
+            // XCreature::DoMove() attacks whatever occupies nx/ny with no
+            // isEnemy() check at all (unlike XStandardAI::Move()'s own
+            // "prevents from attacking friends" guard, which this
+            // early-return path never reaches) - so a civilian who
+            // happened to wander through the doorway would get attacked
+            // outright instead of just standing in the way. Step around
+            // that here: swap places with an innocent bystander, the
+            // same way a hero declining to attack a friendly swaps past
+            // them - except the hero itself is never a swap target.
+            if (const auto blocker = ai_owner->l->map->GetMonster(ai_owner->nx, ai_owner->ny);
+                blocker && blocker != ai_owner && !isEnemy(blocker)) {
+                if (blocker->isHero()) {
+                    ai_owner->nx = ai_owner->x;
+                    ai_owner->ny = ai_owner->y;
+                } else {
+                    XLocation* tl = ai_owner->l;
+                    auto keepalive = std::static_pointer_cast<XCreature>(blocker->shared_from_this());
+                    const int old_x = ai_owner->x;
+                    const int old_y = ai_owner->y;
+                    const int new_x = ai_owner->nx;
+                    const int new_y = ai_owner->ny;
+                    blocker->LastStep();
+                    ai_owner->LastStep();
+                    blocker->FirstStep(old_x, old_y, tl);
+                    ai_owner->FirstStep(new_x, new_y, tl);
+                }
+            }
+
+            return;
+        }
+    } else {
+        ResAIFlag(XStandardAI::NO_SWAP);
+
+        // Narrow the wander area down from the whole shop to a small patch
+        // hugging the door's inside threshold, so a pickup that happens right
+        // next to the door - anywhere in the shop, really - still finds the
+        // shopkeeper close enough to reach the door first, rather than from
+        // across the room. One-time (see home_area_set); done here rather than
+        // in the constructor because the door's XDoor object may not exist yet
+        // at construction time (see XShop::FindDoor()).
+        if (!home_area_set) {
+            if (const auto door = shop->FindDoor()) {
+                const XPoint home = DoorThresholdPoint(*door, shop->GetArea());
+                SetGuardArea(home.x - 1, home.y - 1, 3, 3, shop->location->ln);
+                home_area_set = true;
+            }
+        }
     }
 
     XStandardAI::Move();
