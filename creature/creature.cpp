@@ -183,16 +183,7 @@ void XCreature::OnInvalidate()
 {
     components.clear();
 
-    // Erase-first, not a range-for: XItem::OnInvalidate() now detaches a
-    // carried item from this very contain, so iterating it while
-    // invalidating would erase out from under the iterator. Taking each
-    // item out up front also guarantees progress whatever Invalidate()
-    // does, the same reasoning as XMapTile::~XMapTile()'s item loop.
-    while (!contain.empty()) {
-        const std::shared_ptr<XItem> item = *contain.begin();
-        contain.erase(contain.begin());
-        item->Invalidate();
-    }
+    contain.InvalidateAll();
 
     if (action_data.item) {
         action_data.item->Invalidate();

@@ -58,6 +58,21 @@ class XItemList : public std::set<std::shared_ptr<XItem>, compare>
         // handles lvalue/rvalue callers alike.
         std::pair<iterator, bool> insert(std::shared_ptr<XItem> item);
         iterator insert(iterator hint, std::shared_ptr<XItem> item);
+
+        // Empty the list, invalidating every item on the way out - the
+        // one correct way to tear down a list of items, shared by a map
+        // cell (XMapTile::~XMapTile), a creature's backpack
+        // (XCreature::OnInvalidate) and a chest (XChest::OnInvalidate).
+        //
+        // Each item is removed BEFORE it is invalidated, because
+        // XItem::OnInvalidate() detaches the item from whatever list
+        // holds it: iterating this list while invalidating would erase
+        // out from under the iterator. Erase-first also guarantees
+        // progress no matter what Invalidate() does - the naive
+        // "Invalidate() until empty" spin relied on the item removing
+        // itself and hung forever when it couldn't (see the erase-first
+        // reasoning that used to be duplicated at each call site).
+        void InvalidateAll();
 };
 
 #endif

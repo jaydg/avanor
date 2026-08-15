@@ -230,4 +230,20 @@ inline XItemList::iterator XItemList::insert(iterator hint, std::shared_ptr<XIte
     return Base::insert(hint, std::move(item));
 }
 
+inline void XItemList::InvalidateAll()
+{
+    // begin() is re-derived every pass rather than cached: invalidating
+    // one item can erase others from this same list (a container item
+    // tearing down its contents, say). The local strong reference keeps
+    // the item alive across Invalidate() even when this list held its
+    // last reference; it is released at the end of each iteration.
+    // Invalidate() is itself idempotent, so an already-invalid item
+    // needs no special case here.
+    while (!empty()) {
+        const std::shared_ptr<XItem> item = *begin();
+        erase(begin());
+        item->Invalidate();
+    }
+}
+
 #endif

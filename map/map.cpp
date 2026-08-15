@@ -106,34 +106,7 @@ XMapTile::XMapTile()
 
 XMapTile::~XMapTile()
 {
-    // Erase each item FIRST, then invalidate it while holding a strong
-    // reference - never iterate this list while invalidating, since
-    // XItem::Invalidate() erases from it too and would invalidate the
-    // iterator.
-    //
-    // The previous form ("call Invalidate() on begin() until the list is
-    // empty") relied entirely on the item self-erasing. That silently
-    // fails for an item whose l/x/y no longer resolve to this cell (its
-    // Invalidate() then searches the wrong list, or none at all), and is
-    // a no-op for an item that is already invalid. Either way the list
-    // never shrinks and teardown spins forever - hit in the wild at game
-    // end, burning 100% CPU inside XItem::Invalidate().
-    //
-    // Erasing up front makes progress unconditional (exactly one element
-    // gone per iteration, whatever Invalidate() does) and needs no
-    // find(), so it is also immune to a mutated sort key leaving an
-    // element unfindable in its own set. The local strong ref keeps the
-    // item alive across Invalidate() and is released at the end of each
-    // iteration, running XItem::Own()'s deleter exactly once.
-    while (!item_list.empty()) {
-        const auto it = item_list.begin();
-        std::shared_ptr<XItem> item = *it;
-        item_list.erase(it);
-
-        if (item && item->isValid()) {
-            item->Invalidate();
-        }
-    }
+    item_list.InvalidateAll();
 
     // Unlike XItem, XCreature::Invalidate() doesn't remove itself from
     // wherever it's referenced from (no map-cell back-reference to do
