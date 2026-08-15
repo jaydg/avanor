@@ -131,9 +131,6 @@ typedef std::map<XGUID, class XObject*> XObjectMap;
 class XObject : public std::enable_shared_from_this<XObject>
 {
     private:
-        // reference count
-        // objects can't be deleted till reference > 0
-        int reference;
         int is_valid;
 
         // counter of deleted objects
@@ -167,7 +164,6 @@ class XObject : public std::enable_shared_from_this<XObject>
 
         void Create()
         {
-            reference = 0;
             objects[xguid] = this;
         }
 
@@ -224,29 +220,19 @@ class XObject : public std::enable_shared_from_this<XObject>
             Create();
         }
 
+        // Every object must go through Invalidate() before it is destroyed,
+        // that is what deregisters it from objects, so skipping it leaves a
+        // dangling raw pointer in the registry for a later
+        // InvalidateAllObjects() sweep to walk into. The codebase's own
+        // shared_ptr deleters (XItem::Own(), XMap::SetMonster()/SetSpecial())
+        // uphold this by calling Invalidate() themselves when they see a
+        // still-valid object; Cereal's deleter for loaded objects does NOT,
+        // so anything that drops the last reference to a loaded object must
+        // have invalidated it first.
         virtual ~XObject()
         {
-            assert(!is_valid && reference == 0);
+            assert(!is_valid);
             invalid_count--;
-        }
-
-        void AddRef()
-        {
-            reference++;
-        }
-
-        void Release()
-        {
-            assert(reference > 0);
-
-            if (--reference == 0 && !is_valid && weak_from_this().expired()) {
-                delete this;
-            }
-        }
-
-        int GetRef()
-        {
-            return reference;
         }
 
         virtual void Invalidate()
@@ -269,14 +255,13 @@ class XObject : public std::enable_shared_from_this<XObject>
                 objects.erase(it);
             }
 
-            // Objects that have been wrapped in a shared_ptr somewhere (the
-            // ones migrated off this legacy refcount) must never be deleted
-            // here - their lifetime is governed entirely by shared_ptr
+            // An object that is owned by a shared_ptr anywhere must never be
+            // deleted here - its lifetime is governed by shared_ptr
             // refcounting from this point on, and something (a container, a
             // scheduler weak_ptr's lock(), a shared_from_this() guard higher
-            // up the call stack) is guaranteed to still be holding this
-            // object alive for as long as we're inside this call anyway.
-            if (reference == 0 && weak_from_this().expired()) {
+            // up the call stack) is holding it alive for as long as we are
+            // inside this call anyway.
+            if (weak_from_this().expired()) {
                 delete this;
             }
         }

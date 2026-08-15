@@ -370,7 +370,6 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
 
 void XItem::Concat(XItem* it)
 {
-    assert(it->GetRef() == 0);
     quantity += it->quantity;
     it->Invalidate();
 }

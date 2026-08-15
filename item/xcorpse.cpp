@@ -72,8 +72,16 @@ XCorpse::XCorpse(XCorpse * copy) : XAnyFood((XAnyFood*)copy)
 
 RESULT XCorpse::onEat(XCreature * eater)
 {
-    //prevent corpse from distruction
-    AddRef();
+    // Prevent the corpse from being destroyed under us: XAnyFood::onEat()
+    // below Invalidate()s it once it has been eaten up, which can drop
+    // the last reference to it, while the effect handling further down
+    // still reads our own members. A real strong reference held for the
+    // whole call.
+    // Every corpse is shared_ptr-owned from construction onwards
+    // (its constructor registers with the scheduler, which routes
+    // through XItem::Own()), so this always yields a reference.
+    const auto keepalive = ToWeakPtr(this).lock();
+    assert(keepalive);
 
     RESULT flag = XAnyFood::onEat(eater);
 
@@ -166,7 +174,6 @@ RESULT XCorpse::onEat(XCreature * eater)
         }
     }
 
-    Release();
     return flag;
 }
 

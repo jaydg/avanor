@@ -325,7 +325,11 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
         return 0;
     }
 
-    item->AddRef(); // prevent money object from destroying
+    // Prevent the money object from being destroyed under us: the MoneyOp()
+    // calls below can consume/merge the giver's money stacks, and the code
+    // after them still reads item->quantity/isValid().
+    const auto item_keepalive = XItem::ToWeakPtr(item).lock();
+    assert(item_keepalive);
 
     if (!debt.unpaid_items.empty()) {
 
@@ -372,7 +376,6 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
         }
     }
 
-    item->Release();
     return 0;
 }
 

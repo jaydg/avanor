@@ -190,25 +190,19 @@ inline bool compare::operator()(const XItem* lhs, const std::shared_ptr<XItem>& 
 // TryMerge() and only falls back to the hint for the no-match case.
 inline XItemList::iterator XItemList::TryMerge(const std::shared_ptr<XItem>& item)
 {
-    if (item->GetRef() == 0) {
-        for (auto it = begin(); it != end(); ++it) {
-            if (it->get() == item.get()) {
-                // Already this exact element - e.g. XCreature::stopAction()
-                // reinserting action_data.item after an interrupted action,
-                // where the item never left contain in the first place
-                // (XItem::Own() just handed out a second shared_ptr to the
-                // same live object via shared_from_this()). Concat()-ing an
-                // item into itself would double its quantity and then
-                // Invalidate() it while still a live set member - caught by
-                // the -test soak's assert(item->isValid()) in
-                // XStandardAI::Wear(). Nothing to do: it's already here.
-                return it;
-            }
+    for (auto it = begin(); it != end(); ++it) {
+        if (it->get() == item.get()) {
+            // Already this exact element - e.g. XCreature::stopAction()
+            // reinserting action_data.item after an interrupted action,
+            // where the item never left contain in the first place
+            // (XItem::Own() just handed out a second shared_ptr to the
+            // same live object via shared_from_this()).
+            return it;
+        }
 
-            if ((*it)->kind == item->kind && (*it)->Compare(item.get()) == 0) {
-                (*it)->Concat(item.get());
-                return it;
-            }
+        if ((*it)->kind == item->kind && (*it)->Compare(item.get()) == 0) {
+            (*it)->Concat(item.get());
+            return it;
         }
     }
 
