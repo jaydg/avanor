@@ -114,11 +114,6 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
         return 1;
     }
 
-    if (!debt.unpaid_items.empty()) {
-        msgwin.Add("Pay for what you've picked up already before you take anything else!");
-        return 0;
-    }
-
     // hack!!!
     auto titem = dynamic_cast<XItem *>(item->MakeCopy());
     titem->x = -1;

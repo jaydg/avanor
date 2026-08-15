@@ -127,7 +127,7 @@ class XHero final : public XCreature
         void SaveGame();
         int UseTool();
         int UseOuterObject();
-        void QuickPay();
+        void PayBill();
         void Pray();
         static int WhichDirection(XPoint* pt, int flag = 1); // flag == 1 - allow 0,0 coords (self)
         std::shared_ptr<XItem> onIdentifyItem() override;
@@ -184,7 +184,9 @@ class XGuiItem_Inventory final : public XGuiItem
         XItem* pItem;
         std::string str;
     public:
-        explicit XGuiItem_Inventory(XItem* item, bool worn = false) : pItem(item)
+        // show_price swaps the trailing badge from the
+        // item's weight to its total gp value.
+        explicit XGuiItem_Inventory(XItem* item, bool worn = false, bool show_price = false) : pItem(item)
         {
             str = MSG_LIGHTGRAY + item->toString();
 
@@ -199,11 +201,11 @@ class XGuiItem_Inventory final : public XGuiItem
             if (visible < size_x)
                 str.append(size_x - visible, ' ');
 
-            // Align the weight badge to the right. x_strlen measures
+            // Align the weight/price badge to the right. x_strlen measures
             // the visible width of the badge (excluding ANSI characters).
-            const std::string badge = fmt::format(
-                MSG_BROWN "[" MSG_LIGHTGRAY "{}" MSG_BROWN "]",
-                item->weight * item->quantity);
+            const std::string badge = show_price
+                ? fmt::format(MSG_BROWN "[" MSG_LIGHTGRAY "{}gp" MSG_BROWN "]", item->GetValue() * item->quantity)
+                : fmt::format(MSG_BROWN "[" MSG_LIGHTGRAY "{}" MSG_BROWN "]", item->weight * item->quantity);
             const size_t badge_visible = static_cast<size_t>(x_strlen(badge.c_str()));
 
             // Insertion position in str. Measured back from str's actual

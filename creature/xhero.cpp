@@ -394,7 +394,7 @@ void XHero::NewMove()
                     break;
 
                 case 'P' :
-                    QuickPay();
+                    PayBill();
                     break;
 
                 case 'p' :
@@ -2387,10 +2387,8 @@ int XHero::Chat(XCreature * chatter, const char* msg)
     return 1;
 }
 
-void XHero::QuickPay()
+void XHero::PayBill()
 {
-
-    XCreature* shopkeeper = nullptr;
     XAnyPlace* pl = l->map->GetPlace(x, y);
 
     //hack!!!
@@ -2399,27 +2397,76 @@ void XHero::QuickPay()
         return;
     }
 
-    shopkeeper = pl->GetOwner().lock().get();
+    XCreature* shopkeeper = pl->GetOwner().lock().get();
 
-    if (shopkeeper) {
-        const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai.get());
-        int val = 0;
+    if (!shopkeeper) {
+        return;
+    }
 
-        for (const auto item: pai->debt.unpaid_items)
-            val += item->GetValue() * item->quantity;
+    const auto pai = dynamic_cast<XShopKeeperAI *>(shopkeeper->xai.get());
 
-        val += static_cast<int>(pai->debt.debtor_sum);
+    // Repeatedly show what's owed and let the player
+    // pick one item at a time to settle.
+    while (true) {
+        int total = static_cast<int>(pai->debt.debtor_sum);
 
-        if (val > 0) {
-            if (MoneyOp(0) >= val) {
-                const auto money = new XMoney(val);
-                pai->onGiveItem(this, money);
-            } else {
-                msgwin.Add("You don't have enough money!");
-            }
-        } else {
-            msgwin.Add(fmt::format("You owe nothing to {}.", shopkeeper->name));
+        for (const auto& item: pai->debt.unpaid_items) {
+            total += item->GetValue() * item->quantity;
         }
+
+        if (total <= 0) {
+            msgwin.Add(fmt::format("You owe nothing to {}.", shopkeeper->name));
+            return;
+        }
+
+        if (pai->debt.unpaid_items.empty()) {
+            // Nothing itemized left to browse - just a flat balance,
+            // usually carried over from a previous visit. Settle it in
+            // one shot rather than showing an empty list.
+            msgwin.Add(fmt::format("You owe {} a total of {}gp. Pay it off?", shopkeeper->name, total));
+
+            if (!GetTarget(TR_YES_NO)) {
+                return;
+            }
+
+            if (MoneyOp(0) < total) {
+                msgwin.Add("You don't have enough money!");
+                return;
+            }
+
+            MoneyOp(-total);
+            pai->debt.debtor_sum = 0;
+            msgwin.Add(fmt::format("You paid off your debt to {}.", shopkeeper->name));
+            return;
+        }
+
+        XGuiList list;
+        list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Bill " MSG_BROWN "###");
+        list.SetFooter(fmt::format(
+            MSG_LIGHTGRAY "Total owed: " MSG_YELLOW "{}gp" MSG_LIGHTGRAY "   Your money: " MSG_YELLOW "{}gp",
+            total, MoneyOp(0)));
+
+        for (const auto& item: pai->debt.unpaid_items) {
+            list.AddItem(new XGuiItem_Inventory(item.get(), false, true), 0);
+        }
+
+        const int item_number = list.Run();
+
+        if (item_number == -1) {
+            return;
+        }
+
+        const auto picked = pai->debt.unpaid_items[item_number];
+        const int price = picked->GetValue() * picked->quantity;
+
+        if (MoneyOp(0) < price) {
+            msgwin.Add(fmt::format("You don't have enough money for {}.", picked->toString()));
+            continue;
+        }
+
+        MoneyOp(-price);
+        pai->debt.unpaid_items.erase(pai->debt.unpaid_items.begin() + item_number);
+        msgwin.Add(fmt::format("You paid {}gp for {}.", price, picked->toString()));
     }
 }
 
