@@ -134,6 +134,7 @@ void XGame::RunDemo()
     while (true) {
         for (int i = 0; i < 100; i++) {
             Game.Scheduler.Get()->Run();
+            XObject::DrainDeferred();
         }
 
         if (vKbhit()) {
@@ -169,6 +170,7 @@ void XGame::RunWithoutHero() const
         for (int i = 0; i < 1000; i++) {
             auto o = Game.Scheduler.Get();
             o->Run();
+            XObject::DrainDeferred();
         }
 
         if (vKbhit()) {
@@ -267,6 +269,12 @@ void XGame::Run()
             // object is dead!
             Game.Scheduler.Remove();
         }
+
+        // Between turns, nothing is mid-call on any game object - the
+        // one safe point to actually release objects that evicted
+        // themselves from the map during this turn (see
+        // XObject::DeferRelease()).
+        XObject::DrainDeferred();
     }
 
     XObject::InvalidateAllObjects();

@@ -261,7 +261,8 @@ bool XHerbBush::Run()
 
     if (N < 2 || N > 3) {
         if (--herb_strength <= 0) {
-            l->map->SetSpecial(x, y, nullptr);
+            // Invalidate() handles the map-cell eviction itself (see
+            // XMapObject::Invalidate()).
             Invalidate();
             return false;
         }
@@ -298,7 +299,9 @@ XObject* XHerbBush::Pick(XCreature * picker)
     picker->sk->UseSkill(XSkill::Skill::HERBALISM);
 
     if (--herb_strength <= 0) {
-        l->map->SetSpecial(x, y, nullptr);
+        // Invalidate() evicts this bush from its map cell itself; the
+        // deferred-release graveyard keeps the object alive through the
+        // herb_index read below even when the cell was its last owner.
         Invalidate();
     }
 
@@ -348,7 +351,8 @@ bool XMushSpawn::Run()
             msgwin.Add("Suddenly mushroom dissapered in the small cloud of spores.");
         }
 
-        l->map->SetSpecial(x, y, nullptr);
+        // Invalidate() handles the map-cell eviction itself (see
+        // XMapObject::Invalidate()).
         Invalidate();
         return false;
     }
@@ -359,7 +363,10 @@ bool XMushSpawn::Run()
 XObject* XMushSpawn::Pick(XCreature * picker)
 {
     picker->sk->UseSkill(XSkill::Skill::HERBALISM);
-    l->map->SetSpecial(x, y, nullptr);
+
+    // Invalidate() evicts this spawn from its map cell itself; the
+    // deferred-release graveyard keeps the object alive through the
+    // mush_index read below even when the cell was its last owner.
     Invalidate();
     XHerb * it = new XHerb(mush_index);
     it->Identify(1);

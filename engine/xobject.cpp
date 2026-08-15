@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 long XObject::invalid_count = 0;
 XObjectMap XObject::objects = XObjectMap();
+std::vector<std::shared_ptr<XObject>> XObject::deferred_release;
 
 XGUID guid = 1;
 
@@ -92,5 +93,31 @@ void XObject::InvalidateAllObjects()
     // Always re-derive the next target from the live map instead.
     while (!objects.empty()) {
         objects.begin()->second->Invalidate();
+    }
+
+    // The sweep above parks self-evicting map objects (see
+    // XMapObject::Invalidate()) in the graveyard - actually release them
+    // now that nothing is mid-turn.
+    DrainDeferred();
+}
+
+void XObject::DeferRelease(std::shared_ptr<XObject> p)
+{
+    if (p) {
+        deferred_release.push_back(std::move(p));
+    }
+}
+
+void XObject::DrainDeferred()
+{
+    // Swap-then-clear, repeated: destroying a parked object can itself
+    // Invalidate()/evict further objects into the graveyard (a deleter
+    // running Invalidate() on a never-shared legacy object, say) -
+    // clearing the live vector in place would push into a vector that's
+    // being iterated by its own clear().
+    while (!deferred_release.empty()) {
+        std::vector<std::shared_ptr<XObject>> batch;
+        batch.swap(deferred_release);
+        batch.clear();
     }
 }

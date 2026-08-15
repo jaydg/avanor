@@ -1236,6 +1236,11 @@ void XHero::PickItem()
 
     if (tmpquae->empty()) {
         XMapObject* obj = l->map->GetSpecial(x, y);
+
+        // Pick() may destroy obj (self-eviction from its map cell) -
+        // safe without a keepalive here because eviction goes through
+        // XObject's deferred-release graveyard, which keeps the object
+        // allocated until between turns.
         XItem* picked = (obj && obj->isValid()) ? dynamic_cast<XItem *>(obj->Pick(this)) : nullptr;
 
         if (!picked) {
@@ -2652,6 +2657,8 @@ void XHero::ActivateTrap()
     XMapObject* obj = l->map->GetSpecial(x, y);
 
     if (auto* trap = dynamic_cast<XTrap *>(obj)) {
+        // Activate() may destroy the trap (self-eviction, kept alive
+        // through this call by the deferred-release graveyard).
         trap->Activate(this);
     }
 }

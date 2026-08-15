@@ -1068,7 +1068,16 @@ void XCreature::Die(XCreature* killer)
     }
 
     for (auto item: contain) {
-        item->Drop(l, x, y);
+        // Never drop an already-invalid item as loot. XItem::Invalidate()
+        // does not remove an item from a creature's contain (only from a
+        // ground list), so an item invalidated while still carried stays
+        // here - and putting one on the ground leaves a corpse-of-an-item
+        // in a cell's item_list that can never clean itself up again.
+        // ~XMapTile now tolerates that regardless, but there is no reason
+        // to manufacture it: contain.clear() below releases such items.
+        if (item->isValid()) {
+            item->Drop(l, x, y);
+        }
     }
 
     // Drop() moves each item onto the ground but leaves it in contain -

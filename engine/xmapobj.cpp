@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 
 #include "engine/xmapobj.h"
+#include "map/map.h"
 
 // XMapObject is never itself the dynamic type of a serialized object
 // (only ever a base class in the middle of a longer chain), so it
@@ -47,6 +48,34 @@ XMapObject::XMapObject(XMapObject* copy) :
 
 void XMapObject::Invalidate()
 {
+    if (!isValid()) {
+        return;
+    }
+
+    // Self-eviction from the map grid, mirroring how XItem::Invalidate()
+    // erases itself from its ground cell's item_list: if this object's
+    // cell still points at it, clear the cell. This centralizes the
+    // formerly per-call-site "SetSpecial(x, y, nullptr) + Invalidate()"
+    // pair (XTrap::Activate()/Disarm(), XHerbBush/XMushSpawn::Run()/
+    // Pick()) whose ordering was repeatedly gotten wrong - call sites
+    // now just call Invalidate() and can't mis-order anything.
+    //
+    // Dropping the cell's reference can be dropping this object's LAST
+    // strong owner - that's safe (no delete-out-from-under-this-method)
+    // because SetSpecial(nullptr) parks the outgoing shared_ptr in
+    // XObject's deferred-release graveyard rather than destroying it
+    // synchronously; the object stays allocated until the between-turns
+    // drain, so even a caller that keeps reading members after this
+    // returns (e.g. XMushSpawn::Pick() reading mush_index) stays valid.
+    //
+    // Run before SetLocation(nullptr) wipes `l`, and guarded by a
+    // bounds check since never-placed objects (XGenerator) sit at -1/-1.
+    if (l && l->map
+        && x >= 0 && x < l->map->len && y >= 0 && y < l->map->hgt
+        && l->map->GetSpecial(x, y) == this) {
+        l->map->SetSpecial(x, y, nullptr);
+    }
+
     SetLocation(nullptr);
     XObject::Invalidate();
 }

@@ -291,6 +291,8 @@ int XSkill::UseDisarm(XCreature * user)
     XMapObject * obj = user->l->map->GetSpecial(user->x, user->y);
 
     if (auto* trap = dynamic_cast<XTrap *>(obj)) {
+        // Disarm() may destroy the trap (self-eviction, kept alive
+        // through this call by the deferred-release graveyard).
         if (trap->Disarm(user)) {
             UseSkill(1);
         }

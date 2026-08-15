@@ -106,12 +106,33 @@ XMapTile::XMapTile()
 
 XMapTile::~XMapTile()
 {
-    // XItem::Invalidate() removes the item from this very item_list, so
-    // iterating it directly while invalidating would erase out from under
-    // the iterator. Always re-derive the next target from the live set
-    // instead, mirroring XObject::InvalidateAllObjects().
+    // Erase each item FIRST, then invalidate it while holding a strong
+    // reference - never iterate this list while invalidating, since
+    // XItem::Invalidate() erases from it too and would invalidate the
+    // iterator.
+    //
+    // The previous form ("call Invalidate() on begin() until the list is
+    // empty") relied entirely on the item self-erasing. That silently
+    // fails for an item whose l/x/y no longer resolve to this cell (its
+    // Invalidate() then searches the wrong list, or none at all), and is
+    // a no-op for an item that is already invalid. Either way the list
+    // never shrinks and teardown spins forever - hit in the wild at game
+    // end, burning 100% CPU inside XItem::Invalidate().
+    //
+    // Erasing up front makes progress unconditional (exactly one element
+    // gone per iteration, whatever Invalidate() does) and needs no
+    // find(), so it is also immune to a mutated sort key leaving an
+    // element unfindable in its own set. The local strong ref keeps the
+    // item alive across Invalidate() and is released at the end of each
+    // iteration, running XItem::Own()'s deleter exactly once.
     while (!item_list.empty()) {
-        (*item_list.begin())->Invalidate();
+        const auto it = item_list.begin();
+        std::shared_ptr<XItem> item = *it;
+        item_list.erase(it);
+
+        if (item && item->isValid()) {
+            item->Invalidate();
+        }
     }
 
     // Unlike XItem, XCreature::Invalidate() doesn't remove itself from
@@ -127,9 +148,14 @@ XMapTile::~XMapTile()
         pMonster = nullptr;
     }
 
-    if (pSpecialObject) {
-        pSpecialObject->Invalidate();
-        pSpecialObject = nullptr;
+    // Move the pointer out BEFORE invalidating: XMapObject::Invalidate()
+    // self-evicts via SetSpecial() on its own cell, which must not run
+    // against this very cell mid-destruction. With the member already
+    // moved-from, Invalidate()'s GetSpecial(x, y) == this check fails
+    // harmlessly and the object is released at scope end instead (its
+    // deleter sees is_valid already false and plain-deletes).
+    if (auto spec = std::move(pSpecialObject)) {
+        spec->Invalidate();
     }
 }
 
@@ -238,10 +264,18 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
     assert(y >= 0 && y < hgt);
 
     // Callers only ever pass either a fresh object self-registering into an
-    // empty slot, or nullptr to evict the current occupant just before that
-    // same occupant Invalidate()s itself - never a replacement of one live
-    // occupant with another.
+    // empty slot, or nullptr to evict the current occupant (now always from
+    // inside the occupant's own Invalidate() - see XMapObject::Invalidate())
+    // - never a replacement of one live occupant with another.
     if (spec == nullptr) {
+        // The cell can be the occupant's only strong owner, and eviction
+        // is typically requested from inside one of the occupant's own
+        // methods - destroying it synchronously here would delete it out
+        // from under its own still-executing code (for Cereal-loaded
+        // objects, via a deleter that additionally destructs without
+        // Invalidate(), tripping ~XObject's assert). Park the reference
+        // in the graveyard instead; it's released between turns.
+        XObject::DeferRelease(std::move(map[x + y * len].pSpecialObject));
         map[x + y * len].pSpecialObject = nullptr;
         return;
     }

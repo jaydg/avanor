@@ -1233,6 +1233,9 @@ void XStandardAI::RunScript()
 
         case SCC_COLLECT_MUSHROOM: {
             XMapObject* obj = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
+
+            // Pick() may destroy obj (self-eviction, kept alive through
+            // this call by the deferred-release graveyard).
             auto* tit = (obj && obj->isValid()) ? dynamic_cast<XItem *>(obj->Pick(ai_owner)) : nullptr;
 
             if (tit) {

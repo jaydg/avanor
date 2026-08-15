@@ -324,7 +324,9 @@ int XTrap::Activate(XCreature* cr)
             msgwin.Add("The trap is broken.");
         }
 
-        l->map->SetSpecial(x, y, nullptr);
+        // Invalidate() handles the map-cell eviction itself now (see
+        // XMapObject::Invalidate() + the deferred-release graveyard) -
+        // no separate SetSpecial() call, no ordering to get wrong.
         Invalidate();
     }
 
@@ -385,7 +387,9 @@ int XTrap::Disarm(XCreature * cr)
         msgwin.Add(cr->GetNameEx(CRN_T1));
         msgwin.Add(cr->GetVerb("disarm"));
         msgwin.Add("a trap successfully.");
-        l->map->SetSpecial(x, y, nullptr);
+
+        // Invalidate() handles the map-cell eviction itself (see
+        // XMapObject::Invalidate()).
         Invalidate();
 
         return 1;

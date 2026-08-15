@@ -107,6 +107,14 @@ std::string DecompressWithZstd(const std::vector<char>& compressed) {
 // ============================================================================
 int XArchive::StoreGame()
 {
+    // Saving happens mid-turn (from the hero's own key handling), so the
+    // deferred-release graveyard could still hold objects evicted earlier
+    // in this same turn - invalidated, but still lockable through the
+    // scheduler's weak_ptr entries, which Cereal would happily serialize
+    // as live objects. Release them first so they can't leak into the
+    // save as zombies.
+    XObject::DrainDeferred();
+
     // First, serialize game state to JSON string using Cereal
     std::string serialized_data;
     std::ostringstream oss;

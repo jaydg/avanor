@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <cereal/access.hpp>
 #include <cereal/cereal.hpp>
@@ -138,6 +139,9 @@ class XObject : public std::enable_shared_from_this<XObject>
         // counter of deleted objects
         static long invalid_count;
 
+        // see DeferRelease()/DrainDeferred() below
+        static std::vector<std::shared_ptr<XObject>> deferred_release;
+
         // all objects have a global unique identifier
         // (it has no sense to store pointers)
         XGUID xguid;
@@ -168,6 +172,21 @@ class XObject : public std::enable_shared_from_this<XObject>
         }
 
         static void InvalidateAllObjects();
+
+        // Deferred-release "graveyard": an owner that wants to drop what
+        // may be an object's last shared_ptr mid-turn (e.g. a map cell
+        // evicting a trap from inside that trap's own Activate(), see
+        // XMap::SetSpecial()) hands the reference here instead of
+        // destroying it synchronously. Everything parked here stays
+        // allocated - Invalidate()d, but readable - until the next
+        // DrainDeferred(), which the main scheduler loops call between
+        // turns (and InvalidateAllObjects()/StoreGame() call at their
+        // boundaries). This is what makes "object destroys itself from
+        // inside its own method, then keeps reading its members" safe
+        // without per-call-site keepalives.
+        static void DeferRelease(std::shared_ptr<XObject> p);
+        static void DrainDeferred();
+
         static XObject* GetObject(XGUID guid) {
             if (const auto it = objects.find(guid); it != objects.end()) {
                 return objects[guid];
