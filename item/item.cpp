@@ -146,26 +146,24 @@ std::shared_ptr<XItem> XItem::Own(XItem * raw)
     return std::static_pointer_cast<XItem>(raw->shared_from_this());
 }
 
-void XItem::Invalidate()
+void XItem::OnInvalidate()
 {
-    if (!isValid()) {
-        return;
-    }
-
     // If this item is currently lying on the ground, its map cell's
     // item_list holds the item's master shared_ptr (see XItem::Own()).
-    // Capture that list now, before XBaseObject::Invalidate() clears our
-    // location below, but don't actually erase from it until after is_valid
-    // is cleared - if this is the item's last reference, erasing it runs
-    // Own()'s deleter synchronously, and that deleter must see isValid() ==
-    // false (delete outright) rather than re-entering this very Invalidate()
-    // call while it's still on the stack. l->map may already be gone (its
-    // location's teardown got there first and already reclaimed every item
-    // on it), in which case there's nothing left to remove ourselves from.
+    // Capture that list now, before XBaseObject::OnInvalidate() below
+    // clears our location. l->map may already be gone (its location's
+    // teardown got there first and already reclaimed every item on it),
+    // in which case there's nothing left to remove ourselves from.
+    //
+    // Erasing below can drop the item's last reference, but that is safe
+    // from here: XObject::Invalidate() has already cleared is_valid (so
+    // Own()'s deleter plain-deletes rather than re-entering Invalidate())
+    // and holds its own strong reference across this call (so the actual
+    // destruction happens after we return, not under our feet).
     XItemList* ground_list = (l && l->map && x >= 0 && y >= 0) ? l->map->GetItemList(x, y) : nullptr;
 
     total_it--;
-    XBaseObject::Invalidate();
+    XBaseObject::OnInvalidate();
 
     if (ground_list) {
         if (auto it = ground_list->find(this); it != ground_list->end()) {

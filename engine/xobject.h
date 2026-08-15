@@ -144,6 +144,14 @@ class XObject : public std::enable_shared_from_this<XObject>
         XGUID xguid;
 
     protected:
+        // Subclass teardown hook, called by Invalidate() once is_valid is
+        // already 0 and this object is out of the registry, but while it
+        // is still guaranteed alive and fully readable. Override this
+        // instead of Invalidate(); always chain to the direct base's
+        // OnInvalidate() the way an Invalidate() override used to chain
+        // to Base::Invalidate().
+        virtual void OnInvalidate() {}
+
         // object registry
         static XObjectMap objects;
         // used in XGame::RunWithoutHero
@@ -235,12 +243,21 @@ class XObject : public std::enable_shared_from_this<XObject>
             invalid_count--;
         }
 
-        virtual void Invalidate()
+        // Deliberately NOT virtual - this is the one place the "logical
+        // death" bookkeeping lives, so it cannot be forgotten or reordered
+        // by a subclass. Subclasses put their own teardown in
+        // OnInvalidate() instead, which this calls at the right moment.
+        void Invalidate()
         {
             if (!is_valid) {
                 return;
             }
 
+            // Logical death happens up-front, so any re-entrant
+            // Invalidate() reaching us from inside OnInvalidate() below
+            // (a container erase that drops our last reference, a child
+            // invalidating its parent, ...) is a no-op instead of a
+            // second teardown.
             is_valid = 0;
 
             // Erase by identity, not just by key: a Cereal-restored
@@ -255,15 +272,26 @@ class XObject : public std::enable_shared_from_this<XObject>
                 objects.erase(it);
             }
 
-            // An object that is owned by a shared_ptr anywhere must never be
-            // deleted here - its lifetime is governed by shared_ptr
-            // refcounting from this point on, and something (a container, a
-            // scheduler weak_ptr's lock(), a shared_from_this() guard higher
-            // up the call stack) is holding it alive for as long as we are
-            // inside this call anyway.
-            if (weak_from_this().expired()) {
+            // Hold ourselves alive across the teardown below. Subclass
+            // teardown routinely removes this object from the container
+            // that owns it (a ground item_list, a map cell), which can be
+            // the last reference and would otherwise destroy us halfway
+            // through our own Invalidate(). Null in exactly two cases,
+            // both of which mean nothing else can free us: we were never
+            // shared_ptr-owned, or we are already running inside our own
+            // deleter (use_count has hit 0).
+            const std::shared_ptr<XObject> self = weak_from_this().lock();
+
+            OnInvalidate();
+
+            if (!self) {
                 delete this;
             }
+
+            // Otherwise `self` drops here. If it was the last reference,
+            // the owning deleter destroys us now - and it sees
+            // is_valid == 0, so it plain-deletes instead of re-entering
+            // Invalidate().
         }
 
         virtual int Compare(XObject * o)

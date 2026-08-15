@@ -286,7 +286,10 @@ class XCreature : public XBaseObject
     public:
         DECLARE_CREATOR(XCreature, XBaseObject);
         XCreature();
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         // Safely wrap a creature pointer that may be null, or may already
         // be dead (in which case shared_from_this() would throw

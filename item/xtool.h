@@ -84,7 +84,10 @@ class XCookingSet : public XTool
             return name;
         }
 
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         template<class Archive>
         void serialize(Archive& ar)

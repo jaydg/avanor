@@ -132,12 +132,8 @@ XLocation::XLocation(XLocation::Id location)
     ttm = ttmb;
 }
 
-void XLocation::Invalidate()
+void XLocation::OnInvalidate()
 {
-    if (!isValid()) {
-        return;
-    }
-
     for (int i = 0; i < MAX_PLACES; i++)
         if (places[i]) {
             // No XPtr<XShop> reference exists anywhere anymore to defer
@@ -156,7 +152,7 @@ void XLocation::Invalidate()
     delete map; // map must be the last!!!!!
     map = nullptr;
 
-    XObject::Invalidate();
+    XObject::OnInvalidate();
 }
 
 bool XLocation::Run()

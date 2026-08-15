@@ -48,7 +48,10 @@ class XAnyPlace : public XObject
         XAnyPlace(const XRect& _area, XLocation* _loc);
         XAnyPlace(const XRect& _area, XLocation* _loc, const char* _onEventLua);
         ~XAnyPlace() override;
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         virtual int onCreatureMove(XCreature* cr);
         virtual int onCreatureEnter(XCreature* cr);

@@ -46,7 +46,10 @@ class XMapObject : public XObject
             return new XMapObject(this);
         }
 
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         // Coordinates of any object
         int x, y;

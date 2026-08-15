@@ -275,7 +275,10 @@ class XLocation : public XObject
             }
         }
 
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         std::string GetBriefName()
         {

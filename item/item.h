@@ -64,7 +64,10 @@ class XItem : public XBaseObject
             return nullptr;
         }
 
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         int BasicFill(ItemType it, XItemBasicStructure * pData);
         void PropFill(ITEM_SET is, int val = 1000);

@@ -115,11 +115,11 @@ int XAnyPlace::onCreatureLeave(XCreature* cr)
     return result.get<sol::optional<int>>().value_or(0);
 }
 
-void XAnyPlace::Invalidate()
+void XAnyPlace::OnInvalidate()
 {
     location = nullptr;
     owner.reset();
-    XObject::Invalidate();
+    XObject::OnInvalidate();
 }
 
 std::string XAnyPlace::onShowItem(XItem* item)

@@ -99,7 +99,10 @@ class XTrap final : public XMapObject
         int isVisible(XCreature * cr) const;
 
         int Disarm(XCreature * cr);
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -248,7 +251,10 @@ class XGrave: public XMapObject
         XGrave(int _x, int _y, char* subscr, XLocation* _l);
         void HideItem(XItem* item);
         int onOuterUse(XCreature* cr) override;
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         template<class Archive>
         void serialize(Archive& ar)

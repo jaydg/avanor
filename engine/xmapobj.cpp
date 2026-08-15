@@ -46,12 +46,8 @@ XMapObject::XMapObject(XMapObject* copy) :
     name = copy->name;
 }
 
-void XMapObject::Invalidate()
+void XMapObject::OnInvalidate()
 {
-    if (!isValid()) {
-        return;
-    }
-
     // Self-eviction from the map grid, mirroring how XItem::Invalidate()
     // erases itself from its ground cell's item_list: if this object's
     // cell still points at it, clear the cell. This centralizes the
@@ -77,7 +73,7 @@ void XMapObject::Invalidate()
     }
 
     SetLocation(nullptr);
-    XObject::Invalidate();
+    XObject::OnInvalidate();
 }
 
 int XMapObject::Compare(XObject * o)

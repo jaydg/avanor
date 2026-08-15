@@ -127,14 +127,14 @@ RESULT XCookingSet::onUse(ItemUsageState uis, XCreature * cr)
     return FAIL;
 }
 
-void XCookingSet::Invalidate()
+void XCookingSet::OnInvalidate()
 {
     if (cooked_item) {
         cooked_item->Invalidate();
         cooked_item = nullptr;
     }
 
-    XItem::Invalidate();
+    XItem::OnInvalidate();
 }
 
 //////////////////////////////////////////////////////////////////////

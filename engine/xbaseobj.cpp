@@ -37,9 +37,9 @@ XBaseObject::XBaseObject() :
 {
 }
 
-void XBaseObject::Invalidate()
+void XBaseObject::OnInvalidate()
 {
-    XMapObject::Invalidate();
+    XMapObject::OnInvalidate();
 }
 
 XBaseObject::XBaseObject(XBaseObject * copy) :

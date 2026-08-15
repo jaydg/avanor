@@ -142,7 +142,10 @@ class XChest : public XItem
         }
 
         std::string toString() override;
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
 
         template<class Archive>
         void serialize(Archive& ar)

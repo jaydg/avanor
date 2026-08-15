@@ -35,7 +35,10 @@ class XBaseObject : public XMapObject
     public:
         DECLARE_CREATOR(XBaseObject, XMapObject);
         XBaseObject();
-        void Invalidate() override;
+    protected:
+        // teardown hook, called by XObject::Invalidate()
+        void OnInvalidate() override;
+    public:
         explicit XBaseObject(XBaseObject * copy);
 
         int _DV{}, _PV{}, _HIT{}, RNG;

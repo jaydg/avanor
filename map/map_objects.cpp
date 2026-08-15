@@ -405,14 +405,14 @@ int XTrap::Disarm(XCreature * cr)
     return 0;
 }
 
-void XTrap::Invalidate()
+void XTrap::OnInvalidate()
 {
     if (trap_item) {
         trap_item->Invalidate();
         trap_item = nullptr;
     }
 
-    XMapObject::Invalidate();
+    XMapObject::OnInvalidate();
 }
 
 REGISTER_CLASS(XStairWay);
@@ -568,7 +568,7 @@ void XGrave::HideItem(XItem* item)
     hidden_items.insert(XItem::Own(item));
 }
 
-void XGrave::Invalidate()
+void XGrave::OnInvalidate()
 {
     // Same idiom as XChest::Invalidate(): XItem::Invalidate() has no
     // idea this set exists (it only knows how to remove itself from
@@ -579,7 +579,7 @@ void XGrave::Invalidate()
         item->Invalidate();
     }
 
-    XMapObject::Invalidate();
+    XMapObject::OnInvalidate();
 }
 
 int XGrave::onOuterUse(XCreature* cr)

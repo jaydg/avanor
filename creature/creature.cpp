@@ -179,7 +179,7 @@ XCreature::XCreature()
     event_handler = nullptr;
 }
 
-void XCreature::Invalidate()
+void XCreature::OnInvalidate()
 {
     components.clear();
 
@@ -228,7 +228,7 @@ void XCreature::Invalidate()
 
     total_cr--;
 
-    XBaseObject::Invalidate();
+    XBaseObject::OnInvalidate();
 }
 
 void XCreature::Regenerate()

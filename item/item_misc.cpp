@@ -76,7 +76,7 @@ std::string XChest::toString()
     return str;
 }
 
-void XChest::Invalidate()
+void XChest::OnInvalidate()
 {
     // Unlike XMapTile's ground-level item_list, XItem::Invalidate() has no
     // idea this set exists - it only knows how to remove itself from
@@ -90,6 +90,6 @@ void XChest::Invalidate()
         item->Invalidate();
     }
 
-    XItem::Invalidate();
+    XItem::OnInvalidate();
 }
 
