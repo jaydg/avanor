@@ -29,15 +29,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XGame
 {
-        void CreateLocations();
-        void CreateHero();
+        void CreateLocations() const;
+        void CreateHero() const;
     public:
         XGame();
         ~XGame();
-        void Run();
-        void RunWithoutHero();
-        void RunDemo();
-        void Create(char type_of_start);
+
+        static void Run();
+        void RunWithoutHero() const;
+        static void RunDemo();
+        void Create(char type_of_start) const;
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
         std::shared_ptr<XLocation> locations[XLocation::COUNT];
         XScheduler Scheduler;

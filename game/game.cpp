@@ -44,8 +44,8 @@ int XGame::current_location = 0;
 
 XGame::XGame()
 {
-    for (int i = 0; i < XLocation::COUNT; i++)	{
-        locations[i] = nullptr;
+    for (auto & location : locations)	{
+        location = nullptr;
     }
 }
 
@@ -56,12 +56,12 @@ XGame::~XGame()
     // shared_ptr-driven: dropping this array's reference deletes a location
     // only once every other reference to it (the Scheduler's weak_ptr
     // doesn't count) is also gone.
-    for (int i = 0; i < XLocation::COUNT; i++) {
-        locations[i] = nullptr;
+    for (auto & location : locations) {
+        location = nullptr;
     }
 }
 
-XCreature* XGame::NewCreature(XCreature * cr, int x, int y, XLocation * loc)
+XCreature* XGame::NewCreature(XCreature * cr, const int x, const int y, XLocation* loc)
 {
     cr->FirstStep(x, y, loc);
     Scheduler.Add(cr);
@@ -69,10 +69,10 @@ XCreature* XGame::NewCreature(XCreature * cr, int x, int y, XLocation * loc)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Create all the necessery objects in memory depending on user's choice    //
+// Create all the necessary objects in memory depending on user's choice    //
 //////////////////////////////////////////////////////////////////////////////
 
-void XGame::Create(char type_of_start)
+void XGame::Create(const char type_of_start) const
 {
     switch (type_of_start) {
         case 'R' :
@@ -131,15 +131,13 @@ void XGame::Create(char type_of_start)
 
 void XGame::RunDemo()
 {
-    int mode = 0;
-
     while (true) {
         for (int i = 0; i < 100; i++) {
             Game.Scheduler.Get()->Run();
         }
 
         if (vKbhit()) {
-            int ch = vGetch();
+            const int ch = vGetch();
 
             if (ch == KEY_ESC) {
                 break;
@@ -163,7 +161,7 @@ void XGame::RunDemo()
 // Run the game without hero for detecting bugs or benchmarking             //
 //////////////////////////////////////////////////////////////////////////////
 
-void XGame::RunWithoutHero()
+void XGame::RunWithoutHero() const
 {
     clock_t start_clock = clock();
 
@@ -183,9 +181,9 @@ void XGame::RunWithoutHero()
             if (ch == 'L') {
                 std::ofstream f(vMakePath(HOME_DIR, "location.txt"));
 
-                for (int i = 0; i < XLocation::COUNT; i++) {
-                    if (locations[i]) {
-                        locations[i]->DumpLocation(f);
+                for (const auto & location : locations) {
+                    if (location) {
+                        location->DumpLocation(f);
                     }
                 }
             }
@@ -200,7 +198,7 @@ void XGame::RunWithoutHero()
 
                 for (const auto& [key, pItem] : XObject::objects) {
                     if (auto* it = dynamic_cast<XItem*>(pItem); it && it->kind & ItemKind::ITEM) {
-                        TMP entry;
+                        TMP entry{};
                         entry.pI = it;
                         entry.val = entry.pI->GetValue();
                         ia.push_back(entry);
@@ -215,10 +213,10 @@ void XGame::RunWithoutHero()
                 // dump it
                 std::ofstream f(vMakePath(HOME_DIR, "items.txt"));
 
-                for (const auto& entry : ia) {
-                    if (entry.pI->kind & (ItemKind::VALUEDICE | ItemKind::ARMOUR)) {
-                        entry.pI->Identify(1);
-                        f << fmt::format("{:<70}{}\n", entry.pI->toString(), entry.val);
+                for (const auto&[pI, val] : ia) {
+                    if (pI->kind & (ItemKind::VALUEDICE | ItemKind::ARMOUR)) {
+                        pI->Identify(1);
+                        f << fmt::format("{:<70}{}\n", pI->toString(), val);
                     }
                 }
             }
@@ -243,7 +241,7 @@ void XGame::RunWithoutHero()
             total_cr,
             total_it,
             Game.Scheduler.GetTime() / 1000,
-            (double)Game.Scheduler.GetTime() * CLOCKS_PER_SEC
+            static_cast<double>(Game.Scheduler.GetTime()) * CLOCKS_PER_SEC
                 / (1000. * (clock() - start_clock)));
 
         vPutS(status.c_str());
@@ -263,7 +261,7 @@ void XGame::Run()
     vHideCursor();
 
     while (!_exit_flag && XQuest::quest.hero_win == 0 && XQuest::quest.hero_die == 0) {
-        auto o = Game.Scheduler.Get();
+        const auto o = Game.Scheduler.Get();
 
         if (!o->Run()) {
             // object is dead!
@@ -310,7 +308,7 @@ void XGame::Run()
     vGetch();
 }
 
-void XGame::CreateLocations()
+void XGame::CreateLocations() const
 {
     //	Create locations
     XLocation::CreateNewGame();
@@ -325,7 +323,7 @@ void XGame::CreateLocations()
                     for (const auto it2: locations[way->ln]->ways_list) {
                         auto tmp_way = dynamic_cast<XStairWay*>(it2);
 
-                        if (tmp_way->nx < 0 && tmp_way->ny < 0 && tmp_way->ln == (XLocation::Id)i) {
+                        if (tmp_way->nx < 0 && tmp_way->ny < 0 && tmp_way->ln == static_cast<XLocation::Id>(i)) {
                             way->Bind(tmp_way);
                         }
                     }
@@ -335,23 +333,23 @@ void XGame::CreateLocations()
     }
 }
 
-void XGame::CreateHero()
+void XGame::CreateHero() const
 {
     XRect hero_rect(26, 4, 32, 9);
     XPoint hero_point;
 
     locations[XLocation::MAIN]->GetFreeXY(&hero_point, &hero_rect);
 
-    XHero * hero = new XHero(1);
+    const auto hero = new XHero(1);
     Game.NewCreature(hero, hero_point.x, hero_point.y, locations[XLocation::MAIN].get());
     hero->MoneyOp(2000);
 
-    //if hero is a bard, than create a dog for him...
+    // If hero is a bard, then create a dog for them...
     if (strstr(hero->GetProfessionStr(), "bard")) {
         XPoint dog_point;
         XRect tr(hero->x - 1, hero->y - 1, hero->x + 1, hero->y + 1);
         hero->l->GetFreeXY(&dog_point, &tr);
-        XCreature * cr = hero->l->NewCreature(CN_DOG, dog_point.x, dog_point.y);
+        const XCreature* cr = hero->l->NewCreature(CN_DOG, dog_point.x, dog_point.y);
         cr->xai->SetCompanion(hero);
         cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_OUT);
         cr->xai->SetAIFlag(XStandardAI::PEACEFUL);
@@ -360,4 +358,3 @@ void XGame::CreateHero()
 
     XCreature::main_creature = hero;
 }
-
