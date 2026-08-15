@@ -26,6 +26,11 @@ class XArchive
     public:
         static int StoreGame();
         static int RestoreGame();
+
+    private:
+        // Internal helper to restore from serialized JSON string
+        // Used by both compressed and uncompressed restore paths
+        static int RestoreFromSerializedData(const std::string& serialized_data);
 };
 
 #endif

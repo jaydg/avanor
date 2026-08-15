@@ -71,7 +71,7 @@ SRCS = xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xshield.cpp                \
        creature2.cpp creature.cpp cbuilder.cpp cave.cpp                       \
        bodypart.cpp anycr.cpp ai_view.cpp
 
-LIBS = $(shell pkg-config --libs fmt ncurses luajit)
+LIBS = $(shell pkg-config --libs fmt ncurses luajit) -lzstd
 
 ifdef debug
 	CFLAGS += -g
