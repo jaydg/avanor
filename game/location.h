@@ -206,13 +206,19 @@ class XLocation : public XObject
         // not a mechanical port.
         void FixupWaysList();
 
-        // XMapTile::pMonster/item_list round-trip a creature's/item's own
-        // state correctly (XCreature::serialize()/XItem's own serialize()
-        // handle that), but position (x/y, plus a creature's nx/ny) and
-        // the owning-location back-reference (`l`, inherited from
-        // XMapObject) are deliberately not part of either - re-derived
-        // here structurally from the cell each is actually found in, same
+        // XMapTile::pMonster/item_list/pSpecialObject round-trip a
+        // creature's/item's/special object's own state correctly
+        // (XCreature::serialize()/XItem's own serialize()/etc. handle
+        // that), but position (x/y, plus a creature's nx/ny) and the
+        // owning-location back-reference (`l`, inherited from XMapObject)
+        // are deliberately not part of any of them - re-derived here
+        // structurally from the cell each is actually found in, same
         // idiom as XMapObject::l/SetLocation() for ordinary map objects.
+        // pSpecialObject covers doors, stairways, traps, altars,
+        // furniture, and herb bushes - anything scheduled (like a herb
+        // bush's periodic Run()) crashes on a null `l` the first time its
+        // own turn comes due after a load, not immediately, since that
+        // fires off the scheduler rather than this fixup pass itself.
         //
         // Not just cosmetic: XItem::Invalidate() uses `l`/x/y to find and
         // erase itself from its ground cell's item_list - without this,

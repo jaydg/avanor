@@ -35,12 +35,30 @@ XLuaAI::XLuaAI(XCreature* cr, const std::string& lc) : XStandardAI(cr), lua_clas
 void XLuaAI::ResolveHooks()
 {
     sol::state_view lua(XLocation::L);
-    sol::table cls = lua[lua_class];
+    sol::object obj = lua[lua_class];
 
-    has_isEnemy = cls.valid() && cls["isEnemy"].valid();
-    has_onWasAttacked = cls.valid() && cls["onWasAttacked"].valid();
-    has_onDie = cls.valid() && cls["onDie"].valid();
-    has_onSteal = cls.valid() && cls["onSteal"].valid();
+    // lua[lua_class] is nil (not a table) both for a genuinely missing/
+    // mistyped class name and - critically - for the Cereal placeholder
+    // construction that happens on every load (see
+    // CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT in engine/xobject.h): it
+    // constructs via this same real constructor with lua_class="" before
+    // serialize() has populated the actual saved name. sol::table's own
+    // constructor would type-check-panic on a non-table value here, so
+    // check the type first rather than converting straight to sol::table.
+    if (obj.get_type() != sol::type::table) {
+        has_isEnemy = false;
+        has_onWasAttacked = false;
+        has_onDie = false;
+        has_onSteal = false;
+        return;
+    }
+
+    sol::table cls = obj;
+
+    has_isEnemy = cls["isEnemy"].valid();
+    has_onWasAttacked = cls["onWasAttacked"].valid();
+    has_onDie = cls["onDie"].valid();
+    has_onSteal = cls["onSteal"].valid();
 }
 
 bool XLuaAI::isEnemy(XCreature* cr)

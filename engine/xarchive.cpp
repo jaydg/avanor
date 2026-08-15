@@ -35,7 +35,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xring.h"
 #include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x0000049;
+constexpr unsigned int SAVE_GAME_VERSION = 0x000004A;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 int XArchive::StoreGame()

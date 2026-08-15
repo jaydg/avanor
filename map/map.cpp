@@ -129,7 +129,7 @@ XMapTile::~XMapTile()
 
     if (pSpecialObject) {
         pSpecialObject->Invalidate();
-        pSpecialObject.release();
+        pSpecialObject = nullptr;
     }
 }
 
@@ -240,14 +240,28 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
     // Callers only ever pass either a fresh object self-registering into an
     // empty slot, or nullptr to evict the current occupant just before that
     // same occupant Invalidate()s itself - never a replacement of one live
-    // occupant with another. Releasing rather than resetting on eviction
-    // matters: the occupant's own Invalidate() call right after this one is
-    // what actually deletes it, so this must not delete it out from under
-    // that still-executing method first.
+    // occupant with another.
     if (spec == nullptr) {
-        map[x + y * len].pSpecialObject.release();
+        map[x + y * len].pSpecialObject = nullptr;
+        return;
+    }
+
+    // Same idiom as SetMonster(): first placement (nothing owns it yet, e.g. a
+    // fresh XHerbBush self-registering from its own constructor) establishes
+    // the one master shared_ptr, with a deleter that defers to Invalidate(),
+    // since the scheduler may still hold its own reference keeping this alive
+    // past this call. Any later placement (already shared_ptr-owned, e.g. via
+    // the scheduler) just takes another reference to that same control block.
+    if (spec->weak_from_this().expired()) {
+        map[x + y * len].pSpecialObject = std::shared_ptr<XMapObject>(spec, [](XMapObject* p) {
+            if (p->isValid()) {
+                p->Invalidate();
+            } else {
+                delete p;
+            }
+        });
     } else {
-        map[x + y * len].pSpecialObject.reset(spec);
+        map[x + y * len].pSpecialObject = std::static_pointer_cast<XMapObject>(spec->shared_from_this());
     }
 }
 

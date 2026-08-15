@@ -122,7 +122,11 @@ struct XMapTile {
     XTileType::Type n;
     std::shared_ptr<XCreature> pMonster; // if null then no monster here
     XItemList item_list;             // list of item in this cell of map. Automatic construct/destruct
-    std::unique_ptr<XMapObject> pSpecialObject; // door, way, trap door.
+    // Shared ownership, same reasoning and idiom as pMonster above: a
+    // schedulable pSpecialObject (e.g. XHerbBush) is ALSO independently owned
+    // by the scheduler's own XScheduler::Entry for as long as it's due to run
+    // again, exactly like a creature.
+    std::shared_ptr<XMapObject> pSpecialObject; // door, way, trap door.
     bool visible;                    // visible for HERO!!!
     char known;                      // for hero memory
     char color;                      // for hero memory

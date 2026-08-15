@@ -88,6 +88,12 @@ void XLocation::FixupMapObjectPositions()
                 item->y = y;
                 item->SetLocation(this);
             }
+
+            if (auto& spec = cell.pSpecialObject) {
+                spec->x = x;
+                spec->y = y;
+                spec->SetLocation(this);
+            }
         }
     }
 }
