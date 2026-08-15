@@ -121,11 +121,6 @@ class XStairWay final : public XMapObject
         DECLARE_CREATOR(XStairWay, XMapObject);
         XStairWay(int _x, int _y, XLocation* loc, XLocation::Id _ln, STAIRWAY_TYPE type);
         XLocation::Id ln;
-        int Compare(XObject* o) override
-        {
-            return -1;
-        }
-
         void Bind(XStairWay* way);
 
         template<class Archive>
@@ -155,11 +150,6 @@ class XTeleport final : public XMapObject
         DECLARE_CREATOR(XTeleport, XMapObject);
         XTeleport(int _x, int _y, XLocation* loc, XLocation::Id _ln, int _nx, int _ny);
         XLocation::Id ln;
-        int Compare(XObject* o) override
-        {
-            return -1;
-        }
-
         int MoveIn(XCreature* cr);
 
         template<class Archive>

@@ -67,7 +67,6 @@ class XCave
         ~XCave() { }
 
         bool GetFreeExit(XPoint * pt);
-        int Compare(XObject * o);
 };
 
 #endif

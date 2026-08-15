@@ -293,11 +293,6 @@ class XObject : public std::enable_shared_from_this<XObject>
             // Invalidate().
         }
 
-        virtual int Compare(XObject * o)
-        {
-            return 1;
-        }
-
         virtual const std::string GetClassName()
         {
             return "XObject";

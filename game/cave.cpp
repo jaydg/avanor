@@ -202,17 +202,6 @@ XCave::XCave(int len, int hgt, bool isAllowSpecialRooms)
     r.Setup(x, y, x + l, y + h);
 }
 
-int XCave::Compare(XObject * o)
-{
-    XCave * xc = (XCave*)o;
-
-    if (xc->r.left < r.left && xc->r.top <= r.top) {
-        return -1;
-    } else {
-        return 1;
-    }
-}
-
 int XCave::Intersect(XCave * xc, int dist)
 {
     XRect tr(xc->r);

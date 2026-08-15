@@ -94,7 +94,8 @@ class XItem : public XBaseObject
         int identify;    // 0 - not identifed, 1 - identifed
         int is_selected; // it is need to user interface....
 
-        int Compare(XObject * o) override; // compare objects
+        // Answer "can these two items stack?"
+        virtual int Compare(XObject * o);
         virtual int isIdentifed()
         {
             return identify; // object can be indetifed or not

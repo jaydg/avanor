@@ -50,11 +50,6 @@ class XGenerator : public XMapObject
             return 0;
         }
 
-        int Compare(XObject * o) override
-        {
-            return 1;
-        }
-
         // XGenerator is never itself a dynamic type, just a link in the
         // chain for its two concrete subclasses below.
         //

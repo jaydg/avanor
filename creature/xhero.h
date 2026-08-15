@@ -92,11 +92,6 @@ class XHero final : public XCreature
         static void CreateScreenShot();
         static void DumpVBuffer(std::ofstream &file);
         void ReadAll();
-        int Compare(XObject* o) override
-        {
-            return -1;
-        }
-
         void ExpList() const;
         void InfoList();
         void Eat();

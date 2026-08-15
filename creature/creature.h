@@ -297,11 +297,6 @@ class XCreature : public XBaseObject
         // either of those cases.
         static std::weak_ptr<XCreature> ToWeakPtr(XCreature* cr);
 
-        int Compare(XObject* o) override
-        {
-            return 1;
-        }
-
         int TestMove();
         virtual void NewMove();
         virtual void Move();
