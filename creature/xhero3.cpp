@@ -31,10 +31,10 @@ int XHero::UseTool()
 {
     if (const XBodyPart* tbp = GetBodyPart(BP_TOOL))
     {
-        auto tool = dynamic_cast<XTool *>(tbp->Item());
-        UseItem(tool);
-
-        return 1;
+        if (auto tool = dynamic_cast<XTool *>(tbp->Item())) {
+            UseItem(tool);
+            return 1;
+        }
     }
 
     msgwin.Add("You have no tool.");
