@@ -961,9 +961,9 @@ void XLocation::InflictDamage(void* target, int dmg, int resist, sol::optional<s
 {
     XCreature * p = (XCreature*)target;
     dmg = p->onMagicDamage(dmg, (XResistance::Id)resist);
-    p->_HP -= dmg;
+    p->HP -= dmg;
 
-    if (p->_HP < 0 && msg) {
+    if (p->HP < 0 && msg) {
         XFakeCreature * tcr = new XFakeCreature((char*)msg->c_str());
         p->Die(tcr);
         tcr->Invalidate();

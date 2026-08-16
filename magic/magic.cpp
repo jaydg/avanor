@@ -231,7 +231,7 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
 {
     const int power = caster->GetStats(XStats::WIL) + spell->GetEffectivity();
 
-    if (caster->_PP - spell->GetManaCost() >= 0) {
+    if (caster->PP - spell->GetManaCost() >= 0) {
         if (caster->isInVisibleArea() && !caster->isHero()) {
             msgwin.Add(fmt::format("{} {} {}.",
                 caster->GetNameEx(CRN_T1),
@@ -242,7 +242,7 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
         const int res = XEffect::Make(caster, spell->GetEffect(), power);
 
         if (res != ABORT) {
-            caster->_PP -= spell->GetManaCost();
+            caster->PP -= spell->GetManaCost();
         }
 
         if (res == SUCCESS) {

@@ -233,7 +233,7 @@ void XCreature::OnInvalidate()
 
 void XCreature::Regenerate()
 {
-    if (_HP < GetMaxHP()) {
+    if (HP < GetMaxHP()) {
         XSkill * xsk = sk->GetSkill(XSkill::Skill::HEALING);
         int val = 1;
 
@@ -253,7 +253,7 @@ void XCreature::Regenerate()
         }
     }
 
-    if (_PP < GetMaxPP()) {
+    if (PP < GetMaxPP()) {
         XSkill * xsk = sk->GetSkill(XSkill::Skill::CONCENTRATION);
         int val = 1;
 
@@ -276,12 +276,12 @@ void XCreature::Regenerate()
 
 int XCreature::onHeal(int _hp)
 {
-    int last_HP = _HP;
+    int last_HP = HP;
     int max_HP = GetMaxHP();
-    _HP += _hp;
+    HP += _hp;
 
-    if (_HP > max_HP) {
-        _HP = max_HP;
+    if (HP > max_HP) {
+        HP = max_HP;
     }
 
     return last_HP >= max_HP ? 0 : 1;
@@ -289,12 +289,12 @@ int XCreature::onHeal(int _hp)
 
 int XCreature::onRestorePP(int _pp)
 {
-    int last_PP = _PP;
+    int last_PP = PP;
     int max_PP = GetMaxPP();
-    _PP += _pp;
+    PP += _pp;
 
-    if (_PP > max_PP) {
-        _PP = max_PP;
+    if (PP > max_PP) {
+        PP = max_PP;
     }
 
     return last_PP >= max_PP ? 0 : 1;
@@ -604,7 +604,7 @@ void XCreature::PutStatus()
     vClrEol();
 
     vGotoXY(14, size_y - 2);
-    vPutS(fmt::format("HP:{}({})  PP:{}({})  ", _HP, GetMaxHP(), _PP, GetMaxPP()));
+    vPutS(fmt::format("HP:{}({})  PP:{}({})  ", HP, GetMaxHP(), PP, GetMaxPP()));
 
     vGotoXY(38, size_y - 2);
     vPutS(fmt::format("Exp({}){}", level, _EXP));
@@ -1323,7 +1323,7 @@ XBodyPart* XCreature::GetRNDBodyPart(ItemKind kind, RBP_FLAG rbpf)
 
 const char* XCreature::GetWoundMsg(int flag)
 {
-    float rel = (float)(GetMaxHP()) / ((float)_HP);
+    float rel = (float)(GetMaxHP()) / ((float)HP);
 
     if (rel <= 1.0) {
         if (flag) {

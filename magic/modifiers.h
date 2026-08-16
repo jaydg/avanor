@@ -96,7 +96,7 @@ class XBasicModifier
         }
 
         // Defined in modifiers.cpp, not inline here: it needs XCreature
-        // complete (owner->_HP, owner->Die()), and creature.h needs
+        // complete (owner->HP, owner->Die()), and creature.h needs
         // XModifier (this class's owner, magic/modifier.h) complete for
         // XCreature::load()/save() to dereference `md` - an inline body
         // here would make the two headers require each other's complete

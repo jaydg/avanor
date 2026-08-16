@@ -362,7 +362,7 @@ int XSkill::UseCreate(XCreature * user)
         XSpell * sp = user->m->GetSpell((SPELL_NAME)trap_create_rec[ch].var);
 
         if (sp) {
-            int count = user->_PP / (sp->GetManaCost() * 2);
+            int count = user->PP / (sp->GetManaCost() * 2);
 
             if (count == 0) {
                 msgwin.Add("You don't have enough mana!");
@@ -381,7 +381,7 @@ int XSkill::UseCreate(XCreature * user)
                         break;
                 }
 
-                user->_PP -= sp->GetManaCost() * 2 * count;
+                user->PP -= sp->GetManaCost() * 2 * count;
                 user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
                 msgwin.Add("You have successfuly created a trap!");
             }

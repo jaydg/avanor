@@ -42,7 +42,6 @@ class XBaseObject : public XMapObject
         explicit XBaseObject(XBaseObject * copy);
 
         int _DV{}, _PV{}, _HIT{}, RNG;
-        int _HP{}, _PP{};
 
         int weight;
         XDice dice;
@@ -57,7 +56,7 @@ class XBaseObject : public XMapObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-            ar(_DV, _PV, _HIT, RNG, _HP, _PP, weight, dice, resistances, stats);
+            ar(_DV, _PV, _HIT, RNG, weight, dice, resistances, stats);
         }
 };
 

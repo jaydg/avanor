@@ -622,9 +622,6 @@ int XItem::onWear(XCreature * cr)
 
     cr->added_RNG	+= RNG;
 
-    cr->added_HP	+= _HP;
-    cr->added_PP	+= _PP;
-
     return 1;
 }
 
@@ -648,9 +645,6 @@ int XItem::onUnWear(XCreature * cr)
     }
 
     cr->added_RNG	-= RNG;
-
-    cr->added_HP	-= _HP;
-    cr->added_PP	-= _PP;
     return 1;
 }
 

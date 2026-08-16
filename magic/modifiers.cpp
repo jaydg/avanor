@@ -106,7 +106,7 @@ XBasicModifier::XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr)
 
 MODIFIER_RESULT XBasicModifier::Run(XCreature * owner)
 {
-    if (owner->_HP <= 0) {
+    if (owner->HP <= 0) {
         owner->Die(setter.lock().get());
         return MR_DIE;
     } else {
@@ -121,7 +121,7 @@ MODIFIER_RESULT XModWound::Run(XCreature * owner)
     owner->sk->UseSkill(XSkill::Skill::FIRST_AID);
 
     if (val > 0) {
-        owner->_HP -= val;
+        owner->HP -= val;
 
         if (owner->isHero()) {
             msgwin.Add(ApplyMsg());
@@ -135,7 +135,7 @@ MODIFIER_RESULT XModPoison::Run(XCreature * owner)
 {
     if (vRand() % 3 == 0) {
         int rnd = vRand() % 4;
-        owner->_HP -= rnd;
+        owner->HP -= rnd;
 
         if (owner->isHero()) {
             msgwin.Add(ApplyMsg());

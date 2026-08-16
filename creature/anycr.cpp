@@ -94,10 +94,10 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
     _PV	= cr->pv.Throw();
     _HIT	= cr->hit.Throw();
     MAX_HP	= cr->hp.Throw();
-    _HP	= GetMaxHP();
+    HP	= GetMaxHP();
 
     MAX_PP	= cr->pp.Throw();
-    _PP	= MAX_PP;
+    PP	= MAX_PP;
 
     base_exp = GetCreatureStrength();
     creature_person_type = cr->person;

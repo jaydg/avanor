@@ -146,7 +146,7 @@ int XEffect::Heal(XCreature * caster, int X, int Y, int Z)
             msgwin.Add(caster->GetNameEx(CRN_T1));
             msgwin.Add(caster->GetVerb("feel"));
 
-            if (caster->GetMaxHP() == caster->_HP) {
+            if (caster->GetMaxHP() == caster->HP) {
                 msgwin.Add("completly healed.");
             } else if (d.GetResult() < 8) {
                 msgwin.Add("slightly healed.");

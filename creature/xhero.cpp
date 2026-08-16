@@ -83,10 +83,10 @@ XHero::XHero(int flag)
     PlayerSetup();
 
     MAX_HP = stats->Get(XStats::TOU) / 2 + 3 + (XGame::isGodMode ? 1000 : 0);
-    _HP = GetMaxHP();
+    HP = GetMaxHP();
 
     MAX_PP = stats->Get(XStats::MAN) / 2 + 1 + (XGame::isGodMode ? 1000 : 0);
-    _PP = GetMaxPP();
+    PP = GetMaxPP();
 
     base_exp = static_cast<int>(GetCreatureStrength() * 0.6);
 
@@ -554,7 +554,7 @@ void XHero::Die(XCreature * killer)
 
         if (GetTarget(TR_NO_YES)) {
             // Don't want to die twice, since we are cheating it!
-            _HP = GetMaxHP();
+            HP = GetMaxHP();
             md->Remove(MOD_WOUND, main_creature);
             md->Remove(MOD_POISON, main_creature);
             md->Remove(MOD_STUN, main_creature);
@@ -2328,8 +2328,8 @@ void XHero::LookAt()
         list.AddItem(new XGuiItem_Text(str, 0), 0);
 
         str = fmt::format("HP:{}({})  PP:{}({})",
-            xcr->_HP, xcr->GetMaxHP(),
-            xcr->_PP, xcr->GetMaxPP());
+            xcr->HP, xcr->GetMaxHP(),
+            xcr->PP, xcr->GetMaxPP());
         list.AddItem(new XGuiItem_Text(str, 0), 0);
 
         str = fmt::format("Exp({}){}", xcr->level, xcr->_EXP);

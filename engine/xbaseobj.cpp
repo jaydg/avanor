@@ -48,8 +48,6 @@ XBaseObject::XBaseObject(XBaseObject * copy) :
     _PV(copy->_PV),
     _HIT(copy->_HIT),
     RNG(copy->RNG),
-    _HP(copy->_HP),
-    _PP(copy->_PP),
     weight(copy->weight),
     dice(copy->dice)
 {

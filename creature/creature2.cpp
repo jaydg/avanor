@@ -527,9 +527,9 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                     GetNameEx(CRN_T3)));
             }
         } else {
-            _HP -= dmg;
+            HP -= dmg;
 
-            if (_HP > 0) {
+            if (HP > 0) {
                 if ((vis1 || vis2) && !isHero()) {
                     msgwin.Add(fmt::format("and {} {}.",
                         GetWoundMsg(1),

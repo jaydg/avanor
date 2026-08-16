@@ -873,7 +873,7 @@ int XStandardAI::AttackEnemy(int ex, int ey) const
     // try to run away if we must or can
     if (ai_flag & XStandardAI::COWARD && enemy &&
         (enemy->GetExp() / 10 > ai_owner->GetExp() * friends_count // creature is more powerful
-        || ai_owner->GetMaxHP() / ai_owner->_HP > 4) // less than 25% of _HP
+        || ai_owner->GetMaxHP() / ai_owner->HP > 4) // less than 25% of HP
         && TryToRunAway()) {
         return 0;
     }
@@ -900,7 +900,7 @@ int XStandardAI::CastSpell() const {
     }
 
     //	try to heal self
-    if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
+    if (ai_owner->HP < ai_owner->GetMaxHP() / 3) {
 
         for (const auto& spell: ai_owner->m->spells) {
             if ((spell->GetSpellName() == SPELL_CURE_LIGHT_WOUNDS ||
@@ -908,7 +908,7 @@ int XStandardAI::CastSpell() const {
                 spell->GetSpellName() == SPELL_CURE_CRITICAL_WOUNDS ||
                 spell->GetSpellName() == SPELL_CURE_MORTAL_WOUNDS ||
                 spell->GetSpellName() == SPELL_HEAL) &&
-                spell->GetManaCost() <= ai_owner->_PP) {
+                spell->GetManaCost() <= ai_owner->PP) {
                 ai_owner->m->Cast(spell.get(), ai_owner);
 
                 return 1;
@@ -928,7 +928,7 @@ int XStandardAI::CastSpell() const {
                 spell->GetSpellName() == SPELL_ICE_BOLT ||
                 spell->GetSpellName() == SPELL_LIGHTNING_BOLT ||
                 spell->GetSpellName() == SPELL_ACID_BOLT)
-                && spell->GetManaCost() <= ai_owner->_PP) {
+                && spell->GetManaCost() <= ai_owner->PP) {
                 ai_owner->m->Cast(spell.get(), ai_owner);
 
                 return 1;
@@ -969,7 +969,7 @@ int XStandardAI::ReadScroll() const
 
 int XStandardAI::DrinkPotion() const
 {
-    if (ai_owner->_HP < ai_owner->GetMaxHP() / 3) {
+    if (ai_owner->HP < ai_owner->GetMaxHP() / 3) {
         for (const auto it: ai_owner->contain) {
             if (it->kind & ItemKind::POTION) {
                 auto pot = dynamic_cast<XPotion *>(it.get());
