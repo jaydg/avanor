@@ -150,8 +150,6 @@ XCreature::XCreature()
     added_HIT = 0;
     added_DMG = 0;
     added_RNG = 0;
-    added_HP = 0;
-    added_PP = 0;
     carried_weight = 0;
 
     base_nutrio = 500;

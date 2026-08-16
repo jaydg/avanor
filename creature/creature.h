@@ -407,9 +407,6 @@ class XCreature : public XBaseObject
         int added_HIT;
         int added_DMG;
         int added_RNG;
-        int added_HP;
-        int added_PP;
-        int added_speed;
 
         // Current hit / power points.
         int HP{};
@@ -559,8 +556,8 @@ class XCreature : public XBaseObject
             ar(nx, ny);
 
             ar(HP, PP, MAX_HP, MAX_PP);
-            ar(experience, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
-            ar(attack_energy, move_energy, base_speed, added_speed);
+            ar(experience, added_DMG, added_DV, added_HIT, added_PV);
+            ar(attack_energy, move_energy, base_speed);
             ar(added_resists, added_RNG, added_stats);
             ar(base_exp, base_nutrio, carried_weight);
             ar(components);
