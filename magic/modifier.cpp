@@ -203,55 +203,41 @@ int XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
 
 std::string XModifier::toString() const
 {
+    // Every active status contributes to the string, in a fixed order.
     std::string res;
 
-    if (int val = Get(MOD_WOUND) > 0) {
-        const auto tmp = new XModWound(0, nullptr);
-        res = tmp->GetDisplayName(val) + " ";
+    // The wording lives in each modifier subclass, so a throwaway
+    // instance is what gives access to it.
+    const auto append = [&res](const XBasicModifier& mod, int val) {
+        res += mod.GetDisplayName(val) + " ";
+    };
 
-        delete tmp;
+    if (const int val = Get(MOD_WOUND); val > 0) {
+        append(XModWound(0, nullptr), val);
     }
 
-    if (Get(MOD_POISON) > 0) {
-        const auto tmp = new XModPoison(0, nullptr);
-        res = tmp->GetDisplayName(1) +  " ";
-
-        delete tmp;
+    if (const int val = Get(MOD_POISON); val > 0) {
+        append(XModPoison(0, nullptr), val);
     }
 
-    if (int val = Get(MOD_STUN) > 0) {
-        const auto tmp = new XModStun(0, nullptr);
-        res = tmp->GetDisplayName(val) + " ";
-
-        delete tmp;
+    if (const int val = Get(MOD_STUN); val > 0) {
+        append(XModStun(0, nullptr), val);
     }
 
-    if (Get(MOD_CONFUSE) > 0) {
-        const auto tmp = new XModConfuse(0, nullptr);
-        res = tmp->GetDisplayName(1) +  " ";
-
-        delete tmp;
+    if (const int val = Get(MOD_CONFUSE); val > 0) {
+        append(XModConfuse(0, nullptr), val);
     }
 
-    if (Get(MOD_DISEASE) > 0) {
-        const auto tmp = new XModDisease(0, nullptr);
-        res = tmp->GetDisplayName(1) +  " ";
-
-        delete tmp;
+    if (const int val = Get(MOD_DISEASE); val > 0) {
+        append(XModDisease(0, nullptr), val);
     }
 
-    if (Get(MOD_PARALYSE) > 0) {
-        const auto tmp = new XModParalyse(0, nullptr);
-        res = tmp->GetDisplayName(1) +  " ";
-
-        delete tmp;
+    if (const int val = Get(MOD_PARALYSE); val > 0) {
+        append(XModParalyse(0, nullptr), val);
     }
 
-    if (Get(MOD_SEE_INVISIBLE) > 0) {
-        auto tmp = new XModSeeInvisible(0, nullptr);
-        res = tmp->GetDisplayName(1) +  " ";
-
-        delete tmp;
+    if (const int val = Get(MOD_SEE_INVISIBLE); val > 0) {
+        append(XModSeeInvisible(0, nullptr), val);
     }
 
     return res;

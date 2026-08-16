@@ -113,7 +113,7 @@ class XBasicModifier
             return 1;
         }
 
-        virtual std::string GetDisplayName(int xval)
+        virtual std::string GetDisplayName(int xval) const
         {
             return "err";
         }
@@ -164,7 +164,7 @@ class XModWound : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             if (xval > 0) {
                 if (xval < 3) {
@@ -226,7 +226,7 @@ class XModPoison : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_GREEN "poisoned";
         }
@@ -270,7 +270,7 @@ class XModConfuse : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_LIGHTGRAY "confused";
         }
@@ -314,9 +314,9 @@ class XModStun : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
-            return xval < 10 ? MSG_LIGHTGRAY "stunned " : MSG_YELLOW "heavily stunned ";
+            return xval < 10 ? MSG_LIGHTGRAY "stunned" : MSG_YELLOW "heavily stunned";
         }
 
         const char* SetMsg() override
@@ -359,7 +359,7 @@ class XModHeroism : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_LIGHTGRAY "hero";
         }
@@ -404,7 +404,7 @@ class XModDisease : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_GREEN "disease";
         }
@@ -450,7 +450,7 @@ class XModWeak : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_CYAN "weakness";
         }
@@ -496,7 +496,7 @@ class XModParalyse : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_WHITE "paralyzed!";
         }
@@ -584,7 +584,7 @@ class XModSeeInvisible : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return MSG_LIGHTGRAY "perceptive";
         }
@@ -629,7 +629,7 @@ class XModBoostSpeed : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return "";
         }
@@ -674,7 +674,7 @@ class XModSlowness : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return "";
         }
@@ -719,7 +719,7 @@ class XModAcidResistance : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return "";
         }
@@ -764,7 +764,7 @@ class XModFireResistance : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return "";
         }
@@ -809,7 +809,7 @@ class XModColdResistance : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return "";
         }
@@ -854,7 +854,7 @@ class XModPoisonResistance : public XBasicModifier
             assert(0);
         }
 
-        std::string GetDisplayName(int xval) override
+        std::string GetDisplayName(int xval) const override
         {
             return "";
         }
