@@ -41,5 +41,5 @@ XCloak::XCloak(const ItemType it)
     kind = ItemKind::CLOAK;
     dice.SetBonus(0);
     RNG = 0;
-    _HIT = 0;
+    to_hit = 0;
 }

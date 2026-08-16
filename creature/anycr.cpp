@@ -90,9 +90,9 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
 
     creature_size	= cr->creature_size;
 
-    _DV	= cr->dv.Throw();
-    _PV	= cr->pv.Throw();
-    _HIT	= cr->hit.Throw();
+    dv	= cr->dv.Throw();
+    pv	= cr->pv.Throw();
+    to_hit	= cr->hit.Throw();
     MAX_HP	= cr->hp.Throw();
     HP	= GetMaxHP();
 

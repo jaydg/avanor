@@ -41,5 +41,5 @@ XBoots::XBoots(const ItemType it)
     bp = BP_BOOTS;
     dice.SetBonus(0);
     RNG = 0;
-    _HIT = -(weight / 500);
+    to_hit = -(weight / 500);
 }

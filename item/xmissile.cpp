@@ -61,7 +61,7 @@ XMissile::XMissile(ItemType _it)
         view = '*';
         color = xDARKGRAY;
         XDice d(1, 3);
-        _HIT = d.GetResult();
+        to_hit = d.GetResult();
         d.Setup(1, 2);
         dice.Setup(1, 5, d.GetResult());
         value = 1;
@@ -116,13 +116,13 @@ XMissile::XMissile(ItemType _it)
             }
         } else if (xr == 1) {
             if (it == ItemType::ARROW) {
-                _HIT += 10;
+                to_hit += 10;
                 RNG += 2;
                 name = "hunter arrow";
             }
 
             if (it == ItemType::QUARREL) {
-                _HIT += 10;
+                to_hit += 10;
                 RNG += 2;
                 name = "hunter quarrel";
             }
@@ -151,7 +151,7 @@ std::string XMissile::toString()
         return fmt::format("{}{}{} <{:+}>({:+}, {}d{}{:+}){}",
             (aet & AttackEffectType::POISON) != AttackEffectType::NONE ? "poisoned " : "",
             (aet & AttackEffectType::UNDEADSLAYER) != AttackEffectType::NONE ? "holy " : "",
-            name, RNG, _HIT,
+            name, RNG, to_hit,
             dice.GetCount(), dice.GetSides(), dice.GetBonus(),
             (aet & AttackEffectType::FIRE) != AttackEffectType::NONE ? " of fire" : ""
         );
@@ -160,7 +160,7 @@ std::string XMissile::toString()
         quantity,
         (aet & AttackEffectType::POISON) != AttackEffectType::NONE ? "poisoned " : "",
         (aet & AttackEffectType::UNDEADSLAYER) != AttackEffectType::NONE ? "holy " : "",
-        name, RNG, _HIT,
+        name, RNG, to_hit,
         dice.GetCount(), dice.GetSides(), dice.GetBonus(),
         (aet & AttackEffectType::FIRE) != AttackEffectType::NONE ? " of fire" : ""
     );

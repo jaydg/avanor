@@ -63,15 +63,15 @@ XHero::XHero(int flag)
     target.reset();
 
     auto *d = new XDice("1d3");
-    _DV = d->Throw();
+    dv = d->Throw();
     delete d;
 
     d = new XDice("1d2-1");
-    _PV = d->Throw();
+    pv = d->Throw();
     delete d;
 
     d = new XDice("1d4");
-    _HIT = d->Throw();
+    to_hit = d->Throw();
     delete d;
 
     dice.Setup("1d2");
@@ -822,7 +822,7 @@ void XHero::ExpList() const
 
         vGotoXY(0, 20);
         vPutS(fmt::format("\x1F\x06You need \x1F\x0E{}\x1F\x06 experience to next level.",
-            ExpOfLevel(level) - _EXP));
+            ExpOfLevel(level) - experience));
     }
 
     vGotoXY(0, 22);
@@ -2332,12 +2332,12 @@ void XHero::LookAt()
             xcr->PP, xcr->GetMaxPP());
         list.AddItem(new XGuiItem_Text(str, 0), 0);
 
-        str = fmt::format("Exp({}){}", xcr->level, xcr->_EXP);
+        str = fmt::format("Exp({}){}", xcr->level, xcr->experience);
         list.AddItem(new XGuiItem_Text(str, 0), 0);
 
-        fmt::format("_DV - {}, _PV - {}, hit, xdy+z[{}, {}d{} + {}] _EXP(EXP_ADD) {}({})",
+        fmt::format("dv - {}, pv - {}, hit, xdy+z[{}, {}d{} + {}] experience(EXP_ADD) {}({})",
             xcr->GetDV(), xcr->GetPV(), xcr->GetHIT(), xcr->dice.X,
-            xcr->dice.Y, xcr->dice.Z,xcr->_EXP, xcr->GetExp());
+            xcr->dice.Y, xcr->dice.Z,xcr->experience, xcr->GetExp());
         list.AddItem(new XGuiItem_Text(str, 0), 0);
 #endif
     } else {

@@ -222,13 +222,13 @@ XEnhance::XEnhance(const Type enh)
     value =	is->value;
     weight = 1;
     auto d = new XDice(is->dv);
-    _DV = d->Throw();
+    dv = d->Throw();
 
     d->Setup(is->pv);
-    _PV = d->Throw();
+    pv = d->Throw();
 
     d->Setup(is->hit);
-    _HIT = d->Throw();
+    to_hit = d->Throw();
 
     d->Setup(is->dice);
     int tx = d->GetCount();
@@ -281,11 +281,11 @@ std::string XEnhance::toString()
         fullname.append(fmt::format(" <{:+}>", RNG));
     }
 
-    if (dice.GetBonus() != 0 && _HIT != 0) {
-        fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.GetBonus()));
+    if (dice.GetBonus() != 0 && to_hit != 0) {
+        fullname.append(fmt::format(" ({:+}, {:+})", to_hit, dice.GetBonus()));
     } else {
-        if (_HIT != 0) {
-            fullname.append(fmt::format(" ({:+})", _HIT));
+        if (to_hit != 0) {
+            fullname.append(fmt::format(" ({:+})", to_hit));
         }
 
         if (dice.GetBonus() != 0) {
@@ -293,15 +293,15 @@ std::string XEnhance::toString()
         }
     }
 
-    if (_DV != 0 && _PV != 0) {
-        fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+    if (dv != 0 && pv != 0) {
+        fullname.append(fmt::format(" [{:+}, {:+}]", dv, pv));
     } else {
-        if (_DV != 0) {
-            fullname.append(fmt::format(" [{:+}]", _DV));
+        if (dv != 0) {
+            fullname.append(fmt::format(" [{:+}]", dv));
         }
 
-        if (_PV != 0) {
-            fullname.append(fmt::format(" [{:+}]", _PV));
+        if (pv != 0) {
+            fullname.append(fmt::format(" [{:+}]", pv));
         }
     }
 

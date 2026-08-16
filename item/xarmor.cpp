@@ -45,5 +45,5 @@ XArmor::XArmor(const ItemType it)
     kind = ItemKind::BODY;
     dice.SetBonus(0);
     RNG = 0;
-    _HIT = -(weight / 500);
+    to_hit = -(weight / 500);
 }

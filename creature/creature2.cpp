@@ -472,14 +472,14 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         }
 
         //always count intrinsic PV
-        dmg -= _PV;
+        dmg -= pv;
 
         if (pData->flags & DF_AFFECT_PV) {
             //get initial pv of armour
             int xpv = 0;
 
             if (txbp && txbp->Item()) {
-                xpv = txbp->Item()->_PV;
+                xpv = txbp->Item()->pv;
             }
 
             if (!pData->attacker || vRand(100) >= (2 + pData->attacker->sk->GetLevel(XSkill::Skill::FINDWEAKNESS)) || xpv == 0) {
@@ -489,7 +489,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                     XItem * xtmp = GetItem(BP_CLOAK);
 
                     if (xtmp) {
-                        xpv += xtmp->_PV;
+                        xpv += xtmp->pv;
                     }
                 }
 

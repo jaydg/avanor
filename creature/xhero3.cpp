@@ -176,7 +176,7 @@ void XHero::Pray()
 
 void XHero::EndGame(const char* end_msg)
 {
-    unsigned long score = main_creature->_EXP + main_creature->MoneyOp(0);
+    unsigned long score = main_creature->experience + main_creature->MoneyOp(0);
 
     XGuiList list;
 

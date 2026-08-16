@@ -158,7 +158,7 @@ XCreature::XCreature()
     nutrio = 5000;
     nutrio_speed = 10;
 
-    _EXP = 0;
+    experience = 0;
     level = 1;
     RNG = 3;
 
@@ -607,7 +607,7 @@ void XCreature::PutStatus()
     vPutS(fmt::format("HP:{}({})  PP:{}({})  ", HP, GetMaxHP(), PP, GetMaxPP()));
 
     vGotoXY(38, size_y - 2);
-    vPutS(fmt::format("Exp({}){}", level, _EXP));
+    vPutS(fmt::format("Exp({}){}", level, experience));
 
 #ifdef _DEBUG
     vGotoXY(60, size_y - 2);
@@ -743,13 +743,13 @@ int XCreature::TestMove()
 
 int XCreature::GetHIT()
 {
-    int tht = _HIT + added_HIT;
+    int tht = to_hit + added_HIT;
     return tht + GetTacticsHITBonus();
 }
 
 int XCreature::GetDV(XCreature * attacker)
 {
-    int tdv = added_DV + _DV + GetTacticsDVBonus() + GetShieldDVBonus();
+    int tdv = added_DV + dv + GetTacticsDVBonus() + GetShieldDVBonus();
     return tdv < 1 ? 1 : tdv;
 }
 
@@ -761,10 +761,10 @@ int XCreature::GetShieldDVBonus()
 
         if (i && i->kind == ItemKind::SHIELD) {
             int shld_skl = wsk->GetDV(XWarSkills::SHIELD);
-            int shield_dv = i->_DV;
+            int shield_dv = i->dv;
 
-            if (i->_DV < shld_skl) {
-                return i->_DV + shield_dv;
+            if (i->dv < shld_skl) {
+                return i->dv + shield_dv;
             } else {
                 return shld_skl + shield_dv;
             }
@@ -873,7 +873,7 @@ int XCreature::GetTacticsDMGBonus()
 
 int XCreature::GetPV()
 {
-    return _PV + added_PV + GetStats(XStats::TOU) / 10;
+    return pv + added_PV + GetStats(XStats::TOU) / 10;
 }
 
 int XCreature::GainAttr(XStats::Id st, int val)
@@ -1208,14 +1208,14 @@ int XCreature::GetMaxPP()
 
 int XCreature::GetExp() const
 {
-    return base_exp + _EXP / 10;
+    return base_exp + experience / 10;
 }
 
 void XCreature::AddExp(unsigned long exp)
 {
-    _EXP += exp;
+    experience += exp;
 
-    while (ExpOfLevel(level) <= _EXP) {
+    while (ExpOfLevel(level) <= experience) {
         IncLevel();
     }
 }
@@ -1429,7 +1429,7 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     int dex = stats->Get(XStats::DEX);
 
     *range = missile->RNG;
-    *hit = dex / 2 + missile->_HIT;
+    *hit = dex / 2 + missile->to_hit;
     dmg->Setup(missile->dice);
 
     if (bow) {
@@ -1795,7 +1795,7 @@ int XCreature::GetCreatureStrength()
         tpv = 1;
     }
 
-    int dv_pv_bonus = ((tdv * tpv * tpv) / 10 + (_DV * _PV * _PV));
+    int dv_pv_bonus = ((tdv * tpv * tpv) / 10 + (dv * pv * pv));
     int thit = GetHIT() / 10;
     int tdmg = (dice.GetCount() * dice.GetSides() + dice.GetBonus() + GetDMG());
 

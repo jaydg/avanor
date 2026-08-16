@@ -309,7 +309,7 @@ class XCreature : public XBaseObject
 
         std::unique_ptr<XStandardAI> xai;
 
-        unsigned long _EXP;
+        unsigned long experience;
         int level;
         int base_exp;
         unsigned long ExpOfLevel(int lev) const;
@@ -559,7 +559,7 @@ class XCreature : public XBaseObject
             ar(nx, ny);
 
             ar(HP, PP, MAX_HP, MAX_PP);
-            ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
+            ar(experience, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
             ar(attack_energy, move_energy, base_speed, added_speed);
             ar(added_resists, added_RNG, added_stats);
             ar(base_exp, base_nutrio, carried_weight);

@@ -53,8 +53,8 @@ XMissileWeapon::XMissileWeapon(ItemType _it)
     kind = ItemKind::MISSILEW;
     BasicFill(_it, &gi_missilew);
     bp = BP_MISSILE_WEAPON;
-    _DV = 0;
-    _PV = 0;
+    dv = 0;
+    pv = 0;
 
     for (int i = 0; i < 6; i++)
         if (mwbind[i].it == it) {
@@ -69,7 +69,7 @@ std::string XMissileWeapon::toString()
 
     fullname.append(fmt::format(" <{:+}>", RNG));
     fullname.append(fmt::format(" ({:+}, {}d{}{:+})",
-        _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
+        to_hit, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
     fullname.append(StatsToString());
 
     return fullname;

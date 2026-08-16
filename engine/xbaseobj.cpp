@@ -44,9 +44,9 @@ void XBaseObject::OnInvalidate()
 
 XBaseObject::XBaseObject(XBaseObject * copy) :
     XMapObject(static_cast<XMapObject *>(copy)),
-    _DV(copy->_DV),
-    _PV(copy->_PV),
-    _HIT(copy->_HIT),
+    dv(copy->dv),
+    pv(copy->pv),
+    to_hit(copy->to_hit),
     RNG(copy->RNG),
     weight(copy->weight),
     dice(copy->dice)
@@ -71,8 +71,8 @@ int XBaseObject::Compare(XObject * o)
     auto* tit = dynamic_cast<XBaseObject *>(o);
 
     if (XMapObject::Compare(o) == 0
-        && _DV == tit->_DV && _PV == tit->_PV && RNG == tit->RNG
-        && _HIT == tit->_HIT && dice.GetCount() == tit->dice.GetCount()
+        && dv == tit->dv && pv == tit->pv && RNG == tit->RNG
+        && to_hit == tit->to_hit && dice.GetCount() == tit->dice.GetCount()
         && dice.GetSides() == tit->dice.GetSides() && dice.GetBonus() == tit->dice.GetBonus()
         && resistances->isEqual(tit->resistances.get()) && stats->isEqual(tit->stats.get())) {
         return 0;

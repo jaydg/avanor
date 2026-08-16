@@ -34,12 +34,12 @@ std::string XClothes::toString()
         }
 
         if (dice.GetBonus() != 0) {
-            fullname.append(fmt::format(" ({:+}, {:+})", _HIT, dice.GetBonus()));
-        } else if (_HIT != 0) {
-            fullname.append(fmt::format(" ({:+})", _HIT, dice.GetBonus()));
+            fullname.append(fmt::format(" ({:+}, {:+})", to_hit, dice.GetBonus()));
+        } else if (to_hit != 0) {
+            fullname.append(fmt::format(" ({:+})", to_hit, dice.GetBonus()));
         }
 
-        fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+        fullname.append(fmt::format(" [{:+}, {:+}]", dv, pv));
         fullname.append(StatsToString());
     }
 

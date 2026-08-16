@@ -95,7 +95,7 @@ XItem::XItem()
     wt = XWarSkills::OTHER;
     bp = BP_OTHER;
     identify = 1;
-    _DV = _PV = _HIT = RNG = 0;
+    dv = pv = to_hit = RNG = 0;
     dice.Setup("0d0");
     special_number = -1;
     aet = AttackEffectType::NONE;
@@ -245,13 +245,13 @@ void XItem::MainFill(ItemTemplate *is)
     quality = is->iq;
 
     XDice d(is->dv);
-    _DV = d.NThrow();
+    dv = d.NThrow();
 
     d.Setup(is->pv);
-    _PV = d.NThrow();
+    pv = d.NThrow();
 
     d.Setup(is->hit);
-    _HIT = d.NThrow();
+    to_hit = d.NThrow();
 
     d.Setup(is->dice);
     int tx = d.GetCount();
@@ -300,18 +300,18 @@ void XItem::PropFill(ITEM_SET is, int val)
 
     XDice d;
 
-    if (_DV) {
+    if (dv) {
         d.Setup(item_prop[r_val].dv);
-        _DV += d.NThrow();
+        dv += d.NThrow();
     }
 
-    if (_PV) {
+    if (pv) {
         d.Setup(item_prop[r_val].pv);
-        _PV += d.NThrow();
+        pv += d.NThrow();
     }
 
     d.Setup(item_prop[r_val].hit);
-    _HIT += d.NThrow();
+    to_hit += d.NThrow();
 
     d.Setup(item_prop[r_val].dice);
     int tx = dice.GetCount() + d.GetCount();
@@ -349,13 +349,13 @@ void XItem::SpecialFill()
     XDice * d;
 
     d = new XDice(ienh_db[r_val].dv);
-    _DV += d->Throw();
+    dv += d->Throw();
 
     d->Setup(ienh_db[r_val].pv);
-    _PV += d->Throw();
+    pv += d->Throw();
 
     d->Setup(ienh_db[r_val].hit);
-    _HIT += d->Throw();
+    to_hit += d->Throw();
 
     d->Setup(ienh_db[r_val].dice);
     int tx = dice.GetCount() + d->GetCount();
@@ -441,15 +441,15 @@ int XItem::GetValue()
     }
 
     if (kind & ItemKind::VALUEDVPV) {
-        xdvpv = (_DV + 6 * _PV) * 4;
+        xdvpv = (dv + 6 * pv) * 4;
     }
 
     if (kind & ItemKind::SHIELD) {
-        xdvpv = xdvpv + _DV * 5;
+        xdvpv = xdvpv + dv * 5;
     }
 
     if (kind & ItemKind::VALUEHITDMG) {
-        xhitdmg = (_HIT + dice.GetBonus() * 3) * 3;
+        xhitdmg = (to_hit + dice.GetBonus() * 3) * 3;
     }
 
     int xrng = RNG * (abs(RNG) + 5);
@@ -583,14 +583,14 @@ std::string XItem::GetArtifactName(std::string real_name)
             str.append(fmt::format(" <{:+}>", RNG));
         }
 
-        if (_DV != 0 || _PV != 0) {
-            str.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+        if (dv != 0 || pv != 0) {
+            str.append(fmt::format(" [{:+}, {:+}]", dv, pv));
         }
 
         if (kind & ItemKind::WEAPON) {
             str.append(fmt::format(
                 " ({:+}, {}d{}{:+})",
-                _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
+                to_hit, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
         }
 
         str.append(StatsToString());
@@ -607,13 +607,13 @@ int XItem::onWear(XCreature * cr)
     cr->added_resists.Add(resistances.get()); // modify resist
 
     if (kind != ItemKind::SHIELD) {
-        cr->added_DV	+= _DV;
+        cr->added_DV	+= dv;
     }
 
-    cr->added_PV	+= _PV;
+    cr->added_PV	+= pv;
 
     if (kind & ItemKind::TOHIT) {
-        cr->added_HIT	+= _HIT;
+        cr->added_HIT	+= to_hit;
     }
 
     if (!(kind & (ItemKind::WEAPON | ItemKind::MISSILE | ItemKind::MISSILEW))) {
@@ -631,13 +631,13 @@ int XItem::onUnWear(XCreature * cr)
     cr->added_resists.Sub(resistances.get()); //modify resist;
 
     if (kind != ItemKind::SHIELD) {
-        cr->added_DV	-= _DV;
+        cr->added_DV	-= dv;
     }
 
-    cr->added_PV	-= _PV;
+    cr->added_PV	-= pv;
 
     if (kind & ItemKind::TOHIT) {
-        cr->added_HIT	-= _HIT;
+        cr->added_HIT	-= to_hit;
     }
 
     if (!(kind & (ItemKind::WEAPON | ItemKind::MISSILE | ItemKind::MISSILEW))) {

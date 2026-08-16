@@ -41,19 +41,19 @@ XShield::XShield(ItemType _it)
 {
     kind = ItemKind::SHIELD;
     BasicFill(_it, &gi_shield);
-    _PV = 0;
+    pv = 0;
     bp = BP_HAND;
     RNG = 0;
     wt = XWarSkills::SHIELD;
     dice.SetBonus(0);
-    _HIT = 0;
+    to_hit = 0;
 }
 
 std::string XShield::toString()
 {
     auto fullname = GetFullName();
 
-    fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+    fullname.append(fmt::format(" [{:+}, {:+}]", dv, pv));
     fullname.append(StatsToString());
 
     return fullname;

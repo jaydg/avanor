@@ -210,12 +210,12 @@ std::string XWeapon::toString()
             fullname.append(fmt::format(" <{:+}>", RNG));
         }
 
-        if (_DV != 0 || _PV != 0) {
-            fullname.append(fmt::format(" [{:+}, {:+}]", _DV, _PV));
+        if (dv != 0 || pv != 0) {
+            fullname.append(fmt::format(" [{:+}, {:+}]", dv, pv));
         }
 
         fullname.append(fmt::format(" ({:+}, {}d{}{:+})",
-            _HIT, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
+            to_hit, dice.GetCount(), dice.GetSides(), dice.GetBonus()));
 
         fullname.append(StatsToString());
     }

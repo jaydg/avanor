@@ -32,9 +32,9 @@ XGlamdring::XGlamdring() : XWeapon(ItemType::BROADSWORD)
     view = '|';
     weight = 700;
     value = 2000;
-    _DV = 0;
-    _PV = 0;
-    _HIT = 12;
+    dv = 0;
+    pv = 0;
+    to_hit = 12;
     dice.Setup(4, 5, 10);
     RNG = 0;
 
@@ -58,9 +58,9 @@ XDeathHack::XDeathHack() : XWeapon(ItemType::LONGDAGGER)
     it = ItemType::LONGDAGGER;
     weight = 70;
     value = 500;
-    _DV = 0;
-    _PV = 0;
-    _HIT = 6;
+    dv = 0;
+    pv = 0;
+    to_hit = 6;
     dice.Setup(2, 3, 12);
     RNG = 0;
 
@@ -85,9 +85,9 @@ XAvanorDefender::XAvanorDefender() : XWeapon(ItemType::LONGSWORD)
     it = ItemType::LONGSWORD;
     weight = 110;
     value = 3000;
-    _DV = 0;
-    _PV = 0;
-    _HIT = 18;
+    dv = 0;
+    pv = 0;
+    to_hit = 18;
     dice.Setup(4, 4, 15);
     RNG = 0;
 
@@ -113,9 +113,9 @@ XForestBrotherCloak::XForestBrotherCloak() : XCloak(ItemType::CLOAK)
     color = xGREEN;
     weight = 20;
     value = 100;
-    _DV = 3;
-    _PV = 1;
-    _HIT = 0;
+    dv = 3;
+    pv = 1;
+    to_hit = 0;
     dice.Setup(1, 2, 0);
     RNG = 0;
 
@@ -151,9 +151,9 @@ XAvanorScepter::XAvanorScepter() : XWeapon(ItemType::CLUB)
     color = xYELLOW;
     weight = 400;
     value = 12000;
-    _DV = 0;
-    _PV = 0;
-    _HIT = 8;
+    dv = 0;
+    pv = 0;
+    to_hit = 8;
     dice.Setup(1, 12, 10);
     RNG = 0;
 
@@ -179,9 +179,9 @@ XAvanorCrown::XAvanorCrown() : XCap(ItemType::CAP)
     color = xYELLOW;
     weight = 100;
     value = 8000;
-    _DV = 2;
-    _PV = 2;
-    _HIT = 0;
+    dv = 2;
+    pv = 2;
+    to_hit = 0;
     dice.Setup(0, 0, 0);
     RNG = 0;
 
@@ -206,9 +206,9 @@ XAvanorMitre::XAvanorMitre() : XCap(ItemType::CAP)
     color = xWHITE;
     weight = 100;
     value = 8000;
-    _DV = 3;
-    _PV = 2;
-    _HIT = 0;
+    dv = 3;
+    pv = 2;
+    to_hit = 0;
     dice.Setup(0, 0, 0);
     RNG = 0;
 
@@ -232,9 +232,9 @@ XTorinAxe::XTorinAxe() : XWeapon(ItemType::GREATAXE)
     view = '\\';
     weight = 1200;
     value = 12000;
-    _DV = 0;
-    _PV = 0;
-    _HIT = 8;
+    dv = 0;
+    pv = 0;
+    to_hit = 8;
     dice.Setup(2, 8, 5);
     RNG = 0;
 
@@ -259,9 +259,9 @@ XTorinShield::XTorinShield() : XShield(ItemType::MEDIUMSHIELD)
     view = ')';
     weight = 100;
     value = 8000;
-    _DV = 12;
-    _PV = 2;
-    _HIT = 0;
+    dv = 12;
+    pv = 2;
+    to_hit = 0;
     dice.Setup(0, 0, 0);
     RNG = 0;
 
@@ -286,9 +286,9 @@ XDwarfCrown::XDwarfCrown() : XCap(ItemType::CAP)
     color = xLIGHTCYAN;
     weight = 100;
     value = 8000;
-    _DV = 2;
-    _PV = 2;
-    _HIT = 0;
+    dv = 2;
+    pv = 2;
+    to_hit = 0;
     dice.Setup(0, 0, 0);
     RNG = 0;
 
@@ -313,9 +313,9 @@ XBlackClub::XBlackClub() : XWeapon(ItemType::CLUB)
     color = xDARKGRAY;
     weight = 8000;
     value = 10000;
-    _DV = -10;
-    _PV = 0;
-    _HIT = -15;
+    dv = -10;
+    pv = 0;
+    to_hit = -15;
     dice.Setup(2, 20, 0);
     RNG = 0;
 
