@@ -406,7 +406,15 @@ const char* XCreature::GetMeleeAttackMsg(XItem * weapon)
 int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 {
     //make creature hostle
-    if (pData->attacker) {
+    //
+    // ... but never towards itself. A creature can legitimately damage
+    // itself - most directly by aiming a bolt spell or scroll at its own
+    // tile, which XEffect::Bolt() happily delivers. Reacting to that
+    // would mean adding itself to its own personal-enemy list, which is
+    // meaningless and trips ReactToAttacker()'s assert(attacker !=
+    // ai_owner) - aborting the game the moment the player targets
+    // themselves.
+    if (pData->attacker && pData->attacker != this) {
         xai->onWasAttacked(pData->attacker);
     }
 

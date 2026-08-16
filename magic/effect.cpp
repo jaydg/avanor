@@ -234,7 +234,7 @@ int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, At
 
 int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, AttackEffectType brt, const char* msg)
 {
-    MF_DATA mfd;
+    MF_DATA mfd{};
     mfd.arrow_type = MFT_BALL;
     mfd.arrow_color = col;
     mfd.l = pData->l;
@@ -245,9 +245,15 @@ int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, Att
     mfd.to_hit = 1000;
     mfd.max_range = GetRange(pData->effect, pData->power);
 
-    XCreature* target;
+    // Actually launch the bolt. MissileFlight() walks it from (sx,sy)
+    // towards (ex,ey), draws it, lets the victim try to avoid it, and
+    // reports where it came to rest in mfd.pt - which is exactly what
+    // the lookup below needs.
+    if (XCreature::MissileFlight(&mfd) != MF_HIT) {
+        return 0;
+    }
 
-    if ((target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y))) {
+    if (XCreature* target = pData->l->map->GetMonster(mfd.pt.x, mfd.pt.y)) {
         XDice d(X, Y, Z);
         DAMAGE_DATA_EX dd{};
         dd.damage = d.GetResult();
