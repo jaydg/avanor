@@ -74,7 +74,8 @@ class XItem : public XBaseObject
         void PropFill(ITEM_SET is, int val = 1000);
         void SpecialFill();
 
-        std::string toString() override;
+        // Render an object as text
+        virtual std::string toString();
 
         // items can be stacked to a bundle: "bundle of 23 arrow (1d4)"
         int quantity;

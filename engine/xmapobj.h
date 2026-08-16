@@ -72,11 +72,6 @@ class XMapObject : public XObject
             ar(x, y, nx, ny, view, color, name);
         }
 
-        virtual std::string toString()
-        {
-            return "";
-        }
-
         bool SetLocation(XLocation* new_l)
         {
             l = new_l;
