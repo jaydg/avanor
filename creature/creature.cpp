@@ -143,6 +143,8 @@ XCreature::XCreature()
 {
     total_cr++;
 
+    nx = -1;
+    ny = -1;
     added_DV = 0;
     added_PV = 0;
     added_HIT = 0;
@@ -1366,8 +1368,8 @@ void XCreature::MoveStairWay()
 
     if (way) {
         XLocation * tgtloc = Game.locations[way->ln].get();
-        int tgt_x = spec->nx;
-        int tgt_y = spec->ny;
+        int tgt_x = way->dest_x;
+        int tgt_y = way->dest_y;
         int n_x = tgt_x;
         int n_y = tgt_y;
 

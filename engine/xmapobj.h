@@ -38,7 +38,7 @@ class XMapObject : public XObject
 
         DECLARE_CREATOR(XMapObject, XObject);
 
-        XMapObject() : l(nullptr), name{}, x(-1), y(-1), nx(-1), ny(-1), view(0), color(0) {}
+        XMapObject() : l(nullptr), name{}, x(-1), y(-1), view(0), color(0) {}
 
         explicit XMapObject(XMapObject * copy);
 
@@ -49,9 +49,6 @@ class XMapObject : public XObject
 
         // Coordinates of any object
         int x, y;
-
-        // Used for the next turn
-        int nx, ny;
 
         // character representation view of object
         char view;
@@ -69,7 +66,7 @@ class XMapObject : public XObject
             // l, the owning XLocation, is deliberately not persisted - it is
             // re-established structurally via SetLocation() when this object
             // is restored into its owning location's map grid
-            ar(x, y, nx, ny, view, color, name);
+            ar(x, y, view, color, name);
         }
 
         bool SetLocation(XLocation* new_l)

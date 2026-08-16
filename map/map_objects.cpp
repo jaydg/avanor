@@ -421,8 +421,9 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XStairWay);
 
 XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const STAIRWAY_TYPE type)
 {
-    nx = -1;
-    ny = -1;
+    // Unbound until Bind() finds the matching stairway on the other side.
+    dest_x = -1;
+    dest_y = -1;
     x = _x;
     y = _y;
     ln = _ln;
@@ -453,20 +454,20 @@ XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const XLocation
 
 void XStairWay::Bind(XStairWay * way)
 {
-    nx = way->x;
-    ny = way->y;
-    way->nx = x;
-    way->ny = y;
+    dest_x = way->x;
+    dest_y = way->y;
+    way->dest_x = x;
+    way->dest_y = y;
 }
 
 REGISTER_CLASS(XTeleport);
 CEREAL_REGISTER_TYPE(XTeleport);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTeleport);
 
-XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const int _nx, const int _ny)
+XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const int _dest_x, const int _dest_y)
 {
-    nx = _nx;
-    ny = _ny;
+    dest_x = _dest_x;
+    dest_y = _dest_y;
     x = _x;
     y = _y;
     ln = _ln;
@@ -486,9 +487,9 @@ int XTeleport::MoveIn(XCreature* cr)
         return 1; // Citizens shouldn't want to go visit the village...
     }
 
-    if (Game.locations[ln]->map->XGetMovability(nx, ny) == 0) {
+    if (Game.locations[ln]->map->XGetMovability(dest_x, dest_y) == 0) {
         cr->LastStep();
-        cr->FirstStep(nx, ny, Game.locations[ln].get());
+        cr->FirstStep(dest_x, dest_y, Game.locations[ln].get());
     }
 
     return 1;

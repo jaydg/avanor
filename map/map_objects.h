@@ -121,13 +121,19 @@ class XStairWay final : public XMapObject
         DECLARE_CREATOR(XStairWay, XMapObject);
         XStairWay(int _x, int _y, XLocation* loc, XLocation::Id _ln, STAIRWAY_TYPE type);
         XLocation::Id ln;
+
+        // Where this stairway comes out: the matching stairway's position
+        // within location ln. Negative until Bind() pairs the two ends, which
+        // is what XGame's way-binding pass tests for.
+        int dest_x, dest_y;
+
         void Bind(XStairWay* way);
 
         template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-            ar(ln);
+            ar(ln, dest_x, dest_y);
         }
 
         const std::string GetName(XCreature *viewer) override
@@ -136,7 +142,7 @@ class XStairWay final : public XMapObject
         }
 
     protected:
-        XStairWay() : ln() {
+        XStairWay() : ln(), dest_x(-1), dest_y(-1) {
         }
         friend class cereal::access;
 };
@@ -148,15 +154,20 @@ class XTeleport final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XTeleport, XMapObject);
-        XTeleport(int _x, int _y, XLocation* loc, XLocation::Id _ln, int _nx, int _ny);
+        XTeleport(int _x, int _y, XLocation* loc, XLocation::Id _ln, int _dest_x, int _dest_y);
         XLocation::Id ln;
+
+        // Where this pad drops you: a position within location ln. Fixed
+        // at construction, unlike a stairway's, which is paired up later.
+        int dest_x, dest_y;
+
         int MoveIn(XCreature* cr);
 
         template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-            ar(ln);
+            ar(ln, dest_x, dest_y);
         }
 
         const std::string GetName(XCreature *viewer) override
@@ -165,7 +176,7 @@ class XTeleport final : public XMapObject
         }
 
     protected:
-        XTeleport() : ln() {
+        XTeleport() : ln(), dest_x(-1), dest_y(-1) {
         }
         friend class cereal::access;
 };

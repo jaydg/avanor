@@ -447,6 +447,11 @@ class XCreature : public XBaseObject
 
         virtual const char* GetMeleeAttackMsg(XItem* weapon);
 
+        // Movement intent for the turn being resolved: where this creature
+        // wants to step, decided by the AI and then acted on by Move().
+        // Distinct from x/y, which stay put until the  step actually succeeds.
+        int nx, ny;
+
         virtual void FirstStep(int _x, int _y, XLocation* _l);
         virtual void LastStep();
 
@@ -539,6 +544,12 @@ class XCreature : public XBaseObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XBaseObject>(this));
+
+            // FixupCreatureInfo() re-derives them from the cell each
+            // creature is found in anyway, so this only matters for a
+            // creature not reached by that structural pass.
+            ar(nx, ny);
+
             ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
             ar(attack_energy, move_energy, base_speed, added_speed);
             ar(added_resists, added_RNG, added_stats);

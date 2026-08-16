@@ -331,8 +331,8 @@ class XLocation : public XObject
         static void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
 
         // Places an instant same-or-cross-location jump pad at (x, y) in
-        // the current location, landing at (nx, ny) in target_loc_id.
-        static void Teleport(int x, int y, int target_loc_id, int nx, int ny);
+        // the current location, landing at (dest_x, dest_y) in target_loc_id.
+        static void Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y);
 
         // Scatters XHerbBush onto roughly 1-in-18 GREEN_GRASS tiles across
         // the whole current location (skipping tiles that already have a

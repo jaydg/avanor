@@ -747,9 +747,9 @@ void* XLocation::GuardianClass(CreatureClass crc, const std::string& gid, int x,
 }
 
 //Teleport(23, 20, XLocation.MAIN, 154, 13)
-void XLocation::Teleport(int x, int y, int target_loc_id, int nx, int ny)
+void XLocation::Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y)
 {
-    new XTeleport(x, y, current_location, (XLocation::Id)target_loc_id, nx, ny);
+    new XTeleport(x, y, current_location, (XLocation::Id)target_loc_id, dest_x, dest_y);
 }
 
 //ScatterHerbBushes()

@@ -37,8 +37,6 @@ XMapObject::XMapObject(XMapObject* copy) :
     XObject(static_cast<XObject *>(copy)),
     x(copy->x),
     y(copy->y),
-    nx(copy->nx),
-    ny(copy->ny),
     view(copy->view),
     color(copy->color)
 {
