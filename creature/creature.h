@@ -411,6 +411,10 @@ class XCreature : public XBaseObject
         int added_PP;
         int added_speed;
 
+        // Hit/power point ceilings.
+        int MAX_HP{};
+        int MAX_PP{};
+
         // Adds item to creature inventory, increase carried weight. Returns
         // the surviving owned XItem, or nullptr if CarryItem() rejected it
         // (e.g. a dying creature) - `item` itself is not necessarily that
@@ -550,6 +554,7 @@ class XCreature : public XBaseObject
             // creature not reached by that structural pass.
             ar(nx, ny);
 
+            ar(MAX_HP, MAX_PP);
             ar(_EXP, added_DMG, added_DV, added_HIT, added_HP, added_PP, added_PV);
             ar(attack_energy, move_energy, base_speed, added_speed);
             ar(added_resists, added_RNG, added_stats);

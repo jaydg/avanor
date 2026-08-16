@@ -50,8 +50,6 @@ XBaseObject::XBaseObject(XBaseObject * copy) :
     RNG(copy->RNG),
     _HP(copy->_HP),
     _PP(copy->_PP),
-    MAX_HP(copy->MAX_HP),
-    MAX_PP(copy->MAX_PP),
     weight(copy->weight),
     dice(copy->dice)
 {
