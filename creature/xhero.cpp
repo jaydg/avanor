@@ -359,7 +359,7 @@ void XHero::NewMove()
                     break;
 
                 case 'R' :
-                    ShowReception();
+                    ShowRecipes();
                     moved = 0;
                     break;
 

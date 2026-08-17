@@ -738,11 +738,11 @@ void XHero::PlayerSetup()
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    scroll = new XScroll(SCROLL_RECIPIE);
+                    scroll = new XScroll(SCROLL_RECIPE);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    scroll = new XScroll(SCROLL_RECIPIE);
+                    scroll = new XScroll(SCROLL_RECIPE);
                     scroll->Identify(1);
                     ContainItem(scroll);
 

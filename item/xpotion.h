@@ -213,14 +213,14 @@ class XPotion : public XItem
         POTION_REC* pdescr;
 };
 
-class XAlchemyRec
+class XAlchemyRecipe
 {
     public:
         POTION_NAME pn1;
         POTION_NAME pn2;
         POTION_NAME result;
 
-        XAlchemyRec(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
+        XAlchemyRecipe(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
             pn1(p1), pn2(p2), result(res) {}
 
         template<class Archive>
@@ -230,30 +230,30 @@ class XAlchemyRec
         }
 };
 
-// XAlchemyRec has no default constructor at all (not even a deleted
+// XAlchemyRecipe has no default constructor at all (not even a deleted
 // one) - route Cereal's load-time construction through the real
 // constructor with placeholders. Lives here, not in xpotion.cpp:
-// reception_list (a vector<unique_ptr<XAlchemyRec>>) is a field of
+// recipe_list (a vector<unique_ptr<XAlchemyRecipe>>) is a field of
 // XHero, and its own deserialization is inline in XHero::serialize()
 // (a header template) - a specialization declared only in xpotion.cpp
 // wouldn't be visible wherever that gets instantiated (see the same
 // reasoning, first hit for XStandardAI, in std_ai.h).
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRec, serialize, PN_WATER, PN_WATER, PN_WATER);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRecipe, serialize, PN_WATER, PN_WATER, PN_WATER);
 
 class XAlchemy
 {
-        void BuildReception(int al_lvl);
+        void BuildRecipes(int al_lvl);
 
         static int GetPotionCount(int al_lvl, POTION_NAME** pTable);
-        std::vector<std::unique_ptr<XAlchemyRec>> reception;
+        std::vector<std::unique_ptr<XAlchemyRecipe>> recipes;
     public:
         XAlchemy();
         ~XAlchemy();
-        static int GetReceptionCount();
-        static XAlchemyRec* GetReception(int num);
+        static int GetRecipeCount();
+        static XAlchemyRecipe* GetRecipe(int num);
         static void Init();
-        static int isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
-        static std::string GetReceptionName(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
+        static int isValidRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
+        static std::string GetRecipeName(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
         static POTION_NAME GetPotionName(POTION_NAME pn1, POTION_NAME pn2);
 };
 

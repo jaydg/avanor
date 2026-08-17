@@ -110,7 +110,7 @@ SCROLL_REC scroll_descr[] = {
     SCROLL_REC("blink",	XEffect::BLINK,	SCROLL_BLINK,	70,	30),
     SCROLL_REC("self knowledge", XEffect::SELF_KNOWLEDGE,	SCROLL_SELF_KNOWLEDGE,	150,	10),
     SCROLL_REC("see invisible", XEffect::SEE_INVISIBLE,	SCROLL_SEE_INVISIBLE,	40,	50),
-    SCROLL_REC("recipe",	XEffect::NONE,	SCROLL_RECIPIE,	30,	25),
+    SCROLL_REC("recipe",	XEffect::NONE,	SCROLL_RECIPE,	30,	25),
 };
 
 int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
@@ -234,13 +234,13 @@ int XScroll::onRead(XCreature * cr)
         flag = 0;
 
         switch (scroll_descr[descr].scroll_name) {
-            case SCROLL_RECIPIE:
+            case SCROLL_RECIPE:
                 if (cr->isHero()) {
-                    int val = vRand(XAlchemy::GetReceptionCount());
-                    XAlchemyRec * pRec = XAlchemy::GetReception(val);
+                    int val = vRand(XAlchemy::GetRecipeCount());
+                    XAlchemyRecipe * pRec = XAlchemy::GetRecipe(val);
 
                     if (pRec) {
-                        flag = ((XHero*)cr)->LearnReception(pRec->pn1, pRec->pn2, pRec->result);
+                        flag = ((XHero*)cr)->LearnRecipe(pRec->pn1, pRec->pn2, pRec->result);
                     }
                 }
 

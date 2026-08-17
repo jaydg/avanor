@@ -549,12 +549,12 @@ XAlchemy::~XAlchemy()
 void XAlchemy::Init()
 {
     for (int i = 1; i < 5; i++) {
-        alchemy.BuildReception(i);
+        alchemy.BuildRecipes(i);
     }
 
     std::ofstream file(vMakePath(HOME_DIR, "recipes.txt"));
 
-    for (const auto& it: alchemy.reception) {
+    for (const auto& it: alchemy.recipes) {
         file <<  fmt::format("{} + {} = {}\n",
             potion_descr[it->pn1].name,
             potion_descr[it->pn2].name,
@@ -563,7 +563,7 @@ void XAlchemy::Init()
     }
 }
 
-std::string XAlchemy::GetReceptionName(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
+std::string XAlchemy::GetRecipeName(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
 {
     const char* c1 = potion_descr[pn1].name;
     const char* c2 = potion_descr[pn2].name;
@@ -571,7 +571,7 @@ std::string XAlchemy::GetReceptionName(const POTION_NAME pn1, const POTION_NAME 
     return fmt::format("potion of {} + potion of {} = potion of {}", c1, c2, c3);
 }
 
-void XAlchemy::BuildReception(int al_lvl)
+void XAlchemy::BuildRecipes(int al_lvl)
 {
     POTION_NAME * pTableSrc = nullptr;
     int tbl_src = GetPotionCount(al_lvl, &pTableSrc);
@@ -589,7 +589,7 @@ void XAlchemy::BuildReception(int al_lvl)
 
             if (pos1 != pos2 && tbl[tbl_src * pos1 + pos2] == -1) {
                 tbl[tbl_src * pos1 + pos2] = j;
-                reception.push_back(std::make_unique<XAlchemyRec>(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]));
+                recipes.push_back(std::make_unique<XAlchemyRecipe>(pTableSrc[pos1], pTableSrc[pos2], pTableDest[j]));
                 break;
             }
         }
@@ -623,25 +623,25 @@ int XAlchemy::GetPotionCount(const int al_lvl, POTION_NAME** pTable)
     return res;
 }
 
-int XAlchemy::GetReceptionCount()
+int XAlchemy::GetRecipeCount()
 {
-    return alchemy.reception.size();
+    return alchemy.recipes.size();
 }
 
 // Zero-based, matching its only caller (XScroll::onRead picks
-// vRand(GetReceptionCount()), which yields 0..count-1).
-XAlchemyRec* XAlchemy::GetReception(int num)
+// vRand(GetRecipeCount()), which yields 0..count-1).
+XAlchemyRecipe* XAlchemy::GetRecipe(int num)
 {
-    if (num < 0 || static_cast<size_t>(num) >= alchemy.reception.size()) {
+    if (num < 0 || static_cast<size_t>(num) >= alchemy.recipes.size()) {
         return nullptr;
     }
 
-    return alchemy.reception[num].get();
+    return alchemy.recipes[num].get();
 }
 
-int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
+int XAlchemy::isValidRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
 {
-    for (auto& rec: alchemy.reception) {
+    for (auto& rec: alchemy.recipes) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 && rec->result == pn3)
             return 1;
     }
@@ -651,7 +651,7 @@ int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3
 
 POTION_NAME XAlchemy::GetPotionName(POTION_NAME pn1, POTION_NAME pn2)
 {
-    for (auto& rec: alchemy.reception) {
+    for (auto& rec: alchemy.recipes) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 || rec->pn2 == pn1 && rec->pn1 == pn2)
             return rec->result;
     }

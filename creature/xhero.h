@@ -152,7 +152,7 @@ class XHero final : public XCreature
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XCreature>(this));
-            ar(race, profession, turn_count, reception_list);
+            ar(race, profession, turn_count, recipe_list);
             FixupHeroDefaults();
         }
 
@@ -168,10 +168,10 @@ class XHero final : public XCreature
         static void EndGame(const char* end_msg);
 
         // ALCHEMY
-        int LearnReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
-        void ShowReception() const;
+        int LearnRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
+        void ShowRecipes() const;
         void MixPotions();
-        std::vector<std::unique_ptr<XAlchemyRec>> reception_list;
+        std::vector<std::unique_ptr<XAlchemyRecipe>> recipe_list;
 };
 
 class XGuiItem_Inventory final : public XGuiItem
