@@ -552,7 +552,7 @@ void XAlchemy::Init()
         alchemy.BuildReception(i);
     }
 
-    std::fstream file(vMakePath(HOME_DIR, "recipies.txt"));
+    std::ofstream file(vMakePath(HOME_DIR, "recipes.txt"));
 
     for (const auto& it: alchemy.reception) {
         file <<  fmt::format("{} + {} = {}\n",
