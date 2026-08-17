@@ -200,7 +200,6 @@ int XScroll::onRead(XCreature * cr)
 {
     assert(cr->isValid());
 
-    char buf[256];
     int flag = 0;
 
     if (scroll_descr[descr].effect != XEffect::NONE) {
