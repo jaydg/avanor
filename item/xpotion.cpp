@@ -628,12 +628,15 @@ int XAlchemy::GetReceptionCount()
     return alchemy.reception.size();
 }
 
+// Zero-based, matching its only caller (XScroll::onRead picks
+// vRand(GetReceptionCount()), which yields 0..count-1).
 XAlchemyRec* XAlchemy::GetReception(int num)
 {
-    if (num > alchemy.reception.size())
+    if (num < 0 || static_cast<size_t>(num) >= alchemy.reception.size()) {
         return nullptr;
+    }
 
-    return alchemy.reception[num - 1].get();
+    return alchemy.reception[num].get();
 }
 
 int XAlchemy::isValidReception(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
