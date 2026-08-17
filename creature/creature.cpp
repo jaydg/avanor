@@ -149,7 +149,7 @@ XCreature::XCreature()
     added_PV = 0;
     added_HIT = 0;
     added_DMG = 0;
-    added_RNG = 0;
+    added_range = 0;
     carried_weight = 0;
 
     base_nutrio = 500;
@@ -1411,10 +1411,10 @@ void XCreature::MoveStairWay()
 
 void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
 {
-    XItem * missile = GetItem(BP_MISSILE);
-    XItem * bow = GetItem(BP_MISSILE_WEAPON);
+    XItem* missile = GetItem(BP_MISSILE);
+    XItem* launcher = GetItem(BP_MISSILE_WEAPON);
 
-    if (!missile || !XMissile::isProperWeapon(missile, bow)) {
+    if (!missile || !XMissile::isProperWeapon(missile, launcher)) {
         *range = 0;
         *hit = 0;
         dmg->Setup(0, 0, 0);
@@ -1426,16 +1426,21 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     int str = stats->Get(XStats::STR);
     int dex = stats->Get(XStats::DEX);
 
-    *range = missile->RNG;
+    // added_range is the sum of every worn item's RNG, maintained
+    // by XItem::onWear()/onUnWear().
+    //
+    // That is what finally connects the accumulation: For gear where only the
+    // ammo and launcher carry an rng, this computes exactly what the two
+    // explicit adds did.
+    *range = added_range;
     *hit = dex / 2 + missile->to_hit;
     dmg->Setup(missile->dice);
 
-    if (bow) {
-        *range += bow->RNG;
-        dmg->Add(&(bow->dice));
-        *range += wsk->GetDV(bow->wt);
-        dmg->ModifyBonus(wsk->GetDMG(bow->wt));
-        *hit += wsk->GetHIT(bow->wt);
+    if (launcher) {
+        dmg->Add(&(launcher->dice));
+        *range += wsk->GetDV(launcher->wt);
+        dmg->ModifyBonus(wsk->GetDMG(launcher->wt));
+        *hit += wsk->GetHIT(launcher->wt);
     } else {
         *range += RNG + str / 25;
         dmg->ModifyBonus(str / 10);

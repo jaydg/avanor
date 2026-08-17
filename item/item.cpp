@@ -620,7 +620,7 @@ int XItem::onWear(XCreature * cr)
         cr->added_DMG	+= dice.GetBonus();
     }
 
-    cr->added_RNG	+= RNG;
+    cr->added_range	+= RNG;
 
     return 1;
 }
@@ -644,7 +644,7 @@ int XItem::onUnWear(XCreature * cr)
         cr->added_DMG	-= dice.GetBonus();
     }
 
-    cr->added_RNG	-= RNG;
+    cr->added_range	-= RNG;
     return 1;
 }
 
