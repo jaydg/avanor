@@ -168,7 +168,7 @@ class XHero final : public XCreature
         static void EndGame(const char* end_msg);
 
         // ALCHEMY
-        int LearnRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
+        int LearnRecipe(PotionName pn1, PotionName pn2, PotionName pn3);
         void ShowRecipes() const;
         void MixPotions();
         std::vector<std::unique_ptr<XAlchemyRecipe>> recipe_list;

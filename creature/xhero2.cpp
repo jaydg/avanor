@@ -349,11 +349,11 @@ void XHero::PlayerSetup()
                             assert(0);
                     }
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    potion = new XPotion(PN_HEROISM);
+                    potion = new XPotion(PotionName::HEROISM);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -369,7 +369,7 @@ void XHero::PlayerSetup()
                     pbp = GetBodyPart(BP_HAND, 0);
                     pbp->Wear(ICREATEB(ItemKind::WEAPON, ItemType::STAFF, 1, 100));
 
-                    potion = new XPotion(PN_POWER);
+                    potion = new XPotion(PotionName::POWER);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -507,7 +507,7 @@ void XHero::PlayerSetup()
                             assert(0);
                     }
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -621,7 +621,7 @@ void XHero::PlayerSetup()
                             break;
                     }
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -655,7 +655,7 @@ void XHero::PlayerSetup()
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -700,7 +700,7 @@ void XHero::PlayerSetup()
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -746,19 +746,19 @@ void XHero::PlayerSetup()
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    potion = new XPotion(PN_ORANGEJUCE);
+                    potion = new XPotion(PotionName::ORANGEJUCE);
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    potion = new XPotion(PN_APPLEJUCE);
+                    potion = new XPotion(PotionName::APPLEJUCE);
                     potion->Identify(1);
                     ContainItem(potion);
 
-                    potion = new XPotion(PN_WATER);
+                    potion = new XPotion(PotionName::WATER);
                     potion->Identify(1);
                     ContainItem(potion);
 
@@ -779,7 +779,7 @@ void XHero::PlayerSetup()
                     pbp = GetBodyPart(BP_HAND, 0);
                     pbp->Wear(ICREATEB(ItemKind::WEAPON, ItemType::CLUB, 10, 150));
 
-                    potion = new XPotion(PN_CURE_LIGHT_WOUNDS);
+                    potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
                     potion->Identify(1);
                     ContainItem(potion);
 

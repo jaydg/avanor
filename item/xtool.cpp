@@ -250,8 +250,8 @@ RESULT XAlchemySet::onUse(ItemUsageState uis, XCreature * cr)
         return FAIL;
     }
 
-    POTION_NAME pn = herb->GetTargetPotion();
-    POTION_REC * pr = POTION_REC::GetRec(pn);
+    PotionName pn = herb->GetTargetPotion();
+    PotionDescription * pr = PotionDescription::GetRec(pn);
     int val = cr->sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
     if (vRand(100) < val) {

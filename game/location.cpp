@@ -793,7 +793,7 @@ void* XLocation::CreateObjectByMask(int flag, int min_val, int max_val)
 //CreateObject(PotionName.HEALING)
 void* XLocation::CreateObjectByPotion(int pn)
 {
-    return new XPotion(static_cast<POTION_NAME>(pn));
+    return new XPotion(static_cast<PotionName>(pn));
 }
 
 //DropItem(item, 0, 0)

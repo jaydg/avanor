@@ -37,7 +37,7 @@ struct HerbDefinition {
     const char* post_eat;
     int color;
     HERB_TYPE herb_type;
-    POTION_NAME pn;
+    PotionName pn;
     int difficulty;
     int identify;
     static void Create();
@@ -80,7 +80,7 @@ class XHerb : public XAnyFood
             }
         }
 
-        POTION_NAME GetTargetPotion();
+        PotionName GetTargetPotion();
 
         void Identify(int level) override;
         int isIdentifed() override;

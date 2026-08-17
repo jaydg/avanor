@@ -34,171 +34,171 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPotion);
 void XPotion::RegisterLua(sol::state_view& lua)
 {
     lua.new_enum("PotionName",
-        "WATER", PN_WATER,
-        "APPLEJUCE", PN_APPLEJUCE,
-        "ORANGEJUCE", PN_ORANGEJUCE,
-        "HEALING", PN_HEALING,
-        "CURE_LIGHT_WOUNDS", PN_CURE_LIGHT_WOUNDS,
-        "CURE_SERIOUS_WOUNDS", PN_CURE_SERIOUS_WOUNDS,
-        "CURE_CRITICAL_WOUNDS", PN_CURE_CRITICAL_WOUNDS,
-        "CURE_MORTAL_WOUNDS", PN_CURE_MORTAL_WOUNDS,
-        "POWER", PN_POWER,
-        "RESTORATION", PN_RESTORATION,
-        "GAIN_STRENGTH", PN_GAIN_STRENGTH,
-        "GAIN_WILLPOWER", PN_GAIN_WILLPOWER,
-        "GAIN_MANA", PN_GAIN_MANA,
-        "GAIN_TOUGHNESS", PN_GAIN_TOUGHNESS,
-        "GAIN_DEXTERITY", PN_GAIN_DEXTERITY,
-        "CURE_POISON", PN_CURE_POISON,
-        "POISON", PN_POISON,
-        "BLEEDNESS", PN_BLEEDNESS,
-        "DISEASE", PN_DISEASE,
-        "CURE_DISEASE", PN_CURE_DISEASE,
-        "HEROISM", PN_HEROISM,
-        "SEE_INVISIBLE", PN_SEE_INVISIBLE,
-        "WEAKNESS", PN_WEAKNESS,
-        "CLUMSINESS", PN_CLUMSINESS,
-        "DEATH", PN_DEATH,
-        "SATIATION", PN_SATIATION,
-        "STARVATION", PN_STARVATION,
-        "BOOST_SPEED", PN_BOOST_SPEED,
-        "SLOWNESS", PN_SLOWNESS,
-        "ACID_RESISTANCE", PN_ACID_RESISTANCE,
-        "FIRE_RESISTANCE", PN_FIRE_RESISTANCE,
-        "COLD_RESISTANCE", PN_COLD_RESISTANCE,
-        "POISON_RESISTANCE", PN_POISON_RESISTANCE,
-        "RANDOM", PN_RANDOM
+        "WATER", PotionName::WATER,
+        "APPLEJUCE", PotionName::APPLEJUCE,
+        "ORANGEJUCE", PotionName::ORANGEJUCE,
+        "HEALING", PotionName::HEALING,
+        "CURE_LIGHT_WOUNDS", PotionName::CURE_LIGHT_WOUNDS,
+        "CURE_SERIOUS_WOUNDS", PotionName::CURE_SERIOUS_WOUNDS,
+        "CURE_CRITICAL_WOUNDS", PotionName::CURE_CRITICAL_WOUNDS,
+        "CURE_MORTAL_WOUNDS", PotionName::CURE_MORTAL_WOUNDS,
+        "POWER", PotionName::POWER,
+        "RESTORATION", PotionName::RESTORATION,
+        "GAIN_STRENGTH", PotionName::GAIN_STRENGTH,
+        "GAIN_WILLPOWER", PotionName::GAIN_WILLPOWER,
+        "GAIN_MANA", PotionName::GAIN_MANA,
+        "GAIN_TOUGHNESS", PotionName::GAIN_TOUGHNESS,
+        "GAIN_DEXTERITY", PotionName::GAIN_DEXTERITY,
+        "CURE_POISON", PotionName::CURE_POISON,
+        "POISON", PotionName::POISON,
+        "BLEEDNESS", PotionName::BLEEDNESS,
+        "DISEASE", PotionName::DISEASE,
+        "CURE_DISEASE", PotionName::CURE_DISEASE,
+        "HEROISM", PotionName::HEROISM,
+        "SEE_INVISIBLE", PotionName::SEE_INVISIBLE,
+        "WEAKNESS", PotionName::WEAKNESS,
+        "CLUMSINESS", PotionName::CLUMSINESS,
+        "DEATH", PotionName::DEATH,
+        "SATIATION", PotionName::SATIATION,
+        "STARVATION", PotionName::STARVATION,
+        "BOOST_SPEED", PotionName::BOOST_SPEED,
+        "SLOWNESS", PotionName::SLOWNESS,
+        "ACID_RESISTANCE", PotionName::ACID_RESISTANCE,
+        "FIRE_RESISTANCE", PotionName::FIRE_RESISTANCE,
+        "COLD_RESISTANCE", PotionName::COLD_RESISTANCE,
+        "POISON_RESISTANCE", PotionName::POISON_RESISTANCE,
+        "RANDOM", PotionName::RANDOM
     );
 }
 
-struct PN_COLORTABLE {
+struct PotionColorEntry {
     const char* name;
     int color;
     int is_used;
 };
 
-PN_COLORTABLE pnc_table[] = {
-    /* 0 PNC_CLEAR*/{	"clear",	xLIGHTGRAY	, 0},
-    /* 1 PNC_SMOKY*/{	"smoky",	xLIGHTGRAY	, 0},
-    /* 2 PNC_GREEN*/{	"green",	xGREEN	, 0},
-    /* 3 PNC_ORANGE*/{	"orange",	xYELLOW	, 0},
-    /* 4 PNC_YELLOW*/{	"yellow",	xYELLOW	, 0},
-    /* 5 PNC_BLACK*/{	"black",	xDARKGRAY	, 0},
-    /* 6 PNC_BLUE*/{	"blue",	xBLUE	, 0},
-    /* 7 PNC_WHITE*/{	"white",	xWHITE	, 0},
-    /* 8 PNC_CYAN*/{	"cyan",	xCYAN	, 0},
-    /* 9 PNC_PURPLE*/{	"purple",	xLIGHTMAGENTA	, 0},
-    /* 10 PNC_HAZE*/{	"haze",	xLIGHTGRAY	, 0},
-    /* 11 PNC_GOLDEN*/{	"golden",	xYELLOW	, 0},
-    /* 12 PNC_SILVER*/{	"silver",	xLIGHTGRAY	, 0},
-    /* 13 PNC_AZURE*/{	"azure",	xLIGHTCYAN	, 0},
-    /* 14 PNC_MURKY*/{	"murky",	xDARKGRAY	, 0},
-    /* 15 PNC_RED*/	{	"red",	xRED	, 0},
-    /* 16 PNC_GLOWING*/{	"glowing",	xYELLOW	, 0},
-    /* 17 PNC_MOTTLED*/{	"mottled",	xLIGHTRED	, 0},
-    /* 18 PNC_BLOBBED*/{	"blobby",	xBROWN	, 0},
-    /* 19 PNC_PINK*/{	"pink",	xLIGHTMAGENTA	, 0},
-    /* 20 PNC_MOULDED*/{	"mouldy",	xLIGHTCYAN	, 0},
-    /* 21 PNC_GRAY*/{	"gray",	xLIGHTGRAY	, 0},
-    /* 22 PNC_MERCURY*/{	"mercury",	xLIGHTGRAY	, 0},
-    /* 23 PNC_OILY*/{	"oily",	xDARKGRAY	, 0},
-    /* 24 PNC_VISCOUS*/{	"viscous",	xLIGHTCYAN	, 0},
-    /* 25 PNC_DARK_RED*/{	"dark red",	xRED	, 0},
-    /* 26 PNC_LIGHT_RED*/{	"light red",	xLIGHTRED	, 0},
-    /* 27 PNC_DARK_BLUE*/{	"dark blue",	xBLUE	, 0},
-    /* 28 PNC_LIGHT_BLUE*/{	"light blue",	xLIGHTBLUE	, 0},
-    /* 29 PNC_BROWN*/{	"brown",	xBROWN	, 0},
-    /* 30 PNC_LIGHT_GRAY*/{	"light gray",	xLIGHTGRAY	, 0},
-    /* 31 PNC_DARK_GRAY*/{	"dark gray",	xDARKGRAY	, 0},
-    /* 32 PNC_DARK_GREEN*/{	"dark green",	xGREEN	, 0},
-    /* 33 PNC_LIGHT_GREEN*/{"light green",	xLIGHTGREEN	, 0},
-    /* 34 PNC_BEIGE*/	{"beige",	xLIGHTGRAY	, 0},
-    /* 35 PNC_AQUAMARINE*/	{"aquamarine",	xCYAN	, 0},
-    /* 36 PNC_CORAL*/	{"coral",	xGREEN	, 0},
-    /* 37 PNC_IVORY*/	{"ivory",	xYELLOW	, 0},
-    /* 38 PNC_MAROON*/	{"maroon",	xRED	, 0},
-    /* 39 PNC_TAN*/	{"tan",	xBROWN	, 0},
-    /* 40 PNC_TURQUOISE*/	{"turquoise",	xCYAN	, 0},
-    /* 41 PNC_VIOLET*/	{"violet",	xMAGENTA	, 0},
+PotionColorEntry pnc_table[] = {
+    /* 0 PotionColor::CLEAR*/{	"clear",	xLIGHTGRAY	, 0},
+    /* 1 PotionColor::SMOKY*/{	"smoky",	xLIGHTGRAY	, 0},
+    /* 2 PotionColor::GREEN*/{	"green",	xGREEN	, 0},
+    /* 3 PotionColor::ORANGE*/{	"orange",	xYELLOW	, 0},
+    /* 4 PotionColor::YELLOW*/{	"yellow",	xYELLOW	, 0},
+    /* 5 PotionColor::BLACK*/{	"black",	xDARKGRAY	, 0},
+    /* 6 PotionColor::BLUE*/{	"blue",	xBLUE	, 0},
+    /* 7 PotionColor::WHITE*/{	"white",	xWHITE	, 0},
+    /* 8 PotionColor::CYAN*/{	"cyan",	xCYAN	, 0},
+    /* 9 PotionColor::PURPLE*/{	"purple",	xLIGHTMAGENTA	, 0},
+    /* 10 PotionColor::HAZE*/{	"haze",	xLIGHTGRAY	, 0},
+    /* 11 PotionColor::GOLDEN*/{	"golden",	xYELLOW	, 0},
+    /* 12 PotionColor::SILVER*/{	"silver",	xLIGHTGRAY	, 0},
+    /* 13 PotionColor::AZURE*/{	"azure",	xLIGHTCYAN	, 0},
+    /* 14 PotionColor::MURKY*/{	"murky",	xDARKGRAY	, 0},
+    /* 15 PotionColor::RED*/	{	"red",	xRED	, 0},
+    /* 16 PotionColor::GLOWING*/{	"glowing",	xYELLOW	, 0},
+    /* 17 PotionColor::MOTTLED*/{	"mottled",	xLIGHTRED	, 0},
+    /* 18 PotionColor::BLOBBED*/{	"blobby",	xBROWN	, 0},
+    /* 19 PotionColor::PINK*/{	"pink",	xLIGHTMAGENTA	, 0},
+    /* 20 PotionColor::MOULDED*/{	"mouldy",	xLIGHTCYAN	, 0},
+    /* 21 PotionColor::GRAY*/{	"gray",	xLIGHTGRAY	, 0},
+    /* 22 PotionColor::MERCURY*/{	"mercury",	xLIGHTGRAY	, 0},
+    /* 23 PotionColor::OILY*/{	"oily",	xDARKGRAY	, 0},
+    /* 24 PotionColor::VISCOUS*/{	"viscous",	xLIGHTCYAN	, 0},
+    /* 25 PotionColor::DARK_RED*/{	"dark red",	xRED	, 0},
+    /* 26 PotionColor::LIGHT_RED*/{	"light red",	xLIGHTRED	, 0},
+    /* 27 PotionColor::DARK_BLUE*/{	"dark blue",	xBLUE	, 0},
+    /* 28 PotionColor::LIGHT_BLUE*/{	"light blue",	xLIGHTBLUE	, 0},
+    /* 29 PotionColor::BROWN*/{	"brown",	xBROWN	, 0},
+    /* 30 PotionColor::LIGHT_GRAY*/{	"light gray",	xLIGHTGRAY	, 0},
+    /* 31 PotionColor::DARK_GRAY*/{	"dark gray",	xDARKGRAY	, 0},
+    /* 32 PotionColor::DARK_GREEN*/{	"dark green",	xGREEN	, 0},
+    /* 33 PotionColor::LIGHT_GREEN*/{"light green",	xLIGHTGREEN	, 0},
+    /* 34 PotionColor::BEIGE*/	{"beige",	xLIGHTGRAY	, 0},
+    /* 35 PotionColor::AQUAMARINE*/	{"aquamarine",	xCYAN	, 0},
+    /* 36 PotionColor::CORAL*/	{"coral",	xGREEN	, 0},
+    /* 37 PotionColor::IVORY*/	{"ivory",	xYELLOW	, 0},
+    /* 38 PotionColor::MAROON*/	{"maroon",	xRED	, 0},
+    /* 39 PotionColor::TAN*/	{"tan",	xBROWN	, 0},
+    /* 40 PotionColor::TURQUOISE*/	{"turquoise",	xCYAN	, 0},
+    /* 41 PotionColor::VIOLET*/	{"violet",	xMAGENTA	, 0},
 };
 
-POTION_COLOR POTION_REC::SelectColor(POTION_COLOR pnc)
+PotionColor PotionDescription::SelectColor(PotionColor pnc)
 {
-    if (pnc == PNC_RANDOM) {
+    if (pnc == PotionColor::RANDOM) {
         int count = 1000;
 
         while (count-- > 0) {
-            int rp = vRand() % PNC_RANDOM;
+            int rp = vRand() % static_cast<int>(PotionColor::RANDOM);
 
             if (pnc_table[rp].is_used == 0) {
                 pnc_table[rp].is_used = 1;
 
-                return static_cast<POTION_COLOR>(rp);
+                return static_cast<PotionColor>(rp);
             }
         }
 
         assert(0);
-        return PNC_CLEAR;
+        return PotionColor::CLEAR;
     }
 
-    assert(pnc_table[pnc].is_used == 0);
-    pnc_table[pnc].is_used = 1;
+    assert(pnc_table[static_cast<int>(pnc)].is_used == 0);
+    pnc_table[static_cast<int>(pnc)].is_used = 1;
 
     return pnc;
 }
 
-POTION_REC potion_descr[] = {
-    {PN_WATER,	"water",	XEffect::NONE,	100,	1,	1,	POTION_REC::SelectColor(PNC_CLEAR),	0},
-    {PN_APPLEJUCE,	"apple juice",	XEffect::NONE,	95,	1,	2,	POTION_REC::SelectColor(PNC_YELLOW),	0},
-    {PN_ORANGEJUCE,	"orange juice",	XEffect::NONE,	95,	1,	3,	POTION_REC::SelectColor(PNC_ORANGE),	0},
-    {PN_HEALING,	"healing",	XEffect::HEAL,	10,	4,	200, POTION_REC::SelectColor(PNC_WHITE),	0},
-    {PN_CURE_LIGHT_WOUNDS,	"cure light wounds",	XEffect::CURE_LIGHT_WOUNDS,	80,	2,	15,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_SERIOUS_WOUNDS, "cure serious wounds",	XEffect::CURE_SERIOUS_WOUNDS,	70,	2,	40,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_CRITICAL_WOUNDS, "cure critical wounds", XEffect::CURE_CRITICAL_WOUNDS,	40,	3,	60,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_MORTAL_WOUNDS,	"cure mortal wounds",	XEffect::CURE_MORTAL_WOUNDS,	20,	3,	100, POTION_REC::SelectColor(),	0},
-    {PN_POWER,	"power",	XEffect::POWER,	80,	2,	15,	POTION_REC::SelectColor(),	0},
-    {PN_RESTORATION,	"restoration",	XEffect::RESTORATION,	5,	5,	400, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_STRENGTH,	"strength",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_WILLPOWER,	"willpower",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_MANA,	"mana",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_TOUGHNESS,	"toughness",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_GAIN_DEXTERITY,	"swiftness",	XEffect::NONE,	10,	4,	1000, POTION_REC::SelectColor(),	0},
-    {PN_POISON,	"poison",	XEffect::NONE,	150,	1,	5,	POTION_REC::SelectColor(),	0},
-    {PN_CURE_POISON,	"cure poison",	XEffect::CURE_POISON,	80,	3,	25, POTION_REC::SelectColor(),	0},
-    {PN_BLEEDNESS,	"bleeding",	XEffect::NONE,	300,	1,	1, POTION_REC::SelectColor(),	0},
-    {PN_DISEASE,	"disease",	XEffect::NONE,	200,	1,	1, POTION_REC::SelectColor(),	0},
-    {PN_CURE_DISEASE,	"cure disease",	XEffect::CURE_DISEASE,	50,	3,	50, POTION_REC::SelectColor(),	0},
-    {PN_HEROISM,	"heroism",	XEffect::HEROISM,	75,	2,	20, POTION_REC::SelectColor(),	0},
-    {PN_SEE_INVISIBLE,	"see invisible",	XEffect::SEE_INVISIBLE,	30,	3,	30,	POTION_REC::SelectColor(),	0},
-    {PN_WEAKNESS,	"weakness",	XEffect::NONE,	70,	1,	5,	POTION_REC::SelectColor(),	0},
-    {PN_CLUMSINESS,	"clumsiness",	XEffect::NONE,	70,	1,	5,	POTION_REC::SelectColor(),	0},
-    {PN_DEATH,	"death",	XEffect::NONE,	1,	2,	5,	POTION_REC::SelectColor(),	0},
-    {PN_SATIATION,	"satiation",	XEffect::NONE,	50,	2,	15,	POTION_REC::SelectColor(),	0},
-    {PN_STARVATION,	"starvation",	XEffect::NONE,	40,	3,	15,	POTION_REC::SelectColor(),	0},
-    {PN_BOOST_SPEED,	"boost speed",	XEffect::NONE,	30,	3,	100, POTION_REC::SelectColor(),	0},
-    {PN_SLOWNESS,	"slowness",	XEffect::NONE,	150,	1,	2,	POTION_REC::SelectColor(),	0},
-    {PN_ACID_RESISTANCE,	"acid resistance",	XEffect::ACID_RESISTANCE,	35,	3,	70,	POTION_REC::SelectColor(),	0},
-    {PN_FIRE_RESISTANCE,	"fire resistance",	XEffect::FIRE_RESISTANCE,	45,	2,	50,	POTION_REC::SelectColor(),	0},
-    {PN_COLD_RESISTANCE,	"cold resistance",	XEffect::COLD_RESISTANCE,	45,	2,	50,	POTION_REC::SelectColor(),	0},
-    {PN_POISON_RESISTANCE,	"poison resistance",	XEffect::POISON_RESISTANCE,	40,	3,	50,	POTION_REC::SelectColor(),	0},
+PotionDescription potion_descr[] = {
+    {PotionName::WATER,	"water",	XEffect::NONE,	100,	1,	1,	PotionDescription::SelectColor(PotionColor::CLEAR),	0},
+    {PotionName::APPLEJUCE,	"apple juice",	XEffect::NONE,	95,	1,	2,	PotionDescription::SelectColor(PotionColor::YELLOW),	0},
+    {PotionName::ORANGEJUCE,	"orange juice",	XEffect::NONE,	95,	1,	3,	PotionDescription::SelectColor(PotionColor::ORANGE),	0},
+    {PotionName::HEALING,	"healing",	XEffect::HEAL,	10,	4,	200, PotionDescription::SelectColor(PotionColor::WHITE),	0},
+    {PotionName::CURE_LIGHT_WOUNDS,	"cure light wounds",	XEffect::CURE_LIGHT_WOUNDS,	80,	2,	15,	PotionDescription::SelectColor(),	0},
+    {PotionName::CURE_SERIOUS_WOUNDS, "cure serious wounds",	XEffect::CURE_SERIOUS_WOUNDS,	70,	2,	40,	PotionDescription::SelectColor(),	0},
+    {PotionName::CURE_CRITICAL_WOUNDS, "cure critical wounds", XEffect::CURE_CRITICAL_WOUNDS,	40,	3,	60,	PotionDescription::SelectColor(),	0},
+    {PotionName::CURE_MORTAL_WOUNDS,	"cure mortal wounds",	XEffect::CURE_MORTAL_WOUNDS,	20,	3,	100, PotionDescription::SelectColor(),	0},
+    {PotionName::POWER,	"power",	XEffect::POWER,	80,	2,	15,	PotionDescription::SelectColor(),	0},
+    {PotionName::RESTORATION,	"restoration",	XEffect::RESTORATION,	5,	5,	400, PotionDescription::SelectColor(),	0},
+    {PotionName::GAIN_STRENGTH,	"strength",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
+    {PotionName::GAIN_WILLPOWER,	"willpower",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
+    {PotionName::GAIN_MANA,	"mana",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
+    {PotionName::GAIN_TOUGHNESS,	"toughness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
+    {PotionName::GAIN_DEXTERITY,	"swiftness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
+    {PotionName::POISON,	"poison",	XEffect::NONE,	150,	1,	5,	PotionDescription::SelectColor(),	0},
+    {PotionName::CURE_POISON,	"cure poison",	XEffect::CURE_POISON,	80,	3,	25, PotionDescription::SelectColor(),	0},
+    {PotionName::BLEEDNESS,	"bleeding",	XEffect::NONE,	300,	1,	1, PotionDescription::SelectColor(),	0},
+    {PotionName::DISEASE,	"disease",	XEffect::NONE,	200,	1,	1, PotionDescription::SelectColor(),	0},
+    {PotionName::CURE_DISEASE,	"cure disease",	XEffect::CURE_DISEASE,	50,	3,	50, PotionDescription::SelectColor(),	0},
+    {PotionName::HEROISM,	"heroism",	XEffect::HEROISM,	75,	2,	20, PotionDescription::SelectColor(),	0},
+    {PotionName::SEE_INVISIBLE,	"see invisible",	XEffect::SEE_INVISIBLE,	30,	3,	30,	PotionDescription::SelectColor(),	0},
+    {PotionName::WEAKNESS,	"weakness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	0},
+    {PotionName::CLUMSINESS,	"clumsiness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	0},
+    {PotionName::DEATH,	"death",	XEffect::NONE,	1,	2,	5,	PotionDescription::SelectColor(),	0},
+    {PotionName::SATIATION,	"satiation",	XEffect::NONE,	50,	2,	15,	PotionDescription::SelectColor(),	0},
+    {PotionName::STARVATION,	"starvation",	XEffect::NONE,	40,	3,	15,	PotionDescription::SelectColor(),	0},
+    {PotionName::BOOST_SPEED,	"boost speed",	XEffect::NONE,	30,	3,	100, PotionDescription::SelectColor(),	0},
+    {PotionName::SLOWNESS,	"slowness",	XEffect::NONE,	150,	1,	2,	PotionDescription::SelectColor(),	0},
+    {PotionName::ACID_RESISTANCE,	"acid resistance",	XEffect::ACID_RESISTANCE,	35,	3,	70,	PotionDescription::SelectColor(),	0},
+    {PotionName::FIRE_RESISTANCE,	"fire resistance",	XEffect::FIRE_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	0},
+    {PotionName::COLD_RESISTANCE,	"cold resistance",	XEffect::COLD_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	0},
+    {PotionName::POISON_RESISTANCE,	"poison resistance",	XEffect::POISON_RESISTANCE,	40,	3,	50,	PotionDescription::SelectColor(),	0},
 };
 
-int POTION_REC::potion_total_value = 0;
-void POTION_REC::RunOnce()
+int PotionDescription::potion_total_value = 0;
+void PotionDescription::RunOnce()
 {
-    for (int i = 0; i < PN_RANDOM; i++) {
+    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++) {
         potion_total_value += potion_descr[i].rarity;
     }
 }
 
-struct POTION_RUN_ONCE {
-    POTION_RUN_ONCE()
+struct PotionRunOnce {
+    PotionRunOnce()
     {
-        POTION_REC::RunOnce();
+        PotionDescription::RunOnce();
     }
-} _POTION_RUN_ONCE;
+} potion_run_once;
 
-POTION_NAME POTION_REC::GetRandomPotion()
+PotionName PotionDescription::GetRandomPotion()
 {
     int val = vRand(potion_total_value);
     int pos = -1;
@@ -208,12 +208,12 @@ POTION_NAME POTION_REC::GetRandomPotion()
         val -= potion_descr[pos].rarity;
     } while (val >= 0);
 
-    return static_cast<POTION_NAME>(pos);
+    return static_cast<PotionName>(pos);
 }
 
-POTION_REC* POTION_REC::GetRec(const POTION_NAME pn)
+PotionDescription* PotionDescription::GetRec(const PotionName pn)
 {
-    for (int i = 0; i < PN_RANDOM; i++)
+    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
         if (potion_descr[i].pn == pn) {
             return &potion_descr[i];
         }
@@ -221,17 +221,17 @@ POTION_REC* POTION_REC::GetRec(const POTION_NAME pn)
     return nullptr;
 }
 
-XPotion::XPotion(const POTION_NAME _pn)
+XPotion::XPotion(const PotionName _pn)
 {
-    if (_pn == PN_RANDOM) {
-        pn = POTION_REC::GetRandomPotion();
+    if (_pn == PotionName::RANDOM) {
+        pn = PotionDescription::GetRandomPotion();
     } else {
         pn = _pn;
     }
 
     pdescr = nullptr;
 
-    for (int i = 0; i < PN_RANDOM; i++)
+    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
         if (potion_descr[i].pn == pn) {
             pdescr = &potion_descr[i];
             break;
@@ -243,7 +243,7 @@ XPotion::XPotion(const POTION_NAME _pn)
     bp = BP_OTHER;
     it = ItemType::POTION;
     view = '!';
-    color =	pnc_table[pdescr->force_color].color;
+    color =	pnc_table[static_cast<int>(pdescr->force_color)].color;
 
     name = pdescr->name;
 
@@ -285,10 +285,10 @@ std::string XPotion::toString()
     }
 
     if (quantity == 1) {
-        return fmt::format("{} potion", pnc_table[pdescr->force_color].name);
+        return fmt::format("{} potion", pnc_table[static_cast<int>(pdescr->force_color)].name);
     }
 
-    return fmt::format("heap of {} {} potions", quantity, pnc_table[pdescr->force_color].name);
+    return fmt::format("heap of {} {} potions", quantity, pnc_table[static_cast<int>(pdescr->force_color)].name);
 }
 
 int XPotion::isIdentifed()
@@ -315,9 +315,9 @@ int XPotion::onDrink(XCreature * cr)
         flag = XEffect::Make(cr, pdescr->effect, 30);
     } else {
         switch (pn) {
-            case PN_WATER:
-            case PN_APPLEJUCE:
-            case PN_ORANGEJUCE:
+            case PotionName::WATER:
+            case PotionName::APPLEJUCE:
+            case PotionName::ORANGEJUCE:
                 if (cr->isHero()) {
                     msgwin.Add("You feel less thirsty.");
                 } else if (cr->isVisible()) {
@@ -328,35 +328,35 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_GAIN_STRENGTH:
+            case PotionName::GAIN_STRENGTH:
                 cr->GainAttr(XStats::STR, 1);
                 break;
 
-            case PN_GAIN_TOUGHNESS:
+            case PotionName::GAIN_TOUGHNESS:
                 cr->GainAttr(XStats::TOU, 1);
                 break;
 
-            case PN_GAIN_WILLPOWER:
+            case PotionName::GAIN_WILLPOWER:
                 cr->GainAttr(XStats::WIL, 1);
                 break;
 
-            case PN_GAIN_DEXTERITY:
+            case PotionName::GAIN_DEXTERITY:
                 cr->GainAttr(XStats::DEX, 1);
                 break;
 
-            case PN_GAIN_MANA:
+            case PotionName::GAIN_MANA:
                 cr->GainAttr(XStats::MAN, 1);
                 break;
 
-            case PN_WEAKNESS:
+            case PotionName::WEAKNESS:
                 cr->GainAttr(XStats::STR, -1);
                 break;
 
-            case PN_CLUMSINESS:
+            case PotionName::CLUMSINESS:
                 cr->GainAttr(XStats::DEX, -1);
                 break;
 
-            case PN_DEATH:
+            case PotionName::DEATH:
                 // A potion of death should hurt really badly!
                 // As potion of lifelessness, it was just another
                 // clumsiness potion, but now it is a potion of death.
@@ -408,7 +408,7 @@ int XPotion::onDrink(XCreature * cr)
                 cr->md->Add(MOD_WOUND, 100, cr); // Ensure death
                 break;
 
-            case PN_SATIATION:
+            case PotionName::SATIATION:
                 cr->nutrio += cr->base_nutrio * 7;
 
                 if (cr->isHero()) {
@@ -421,7 +421,7 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_STARVATION:
+            case PotionName::STARVATION:
                 cr->nutrio = cr->base_nutrio * 3;
 
                 if (cr->isHero()) {
@@ -434,7 +434,7 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_BOOST_SPEED:
+            case PotionName::BOOST_SPEED:
                 cr->md->Add(MOD_BOOST_SPEED, 100, cr);
 
                 if (cr->isVisible() && !cr->isHero()) {
@@ -444,7 +444,7 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_SLOWNESS:
+            case PotionName::SLOWNESS:
                 cr->md->Add(MOD_SLOWNESS, 100, cr);
 
                 if (cr->isVisible() && !cr->isHero()) {
@@ -455,7 +455,7 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_BLEEDNESS:
+            case PotionName::BLEEDNESS:
                 cr->md->Add(MOD_WOUND, 30, cr);
 
                 if (cr->isHero()) {
@@ -468,7 +468,7 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_DISEASE:
+            case PotionName::DISEASE:
                 cr->md->Add(MOD_DISEASE, 25, cr);
 
                 if (cr->isVisible() && !cr->isHero()) {
@@ -479,7 +479,7 @@ int XPotion::onDrink(XCreature * cr)
                 flag = 1;
                 break;
 
-            case PN_POISON:
+            case PotionName::POISON:
                 cr->md->Add(MOD_POISON, 10, cr);
 
                 if (cr->isVisible() && !cr->isHero()) {
@@ -513,7 +513,7 @@ void XPotion::FixupDescr()
 {
     pdescr = nullptr;
 
-    for (int i = 0; i < PN_RANDOM; i++)
+    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
         if (potion_descr[i].pn == pn) {
             pdescr = &potion_descr[i];
             break;
@@ -524,14 +524,14 @@ void XPotion::FixupDescr()
 
 void XPotion::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (int i = 0; i < PN_RANDOM; i++) {
+    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++) {
         ar(potion_descr[i]);
     }
 }
 
 void XPotion::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (int i = 0; i < PN_RANDOM; i++) {
+    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++) {
         ar(potion_descr[i]);
     }
 }
@@ -556,27 +556,27 @@ void XAlchemy::Init()
 
     for (const auto& it: alchemy.recipes) {
         file <<  fmt::format("{} + {} = {}\n",
-            potion_descr[it->pn1].name,
-            potion_descr[it->pn2].name,
-            potion_descr[it->result].name
+            potion_descr[static_cast<int>(it->pn1)].name,
+            potion_descr[static_cast<int>(it->pn2)].name,
+            potion_descr[static_cast<int>(it->result)].name
         );
     }
 }
 
-std::string XAlchemy::GetRecipeName(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
+std::string XAlchemy::GetRecipeName(const PotionName pn1, const PotionName pn2, const PotionName pn3)
 {
-    const char* c1 = potion_descr[pn1].name;
-    const char* c2 = potion_descr[pn2].name;
-    const char* c3 = potion_descr[pn3].name;
+    const char* c1 = potion_descr[static_cast<int>(pn1)].name;
+    const char* c2 = potion_descr[static_cast<int>(pn2)].name;
+    const char* c3 = potion_descr[static_cast<int>(pn3)].name;
     return fmt::format("potion of {} + potion of {} = potion of {}", c1, c2, c3);
 }
 
 void XAlchemy::BuildRecipes(int al_lvl)
 {
-    POTION_NAME * pTableSrc = nullptr;
+    PotionName * pTableSrc = nullptr;
     int tbl_src = GetPotionCount(al_lvl, &pTableSrc);
 
-    POTION_NAME * pTableDest = nullptr;
+    PotionName * pTableDest = nullptr;
     int tbl_dest = GetPotionCount(al_lvl + 1, &pTableDest);
 
     int* tbl = new int[tbl_src * tbl_src];
@@ -600,21 +600,21 @@ void XAlchemy::BuildRecipes(int al_lvl)
     delete[] pTableDest;
 }
 
-int XAlchemy::GetPotionCount(const int al_lvl, POTION_NAME** pTable)
+int XAlchemy::GetPotionCount(const int al_lvl, PotionName** pTable)
 {
     int res = 0;
     int i;
 
-    for (i = 0; i < PN_RANDOM; i++)
+    for (i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
         if (potion_descr[i].alchemy_power == al_lvl) {
             res++;
         }
 
-    *pTable = new POTION_NAME[res];
+    *pTable = new PotionName[res];
 
     int tres = 0;
 
-    for (i = 0; i < PN_RANDOM; i++)
+    for (i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
         if (potion_descr[i].alchemy_power == al_lvl) {
             (*pTable)[tres] = potion_descr[i].pn;
             tres++;
@@ -639,7 +639,7 @@ XAlchemyRecipe* XAlchemy::GetRecipe(int num)
     return alchemy.recipes[num].get();
 }
 
-int XAlchemy::isValidRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
+int XAlchemy::isValidRecipe(PotionName pn1, PotionName pn2, PotionName pn3)
 {
     for (auto& rec: alchemy.recipes) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 && rec->result == pn3)
@@ -649,13 +649,13 @@ int XAlchemy::isValidRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3)
     return 0;
 }
 
-POTION_NAME XAlchemy::GetPotionName(POTION_NAME pn1, POTION_NAME pn2)
+PotionName XAlchemy::GetPotionName(PotionName pn1, PotionName pn2)
 {
     for (auto& rec: alchemy.recipes) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 || rec->pn2 == pn1 && rec->pn1 == pn2)
             return rec->result;
     }
 
-    return PN_UNKNOWN;
+    return PotionName::UNKNOWN;
 }
 

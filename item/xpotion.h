@@ -31,105 +31,105 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "magic/effect.h"
 
-enum POTION_COLOR {
-    PNC_CLEAR,
-    PNC_SMOKY,
-    PNC_GREEN,
-    PNC_ORANGE,
-    PNC_YELLOW,
-    PNC_BLACK,
-    PNC_BLUE,
-    PNC_WHITE,
-    PNC_CYAN,
-    PNC_PURPLE,
-    PNC_HAZE,
-    PNC_GOLDEN,
-    PNC_SILVER,
-    PNC_AZURE,
-    PNC_MURKY,
-    PNC_RED,
-    PNC_GLOWING,
-    PNC_MOTTLED,
-    PNC_BLOBBY,
-    PNC_PINK,
-    PNC_MOULDY,
-    PNC_GRAY,
-    PNC_MERCURY,
-    PNC_OILY,
-    PNC_VISCOUS,
-    PNC_DARK_RED,
-    PNC_LIGHT_RED,
-    PNC_DARK_BLUE,
-    PNC_LIGHT_BLUE,
-    PNC_BROWN,
-    PNC_LIGHT_GRAY,
-    PNC_DARK_GRAY,
-    PNC_DARK_GREEN,
-    PNC_LIGHT_GREEN,
-    PNC_BEIGE,
-    PNC_AQUAMARINE,
-    PNC_CORAL,
-    PNC_IVORY,
-    PNC_MAROON,
-    PNC_TAN,
-    PNC_TURQUOISE,
-    PNC_VIOLET,
-    PNC_RANDOM
+enum class PotionColor {
+    CLEAR,
+    SMOKY,
+    GREEN,
+    ORANGE,
+    YELLOW,
+    BLACK,
+    BLUE,
+    WHITE,
+    CYAN,
+    PURPLE,
+    HAZE,
+    GOLDEN,
+    SILVER,
+    AZURE,
+    MURKY,
+    RED,
+    GLOWING,
+    MOTTLED,
+    BLOBBY,
+    PINK,
+    MOULDY,
+    GRAY,
+    MERCURY,
+    OILY,
+    VISCOUS,
+    DARK_RED,
+    LIGHT_RED,
+    DARK_BLUE,
+    LIGHT_BLUE,
+    BROWN,
+    LIGHT_GRAY,
+    DARK_GRAY,
+    DARK_GREEN,
+    LIGHT_GREEN,
+    BEIGE,
+    AQUAMARINE,
+    CORAL,
+    IVORY,
+    MAROON,
+    TAN,
+    TURQUOISE,
+    VIOLET,
+    RANDOM
 };
 
-enum POTION_NAME {
-    PN_UNKNOWN = -1,
-    PN_WATER,
-    PN_APPLEJUCE,
-    PN_ORANGEJUCE,
-    PN_HEALING,
-    PN_CURE_LIGHT_WOUNDS,
-    PN_CURE_SERIOUS_WOUNDS,
-    PN_CURE_CRITICAL_WOUNDS,
-    PN_CURE_MORTAL_WOUNDS,
-    PN_POWER,
-    PN_RESTORATION,
-    PN_GAIN_STRENGTH,
-    PN_GAIN_WILLPOWER,
-    PN_GAIN_MANA,
-    PN_GAIN_TOUGHNESS,
-    PN_GAIN_DEXTERITY,
-    PN_CURE_POISON,
-    PN_POISON,
-    PN_BLEEDNESS,
-    PN_DISEASE,
-    PN_CURE_DISEASE,
-    PN_HEROISM,
-    PN_SEE_INVISIBLE,
-    PN_WEAKNESS,
-    PN_CLUMSINESS,
-    PN_DEATH,
-    PN_SATIATION,
-    PN_STARVATION,
-    PN_BOOST_SPEED,
-    PN_SLOWNESS,
-    PN_ACID_RESISTANCE,
-    PN_FIRE_RESISTANCE,
-    PN_COLD_RESISTANCE,
-    PN_POISON_RESISTANCE,
-    PN_RANDOM
+enum class PotionName {
+    UNKNOWN = -1,
+    WATER,
+    APPLEJUCE,
+    ORANGEJUCE,
+    HEALING,
+    CURE_LIGHT_WOUNDS,
+    CURE_SERIOUS_WOUNDS,
+    CURE_CRITICAL_WOUNDS,
+    CURE_MORTAL_WOUNDS,
+    POWER,
+    RESTORATION,
+    GAIN_STRENGTH,
+    GAIN_WILLPOWER,
+    GAIN_MANA,
+    GAIN_TOUGHNESS,
+    GAIN_DEXTERITY,
+    CURE_POISON,
+    POISON,
+    BLEEDNESS,
+    DISEASE,
+    CURE_DISEASE,
+    HEROISM,
+    SEE_INVISIBLE,
+    WEAKNESS,
+    CLUMSINESS,
+    DEATH,
+    SATIATION,
+    STARVATION,
+    BOOST_SPEED,
+    SLOWNESS,
+    ACID_RESISTANCE,
+    FIRE_RESISTANCE,
+    COLD_RESISTANCE,
+    POISON_RESISTANCE,
+    RANDOM
 };
 
-struct POTION_REC {
-    POTION_NAME pn;
+struct PotionDescription {
+    PotionName pn;
     const char* name;
     XEffect::Id effect;
     int rarity;
     int alchemy_power;
     int value; // how much it cost for one potion_power //value * potion_power * [spell_cost]
-    POTION_COLOR force_color;
+    PotionColor force_color;
     int identify;
 
-    static POTION_COLOR SelectColor(POTION_COLOR pnc = PNC_RANDOM);
-    static POTION_NAME GetRandomPotion();
+    static PotionColor SelectColor(PotionColor pnc = PotionColor::RANDOM);
+    static PotionName GetRandomPotion();
     static void RunOnce();
     static int potion_total_value;
-    static POTION_REC* GetRec(POTION_NAME pn);
+    static PotionDescription* GetRec(PotionName pn);
 
     // name/effect/rarity/alchemy_power/value are compile-time constants
     // (see potion_descr[]'s static initializer) - only identify/
@@ -145,17 +145,17 @@ struct POTION_REC {
 class XPotion : public XItem
 {
     public:
-        // Registers POTION_NAME as the Lua table PotionName.MEMBER (prefix
+        // Registers PotionName as the Lua table PotionName.MEMBER (prefix
         // dropped, same convention as every other Lua-facing enum table) -
         // lets world scripts create a specific potion (e.g. for a unique
         // NPC's starting gear) via CreateObject(PotionName.HEALING), the
         // only axis ItemKind/ItemType-based creation (ICREATEA/ICREATEB,
         // see item/itemf.cpp) can't reach: every ItemKind::POTION item is
-        // created as `new XPotion()` (PN_RANDOM) regardless of ItemType.
+        // created as `new XPotion()` (PotionName::RANDOM) regardless of ItemType.
         static void RegisterLua(sol::state_view& lua);
 
         DECLARE_CREATOR(XPotion, XItem);
-        XPotion(POTION_NAME _pn = PN_RANDOM);
+        XPotion(PotionName _pn = PotionName::RANDOM);
         XPotion(XPotion * copy);
         XItem* MakeCopy() override
         {
@@ -171,7 +171,7 @@ class XPotion : public XItem
             return value;
         }
 
-        POTION_NAME pn;
+        PotionName pn;
         int onDrink(XCreature * cr);
 
         // Non-template, concrete-archive-typed (like XCreature::Save/
@@ -210,17 +210,17 @@ class XPotion : public XItem
 
     protected:
         void FixupDescr();
-        POTION_REC* pdescr;
+        PotionDescription* pdescr;
 };
 
 class XAlchemyRecipe
 {
     public:
-        POTION_NAME pn1;
-        POTION_NAME pn2;
-        POTION_NAME result;
+        PotionName pn1;
+        PotionName pn2;
+        PotionName result;
 
-        XAlchemyRecipe(POTION_NAME p1, POTION_NAME p2, POTION_NAME res) :
+        XAlchemyRecipe(PotionName p1, PotionName p2, PotionName res) :
             pn1(p1), pn2(p2), result(res) {}
 
         template<class Archive>
@@ -238,13 +238,13 @@ class XAlchemyRecipe
 // (a header template) - a specialization declared only in xpotion.cpp
 // wouldn't be visible wherever that gets instantiated (see the same
 // reasoning, first hit for XStandardAI, in std_ai.h).
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRecipe, serialize, PN_WATER, PN_WATER, PN_WATER);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRecipe, serialize, PotionName::WATER, PotionName::WATER, PotionName::WATER);
 
 class XAlchemy
 {
         void BuildRecipes(int al_lvl);
 
-        static int GetPotionCount(int al_lvl, POTION_NAME** pTable);
+        static int GetPotionCount(int al_lvl, PotionName** pTable);
         std::vector<std::unique_ptr<XAlchemyRecipe>> recipes;
     public:
         XAlchemy();
@@ -252,9 +252,9 @@ class XAlchemy
         static int GetRecipeCount();
         static XAlchemyRecipe* GetRecipe(int num);
         static void Init();
-        static int isValidRecipe(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
-        static std::string GetRecipeName(POTION_NAME pn1, POTION_NAME pn2, POTION_NAME pn3);
-        static POTION_NAME GetPotionName(POTION_NAME pn1, POTION_NAME pn2);
+        static int isValidRecipe(PotionName pn1, PotionName pn2, PotionName pn3);
+        static std::string GetRecipeName(PotionName pn1, PotionName pn2, PotionName pn3);
+        static PotionName GetPotionName(PotionName pn1, PotionName pn2);
 };
 
 #endif

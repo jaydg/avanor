@@ -974,11 +974,11 @@ int XStandardAI::DrinkPotion() const
             if (it->kind & ItemKind::POTION) {
                 auto pot = dynamic_cast<XPotion *>(it.get());
 
-                if (pot->pn == PN_HEALING ||
-                    pot->pn == PN_CURE_LIGHT_WOUNDS ||
-                    pot->pn == PN_CURE_SERIOUS_WOUNDS ||
-                    pot->pn == PN_CURE_CRITICAL_WOUNDS ||
-                    pot->pn == PN_CURE_MORTAL_WOUNDS) {
+                if (pot->pn == PotionName::HEALING ||
+                    pot->pn == PotionName::CURE_LIGHT_WOUNDS ||
+                    pot->pn == PotionName::CURE_SERIOUS_WOUNDS ||
+                    pot->pn == PotionName::CURE_CRITICAL_WOUNDS ||
+                    pot->pn == PotionName::CURE_MORTAL_WOUNDS) {
                     // FIXME: why the copy?
                     auto np = dynamic_cast<XPotion *>(pot->MakeCopy());
                     np->onDrink(ai_owner);

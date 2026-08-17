@@ -345,7 +345,7 @@ class XLocation : public XObject
         static void* CreateObjectByName(const std::string& name);
         static void* CreateObjectByMask(int flag, int min_val, int max_val);
 
-        // pn is really POTION_NAME - kept as a plain int here, same
+        // pn is really PotionName - kept as a plain int here, same
         // reasoning as CreateObjectByMask's ItemKind-as-int flag: pulling
         // item/xpotion.h into this header breaks XLocation's own forward-
         // declaration ordering for downstream includers.

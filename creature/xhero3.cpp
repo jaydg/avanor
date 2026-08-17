@@ -355,7 +355,7 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
 }
 
 
-int XHero::LearnRecipe(const POTION_NAME pn1, const POTION_NAME pn2, const POTION_NAME pn3)
+int XHero::LearnRecipe(const PotionName pn1, const PotionName pn2, const PotionName pn3)
 {
     for (const auto& it : recipe_list)
         if (it->pn1 == pn1 && it->pn2 == pn2) {
@@ -396,11 +396,11 @@ void XHero::MixPotions()
         auto pot2 = dynamic_cast<XPotion *>(item2.get());
 
         if (pot2) {
-            const POTION_NAME pn = XAlchemy::GetPotionName(pot1->pn, pot2->pn);
-            const POTION_REC* pr = POTION_REC::GetRec(pot1->pn);
+            const PotionName pn = XAlchemy::GetPotionName(pot1->pn, pot2->pn);
+            const PotionDescription* pr = PotionDescription::GetRec(pot1->pn);
             int val = sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
-            if (pn != PN_UNKNOWN && vRand(100) < val) {
+            if (pn != PotionName::UNKNOWN && vRand(100) < val) {
                 const auto pot = new XPotion(pn);
                 sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
                 msgwin.Add(fmt::format("You have mixed {}.", pot->toString()));
