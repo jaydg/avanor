@@ -38,9 +38,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map_objects.h"
 
 // Left behind in game/location.cpp on purpose, not overlooked: Altar
-// (bound to XDeity), CreateMushroom (named after a specific plant),
-// BuildShop (drags in XShop and its C++ keeper AI) and
-// IsWearingAvanorDefender (an engine global named after a single
+// (bound to XDeity), BuildShop (drags in XShop and its C++ keeper AI)
+// and IsWearingAvanorDefender (an engine global named after a single
 // artifact). Those are Avanor content wearing an engine API hat; moving
 // them here would bless them as part of the generic interface.
 //
@@ -170,10 +169,14 @@ void DropItem(void* item, sol::optional<int> x, sol::optional<int> y)
         tx = *x;
         ty = *y;
     } else {
-        XPoint pt;
-        XLocation::current_location->GetFreeXY(&pt);
-        tx = pt.x;
-        ty = pt.y;
+        const auto pt = XLocation::current_location->GetFreeXY();
+
+        if (!pt) {
+            return;
+        }
+
+        tx = pt->x;
+        ty = pt->y;
     }
 
     if (pItem) {
@@ -228,9 +231,13 @@ void* Furniture(int x, int y, int color, const std::string& view, const std::str
 //OuterObject(xLIGHTRED, '~', 'a royal bad', 'EventHandler')
 void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
 {
-    XPoint pt;
-    XLocation::current_location->GetFreeXY(&pt);
-    return new XOuterObject(pt.x, pt.y, color, view[0], (char*)descr.c_str(), XLocation::current_location, event ? event->c_str() : nullptr);
+    const auto pt = XLocation::current_location->GetFreeXY();
+
+    if (!pt) {
+        return nullptr;
+    }
+
+    return new XOuterObject(pt->x, pt->y, color, view[0], (char*)descr.c_str(), XLocation::current_location, event ? event->c_str() : nullptr);
 }
 
 //OuterObject(x, y, xLIGHTRED, '~', 'a royal bad', 'EventHandler')
@@ -282,27 +289,51 @@ void EventPlaceArea(int x, int y, int w, int h, const std::string& event)
 // now a Lua function in world/valley.lua built out of exactly these calls.
 // ---------------------------------------------------------------------
 
-std::tuple<int, int> GetMapSize()
+// Every one of these takes an optional location handle - the same void*
+// that a location event handler is passed - and falls back to the location
+// currently being built. World-construction scripts want the default;
+// runtime event handlers (world/locations/mushroom_cave.lua's mushroom
+// spawner, say) are handed a specific location and must say so.
+static XLocation* ResolveLocation(const sol::optional<void*>& location)
 {
-    const XMap* map = XLocation::current_location->map;
+    return location ? static_cast<XLocation*>(*location) : XLocation::current_location;
+}
+
+std::tuple<int, int> GetMapSize(sol::optional<void*> location)
+{
+    const XMap* map = ResolveLocation(location)->map;
 
     return {map->len, map->hgt};
 }
 
-int GetTile(const int x, const int y)
+int GetTile(const int x, const int y, sol::optional<void*> location)
 {
-    return XLocation::current_location->map->GetXY(x, y);
+    return ResolveLocation(location)->map->GetXY(x, y);
 }
 
-bool HasSpecial(const int x, const int y)
+bool HasSpecial(const int x, const int y, sol::optional<void*> location)
 {
-    return XLocation::current_location->map->GetSpecial(x, y) != nullptr;
+    return ResolveLocation(location)->map->GetSpecial(x, y) != nullptr;
+}
+
+// A randomly chosen walkable, unoccupied cell, or nil when the map has
+// none - a direct pass-through of XLocation::GetFreeXY()'s own optional.
+sol::optional<std::tuple<int, int>> GetFreeXY(sol::optional<void*> location)
+{
+    const auto pt = ResolveLocation(location)->GetFreeXY();
+
+    if (!pt) {
+        return sol::nullopt;
+    }
+
+    return std::make_tuple(pt->x, pt->y);
 }
 
 // Creates `class_name` through the same factory CreateObject() uses, then
 // places it. Returns the object so script can keep configuring it, or nil
 // when the class is unknown or the cell is unusable.
-sol::object PlaceSpecial(const std::string& class_name, const int x, const int y, sol::this_state s)
+sol::object PlaceSpecial(const std::string& class_name, const int x, const int y,
+                         sol::this_state s, sol::optional<void*> location)
 {
     auto* obj = dynamic_cast<XMapObject*>(XClassFactory::CreateNew(class_name));
 
@@ -310,7 +341,7 @@ sol::object PlaceSpecial(const std::string& class_name, const int x, const int y
         return sol::nil;
     }
 
-    if (!obj->PlaceAt(XLocation::current_location, x, y)) {
+    if (!obj->PlaceAt(ResolveLocation(location), x, y)) {
         obj->Invalidate();
 
         return sol::nil;
@@ -324,6 +355,7 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("GetMapSize", &lua_api::GetMapSize);
     lua.set_function("GetTile", &lua_api::GetTile);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
+    lua.set_function("GetFreeXY", &lua_api::GetFreeXY);
     lua.set_function("PlaceSpecial", &lua_api::PlaceSpecial);
 
     lua.set_function("CreateLocation", &XLocation::CreateLocation);

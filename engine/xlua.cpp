@@ -112,7 +112,6 @@ void XLua::Init()
 
         lua.set_function("BuildShop", &XLocation::BuildShop);
         lua.set_function("Altar", &XLocation::Altar);
-        lua.set_function("CreateMushroom", &XLocation::CreateMushroom);
     }
 
     {

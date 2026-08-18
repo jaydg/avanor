@@ -95,7 +95,7 @@ void XGame::Create(const char type_of_start) const
 
         case 'N' :
             XAlchemy::Init();
-            HerbDefinition::Create();
+            PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Generating game objects, please wait...")) / 2, size_y / 2);
             vPutS(MSG_LIGHTGRAY "Generating game objects, please wait...");
@@ -106,7 +106,7 @@ void XGame::Create(const char type_of_start) const
 
         case 'T' :
             XAlchemy::Init();
-            HerbDefinition::Create();
+            PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Preparing for test, please wait...")) / 2, size_y / 2);
             vPutS(MSG_LIGHTGRAY "Preparing for test, please wait...");
@@ -117,7 +117,7 @@ void XGame::Create(const char type_of_start) const
 
         case 'D' :
             XAlchemy::Init();
-            HerbDefinition::Create();
+            PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Preparing for demo, please wait...")) / 2, size_y / 2);
             vPutS(MSG_LIGHTGRAY "Preparing for demo, please wait...");
@@ -344,9 +344,11 @@ void XGame::CreateLocations() const
 void XGame::CreateHero() const
 {
     XRect hero_rect(26, 4, 32, 9);
-    XPoint hero_point;
 
-    locations[XLocation::MAIN]->GetFreeXY(&hero_point, &hero_rect);
+    // The one caller that cannot carry on without a cell: a starting
+    // location with nowhere to stand is an unusable world, so let the
+    // empty optional throw rather than inventing a coordinate.
+    const XPoint hero_point = locations[XLocation::MAIN]->GetFreeXY(&hero_rect).value();
 
     const auto hero = new XHero(1);
     Game.NewCreature(hero, hero_point.x, hero_point.y, locations[XLocation::MAIN].get());
@@ -354,14 +356,17 @@ void XGame::CreateHero() const
 
     // If hero is a bard, then create a dog for them...
     if (strstr(hero->GetProfessionStr(), "bard")) {
-        XPoint dog_point;
         XRect tr(hero->x - 1, hero->y - 1, hero->x + 1, hero->y + 1);
-        hero->l->GetFreeXY(&dog_point, &tr);
-        const XCreature* cr = hero->l->NewCreature(CN_DOG, dog_point.x, dog_point.y);
-        cr->xai->SetCompanion(hero);
-        cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_OUT);
-        cr->xai->SetAIFlag(XStandardAI::PEACEFUL);
-        cr->xai->SetEnemyClass(CreatureClass::KOBOLD | CreatureClass::GOBLIN | CreatureClass::UNDEAD | CreatureClass::INSECT | CreatureClass::BLOB | CreatureClass::CANINE | CreatureClass::FELINE | CreatureClass::RAT | CreatureClass::REPTILE | CreatureClass::ORC);
+
+        // Only the eight cells around the hero, which can legitimately all
+        // be taken - then the bard simply starts without the dog.
+        if (const auto dog_point = hero->l->GetFreeXY(&tr)) {
+            const XCreature* cr = hero->l->NewCreature(CN_DOG, dog_point->x, dog_point->y);
+            cr->xai->SetCompanion(hero);
+            cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_OUT);
+            cr->xai->SetAIFlag(XStandardAI::PEACEFUL);
+            cr->xai->SetEnemyClass(CreatureClass::KOBOLD | CreatureClass::GOBLIN | CreatureClass::UNDEAD | CreatureClass::INSECT | CreatureClass::BLOB | CreatureClass::CANINE | CreatureClass::FELINE | CreatureClass::RAT | CreatureClass::REPTILE | CreatureClass::ORC);
+        }
     }
 
     XCreature::main_creature = hero;

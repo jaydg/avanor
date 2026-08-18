@@ -61,10 +61,12 @@ namespace lua_api
     void EventPlace(const std::string& event);
     void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
 
-    std::tuple<int, int> GetMapSize();
-    int GetTile(int x, int y);
-    bool HasSpecial(int x, int y);
-    sol::object PlaceSpecial(const std::string& class_name, int x, int y, sol::this_state s);
+    std::tuple<int, int> GetMapSize(sol::optional<void*> location);
+    int GetTile(int x, int y, sol::optional<void*> location);
+    bool HasSpecial(int x, int y, sol::optional<void*> location);
+    sol::optional<std::tuple<int, int>> GetFreeXY(sol::optional<void*> location);
+    sol::object PlaceSpecial(const std::string& class_name, int x, int y,
+                             sol::this_state s, sol::optional<void*> location);
 
     // Registers every function above under its Lua name.
     void RegisterWorldApi(sol::state_view& lua);

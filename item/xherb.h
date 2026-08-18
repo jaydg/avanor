@@ -31,7 +31,7 @@ enum HERB_TYPE {
     HT_MUSHROOM,
 };
 
-struct HerbDefinition {
+struct PlantDefinition {
     const char* herb_name;
     const char* bush_name;
     const char* post_eat;
@@ -102,14 +102,54 @@ class XLocation;
 
 #define BASE_HERB_REFRESH 1000000
 
-class XHerbBush: public XMapObject
+// Shared base for the map objects that grow a plant: a herb bush and a
+// mushroom patch were near-identical classes, each with its own index into
+// the shared species table and its own copy of the same placement code.
+//
+// Everything that differed between them is now three questions a subclass
+// answers - which species type to draw from, which glyph to draw, and how
+// long before its first turn - so placement exists once.
+class XPlant : public XMapObject
 {
-        int herb_index;
+    protected:
+        // Index into herbs[]; the species is drawn at placement time.
+        int herb_index{};
+
+        virtual HERB_TYPE SpeciesType() const = 0;
+        virtual char SpeciesView() const = 0;
+        virtual int FirstRunDelay() const = 0;
+
+        // herbs[] is private to xherb.cpp, so these are defined there.
+        // The non-const overload exists because naming a plant can mark
+        // its species identified (see XHerbBush::GetName()).
+        const PlantDefinition& Species() const;
+        PlantDefinition& Species();
+
+        XPlant() {}
+        explicit XPlant(DUMMY_STRUCT* ds) : XMapObject(ds) {}
+        friend class cereal::access;
+
+    public:
+        // Draws the species, places the object and schedules it.
+        bool PlaceAt(XLocation* location, int _x, int _y) override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(herb_index);
+        }
+};
+
+class XHerbBush: public XPlant
+{
         unsigned char herb_strength;
         int CountNeighbours(int x, int y);
 
     protected:
-        long grownth_rate;
+        HERB_TYPE SpeciesType() const override { return HT_HERB; }
+        char SpeciesView() const override { return '"'; }
+        int FirstRunDelay() const override { return 1; }
 
         const std::string GetName(XCreature *viewer) override;
         XHerbBush() { }
@@ -120,19 +160,17 @@ class XHerbBush: public XMapObject
         friend class cereal::access;
 
     public:
-        DECLARE_CREATOR(XHerbBush, XMapObject);
+        DECLARE_CREATOR(XHerbBush, XPlant);
         XHerbBush(int _x, int _y, XLocation * _l);
 
-        // Picks the species, then places and schedules. Everything the
-        // three-argument constructor used to do, reachable after a bare
-        // CreateObject("XHerbBush") from script.
+        // Adds the bush's own starting strength on top of XPlant's.
         bool PlaceAt(XLocation* location, int _x, int _y) override;
 
         template<class Archive>
         void serialize(Archive& ar)
         {
-            ar(cereal::base_class<XMapObject>(this));
-            ar(herb_strength, herb_index);
+            ar(cereal::base_class<XPlant>(this));
+            ar(herb_strength);
         }
 
         bool Run() override;
@@ -142,27 +180,25 @@ class XHerbBush: public XMapObject
 
 #define BASE_MUSH_REFRESH 1000000
 
-class XMushSpawn: public XMapObject
+class XMushSpawn: public XPlant
 {
-        int mush_index;
-        long grownth_rate;
+    protected:
+        HERB_TYPE SpeciesType() const override { return HT_MUSHROOM; }
+        char SpeciesView() const override { return '`'; }
+        int FirstRunDelay() const override { return vRand(BASE_MUSH_REFRESH); }
 
         const std::string GetName(XCreature *viewer) override;
         XMushSpawn() { }
         friend class cereal::access;
 
     public:
-        DECLARE_CREATOR(XMushSpawn, XMapObject);
+        DECLARE_CREATOR(XMushSpawn, XPlant);
         XMushSpawn(int _x, int _y, XLocation * _l);
-
-        // See XHerbBush::PlaceAt().
-        bool PlaceAt(XLocation* location, int _x, int _y) override;
 
         template<class Archive>
         void serialize(Archive& ar)
         {
-            ar(cereal::base_class<XMapObject>(this));
-            ar(mush_index);
+            ar(cereal::base_class<XPlant>(this));
         }
 
         bool Run() override;

@@ -184,11 +184,8 @@ void XLocation::AddPlace(XAnyPlace * pl)
     assert(0);
 }
 
-void XLocation::GetFreeXY(XPoint * pt, XRect * area)
+std::optional<XPoint> XLocation::GetFreeXY(XRect * area)
 {
-    int f = 10000;
-    int tx, ty;
-
     int bx, by, dx, dy;
 
     if (area) {
@@ -203,18 +200,16 @@ void XLocation::GetFreeXY(XPoint * pt, XRect * area)
         dy = map->hgt;
     }
 
-    while (f-- > 0) {
-        tx = vRand() % dx + bx;
-        ty = vRand() % dy + by;
+    for (int f = 10000; f-- > 0; ) {
+        const int tx = vRand() % dx + bx;
+        const int ty = vRand() % dy + by;
 
         if (map->XGetMovability(tx, ty) == 0 && map->GetSpecial(tx, ty) == nullptr) {
-            pt->x = tx;
-            pt->y = ty;
-            return;
+            return XPoint(tx, ty);
         }
     }
 
-    assert(0);
+    return std::nullopt;
 }
 
 void XLocation::BuildPlain(int w, int h)
@@ -483,8 +478,9 @@ void XLocation::CreateTraps()
         XPoint pt;
 
         for (int i = 0; i < vRand(7); i++) {
-            GetFreeXY(&pt);
-            new XTrap(pt.x, pt.y, this);
+            if (const auto pt = GetFreeXY()) {
+                new XTrap(pt->x, pt->y, this);
+            }
         }
     }
 }
@@ -495,9 +491,14 @@ void XLocation::CreateChests()
         XPoint pt;
 
         for (int i = 0; i < vRand(4); i++) {
-            GetFreeXY(&pt);
+            const auto pt = GetFreeXY();
+
+            if (!pt) {
+                continue;
+            }
+
             XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::ITEM, 1, 5000);
-            ch1->Drop(this, pt.x, pt.y);
+            ch1->Drop(this, pt->x, pt->y);
         }
     }
 }
@@ -517,16 +518,20 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
 
 XCreature* XLocation::NewCreature(CREATURE_NAME cn)
 {
-    XPoint pt;
-    GetFreeXY(&pt, nullptr);
-    return NewCreature(cn, pt.x, pt.y);
+    const auto pt = GetFreeXY();
+
+    return pt ? NewCreature(cn, pt->x, pt->y) : nullptr;
 }
 
 XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
 {
-    XPoint pt;
-    GetFreeXY(&pt, &rect);
-    XCreature * cr = NewCreature(cn, pt.x, pt.y, gid);
+    const auto pt = GetFreeXY(&rect);
+
+    if (!pt) {
+        return nullptr;
+    }
+
+    XCreature * cr = NewCreature(cn, pt->x, pt->y, gid);
 
     if (ai_flags & XStandardAI::GUARD_AREA) {
         cr->xai->SetArea(rect, ln);
@@ -540,19 +545,27 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, u
 
 XCreature* XLocation::NewCreature(CreatureClass crc)
 {
-    XPoint pt;
-    GetFreeXY(&pt, nullptr);
+    const auto pt = GetFreeXY();
+
+    if (!pt) {
+        return nullptr;
+    }
+
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
 
-    Game.NewCreature(cr, pt.x, pt.y, this);
+    Game.NewCreature(cr, pt->x, pt->y, this);
 
     return cr;
 }
 
 XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
 {
-    XPoint pt;
-    GetFreeXY(&pt, &rect);
+    const auto pt = GetFreeXY(&rect);
+
+    if (!pt) {
+        return nullptr;
+    }
+
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
     cr->setGroupID(gid);
 
@@ -560,7 +573,7 @@ XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, 
         cr->xai->SetEnemyClass(CreatureClass::NONE); //by default all creatures in pease with others.
     }
 
-    Game.NewCreature(cr, pt.x, pt.y, this);
+    Game.NewCreature(cr, pt->x, pt->y, this);
 
     if (ai_flags & XStandardAI::GUARD_AREA) {
         cr->xai->SetArea(rect, ln);
@@ -573,8 +586,10 @@ XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, 
 
 XStairWay* XLocation::NewWay(XLocation::Id target_ln, STAIRWAY_TYPE s_type, XRect * area)
 {
-    XPoint pt;
-    GetFreeXY(&pt, area);
+    // A location that cannot fit its own stairway is a broken map, not a
+    // case to recover from - let the empty optional throw.
+    const XPoint pt = GetFreeXY(area).value();
+
     return NewWay(pt.x, pt.y, target_ln, s_type);
 }
 
@@ -699,13 +714,6 @@ std::vector<int>* XLocation::lua_int_buffer = nullptr;
 size_t XLocation::lua_int_index = 0;
 
 
-void XLocation::CreateMushroom(void* location)
-{
-    XLocation * p = (XLocation*)location;
-    XPoint pt;
-    p->GetFreeXY(&pt);
-    new XMushSpawn(pt.x, pt.y, p);
-}
 
 void XLocation::RegisterLua(sol::state_view& lua)
 {

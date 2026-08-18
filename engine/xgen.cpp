@@ -58,11 +58,13 @@ bool XUniversalGen::Run()
     }
 
     if (auto n_mask = static_cast<CreatureClass>(cmask & static_cast<int>(crc)); n_mask != CreatureClass::NONE) {
-        XCreature * cr = XCreatureStorage::CreateRnd(n_mask, crl);
-        XPoint pt;
-        l->GetFreeXY(&pt);
-        Game.NewCreature(cr, pt.x, pt.y, l);
-        cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
+        // No room right now is not an error - the generator simply
+        // produces nothing this turn and tries again on the next.
+        if (const auto pt = l->GetFreeXY()) {
+            XCreature * cr = XCreatureStorage::CreateRnd(n_mask, crl);
+            Game.NewCreature(cr, pt->x, pt->y, l);
+            cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
+        }
     }
 
     ttm = ttmb;

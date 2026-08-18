@@ -221,9 +221,9 @@ void XCave::Draw(XLocation * l)
             int i;
 
             for (i = 0; i < vRand(5); i++) {
-                XPoint pt;
-                l->GetFreeXY(&pt, &r);
-                new XTrap(pt.x, pt.y, l, TL_RANDOM);
+                if (const auto pt = l->GetFreeXY(&r)) {
+                    new XTrap(pt->x, pt->y, l, TL_RANDOM);
+                }
             }
         }
     } else {

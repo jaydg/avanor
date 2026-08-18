@@ -460,7 +460,11 @@ int XEffect::Make(const EFFECT_DATA* pData)
             }
 
             if (flg) {
-                XCreature * cr = pData->l->NewCreature(CreatureClass::UNDEAD);
+                XCreature* cr = pData->l->NewCreature(CreatureClass::UNDEAD);
+
+                if (!cr) {
+                    return 0;
+                }
 
                 // NewCreature() already placed cr via its own FirstStep(),
                 // whose birth path makes the map cell cr's only strong
@@ -500,9 +504,16 @@ int XEffect::Make(const EFFECT_DATA* pData)
         };
 
         case XEffect::BLINK: {
-            XPoint pt;
             XRect rect(pData->caller->x - 5, pData->caller->y - 5, pData->caller->x + 5, pData->caller->y + 5);
-            pData->l->GetFreeXY(&pt, &rect);
+
+            // Nowhere within five tiles to put it - the summon fizzles
+            const auto pt_opt = pData->l->GetFreeXY(&rect);
+
+            if (!pt_opt) {
+                return 0;
+            }
+
+            const XPoint pt = *pt_opt;
 
             if (pData->caller->isVisible()) {
                 msgwin.Add(pData->caller->name);
@@ -525,8 +536,13 @@ int XEffect::Make(const EFFECT_DATA* pData)
         };
 
         case XEffect::TELEPORT: {
-            XPoint pt;
-            pData->l->GetFreeXY(&pt);
+            const auto pt_opt = pData->l->GetFreeXY();
+
+            if (!pt_opt) {
+                return 0;
+            }
+
+            const XPoint pt = *pt_opt;
 
             if (!pData->target->isHero() && pData->target->isVisible()) {
                 msgwin.Add(pData->target->name);

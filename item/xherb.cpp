@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define HERBS_COUNT 18
 
-HerbDefinition herbs[] = {
+PlantDefinition herbs[] = {
     {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
     {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
     {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
@@ -50,7 +50,7 @@ HerbDefinition herbs[] = {
     {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, 0},
 };
 
-void HerbDefinition::Create()
+void PlantDefinition::Create()
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         while (1) {
@@ -91,14 +91,14 @@ void HerbDefinition::Create()
     }
 }
 
-void HerbDefinition::SaveTable(cereal::JSONOutputArchive& ar)
+void PlantDefinition::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
     }
 }
 
-void HerbDefinition::LoadTable(cereal::JSONInputArchive& ar)
+void PlantDefinition::LoadTable(cereal::JSONInputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
@@ -171,7 +171,8 @@ int XHerb::isIdentified()
 
 REGISTER_CLASS(XHerbBush);
 CEREAL_REGISTER_TYPE(XHerbBush);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XHerbBush);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XPlant);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XPlant, XHerbBush);
 
 XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 {
@@ -179,24 +180,43 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
     assert(placed);
 }
 
-bool XHerbBush::PlaceAt(XLocation* location, const int _x, const int _y)
+const PlantDefinition& XPlant::Species() const
+{
+    return herbs[herb_index];
+}
+
+PlantDefinition& XPlant::Species()
+{
+    return herbs[herb_index];
+}
+
+bool XPlant::PlaceAt(XLocation* location, const int _x, const int _y)
 {
     if (!XMapObject::PlaceAt(location, _x, _y)) {
         return false;
     }
 
-    ttm = 1;
-    herb_strength = 1;
-
     do {
         herb_index = vRand(HERBS_COUNT);
-    } while (herbs[herb_index].herb_type != HT_HERB);
+    } while (herbs[herb_index].herb_type != SpeciesType());
 
-    view = '"';
-    color = herbs[herb_index].color;
-    name = herbs[herb_index].herb_name;
+    ttm = FirstRunDelay();
+    view = SpeciesView();
+    color = Species().color;
+    name = Species().herb_name;
 
     Game.Scheduler.Add(this);
+
+    return true;
+}
+
+bool XHerbBush::PlaceAt(XLocation* location, const int _x, const int _y)
+{
+    if (!XPlant::PlaceAt(location, _x, _y)) {
+        return false;
+    }
+
+    herb_strength = 1;
 
     return true;
 }
@@ -210,7 +230,7 @@ const std::string XHerbBush::GetName(XCreature *viewer)
         val += xsk->GetLevel();
     }
 
-    HerbDefinition * herb_data = &herbs[herb_index];
+    PlantDefinition * herb_data = &Species();
 
     const char* size_name = "";
 
@@ -321,7 +341,7 @@ XObject* XHerbBush::Pick(XCreature * picker)
 
 REGISTER_CLASS(XMushSpawn);
 CEREAL_REGISTER_TYPE(XMushSpawn);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XMushSpawn);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XPlant, XMushSpawn);
 
 XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 {
@@ -329,30 +349,9 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
     assert(placed);
 }
 
-bool XMushSpawn::PlaceAt(XLocation* location, const int _x, const int _y)
-{
-    if (!XMapObject::PlaceAt(location, _x, _y)) {
-        return false;
-    }
-
-    ttm = vRand(BASE_MUSH_REFRESH);
-
-    do {
-        mush_index = vRand(HERBS_COUNT);
-    } while (herbs[mush_index].herb_type != HT_MUSHROOM);
-
-    view = '`';
-    color = herbs[mush_index].color;
-    name = herbs[mush_index].herb_name;
-
-    Game.Scheduler.Add(this);
-
-    return true;
-}
-
 const std::string XMushSpawn::GetName(XCreature *viewer)
 {
-    HerbDefinition * herb_data = &herbs[mush_index];
+    PlantDefinition * herb_data = &Species();
     return herb_data->bush_name;
 }
 
@@ -380,9 +379,9 @@ XObject* XMushSpawn::Pick(XCreature * picker)
 
     // Invalidate() evicts this spawn from its map cell itself; the
     // deferred-release graveyard keeps the object alive through the
-    // mush_index read below even when the cell was its last owner.
+    // herb_index read below even when the cell was its last owner.
     Invalidate();
-    XHerb * it = new XHerb(mush_index);
+    XHerb * it = new XHerb(herb_index);
     it->Identify(1);
     return it;
 }

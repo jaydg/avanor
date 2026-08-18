@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <memory>
 #include <string>
+#include <optional>
 #include <vector>
 
 #include <cereal/types/base_class.hpp>
@@ -191,7 +192,9 @@ class XLocation : public XObject
         }
 
         XMap* map;
-        void GetFreeXY(XPoint * pt, XRect * area = nullptr);
+        // A random walkable, unoccupied cell inside area (or the whole map
+        // when null), or nullopt when there is none.
+        std::optional<XPoint> GetFreeXY(XRect * area = nullptr);
         void AddPlace(XAnyPlace * pl);
 
         // ways_list holds raw, non-owning XObject* into two different
@@ -321,7 +324,6 @@ class XLocation : public XObject
 
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
         static void Altar(int x, int y, int deity);
-        static void CreateMushroom(void* location);
 
         // Roderick's ancestral-sword recognition check (both BP_HAND slots)
         // - kept as one bespoke predicate rather than decomposed into

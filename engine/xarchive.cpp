@@ -38,7 +38,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xring.h"
 #include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x000004F;
+constexpr unsigned int SAVE_GAME_VERSION = 0x0000050;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 // ZSTD compression level: 1 provides excellent speed/size tradeoff
@@ -139,7 +139,7 @@ int XArchive::StoreGame()
         XScroll::SaveTable(ar);
         XAmulet::SaveTable(ar);
         XRing::SaveTable(ar);
-        HerbDefinition::SaveTable(ar);
+        PlantDefinition::SaveTable(ar);
 
         XTime::serialize(ar);
 
@@ -239,7 +239,7 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
         XScroll::LoadTable(ar);
         XAmulet::LoadTable(ar);
         XRing::LoadTable(ar);
-        HerbDefinition::LoadTable(ar);
+        PlantDefinition::LoadTable(ar);
 
         XTime::serialize(ar);
 
