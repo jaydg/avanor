@@ -37,10 +37,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "lua/api_world.h"
 #include "map/map_objects.h"
 
-// Left behind in game/location.cpp on purpose, not overlooked: Altar
-// (bound to XDeity), BuildShop (drags in XShop and its C++ keeper AI)
-// and IsWearingAvanorDefender (an engine global named after a single
-// artifact). Those are Avanor content wearing an engine API hat; moving
+// Left behind in game/location.cpp on purpose, not overlooked: BuildShop
+// (drags in XShop and its C++ keeper AI) and IsWearingAvanorDefender (an
+// engine global named after a single artifact). Those are Avanor content wearing an engine API hat; moving
 // them here would bless them as part of the generic interface.
 //
 // CreateObject's potion overload is a borderline case kept for now only

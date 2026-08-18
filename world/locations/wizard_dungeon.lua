@@ -53,7 +53,7 @@ function MakeWizardDungeon()
 		AddTranslation("<", function(x, y) Way(UP, XLocation.WIZARD_DUNGEON5, x, y) end)
 		AddTranslation("h", function(x, y) Guardian('death_knight', "ahkulan_guardian", x, y) end)
 		AddTranslation("A", function(x, y) CreateAhkUlan(x, y) Furniture(x, y, xColor.xDARKGRAY, '~', 'the black throne from pure obsidian') end)
-		AddTranslation("_", function(x, y) Altar(x, y, XDeity.DEATH) end)
+		AddTranslation("_", function(x, y) SetView(PlaceSpecial("XAltar", x, y), "_", xColor.xDARKGRAY) end)
 		AddTranslation("r", function(x, y) Creature('huge_rat', x, y) end)
 		DrawPattern(0, 0)
 

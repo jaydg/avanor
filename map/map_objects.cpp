@@ -531,21 +531,28 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XAltar);
 
 XAltar::XAltar(const int _x, const int _y, const XDeity::Id deity, XLocation* _l)
 {
-    SetLocation(_l);
-    x = _x;
-    y = _y;
+    const bool placed = PlaceAt(_l, _x, _y);
+    assert(placed);
 
-    if (deity == XDeity::LIFE) {
-        color = xWHITE;
-    } else {
+    if (deity != XDeity::LIFE) {
         color = xDARKGRAY;
+    }
+}
+
+bool XAltar::PlaceAt(XLocation* location, const int _x, const int _y)
+{
+    if (!XMapObject::PlaceAt(location, _x, _y)) {
+        return false;
     }
 
     view = '_';
-
-    assert(l->map->GetSpecial(x, y) == nullptr);
-    l->map->SetSpecial(x, y, this);
     name = "altar";
+
+    // White is the LIFE altar; XDeity::DEATH is the dark one. Script
+    // chooses by overriding this with SetView().
+    color = xWHITE;
+
+    return true;
 }
 
 REGISTER_CLASS(XGrave);

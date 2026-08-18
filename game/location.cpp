@@ -692,11 +692,6 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
 }
 
 
-//Altar(x, y, XDeity::LIFE)
-void XLocation::Altar(int x, int y, int deity)
-{
-    new XAltar(x, y, (XDeity::Id)deity, current_location);
-}
 
 
 bool XLocation::IsWearingAvanorDefender(void* cr)

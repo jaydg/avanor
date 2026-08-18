@@ -323,7 +323,6 @@ class XLocation : public XObject
         static int pat_offs_y;
 
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
-        static void Altar(int x, int y, int deity);
 
         // Roderick's ancestral-sword recognition check (both BP_HAND slots)
         // - kept as one bespoke predicate rather than decomposed into

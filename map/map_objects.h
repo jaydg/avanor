@@ -218,12 +218,20 @@ class XAltar final : public XMapObject
         DECLARE_CREATOR(XAltar, XMapObject);
         XAltar(int _x, int _y, XDeity::Id deity, XLocation* _l);
 
+        // Places the altar and gives it its glyph, name and default colour,
+        // so a bare PlaceSpecial("XAltar", x, y) from script yields a usable
+        // altar. The colour is not decoration: it is how an altar's deity is
+        // recorded, so script picks the deity by calling SetView() afterwards.
+        bool PlaceAt(XLocation* location, int _x, int _y) override;
+
         // Pre-existing behaviour, not a shared_ptr-migration regression:
         // `deity` is only ever used to pick a color at construction time
         // (see the .cpp) and isn't kept as a member anywhere on this
         // class - the base's `color` field (already covered by
         // XMapObject::serialize()) is the only trace of it that
         // survives, same as the existing (also base-only) Store/Restore.
+        // XReligion::SacrificeItem() reads that colour back to decide
+        // which deity an altar belongs to, so colour *is* the deity here.
         template<class Archive>
         void serialize(Archive& ar)
         {

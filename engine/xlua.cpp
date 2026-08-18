@@ -111,7 +111,6 @@ void XLua::Init()
     lua_api::RegisterWorldApi(lua);
 
         lua.set_function("BuildShop", &XLocation::BuildShop);
-        lua.set_function("Altar", &XLocation::Altar);
     }
 
     {
