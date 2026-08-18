@@ -29,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xlua.h"
 #include "game/location.h"
 #include "lua/api_actor.h"
+#include "lua/api_world.h"
 #include "game/quest.h"
 #include "item/item.h"
 #include "item/itemdef.h"
@@ -107,28 +108,11 @@ void XLua::Init()
     // locations.lua/valley.lua call these while loading.
     {
         lua_api::RegisterActorApi(lua);
+    lua_api::RegisterWorldApi(lua);
 
-    lua.set_function("CreateLocation", &XLocation::CreateLocation);
-        lua.set_function("Settle", &XLocation::Settle);
-        lua.set_function("Creature", &XLocation::Creature);
-        lua.set_function("Guardian", &XLocation::Guardian);
-        lua.set_function("GuardianClass", &XLocation::GuardianClass);
-        lua.set_function("Teleport", &XLocation::Teleport);
         lua.set_function("ScatterHerbBushes", &XLocation::ScatterHerbBushes);
-        lua.set_function("Way", &XLocation::Way);
-        lua.set_function("CreateObject", sol::overload(&XLocation::CreateObjectByName, &XLocation::CreateObjectByMask, &XLocation::CreateObjectByPotion));
-        lua.set_function("DropItem", sol::overload(&XLocation::DropItem, &XLocation::DropItemAt));
-        lua.set_function("SetPattern", &XLocation::SetPattern);
-        lua.set_function("AddTranslation", &XLocation::AddTranslation);
-        lua.set_function("DrawPattern", &XLocation::DrawPattern);
         lua.set_function("BuildShop", &XLocation::BuildShop);
-        lua.set_function("Furniture", &XLocation::Furniture);
-        lua.set_function("OuterObject", sol::overload(&XLocation::OuterObject, &XLocation::OuterObjectAt));
         lua.set_function("Altar", &XLocation::Altar);
-        lua.set_function("Treasure", &XLocation::Treasure);
-        lua.set_function("Chest", &XLocation::Chest);
-        lua.set_function("Trap", &XLocation::Trap);
-        lua.set_function("EventPlace", sol::overload(&XLocation::EventPlace, &XLocation::EventPlaceArea));
         lua.set_function("CreateMushroom", &XLocation::CreateMushroom);
     }
 
@@ -136,7 +120,6 @@ void XLua::Init()
         lua.set_function("IsWearingAvanorDefender", &XLocation::IsWearingAvanorDefender);
 
 
-        lua.set_function("CreateTimerEvent", &XLocation::CreateTimerEvent);
 
 
 

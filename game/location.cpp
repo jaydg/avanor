@@ -668,90 +668,6 @@ int XLocation::pat_offs_y = 0;
 LOCATION_PATTERN XLocation::current_pattern;
 std::vector<PALETTE_MAP> XLocation::pattern_translation;
 
-//CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-void XLocation::CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type)
-{
-    current_location = new XLocation((XLocation::Id)loc_id);
-    current_location->brief_name = lbrief;
-    current_location->full_name = lfull;
-
-    if (type == 0) {
-        current_location->BuildCave();
-    } else if (type == 1) {
-        current_location->BuildLabirint();
-    } else {
-        current_location->BuildPlain(200, 90);
-    }
-}
-
-//Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
-void XLocation::Settle(CreatureClass crc, int crl)
-{
-    Game.Scheduler.Add(new XUniversalGen(current_location, crc, static_cast<CreatureTemplate::Level>(crl), 5, 25000));
-}
-
-//cr = Creature("rotmoth")
-//cr = Creature("rat", [x, y, [w, h]])
-void* XLocation::Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
-{
-    XCreature * cr = nullptr;
-
-    if (!x) {
-        cr = current_location->NewCreature(crn);
-    } else {
-        int tx = *x;
-        int ty = *y;
-        XRect rect = w ? XRect(tx, ty, tx + *w, ty + *h) : XRect(tx, ty, tx + 1, ty + 1);
-        cr = current_location->NewCreature(crn, rect);
-    }
-
-    return cr;
-}
-
-//cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
-void* XLocation::Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
-{
-    XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
-    int flag = XStandardAI::GUARD_AREA;
-
-    if (flags) {
-        flag |= *flags;
-    }
-
-    XCreature * cr = current_location->NewCreature(crn, rect, gid, flag);
-
-    // NewCreature() already set enemy_class to NONE for a PEACEFUL
-    // creature (see its own comment) - respect that instead of
-    // unconditionally overwriting it here. Without this check, every
-    // Guardian()-spawned PEACEFUL creature (farmers, goodwives, and
-    // anyone else inheriting their template) ends up hostile to every
-    // non-human/humanoid class regardless, silently defeating the whole
-    // point of being flagged PEACEFUL.
-    if (!(cr->xai->GetAIFlag() & XStandardAI::PEACEFUL)) {
-        cr->xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
-    }
-
-    return cr;
-}
-
-//GuardianClass(CreatureClass.ORC, "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
-void* XLocation::GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
-{
-    XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
-    int flag = XStandardAI::GUARD_AREA;
-
-    if (flags) {
-        flag |= *flags;
-    }
-
-    return current_location->NewCreature(crc, rect, gid, flag);
-}
-
-//Teleport(23, 20, XLocation.MAIN, 154, 13)
-void XLocation::Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y)
-{
-    new XTeleport(x, y, current_location, (XLocation::Id)target_loc_id, dest_x, dest_y);
-}
 
 //ScatterHerbBushes()
 void XLocation::ScatterHerbBushes()
@@ -768,102 +684,6 @@ void XLocation::ScatterHerbBushes()
     }
 }
 
-//Way(DOWN, L_SMALL_CAVE2)
-//Way(DOWN, L_SMALL_CAVE2, x, y)
-void XLocation::Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y)
-{
-    if (x) {
-        current_location->NewWay(*x, *y, (XLocation::Id)loc_id, (STAIRWAY_TYPE)type);
-    } else {
-        current_location->NewWay((XLocation::Id)loc_id, (STAIRWAY_TYPE)type);
-    }
-}
-
-//CreateObject("XCookingSet")
-void* XLocation::CreateObjectByName(const std::string& name)
-{
-    return XClassFactory::CreateNew((char*)name.c_str());
-}
-
-//CreateObject(ItemKind::ITEM - ItemKind::FOOD, 20, 500)
-void* XLocation::CreateObjectByMask(int flag, int min_val, int max_val)
-{
-    return ICREATE((ItemKind)(flag), min_val, max_val);
-}
-
-//CreateObject(PotionName.HEALING)
-void* XLocation::CreateObjectByPotion(int pn)
-{
-    return new XPotion(static_cast<PotionName>(pn));
-}
-
-//DropItem(item, 0, 0)
-//DropItem(item)
-void XLocation::DropItem(void* item, sol::optional<int> x, sol::optional<int> y)
-{
-    XItem * pItem = (XItem*)item;
-    int tx;
-    int ty;
-
-    if (x) {
-        tx = *x;
-        ty = *y;
-    } else {
-        XPoint pt;
-        current_location->GetFreeXY(&pt);
-        tx = pt.x;
-        ty = pt.y;
-    }
-
-    if (pItem) {
-        pItem->Drop(current_location, tx, ty);
-    }
-}
-
-//DropItem(item, object)
-void XLocation::DropItemAt(void* item, void* object)
-{
-    XItem * pItem = (XItem*)item;
-    XMapObject * pMO = (XMapObject*)object;
-    pItem->Drop(pMO->l, pMO->x, pMO->y);
-}
-
-//SetPattern(width, height,
-// "###" ..
-// "#.#" ..
-// "###")
-void XLocation::SetPattern(int w, int h, const std::string& txt)
-{
-    current_pattern.w = w;
-    current_pattern.h = h;
-    current_pattern.pattern = txt;
-    pattern_translation.clear();
-}
-
-//AddTranslation("1", GOLDEN_FLOOR)
-//AddTranslation("A", function(x, y) Guardian('dwarf_guard', GID_DWARVEN_GUARDIAN, x, y) end)
-void XLocation::AddTranslation(const std::string& view, sol::object target)
-{
-    PALETTE_MAP pm;
-    pm.this_view = view[0];
-
-    if (target.get_type() == sol::type::function) {
-        pm.callback = target.as<sol::protected_function>();
-        pm.real_view = XTileType::UNKNOWN;
-    } else {
-        pm.real_view = (XTileType::Type)target.as<int>();
-    }
-
-    pattern_translation.push_back(pm);
-}
-
-//DrawPattern(x, y)
-void XLocation::DrawPattern(int x, int y)
-{
-    pat_offs_x = x;
-    pat_offs_y = y;
-    current_location->PutPalette(x, y);
-}
 
 //BuildShop(x, y, 9, 3, ItemKind::ARMOUR + ItemKind::WEAPON + ItemKind::POTION + ItemKind::BOOK + ItemKind::SCROLL + ItemKind::NECK + ItemKind::MISSILE + ItemKind::MISSILEW, 'Toberin, the dwarwen shopkeeper')
 void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name)
@@ -872,70 +692,11 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
     current_location->CreateShop(mask, shop_rect, (char*)keeper_name.c_str(), SHOP_BUILD_IN);
 }
 
-//Furniture(x, y, xLIGHTRED, '~', 'a royal bad')
-void* XLocation::Furniture(int x, int y, int color, const std::string& view, const std::string& descr)
-{
-    return new XFurniture(x, y, color, view[0], (char*)descr.c_str(), current_location);
-}
-
-//OuterObject(xLIGHTRED, '~', 'a royal bad', 'EventHandler')
-void* XLocation::OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
-{
-    XPoint pt;
-    current_location->GetFreeXY(&pt);
-    return new XOuterObject(pt.x, pt.y, color, view[0], (char*)descr.c_str(), current_location, event ? event->c_str() : nullptr);
-}
-
-//OuterObject(x, y, xLIGHTRED, '~', 'a royal bad', 'EventHandler')
-void* XLocation::OuterObjectAt(int x, int y, int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
-{
-    return new XOuterObject(x, y, color, view[0], (char*)descr.c_str(), current_location, event ? event->c_str() : nullptr);
-}
 
 //Altar(x, y, XDeity::LIFE)
 void XLocation::Altar(int x, int y, int deity)
 {
     new XAltar(x, y, (XDeity::Id)deity, current_location);
-}
-
-void XLocation::Treasure(int x, int y, int val)
-{
-    XMoney * money = new XMoney(vRand(val) + val);
-    money->Drop(current_location, x, y);
-}
-
-void XLocation::Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval)
-{
-    XChest * tchest = new XChest(cnt.value_or(5), (ItemKind)flg.value_or(static_cast<int>(ItemKind::ITEM)), mnval.value_or(100), mxval.value_or(25000));
-    tchest->Drop(current_location, x, y);
-}
-
-void XLocation::Trap(int x, int y)
-{
-    new XTrap(x, y, current_location);
-}
-
-//EventPlace('MushroomCaveEvent')
-void XLocation::EventPlace(const std::string& event)
-{
-    XRect area(0, 0, current_location->map->len, current_location->map->hgt);
-    new XAnyPlace(area, current_location, event);
-}
-
-//EventPlace(x, y, 5, 2, 'SmallCaveEvent')
-void XLocation::EventPlaceArea(int x, int y, int w, int h, const std::string& event)
-{
-    XRect area(x, y, x + w, y + h);
-    new XAnyPlace(area, current_location, event);
-}
-
-
-void XLocation::CreateTimerEvent(const std::string& event, int ttm)
-{
-    current_location->event = event;
-    current_location->ttm = ttm;
-    current_location->ttmb = current_location->ttm;
-    Game.Scheduler.Add(current_location);
 }
 
 
@@ -1024,4 +785,36 @@ void XLocation::CreateNewGame()
     XLua::Init();
     sol::state_view lua(XLua::State());
     assert(lua["InitWorld"]().valid());
+}
+
+//CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
+void XLocation::CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type)
+{
+    XLocation::current_location = new XLocation((XLocation::Id)loc_id);
+    XLocation::current_location->brief_name = lbrief;
+    XLocation::current_location->full_name = lfull;
+
+    if (type == 0) {
+        XLocation::current_location->BuildCave();
+    } else if (type == 1) {
+        XLocation::current_location->BuildLabirint();
+    } else {
+        XLocation::current_location->BuildPlain(200, 90);
+    }
+}
+
+//DrawPattern(x, y)
+void XLocation::DrawPattern(int x, int y)
+{
+    pat_offs_x = x;
+    pat_offs_y = y;
+    XLocation::current_location->PutPalette(x, y);
+}
+
+void XLocation::CreateTimerEvent(const std::string& event, int ttm)
+{
+    XLocation::current_location->event = event;
+    XLocation::current_location->ttm = ttm;
+    XLocation::current_location->ttmb = XLocation::current_location->ttm;
+    Game.Scheduler.Add(XLocation::current_location);
 }

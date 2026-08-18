@@ -52,8 +52,8 @@ CFLAGS += $(shell pkg-config --cflags fmt ncurses luajit)
 
 VPATH = creature engine game global helpers item magic map other lua
 
-SRCS = xlua.cpp api_actor.cpp xweapon.cpp xtool.cpp xtime.cpp xstring.cpp     \
-       xscheduler.cpp xscroll.cpp xring.cpp xration.cpp xpotion.cpp           \
+SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
+       xscheduler.cpp xscroll.cpp xring.cpp xration.cpp xpotion.cpp xtool.cpp \
        xobject.cpp xmoney.cpp xmissileweapon.cpp xmissile.cpp xmapobj.cpp     \
        xhero3.cpp xhero2.cpp xhero.cpp xherb.cpp xguihtml.cpp xgui.cpp        \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothes.cpp xcloak.cpp  \

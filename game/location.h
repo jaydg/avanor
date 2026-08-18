@@ -308,29 +308,16 @@ class XLocation : public XObject
 
         static void CreateNewGame();
         static void Restoration();
+        static void CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type);
+        static void DrawPattern(int x, int y);
+        static void CreateTimerEvent(const std::string& event, int ttm);
+
         static XLocation* current_location;
         static XCreature* last_creature;
         static LOCATION_PATTERN current_pattern;
         static std::vector<PALETTE_MAP> pattern_translation;
         static int pat_offs_x;
         static int pat_offs_y;
-
-        static void CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type);
-        static void Settle(CreatureClass crc, int crl);
-
-        static void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-        static void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
-
-        // Like Guardian(), but spawns a random creature of crc (see
-        // XCreatureStorage::CreateRnd) instead of one fixed name - for a
-        // group with several interchangeable member templates (e.g. the
-        // orc war party's 7 orc variants) where any one of them filling
-        // a given spot is fine.
-        static void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
-
-        // Places an instant same-or-cross-location jump pad at (x, y) in
-        // the current location, landing at (dest_x, dest_y) in target_loc_id.
-        static void Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y);
 
         // Scatters XHerbBush onto roughly 1-in-18 GREEN_GRASS tiles across
         // the whole current location (skipping tiles that already have a
@@ -339,32 +326,9 @@ class XLocation : public XObject
         // Valley.
         static void ScatterHerbBushes();
 
-        static void Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y);
-        static void* CreateObjectByName(const std::string& name);
-        static void* CreateObjectByMask(int flag, int min_val, int max_val);
-
-        // pn is really PotionName - kept as a plain int here, same
-        // reasoning as CreateObjectByMask's ItemKind-as-int flag: pulling
-        // item/xpotion.h into this header breaks XLocation's own forward-
-        // declaration ordering for downstream includers.
-        static void* CreateObjectByPotion(int pn);
-        static void DropItem(void* item, sol::optional<int> x, sol::optional<int> y);
-        static void DropItemAt(void* item, void* object);
-        static void SetPattern(int w, int h, const std::string& txt);
-        static void AddTranslation(const std::string& view, sol::object target);
-        static void DrawPattern(int x, int y);
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
-        static void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr);
-        static void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
-        static void* OuterObjectAt(int x, int y, int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
         static void Altar(int x, int y, int deity);
-        static void Treasure(int x, int y, int val);
-        static void Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval);
-        static void Trap(int x, int y);
-        static void EventPlace(const std::string& event);
-        static void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
         static void CreateMushroom(void* location);
-        static void CreateTimerEvent(const std::string& event, int ttm);
 
         // Roderick's ancestral-sword recognition check (both BP_HAND slots)
         // - kept as one bespoke predicate rather than decomposed into
