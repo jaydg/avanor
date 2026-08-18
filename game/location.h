@@ -364,108 +364,13 @@ class XLocation : public XObject
         static void EventPlace(const std::string& event);
         static void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
         static void CreateMushroom(void* location);
-
-        static void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg);
-        static void ChangeStats(void* cr, int st, int val);
-        static int GetStats(void* cr, int st);
-        static int Rand(int val);
-        static void SetEventHandler(void* cr, const std::string& event);
-
-        // Opt-in gate for LuaEvent::AI_TURN/PRE_MOVE (see XCreature::
-        // wants_move_hook) - call once, alongside SetEventHandler, for any
-        // creature whose Lua handler wants a callback on every move (these
-        // fire far more often than Chat/Die/GiveItem, so they're not
-        // dispatched to every event_handler-bearing creature by default).
-        static void EnableMoveHandler(void* cr);
-
-        // Turns EnableMoveHandler() back off - for a handler that only
-        // needs the per-turn callback for a bounded stretch of gameplay,
-        // not for the rest of the game.
-        static void DisableMoveHandler(void* cr);
-
-        // Flags cr as the creature the display follows in demo/attract mode
-        // ("-demo") in place of a real hero (see XCreature::NewMove()/Move()) -
-        // a no-op outside demo mode, so it's safe for any world script to
-        // call unconditionally on whichever creature should play that role.
-        static void SetMainCreature(void* cr);
         static void CreateTimerEvent(const std::string& event, int ttm);
-
-        static int GetSkill(void* cr, int skill);
-        static void LearnSkill(void* cr, int skill, int val);
-        static int MoneyOperation(void* cr, int val);
-
-        static void SetName(void* obj, const std::string& name);
-        static void SetView(void* obj, const std::string& view, int color);
-        static std::string GetView(void* obj);
-
-        static bool isHero(void* cr);
-        static bool isEnemy(void* cr1, void* cr2);
-
-        // Swaps a freshly-created creature's AI to a Lua-driven XLuaAI
-        // (see creature/lua_ai.h), naming a global Lua table with optional
-        // isEnemy/onWasAttacked/onDie/onSteal hooks. Call right after
-        // creation, before anything else touches xai (SetAIFlag etc. set
-        // on the old XStandardAI would otherwise be lost).
-        static void SetCreatureAI(void* cr, const std::string& lua_class);
-
-        // Cast bridges from the existing opaque void* handles (event_handler
-        // dispatch, FindCreature/FindCreatures, ...) to the real
-        // XCreature/XItem usertypes (see XCreature::RegisterLua,
-        // XItem::RegisterLua) - lets Lua opt into the rich method/property
-        // API on an object it already has a void* handle for, without
-        // changing what type that handle actually is under the hood.
-        static XCreature* AsCreature(void* p);
-        static XItem* AsItem(void* p);
-
-        // Location-scoped creature count, e.g. for a "is this crypt clear
-        // of undead yet" quest check. Named distinctly from the instance
-        // method below (same name, different signature) - taking &XLocation
-        // ::GetCreatureCount is otherwise ambiguous for sol2's set_function.
-        static int CreatureCountInLocation(int l_id, CreatureClass cc);
 
         // Roderick's ancestral-sword recognition check (both BP_HAND slots)
         // - kept as one bespoke predicate rather than decomposed into
         // generic Lua-side body-part/guid primitives, since that's a
         // separate, larger "expose item identity generically" project.
         static bool IsWearingAvanorDefender(void* cr);
-
-        static void SetItEnemyFor(void* cr1, void* cr2);
-        static void SetEnemy(void* cr, int cr_class);
-        static void* FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-        static std::vector<void*> FindCreatures(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-
-        // Builds a SCRIPT_CMD queue from `script` (an array of tables,
-        // each {cmd = ScriptCommand.X, pt_x = .., pt_y = .., ln = .., kind = ..}
-        // - only the fields the given cmd actually uses need to be set)
-        // and hands it to `cr`'s XStandardAI via ExecuteScript(), same as
-        // any other AI-flag-driven behavior (see XStandardAI::EXECUTE_SCRIPT).
-        static void ExecuteCreatureScript(void* cr, sol::table script);
-
-        // Position of the first entry in a location's ways_list (e.g. the
-        // stairway Way(UP, ...) auto-places at a random free spot when
-        // called without explicit x/y) - there's no other way for a
-        // script to learn where that ended up.
-        static std::tuple<int, int> GetWayXY(int l_id);
-
-        static void AddMessage(const std::string& str);
-        static std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
-        static int Gender(void* cr);
-
-        static XGUID GetObjectGUID(void* obj);
-        static std::tuple<int, int, int, int, int, std::string> GetItemParam(void* item);
-        static void SetItemBrand(void* item, int br);
-
-        static int MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power);
-        static void DestroyObject(void* item);
-
-        static void SetCompanion(void* owner, void* slave, bool flag);
-
-        static void GiveObjectToCreature(void* item, void* cr);
-        static bool GiveAward(void* owner, XGUID aguid, void* target);
-
-        static void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed);
-        static void QuestModify(int id, int status);
-        static int QuestStatus(int id);
 
         // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
         // the .cpp): whichever XCreature/XAnyPlace is currently firing
@@ -477,9 +382,6 @@ class XLocation : public XObject
         // separate raw file.
         static std::vector<int>* lua_int_buffer;
         static size_t lua_int_index;
-        static int StoreInt(lua_State * L);
-        static int RestoreInt(lua_State * L);
-        static bool BinaryAND(int v1, int v2);
 
     protected:
         std::string brief_name; // max. 10 characters
