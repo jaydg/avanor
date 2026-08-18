@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef LUA_API_ACTOR_H
 #define LUA_API_ACTOR_H
 
+#include <string>
+
 #include <sol/forward.hpp>
 
 // Script API operating on things that already exist - creatures, items,
@@ -79,6 +81,9 @@ namespace lua_api
     int StoreInt(lua_State * L);
     int RestoreInt(lua_State * L);
     bool BinaryAND(int v1, int v2);
+
+    void* GetWornItem(void* cr, int bodypart, int slot);
+    std::string GetObjectClass(void* obj);
 
     // Registers every function above under its Lua name.
     void RegisterActorApi(sol::state_view& lua);

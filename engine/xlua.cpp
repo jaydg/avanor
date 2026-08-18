@@ -114,7 +114,6 @@ void XLua::Init()
     }
 
     {
-        lua.set_function("IsWearingAvanorDefender", &XLocation::IsWearingAvanorDefender);
 
 
 

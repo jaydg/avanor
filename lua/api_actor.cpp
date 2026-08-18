@@ -481,6 +481,22 @@ bool BinaryAND(int v1, int v2)
     return v1 & v2;
 }
 
+// The item worn in a body part slot, or nil when the slot is empty.
+void* GetWornItem(void* cr, const int bodypart, const int slot)
+{
+    XBodyPart* bp = ((XCreature*)cr)->GetBodyPart((BODY_PART)bodypart, slot);
+
+    return (bp && bp->Item()) ? static_cast<void*>(bp->Item()) : nullptr;
+}
+
+// An object's registered class name - the same identity CreateObject() and
+// PlaceSpecial() take, so script can recognise a specific kind of object
+// rather than only its broad ItemType.
+std::string GetObjectClass(void* obj)
+{
+    return ((XObject*)obj)->GetClassName();
+}
+
 void RegisterActorApi(sol::state_view& lua)
 {
     lua_register(lua.lua_state(), "StoreInt", lua_api::StoreInt);
@@ -490,6 +506,8 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetCreatureAI", &lua_api::SetCreatureAI);
         lua.set_function("AsCreature", &lua_api::AsCreature);
         lua.set_function("AsItem", &lua_api::AsItem);
+        lua.set_function("GetWornItem", &lua_api::GetWornItem);
+        lua.set_function("GetObjectClass", &lua_api::GetObjectClass);
         lua.set_function("GetCreatureCount", &lua_api::CreatureCountInLocation);
         lua.set_function("FindCreature", &lua_api::FindCreature);
         lua.set_function("FindCreatures", &lua_api::FindCreatures);

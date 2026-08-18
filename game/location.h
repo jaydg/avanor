@@ -324,12 +324,6 @@ class XLocation : public XObject
 
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
 
-        // Roderick's ancestral-sword recognition check (both BP_HAND slots)
-        // - kept as one bespoke predicate rather than decomposed into
-        // generic Lua-side body-part/guid primitives, since that's a
-        // separate, larger "expose item identity generically" project.
-        static bool IsWearingAvanorDefender(void* cr);
-
         // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
         // the .cpp): whichever XCreature/XAnyPlace is currently firing
         // its LuaEvent::SAVE/LuaEvent::LOAD Lua event handler points this at its own

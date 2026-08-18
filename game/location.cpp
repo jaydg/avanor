@@ -694,15 +694,6 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
 
 
 
-bool XLocation::IsWearingAvanorDefender(void* cr)
-{
-    XCreature* p = (XCreature*)cr;
-    XItem* it1 = p->GetBodyPart(BP_HAND, 0)->Item();
-    XItem* it2 = p->GetBodyPart(BP_HAND, 1)->Item();
-
-    return (it1 && it1->guid() == XAvanorDefender::avanordefender_guid)
-        || (it2 && it2->guid() == XAvanorDefender::avanordefender_guid);
-}
 
 
 std::vector<int>* XLocation::lua_int_buffer = nullptr;

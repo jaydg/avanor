@@ -26,6 +26,18 @@ function CreateRoderik(x, y)
 	GiveObjectToCreature(CreateObject('XAvanorScepter'), roderik)
 end
 
+local function isWieldingClass(cr, class_name)
+	for slot = 0, 1 do
+		local item = GetWornItem(cr, BodyPart.HAND, slot)
+
+		if (item and GetObjectClass(item) == class_name) then
+			return true
+		end
+	end
+
+	return false
+end
+
 function RoderikHandler(e, t, p, v)
 	local roderik = AsCreature(t)
 
@@ -34,7 +46,7 @@ function RoderikHandler(e, t, p, v)
 
 		if (roderik.xai:isEnemy(chatter)) then
 			AddMessage("No mercy!")
-		elseif (IsWearingAvanorDefender(p)) then
+		elseif (isWieldingClass(p, "XAvanorDefender")) then
 			AddMessage("I recognize that sword in your hand. You have looted the tomb of my ancestors! Guards! Seize the traitor!")
 			roderik.xai:AddPersonalEnemy(chatter)
 			roderik.xai:SetGroupEnemy(chatter)
