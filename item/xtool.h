@@ -168,7 +168,7 @@ class XEyeOfRaa : public XTool
             kind = ItemKind::TOOL;
             bp = BP_TOOL;
             stats = std::make_unique<XStats>("Ma:0d0+10 Wi:0d0+10");
-            resistances = std::make_unique<XResistance>("air:100");
+            resistances = std::make_unique<XResistance>("air:0d0+100");
             dice.Setup(1, 10, 0);
         }
 
