@@ -1156,48 +1156,50 @@ std::string XLocation::AskQuestion(const std::string& msg, const std::string& ke
 
     std::string out = "[";
 
-    int offs = 0;
-    char key_value[20];
     int index = 0;
 
     std::vector<ASK_QUESTION_REC> keys;
 
-    while (sscanf(key.c_str() + offs, "%s10%n", key_value, &offs) > 0) {
+    // `key` is a whitespace-separated list of accepted keys, e.g. "esc y n".
+    static constexpr char WHITESPACE[] = " \t\n\r";
+
+    for (std::string::size_type pos = 0;
+         (pos = key.find_first_not_of(WHITESPACE, pos)) != std::string::npos; ) {
+        const auto token_end = key.find_first_of(WHITESPACE, pos);
+        const std::string token = key.substr(pos, token_end == std::string::npos
+            ? std::string::npos
+            : token_end - pos);
+        pos = (token_end == std::string::npos) ? key.size() : token_end;
+
         ASK_QUESTION_REC aqr;
         std::string variant;
 
-        if (stricmp(key_value, "esc") == 0) {
+        if (stricmp(token.c_str(), "esc") == 0) {
             variant = MSG_CYAN "ESC" MSG_LIGHTGRAY;
             aqr.key = KEY_ESC;
             aqr.val = "esc";
-        } else if (stricmp(key_value, "return") == 0) {
+        } else if (stricmp(token.c_str(), "return") == 0) {
             variant = MSG_CYAN "Enter" MSG_LIGHTGRAY;
             aqr.key = KEY_ENTER;
             aqr.val = "enter";
         } else {
             variant = va[index].get<std::string>();
             index++;
-            char substring[] = "x";
-            substring[0] = key_value[0];
-            char newstr[] = MSG_CYAN "x" MSG_LIGHTGRAY;
-            newstr[2] = key_value[0];
-            variant.replace(0, 1, newstr);
-            aqr.key = key_value[0];
-            aqr.val = substring;
+
+            // Highlight the answer's first letter with the key that picks
+            // it - which is the key token's letter, not necessarily the
+            // one the answer text starts with.
+            variant.replace(0, 1, std::string(MSG_CYAN) + token[0] + MSG_LIGHTGRAY);
+            aqr.key = token[0];
+            aqr.val = std::string(1, token[0]);
         }
 
-        keys.push_back(aqr);
-
-        if (offs > 0) {
+        if (!keys.empty()) {
             out += ", ";
         }
 
+        keys.push_back(aqr);
         out += variant;
-        offs += strlen(key_value);
-
-        while (key[offs] == ' ') {
-            offs++;
-        }
     }
 
     out += "]";
@@ -1211,6 +1213,13 @@ std::string XLocation::AskQuestion(const std::string& msg, const std::string& ke
         if (ch == it.key) {
             return it.val;
         }
+    }
+
+    // An empty or all-whitespace `key` yields no accepted answers at all,
+    // and front() on the empty vector would be undefined - reachable from
+    // a script calling AskQuestion(msg, "").
+    if (keys.empty()) {
+        return {};
     }
 
     return keys.front().val;
