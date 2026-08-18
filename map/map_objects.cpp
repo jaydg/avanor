@@ -637,21 +637,13 @@ XOuterObject::XOuterObject(const int _x, const int _y, const int _c, const char 
     l->map->SetSpecial(x, y, this);
 
     if (event) {
-        onEventLua = new char[strlen(event) + 1];
-        strcpy(onEventLua, event);
-    } else {
-        onEventLua = nullptr;
+        onEventLua = event;
     }
-}
-
-XOuterObject::~XOuterObject()
-{
-    delete[] onEventLua;
 }
 
 int XOuterObject::onOuterUse(XCreature* cr)
 {
-    if (!onEventLua) {
+    if (onEventLua.empty()) {
         return XMapObject::onOuterUse(cr);
     }
 

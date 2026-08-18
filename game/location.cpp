@@ -919,14 +919,14 @@ void XLocation::Trap(int x, int y)
 void XLocation::EventPlace(const std::string& event)
 {
     XRect area(0, 0, current_location->map->len, current_location->map->hgt);
-    new XAnyPlace(area, current_location, (char*)event.c_str());
+    new XAnyPlace(area, current_location, event);
 }
 
 //EventPlace(x, y, 5, 2, 'SmallCaveEvent')
 void XLocation::EventPlaceArea(int x, int y, int w, int h, const std::string& event)
 {
     XRect area(x, y, x + w, y + h);
-    new XAnyPlace(area, current_location, (char*)event.c_str());
+    new XAnyPlace(area, current_location, event);
 }
 
 int XLocation::GetSkill(void* cr, int skill)
@@ -1228,7 +1228,7 @@ std::string XLocation::AskQuestion(const std::string& msg, const std::string& ke
 
 void XLocation::SetEventHandler(void* cr, const std::string& event)
 {
-    ((XCreature*)cr)->SetEventHandler(event.c_str());
+    ((XCreature*)cr)->SetEventHandler(event);
 }
 
 void XLocation::EnableMoveHandler(void* cr)

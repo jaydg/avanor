@@ -294,17 +294,12 @@ class XFurniture: public XMapObject
 //////////////////////////////////////////////////////////////////////
 class XOuterObject final : public XMapObject
 {
-        char* onEventLua;
+        std::string onEventLua;
     public:
         DECLARE_CREATOR(XOuterObject, XMapObject);
         XOuterObject(int _x, int _y, int _c, char _v, const char* subscr, XLocation* _l, const char* event);
-        ~XOuterObject() override;
         int onOuterUse(XCreature* cr) override;
 
-        // onEventLua is an owned, heap-allocated C string (see the dtor)
-        // rather than a std::string - Cereal has no built-in support for
-        // raw char*, so save/load go through a temporary std::string.
-        //
         // One symmetric serialize() rather than a split save()/load()
         // pair: as found and fixed for XCreature/XPotion/XCorpse earlier
         // this session, a split pair - even a correctly-disambiguated
@@ -315,26 +310,11 @@ class XOuterObject final : public XMapObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-
-            if constexpr (Archive::is_loading::value) {
-                std::string event;
-                ar(event);
-
-                delete[] onEventLua;
-
-                if (event.empty()) {
-                    onEventLua = nullptr;
-                } else {
-                    onEventLua = new char[event.size() + 1];
-                    std::memcpy(onEventLua, event.c_str(), event.size() + 1);
-                }
-            } else {
-                ar(std::string(onEventLua ? onEventLua : ""));
-            }
+            ar(onEventLua);
         }
 
     protected:
-        XOuterObject() : onEventLua(nullptr) {}
+        XOuterObject() = default;
         friend class cereal::access;
 };
 

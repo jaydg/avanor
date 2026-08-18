@@ -260,8 +260,8 @@ class XCreature : public XBaseObject
         // creation and the Cereal-load path. false for the hero and
         // every ordinary monster.
         bool unique = false;
-        char* event_handler;
-        void SetEventHandler(const char* handler);
+        std::string event_handler;
+        void SetEventHandler(const std::string& handler);
 
         // Opt-in gate for LuaEvent::AI_TURN/PRE_MOVE dispatch in NewMove()/
         // Move() - both fire for every creature, every turn, so unlike
@@ -622,22 +622,14 @@ class XCreature : public XBaseObject
             if constexpr (Archive::is_loading::value) {
                 FixupCreatureInfo();
 
-                std::string event;
-                ar(event);
-
-                if (event.empty()) {
-                    event_handler = nullptr;
-                } else {
-                    event_handler = new char[event.size() + 1];
-                    std::memcpy(event_handler, event.c_str(), event.size() + 1);
-                }
+                ar(event_handler);
 
                 // lua_ints must be read back before firing: RestoreInt
                 // hands its contents out sequentially as the handler runs.
                 ar(lua_ints);
                 NotifyLuaEventHandler(LuaEvent::LOAD);
             } else {
-                ar(std::string(event_handler ? event_handler : ""));
+                ar(event_handler);
 
                 // Cleared first in case this creature was saved before,
                 // earlier in the same run - firing appends to it via

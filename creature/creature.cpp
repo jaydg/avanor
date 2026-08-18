@@ -177,7 +177,6 @@ XCreature::XCreature()
     tactics = TS_NORMAL;
     group_id = GID_NONE;
     food_feeling = FF_NORMAL;
-    event_handler = nullptr;
 }
 
 void XCreature::OnInvalidate()
@@ -207,10 +206,7 @@ void XCreature::OnInvalidate()
 
     delete xai.release();
 
-    if (event_handler) {
-        delete[] event_handler;
-        event_handler = nullptr;
-    }
+    event_handler.clear();
 
     // remove perished creature from the group members list
     if (group_id != GID_NONE) {
@@ -442,7 +438,7 @@ void XCreature::Move()
         ShowNewView();
     }
 
-    if (wants_move_hook && event_handler) {
+    if (wants_move_hook && !event_handler.empty()) {
         sol::state_view lua(XLua::State());
         lua[event_handler](LuaEvent::PRE_MOVE, (void*)this);
     }
@@ -698,7 +694,7 @@ void XCreature::NewMove()
         msgwin.ClrMsg();
     }
 
-    if (wants_move_hook && event_handler) {
+    if (wants_move_hook && !event_handler.empty()) {
         sol::state_view lua(XLua::State());
         lua[event_handler](LuaEvent::AI_TURN, (void*)this);
     }
@@ -1050,7 +1046,7 @@ void XCreature::Die(XCreature* killer)
     // alive for the rest of this function regardless.
     auto self = shared_from_this();
 
-    if (event_handler) {
+    if (!event_handler.empty()) {
         // this/killer stay void*, not XCreature* -  killer can legitimately be
         // nullptr (e.g. DecNutrio()'s Die(nullptr))
         sol::state_view lua(XLua::State());
@@ -1734,10 +1730,9 @@ int XCreature::Read(XItem * item)
     return 0;
 }
 
-void XCreature::SetEventHandler(const char* handler)
+void XCreature::SetEventHandler(const std::string& handler)
 {
-    event_handler = new char [strlen(handler) + 1];
-    strcpy(event_handler, handler);
+    event_handler = handler;
 }
 
 void XCreature::EnableMoveHandler()
@@ -1780,7 +1775,7 @@ void XCreature::NotifyLuaEventHandler(LuaEvent event)
     XLocation::lua_int_buffer = &lua_ints;
     XLocation::lua_int_index = 0;
 
-    if (event_handler && strlen(event_handler)) {
+    if (!event_handler.empty()) {
         sol::state_view lua(XLua::State());
         lua[event_handler](event);
     }
@@ -1829,7 +1824,7 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject**
 
 int XCreature::Chat(XCreature * chatter, const char* msg)
 {
-    if (!event_handler) {
+    if (event_handler.empty()) {
         return 0;
     }
 
@@ -1953,7 +1948,7 @@ int XCreature::GetVisibleRadius()
 
 int XCreature::onGiveItem(XCreature* giver, XItem* item)
 {
-    if (!event_handler) {
+    if (event_handler.empty()) {
         return 0;
     }
 

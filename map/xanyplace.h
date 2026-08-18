@@ -46,8 +46,7 @@ class XAnyPlace : public XObject
     public:
         DECLARE_CREATOR(XAnyPlace, XObject);
         XAnyPlace(const XRect& _area, XLocation* _loc);
-        XAnyPlace(const XRect& _area, XLocation* _loc, const char* _onEventLua);
-        ~XAnyPlace() override;
+        XAnyPlace(const XRect& _area, XLocation* _loc, const std::string& _onEventLua);
     protected:
         // teardown hook, called by XObject::Invalidate()
         void OnInvalidate() override;
@@ -93,15 +92,7 @@ class XAnyPlace : public XObject
             ar(area, owner);
 
             if constexpr (Archive::is_loading::value) {
-                std::string event;
-                ar(event);
-
-                if (event.empty()) {
-                    onEventLua = nullptr;
-                } else {
-                    onEventLua = new char[event.size() + 1];
-                    std::memcpy(onEventLua, event.c_str(), event.size() + 1);
-                }
+                ar(onEventLua);
 
                 // lua_ints must be read back before firing: RestoreInt
                 // hands its contents out sequentially as the handler runs.
@@ -113,7 +104,7 @@ class XAnyPlace : public XObject
                 // StoreInt, so a stale leftover would double up.
                 lua_ints.clear();
                 NotifyLuaEvent(false);
-                ar(std::string(onEventLua ? onEventLua : ""));
+                ar(onEventLua);
                 ar(lua_ints);
             }
         }
@@ -121,7 +112,7 @@ class XAnyPlace : public XObject
     protected:
         XRect area;
         std::weak_ptr<XCreature> owner;
-        char* onEventLua{};
+        std::string onEventLua;
 
         // Backing store for onEventLua's Lua StoreInt/RestoreInt calls
         // (see NotifyLuaEvent()) - filled by StoreInt during LuaEvent::SAVE,

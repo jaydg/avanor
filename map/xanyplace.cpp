@@ -38,7 +38,7 @@ void XAnyPlace::NotifyLuaEvent(bool is_load)
     XLocation::lua_int_buffer = &lua_ints;
     XLocation::lua_int_index = 0;
 
-    if (!onEventLua) {
+    if (onEventLua.empty()) {
         return;
     }
 
@@ -49,27 +49,17 @@ void XAnyPlace::NotifyLuaEvent(bool is_load)
 XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc) : area(_area)
 {
     Setup(_loc);
-    onEventLua = nullptr;
 }
 
-XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc, const char* _onEventLua) : area(_area)
+XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc, const std::string& _onEventLua)
+    : area(_area), onEventLua(_onEventLua)
 {
     Setup(_loc);
-
-    if (_onEventLua) {
-        onEventLua = new char[strlen(_onEventLua) + 1];
-        strcpy(onEventLua, _onEventLua);
-    }
-}
-
-XAnyPlace::~XAnyPlace()
-{
-    delete[] onEventLua;
 }
 
 int XAnyPlace::onCreatureMove(XCreature* cr)
 {
-    if (!onEventLua) {
+    if (onEventLua.empty()) {
         return 0;
     }
 
@@ -86,7 +76,7 @@ int XAnyPlace::onCreatureMove(XCreature* cr)
 
 int XAnyPlace::onCreatureEnter(XCreature* cr)
 {
-    if (!onEventLua) {
+    if (onEventLua.empty()) {
         return 0;
     }
 
@@ -102,7 +92,7 @@ int XAnyPlace::onCreatureEnter(XCreature* cr)
 
 int XAnyPlace::onCreatureLeave(XCreature* cr)
 {
-    if (!onEventLua) {
+    if (onEventLua.empty()) {
         return 0;
     }
 
