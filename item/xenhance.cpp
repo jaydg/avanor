@@ -259,7 +259,7 @@ int XEnhance::Compare(XObject* o)
 
 std::string XEnhance::toString()
 {
-    if (!isIdentifed()) {
+    if (!isIdentified()) {
         if (quantity == 1) {
             return fmt::format("{} {}", ect[descr].color_name, name);
         }

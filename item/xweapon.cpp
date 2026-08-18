@@ -205,7 +205,7 @@ std::string XWeapon::toString()
         }
     }
 
-    if (isIdentifed()) {
+    if (isIdentified()) {
         if (RNG != 0) {
             fullname.append(fmt::format(" <{:+}>", RNG));
         }

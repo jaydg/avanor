@@ -160,7 +160,7 @@ void XHerb::Identify(int level)
     herbs[herb_index].identify = 1;
 }
 
-int XHerb::isIdentifed()
+int XHerb::isIdentified()
 {
     return herbs[herb_index].identify;
 }

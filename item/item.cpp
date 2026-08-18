@@ -576,7 +576,7 @@ std::string XItem::GetArtifactName(std::string real_name)
 {
     std::string str;
 
-    if (isIdentifed()) {
+    if (isIdentified()) {
         str = real_name;
 
         if (RNG != 0) {

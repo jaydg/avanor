@@ -375,9 +375,9 @@ void XHero::PlayerSetup()
 
                     for (int t = 1; t < 3; t++) {
                         if (vRand() % 2 == 1) {
-                            scroll = new XScroll(SCROLL_FIRE_BOLT);
+                            scroll = new XScroll(ScrollName::FIRE_BOLT);
                         } else {
-                            scroll = new XScroll(SCROLL_ICE_BOLT);
+                            scroll = new XScroll(ScrollName::ICE_BOLT);
                         }
 
                         scroll->Identify(1);
@@ -647,11 +647,11 @@ void XHero::PlayerSetup()
                     pbp = GetBodyPart(BP_HAND, 1);
                     pbp->Wear(ICREATEB(ItemKind::SHIELD, ItemType::SMALLSHIELD, 10, 150));
 
-                    scroll = new XScroll(SCROLL_BLINK);
+                    scroll = new XScroll(ScrollName::BLINK);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    scroll = new XScroll(SCROLL_HEROISM);
+                    scroll = new XScroll(ScrollName::HEROISM);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
@@ -692,11 +692,11 @@ void XHero::PlayerSetup()
                     pbp = GetBodyPart(BP_HAND, 1);
                     pbp->Wear(ICREATEB(ItemKind::SHIELD, ItemType::LARGESHIELD, 10, 150));
 
-                    scroll = new XScroll(SCROLL_BLINK);
+                    scroll = new XScroll(ScrollName::BLINK);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    scroll = new XScroll(SCROLL_HEROISM);
+                    scroll = new XScroll(ScrollName::HEROISM);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
@@ -734,15 +734,15 @@ void XHero::PlayerSetup()
                     pbp = GetBodyPart(BP_HAND, 0);
                     pbp->Wear(ICREATEB(ItemKind::WEAPON, ItemType::DAGGER, 10, 150));
 
-                    scroll = new XScroll(SCROLL_BLINK);
+                    scroll = new XScroll(ScrollName::BLINK);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    scroll = new XScroll(SCROLL_RECIPE);
+                    scroll = new XScroll(ScrollName::RECIPE);
                     scroll->Identify(1);
                     ContainItem(scroll);
 
-                    scroll = new XScroll(SCROLL_RECIPE);
+                    scroll = new XScroll(ScrollName::RECIPE);
                     scroll->Identify(1);
                     ContainItem(scroll);
 

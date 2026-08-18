@@ -34,7 +34,7 @@ class XRing : public XEnhance
 
         explicit XRing(XRing* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
 
-        int isIdentifed() override;
+        int isIdentified() override;
         void Identify(int level) override;
         XItem* MakeCopy() override
         {

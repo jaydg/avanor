@@ -39,7 +39,7 @@ class XAmulet : public XEnhance
             return new XAmulet(this);
         }
 
-        int isIdentifed() override;
+        int isIdentified() override;
         void Identify(int level) override;
 
         // aidentify_db is private to xamulet.cpp.

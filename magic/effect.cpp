@@ -399,7 +399,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
 
         case XEffect::IDENTIFY: {
             if (auto it = pData->caller->onIdentifyItem()) {
-                if (it->isIdentifed()) {
+                if (it->isIdentified()) {
                     if (pData->caller->isVisible()) {
                         msgwin.Add(fmt::format(
                             "{} learns nothing new about their items.",

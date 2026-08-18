@@ -50,7 +50,7 @@ XAmulet::XAmulet(Type enh) : XEnhance(enh)
     view = '\'';
 }
 
-int XAmulet::isIdentifed()
+int XAmulet::isIdentified()
 {
     return aidentify_db[descr];
 }

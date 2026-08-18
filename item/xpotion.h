@@ -162,7 +162,7 @@ class XPotion : public XItem
             return new XPotion(this);
         }
 
-        int isIdentifed() override;
+        int isIdentified() override;
         void Identify(int level) override;
         std::string toString() override;
         int Compare(XObject * o) override;

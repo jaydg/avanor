@@ -50,7 +50,7 @@ XRing::XRing(Type enh) : XEnhance(enh)
     view = '=';
 }
 
-int XRing::isIdentifed()
+int XRing::isIdentified()
 {
     return ridentify_db[descr];
 }

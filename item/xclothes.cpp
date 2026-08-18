@@ -28,7 +28,7 @@ std::string XClothes::toString()
 {
     auto fullname = GetFullName();
 
-    if (isIdentifed()) {
+    if (isIdentified()) {
         if (RNG != 0) {
             fullname.append(fmt::format(" <{:+}>", RNG));
         }

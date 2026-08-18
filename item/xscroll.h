@@ -27,34 +27,34 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "magic/effect.h"
 
-enum SCROLL_NAME {
-    SCROLL_BURNING_HANDS,
-    SCROLL_ICE_TOUCH,
-    SCROLL_HEROISM,
-    SCROLL_HEALING,
-    SCROLL_POWER,
-    SCROLL_IDENTIFY,
-    SCROLL_MAGIC_ARROW,
-    SCROLL_FIRE_BOLT,
-    SCROLL_ICE_BOLT,
-    SCROLL_LIGHTNING_BOLT,
-    SCROLL_ACID_BOLT,
-    SCROLL_SUMMON_MONSTER,
-    SCROLL_CREATE_ITEM,
-    SCROLL_CURE_DISEASE,
-    SCROLL_CURE_POISON,
-    SCROLL_BLINK,
-    SCROLL_SELF_KNOWLEDGE,
-    SCROLL_SEE_INVISIBLE,
-    SCROLL_RECIPE,
-    SCROLL_RANDOM
+enum class ScrollName {
+    BURNING_HANDS,
+    ICE_TOUCH,
+    HEROISM,
+    HEALING,
+    POWER,
+    IDENTIFY,
+    MAGIC_ARROW,
+    FIRE_BOLT,
+    ICE_BOLT,
+    LIGHTNING_BOLT,
+    ACID_BOLT,
+    SUMMON_MONSTER,
+    CREATE_ITEM,
+    CURE_DISEASE,
+    CURE_POISON,
+    BLINK,
+    SELF_KNOWLEDGE,
+    SEE_INVISIBLE,
+    RECIPE,
+    RANDOM
 };
 
 class XScroll : public XItem
 {
     public:
         DECLARE_CREATOR(XScroll, XItem);
-        XScroll(SCROLL_NAME _scrn = SCROLL_RANDOM);
+        XScroll(ScrollName _scrn = ScrollName::RANDOM);
         XScroll(XScroll * copy): XItem((XItem*)copy)
         {
             descr = copy->descr;
@@ -66,14 +66,14 @@ class XScroll : public XItem
             return new XScroll(this);
         }
 
-        int isIdentifed() override;
+        int isIdentified() override;
         void Identify(int level) override;
         std::string toString() override;
         int Compare(XObject * o) override;
         virtual int onRead(XCreature * cr);
 
         // Non-template, concrete-archive-typed (like XPotion::Save/
-        // LoadTable): SCROLL_REC/scroll_descr[] are private to
+        // LoadTable): ScrollDescription/scroll_descr[] are private to
         // xscroll.cpp.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);
@@ -85,7 +85,7 @@ class XScroll : public XItem
             ar(descr, sc_name);
         }
 
-        SCROLL_NAME sc_name;
+        ScrollName sc_name;
     protected:
         int descr;
 };

@@ -276,7 +276,7 @@ int XPotion::Compare(XObject * o)
 
 std::string XPotion::toString()
 {
-    if (isIdentifed()) {
+    if (isIdentified()) {
         if (quantity == 1) {
             return fmt::format("potion of {}", name);
         }
@@ -291,7 +291,7 @@ std::string XPotion::toString()
     return fmt::format("heap of {} {} potions", quantity, pnc_table[static_cast<int>(pdescr->force_color)].name);
 }
 
-int XPotion::isIdentifed()
+int XPotion::isIdentified()
 {
     return pdescr->identify;
 }
@@ -501,7 +501,7 @@ int XPotion::onDrink(XCreature * cr)
         } else {
             msgwin.Add(fmt::format("Nothing special happens to {}.", cr->name));
         }
-    } else if (!isIdentifed() && cr->isHero()) {
+    } else if (!isIdentified() && cr->isHero()) {
         Identify(1);
         msgwin.Add(fmt::format("It was {}.", toString()));
     }

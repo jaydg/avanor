@@ -83,7 +83,7 @@ class XHerb : public XAnyFood
         PotionName GetTargetPotion();
 
         void Identify(int level) override;
-        int isIdentifed() override;
+        int isIdentified() override;
 
         std::string toString() override;
                         template<class Archive>

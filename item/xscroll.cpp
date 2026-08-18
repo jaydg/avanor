@@ -27,8 +27,9 @@ REGISTER_CLASS(XScroll);
 CEREAL_REGISTER_TYPE(XScroll);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XScroll);
 
-struct SCROLL_REC {
-    SCROLL_REC(const char* rn, XEffect::Id eff, SCROLL_NAME scrn, int val, int rar) //generate scroll name
+struct ScrollDescription {
+	// generate scroll name
+    ScrollDescription(const char* rn, XEffect::Id eff, ScrollName scrn, int val, int rar)
     {
         real_name = rn;
         effect = eff;
@@ -44,7 +45,8 @@ struct SCROLL_REC {
             const int word_len = vRand() % (5 - words) + 3;
 
             for (int j = 0; j < word_len; j++) {
-                char letter = 'X'; //default letter;
+                // default letter
+                char letter = 'X';
 
                 if (j % 2 == 0) {
                     constexpr char vowels[] = "euioa";
@@ -67,7 +69,7 @@ struct SCROLL_REC {
     };
 
     XEffect::Id effect;
-    SCROLL_NAME scroll_name;
+    ScrollName scroll_name;
     int identify;
     std::string name;
     std::string_view real_name;
@@ -75,7 +77,7 @@ struct SCROLL_REC {
     int rarity;
 
     static int total_value;
-    static int GetRandomDescription(SCROLL_NAME scrn);
+    static int GetRandomDescription(ScrollName scrn);
 
     // real_name/value/rarity are compile-time constants; effect/
     // scroll_name/identify/name are per-game-session mutable state (the
@@ -89,33 +91,33 @@ struct SCROLL_REC {
     }
 };
 
-int SCROLL_REC::total_value = 0;
+int ScrollDescription::total_value = 0;
 
-SCROLL_REC scroll_descr[] = {
-    SCROLL_REC("healing",	XEffect::HEAL,	SCROLL_HEALING,	200,	10),
-    SCROLL_REC("burning hands",	XEffect::BURNING_HANDS,	SCROLL_BURNING_HANDS,	20,	100),
-    SCROLL_REC("ice touch",	XEffect::ICE_TOUCH,	SCROLL_ICE_TOUCH,	20,	100),
-    SCROLL_REC("heroism",	XEffect::HEROISM,	SCROLL_HEROISM,	25,	100),
-    SCROLL_REC("power",	XEffect::POWER,	SCROLL_POWER,	15,	100),
-    SCROLL_REC("identify",	XEffect::IDENTIFY,	SCROLL_IDENTIFY,	100,	30),
-    SCROLL_REC("magic arrow",	XEffect::MAGIC_ARROW,	SCROLL_MAGIC_ARROW,	15,	200),
-    SCROLL_REC("fire bolt",	XEffect::FIRE_BOLT,	SCROLL_FIRE_BOLT,	50,	60),
-    SCROLL_REC("ice bolt",	XEffect::ICE_BOLT,	SCROLL_ICE_BOLT,	50,	60),
-    SCROLL_REC("lightning bolt", XEffect::LIGHTNING_BOLT,	SCROLL_LIGHTNING_BOLT,	100,	20),
-    SCROLL_REC("acid bolt",	XEffect::ACID_BOLT,	SCROLL_ACID_BOLT,	150,	15),
-    SCROLL_REC("summon monsters", XEffect::SUMMON_MONSTER,	SCROLL_SUMMON_MONSTER,	10,	100),
-    SCROLL_REC("create item",	XEffect::CREATE_ITEM,	SCROLL_CREATE_ITEM,	200,	25),
-    SCROLL_REC("cure disease",	XEffect::CURE_DISEASE,	SCROLL_CURE_DISEASE,	40,	100),
-    SCROLL_REC("cure poison",	XEffect::CURE_POISON,	SCROLL_CURE_POISON,	40,	100),
-    SCROLL_REC("blink",	XEffect::BLINK,	SCROLL_BLINK,	70,	30),
-    SCROLL_REC("self knowledge", XEffect::SELF_KNOWLEDGE,	SCROLL_SELF_KNOWLEDGE,	150,	10),
-    SCROLL_REC("see invisible", XEffect::SEE_INVISIBLE,	SCROLL_SEE_INVISIBLE,	40,	50),
-    SCROLL_REC("recipe",	XEffect::NONE,	SCROLL_RECIPE,	30,	25),
+ScrollDescription scroll_descr[] = {
+    ScrollDescription("healing",         XEffect::HEAL,           ScrollName::HEALING,        200,  10),
+    ScrollDescription("burning hands",   XEffect::BURNING_HANDS,  ScrollName::BURNING_HANDS,   20, 100),
+    ScrollDescription("ice touch",       XEffect::ICE_TOUCH,      ScrollName::ICE_TOUCH,       20, 100),
+    ScrollDescription("heroism",         XEffect::HEROISM,        ScrollName::HEROISM,         25, 100),
+    ScrollDescription("power",           XEffect::POWER,          ScrollName::POWER,           15, 100),
+    ScrollDescription("identify",        XEffect::IDENTIFY,       ScrollName::IDENTIFY,       100,  30),
+    ScrollDescription("magic arrow",     XEffect::MAGIC_ARROW,    ScrollName::MAGIC_ARROW,     15, 200),
+    ScrollDescription("fire bolt",       XEffect::FIRE_BOLT,      ScrollName::FIRE_BOLT,       50,  60),
+    ScrollDescription("ice bolt",        XEffect::ICE_BOLT,       ScrollName::ICE_BOLT,        50,  60),
+    ScrollDescription("lightning bolt",  XEffect::LIGHTNING_BOLT, ScrollName::LIGHTNING_BOLT, 100,  20),
+    ScrollDescription("acid bolt",       XEffect::ACID_BOLT,      ScrollName::ACID_BOLT,      150,  15),
+    ScrollDescription("summon monsters", XEffect::SUMMON_MONSTER, ScrollName::SUMMON_MONSTER,  10, 100),
+    ScrollDescription("create item",     XEffect::CREATE_ITEM,    ScrollName::CREATE_ITEM,    200,  25),
+    ScrollDescription("cure disease",    XEffect::CURE_DISEASE,   ScrollName::CURE_DISEASE,    40, 100),
+    ScrollDescription("cure poison",     XEffect::CURE_POISON,    ScrollName::CURE_POISON,     40, 100),
+    ScrollDescription("blink",           XEffect::BLINK,          ScrollName::BLINK,           70,  30),
+    ScrollDescription("self knowledge",  XEffect::SELF_KNOWLEDGE, ScrollName::SELF_KNOWLEDGE, 150,  10),
+    ScrollDescription("see invisible",   XEffect::SEE_INVISIBLE,  ScrollName::SEE_INVISIBLE,   40,  50),
+    ScrollDescription("recipe",          XEffect::NONE,           ScrollName::RECIPE,          30,  25),
 };
 
-int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
+int ScrollDescription::GetRandomDescription(ScrollName scrn)
 {
-    if (scrn == SCROLL_RANDOM) {
+    if (scrn == ScrollName::RANDOM) {
         int val = vRand(total_value);
         int pos = -1;
 
@@ -126,7 +128,7 @@ int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
 
         return pos;
     } else {
-        for (int i = 0; i < SCROLL_RANDOM; i++)
+        for (int i = 0; i < static_cast<int>(ScrollName::RANDOM); i++)
             if (scroll_descr[i].scroll_name == scrn) {
                 return i;
             }
@@ -135,10 +137,10 @@ int SCROLL_REC::GetRandomDescription(SCROLL_NAME scrn)
     return -1;
 }
 
-XScroll::XScroll(SCROLL_NAME scrn)
+XScroll::XScroll(ScrollName scrn)
 {
-    descr = SCROLL_REC::GetRandomDescription(scrn);
-    assert(descr > -1 && descr < SCROLL_RANDOM);
+    descr = ScrollDescription::GetRandomDescription(scrn);
+    assert(descr > -1 && descr < static_cast<int>(ScrollName::RANDOM));
     sc_name = scroll_descr[descr].scroll_name;
     name = scroll_descr[descr].real_name;
     value = scroll_descr[descr].value;
@@ -151,7 +153,7 @@ XScroll::XScroll(SCROLL_NAME scrn)
     dice.Setup("1d1");
 }
 
-int XScroll::isIdentifed()
+int XScroll::isIdentified()
 {
     return scroll_descr[descr].identify;
 }
@@ -179,7 +181,7 @@ int XScroll::Compare(XObject * o)
 
 std::string XScroll::toString()
 {
-    if (!isIdentifed()) {
+    if (!isIdentified()) {
         if (quantity == 1) {
             return fmt::format("scroll labeled \"{}\"", scroll_descr[descr].name);
         }
@@ -234,7 +236,7 @@ int XScroll::onRead(XCreature * cr)
         flag = 0;
 
         switch (scroll_descr[descr].scroll_name) {
-            case SCROLL_RECIPE:
+            case ScrollName::RECIPE:
                 if (cr->isHero()) {
                     int val = vRand(XAlchemy::GetRecipeCount());
                     XAlchemyRecipe * pRec = XAlchemy::GetRecipe(val);
@@ -260,7 +262,7 @@ int XScroll::onRead(XCreature * cr)
             msgwin.Add("feels nothing special.");
         }
     } else {
-        if (!isIdentifed() && cr->isHero()) {
+        if (!isIdentified() && cr->isHero()) {
             Identify(1);
             msgwin.Add(fmt::format("It was {}.", toString()));
         }
@@ -271,14 +273,14 @@ int XScroll::onRead(XCreature * cr)
 
 void XScroll::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (int i = 0; i < SCROLL_RANDOM; i++) {
+    for (int i = 0; i < static_cast<int>(ScrollName::RANDOM); i++) {
         ar(scroll_descr[i]);
     }
 }
 
 void XScroll::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (int i = 0; i < SCROLL_RANDOM; i++) {
+    for (int i = 0; i < static_cast<int>(ScrollName::RANDOM); i++) {
         ar(scroll_descr[i]);
     }
 }

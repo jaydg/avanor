@@ -125,7 +125,7 @@ XBook::XBook(BOOK_NAME bn)
     reader_guid = 0;
 }
 
-int XBook::isIdentifed()
+int XBook::isIdentified()
 {
     return book_descr[descr].identify;
 }
@@ -155,7 +155,7 @@ std::string XBook::toString()
 {
     std::string str;
 
-    if (!isIdentifed()) {
+    if (!isIdentified()) {
         if (quantity == 1) {
             str = books_descr[book_descr[descr].name_index];
         } else {
@@ -191,7 +191,7 @@ int XBook::onRead(XCreature * reader)
         if (reader->isHero()) {
             msgwin.Add(fmt::format("You read the {}.", toString()));
 
-            if (!isIdentifed()) {
+            if (!isIdentified()) {
                 Identify(1);
                 msgwin.Add(fmt::format("It was {}.", toString()));
             }
@@ -201,7 +201,7 @@ int XBook::onRead(XCreature * reader)
                 reader->GetVerb("read"),
                 toString()));
 
-            if (!isIdentifed()) {
+            if (!isIdentified()) {
                 Identify(1);
                 msgwin.Add(fmt::format("It was {}.", toString()));
             }

@@ -948,11 +948,11 @@ int XStandardAI::ReadScroll() const
 
         auto scroll = dynamic_cast<XScroll*>(item.get());
 
-        if (scroll->sc_name == SCROLL_MAGIC_ARROW ||
-            scroll->sc_name == SCROLL_FIRE_BOLT ||
-            scroll->sc_name == SCROLL_ICE_BOLT ||
-            scroll->sc_name == SCROLL_LIGHTNING_BOLT ||
-            scroll->sc_name == SCROLL_ACID_BOLT) {
+        if (scroll->sc_name == ScrollName::MAGIC_ARROW ||
+            scroll->sc_name == ScrollName::FIRE_BOLT ||
+            scroll->sc_name == ScrollName::ICE_BOLT ||
+            scroll->sc_name == ScrollName::LIGHTNING_BOLT ||
+            scroll->sc_name == ScrollName::ACID_BOLT) {
             scroll->onRead(ai_owner);
 
             if (--scroll->quantity <= 0) {

@@ -98,7 +98,7 @@ class XItem : public XBaseObject
 
         // Answer "can these two items stack?"
         virtual int Compare(XObject * o);
-        virtual int isIdentifed()
+        virtual int isIdentified()
         {
             return identify; // object can be indetifed or not
         }
