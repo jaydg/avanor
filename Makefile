@@ -59,9 +59,8 @@ SRCS = xlua.cpp xweapon.cpp xtool.cpp xtime.cpp xstring.cpp xshield.cpp       \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothes.cpp xcloak.cpp  \
        xcap.cpp xboots.cpp xbook.cpp xbaseobj.cpp xarmor.cpp xarchive.cpp     \
        xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp wskills.cpp            \
-       uniquei.cpp shopkeeper.cpp                                             \
-       strproc.cpp std_ai.cpp lua_ai.cpp stats.cpp skills.cpp skill.cpp       \
-       attack_effect_type.cpp                                                \
+       uniquei.cpp shopkeeper.cpp keyword_dice.cpp std_ai.cpp lua_ai.cpp      \
+       stats.cpp skills.cpp skill.cpp attack_effect_type.cpp                  \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
        quest.cpp map_objects.cpp msgwin.cpp                                   \
        modifiers.cpp modifier.cpp map.cpp manual.cpp Main.cpp                \

@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
-#include "helpers/strproc.h"
+#include "helpers/keyword_dice.h"
 #include "magic/stats.h"
 
 void XStats::RegisterLua(sol::state_view& lua)
@@ -88,9 +88,7 @@ XStats::XStats(const char* str)
 
 void XStats::Set(const char* str)
 {
-    XStringProcEx xsp(str);
-
-    for (auto [keyword_index, dice]: xsp.GetPairsList()) {
+    for (auto [keyword_index, dice]: ParseKeywordDice(str)) {
         stats[keyword_index] += dice.Throw() * 100;
     }
 }
@@ -140,9 +138,7 @@ XStatsGenerator::XStatsGenerator()
 
 void XStatsGenerator::Init(const char* str)
 {
-    XStringProcEx xsp(str);
-
-    for (auto [keyword_index, dice]: xsp.GetPairsList()) {
+    for (auto [keyword_index, dice]: ParseKeywordDice(str)) {
         stats[keyword_index].Setup(dice);
     }
 }

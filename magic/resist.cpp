@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "engine/global.h"
-#include "helpers/strproc.h"
+#include "helpers/keyword_dice.h"
 #include "magic/resist.h"
 
 void XResistance::RegisterLua(sol::state_view& lua)
@@ -83,18 +83,57 @@ XResistance::XResistance()
     }
 }
 
+namespace {
+
+// The value token following `param` in a "name value name value" string:
+// FindParam("fire 1d3 cold 2d2", "cold") is "2d2", and absent names give
+// an empty string.
+//
+// This is all that remained of XStringProc::GetParam(), which wrote into
+// a caller-supplied char[256] with no bound on the token length.
+std::string FindParam(const std::string& str, const std::string& param)
+{
+    for (auto pos = str.find(param); pos != std::string::npos; pos = str.find(param, pos + 1)) {
+        // Must start a word, so "invisible" doesn't match inside
+        // "see_invisible" - the same test the old GetParam() made.
+        if (pos != 0 && str[pos - 1] != ' ') {
+            continue;
+        }
+
+        // Exactly one separator sits between a name and its value.
+        const auto value = pos + param.size() + 1;
+
+        if (value >= str.size()) {
+            return {};
+        }
+
+        auto end = value;
+
+        while (end < str.size() && static_cast<unsigned char>(str[end]) > ' ') {
+            end++;
+        }
+
+        return str.substr(value, end - value);
+    }
+
+    return {};
+}
+
+} // namespace
+
 XResistance::XResistance(const char* str1)
 {
-    XStringProc xsp1(str1);
-    char buf[256];
+    const std::string str = str1 ? str1 : "";
     XDice d;
 
     for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-        if (xsp1.GetParam(buf, resists_data[i + 1].name)) {
-            d.Setup(buf);
-            SetResistance(static_cast<XResistance::Id>(i), d.Throw());
-        } else {
+        const std::string value = FindParam(str, resists_data[i + 1].name);
+
+        if (value.empty()) {
             SetResistance(static_cast<XResistance::Id>(i), 0);
+        } else {
+            d.Setup(value);
+            SetResistance(static_cast<XResistance::Id>(i), d.Throw());
         }
     }
 }
@@ -200,9 +239,7 @@ XResistGenerator::XResistGenerator()
 
 void XResistGenerator::Init(const char* str)
 {
-    XStringProcEx xsp(str);
-
-    for (auto [keyword_index, dice]: xsp.GetPairsList()) {
+    for (auto [keyword_index, dice]: ParseKeywordDice(str)) {
         resist[keyword_index].Setup(dice);
     }
 }
