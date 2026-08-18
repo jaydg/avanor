@@ -177,6 +177,19 @@ class XObject : public std::enable_shared_from_this<XObject>
 
         static void InvalidateAllObjects();
 
+        // Opt-in consistency check for objects, run between turns from
+        // DrainDeferred(). Every entry must be filed under its own xguid;
+        // an object freed without its registry entry being erased shows up
+        // as a key whose value's xguid no longer matches (freed memory
+        // reads back as garbage). Catching that at the next drain pins the
+        // turn that broke it, instead of segfaulting in some later
+        // XUniversalGen::Run() walk over a dangling pointer.
+        //
+        // Enable with AVANOR_AUDIT_OBJECTS=1 in the environment, or from a
+        // debugger: set XObject::audit_objects = 1
+        static bool audit_objects;
+        static void AuditObjects();
+
         // Deferred-release "graveyard": an owner that wants to drop what
         // may be an object's last shared_ptr mid-turn (e.g. a map cell
         // evicting a trap from inside that trap's own Activate(), see
