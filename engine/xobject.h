@@ -335,7 +335,15 @@ class XObject : public std::enable_shared_from_this<XObject>
 
             if constexpr (Archive::is_loading::value) {
                 if (old_guid != xguid) {
-                    objects.erase(old_guid);
+                    // By identity, like Invalidate()'s erase: `this` was
+                    // registered under old_guid by Create(), but if some
+                    // other object has since taken that key, a blind erase
+                    // would deregister *it* - silently hiding a live object
+                    // from InvalidateAllObjects()'s sweep.
+                    if (auto it = objects.find(old_guid);
+                        it != objects.end() && it->second == this) {
+                        objects.erase(it);
+                    }
 
                     // Never steal an occupied slot from a different,
                     // already-registered live object - in normal
