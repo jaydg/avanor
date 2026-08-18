@@ -1,4 +1,24 @@
 
+-- Scatters herb bushes across the current location.
+--
+local HERB_BUSH_ODDS = 18
+local HERB_BUSH_TERRAIN = XTileType.GREEN_GRASS
+local HERB_BUSH_CLASS = "XHerbBush"
+
+function ScatterHerbBushes()
+	local w, h = GetMapSize()
+
+	for y = 0, h - 1 do
+		for x = 0, w - 1 do
+			if Rand(HERB_BUSH_ODDS) == 0
+				and GetTile(x, y) == HERB_BUSH_TERRAIN
+				and not HasSpecial(x, y) then
+				PlaceSpecial(HERB_BUSH_CLASS, x, y)
+			end
+		end
+	end
+end
+
 function MakeAvanorValley()
 	CreateLocation(XLocation.MAIN, "Valley", "Valley of Avanor", PLAIN)
 

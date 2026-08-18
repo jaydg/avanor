@@ -69,6 +69,16 @@ class XMapObject : public XObject
             ar(x, y, view, color, name);
         }
 
+        // Put this object on a map at (x, y), returning false if the cell
+        // is already taken. Separate from the constructors so an object can
+        // be created by class name (XClassFactory::CreateNew, reachable
+        // from Lua as CreateObject) and placed afterwards.
+        //
+        // Subclasses that need more than a map cell - picking their
+        // species, registering with the scheduler - override this; see
+        // XHerbBush::PlaceAt().
+        virtual bool PlaceAt(XLocation* location, int _x, int _y);
+
         bool SetLocation(XLocation* new_l)
         {
             l = new_l;

@@ -44,6 +44,28 @@ XMapObject::XMapObject(XMapObject* copy) :
     name = copy->name;
 }
 
+bool XMapObject::PlaceAt(XLocation* location, const int _x, const int _y)
+{
+    if (!location || !location->map) {
+        return false;
+    }
+
+    if (_x < 0 || _y < 0 || _x >= location->map->len || _y >= location->map->hgt) {
+        return false;
+    }
+
+    if (location->map->GetSpecial(_x, _y) != nullptr) {
+        return false;
+    }
+
+    SetLocation(location);
+    x = _x;
+    y = _y;
+    location->map->SetSpecial(x, y, this);
+
+    return true;
+}
+
 void XMapObject::OnInvalidate()
 {
     // Self-eviction from the map grid, mirroring how XItem::Invalidate()

@@ -669,22 +669,6 @@ LOCATION_PATTERN XLocation::current_pattern;
 std::vector<PALETTE_MAP> XLocation::pattern_translation;
 
 
-//ScatterHerbBushes()
-void XLocation::ScatterHerbBushes()
-{
-    for (int i = 0; i < current_location->map->hgt; i++) {
-        for (int j = 0; j < current_location->map->len; j++) {
-            if (vRand(18) == 0) {
-                if (current_location->map->GetXY(j, i) == XTileType::GREEN_GRASS
-                    && current_location->map->GetSpecial(j, i) == nullptr) {
-                    new XHerbBush(j, i, current_location);
-                }
-            }
-        }
-    }
-}
-
-
 //BuildShop(x, y, 9, 3, ItemKind::ARMOUR + ItemKind::WEAPON + ItemKind::POTION + ItemKind::BOOK + ItemKind::SCROLL + ItemKind::NECK + ItemKind::MISSILE + ItemKind::MISSILEW, 'Toberin, the dwarwen shopkeeper')
 void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name)
 {

@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef LUA_API_WORLD_H
 #define LUA_API_WORLD_H
 
+#include <string>
+#include <tuple>
+
 #include <sol/forward.hpp>
 
 // Script API for building the location currently under construction
@@ -57,6 +60,11 @@ namespace lua_api
     void Trap(int x, int y);
     void EventPlace(const std::string& event);
     void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
+
+    std::tuple<int, int> GetMapSize();
+    int GetTile(int x, int y);
+    bool HasSpecial(int x, int y);
+    sol::object PlaceSpecial(const std::string& class_name, int x, int y, sol::this_state s);
 
     // Registers every function above under its Lua name.
     void RegisterWorldApi(sol::state_view& lua);

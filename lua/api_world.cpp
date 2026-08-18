@@ -38,9 +38,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map_objects.h"
 
 // Left behind in game/location.cpp on purpose, not overlooked: Altar
-// (bound to XDeity), ScatterHerbBushes and CreateMushroom (named after
-// two specific plants), BuildShop (drags in XShop and its C++ keeper AI)
-// and IsWearingAvanorDefender (an engine global named after a single
+// (bound to XDeity), CreateMushroom (named after a specific plant),
+// BuildShop (drags in XShop and its C++ keeper AI) and
+// IsWearingAvanorDefender (an engine global named after a single
 // artifact). Those are Avanor content wearing an engine API hat; moving
 // them here would bless them as part of the generic interface.
 //
@@ -271,8 +271,61 @@ void EventPlaceArea(int x, int y, int w, int h, const std::string& event)
 }
 
 
+
+// ---------------------------------------------------------------------
+// Map queries and generic placement.
+//
+// These four exist so that scatter/decoration rules - how dense, on which
+// terrain, avoiding which cells - can be written in Lua instead of being
+// compiled in. ScatterHerbBushes() used to be a C++ binding that hard-coded
+// "one cell in eighteen, on green grass, where nothing else stands"; it is
+// now a Lua function in world/valley.lua built out of exactly these calls.
+// ---------------------------------------------------------------------
+
+std::tuple<int, int> GetMapSize()
+{
+    const XMap* map = XLocation::current_location->map;
+
+    return {map->len, map->hgt};
+}
+
+int GetTile(const int x, const int y)
+{
+    return XLocation::current_location->map->GetXY(x, y);
+}
+
+bool HasSpecial(const int x, const int y)
+{
+    return XLocation::current_location->map->GetSpecial(x, y) != nullptr;
+}
+
+// Creates `class_name` through the same factory CreateObject() uses, then
+// places it. Returns the object so script can keep configuring it, or nil
+// when the class is unknown or the cell is unusable.
+sol::object PlaceSpecial(const std::string& class_name, const int x, const int y, sol::this_state s)
+{
+    auto* obj = dynamic_cast<XMapObject*>(XClassFactory::CreateNew(class_name));
+
+    if (!obj) {
+        return sol::nil;
+    }
+
+    if (!obj->PlaceAt(XLocation::current_location, x, y)) {
+        obj->Invalidate();
+
+        return sol::nil;
+    }
+
+    return sol::make_object(s, static_cast<void*>(obj));
+}
+
 void RegisterWorldApi(sol::state_view& lua)
 {
+    lua.set_function("GetMapSize", &lua_api::GetMapSize);
+    lua.set_function("GetTile", &lua_api::GetTile);
+    lua.set_function("HasSpecial", &lua_api::HasSpecial);
+    lua.set_function("PlaceSpecial", &lua_api::PlaceSpecial);
+
     lua.set_function("CreateLocation", &XLocation::CreateLocation);
         lua.set_function("Settle", &lua_api::Settle);
         lua.set_function("Creature", &lua_api::Creature);

@@ -175,9 +175,16 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XHerbBush);
 
 XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 {
-    l = _l;
-    x = _x;
-    y = _y;
+    const bool placed = PlaceAt(_l, _x, _y);
+    assert(placed);
+}
+
+bool XHerbBush::PlaceAt(XLocation* location, const int _x, const int _y)
+{
+    if (!XMapObject::PlaceAt(location, _x, _y)) {
+        return false;
+    }
+
     ttm = 1;
     herb_strength = 1;
 
@@ -187,11 +194,11 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
 
     view = '"';
     color = herbs[herb_index].color;
-
     name = herbs[herb_index].herb_name;
-    assert(l->map->GetSpecial(x, y) == nullptr);
-    l->map->SetSpecial(x, y, this);
+
     Game.Scheduler.Add(this);
+
+    return true;
 }
 
 const std::string XHerbBush::GetName(XCreature *viewer)
@@ -318,9 +325,16 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XMushSpawn);
 
 XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 {
-    l = _l;
-    x = _x;
-    y = _y;
+    const bool placed = PlaceAt(_l, _x, _y);
+    assert(placed);
+}
+
+bool XMushSpawn::PlaceAt(XLocation* location, const int _x, const int _y)
+{
+    if (!XMapObject::PlaceAt(location, _x, _y)) {
+        return false;
+    }
+
     ttm = vRand(BASE_MUSH_REFRESH);
 
     do {
@@ -329,11 +343,11 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
 
     view = '`';
     color = herbs[mush_index].color;
-
     name = herbs[mush_index].herb_name;
-    assert(l->map->GetSpecial(x, y) == nullptr);
-    l->map->SetSpecial(x, y, this);
+
     Game.Scheduler.Add(this);
+
+    return true;
 }
 
 const std::string XMushSpawn::GetName(XCreature *viewer)

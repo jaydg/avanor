@@ -319,13 +319,6 @@ class XLocation : public XObject
         static int pat_offs_x;
         static int pat_offs_y;
 
-        // Scatters XHerbBush onto roughly 1-in-18 GREEN_GRASS tiles across
-        // the whole current location (skipping tiles that already have a
-        // special object) - a one-shot world-gen batch, not a per-tile Lua
-        // loop, since it's an 18000-tile scan for a 200x90 map like the
-        // Valley.
-        static void ScatterHerbBushes();
-
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
         static void Altar(int x, int y, int deity);
         static void CreateMushroom(void* location);

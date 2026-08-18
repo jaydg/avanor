@@ -110,7 +110,6 @@ void XLua::Init()
         lua_api::RegisterActorApi(lua);
     lua_api::RegisterWorldApi(lua);
 
-        lua.set_function("ScatterHerbBushes", &XLocation::ScatterHerbBushes);
         lua.set_function("BuildShop", &XLocation::BuildShop);
         lua.set_function("Altar", &XLocation::Altar);
         lua.set_function("CreateMushroom", &XLocation::CreateMushroom);

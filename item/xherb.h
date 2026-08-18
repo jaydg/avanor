@@ -123,6 +123,11 @@ class XHerbBush: public XMapObject
         DECLARE_CREATOR(XHerbBush, XMapObject);
         XHerbBush(int _x, int _y, XLocation * _l);
 
+        // Picks the species, then places and schedules. Everything the
+        // three-argument constructor used to do, reachable after a bare
+        // CreateObject("XHerbBush") from script.
+        bool PlaceAt(XLocation* location, int _x, int _y) override;
+
         template<class Archive>
         void serialize(Archive& ar)
         {
@@ -149,6 +154,9 @@ class XMushSpawn: public XMapObject
     public:
         DECLARE_CREATOR(XMushSpawn, XMapObject);
         XMushSpawn(int _x, int _y, XLocation * _l);
+
+        // See XHerbBush::PlaceAt().
+        bool PlaceAt(XLocation* location, int _x, int _y) override;
 
         template<class Archive>
         void serialize(Archive& ar)
