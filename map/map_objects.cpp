@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "engine/xlua.h"
 #include "creature/creature.h"
 #include "game/game.h"
 #include "game/location.h"
@@ -654,7 +655,7 @@ int XOuterObject::onOuterUse(XCreature* cr)
         return XMapObject::onOuterUse(cr);
     }
 
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::OUTER_USE, (void*)cr, (void*)this);
 
     if (!result.valid()) {

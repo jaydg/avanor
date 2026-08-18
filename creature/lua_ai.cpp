@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "engine/xlua.h"
 #include <cereal/types/polymorphic.hpp>
 #include <sol/sol.hpp>
 
@@ -34,7 +35,7 @@ XLuaAI::XLuaAI(XCreature* cr, const std::string& lc) : XStandardAI(cr), lua_clas
 
 void XLuaAI::ResolveHooks()
 {
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::object obj = lua[lua_class];
 
     // lua[lua_class] is nil (not a table) both for a genuinely missing/
@@ -64,7 +65,7 @@ void XLuaAI::ResolveHooks()
 bool XLuaAI::isEnemy(XCreature* cr)
 {
     if (has_isEnemy) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         sol::protected_function_result result = lua[lua_class]["isEnemy"](ai_owner, cr);
 
         if (result.valid()) {
@@ -80,7 +81,7 @@ bool XLuaAI::isEnemy(XCreature* cr)
 void XLuaAI::onWasAttacked(XCreature* attacker)
 {
     if (has_onWasAttacked) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         sol::protected_function_result result = lua[lua_class]["onWasAttacked"](ai_owner, attacker);
 
         if (result.valid()) {
@@ -96,7 +97,7 @@ void XLuaAI::onWasAttacked(XCreature* attacker)
 void XLuaAI::onDie(XCreature* killer)
 {
     if (has_onDie) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         sol::protected_function_result result = lua[lua_class]["onDie"](ai_owner, killer);
 
         if (result.valid()) {
@@ -112,7 +113,7 @@ void XLuaAI::onDie(XCreature* killer)
 void XLuaAI::onSteal(XCreature* rogue)
 {
     if (has_onSteal) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         sol::protected_function_result result = lua[lua_class]["onSteal"](ai_owner, rogue);
 
         if (result.valid()) {

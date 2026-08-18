@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "engine/xlua.h"
 #include <algorithm>
 #include <cmath>
 #include <fmt/format.h>
@@ -442,7 +443,7 @@ void XCreature::Move()
     }
 
     if (wants_move_hook && event_handler) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         lua[event_handler](LuaEvent::PRE_MOVE, (void*)this);
     }
 
@@ -698,7 +699,7 @@ void XCreature::NewMove()
     }
 
     if (wants_move_hook && event_handler) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         lua[event_handler](LuaEvent::AI_TURN, (void*)this);
     }
 
@@ -1052,7 +1053,7 @@ void XCreature::Die(XCreature* killer)
     if (event_handler) {
         // this/killer stay void*, not XCreature* -  killer can legitimately be
         // nullptr (e.g. DecNutrio()'s Die(nullptr))
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         lua[event_handler](LuaEvent::DIE, (void*)this, (void*)killer);
     }
 
@@ -1780,7 +1781,7 @@ void XCreature::NotifyLuaEventHandler(LuaEvent event)
     XLocation::lua_int_index = 0;
 
     if (event_handler && strlen(event_handler)) {
-        sol::state_view lua(XLocation::L);
+        sol::state_view lua(XLua::State());
         lua[event_handler](event);
     }
 }
@@ -1832,7 +1833,7 @@ int XCreature::Chat(XCreature * chatter, const char* msg)
         return 0;
     }
 
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[event_handler](LuaEvent::CHAT, (void*)this, (void*)chatter, std::string(msg));
 
     if (!result.valid()) {
@@ -1956,7 +1957,7 @@ int XCreature::onGiveItem(XCreature* giver, XItem* item)
         return 0;
     }
 
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[event_handler](LuaEvent::GIVE_ITEM, (void*)this, (void*)giver, (void*)item);
 
     if (!result.valid()) {

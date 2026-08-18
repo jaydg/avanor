@@ -308,10 +308,8 @@ class XLocation : public XObject
 
         static void CreateNewGame();
         static void Restoration();
-        static void CommonLuaInitialization();
         static XLocation* current_location;
         static XCreature* last_creature;
-        static lua_State* L;
         static LOCATION_PATTERN current_pattern;
         static std::vector<PALETTE_MAP> pattern_translation;
         static int pat_offs_x;

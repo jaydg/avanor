@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "engine/xlua.h"
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
 
@@ -41,7 +42,7 @@ void XAnyPlace::NotifyLuaEvent(bool is_load)
         return;
     }
 
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     lua[onEventLua](is_load ? LuaEvent::LOAD : LuaEvent::SAVE);
 }
 
@@ -73,7 +74,7 @@ int XAnyPlace::onCreatureMove(XCreature* cr)
     }
 
     // cr stays void*, not XCreature* - Sol2 pushes void* as light userdata
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE, (void*)cr);
 
     if (!result.valid()) {
@@ -89,7 +90,7 @@ int XAnyPlace::onCreatureEnter(XCreature* cr)
         return 0;
     }
 
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE_IN, (void*)cr);
 
     if (!result.valid()) {
@@ -105,7 +106,7 @@ int XAnyPlace::onCreatureLeave(XCreature* cr)
         return 0;
     }
 
-    sol::state_view lua(XLocation::L);
+    sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE_OUT, (void*)cr);
 
     if (!result.valid()) {
