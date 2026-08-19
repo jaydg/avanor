@@ -48,71 +48,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
-namespace {
-
-// Every real location id and the name it is known by. One table rather
-// than two: XLocation::IdToKey() and the Lua XLocation.MEMBER table are
-// both built from it, so they cannot drift apart. UNKNOWN/RANDOM/COUNT
-// are deliberately absent - they are sentinels, not places.
-struct LocationIdName {
-    XLocation::Id id;
-    const char* name;
-};
-
-const LocationIdName location_id_names[] = {
-    {XLocation::MAIN, "MAIN"},
-    {XLocation::DWARFCITYCAVE1, "DWARFCITYCAVE1"},
-    {XLocation::DWARFCITYCAVE2, "DWARFCITYCAVE2"},
-    {XLocation::DWARFCITYCAVE3, "DWARFCITYCAVE3"},
-    {XLocation::DWARFCITYCAVE4, "DWARFCITYCAVE4"},
-    {XLocation::DWARFCITYCAVE5, "DWARFCITYCAVE5"},
-    {XLocation::DWARFCITYCAVE6, "DWARFCITYCAVE6"},
-    {XLocation::DWARFCITYCAVE7, "DWARFCITYCAVE7"},
-    {XLocation::DWARFCITY, "DWARFCITY"},
-    {XLocation::DWARFTREASURE, "DWARFTREASURE"},
-    {XLocation::GASMINE1, "GASMINE1"},
-    {XLocation::GASMINE2, "GASMINE2"},
-    {XLocation::GASMINE3, "GASMINE3"},
-    {XLocation::SMALLCAVE, "SMALLCAVE"},
-    {XLocation::RATCELLAR, "RATCELLAR"},
-    {XLocation::MUSHROOMS_CAVE1, "MUSHROOMS_CAVE1"},
-    {XLocation::MUSHROOMS_CAVE2, "MUSHROOMS_CAVE2"},
-    {XLocation::MUSHROOMS_CAVE3, "MUSHROOMS_CAVE3"},
-    {XLocation::MUSHROOMS_CAVE4, "MUSHROOMS_CAVE4"},
-    {XLocation::MUSHROOMS_CAVE5, "MUSHROOMS_CAVE5"},
-    {XLocation::WIZARD_DUNGEON1, "WIZARD_DUNGEON1"},
-    {XLocation::WIZARD_DUNGEON2, "WIZARD_DUNGEON2"},
-    {XLocation::WIZARD_DUNGEON3, "WIZARD_DUNGEON3"},
-    {XLocation::WIZARD_DUNGEON4, "WIZARD_DUNGEON4"},
-    {XLocation::WIZARD_DUNGEON5, "WIZARD_DUNGEON5"},
-    {XLocation::AHKULAN_CASTLE, "AHKULAN_CASTLE"},
-    {XLocation::UNDEADS_TOMB1, "UNDEADS_TOMB1"},
-    {XLocation::UNDEADS_TOMB2, "UNDEADS_TOMB2"},
-    {XLocation::UNDEADS_TOMB3, "UNDEADS_TOMB3"},
-    {XLocation::UNDEADS_TOMB4, "UNDEADS_TOMB4"},
-    {XLocation::UNDEADS_TOMB5, "UNDEADS_TOMB5"},
-    {XLocation::EXTINCT_VOLCANO, "EXTINCT_VOLCANO"},
-    {XLocation::KINGS_TREASURE, "KINGS_TREASURE"},
-    {XLocation::WIZTOWER_TOP, "WIZTOWER_TOP"},
-    {XLocation::SMALL_CAVE_1, "SMALL_CAVE_1"},
-    {XLocation::SMALL_CAVE_2, "SMALL_CAVE_2"},
-    {XLocation::DEBUG1, "DEBUG1"},
-    {XLocation::DEBUG2, "DEBUG2"},
-};
-
-} // namespace
-
-std::string XLocation::IdToKey(const Id location_id)
-{
-    for (const auto& entry : location_id_names) {
-        if (entry.id == location_id) {
-            return entry.name;
-        }
-    }
-
-    return {};
-}
-
 
 REGISTER_CLASS(XLocation);
 CEREAL_REGISTER_TYPE(XLocation);
@@ -736,16 +671,6 @@ void XLocation::RegisterLua(sol::state_view& lua)
         "RIGHT", XShop::Door::RIGHT,
         "BUILT_IN", XShop::Door::BUILT_IN
     );
-
-    // Built from location_id_names above rather than a second hand-written
-    // list, which is what world/ids.lua's L_* constants still are: they
-    // hardcode the numeric values (L_SMALL_CAVE1 = 55) and nothing checks
-    // them against this enum. Step 4c retires both.
-    auto location_ids = lua.create_named_table("XLocation");
-
-    for (const auto& entry : location_id_names) {
-        location_ids[entry.name] = static_cast<int>(entry.id);
-    }
 
 }
 

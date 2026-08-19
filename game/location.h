@@ -107,58 +107,8 @@ class XLocation : public XObject
 {
         std::string event;
     public:
-        enum Id {
-            UNKNOWN = 0,
-            MAIN	= 1,
-            DWARFCITYCAVE1	= 2,
-            DWARFCITYCAVE2	= 3,
-            DWARFCITYCAVE3	= 4,
-            DWARFCITYCAVE4	= 5,
-            DWARFCITYCAVE5	= 6,
-            DWARFCITYCAVE6	= 7,
-            DWARFCITYCAVE7	= 8,
-            DWARFCITY	= 9,
-            DWARFTREASURE	= 10,
 
-            GASMINE1	= 15,
-            GASMINE2	= 16,
-            GASMINE3	= 17,
-
-            SMALLCAVE	= 18,
-            RATCELLAR	= 19,
-
-            MUSHROOMS_CAVE1	= 20, //first
-            MUSHROOMS_CAVE2	= 21, //demon
-            MUSHROOMS_CAVE3	= 22, //misc
-            MUSHROOMS_CAVE4	= 23, //kobolds
-            MUSHROOMS_CAVE5	= 24, //mushrooms
-
-            WIZARD_DUNGEON1	= 30,
-            WIZARD_DUNGEON2	= 31,
-            WIZARD_DUNGEON3	= 32,
-            WIZARD_DUNGEON4	= 33,
-            WIZARD_DUNGEON5	= 34,
-            AHKULAN_CASTLE	= 35,
-
-            UNDEADS_TOMB1	= 40,
-            UNDEADS_TOMB2	= 41,
-            UNDEADS_TOMB3	= 42,
-            UNDEADS_TOMB4	= 43,
-            UNDEADS_TOMB5	= 44,
-
-            EXTINCT_VOLCANO	= 45,
-
-            KINGS_TREASURE	= 46,
-
-            WIZTOWER_TOP	= 50,
-            SMALL_CAVE_1	= 55,
-            SMALL_CAVE_2	= 56,
-
-            DEBUG1	= 90,
-            DEBUG2	= 91,
-        };
-
-        // Registers this enum as the Lua table XLocation.MEMBER.
+        // Registers the Lua enums that belong to the location layer.
         static void RegisterLua(sol::state_view& lua);
 
         bool Run() override;
@@ -169,10 +119,6 @@ class XLocation : public XObject
         std::vector<XObject*> ways_list;
         // The location's key in Game.locations.
         std::string id;
-
-        // Name of an Id's enum member, e.g. "EXTINCT_VOLCANO".
-        // The bridge between the two while both exist.
-        static std::string IdToKey(Id location_id);
 
         DECLARE_CREATOR(XLocation, XObject);
         explicit XLocation(const std::string& location_id);

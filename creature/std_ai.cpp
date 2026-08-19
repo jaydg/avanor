@@ -160,7 +160,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
         (((spec->view == '>') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_DOWN)) ||
         ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))
     ) {
-        if (way->ln != XLocation::IdToKey(XLocation::MAIN) || ai_flag & XStandardAI::ALLOW_MOVE_OUT) {
+        if (way->ln != "MAIN" || ai_flag & XStandardAI::ALLOW_MOVE_OUT) {
             way_dist = w;
             way_x = j;
             way_y = i;

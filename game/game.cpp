@@ -344,10 +344,10 @@ void XGame::CreateHero() const
     // The one caller that cannot carry on without a cell: a starting
     // location with nowhere to stand is an unusable world, so let the
     // empty optional throw rather than inventing a coordinate.
-    const XPoint hero_point = Location(XLocation::MAIN)->GetFreeXY(&hero_rect).value();
+    const XPoint hero_point = Location("MAIN")->GetFreeXY(&hero_rect).value();
 
     const auto hero = new XHero(1);
-    Game.NewCreature(hero, hero_point.x, hero_point.y, Location(XLocation::MAIN).get());
+    Game.NewCreature(hero, hero_point.x, hero_point.y, Location("MAIN").get());
     hero->MoneyOp(2000);
 
     // If hero is a bard, then create a dog for them...

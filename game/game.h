@@ -42,7 +42,7 @@ class XGame
         static void RunDemo();
         void Create(char type_of_start) const;
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
-        // Keyed by XLocation::id, not indexed by XLocation::Id.
+        // Keyed by XLocation::id.
         //
         // Reach for Location() rather than operator[]: subscripting a map
         // would insert an empty entry for an id that does not exist, where
@@ -57,11 +57,6 @@ class XGame
             return it != locations.end() ? it->second : nullptr;
         }
 
-        // Boundary overload for the code that still speaks XLocation::Id
-        [[nodiscard]] std::shared_ptr<XLocation> Location(XLocation::Id id) const
-        {
-            return Location(XLocation::IdToKey(id));
-        }
         XScheduler Scheduler;
         static int current_location;
         static XGUID hero_guid;

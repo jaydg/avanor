@@ -88,7 +88,7 @@ bool XMainLocationGen::Run()
             auto* cr = dynamic_cast<XCreature *>(obj);
 
             if (cr && !cr->isHero() && cr->creature_class & CreatureClass::ORC) {
-                cr->xai->SetArea(small_town_area, XLocation::IdToKey(XLocation::MAIN));
+                cr->xai->SetArea(small_town_area, "MAIN");
             }
         }
     }

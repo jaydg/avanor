@@ -184,7 +184,7 @@ void ExecuteCreatureScript(void* cr, sol::table script)
         cmd.cmd = row.get_or("cmd", SCC_NONE);
         cmd.pt_x = row.get_or("pt_x", 0);
         cmd.pt_y = row.get_or("pt_y", 0);
-        cmd.ln = row.get_or("ln", XLocation::UNKNOWN);
+        cmd.ln = row.get_or<std::string>("ln", "");
         cmd.kind = row.get_or("kind", ItemKind::UNKNOWN);
         cmds.push_back(cmd);
     }
