@@ -72,27 +72,3 @@ bool XUniversalGen::Run()
     return true;
 };
 
-REGISTER_CLASS(XMainLocationGen);
-CEREAL_REGISTER_TYPE(XMainLocationGen);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XGenerator, XMainLocationGen);
-
-bool XMainLocationGen::Run()
-{
-    ttm = ttmb;
-    turns_count++;
-
-    if (turns_count == 10000) {
-        XRect small_town_area(20, 42, 28, 48);
-
-        for (const auto& [key, obj] : XObject::objects) {
-            auto* cr = dynamic_cast<XCreature *>(obj);
-
-            if (cr && !cr->isHero() && cr->creature_class & CreatureClass::ORC) {
-                cr->xai->SetArea(small_town_area, "MAIN");
-            }
-        }
-    }
-
-    return false;
-}
-

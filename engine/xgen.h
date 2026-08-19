@@ -117,31 +117,6 @@ class XUniversalGen final : public XGenerator
         unsigned int max_creature{};
 };
 
-class XMainLocationGen final : public XGenerator
-{
-    public:
-        DECLARE_CREATOR(XMainLocationGen, XGenerator);
-        explicit XMainLocationGen(XLocation * loc) : XGenerator(1000)
-        {
-            l = loc;
-            turns_count = 0;
-        }
-
-        XMainLocationGen() : turns_count(0) {
-            assert(0);
-        }
-
-        bool Run() override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XGenerator>(this));
-            ar(turns_count);
-        }
-    protected:
-        int turns_count;
-};
 
 // Construction routed via each class's own DECLARE_CREATOR-provided
 // DUMMY_STRUCT constructor rather than the (protected/asserting)
@@ -150,6 +125,5 @@ class XMainLocationGen final : public XGenerator
 // (a template in xscheduler.h, reinstantiated per translation unit),
 // same reasoning as XStandardAI/XSpell/etc.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XUniversalGen, serialize);
-CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XMainLocationGen, serialize);
 
 #endif

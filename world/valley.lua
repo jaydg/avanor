@@ -19,6 +19,26 @@ function ScatterHerbBushes()
 	end
 end
 
+-- The orc war party musters in the southern hills and, after a long
+-- while, marches on the small town (the pattern drawn at 10,40 below).
+local ORC_WAR_PARTY = "orcs_war_party"
+local ORC_MUSTER_AREA = {x = 10, y = 70, w = 20, h = 10}
+local ORC_TARGET_AREA = {x = 20, y = 42, w = 8, h = 6}
+local ORC_ATTACK_DELAY = 10000 * 1000
+
+-- Location timer event: re-guards every orc still alive onto the town.
+-- Returns 0 so the scheduler drops the timer afterwards - the march
+-- happens once, exactly as the old generator removed itself after its
+-- one strike.
+function OrcWarPartyAttack(l)
+	for _, orc in ipairs(FindCreatures("MAIN", ORC_WAR_PARTY)) do
+		AsCreature(orc).xai:SetGuardArea(ORC_TARGET_AREA.x, ORC_TARGET_AREA.y,
+			ORC_TARGET_AREA.w, ORC_TARGET_AREA.h, "MAIN")
+	end
+
+	return 0
+end
+
 function MakeAvanorValley()
 	CreateLocation("MAIN", "Valley", "Valley of Avanor", PLAIN)
 
@@ -29,8 +49,11 @@ function MakeAvanorValley()
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).
 	for i = 1, 20 do
-		GuardianClass(CreatureClass.ORC, "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
+		GuardianClass(CreatureClass.ORC, ORC_WAR_PARTY, ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y,
+			ORC_MUSTER_AREA.w, ORC_MUSTER_AREA.h, XStandardAI.GUARD_AREA)
 	end
+
+	CreateTimerEvent('OrcWarPartyAttack', ORC_ATTACK_DELAY)
 
 	Teleport(23, 20, "MAIN", 154, 13)
 	Teleport(154, 13, "MAIN", 23, 20)
