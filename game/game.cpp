@@ -327,7 +327,7 @@ void XGame::CreateLocations() const
                     for (const auto it2: Location(way->ln)->ways_list) {
                         auto tmp_way = dynamic_cast<XStairWay*>(it2);
 
-                        if (tmp_way->dest_x < 0 && tmp_way->dest_y < 0 && tmp_way->ln == loc->ln) {
+                        if (tmp_way->dest_x < 0 && tmp_way->dest_y < 0 && tmp_way->ln == loc->id) {
                             way->Bind(tmp_way);
                         }
                     }

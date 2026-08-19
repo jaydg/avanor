@@ -89,7 +89,6 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
 CEREAL_REGISTER_TYPE(XStandardAI);
 
 XStandardAI::XStandardAI(XCreature* _cr) : guard_area(1, 1, 2, 3),
-                                           guard_area_location(),
                                            enemy(nullptr), enemy_dist(0),
                                            friend_avg_x(0), friend_avg_y(0),
                                            friends_count(0),
@@ -161,7 +160,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
         (((spec->view == '>') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_DOWN)) ||
         ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))
     ) {
-        if (way->ln != XLocation::MAIN || ai_flag & XStandardAI::ALLOW_MOVE_OUT) {
+        if (way->ln != XLocation::IdToKey(XLocation::MAIN) || ai_flag & XStandardAI::ALLOW_MOVE_OUT) {
             way_dist = w;
             way_x = j;
             way_y = i;
@@ -315,7 +314,7 @@ void XStandardAI::Move()
 
     // we can leave the area only to pursuit enemies, otherwise come back
     if (!companion_sp && !was_attack && !was_item_pick && (ai_flag & XStandardAI::GUARD_AREA)) {
-        if (guard_area_location != ai_owner->l->ln || !guard_area.PointIn(ai_owner->nx, ai_owner->ny)) {
+        if (guard_area_location != ai_owner->l->id || !guard_area.PointIn(ai_owner->nx, ai_owner->ny)) {
             MoveTo((guard_area.left + guard_area.right) / 2, (guard_area.top + guard_area.bottom) / 2, Game.Location(guard_area_location).get());
         }
     }
@@ -758,7 +757,7 @@ XStairWay* RecursiveWayFound(XLocation * tl, XLocation * tgt_l)
     for (const auto it: tl->ways_list) {
         const auto way = dynamic_cast<XStairWay*>(it);
 
-        if (way->ln == tgt_l->ln) {
+        if (way->ln == tgt_l->id) {
             return way;
         }
 
@@ -1055,7 +1054,7 @@ int XStandardAI::PickUpItems() const
     return 1;
 }
 
-void XStandardAI::SetArea(XRect & area, XLocation::Id ln)
+void XStandardAI::SetArea(XRect & area, const std::string& ln)
 {
     guard_area.Setup(area);
     guard_area_location = ln;
@@ -1225,7 +1224,7 @@ void XStandardAI::RunScript()
         case SCC_MOVE_POINT:
             MoveTo(cmd.pt_x, cmd.pt_y, Game.Location(cmd.ln).get());
 
-            if (cmd.pt_x == ai_owner->nx && cmd.pt_y == ai_owner->ny && cmd.ln == ai_owner->l->ln) {
+            if (cmd.pt_x == ai_owner->nx && cmd.pt_y == ai_owner->ny && cmd.ln == ai_owner->l->id) {
                 flag = true;
             }
 

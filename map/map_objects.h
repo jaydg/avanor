@@ -119,8 +119,9 @@ class XStairWay final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XStairWay, XMapObject);
-        XStairWay(int _x, int _y, XLocation* loc, XLocation::Id _ln, STAIRWAY_TYPE type);
-        XLocation::Id ln;
+        XStairWay(int _x, int _y, XLocation* loc, const std::string& _ln, STAIRWAY_TYPE type);
+        // The id of the location this stairway leads to.
+        std::string ln;
 
         // Where this stairway comes out: the matching stairway's position
         // within location ln. Negative until Bind() pairs the two ends, which
@@ -142,7 +143,7 @@ class XStairWay final : public XMapObject
         }
 
     protected:
-        XStairWay() : ln(), dest_x(-1), dest_y(-1) {
+        XStairWay() : dest_x(-1), dest_y(-1) {
         }
         friend class cereal::access;
 };
@@ -154,8 +155,9 @@ class XTeleport final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XTeleport, XMapObject);
-        XTeleport(int _x, int _y, XLocation* loc, XLocation::Id _ln, int _dest_x, int _dest_y);
-        XLocation::Id ln;
+        XTeleport(int _x, int _y, XLocation* loc, const std::string& _ln, int _dest_x, int _dest_y);
+        // The id of the location this pad drops you in.
+        std::string ln;
 
         // Where this pad drops you: a position within location ln. Fixed
         // at construction, unlike a stairway's, which is paired up later.
@@ -176,7 +178,7 @@ class XTeleport final : public XMapObject
         }
 
     protected:
-        XTeleport() : ln(), dest_x(-1), dest_y(-1) {
+        XTeleport() : dest_x(-1), dest_y(-1) {
         }
         friend class cereal::access;
 };

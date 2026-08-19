@@ -92,7 +92,7 @@ XShopKeeperAI::XShopKeeperAI(XCreature * shopkeeper, XShop * _shop)
     if (_shop) {
         _shop->SetShopkeeper(shopkeeper);
 
-        SetArea(shop->GetArea(), shop->location->ln);
+        SetArea(shop->GetArea(), shop->location->id);
         SetAIFlag(XStandardAI::GUARD_AREA);
         SetAIFlag(XStandardAI::GUARD_AREA);
         SetAIFlag(XStandardAI::COWARD);
@@ -187,7 +187,7 @@ void XShopKeeperAI::Move()
         if (!home_area_set) {
             if (const auto door = shop->FindDoor()) {
                 const XPoint home = DoorThresholdPoint(*door, shop->GetArea());
-                SetGuardArea(home.x - 1, home.y - 1, 3, 3, shop->location->ln);
+                SetGuardArea(home.x - 1, home.y - 1, 3, 3, shop->location->id);
                 home_area_set = true;
             }
         }

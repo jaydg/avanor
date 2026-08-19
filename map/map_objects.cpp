@@ -420,7 +420,7 @@ REGISTER_CLASS(XStairWay);
 CEREAL_REGISTER_TYPE(XStairWay);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XStairWay);
 
-XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const STAIRWAY_TYPE type)
+XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const std::string& _ln, const STAIRWAY_TYPE type)
 {
     // Unbound until Bind() finds the matching stairway on the other side.
     dest_x = -1;
@@ -465,7 +465,7 @@ REGISTER_CLASS(XTeleport);
 CEREAL_REGISTER_TYPE(XTeleport);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTeleport);
 
-XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const XLocation::Id _ln, const int _dest_x, const int _dest_y)
+XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const std::string& _ln, const int _dest_x, const int _dest_y)
 {
     dest_x = _dest_x;
     dest_y = _dest_y;

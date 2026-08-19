@@ -599,7 +599,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, u
     XCreature * cr = NewCreature(cn, pt->x, pt->y, gid);
 
     if (ai_flags & XStandardAI::GUARD_AREA) {
-        cr->xai->SetArea(rect, ln);
+        cr->xai->SetArea(rect, id);
         cr->xai->LearnTraps();
     }
 
@@ -641,7 +641,7 @@ XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, 
     Game.NewCreature(cr, pt->x, pt->y, this);
 
     if (ai_flags & XStandardAI::GUARD_AREA) {
-        cr->xai->SetArea(rect, ln);
+        cr->xai->SetArea(rect, id);
         cr->xai->LearnTraps();
     }
 
@@ -649,7 +649,7 @@ XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, 
     return cr;
 }
 
-XStairWay* XLocation::NewWay(XLocation::Id target_ln, STAIRWAY_TYPE s_type, XRect * area)
+XStairWay* XLocation::NewWay(const std::string& target_ln, STAIRWAY_TYPE s_type, XRect * area)
 {
     // A location that cannot fit its own stairway is a broken map, not a
     // case to recover from - let the empty optional throw.
@@ -658,7 +658,7 @@ XStairWay* XLocation::NewWay(XLocation::Id target_ln, STAIRWAY_TYPE s_type, XRec
     return NewWay(pt.x, pt.y, target_ln, s_type);
 }
 
-XStairWay* XLocation::NewWay(int x, int y, XLocation::Id target_ln, STAIRWAY_TYPE s_type)
+XStairWay* XLocation::NewWay(int x, int y, const std::string& target_ln, STAIRWAY_TYPE s_type)
 {
     XStairWay * pWay = new XStairWay(x, y, this, target_ln, s_type);
     ways_list.push_back(pWay);

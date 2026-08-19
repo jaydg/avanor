@@ -54,7 +54,7 @@ struct SCRIPT_CMD {
     SCRIPT_COMMAND cmd;
     int pt_x;
     int pt_y;
-    XLocation::Id ln;
+    std::string ln;
     ItemKind kind;
 };
 
@@ -102,7 +102,7 @@ class XStandardAI
 
         virtual ~XStandardAI();
 
-        void SetArea(XRect& area, XLocation::Id ln);
+        void SetArea(XRect& area, const std::string& ln);
 
         // Lua-friendly wrapper around SetArea() - takes plain ints (like
         // Guardian()'s own x,y,w,h params) instead of an XRect, and also
@@ -111,7 +111,7 @@ class XStandardAI
         // to a different guard area later in its life (e.g. Giana settling
         // in the village once rescued) without needing to reconstruct an
         // XRect from Lua.
-        void SetGuardArea(int x, int y, int w, int h, XLocation::Id ln)
+        void SetGuardArea(int x, int y, int w, int h, const std::string& ln)
         {
             XRect rect(x, y, x + w, y + h);
             SetArea(rect, ln);
@@ -251,7 +251,8 @@ class XStandardAI
         CreatureClass enemy_class;
 
         XRect guard_area;
-        XLocation::Id guard_area_location;
+        // Id of the location the guarded area belongs to.
+        std::string guard_area_location;
 
         // currently targeted creature
         XCreature* enemy;

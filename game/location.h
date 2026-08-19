@@ -302,8 +302,8 @@ class XLocation : public XObject
         XCreature* NewCreature(CreatureClass crc);
         XCreature* NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
-        XStairWay* NewWay(Id target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
-        XStairWay* NewWay(int x, int y, Id target_ln, STAIRWAY_TYPE s_type);
+        XStairWay* NewWay(const std::string& target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
+        XStairWay* NewWay(int x, int y, const std::string& target_ln, STAIRWAY_TYPE s_type);
 
         static void CreateNewGame();
         static void Restoration();

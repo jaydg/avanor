@@ -118,7 +118,8 @@ void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol
 //Teleport(23, 20, XLocation.MAIN, 154, 13)
 void Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y)
 {
-    new XTeleport(x, y, XLocation::current_location, (XLocation::Id)target_loc_id, dest_x, dest_y);
+    new XTeleport(x, y, XLocation::current_location,
+        XLocation::IdToKey(static_cast<XLocation::Id>(target_loc_id)), dest_x, dest_y);
 }
 
 //Way(DOWN, L_SMALL_CAVE2)
@@ -126,9 +127,11 @@ void Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y)
 void Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y)
 {
     if (x) {
-        XLocation::current_location->NewWay(*x, *y, (XLocation::Id)loc_id, (STAIRWAY_TYPE)type);
+        XLocation::current_location->NewWay(*x, *y,
+            XLocation::IdToKey(static_cast<XLocation::Id>(loc_id)), (STAIRWAY_TYPE)type);
     } else {
-        XLocation::current_location->NewWay((XLocation::Id)loc_id, (STAIRWAY_TYPE)type);
+        XLocation::current_location->NewWay(
+            XLocation::IdToKey(static_cast<XLocation::Id>(loc_id)), (STAIRWAY_TYPE)type);
     }
 }
 

@@ -2772,7 +2772,7 @@ int XHero::OrderCompanion()
         slave->xai->SetOrderedEnemy(nullptr);
         slave->xai->companion_command = CC_WAIT;
         XRect tr(slave->x, slave->y, slave->x + 1, slave->y + 1);
-        slave->xai->SetArea(tr, slave->l->ln);
+        slave->xai->SetArea(tr, slave->l->id);
         slave->xai->SetAIFlag(XStandardAI::GUARD_AREA);
         return 1;
     }
