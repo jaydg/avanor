@@ -17,7 +17,7 @@ Monster.new("xshee_voo")
 	:Register()
 
 function MakeVulcano()
-	CreateLocation(XLocation.EXTINCT_VOLCANO, "Volcano", "Crater of an Extinct Volcano", CAVE)
+	CreateLocation("EXTINCT_VOLCANO", "Volcano", "Crater of an Extinct Volcano", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"########################,#######################################################" ..
@@ -39,7 +39,7 @@ function MakeVulcano()
 		"#####,,#######################,,,,,,,,,,,,,,,,,,,,,,,####################,,#####" ..
 		"####,################################,,,,,,,,,,,,,,,#######################,,,,#" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, XLocation.MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, "MAIN", x, y) end)
 		AddTranslation("=", XTileType.LAVA)
 		DrawPattern(0, 0)
 		GiveObjectToCreature(CreateObject('XBlackClub'), Creature("xshee_voo"))

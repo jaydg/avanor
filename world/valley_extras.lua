@@ -1,13 +1,13 @@
 function SendFarmersToCollectMushrooms()
-	local cave_x, cave_y = GetWayXY(XLocation.MUSHROOMS_CAVE5)
+	local cave_x, cave_y = GetWayXY("MUSHROOMS_CAVE5")
 	local script = {
-		{cmd = ScriptCommand.MOVE_POINT, pt_x = cave_x, pt_y = cave_y, ln = XLocation.MUSHROOMS_CAVE5},
+		{cmd = ScriptCommand.MOVE_POINT, pt_x = cave_x, pt_y = cave_y, ln = "MUSHROOMS_CAVE5"},
 		{cmd = ScriptCommand.COLLECT_MUSHROOM},
-		{cmd = ScriptCommand.MOVE_POINT, pt_x = 13, pt_y = 8, ln = XLocation.MAIN},
+		{cmd = ScriptCommand.MOVE_POINT, pt_x = 13, pt_y = 8, ln = "MAIN"},
 		{cmd = ScriptCommand.DROP_ITEM, kind = ItemKind.FOOD},
 	}
 
-	for _, farmer in ipairs(FindCreatures(XLocation.MAIN, "small_village_farmer")) do
+	for _, farmer in ipairs(FindCreatures("MAIN", "small_village_farmer")) do
 		ExecuteCreatureScript(farmer, script)
 	end
 end

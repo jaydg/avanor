@@ -2,7 +2,7 @@
 -------------------- RAT'S CELLAR ---------------------------
 
 function MakeRatCellar()
-	CreateLocation(XLocation.RATCELLAR, "RC:1", "Rat's cellar", CAVE)
+	CreateLocation("RATCELLAR", "RC:1", "Rat's cellar", CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"#A,,,,,,,,,,,######################################################A,,,,,,,,,,,#" ..
@@ -24,7 +24,7 @@ function MakeRatCellar()
 		"#,,,,,,,,,,,,+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,+,,,,,,,,,,,#" ..
 		"#,,,,,,,,,,,,#######################################################,,,,,,,,,,,#" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, XLocation.MAIN, x, y) end)
+		AddTranslation("<", function(x, y) Way(UP, "MAIN", x, y) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("A", function(x, y) for i = 1, 8 do Creature('rat', x, y, 12, 4) end end)
 		AddTranslation("B", function(x, y) for i = 1, 2 do Creature('ghost', x, y, 4, 4) end end)

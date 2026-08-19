@@ -57,7 +57,7 @@ function RoderikHandler(e, t, p, v)
 				AddMessage("I have heard that my family crypt has been occupied by a group of undead. Clear the crypt and I will reward you. It lies to the south-west of the city.")
 				QuestState:SetFlag('roderick_quest2', 1)
 			elseif (QuestState:GetFlag('roderick_quest2') == 1) then
-				if (GetCreatureCount(XLocation.UNDEADS_TOMB1, CreatureClass.UNDEAD) == 0) then
+				if (GetCreatureCount("UNDEADS_TOMB1", CreatureClass.UNDEAD) == 0) then
 					AddMessage("Thank you for destroying the evil in our crypt. Please accept these coins and my gratitude for a job well done.")
 					QuestState:SetFlag('roderick_quest2', 2)
 					chatter:MoneyOp(1000)

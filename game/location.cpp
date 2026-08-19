@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xlua.h"
 #include <cctype>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 #include <cereal/archives/json.hpp>
@@ -180,7 +181,7 @@ void XLocation::FixupShops()
     }
 }
 
-XLocation::XLocation(XLocation::Id location)
+XLocation::XLocation(const std::string& location_id)
 {
     visited_by_hero = 0;
     map = nullptr;	//map will created by XBuilder...
@@ -189,9 +190,12 @@ XLocation::XLocation(XLocation::Id location)
         places[i] = nullptr;
     }
 
-    assert(Game.Location(location) == nullptr);
-    ln = location;
-    id = IdToKey(location);
+    // Free-form: any name a script cares to invent. Nothing validates it
+    // here - XLocation::ValidateWorld() sweeps the finished world instead,
+    // so a typo is reported once, with its referrer, rather than silently
+    // creating a second location or failing at the point of use.
+    assert(Game.Location(location_id) == nullptr);
+    id = location_id;
     Game.locations[id] = std::shared_ptr<XLocation>(this);
 
     ttmb = 1000000;
@@ -767,6 +771,47 @@ void RegisterLuaEventEnum(sol::state_view& lua)
 void XLocation::Restoration()
 {
     XLua::Init();
+    ValidateWorld();
+}
+
+int XLocation::ValidateWorld()
+{
+    int bad = 0;
+
+    for (const auto& [key, loc] : Game.locations) {
+        if (!loc || !loc->map) {
+            continue;
+        }
+
+        for (int i = 0; i < loc->map->len * loc->map->hgt; i++) {
+            const auto& spec = loc->map->map[i].pSpecialObject;
+
+            if (!spec) {
+                continue;
+            }
+
+            std::string target;
+
+            if (const auto* way = dynamic_cast<XStairWay*>(spec.get())) {
+                target = way->ln;
+            } else if (const auto* pad = dynamic_cast<XTeleport*>(spec.get())) {
+                target = pad->ln;
+            } else {
+                continue;
+            }
+
+            if (Game.Location(target)) {
+                continue;
+            }
+
+            bad++;
+            std::cerr << "world: " << key << " at " << (i % loc->map->len) << ","
+                      << (i / loc->map->len) << " leads to '" << target
+                      << "', which is not a location" << std::endl;
+        }
+    }
+
+    return bad;
 }
 
 void XLocation::CreateNewGame()
@@ -774,12 +819,13 @@ void XLocation::CreateNewGame()
     XLua::Init();
     sol::state_view lua(XLua::State());
     assert(lua["InitWorld"]().valid());
+    ValidateWorld();
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-void XLocation::CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type)
+void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, int type)
 {
-    XLocation::current_location = new XLocation((XLocation::Id)loc_id);
+    XLocation::current_location = new XLocation(loc_id);
     XLocation::current_location->brief_name = lbrief;
     XLocation::current_location->full_name = lfull;
 

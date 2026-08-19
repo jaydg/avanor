@@ -43,8 +43,8 @@ namespace lua_api
     void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
     void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
-    void Teleport(int x, int y, int target_loc_id, int dest_x, int dest_y);
-    void Way(int type, int loc_id, sol::optional<int> x, sol::optional<int> y);
+    void Teleport(int x, int y, const std::string& target_loc_id, int dest_x, int dest_y);
+    void Way(int type, const std::string& loc_id, sol::optional<int> x, sol::optional<int> y);
     void* CreateObjectByName(const std::string& name);
     void* CreateObjectByMask(int flag, int min_val, int max_val);
     void* CreateObjectByPotion(int pn);

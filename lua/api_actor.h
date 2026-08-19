@@ -57,13 +57,13 @@ namespace lua_api
     void SetCreatureAI(void* cr, const std::string& lua_class);
     XCreature* AsCreature(void* p);
     XItem* AsItem(void* p);
-    int CreatureCountInLocation(int l_id, CreatureClass cc);
+    int CreatureCountInLocation(const std::string& l_id, CreatureClass cc);
     void SetItEnemyFor(void* cr1, void* cr2);
     void SetEnemy(void* cr, int cr_class);
-    void* FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-    std::vector<void*> FindCreatures(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+    void* FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+    std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void ExecuteCreatureScript(void* cr, sol::table script);
-    std::tuple<int, int> GetWayXY(int l_id);
+    std::tuple<int, int> GetWayXY(const std::string& l_id);
     void AddMessage(const std::string& str);
     std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
     int Gender(void* cr);

@@ -167,8 +167,6 @@ class XLocation : public XObject
 
         // ways list used for the AI.
         std::vector<XObject*> ways_list;
-        Id ln;
-
         // The location's key in Game.locations.
         std::string id;
 
@@ -177,7 +175,7 @@ class XLocation : public XObject
         static std::string IdToKey(Id location_id);
 
         DECLARE_CREATOR(XLocation, XObject);
-        XLocation(Id location);
+        explicit XLocation(const std::string& location_id);
         XLocation(XLocation * copy)
         {
             assert(0);
@@ -247,7 +245,7 @@ class XLocation : public XObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XObject>(this));
-            ar(ln, id);
+            ar(id);
 
             if constexpr (Archive::is_loading::value) {
                 map = new XMap();
@@ -305,9 +303,17 @@ class XLocation : public XObject
         XStairWay* NewWay(const std::string& target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
         XStairWay* NewWay(int x, int y, const std::string& target_ln, STAIRWAY_TYPE s_type);
 
+        // Checks every location reference in the finished world - each
+        // stairway's and teleport's target - against the locations that
+        // actually exist, reporting each dangling one. Location ids are
+        // free-form strings; this is what catches it, once, with the
+        // referring location and coordinates named. Returns the number of
+        // bad references.
+        static int ValidateWorld();
+
         static void CreateNewGame();
         static void Restoration();
-        static void CreateLocation(int loc_id, const std::string& lbrief, const std::string& lfull, int type);
+        static void CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, int type);
         static void DrawPattern(int x, int y);
         static void CreateTimerEvent(const std::string& event, int ttm);
 

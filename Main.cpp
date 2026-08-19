@@ -312,7 +312,7 @@ static bool TestRealLocation()
     }
 
     const auto original_guid = original->guid();
-    const auto original_ln = original->ln;
+    const auto original_id = original->id;
     const auto original_len = original->map->len;
     const auto original_hgt = original->map->hgt;
     const auto original_ways_count = original->ways_list.size();
@@ -360,7 +360,7 @@ static bool TestRealLocation()
     bool pass = restored
         && restored.get() != original.get()
         && restored->guid() == original_guid
-        && restored->ln == original_ln
+        && restored->id == original_id
         && restored->map
         && restored->map->len == original_len
         && restored->map->hgt == original_hgt

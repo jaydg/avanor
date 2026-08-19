@@ -787,7 +787,7 @@ XStairWay* RWayFound(XLocation * tl, XLocation * tgt_l)
 int XStandardAI::MoveTo(int x, int y, XLocation * l) const
 {
     // if it is not this location, then try the way to the nearest location
-    if (l && l->ln != ai_owner->l->ln) {
+    if (l && l->id != ai_owner->l->id) {
         if (!(ai_flag & XStandardAI::FIND_WAY)) {
             return 0;
         }

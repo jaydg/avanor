@@ -124,7 +124,7 @@ function RotmothGuardEvent(e, p)
 	-- below become no-ops - so this failure mode is invisible unless you
 	-- specifically check whether isEnemy() actually flips afterward.
 	local chatter = AsCreature(p)
-	local rotmoth = AsCreature(FindCreature(L_SMALL_CAVE2, "rotmoth"))
+	local rotmoth = AsCreature(FindCreature("SMALL_CAVE_2", "rotmoth"))
 
 	-- Nothing to guard with once he's dead, and no point re-warning someone
 	-- he's already fighting (isEnemy() is what ReactToAttacker below puts
@@ -234,7 +234,7 @@ function GianaHandler(e, t, p, v)
 		-- it directly here was always true the instant rotmoth_status hit
 		-- 1, regardless of whether she'd actually reached the village -
 		-- wrap it in AsCreature() so a real miss becomes proper Lua nil.
-		if (QuestState:GetFlag('rotmoth_status') == 1 and AsCreature(FindCreature(XLocation.MAIN, "giana"))) then
+		if (QuestState:GetFlag('rotmoth_status') == 1 and AsCreature(FindCreature("MAIN", "giana"))) then
 			local giana = AsCreature(t)
 			giana.xai:SetCompanion(nil)
 
@@ -245,7 +245,7 @@ function GianaHandler(e, t, p, v)
 			-- behaviour: she inherits goodwife's HUMAN flag set, which includes
 			-- FREE_WAY (ALLOW_MOVE_WAY_UP|DOWN).
 			giana.xai:SetGuardArea(VILLAGE_GUARD_AREA.x, VILLAGE_GUARD_AREA.y,
-				VILLAGE_GUARD_AREA.w, VILLAGE_GUARD_AREA.h, XLocation.MAIN)
+				VILLAGE_GUARD_AREA.w, VILLAGE_GUARD_AREA.h, "MAIN")
 
 			QuestState:SetFlag('rotmoth_status', 2)
 			DisableMoveHandler(t)
@@ -278,11 +278,11 @@ function SmallCaveEvent(e, p)
 		return
 	end
 
-	local bandit = FindCreature(L_SMALL_CAVE2, "rotmoth")
-	local giana = FindCreature(L_SMALL_CAVE2, "giana")
+	local bandit = FindCreature("SMALL_CAVE_2", "rotmoth")
+	local giana = FindCreature("SMALL_CAVE_2", "giana")
 
 	if (e == LuaEvent.MOVE and isHero(p)) then
---[[		local c = FindCreature(XLocation.DWARFCITY, "dwarven_guardian", 75, 1, 4, 2)
+--[[		local c = FindCreature("DWARFCITY", "dwarven_guardian", 75, 1, 4, 2)
 		if (not isEnemy(c, p)) then
 			DvCityEventMoveCount = DvCityEventMoveCount + 1
 			if (DvCityEventMoveCount < 3) then
