@@ -488,9 +488,9 @@ int XTeleport::MoveIn(XCreature* cr)
         return 1; // Citizens shouldn't want to go visit the village...
     }
 
-    if (Game.locations[ln]->map->XGetMovability(dest_x, dest_y) == 0) {
+    if (Game.Location(ln)->map->XGetMovability(dest_x, dest_y) == 0) {
         cr->LastStep();
-        cr->FirstStep(dest_x, dest_y, Game.locations[ln].get());
+        cr->FirstStep(dest_x, dest_y, Game.Location(ln).get());
     }
 
     return 1;

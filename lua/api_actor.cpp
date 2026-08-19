@@ -116,7 +116,7 @@ void SetCreatureAI(void* cr, const std::string& lua_class)
 
 int CreatureCountInLocation(int l_id, CreatureClass cc)
 {
-    return Game.locations[l_id]->GetCreatureCount(cc);
+    return Game.Location(static_cast<XLocation::Id>(l_id))->GetCreatureCount(cc);
 }
 
 bool isEnemy(void* cr1, void* cr2)
@@ -128,7 +128,7 @@ bool isEnemy(void* cr1, void* cr2)
 
 void* FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
-    XRect rect(0, 0, Game.locations[l_id]->map->len, Game.locations[l_id]->map->hgt);
+    XRect rect(0, 0, Game.Location(static_cast<XLocation::Id>(l_id))->map->len, Game.Location(static_cast<XLocation::Id>(l_id))->map->hgt);
 
     if (x) {
         rect.left = *x;
@@ -139,7 +139,7 @@ void* FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::
 
     for (int i = rect.left; i < rect.right; i++)
         for (int j = rect.top; j < rect.bottom; j++) {
-            XCreature* cr = Game.locations[l_id]->map->GetMonster(i, j);
+            XCreature* cr = Game.Location(static_cast<XLocation::Id>(l_id))->map->GetMonster(i, j);
 
             if (cr && cr->groupID() == gid) {
                 return cr;
@@ -151,7 +151,7 @@ void* FindCreature(int l_id, const std::string& gid, sol::optional<int> x, sol::
 
 std::vector<void*> FindCreatures(int l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
-    XRect rect(0, 0, Game.locations[l_id]->map->len, Game.locations[l_id]->map->hgt);
+    XRect rect(0, 0, Game.Location(static_cast<XLocation::Id>(l_id))->map->len, Game.Location(static_cast<XLocation::Id>(l_id))->map->hgt);
 
     if (x) {
         rect.left = *x;
@@ -164,7 +164,7 @@ std::vector<void*> FindCreatures(int l_id, const std::string& gid, sol::optional
 
     for (int i = rect.left; i < rect.right; i++)
         for (int j = rect.top; j < rect.bottom; j++) {
-            XCreature* cr = Game.locations[l_id]->map->GetMonster(i, j);
+            XCreature* cr = Game.Location(static_cast<XLocation::Id>(l_id))->map->GetMonster(i, j);
 
             if (cr && cr->groupID() == gid) {
                 result.push_back(cr);
@@ -194,7 +194,7 @@ void ExecuteCreatureScript(void* cr, sol::table script)
 
 std::tuple<int, int> GetWayXY(int l_id)
 {
-    XStairWay* way = (XStairWay*)*Game.locations[l_id]->ways_list.begin();
+    XStairWay* way = (XStairWay*)*Game.Location(static_cast<XLocation::Id>(l_id))->ways_list.begin();
     return {way->x, way->y};
 }
 

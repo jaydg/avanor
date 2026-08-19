@@ -25,6 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/unordered_map.hpp>
 #include <cereal/types/polymorphic.hpp>
 
 #include "engine/xarchive.h"
@@ -38,7 +40,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xring.h"
 #include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x0000050;
+constexpr unsigned int SAVE_GAME_VERSION = 0x0000051;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 // ZSTD compression level: 1 provides excellent speed/size tradeoff
@@ -128,9 +130,7 @@ int XArchive::StoreGame()
         ar(SAVE_GAME_VERSION);
         ar(::guid);
 
-        for (auto& loc : Game.locations) {
-            ar(loc);
-        }
+        ar(Game.locations);
 
         ar(XQuest::quest);
 
@@ -228,9 +228,7 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
 
         ar(::guid);
 
-        for (auto& loc : Game.locations) {
-            ar(loc);
-        }
+        ar(Game.locations);
 
         ar(XQuest::quest);
 

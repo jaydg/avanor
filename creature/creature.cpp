@@ -1362,7 +1362,7 @@ void XCreature::MoveStairWay()
     XStairWay * way = dynamic_cast<XStairWay *>(spec);
 
     if (way) {
-        XLocation * tgtloc = Game.locations[way->ln].get();
+        XLocation * tgtloc = Game.Location(way->ln).get();
         int tgt_x = way->dest_x;
         int tgt_y = way->dest_y;
         int n_x = tgt_x;

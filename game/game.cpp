@@ -44,21 +44,17 @@ int XGame::current_location = 0;
 
 XGame::XGame()
 {
-    for (auto & location : locations)	{
-        location = nullptr;
-    }
+    // Nothing to clear - an empty map already means "no locations".
 }
 
 XGame::~XGame()
 {
     // XObject::InvalidateAllObjects() (called from Run() before exiting) has
     // already invalidated every location. Deletion itself is now entirely
-    // shared_ptr-driven: dropping this array's reference deletes a location
+    // shared_ptr-driven: dropping this map's reference deletes a location
     // only once every other reference to it (the Scheduler's weak_ptr
     // doesn't count) is also gone.
-    for (auto & location : locations) {
-        location = nullptr;
-    }
+    locations.clear();
 }
 
 XCreature* XGame::NewCreature(XCreature * cr, const int x, const int y, XLocation* loc)
@@ -183,7 +179,7 @@ void XGame::RunWithoutHero() const
             if (ch == 'L') {
                 std::ofstream f(vMakePath(HOME_DIR, "location.txt"));
 
-                for (const auto & location : locations) {
+                for (const auto& [key, location] : locations) {
                     if (location) {
                         location->DumpLocation(f);
                     }
@@ -322,16 +318,16 @@ void XGame::CreateLocations() const
     XLocation::CreateNewGame();
 
     //	Bind ways
-    for (int i = 0; i < XLocation::COUNT; i++) {
-        if (locations[i]) {
-            for (const auto it1: locations[i]->ways_list) {
+    for (const auto& [key, loc] : locations) {
+        if (loc) {
+            for (const auto it1: loc->ways_list) {
                 auto way = dynamic_cast<XStairWay*>(it1);
 
-                if (way->dest_x < 0 && way->dest_y < 0 && locations[way->ln]) {
-                    for (const auto it2: locations[way->ln]->ways_list) {
+                if (way->dest_x < 0 && way->dest_y < 0 && Location(way->ln)) {
+                    for (const auto it2: Location(way->ln)->ways_list) {
                         auto tmp_way = dynamic_cast<XStairWay*>(it2);
 
-                        if (tmp_way->dest_x < 0 && tmp_way->dest_y < 0 && tmp_way->ln == static_cast<XLocation::Id>(i)) {
+                        if (tmp_way->dest_x < 0 && tmp_way->dest_y < 0 && tmp_way->ln == loc->ln) {
                             way->Bind(tmp_way);
                         }
                     }
@@ -348,10 +344,10 @@ void XGame::CreateHero() const
     // The one caller that cannot carry on without a cell: a starting
     // location with nowhere to stand is an unusable world, so let the
     // empty optional throw rather than inventing a coordinate.
-    const XPoint hero_point = locations[XLocation::MAIN]->GetFreeXY(&hero_rect).value();
+    const XPoint hero_point = Location(XLocation::MAIN)->GetFreeXY(&hero_rect).value();
 
     const auto hero = new XHero(1);
-    Game.NewCreature(hero, hero_point.x, hero_point.y, locations[XLocation::MAIN].get());
+    Game.NewCreature(hero, hero_point.x, hero_point.y, Location(XLocation::MAIN).get());
     hero->MoneyOp(2000);
 
     // If hero is a bard, then create a dog for them...

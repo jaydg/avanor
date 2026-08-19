@@ -210,8 +210,10 @@ static bool TestRealCreature()
 
     std::shared_ptr<XCreature> original;
 
-    for (int li = 0; li < XLocation::COUNT && !original; li++) {
-        auto& loc = Game.locations[li];
+    for (const auto& [key, loc] : Game.locations) {
+        if (original) {
+            break;
+        }
 
         if (!loc || !loc->map) {
             continue;
@@ -302,7 +304,7 @@ static bool TestRealCreature()
 
 static bool TestRealLocation()
 {
-    std::shared_ptr<XLocation> original = Game.locations[XLocation::MAIN];
+    std::shared_ptr<XLocation> original = Game.Location(XLocation::MAIN);
 
     if (!original || !original->map) {
         std::cout << "TestRealLocation: XLocation::MAIN not built, nothing to test with" << std::endl;
@@ -612,7 +614,7 @@ int main(int argc, char* argv[])
             int monster_count = 0;
             int item_count = 0;
 
-            for (auto& loc : Game.locations) {
+            for (auto& [key, loc] : Game.locations) {
                 if (!loc || !loc->map) {
                     continue;
                 }

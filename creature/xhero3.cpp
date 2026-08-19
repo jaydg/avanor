@@ -213,7 +213,7 @@ void XHero::EndGame(const char* end_msg)
 
     int place_count = 0;
 
-    for (const auto & location : Game.locations) {
+    for (const auto& [key, location] : Game.locations) {
         if (location && location->visited_by_hero) {
             place_count++;
         }

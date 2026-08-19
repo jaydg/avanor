@@ -171,6 +171,13 @@ class XLocation : public XObject
         std::vector<XObject*> ways_list;
         Id ln;
 
+        // The location's key in Game.locations.
+        std::string id;
+
+        // Name of an Id's enum member, e.g. "EXTINCT_VOLCANO".
+        // The bridge between the two while both exist.
+        static std::string IdToKey(Id location_id);
+
         static int rand_location_count;
         DECLARE_CREATOR(XLocation, XObject);
         XLocation(Id location);
@@ -243,7 +250,7 @@ class XLocation : public XObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XObject>(this));
-            ar(ln);
+            ar(ln, id);
 
             if constexpr (Archive::is_loading::value) {
                 map = new XMap();

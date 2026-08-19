@@ -22,6 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define GAME_H
 
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 #include "creature/xhero.h"
 #include "game/location.h"
@@ -40,7 +42,26 @@ class XGame
         static void RunDemo();
         void Create(char type_of_start) const;
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
-        std::shared_ptr<XLocation> locations[XLocation::COUNT];
+        // Keyed by XLocation::id, not indexed by XLocation::Id.
+        //
+        // Reach for Location() rather than operator[]: subscripting a map
+        // would insert an empty entry for an id that does not exist, where
+        // the array simply held a null.
+        std::unordered_map<std::string, std::shared_ptr<XLocation>> locations;
+
+        // The location with this id, or nullptr when there is none.
+        [[nodiscard]] std::shared_ptr<XLocation> Location(const std::string& id) const
+        {
+            const auto it = locations.find(id);
+
+            return it != locations.end() ? it->second : nullptr;
+        }
+
+        // Boundary overload for the code that still speaks XLocation::Id
+        [[nodiscard]] std::shared_ptr<XLocation> Location(XLocation::Id id) const
+        {
+            return Location(XLocation::IdToKey(id));
+        }
         XScheduler Scheduler;
         static int current_location;
         static XGUID hero_guid;
