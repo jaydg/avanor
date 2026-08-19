@@ -67,32 +67,32 @@ std::optional<XPoint> XShop::FindDoor()
     return std::nullopt;
 }
 
-XShop::XShop(XRect& _area, ItemKind _kind, XLocation * _loc, SHOP_DOOR sd)
+XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd)
     : XAnyPlace(_area, _loc)
 {
     shop_mask = _kind;
 
-    if (sd != SHOP_BUILD_IN) {
+    if (sd != Door::BUILT_IN) {
         int dx = 0;
         int dy = 0;
 
         switch (sd) {
-            case SHOP_DOOR_DOWN :
+            case Door::DOWN :
                 dx = (area.left + area.right) / 2;
                 dy = area.bottom - 1;
                 break;
 
-            case SHOP_DOOR_UP :
+            case Door::UP :
                 dx = (area.left + area.right) / 2;
                 dy = area.top;
                 break;
 
-            case SHOP_DOOR_LEFT:
+            case Door::LEFT:
                 dx = area.left;
                 dy = (area.top + area.bottom) / 2;
                 break;
 
-            case SHOP_DOOR_RIGHT:
+            case Door::RIGHT:
                 dx = area.right - 1;
                 dy = (area.top + area.bottom) / 2;
                 break;

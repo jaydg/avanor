@@ -600,7 +600,7 @@ XStairWay* XLocation::NewWay(int x, int y, XLocation::Id target_ln, STAIRWAY_TYP
     return pWay;
 }
 
-void XLocation::CreateShop(unsigned int kind, XRect& rect, char* sk_name, SHOP_DOOR sd)
+void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd)
 {
     XShop * shop = new XShop(rect, (ItemKind)kind, this, sd);
     AddPlace(shop);
@@ -685,10 +685,15 @@ std::vector<PALETTE_MAP> XLocation::pattern_translation;
 
 
 //BuildShop(x, y, 9, 3, ItemKind::ARMOUR + ItemKind::WEAPON + ItemKind::POTION + ItemKind::BOOK + ItemKind::SCROLL + ItemKind::NECK + ItemKind::MISSILE + ItemKind::MISSILEW, 'Toberin, the dwarwen shopkeeper')
-void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name)
+// The door side used to be frozen at Door::BUILT_IN here, which is a map
+// authoring decision rather than an engine one - script picks it now, and
+// still gets Door::BUILT_IN when it says nothing.
+void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name,
+                          sol::optional<int> door)
 {
     XRect shop_rect(x, y, x + w, y + h);
-    current_location->CreateShop(mask, shop_rect, (char*)keeper_name.c_str(), SHOP_BUILD_IN);
+    current_location->CreateShop(mask, shop_rect, keeper_name,
+        door ? static_cast<XShop::Door>(*door) : XShop::Door::BUILT_IN);
 }
 
 
@@ -703,6 +708,14 @@ size_t XLocation::lua_int_index = 0;
 
 void XLocation::RegisterLua(sol::state_view& lua)
 {
+    lua.new_enum("ShopDoor",
+        "UP", XShop::Door::UP,
+        "LEFT", XShop::Door::LEFT,
+        "DOWN", XShop::Door::DOWN,
+        "RIGHT", XShop::Door::RIGHT,
+        "BUILT_IN", XShop::Door::BUILT_IN
+    );
+
     lua.new_enum("XLocation",
         "MAIN", XLocation::MAIN,
         "MUSHROOMS_CAVE1", XLocation::MUSHROOMS_CAVE1,

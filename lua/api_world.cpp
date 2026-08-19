@@ -37,10 +37,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "lua/api_world.h"
 #include "map/map_objects.h"
 
-// Left behind in game/location.cpp on purpose, not overlooked: BuildShop,
-// which drags in XShop and its C++ keeper AI. Those are Avanor content wearing an engine API hat; moving
-// them here would bless them as part of the generic interface.
-//
 // CreateObject's potion overload is a borderline case kept for now only
 // because sol::overload has to register all three together - it should
 // collapse into one id-based call once object identity is data rather
@@ -49,13 +45,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 namespace lua_api
 {
 
-// CreateLocation, DrawPattern and CreateTimerEvent stayed on XLocation:
-// each reaches into its private state (brief_name/BuildCave/BuildPlain,
-// pat_offs_x/PutPalette, event/ttm respectively), so they are location
-// implementation rather than engine API. They still register here, and
-// would move once XLocation grows a public seam for them.
-
-
+// CreateLocation, BuildShop, DrawPattern and CreateTimerEvent stayed on
+// XLocation: each reaches into its private state (brief_name/BuildCave/
+// BuildPlain, the protected CreateShop(), pat_offs_x/PutPalette, event/ttm
+// respectively), so they are location implementation rather than engine
+// API. They still register here, and would move once XLocation grows a
+// public seam for them.
 
 //Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
 void Settle(CreatureClass crc, int crl)
@@ -357,6 +352,7 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("PlaceSpecial", &lua_api::PlaceSpecial);
 
     lua.set_function("CreateLocation", &XLocation::CreateLocation);
+    lua.set_function("BuildShop", &XLocation::BuildShop);
         lua.set_function("Settle", &lua_api::Settle);
         lua.set_function("Creature", &lua_api::Creature);
         lua.set_function("Guardian", &lua_api::Guardian);

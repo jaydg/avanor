@@ -40,7 +40,7 @@ class XShopkeeper : public XAnyCreature
 
         std::string StdAnswer() override;
         void Die(XCreature * killer) override;
-        void SetShop(char* _name, XShop * shop);
+        void SetShop(const std::string& _name, XShop* shop);
 
         template<class Archive>
         void serialize(Archive& ar)

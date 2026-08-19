@@ -25,20 +25,34 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/types/base_class.hpp>
 
-#include "game/location.h"
 #include "helpers/point.h"
 #include "item/itemkind.h"
 #include "map/xanyplace.h"
 
+class XLocation;
+
 class XShop : public XAnyPlace
 {
+    public:
+        // Which side of the shop's rectangle its door sits on. The four sides
+        // make the shop build its own room - walls, floor and a door  opening
+        // on that side. BUILT_IN means the opposite: the room is already drawn
+        // by the map pattern, so the shop builds nothing and is placed there.
+        enum class Door {
+            UP,
+            LEFT,
+            DOWN,
+            RIGHT,
+            BUILT_IN,
+        };
+
     protected:
         XShop() {}
         friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XShop, XAnyPlace);
-        XShop(XRect& _area, ItemKind _kind, XLocation * _loc, SHOP_DOOR sd = SHOP_DOOR_UP);
+        XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd = Door::UP);
 
         int onCreatureEnter(XCreature * cr) override;
         int onCreatureLeave(XCreature * cr) override;

@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/cr_defs.h"
 #include "helpers/point.h"
+#include "game/shop.h"
 #include "item/itemdef.h"
 #include "map/map.h"
 #include "map/xanyplace.h"
@@ -42,14 +43,6 @@ enum STAIRWAY_TYPE {
     STW_UNKNOWN,
     STW_UP,
     STW_DOWN
-};
-
-enum SHOP_DOOR {
-    SHOP_DOOR_UP,
-    SHOP_DOOR_LEFT,
-    SHOP_DOOR_DOWN,
-    SHOP_DOOR_RIGHT,
-    SHOP_BUILD_IN,
 };
 
 enum class LuaEvent {
@@ -322,7 +315,8 @@ class XLocation : public XObject
         static int pat_offs_x;
         static int pat_offs_y;
 
-        static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name);
+        static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name,
+                              sol::optional<int> door);
 
         // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
         // the .cpp): whichever XCreature/XAnyPlace is currently firing
@@ -348,7 +342,7 @@ class XLocation : public XObject
         void CreateTraps();
         void CreateChests();
 
-        void CreateShop(unsigned int kind, XRect& rect, char* sk_name, SHOP_DOOR sd = SHOP_DOOR_UP);
+        void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd = XShop::Door::UP);
 };
 
 // Both of XLocation's no-args-shaped constructors assert(0) - route

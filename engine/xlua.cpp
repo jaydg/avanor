@@ -110,7 +110,6 @@ void XLua::Init()
         lua_api::RegisterActorApi(lua);
     lua_api::RegisterWorldApi(lua);
 
-        lua.set_function("BuildShop", &XLocation::BuildShop);
     }
 
     {

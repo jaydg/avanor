@@ -46,7 +46,7 @@ XShopkeeper::XShopkeeper(CreatureTemplate * cr) : XAnyCreature(cr)
     bp->Wear(rn);
 }
 
-void XShopkeeper::SetShop(char* _name, XShop * shop)
+void XShopkeeper::SetShop(const std::string& _name, XShop* shop)
 {
     name = _name;
     xai = std::make_unique<XShopKeeperAI>(this, shop);
