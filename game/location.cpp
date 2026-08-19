@@ -112,7 +112,6 @@ std::string XLocation::IdToKey(const Id location_id)
     return {};
 }
 
-int XLocation::rand_location_count = XLocation::RANDOM;
 
 REGISTER_CLASS(XLocation);
 CEREAL_REGISTER_TYPE(XLocation);
@@ -697,49 +696,6 @@ void XLocation::DumpLocation(std::ofstream &file)
     file << "\n\n";
 }
 
-void XLocation::CreateRandomCave()
-{
-    int deep = vRand(6) + 5;
-    int view = (vRand(2) == 1);
-    int start_cr_lvl = vRand(static_cast<int>(CreatureTemplate::Level::AVG));
-
-    XRect tr(115, 60, 180, 80);
-    Game.Location(XLocation::MAIN)->NewWay((XLocation::Id)rand_location_count, STW_DOWN, &tr);
-    new XRandomLocation(1, view, XLocation::MAIN, rand_location_count + 1, start_cr_lvl);
-    int i = 1;
-
-    for (; i < deep - 1; i++) {
-        new XRandomLocation(i + 1, view, rand_location_count - 1, rand_location_count + 1, start_cr_lvl + (1 << i));
-    }
-
-    new XRandomLocation(i + 1, view, rand_location_count - 1, 0, start_cr_lvl + (1 << i));
-}
-
-XRandomLocation::XRandomLocation(int deep, int view, int way_up, int way_down, int cr_lvl) : XLocation((XLocation::Id)(XLocation::rand_location_count))
-{
-    XLocation::rand_location_count++;
-    brief_name = fmt::format("Rnd{}", deep);
-    full_name = fmt::format("Random Place Level {}", deep);
-
-    if (view) {
-        BuildCave();
-    } else {
-        map = new XMap(80, 20);
-        BuildLabirint(1);
-    }
-
-    XPoint pt;
-
-    if (way_up) {
-        NewWay((XLocation::Id)way_up, STW_UP, nullptr);
-    }
-
-    if (way_down) {
-        NewWay((XLocation::Id)way_down, STW_DOWN, nullptr);
-    }
-
-    Game.Scheduler.Add(new XUniversalGen(this, CreatureClass::UNDEAD | CreatureClass::BLOB | CreatureClass::INSECT | CreatureClass::REPTILE | CreatureClass::RAT | CreatureClass::ALL_IMPL, static_cast<CreatureTemplate::Level>(cr_lvl), 4, 50000));
-}
 
 XLocation* XLocation::current_location = nullptr;
 XCreature* XLocation::last_creature = nullptr;
@@ -763,13 +719,8 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
 }
 
 
-
-
-
-
 std::vector<int>* XLocation::lua_int_buffer = nullptr;
 size_t XLocation::lua_int_index = 0;
-
 
 
 void XLocation::RegisterLua(sol::state_view& lua)

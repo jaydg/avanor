@@ -156,8 +156,6 @@ class XLocation : public XObject
 
             DEBUG1	= 90,
             DEBUG2	= 91,
-            RANDOM = 100,
-            COUNT = 200,
         };
 
         // Registers this enum as the Lua table XLocation.MEMBER.
@@ -178,7 +176,6 @@ class XLocation : public XObject
         // The bridge between the two while both exist.
         static std::string IdToKey(Id location_id);
 
-        static int rand_location_count;
         DECLARE_CREATOR(XLocation, XObject);
         XLocation(Id location);
         XLocation(XLocation * copy)
@@ -298,7 +295,6 @@ class XLocation : public XObject
 
         int GetCreatureCount(CreatureClass creature_class); //count of such creatures on this level (need for quests)
 
-        static void CreateRandomCave();
 
         XCreature* NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid = GID_NONE);
         XCreature* NewCreature(CREATURE_NAME cn);
@@ -360,10 +356,5 @@ class XLocation : public XObject
 // XStandardAI/XSpell/XUniversalGen/etc. earlier this session.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XLocation, serialize);
 
-class XRandomLocation : public XLocation
-{
-    public:
-        XRandomLocation(int deep, int view, int way_up, int way_down, int cr_lvl); //view 0 - labirinth, 1 - cave
-};
 
 #endif
