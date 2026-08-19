@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define GAME_H
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 
@@ -56,6 +57,14 @@ class XGame
 
             return it != locations.end() ? it->second : nullptr;
         }
+
+        // Where a new hero appears, named by the world script through
+        // SetStartLocation(). start_area is the part of that location the
+        // hero may turn up in; unset means anywhere in it. Both are world
+        // definition rather than game state, so neither is saved - a
+        // restored game has its hero already.
+        static std::string start_location;
+        static std::optional<XRect> start_area;
 
         XScheduler Scheduler;
         static int current_location;

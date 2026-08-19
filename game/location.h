@@ -253,9 +253,11 @@ class XLocation : public XObject
         // stairway's and teleport's target - against the locations that
         // actually exist, reporting each dangling one. Location ids are
         // free-form strings; this is what catches it, once, with the
-        // referring location and coordinates named. Returns the number of
-        // bad references.
-        static int ValidateWorld();
+        // referring location and coordinates named. new_game additionally
+        // requires XGame::start_location to name a real place, which a
+        // restored world has no need of. Returns the number of bad
+        // references.
+        static int ValidateWorld(bool new_game);
 
         static void CreateNewGame();
         static void Restoration();

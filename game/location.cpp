@@ -696,12 +696,36 @@ void RegisterLuaEventEnum(sol::state_view& lua)
 void XLocation::Restoration()
 {
     XLua::Init();
-    ValidateWorld();
+    ValidateWorld(false);
 }
 
-int XLocation::ValidateWorld()
+int XLocation::ValidateWorld(const bool new_game)
 {
     int bad = 0;
+
+    // Only a new game needs a start location: a restored one is built
+    // from the save, and its hero already stands somewhere.
+    if (new_game) {
+        const auto start = Game.Location(XGame::start_location);
+
+        if (XGame::start_location.empty()) {
+            bad++;
+            std::cerr << "world: no start location - the world script must call"
+                         " SetStartLocation()" << std::endl;
+        } else if (!start) {
+            bad++;
+            std::cerr << "world: the hero starts in '" << XGame::start_location
+                      << "', which is not a location" << std::endl;
+        } else if (const auto& area = XGame::start_area;
+                   area && (area->left < 0 || area->top < 0
+                            || area->right > start->map->len
+                            || area->bottom > start->map->hgt)) {
+            bad++;
+            std::cerr << "world: the hero's start area " << area->left << "," << area->top
+                      << " to " << area->right << "," << area->bottom << " reaches outside "
+                      << XGame::start_location << std::endl;
+        }
+    }
 
     for (const auto& [key, loc] : Game.locations) {
         if (!loc || !loc->map) {
@@ -744,7 +768,7 @@ void XLocation::CreateNewGame()
     XLua::Init();
     sol::state_view lua(XLua::State());
     assert(lua["InitWorld"]().valid());
-    ValidateWorld();
+    ValidateWorld(true);
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)

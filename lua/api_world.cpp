@@ -115,7 +115,20 @@ void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol
     return XLocation::current_location->NewCreature(crc, rect, gid, flag);
 }
 
-//Teleport(23, 20, XLocation.MAIN, 154, 13)
+//SetStartLocation("MAIN", 26, 4, 6, 5)
+// Names the location a new hero starts in, optionally narrowed to an
+// area of it. Without a call to this there is no world to start a game
+// in, which is why XLocation::ValidateWorld() checks the result.
+void SetStartLocation(const std::string& loc_id, sol::optional<int> x, sol::optional<int> y,
+                      sol::optional<int> w, sol::optional<int> h)
+{
+    XGame::start_location = loc_id;
+    XGame::start_area = (x && y && w && h)
+                            ? std::optional<XRect>(XRect(*x, *y, *x + *w, *y + *h))
+                            : std::nullopt;
+}
+
+//Teleport(23, 20, "MAIN", 154, 13)
 void Teleport(int x, int y, const std::string& target_loc_id, int dest_x, int dest_y)
 {
     new XTeleport(x, y, XLocation::current_location, target_loc_id, dest_x, dest_y);
@@ -357,6 +370,7 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("Creature", &lua_api::Creature);
         lua.set_function("Guardian", &lua_api::Guardian);
         lua.set_function("GuardianClass", &lua_api::GuardianClass);
+        lua.set_function("SetStartLocation", &lua_api::SetStartLocation);
         lua.set_function("Teleport", &lua_api::Teleport);
         lua.set_function("Way", &lua_api::Way);
         lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectByPotion));

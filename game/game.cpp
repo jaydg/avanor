@@ -41,6 +41,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 bool XGame::isGodMode = false;
 XGUID XGame::hero_guid = 0;
 int XGame::current_location = 0;
+std::string XGame::start_location;
+std::optional<XRect> XGame::start_area;
 
 XGame::XGame()
 {
@@ -339,15 +341,30 @@ void XGame::CreateLocations() const
 
 void XGame::CreateHero() const
 {
-    XRect hero_rect(26, 4, 32, 9);
+    const auto start = Location(start_location);
+
+    // XLocation::ValidateWorld() has already named the culprit if the
+    // world script set no start location, or named one that was never
+    // built. There is nothing sensible to do with a hero here.
+    assert(start != nullptr);
+
+    const XRect whole_map(0, 0, start->map->len, start->map->hgt);
+    XRect area = start_area.value_or(whole_map);
+
+    // An area reaching past the map would have GetFreeXY() reading
+    // outside it; ValidateWorld() reports that, this just ignores it.
+    if (area.left < 0 || area.top < 0
+        || area.right > whole_map.right || area.bottom > whole_map.bottom) {
+        area = whole_map;
+    }
 
     // The one caller that cannot carry on without a cell: a starting
     // location with nowhere to stand is an unusable world, so let the
     // empty optional throw rather than inventing a coordinate.
-    const XPoint hero_point = Location("MAIN")->GetFreeXY(&hero_rect).value();
+    const XPoint hero_point = start->GetFreeXY(&area).value();
 
     const auto hero = new XHero(1);
-    Game.NewCreature(hero, hero_point.x, hero_point.y, Location("MAIN").get());
+    Game.NewCreature(hero, hero_point.x, hero_point.y, start.get());
     hero->MoneyOp(2000);
 
     // If hero is a bard, then create a dog for them...

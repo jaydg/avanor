@@ -22,6 +22,9 @@ end
 function MakeAvanorValley()
 	CreateLocation("MAIN", "Valley", "Valley of Avanor", PLAIN)
 
+	-- The hero starts on the green outside the village.
+	SetStartLocation("MAIN", 26, 4, 6, 5)
+
 	-- Orc war party and the village<->town teleports.
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).
@@ -91,7 +94,7 @@ function MakeAvanorValley()
 		AddTranslation(">", function(x, y) Way(DOWN, "MUSHROOMS_CAVE1", x, y) end)
 		AddTranslation("*", function(x, y) Way(DOWN, "DWARFCITYCAVE1", x, y) end)
 		AddTranslation("9", function(x, y) Way(DOWN, "SMALL_CAVE_1", x, y) end)
-		DrawPattern(0, 0) 
+		DrawPattern(0, 0)
 
 -- SMALL TOWN --
 		SetPattern(46, 15,
@@ -110,7 +113,7 @@ function MakeAvanorValley()
 		".#.........#.#####............................" ..
 		".###########.................................." ..
 		"..............................................")
-		
+
 		AddTranslation("1", XTileType.ROAD)
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'table') end)
@@ -164,26 +167,26 @@ function MakeAvanorValley()
 		AddTranslation("M", XTileType.MOUNTAIN)
 		AddTranslation("W", XTileType.MARBLE_WALL)
 		AddTranslation("X", XTileType.GOLDEN_FENCE)
-		
+
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'eternal flame') end)
 		AddTranslation("B", function(x, y) CreateGefeon(x, y) end)
 		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', "roderick_guardian", x, y, 30, 25) Guardian('fcitizen', "roderick_guardian", x, y, 30, 25) end end)
 		AddTranslation("_", function(x, y) SetView(PlaceSpecial("XAltar", x, y), "_", xColor.xWHITE) end)
 		AddTranslation("E", function(x, y) CreateHighPriest(x, y) end)
 		AddTranslation("F", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'pew') end)
-		
+
 		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
 		AddTranslation("G", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y) end)
 		AddTranslation("H", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP) Way(DOWN, "KINGS_TREASURE", x, y) end)
-		
+
 		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
 		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
 		AddTranslation("U", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'round table') end)
-		
+
 		AddTranslation("K", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'table') end)
 		AddTranslation("N", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'bed') end)
-		
-		
+
+
 		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ItemKind.BOOK + ItemKind.SCROLL + ItemKind.POTION, 'Toberik, the human shopkeeper') end)
 		DrawPattern(129, 2)
 
@@ -340,11 +343,11 @@ function MakeAvanorValley()
 		AddTranslation("B", function(x, y) Grave(x, y, 'Frederick II (710-790)', 'StandardGraveEvent') end)
 		AddTranslation("C", function(x, y) Grave(x, y, 'Arthur IV (796-854)', 'StandardGraveEvent') end)
 		AddTranslation("D", function(x, y) Grave(x, y, 'Rodomir III (821-894)', 'AvanorDefenderGraveEvent') end)
-		
+
 		DrawPattern(0, 0)
 		for i = 1, 20 do Creature("ghost") end
-		for i = 1, 10 do 
-			Creature("spectre") 
+		for i = 1, 10 do
+			Creature("spectre")
 			Creature("dread")
 		end
 end

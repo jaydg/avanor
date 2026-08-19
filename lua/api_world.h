@@ -58,6 +58,8 @@ namespace lua_api
     void Treasure(int x, int y, int val);
     void Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval);
     void Trap(int x, int y);
+    void SetStartLocation(const std::string& loc_id, sol::optional<int> x, sol::optional<int> y,
+                          sol::optional<int> w, sol::optional<int> h);
     void EventPlace(const std::string& event);
     void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
 
