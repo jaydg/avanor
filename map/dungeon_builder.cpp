@@ -19,25 +19,230 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <cstring>
 #include <memory>
 #include <vector>
 
+#include "engine/global.h"
 #include "game/location.h"
-#include "game/cbuilder.h"
+#include "creature/std_ai.h"
+#include "item/item_misc.h"
+#include "map/dungeon_builder.h"
+#include "map/map.h"
 #include "map/map_objects.h"
 
-XCaveBuilder::XCaveBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest)
+
+std::vector<RoomTemplate> room_templates;
+
+bool RoomTemplate::isExit(const int x, const int y) const
 {
+    const char ch = pattern.pattern[x + y * pattern.w];
+
+    return ch == '+' || ch == '.';
+}
+
+// Picks a room by weight. Null when the world script defined no rooms,
+// which is not an error - the generator then only makes plain ones.
+const RoomTemplate* PickRoom()
+{
+    int total = 0;
+
+    for (const auto& room : room_templates) {
+        total += room.weight;
+    }
+
+    if (total <= 0) {
+        return nullptr;
+    }
+
+    int roll = vRand(total);
+
+    for (const auto& room : room_templates) {
+        if (roll < room.weight) {
+            return &room;
+        }
+
+        roll -= room.weight;
+    }
+
+    return nullptr;
+}
+
+#define USUAL_CAVE_HGT 4
+#define USUAL_CAVE_LEN 4
+
+XRoom::XRoom(int len, int hgt, const RoomTemplate* _room)
+{
+    assert(len > 4);
+    assert(hgt > 4);
+
+    map_len = len;
+    map_hgt = hgt;
+
+    int x, y, l, h;
+
+    room = _room;
+
+    if (!room) { // plain rectangular room
+
+        while (1) {
+            x = vRand() % (len - USUAL_CAVE_LEN - 2) + 1;
+            y = vRand() % (hgt - USUAL_CAVE_HGT - 2) + 1;
+            l = vRand() % 7 + USUAL_CAVE_LEN;
+            h = vRand() % 3 + USUAL_CAVE_HGT;
+
+            if (x + l < len - 2 && y + h < hgt - 2) {
+                break;
+            }
+        }
+
+        // create from 1 to 4 random exits
+        int ec = vRand(2) + 2;
+        XPoint tpt;
+
+        while (ec > 0) {
+            switch (vRand(4)) { // on which wall the door will placed
+                case 0:
+                    tpt = XPoint(x + vRand(l - 3) + 1, y);
+                    break;
+
+                case 1:
+                    tpt = XPoint(x + vRand(l - 3) + 1, y + h - 1);
+                    break;
+
+                case 2:
+                    tpt = XPoint(x, y + vRand(h - 3) + 1);
+                    break;
+
+                case 3:
+                    tpt = XPoint(x + l - 1, y + vRand(h - 3) + 1);
+                    break;
+            }
+
+            if (tpt.x < 2 || tpt.x > map_len - 2 || tpt.y < 2 || tpt.y > map_hgt - 2) {
+                continue;
+            }
+
+            exits.push_back(tpt);
+            ec--;
+        }
+    } else { // a room the world script defined
+        l = room->pattern.w;
+        h = room->pattern.h;
+        x = vRand() % (len - l - 6) + 3;
+        y = vRand() % (hgt - h - 6) + 3;
+
+        // searching for exits (doors, empty spaces etc.)
+        for (int i = 0; i < l; i++) {
+            if (room->isExit(i, 0)) {
+                exits.push_back(XPoint(i + x, y));
+            }
+
+            if (room->isExit(i, h - 1)) {
+                exits.push_back(XPoint(i + x, y + h - 1));
+            }
+        }
+
+        for (int j = 0; j < h; j++) {
+            if (room->isExit(0, j)) {
+                exits.push_back(XPoint(x, y + j));
+            }
+
+            if (room->isExit(l - 1, j)) {
+                exits.push_back(XPoint(l - 1 + x, y + j));
+            }
+        }
+    }
+
+    r.Setup(x, y, x + l, y + h);
+}
+
+int XRoom::Intersect(XRoom * other, int dist)
+{
+    XRect tr(other->r);
+
+    return tr.Intersect(&r);
+}
+
+void XRoom::Draw(XLocation * l)
+{
+    if (!room) {
+        for (int i = r.top; i < r.bottom; i++)
+            for (int j = r.left; j < r.right; j++) {
+                l->map->SetXY(j, i, XTileType::CAVE_FLOOR);
+            }
+
+        if (vRand(10) == 0) {
+            int i;
+
+            for (i = 0; i < vRand(5); i++) {
+                if (const auto pt = l->GetFreeXY(&r)) {
+                    new XTrap(pt->x, pt->y, l, TL_RANDOM);
+                }
+            }
+        }
+    } else {
+        // The room's own palette resolves its glyphs - tiles directly,
+        // and chests, doors or traps through the script callbacks bound
+        // to them, the same way a hand-built location's pattern works.
+        l->PutPalette(room->pattern, room->translation, r.left, r.top);
+
+        // Marked so the corridor pass routes around the room instead of
+        // carving through its walls.
+        for (int i = r.top; i < r.bottom; i++) {
+            for (int j = r.left; j < r.right; j++) {
+                l->map->SetRoom(j, i, 1);
+            }
+        }
+
+        if (room->on_drawn.valid()) {
+            room->on_drawn(r.left, r.top, room->pattern.w, room->pattern.h);
+        }
+    }
+}
+
+bool XRoom::GetFreeExit(XPoint * pt)
+{
+    int attempt = 100;
+
+    while (attempt-- > 0) {
+        int n = vRand(exits.size());
+        auto it = exits.begin();
+
+        while (n > 0) {
+            ++it;
+            n--;
+        }
+
+        *pt = *it;
+        exits.erase(it);
+
+        return true;
+    }
+
+    return false;
+}
+
+XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest)
+{
+    // Same as the other builders: a location arrives without a map and
+    // leaves with one. XLocation::BuildDungeon() used to do this bit.
+    if (!_l->map) {
+        _l->map = new XMap(80, 20);
+    }
+
     m = _l->map;
     location = _l;
     isCreateDoorTrapChest = create_door_trap_chest > 0;
     room_chance = std::clamp(_room_chance, 0, 100);
 }
 
-bool XCaveBuilder::PlaceRoom(std::vector<std::unique_ptr<XCave>>& placed, const RoomTemplate* room, int attempts)
+bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, const RoomTemplate* room, int attempts)
 {
     while (attempts-- > 0) {
-        auto xc = std::make_unique<XCave>(m->len, m->hgt, room);
+        auto xc = std::make_unique<XRoom>(m->len, m->hgt, room);
         bool clear = true;
 
         for (size_t q = 0; q < placed.size() && clear; q++) {
@@ -56,7 +261,7 @@ bool XCaveBuilder::PlaceRoom(std::vector<std::unique_ptr<XCave>>& placed, const 
     return false;
 }
 
-void XCaveBuilder::Build()
+void XDungeonBuilder::Build()
 {
     int i;
 
@@ -65,7 +270,7 @@ void XCaveBuilder::Build()
             m->SetXY(j, i, XTileType::MAGMA);
         }
 
-    std::vector<std::unique_ptr<XCave>> quae;
+    std::vector<std::unique_ptr<XRoom>> quae;
 
     int nCave = m->hgt * m->len / 200;
 
@@ -82,8 +287,8 @@ void XCaveBuilder::Build()
     }
 
     for (size_t k = 0; k + 1 < quae.size(); k++) {
-        XCave * tc1 = quae[k].get();
-        XCave * tc2 = quae[k + 1].get();
+        XRoom * tc1 = quae[k].get();
+        XRoom * tc2 = quae[k + 1].get();
         XPoint pt1;
         XPoint pt2;
 
@@ -134,7 +339,7 @@ struct LINK_STACK {
 };
 
 //linking of room is using standard flood-fill algorithm
-bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)
+bool XDungeonBuilder::Link(XPoint * p1, XPoint * p2)
 {
     //create and reset table equal with map
     std::vector<int> tbl(m->hgt * m->len, 0);
@@ -252,7 +457,7 @@ bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)
     return true;
 }
 
-void XCaveBuilder::CreateDoors()
+void XDungeonBuilder::CreateDoors()
 {
     for (int i = 1; i < m->hgt - 1; i++)
         for (int j = 1; j < m->len - 1; j++) {
@@ -278,7 +483,7 @@ void XCaveBuilder::CreateDoors()
         }
 }
 
-bool XCaveBuilder::DigOut(const XPoint& door, const XRect& room)
+bool XDungeonBuilder::DigOut(const XPoint& door, const XRect& room)
 {
     // Breadth-first out from the door, through rock and around every
     // other room, until it meets floor belonging to the rest of the

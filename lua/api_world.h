@@ -26,7 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
-#include "game/cave.h"
+#include "map/dungeon_builder.h"
 #include "map/map_objects.h"
 
 // Script API for building the location currently under construction

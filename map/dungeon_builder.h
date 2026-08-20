@@ -18,16 +18,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef CAVE_H
-#define CAVE_H
+#ifndef DUNGEON_BUILDER_H
+#define DUNGEON_BUILDER_H
 
-#include "engine/xobject.h"
+#include <memory>
+#include <vector>
+
+#include "game/location.h"
 #include "helpers/point.h"
 #include "helpers/rect.h"
-#include "game/location.h"
 #include "map/map.h"
 
 class XMap;
+class XLocation;
 
 // A room the dungeon generator can stamp into a level: a pattern and the
 // palette that resolves it - exactly what a hand-built location uses -
@@ -50,11 +53,13 @@ struct RoomTemplate {
 // get only the plain rectangular rooms the generator makes up.
 extern std::vector<RoomTemplate> room_templates;
 
-
 // Picks a room by weight, or null when the script defined none.
 const RoomTemplate* PickRoom();
 
-class XCave
+// One room of a generated dungeon level: where it sits, where a corridor
+// may attach to it, and how it puts itself on the map. Either a plain
+// rectangle the generator made up, or one of the rooms above.
+class XRoom
 {
         // The template this room was stamped from, or null for one of the
         // generator's own plain rectangles.
@@ -63,20 +68,48 @@ class XCave
         int map_hgt;
     public:
         XRect r;
+
+        // Border cells a corridor may be dug to. Consumed as they are
+        // used, so what is left over are the ways in nothing took.
         std::vector<XPoint> exits;
-        // room is the template to stamp, or null for one of the
-        // generator's own plain rectangles.
-        XCave(int len, int hgt, const RoomTemplate* room);
+
+        XRoom(int len, int hgt, const RoomTemplate* room);
+        ~XRoom() { }
 
         [[nodiscard]] bool isTemplateRoom() const
         {
             return room != nullptr;
         }
-        int Intersect(XCave * xc, int dist);
-        void Draw(XLocation * l);
-        ~XCave() { }
 
+        int Intersect(XRoom * other, int dist);
+        void Draw(XLocation * l);
         bool GetFreeExit(XPoint * pt);
+};
+
+// Builds a level out of rooms joined by corridors.
+class XDungeonBuilder
+{
+        bool isCreateDoorTrapChest;
+
+        // The chance in a hundred that this level is built with one of the
+        // rooms the world script defined. Per level setting allows variety.
+        int room_chance;
+    public:
+        XMap* m;
+        XLocation* location;
+        XDungeonBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest = 1);
+        void Build();
+        bool Link(XPoint * p1, XPoint * p2);
+        void CreateDoors();
+
+    private:
+        // Draws room (null for a plain one) at a random free spot, giving
+        // up after `attempts` tries. Returns whether it went down.
+        bool PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, const RoomTemplate* room, int attempts);
+
+        // Digs from a template room's unused door out to the nearest floor
+        // that is not part of that room.
+        bool DigOut(const XPoint& door, const XRect& room);
 };
 
 #endif

@@ -31,7 +31,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/lua_ai.h"
 #include "creature/shopkeeper.h"
 #include "engine/xgen.h"
-#include "game/cbuilder.h"
+#include "map/cave_builder.h"
+#include "map/dungeon_builder.h"
+#include "map/plain_builder.h"
 #include "game/game.h"
 #include "game/location.h"
 #include "game/quest.h"
@@ -214,147 +216,6 @@ std::optional<XPoint> XLocation::GetFreeXY(XRect * area)
     }
 
     return std::nullopt;
-}
-
-void XLocation::BuildPlain(int w, int h)
-{
-    int lm = 0;
-    int rm = w;
-    int tm = 0;
-    int bm = h;
-
-    int i, j;
-
-    // Create Avanor's plain
-    map = new XMap(w, h);
-
-    for (i = 0; i < map->hgt; i++)
-        for (j = 0; j < map->len; j++) {
-            if (vRand() % 3) {
-                map->SetXY(j, i, XTileType::GREEN_GRASS);
-            } else {
-                map->SetXY(j, i, XTileType::TREE);
-            }
-        }
-
-    // creating high mountains
-    for (i = lm; i < rm; i++) {
-        int z1 = vRand() % ((i & 3) + 1) + 1;
-        int z2 = vRand() % ((i & 3) + 1) + 1;
-
-        for (j = 0; j < z1; j++) {
-            map->SetXY(i, tm + j, XTileType::HIGH_MOUNTAIN);
-        }
-
-        for (j = 0; j < z2; j++) {
-            map->SetXY(i, bm - j - 1, XTileType::HIGH_MOUNTAIN);
-        }
-    }
-
-    for (i = tm; i < bm; i++) {
-        int z1 = vRand() % ((i & 3) + 1) + 1;
-        int z2 = vRand() % ((i & 3) + 1) + 1;
-
-        for (j = 0; j < z1; j++) {
-            map->SetXY(lm + j, i, XTileType::HIGH_MOUNTAIN);
-        }
-
-        for (j = 0; j < z2; j++) {
-            map->SetXY(rm - j - 1, i, XTileType::HIGH_MOUNTAIN);
-        }
-    }
-
-    //evaluate high mountains till hills!
-    for (i = 0; i < map->hgt; i++)
-        for (j = 0; j < map->len; j++) {
-            int m = map->GetXY(j, i);
-
-            if (m > XTileType::HILL && m <= XTileType::HIGH_MOUNTAIN) {
-                for (int q = -2; q < 3; q++)
-                    for (int w = -2; w < 3; w++) {
-                        int nm;
-
-                        if (abs(q) >= abs(w)) {
-                            nm = m - abs(q);
-                        } else {
-                            nm = m - abs(w);
-                        }
-
-                        if (nm < XTileType::HILL) {
-                            nm = XTileType::HILL;
-                        }
-
-                        if (j + q >= 0 && i + w >= 0
-                            && j + q < map->len && i + w < map->hgt
-                            && map->GetXY(j + q, i + w) < nm) {
-                            map->SetXY(j + q, i + w, (XTileType::Type)nm);
-                        }
-                    }
-            }
-        }
-}
-
-void XLocation::BuildCave()
-{
-    int cl = 80;
-    int ch = 20;
-
-    if (map) {
-        cl = map->len;
-        ch = map->hgt;
-    } else {
-        map = new XMap(cl, ch);
-    }
-
-    // A random blob-stamp cave has no connectivity guarantee on its own -
-    // regenerate from scratch until the whole floor is one reachable
-    // region (150 blobs over an 80x20 grid connects within a handful of
-    // tries in practice), so a level's stairways - placed afterward, once
-    // this returns, via GetFreeXY() over whatever floor exists - can never
-    // end up in an isolated pocket the player can't get down/up through.
-    constexpr int MAX_ATTEMPTS = 100;
-    bool connected = false;
-
-    for (int attempt = 0; attempt < MAX_ATTEMPTS && !connected; attempt++) {
-        for (int i = 0; i < map->hgt; i++) {
-            for (int j = 0; j < map->len; j++) {
-                map->SetXY(j, i, XTileType::MAGMA);
-            }
-        }
-
-        for (int k = 0; k < 150; k++) {
-            int	qx = vRand() % (cl - 7) + 1;
-            int qy = vRand() % (ch - 5) + 1;
-
-            for (int q = 0; q < 360; q += 3) {
-                for (int w = 0; w < 3; w++) {
-                    int tx = qx + (int)(w * cos(q * M_PI / 180.0));
-                    int ty = qy + (int)(w * sin(q * M_PI / 180.0));
-
-                    if (tx > 0 && ty > 0 && tx < 79 && ty < 19) {
-                        map->SetXY(tx, ty, XTileType::CAVE_FLOOR);
-                    }
-                }
-            }
-        }
-
-        connected = map->isFullyConnected();
-    }
-
-    if (!connected) {
-        map->ConnectAllRegions();
-    }
-}
-
-void XLocation::BuildDungeon(int room_chance, int create_trap_door_chest)
-{
-    if (!map) {
-        map = new XMap(80, 20);
-    }
-
-    XCaveBuilder * xcb = new XCaveBuilder(this, room_chance, create_trap_door_chest);
-    xcb->Build();
-    delete xcb;
 }
 
 XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
@@ -637,15 +498,15 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
 
     switch (generator) {
         case Generator::CAVE:
-            XLocation::current_location->BuildCave();
+            XCaveBuilder(XLocation::current_location).Build();
             break;
 
         case Generator::DUNGEON:
-            XLocation::current_location->BuildDungeon(room_chance.value_or(0));
+            XDungeonBuilder(XLocation::current_location, room_chance.value_or(0)).Build();
             break;
 
         case Generator::PLAIN:
-            XLocation::current_location->BuildPlain(200, 90);
+            XPlainBuilder(XLocation::current_location, 200, 90).Build();
             break;
     }
 }

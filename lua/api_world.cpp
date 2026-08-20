@@ -25,7 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/shopkeeper.h"
 #include "engine/xgen.h"
 #include "engine/xlua.h"
-#include "game/cbuilder.h"
+#include "map/dungeon_builder.h"
 #include "game/game.h"
 #include "game/location.h"
 #include "game/shop.h"

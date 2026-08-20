@@ -297,12 +297,6 @@ class XLocation : public XObject
         // The pattern the world script is currently building with.
         void PutPalette(int x, int y);
 
-        void BuildCave();
-        // room_chance is the chance in a hundred that this level is
-        // built with one of the rooms DefineRoom() registered.
-        void BuildDungeon(int room_chance, int create_trap_door_chest = 1);
-        void BuildPlain(int w, int h);
-
         void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd = XShop::Door::UP);
 };
 
