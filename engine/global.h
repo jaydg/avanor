@@ -263,15 +263,13 @@ std::string SCOLOR(unsigned rgb);
 constexpr char RGB_ESCAPE = 0x1E;
 constexpr int RGB_ESCAPE_LENGTH = 7;
 
-// One character of the screen the game paints into, and the colour it
-// is drawn in. vRefresh() hands these to the terminal.
-struct VCell {
-    char ch;
-    unsigned rgb;
-};
-
+// A screen put aside while something is drawn over it - a menu, a
+// character sheet - and blitted back afterwards. On the terminal it is a
+// duplicate of the standard plane, made by notcurses itself.
 struct V_BUFFER {
-    char* buffer;
+    char* buffer = nullptr;   // the Windows console's own copy
+    void* saved = nullptr;    // ncplane*, the terminal's
+
     V_BUFFER();
     ~V_BUFFER();
 };

@@ -67,10 +67,6 @@ std::string SCOLOR(const unsigned rgb)
 
 int __animation_flag = 100;
 
-#ifndef XWIN32
-    VCell* vscreen;
-#endif
-
 int size_x = 80;
 int size_y = 25;
 
@@ -142,12 +138,15 @@ void vInit()
     size_x = static_cast<int>(cols);
     size_y = static_cast<int>(rows);
 
+    // Every cell of the screen paints, including the blank ones: planes
+    // parked underneath it (see vStore()) must never show through.
+    uint64_t opaque_black = 0;
+    ncchannels_set_fg_rgb(&opaque_black, xLIGHTGRAY);
+    ncchannels_set_bg_rgb(&opaque_black, xBLACK);
+    screen->set_base(" ", 0, opaque_black);
+
     nc->cursor_disable();
 #endif //XLINUX
-
-#ifndef XWIN32
-    vscreen = new VCell[size_x * size_y];
-#endif
 
     vClrScr();
 }
@@ -162,10 +161,9 @@ void vClrScr()
         vscreenw[i] = blank_char;
     }
 #else
-    for (int i = 0; i < size_x * size_y; i++) {
-        vscreen[i].ch = ' ';
-        vscreen[i].rgb = xLIGHTGRAY;
-    }
+    screen->erase();
+    screen->set_fg_rgb(xLIGHTGRAY);
+    screen->set_bg_rgb(xBLACK);
 #endif
 }
 
@@ -185,9 +183,6 @@ void vFinit()
         screen = nullptr;
     }
 #endif
-#ifndef XWIN32
-    delete[] vscreen;
-#endif
 }
 
 void vRefresh()
@@ -201,16 +196,6 @@ void vRefresh()
 #endif
 
 #ifdef XLINUX
-    for (int y = 0; y < size_y; y++) {
-        for (int x = 0; x < size_x; x++) {
-            const VCell& cell = vscreen[x + y * size_x];
-
-            screen->set_fg_rgb(cell.rgb);
-            screen->set_bg_rgb(0x000000);
-            screen->putc(y, x, cell.ch < ' ' ? ' ' : cell.ch);
-        }
-    }
-
     nc->render();
 #endif
 }
@@ -222,7 +207,10 @@ void vPutCh(const int x, const int y, char ch, unsigned rgb)
     CHAR_INFO tmp = { ch, attr };
     vscreenw[x + y * size_x] = tmp;
 #else
-    vscreen[x + y * size_x] = {ch, rgb};
+    // The plane holds what the screen will look like; notcurses works
+    // out what actually has to be sent when vRefresh() renders it.
+    screen->set_fg_rgb(rgb);
+    screen->putc(y, x, ch < ' ' ? ' ' : ch);
 #endif
 };
 
@@ -231,7 +219,16 @@ char vTestCh(const int x, const int y)
 #ifdef XWIN32
     return vscreenw[x + y * size_x].Char.AsciiChar;
 #else
-    return vscreen[x + y * size_x].ch;
+    uint16_t stylemask = 0;
+    uint64_t channels = 0;
+    char ch = ' ';
+
+    if (char* egc = screen->get_at(y, x, &stylemask, &channels)) {
+        ch = egc[0];
+        free(egc);
+    }
+
+    return ch;
 #endif
 }
 
@@ -240,7 +237,16 @@ void vPutCh(int x, int y, char ch)
 #ifdef XWIN32
     vscreenw[x + y * size_x].Char.AsciiChar = ch;
 #else
-    vscreen[x + y * size_x].ch = ch;
+    // No colour given: the cell keeps the one it already has.
+    uint16_t stylemask = 0;
+    uint64_t channels = 0;
+
+    if (char* egc = screen->get_at(y, x, &stylemask, &channels)) {
+        free(egc);
+        screen->set_channels(channels);
+    }
+
+    screen->putc(y, x, ch < ' ' ? ' ' : ch);
 #endif
 };
 
@@ -760,14 +766,18 @@ V_BUFFER::V_BUFFER()
 {
 #ifdef XWIN32
     buffer = new char[size_x * size_y * sizeof(CHAR_INFO)];
-#else
-    buffer = new char[size_x * size_y * sizeof(VCell)];
 #endif
 }
 
 V_BUFFER::~V_BUFFER()
 {
+#ifdef XWIN32
     delete[] buffer;
+#else
+    if (saved) {
+        ncplane_destroy(static_cast<ncplane*>(saved));
+    }
+#endif
 }
 
 void vStore(const V_BUFFER* buf)
@@ -775,7 +785,20 @@ void vStore(const V_BUFFER* buf)
 #ifdef XWIN32
     memcpy(buf->buffer, vscreenw, size_x * size_y * sizeof(CHAR_INFO));
 #else
-    memcpy(buf->buffer, vscreen, size_x * size_y * sizeof(VCell));
+    // A saved screen is a copy of the plane; putting it back is a blit
+    // from that copy, which is what notcurses' own plane machinery does.
+    if (buf->saved) {
+        ncplane_destroy(static_cast<ncplane*>(buf->saved));
+    }
+
+    ncplane* copy = ncplane_dup(*screen, nullptr);
+
+    // ncplane_dup() stacks the copy immediately above its original, where
+    // it would hide everything drawn next; it is only storage, so it goes
+    // to the bottom, under an opaque screen.
+    ncplane_move_bottom(copy);
+
+    const_cast<V_BUFFER*>(buf)->saved = copy;
 #endif
 }
 
@@ -784,7 +807,24 @@ void vRestore(const V_BUFFER* buf)
 #ifdef XWIN32
     memcpy(vscreenw, buf->buffer, size_x * size_y * sizeof(CHAR_INFO));
 #else
-    memcpy(vscreen, buf->buffer, size_x * size_y * sizeof(VCell));
+    if (!buf->saved) {
+        return;
+    }
+
+    auto* copy = static_cast<ncplane*>(buf->saved);
+
+    for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < size_x; x++) {
+            uint16_t stylemask = 0;
+            uint64_t channels = 0;
+
+            if (char* egc = ncplane_at_yx(copy, y, x, &stylemask, &channels)) {
+                screen->set_channels(channels);
+                screen->putc(y, x, egc[0] ? egc[0] : ' ');
+                free(egc);
+            }
+        }
+    }
 #endif
 }
 
