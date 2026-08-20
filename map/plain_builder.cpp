@@ -27,6 +27,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void XPlainBuilder::Build()
 {
+    const XTileType::Id grass = XTileType::ByName("GREEN_GRASS");
+    const XTileType::Id tree = XTileType::ByName("TREE");
+    const XTileType::Id peak = XTileType::ByName("HIGH_MOUNTAIN");
+    const XTileType::Id foot = XTileType::ByName("HILL");
+
     int lm = 0;
     int rm = w;
     int tm = 0;
@@ -42,9 +47,9 @@ void XPlainBuilder::Build()
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
             if (vRand() % 3) {
-                map->SetXY(j, i, XTileType::GREEN_GRASS);
+                map->SetXY(j, i, grass);
             } else {
-                map->SetXY(j, i, XTileType::TREE);
+                map->SetXY(j, i, tree);
             }
         }
 
@@ -54,11 +59,11 @@ void XPlainBuilder::Build()
         int z2 = vRand() % ((i & 3) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
-            map->SetXY(i, tm + j, XTileType::HIGH_MOUNTAIN);
+            map->SetXY(i, tm + j, peak);
         }
 
         for (j = 0; j < z2; j++) {
-            map->SetXY(i, bm - j - 1, XTileType::HIGH_MOUNTAIN);
+            map->SetXY(i, bm - j - 1, peak);
         }
     }
 
@@ -67,11 +72,11 @@ void XPlainBuilder::Build()
         int z2 = vRand() % ((i & 3) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
-            map->SetXY(lm + j, i, XTileType::HIGH_MOUNTAIN);
+            map->SetXY(lm + j, i, peak);
         }
 
         for (j = 0; j < z2; j++) {
-            map->SetXY(rm - j - 1, i, XTileType::HIGH_MOUNTAIN);
+            map->SetXY(rm - j - 1, i, peak);
         }
     }
 
@@ -80,7 +85,7 @@ void XPlainBuilder::Build()
         for (j = 0; j < map->len; j++) {
             int m = map->GetXY(j, i);
 
-            if (m > XTileType::HILL && m <= XTileType::HIGH_MOUNTAIN) {
+            if (m > foot && m <= peak) {
                 for (int q = -2; q < 3; q++)
                     for (int w = -2; w < 3; w++) {
                         int nm;
@@ -91,14 +96,14 @@ void XPlainBuilder::Build()
                             nm = m - abs(w);
                         }
 
-                        if (nm < XTileType::HILL) {
-                            nm = XTileType::HILL;
+                        if (nm < foot) {
+                            nm = foot;
                         }
 
                         if (j + q >= 0 && i + w >= 0
                             && j + q < map->len && i + w < map->hgt
                             && map->GetXY(j + q, i + w) < nm) {
-                            map->SetXY(j + q, i + w, (XTileType::Type)nm);
+                            map->SetXY(j + q, i + w, (XTileType::Id)nm);
                         }
                     }
             }

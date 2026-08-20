@@ -27,6 +27,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void XCaveBuilder::Build()
 {
+    const XTileType::Id rock = XTileType::ByName("MAGMA");
+    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
+
     int cl = 80;
     int ch = 20;
 
@@ -51,7 +54,7 @@ void XCaveBuilder::Build()
     for (int attempt = 0; attempt < MAX_ATTEMPTS && !connected; attempt++) {
         for (int i = 0; i < map->hgt; i++) {
             for (int j = 0; j < map->len; j++) {
-                map->SetXY(j, i, XTileType::MAGMA);
+                map->SetXY(j, i, rock);
             }
         }
 
@@ -65,7 +68,7 @@ void XCaveBuilder::Build()
                     int ty = qy + (int)(w * sin(q * M_PI / 180.0));
 
                     if (tx > 0 && ty > 0 && tx < 79 && ty < 19) {
-                        map->SetXY(tx, ty, XTileType::CAVE_FLOOR);
+                        map->SetXY(tx, ty, floor);
                     }
                 }
             }

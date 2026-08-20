@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 
 #include "engine/xarchive.h"
+#include "map/map.h"
 #include "game/game.h"
 #include "game/quest.h"
 #include "game/xtime.h"
@@ -40,7 +41,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xring.h"
 #include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x0000054;
+constexpr unsigned int SAVE_GAME_VERSION = 0x0000055;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 // ZSTD compression level: 1 provides excellent speed/size tradeoff
@@ -129,6 +130,12 @@ int XArchive::StoreGame()
 
         ar(SAVE_GAME_VERSION);
         ar(::guid);
+
+        // Tile ids are handed out in world/tiles.lua's order, so they mean
+        // nothing on their own. Storing the names beside them lets a game
+        // saved under one tile list be restored under another.
+        std::vector<std::string> tile_names = XTileType::Names();
+        ar(tile_names);
 
         ar(Game.locations);
 
@@ -228,7 +235,21 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
 
         ar(::guid);
 
+        std::vector<std::string> tile_names;
+        ar(tile_names);
+
         ar(Game.locations);
+
+        // Every map cell holds a tile id; if the ids moved since the save
+        // was written, they are translated through the names now, before
+        // anything reads a map.
+        if (const std::vector<XTileType::Id> remap = XTileType::RemapFrom(tile_names); !remap.empty()) {
+            for (const auto& [key, loc] : Game.locations) {
+                if (loc && loc->map) {
+                    loc->map->RemapTiles(remap);
+                }
+            }
+        }
 
         ar(XQuest::quest);
 

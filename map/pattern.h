@@ -43,7 +43,7 @@ class XPattern
         // stands on it - a shop, a chest, a creature.
         struct Translation {
             char glyph;
-            XTileType::Type tile;
+            XTileType::Id tile;
             sol::protected_function callback;
         };
 
@@ -55,14 +55,14 @@ class XPattern
             translations.clear();
         }
 
-        void AddTranslation(char glyph, XTileType::Type tile)
+        void AddTranslation(char glyph, XTileType::Id tile)
         {
             translations.push_back({glyph, tile, {}});
         }
 
         void AddTranslation(char glyph, sol::protected_function callback)
         {
-            translations.push_back({glyph, XTileType::UNKNOWN, std::move(callback)});
+            translations.push_back({glyph, XTileType::NONE, std::move(callback)});
         }
 
         // Stamps this pattern onto a location with its top-left corner at
@@ -79,7 +79,7 @@ class XPattern
         // callback's cell, later entries winning over earlier ones, so a
         // door in a stone corridor gets stone floor and one in a field
         // gets grass.
-        static void SetFloorPriority(std::vector<XTileType::Type> floors);
+        static void SetFloorPriority(std::vector<XTileType::Id> floors);
 
         // Both of the above hold script callbacks and tile choices
         // belonging to one Lua state; XLua::Init() drops them with it.
@@ -111,7 +111,7 @@ class XPattern
         std::vector<Translation> translations;
 
         static std::vector<Translation> default_translations;
-        static std::vector<XTileType::Type> floor_priority;
+        static std::vector<XTileType::Id> floor_priority;
 };
 
 #endif

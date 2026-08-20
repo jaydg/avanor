@@ -168,10 +168,12 @@ int XRoom::Intersect(XRoom * other, int dist)
 
 void XRoom::Draw(XLocation * l)
 {
+    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
+
     if (!room) {
         for (int i = r.top; i < r.bottom; i++)
             for (int j = r.left; j < r.right; j++) {
-                l->map->SetXY(j, i, XTileType::CAVE_FLOOR);
+                l->map->SetXY(j, i, floor);
             }
 
         if (vRand(10) == 0) {
@@ -263,11 +265,12 @@ bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, con
 
 void XDungeonBuilder::Build()
 {
+    const XTileType::Id rock = XTileType::ByName("MAGMA");
     int i;
 
     for (i = 0; i < m->hgt; i++)
         for (int j = 0; j < m->len; j++) {
-            m->SetXY(j, i, XTileType::MAGMA);
+            m->SetXY(j, i, rock);
         }
 
     std::vector<std::unique_ptr<XRoom>> quae;
@@ -341,6 +344,8 @@ struct LINK_STACK {
 //linking of room is using standard flood-fill algorithm
 bool XDungeonBuilder::Link(XPoint * p1, XPoint * p2)
 {
+    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
+
     //create and reset table equal with map
     std::vector<int> tbl(m->hgt * m->len, 0);
 
@@ -439,7 +444,7 @@ bool XDungeonBuilder::Link(XPoint * p1, XPoint * p2)
 
     while (stp > 1) {
         stp = tbl[px + py * m->len];
-        m->SetXY(px, py, XTileType::CAVE_FLOOR);
+        m->SetXY(px, py, floor);
 
         if (tbl[px + 1 + py * m->len] == stp - 1) {
             px++;
@@ -452,7 +457,7 @@ bool XDungeonBuilder::Link(XPoint * p1, XPoint * p2)
         }
     }
 
-    m->SetXY(p1->x, p1->y, XTileType::CAVE_FLOOR);
+    m->SetXY(p1->x, p1->y, floor);
 
     return true;
 }
@@ -485,6 +490,8 @@ void XDungeonBuilder::CreateDoors()
 
 bool XDungeonBuilder::DigOut(const XPoint& door, const XRect& room)
 {
+    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
+
     // Breadth-first out from the door, through rock and around every
     // other room, until it meets floor belonging to the rest of the
     // level - then carve the path it came by.
@@ -527,7 +534,7 @@ bool XDungeonBuilder::DigOut(const XPoint& door, const XRect& room)
             if (m->GetMovability(nx, ny) < XTileType::Movability::UNWALKABLE || m->GetRoom(nx, ny) != 0) {
                 // Reached the level. Carve back to the door.
                 for (int at = came_from[next]; at != start; at = came_from[at]) {
-                    m->SetXY(at % m->len, at / m->len, XTileType::CAVE_FLOOR);
+                    m->SetXY(at % m->len, at / m->len, floor);
                 }
 
                 return true;

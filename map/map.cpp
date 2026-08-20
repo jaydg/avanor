@@ -55,62 +55,81 @@ void XTileType::RegisterLua(sol::state_view& lua)
         "WALL", Visibility::WALL
     );
 
-    lua.new_enum("XTileType",
-        "GREEN_GRASS", XTileType::GREEN_GRASS,
-        "TREE", XTileType::TREE,
-        "SAND", XTileType::SAND,
-        "WINDOW", XTileType::WINDOW,
-        "MAGMA", XTileType::MAGMA,
-        "QUARTZ", XTileType::QUARTZ,
-        "CAVE_FLOOR", XTileType::CAVE_FLOOR,
-        "STONE_FLOOR", XTileType::STONE_FLOOR,
-        "PATH", XTileType::PATH,
-        "WOOD_WALL", XTileType::WOOD_WALL,
-        "STONE_WALL", XTileType::STONE_WALL,
-        "WATER", XTileType::WATER,
-        "DEEP_WATER", XTileType::DEEP_WATER,
-        "LAVA", XTileType::LAVA,
-        "HILL", XTileType::HILL,
-        "LOW_MOUNTAIN", XTileType::LOW_MOUNTAIN,
-        "MOUNTAIN", XTileType::MOUNTAIN,
-        "HIGH_MOUNTAIN", XTileType::HIGH_MOUNTAIN,
-        "BRIDGE", XTileType::BRIDGE,
-        "ROAD", XTileType::ROAD,
-        "OBSIDIAN_FLOOR", XTileType::OBSIDIAN_FLOOR,
-        "FENCE", XTileType::FENCE,
-        "GOLDEN_FLOOR", XTileType::GOLDEN_FLOOR,
-        "MARBLE_WALL", XTileType::MARBLE_WALL,
-        "BLACK_MARBLE_WALL", XTileType::BLACK_MARBLE_WALL,
-        "GOLDEN_FENCE", XTileType::GOLDEN_FENCE,
-        "TELEPORT_WHITE", XTileType::TELEPORT_WHITE
-    );
+    // Filled in by DefineTile(), one entry per tile the script defines.
+    lua.create_named_table("XTileType");
 }
 
 std::vector<XTileType> std_tile_data;
 
-void XTileType::Define(const Type type, const char view, const char color, const std::string& name,
-                       const Movability movability, const Visibility visibility)
+XTileType::Id XTileType::Define(const std::string& id_name, const char view, const char color,
+                                const std::string& name, const Movability movability, const Visibility visibility)
 {
-    if (std_tile_data.size() <= static_cast<size_t>(type)) {
-        std_tile_data.resize(static_cast<size_t>(type) + 1);
+    if (const Id existing = ByName(id_name); existing != NONE || (!std_tile_data.empty() && std_tile_data[NONE].id_name == id_name)) {
+        std::cerr << "tiles: '" << id_name << "' defined twice" << std::endl;
+
+        return existing;
     }
 
-    std_tile_data[type] = {view, color, name, movability, visibility};
+    std_tile_data.push_back({id_name, view, color, name, movability, visibility});
+
+    return static_cast<Id>(std_tile_data.size()) - 1;
+}
+
+XTileType::Id XTileType::ByName(const std::string& id_name)
+{
+    for (size_t i = 0; i < std_tile_data.size(); i++) {
+        if (std_tile_data[i].id_name == id_name) {
+            return static_cast<Id>(i);
+        }
+    }
+
+    return NONE;
+}
+
+std::vector<std::string> XTileType::Names()
+{
+    std::vector<std::string> names;
+
+    names.reserve(std_tile_data.size());
+
+    for (const auto& tile : std_tile_data) {
+        names.push_back(tile.id_name);
+    }
+
+    return names;
+}
+
+std::vector<XTileType::Id> XTileType::RemapFrom(const std::vector<std::string>& saved_names)
+{
+    std::vector<Id> remap;
+    bool moved = false;
+
+    for (size_t saved_id = 0; saved_id < saved_names.size(); saved_id++) {
+        const Id now = ByName(saved_names[saved_id]);
+
+        if (now == NONE && saved_names[saved_id] != std_tile_data[NONE].id_name) {
+            std::cerr << "tiles: the save holds '" << saved_names[saved_id]
+                      << "', which no longer exists - those cells become "
+                      << std_tile_data[NONE].id_name << std::endl;
+        }
+
+        moved = moved || now != static_cast<Id>(saved_id);
+        remap.push_back(now);
+    }
+
+    return moved ? remap : std::vector<Id>{};
 }
 
 int XTileType::ValidateTiles()
 {
-    int bad = 0;
+    if (std_tile_data.empty()) {
+        std::cerr << "tiles: the world script defined none - every map would be blank"
+                  << std::endl;
 
-    for (int type = UNKNOWN; type <= TELEPORT_WHITE; type++) {
-        if (static_cast<size_t>(type) >= std_tile_data.size() || std_tile_data[type].name.empty()) {
-            bad++;
-            std::cerr << "tiles: type " << type << " has no definition - the world script"
-                         " must DefineTile() it" << std::endl;
-        }
+        return 1;
     }
 
-    return bad;
+    return 0;
 }
 
 void XTileType::ForgetTiles()
@@ -120,7 +139,7 @@ void XTileType::ForgetTiles()
 
 XMapTile::XMapTile()
 {
-    n = XTileType::GREEN_GRASS;
+    n = XTileType::NONE;
     pMonster = nullptr;
     pSpecialObject = nullptr;
     visible = false;
@@ -519,7 +538,7 @@ void XMap::Center(const int x, const int y)
     }
 }
 
-void XMap::SetXY(const int x, const int y, const XTileType::Type std_map) const
+void XMap::SetXY(const int x, const int y, const XTileType::Id std_map) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
@@ -527,7 +546,7 @@ void XMap::SetXY(const int x, const int y, const XTileType::Type std_map) const
     map[x + y * len].n = std_map;
 }
 
-XTileType::Type XMap::GetXY(const int x, const int y) const
+XTileType::Id XMap::GetXY(const int x, const int y) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
@@ -551,13 +570,13 @@ int XMap::GetRoom(const int x, const int y) const
     return map[x + y * len].room_id;
 }
 
-void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const XTileType::Type m1, const XTileType::Type m2) const
+void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const XTileType::Id m1, const XTileType::Id m2) const
 {
     CreateRoom(x, y, l, h, m1, m2);
     SetXY(px, py, m1);
 }
 
-void XMap::CreateRoom(const int x, const int y, const int l, const int h, const XTileType::Type m1, const XTileType::Type m2) const
+void XMap::CreateRoom(const int x, const int y, const int l, const int h, const XTileType::Id m1, const XTileType::Id m2) const
 {
     for (int i = 0; i < l; i++) {
         for (int j = 0; j < h; j++) {
@@ -734,6 +753,9 @@ void XMap::ConnectAllRegions()
         return;
     }
 
+    // The tunnels are cut from whatever the script calls cave floor -
+    // this is a repair of last resort, not a place to be fussy.
+    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
     const XPoint hub = component_seeds[0];
 
     for (size_t i = 1; i < component_seeds.size(); i++) {
@@ -741,13 +763,22 @@ void XMap::ConnectAllRegions()
         int y = component_seeds[i].y;
 
         while (x != hub.x) {
-            map->SetXY(x, y, XTileType::CAVE_FLOOR);
+            map->SetXY(x, y, floor);
             x += (x < hub.x) ? 1 : -1;
         }
 
         while (y != hub.y) {
-            map->SetXY(x, y, XTileType::CAVE_FLOOR);
+            map->SetXY(x, y, floor);
             y += (y < hub.y) ? 1 : -1;
         }
+    }
+}
+
+void XMap::RemapTiles(const std::vector<XTileType::Id>& remap) const
+{
+    for (int i = 0; i < len * hgt; i++) {
+        const size_t saved = static_cast<size_t>(map[i].n);
+
+        map[i].n = saved < remap.size() ? remap[saved] : XTileType::NONE;
     }
 }

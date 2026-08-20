@@ -224,7 +224,7 @@ void AddTranslation(const std::string& view, sol::object target)
     if (target.get_type() == sol::type::function) {
         XLocation::current_pattern.AddTranslation(view[0], target.as<sol::protected_function>());
     } else {
-        XLocation::current_pattern.AddTranslation(view[0], static_cast<XTileType::Type>(target.as<int>()));
+        XLocation::current_pattern.AddTranslation(view[0], static_cast<XTileType::Id>(target.as<int>()));
     }
 }
 
@@ -246,7 +246,7 @@ void DefineRoom(const int weight, const int w, const int h, const std::string& p
         if (target.get_type() == sol::type::function) {
             room.pattern.AddTranslation(ch, target.as<sol::protected_function>());
         } else {
-            room.pattern.AddTranslation(ch, static_cast<XTileType::Type>(target.as<int>()));
+            room.pattern.AddTranslation(ch, static_cast<XTileType::Id>(target.as<int>()));
         }
     }
 
@@ -269,22 +269,29 @@ void SetDefaultTranslations(sol::table translations)
         const char ch = glyph.as<std::string>()[0];
 
         if (target.get_type() == sol::type::function) {
-            defaults.push_back({ch, XTileType::UNKNOWN, target.as<sol::protected_function>()});
+            defaults.push_back({ch, XTileType::NONE, target.as<sol::protected_function>()});
         } else {
-            defaults.push_back({ch, static_cast<XTileType::Type>(target.as<int>()), {}});
+            defaults.push_back({ch, static_cast<XTileType::Id>(target.as<int>()), {}});
         }
     }
 
     XPattern::SetDefaults(std::move(defaults));
 }
 
-//DefineTile(XTileType.MAGMA, '#', xColor.xDARKGRAY, "magma", Movability.WALL, Visibility.WALL)
-// Says what one kind of ground looks like and how it behaves. Every type
-// needs one; XTileType::ValidateTiles() names the ones left out.
-void DefineTile(const XTileType::Type type, const std::string& view, const int color, const std::string& name,
+//DefineTile("MAGMA", "magma", '#', xColor.xDARKGRAY, Movability.WALL, Visibility.WALL)
+// Adds a kind of ground: what it is called, what it looks like, and how
+// hard it is to cross and to see through. The id it gets appears in the
+// Lua table XTileType under the name given here, so everything else
+// refers to it as XTileType.MAGMA.
+void DefineTile(sol::this_state s, const std::string& id_name, const std::string& name,
+                const std::string& view, const int color,
                 const XTileType::Movability movability, const XTileType::Visibility visibility)
 {
-    XTileType::Define(type, view[0], static_cast<char>(color), name, movability, visibility);
+    const XTileType::Id id = XTileType::Define(id_name, view[0], static_cast<char>(color), name,
+                                               movability, visibility);
+
+    sol::state_view lua(s);
+    lua["XTileType"][id_name] = id;
 }
 
 //SetFloorPriority{ XTileType.GREEN_GRASS, XTileType.CAVE_FLOOR }
@@ -292,10 +299,10 @@ void DefineTile(const XTileType::Type type, const std::string& view, const int c
 // later entries winning over earlier ones.
 void SetFloorPriority(sol::table floors)
 {
-    std::vector<XTileType::Type> priority;
+    std::vector<XTileType::Id> priority;
 
     for (size_t i = 1; i <= floors.size(); i++) {
-        priority.push_back(static_cast<XTileType::Type>(floors.get<int>(i)));
+        priority.push_back(static_cast<XTileType::Id>(floors.get<int>(i)));
     }
 
     XPattern::SetFloorPriority(std::move(priority));

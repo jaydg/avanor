@@ -26,14 +26,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/pattern.h"
 
 std::vector<XPattern::Translation> XPattern::default_translations;
-std::vector<XTileType::Type> XPattern::floor_priority;
+std::vector<XTileType::Id> XPattern::floor_priority;
 
 void XPattern::SetDefaults(std::vector<Translation> defaults)
 {
     default_translations = std::move(defaults);
 }
 
-void XPattern::SetFloorPriority(std::vector<XTileType::Type> floors)
+void XPattern::SetFloorPriority(std::vector<XTileType::Id> floors)
 {
     floor_priority = std::move(floors);
 }
@@ -97,7 +97,7 @@ void XPattern::Draw(XLocation* location, int x, int y) const
                         continue;
                     }
 
-                    const XTileType::Type tm = location->map->GetXY(pt.x + q, pt.y + w2);
+                    const XTileType::Id tm = location->map->GetXY(pt.x + q, pt.y + w2);
 
                     for (size_t i = 0; i < floor_priority.size(); i++) {
                         if (floor_priority[i] == tm && best_fit_index < i) {

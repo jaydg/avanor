@@ -75,54 +75,46 @@ struct XTileType {
         WALL = 80
     };
 
-    enum Type {
-        UNKNOWN,
-        GREEN_GRASS,
-        TREE,
-        SAND,
-        WINDOW,
-        MAGMA,
-        QUARTZ,
-        CAVE_FLOOR,
-        STONE_FLOOR,
-        PATH,
-        WOOD_WALL,
-        STONE_WALL,
-        WATER,
-        DEEP_WATER,
-        LAVA,
-        HILL,
-        LOW_MOUNTAIN,
-        MOUNTAIN,
-        HIGH_MOUNTAIN,
-        BRIDGE,
-        ROAD,
-        OBSIDIAN_FLOOR,
-        FENCE,
-        GOLDEN_FLOOR,
-        MARBLE_WALL,
-        BLACK_MARBLE_WALL,
-        GOLDEN_FENCE,
-        TELEPORT_WHITE
-    };
+    // A tile is whatever the world script defined, identified by the id
+    // DefineTile() handed out in definition order. The engine knows no
+    // types of its own - only that id 0 is "nothing here", which is what
+    // an undrawn cell and a translation without a tile both hold.
+    using Id = int;
 
-    // Registers this enum as the Lua table XTileType.MEMBER, and the two
-    // above as Movability.MEMBER / Visibility.MEMBER.
+    static constexpr Id NONE = 0;
+
+    // Opens the empty Lua table DefineTile() fills, and registers the two
+    // scales above as Movability.MEMBER / Visibility.MEMBER.
     static void RegisterLua(sol::state_view& lua);
 
-    // Fills in what a tile of this type looks like and how it behaves.
-    // Called for every type by the world script through DefineTile();
-    // the engine ships no tiles of its own.
-    static void Define(Type type, char view, char color, const std::string& name,
-                       Movability movability, Visibility visibility);
+    // Adds a tile and returns its id. Ids are handed out in definition
+    // order, so they belong to one particular tiles.lua - see
+    // XTileType::Names() for what that means for saved games.
+    static Id Define(const std::string& id_name, char view, char color, const std::string& name,
+                     Movability movability, Visibility visibility);
 
-    // Complains about every type the world script left undefined, and
-    // returns how many there were. A type with no definition would draw
-    // as a blank the player could walk through.
+    // The id the script gave that name, or NONE if it never defined it.
+    // A lookup per call site is deliberate: ids change when the scripts
+    // are reloaded, so nothing may cache one across a game.
+    [[nodiscard]] static Id ByName(const std::string& id_name);
+
+    // Every id's name, in id order - written into a save so a game
+    // stored under one tiles.lua can be restored under another.
+    [[nodiscard]] static std::vector<std::string> Names();
+
+    // Maps the ids in a save onto today's, given the names that save was
+    // written with. Empty when nothing moved and no remapping is needed.
+    [[nodiscard]] static std::vector<Id> RemapFrom(const std::vector<std::string>& saved_names);
+
+    // Complains if the world script defined no tiles at all, which would
+    // leave every map blank. Returns the number of complaints.
     static int ValidateTiles();
 
     // Dropped with the Lua state that defined them.
     static void ForgetTiles();
+
+    // The name the script defined this tile under.
+    std::string id_name;
 
     char view;
     char color;
@@ -131,7 +123,7 @@ struct XTileType {
     Visibility visibility;
 };
 
-// Indexed by XTileType::Type - see XTileType::Define().
+// Indexed by XTileType::Id - see XTileType::Define().
 extern std::vector<XTileType> std_tile_data;
 
 /* Forward declarations */
@@ -142,7 +134,7 @@ struct XMapTile {
     XMapTile();
     ~XMapTile();
 
-    XTileType::Type n;
+    XTileType::Id n;
     std::shared_ptr<XCreature> pMonster; // if null then no monster here
     XItemList item_list;             // list of item in this cell of map. Automatic construct/destruct
     // Shared ownership, same reasoning and idiom as pMonster above: a
@@ -211,8 +203,8 @@ class XMap
         [[nodiscard]] XTileType::Movability GetMovability(int x, int y) const;
         [[nodiscard]] int XGetMovability(int x, int y) const;
         [[nodiscard]] int GetVisibility(int x, int y) const;
-        void SetXY(int x, int y, XTileType::Type std_map) const;
-        [[nodiscard]] XTileType::Type GetXY(int x, int y) const;
+        void SetXY(int x, int y, XTileType::Id std_map) const;
+        [[nodiscard]] XTileType::Id GetXY(int x, int y) const;
         // True when the whole walkable floor is one connected region, so
         // anything placed on it afterwards - a stairway, the hero - can be
         // reached from anywhere else.
@@ -222,6 +214,10 @@ class XMap
         // pocket to a single hub, so no floor is left unreachable however
         // pathological the layout was.
         void ConnectAllRegions();
+
+        // Translates every cell's tile id through remap, for a map that
+        // was saved when the ids meant something else.
+        void RemapTiles(const std::vector<XTileType::Id>& remap) const;
 
         void SetRoom(int x, int y, int room_id) const;
         [[nodiscard]] int GetRoom(int x, int y) const;
@@ -250,8 +246,8 @@ class XMap
         void SetSpecial(int x, int y, XMapObject* spec) const;
         [[nodiscard]] XMapObject* GetSpecial(int x, int y) const;
 
-        void CreateRoom(int x, int y, int l, int h, XTileType::Type m1, XTileType::Type m2) const;
-        void CreateRoom(int x, int y, int l, int h, int px, int py, XTileType::Type m1, XTileType::Type m2) const;
+        void CreateRoom(int x, int y, int l, int h, XTileType::Id m1, XTileType::Id m2) const;
+        void CreateRoom(int x, int y, int l, int h, int px, int py, XTileType::Id m1, XTileType::Id m2) const;
 
         void Dump(std::ofstream &file) const;
 
