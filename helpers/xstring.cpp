@@ -18,10 +18,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <string>
+
+#include "engine/global.h"
 #include "helpers/xstring.h"
 
 int x_strlen(const char* str)
 {
+    // Measured after the roles written into it become escape bytes, so
+    // that "<LABEL>Name:" is five characters wide and not thirteen.
+    const std::string expanded = ExpandMarkup(str ? str : "");
+
+    str = expanded.c_str();
+
     int count = 0;
 
     while (*str != 0) {

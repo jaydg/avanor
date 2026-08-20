@@ -620,7 +620,7 @@ void XCreature::PutStatus()
     vGotoXY(0, size_y - 1);
 
     if (nutrio > base_nutrio * 18) {
-        vPutS(MSG_SEVERITY_SEVERE "overfed! " MSG_TEXT);
+        vPutS("<SEVERITY_SEVERE>overfed! <TEXT>");
     } else if (nutrio > base_nutrio * 14) {
         vPutS("bloated ");
     } else if (nutrio > base_nutrio * 10 && nutrio <= base_nutrio * 14) {
@@ -630,19 +630,19 @@ void XCreature::PutStatus()
     } else if (nutrio > base_nutrio * 6 && nutrio <= base_nutrio * 8) {
         vPutS("hungry ");
     } else if (nutrio > base_nutrio * 4 && nutrio <= base_nutrio * 6) {
-        vPutS(MSG_SEVERITY_NOTABLE "very hungry " MSG_TEXT);
+        vPutS("<SEVERITY_NOTABLE>very hungry <TEXT>");
 
         if (action_data.action != A_EAT) {
             stopAction();
         }
     } else if (nutrio > base_nutrio && nutrio <= base_nutrio * 4) {
-        vPutS( MSG_SEVERITY_SEVERE "weak " MSG_TEXT);
+        vPutS( "<SEVERITY_SEVERE>weak <TEXT>");
 
         if (action_data.action != A_EAT) {
             stopAction();
         }
     } else if (nutrio <= base_nutrio) {
-        vPutS(MSG_SEVERITY_SEVERE "dying! " MSG_TEXT);
+        vPutS("<SEVERITY_SEVERE>dying! <TEXT>");
 
         if (action_data.action != A_EAT) {
             stopAction();

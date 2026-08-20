@@ -47,8 +47,9 @@ XMsgWin::~XMsgWin()
 
 void XMsgWin::Add(std::string_view tstr, int flag)
 {
-    // Local copy as std::string, as we need to write str[0]
-    std::string str(tstr);
+    // Expanded up front: the wrapping below measures words, and a role
+    // is two bytes once expanded however long its name was.
+    std::string str = ExpandMarkup(tstr);
     static bool end_sent = true;
 
     if (end_sent) {

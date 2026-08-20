@@ -228,6 +228,16 @@ void SetColourScheme(const ColourScheme& scheme);
 // scheme's answer at or above it.
 xColor ResolveColour(unsigned char escape_byte);
 
+// Turns the roles written into a string - "<LABEL>Name:<VALUE> Deus" -
+// into the escape bytes the screen is painted from. Everything the game
+// prints goes through this, so a role can be written wherever text is,
+// including from Lua.
+//
+// A name the game does not know is left exactly as it stands, so an item
+// called <pickaxe> reads as itself rather than disappearing; "<<" is how
+// a string says a single '<' that must survive.
+std::string ExpandMarkup(std::string_view text);
+
 // next table helps to convert dynamic xCOLOR to text const char *
 // that allows to create construction such next
 // vPutS(MSG_YELLOW "yellow" SCOLOR(vRand(15)) "random color");

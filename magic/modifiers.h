@@ -168,17 +168,17 @@ class XModWound : public XBasicModifier
         {
             if (xval > 0) {
                 if (xval < 3) {
-                    return MSG_SEVERITY_MILD"graze";
+                    return "<SEVERITY_MILD>graze";
                 } else if (xval >= 3 && xval < 8) {
-                    return MSG_SEVERITY_MILD "light cut";
+                    return "<SEVERITY_MILD>light cut";
                 } else if (xval >= 8 && xval < 20) {
-                    return MSG_SEVERITY_NOTABLE "severely cut";
+                    return "<SEVERITY_NOTABLE>severely cut";
                 } else if (xval >= 20 && xval < 50) {
-                    return MSG_SEVERITY_SEVERE "deep wound";
+                    return "<SEVERITY_SEVERE>deep wound";
                 } else if (xval >= 50 && xval < 100) {
-                    return MSG_SEVERITY_SEVERE "deep gash";
+                    return "<SEVERITY_SEVERE>deep gash";
                 } else if (xval >= 100) {
-                    return MSG_SEVERITY_CRITICAL "mortal wound";
+                    return "<SEVERITY_CRITICAL>mortal wound";
                 }
 
                 return "err";
@@ -272,7 +272,7 @@ class XModConfuse : public XBasicModifier
 
         std::string GetDisplayName(int xval) const override
         {
-            return MSG_TEXT "confused";
+            return "<TEXT>confused";
         }
 
         const char* SetMsg() override
@@ -316,7 +316,7 @@ class XModStun : public XBasicModifier
 
         std::string GetDisplayName(int xval) const override
         {
-            return xval < 10 ? MSG_SEVERITY_MILD "stunned" : MSG_SEVERITY_NOTABLE "heavily stunned";
+            return xval < 10 ? "<SEVERITY_MILD>stunned" : "<SEVERITY_NOTABLE>heavily stunned";
         }
 
         const char* SetMsg() override
@@ -361,7 +361,7 @@ class XModHeroism : public XBasicModifier
 
         std::string GetDisplayName(int xval) const override
         {
-            return MSG_TEXT "hero";
+            return "<TEXT>hero";
         }
 
         const char* SetMsg() override
@@ -586,7 +586,7 @@ class XModSeeInvisible : public XBasicModifier
 
         std::string GetDisplayName(int xval) const override
         {
-            return MSG_TEXT "perceptive";
+            return "<TEXT>perceptive";
         }
 
         const char* SetMsg() override

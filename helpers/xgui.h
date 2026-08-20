@@ -121,13 +121,14 @@ class XGuiItem_Text final : public XGuiItem
 
         void SetText(const char* _text)
         {
-            text = _text;
-            SetWidth(text.length());
+            SetText(std::string(_text ? _text : ""));
         }
 
         void SetText(const std::string& _text)
         {
-            text = _text;
+            // Roles become escape bytes here, before anything measures
+            // or wraps this text.
+            text = ExpandMarkup(_text);
             SetWidth(text.length());
         }
 

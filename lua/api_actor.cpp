@@ -264,11 +264,11 @@ std::string AskQuestion(const std::string& msg, const std::string& key, sol::var
         std::string variant;
 
         if (stricmp(token.c_str(), "esc") == 0) {
-            variant = MSG_KEY "ESC" MSG_TEXT;
+            variant = "<KEY>ESC<TEXT>";
             aqr.key = KEY_ESC;
             aqr.val = "esc";
         } else if (stricmp(token.c_str(), "return") == 0) {
-            variant = MSG_KEY "Enter" MSG_TEXT;
+            variant = "<KEY>Enter<TEXT>";
             aqr.key = KEY_ENTER;
             aqr.val = "enter";
         } else {
@@ -278,7 +278,7 @@ std::string AskQuestion(const std::string& msg, const std::string& key, sol::var
             // Highlight the answer's first letter with the key that picks
             // it - which is the key token's letter, not necessarily the
             // one the answer text starts with.
-            variant.replace(0, 1, std::string(MSG_KEY) + token[0] + MSG_TEXT);
+            variant.replace(0, 1, std::string("<KEY>") + token[0] + "<TEXT>");
             aqr.key = token[0];
             aqr.val = std::string(1, token[0]);
         }

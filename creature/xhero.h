@@ -183,10 +183,10 @@ class XGuiItem_Inventory final : public XGuiItem
         // item's weight to its total gp value.
         explicit XGuiItem_Inventory(XItem* item, bool worn = false, bool show_price = false) : pItem(item)
         {
-            str = MSG_TEXT + item->toString();
+            str = "<TEXT>" + item->toString();
 
             if (worn) {
-                str += MSG_DECORATION " (worn)";
+                str += "<DECORATION> (worn)";
             }
 
             // Pad to size_x characters using spaces. str may contain ANSI
@@ -199,8 +199,8 @@ class XGuiItem_Inventory final : public XGuiItem
             // Align the weight/price badge to the right. x_strlen measures
             // the visible width of the badge (excluding ANSI characters).
             const std::string badge = show_price
-                ? fmt::format(MSG_DECORATION "[" MSG_TEXT "{}gp" MSG_DECORATION "]", item->GetValue() * item->quantity)
-                : fmt::format(MSG_DECORATION "[" MSG_TEXT "{}" MSG_DECORATION "]", item->weight * item->quantity);
+                ? fmt::format("<DECORATION>[<TEXT>{}gp<DECORATION>]", item->GetValue() * item->quantity)
+                : fmt::format("<DECORATION>[<TEXT>{}<DECORATION>]", item->weight * item->quantity);
             const size_t badge_visible = static_cast<size_t>(x_strlen(badge.c_str()));
 
             // Insertion position in str. Measured back from str's actual
@@ -208,7 +208,7 @@ class XGuiItem_Inventory final : public XGuiItem
             // plain spaces (1 byte per visible column) all the way to the
             // end of str, so this naturally lands badge_visible + 5
             // visible columns before the end regardless of how many color
-            // codes (MSG_TEXT, plus MSG_DECORATION if worn) precede it.
+            // codes ("<TEXT>", plus "<DECORATION>" if worn) precede it.
             // Using size_x here instead used to get that wrong by however
             // many color-code bytes preceded the padding - correct for an
             // unworn item's one code, 2 bytes short for a worn item's two.

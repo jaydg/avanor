@@ -76,7 +76,7 @@ void XGame::Create(const char type_of_start) const
         case 'R' :
             vClrScr();
             vGotoXY((size_x - strlen("Restoring game objects, please wait...")) / 2, size_y / 2);
-            vPutS(MSG_TEXT "Restoring game objects, please wait...");
+            vPutS("<TEXT>Restoring game objects, please wait...");
             vRefresh();
             XLocation::Restoration();
 
@@ -85,9 +85,9 @@ void XGame::Create(const char type_of_start) const
             }
 
             vGotoXY(0, 20);
-            vPutS(MSG_WARNING "There is not a saved game to load. Starting new game.");
+            vPutS("<WARNING>There is not a saved game to load. Starting new game.");
             vGotoXY(0, 21);
-            vPutS(MSG_KEY "Press any key...");
+            vPutS("<KEY>Press any key...");
             vRefresh();
             vGetch();
 
@@ -96,7 +96,7 @@ void XGame::Create(const char type_of_start) const
             PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Generating game objects, please wait...")) / 2, size_y / 2);
-            vPutS(MSG_TEXT "Generating game objects, please wait...");
+            vPutS("<TEXT>Generating game objects, please wait...");
             vRefresh();
             CreateLocations();
             CreateHero();
@@ -107,7 +107,7 @@ void XGame::Create(const char type_of_start) const
             PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Preparing for test, please wait...")) / 2, size_y / 2);
-            vPutS(MSG_TEXT "Preparing for test, please wait...");
+            vPutS("<TEXT>Preparing for test, please wait...");
             vRefresh();
 
             CreateLocations();
@@ -118,7 +118,7 @@ void XGame::Create(const char type_of_start) const
             PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Preparing for demo, please wait...")) / 2, size_y / 2);
-            vPutS(MSG_TEXT "Preparing for demo, please wait...");
+            vPutS("<TEXT>Preparing for demo, please wait...");
             vRefresh();
             XSettings::isDemo = 1;
 
@@ -226,9 +226,8 @@ void XGame::RunWithoutHero() const
         vGotoXY(0, 0);
 
         std::string status = fmt::format(
-            MSG_EMPHASIS "Testing Avanor - running game without hero ... (press ESC to stop)\n\n"
-            MSG_TEXT
-            "Number of valid objects   : {}\n"
+            "<EMPHASIS>Testing Avanor - running game without hero ... (press ESC to stop)\n\n"
+            "<TEXT>Number of valid objects   : {}\n"
             "Number of invalid objects : {}\n"
             "\n"
             "Number of creatures       : {}\n"

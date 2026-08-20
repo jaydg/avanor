@@ -82,7 +82,7 @@ void XQuest::ShowQuests()
 {
     XGuiList list;
 
-    list.SetCaption(MSG_DECORATION "### " MSG_VALUE "Current Quests" MSG_DECORATION " ###");
+    list.SetCaption("<DECORATION>### <VALUE>Current Quests<DECORATION> ###");
     int flag = 1;
 
     for (auto& quest: quests) {

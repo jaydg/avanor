@@ -205,7 +205,7 @@ MAGIC_SCHOOL XSpell::GetSchool() const
 
 std::string XSpell::toString() const
 {
-    return fmt::format(MSG_VALUE "{:<21s} " MSG_TEXT ": " MSG_VALUE "{}" MSG_TEXT "pp  (Eff - {}) (to next level: {})",
+    return fmt::format("<VALUE>{:<21s} <TEXT>: <VALUE>{}<TEXT>pp  (Eff - {}) (to next level: {})",
         spell_db[spell_name].name,
         GetManaCost(),
         GetEffectivity(),
@@ -332,21 +332,21 @@ const char* mg_name_str[] = {
 
 const char* mg_level_str[] = {
     "",
-    MSG_PROGRESS_NONE	"Beginner",
-    MSG_PROGRESS_NONE	"Novice",
-    MSG_PROGRESS_NONE	"Senior Novice",
-    MSG_PROGRESS_EXPERT	"Minor Adept",
-    MSG_PROGRESS_EXPERT	"Adept",
-    MSG_PROGRESS_EXPERT	"Major Adept",
-    MSG_PROGRESS_MASTER	"Master",
-    MSG_PROGRESS_SENIOR_MASTER	"Senior Master",
-    MSG_PROGRESS_GRANDMASTER	"Grand Master"
+    "<PROGRESS_NONE>Beginner",
+    "<PROGRESS_NONE>Novice",
+    "<PROGRESS_NONE>Senior Novice",
+    "<PROGRESS_EXPERT>Minor Adept",
+    "<PROGRESS_EXPERT>Adept",
+    "<PROGRESS_EXPERT>Major Adept",
+    "<PROGRESS_MASTER>Master",
+    "<PROGRESS_SENIOR_MASTER>Senior Master",
+    "<PROGRESS_GRANDMASTER>Grand Master"
 };
 
 std::string XMagic::LevelToString(const MAGIC_SCHOOL school) const
 {
     if (GetLevel(school) > 0) {
-        return fmt::format(MSG_VALUE "{:<30} {}", mg_name_str[school], mg_level_str[magic_level[school]]);
+        return fmt::format("<VALUE>{:<30} {}", mg_name_str[school], mg_level_str[magic_level[school]]);
     }
 
     return "";

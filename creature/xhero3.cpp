@@ -131,7 +131,7 @@ void XHero::Pray()
     DEITY_HELP * pDeathHelp;
 
     DEITY_RELATION dr = religion.GetRelation(XDeity::LIFE);
-    std::string item_text = fmt::format(MSG_VALUE "{} " MSG_TEXT "({}" MSG_TEXT ")",
+    std::string item_text = fmt::format("<VALUE>{} <TEXT>({}<TEXT>)",
                                         XReligion::GetDeityName(XDeity::LIFE), XReligion::GetRelationName(dr));
     list.AddItem(new XGuiItem_Text(item_text, 0));
     const int life_count = religion.GetAvailHelp(XDeity::LIFE, &pLifeHelp);
@@ -147,7 +147,7 @@ void XHero::Pray()
     list.AddItem(new XGuiItem_Text("", 0));
 
     dr = religion.GetRelation(XDeity::DEATH);
-    item_text = fmt::format(MSG_VALUE "{} " MSG_TEXT "({}" MSG_TEXT ")", XReligion::GetDeityName(XDeity::DEATH), XReligion::GetRelationName(dr));
+    item_text = fmt::format("<VALUE>{} <TEXT>({}<TEXT>)", XReligion::GetDeityName(XDeity::DEATH), XReligion::GetRelationName(dr));
     list.AddItem(new XGuiItem_Text(item_text, 0));
     int death_count = religion.GetAvailHelp(XDeity::DEATH, &pDeathHelp);
 
@@ -276,12 +276,12 @@ void XHero::EndGame(const char* end_msg)
     }
 
     list.AddItem(new XGuiItem_Text(fmt::format("You scored %{}.", score)));
-    list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Achievements " MSG_DECORATION "###");
+    list.SetCaption("<DECORATION>###<TEXT> Achievements <DECORATION>###");
     list.Run();
 
     vGotoXY(0, 0);
     msgwin.ClrMsg();
-    msgwin.Add("Create Memory File? (Y/" MSG_KEY "N" MSG_TEXT ")");
+    msgwin.Add("Create Memory File? (Y/<KEY>N<TEXT>)");
 
     vRefresh();
 
@@ -325,7 +325,7 @@ void XHero::EndGame(const char* end_msg)
 void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstream>> file)
 {
     XGuiList list;
-    list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Resistances and Intrinsics " MSG_DECORATION "###");
+    list.SetCaption("<DECORATION>###<TEXT> Resistances and Intrinsics <DECORATION>###");
     list.SetFooter("Press any key to exit");
 
     int flag = 0;
@@ -337,7 +337,7 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
         tr.SetResistance(res, GetResistance(res));
 
         if (tr.GetResistance(res) != 0) {
-            auto res_str = fmt::format(MSG_TEXT "{:<15}{}", tr.GetResistanceName(res), tr.GetResistanceLevel(res));
+            auto res_str = fmt::format("<TEXT>{:<15}{}", tr.GetResistanceName(res), tr.GetResistanceLevel(res));
             list.AddItem(new XGuiItem_Text(res_str, 0), 0);
             flag = 1;
         }
@@ -372,7 +372,7 @@ int XHero::LearnRecipe(const PotionName pn1, const PotionName pn2, const PotionN
 
 void XHero::ShowRecipes() const {
     XGuiList list;
-    list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Recipes " MSG_DECORATION "###");
+    list.SetCaption("<DECORATION>###<TEXT> Recipes <DECORATION>###");
 
     if (recipe_list.empty()) {
         list.AddItem(new XGuiItem_Text("You don't know any recipes yet.", 0), 0);

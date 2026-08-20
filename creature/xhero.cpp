@@ -640,11 +640,11 @@ void XHero::InfoList()
     vClrScr();
 
     vGotoXY(0, 0);
-    vPutS(MSG_DECORATION "--------- " MSG_TEXT "Attributes " MSG_DECORATION "---------");
+    vPutS("<DECORATION>--------- <TEXT>Attributes <DECORATION>---------");
     vGotoXY(0, 1);
-    vPutS(MSG_TEXT "Attribute  Base  Max  Add  Total");
+    vPutS("<TEXT>Attribute  Base  Max  Add  Total");
     vGotoXY(0, 2);
-    vPutS(MSG_DECORATION "--------------------------------");
+    vPutS("<DECORATION>--------------------------------");
     int i = 0;
 
     for (i = 0; i < XStats::COUNT; i++) {
@@ -687,41 +687,41 @@ void XHero::InfoList()
     }
 
     vGotoXY(40, 0);
-    vPutS(MSG_DECORATION "--------- " MSG_TEXT "Miscellaneous " MSG_DECORATION "---------");
+    vPutS("<DECORATION>--------- <TEXT>Miscellaneous <DECORATION>---------");
     vGotoXY(40, 1);
-    vPutS(MSG_LABEL "Name:" MSG_VALUE);
+    vPutS("<LABEL>Name:<VALUE>");
     vGotoXY(50, 1);
     vPutS(name);
     vGotoXY(40, 2);
-    vPutS(MSG_LABEL "Gender:" MSG_VALUE);
+    vPutS("<LABEL>Gender:<VALUE>");
     vGotoXY(50, 2);
     vPutS(GetGenderStr());
     vGotoXY(40, 3);
-    vPutS(MSG_LABEL "Race:" MSG_VALUE);
+    vPutS("<LABEL>Race:<VALUE>");
     vGotoXY(50, 3);
     vPutS(GetRaceStr());
     vGotoXY(40, 4);
-    vPutS(MSG_LABEL "Class:" MSG_VALUE);
+    vPutS("<LABEL>Class:<VALUE>");
     vGotoXY(50, 4);
     vPutS(GetProfessionStr());
     vGotoXY(40, 5);
-    vPutS(MSG_LABEL "Gold:");
+    vPutS("<LABEL>Gold:");
     vGotoXY(50, 5);
-    vPutS(fmt::format(MSG_VALUE "{}" MSG_DECORATION " gp", MoneyOp(0)));
+    vPutS(fmt::format("<VALUE>{}<DECORATION> gp", MoneyOp(0)));
     vGotoXY(40, 6);
-    vPutS(MSG_LABEL "Time:");
+    vPutS("<LABEL>Time:");
     vGotoXY(50, 6);
-    vPutS(fmt::format(MSG_VALUE "{}" MSG_DECORATION " : " MSG_VALUE "{}" MSG_DECORATION " : "
-        MSG_VALUE "{}", XTime::GetHour(), XTime::GetMin(), XTime::GetSec()));
+    vPutS(fmt::format("<VALUE>{}<DECORATION> : <VALUE>{}<DECORATION> : "
+        "<VALUE>{}", XTime::GetHour(), XTime::GetMin(), XTime::GetSec()));
     vGotoXY(40, 7);
-    vPutS(MSG_LABEL "Date:");
+    vPutS("<LABEL>Date:");
     vGotoXY(50, 7);
-    vPutS(fmt::format(MSG_VALUE "{}" MSG_DECORATION ", " MSG_VALUE "{}" MSG_DECORATION ", "
-        MSG_VALUE "{}", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear()));
+    vPutS(fmt::format("<VALUE>{}<DECORATION>, <VALUE>{}<DECORATION>, "
+        "<VALUE>{}", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear()));
     vGotoXY(40, 8);
-    vPutS(MSG_LABEL "Day/Week");
+    vPutS("<LABEL>Day/Week");
     vGotoXY(50, 8);
-    vPutS(fmt::format(MSG_VALUE "{}" MSG_DECORATION "/" MSG_VALUE "{}",
+    vPutS(fmt::format("<VALUE>{}<DECORATION>/<VALUE>{}",
         XTime::GetDayName(), XTime::GetWeekName()));
 
     vSetAttr(xBROWN);
@@ -736,20 +736,20 @@ void XHero::InfoList()
     }
 
     vGotoXY(0, 13);
-    vPutS(fmt::format(MSG_TEXT "Burden" MSG_DECORATION ": current " MSG_VALUE "{}"
-        MSG_DECORATION ", burdened " MSG_VALUE "{}" MSG_DECORATION ", strained "
-        MSG_VALUE "{}" MSG_DECORATION ", overburdened " MSG_VALUE "{}",
+    vPutS(fmt::format("<TEXT>Burden<DECORATION>: current <VALUE>{}"
+        "<DECORATION>, burdened <VALUE>{}<DECORATION>, strained "
+        "<VALUE>{}<DECORATION>, overburdened <VALUE>{}",
         carried_weight,
         CarryValue(CSTATE_NORMAL),
         CarryValue(CSTATE_BURDENED),
         CarryValue(CSTATE_STRAINED)));
 
     vGotoXY(0, 15);
-    vPutS(MSG_TEXT "Melee Attack");
+    vPutS("<TEXT>Melee Attack");
 
     vGotoXY(0, 16);
-    vPutS(fmt::format(MSG_LABEL "Unarmed:    (" MSG_VALUE "{:+}" MSG_DECORATION ", "
-        MSG_VALUE "{}" MSG_DECORATION "d" MSG_VALUE "{} {:+}" MSG_DECORATION ")",
+    vPutS(fmt::format("<LABEL>Unarmed:    (<VALUE>{:+}<DECORATION>, "
+        "<VALUE>{}<DECORATION>d<VALUE>{} {:+}<DECORATION>)",
         GetHIT() + wsk->GetHIT(XWarSkills::UNARMED),
         dice.GetCount(), dice.GetSides(), dice.GetBonus() + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED)));
 
@@ -758,8 +758,8 @@ void XHero::InfoList()
 
     if (hand_1->Item() && hand_1->Item()->kind & ItemKind::WEAPON) {
         vGotoXY(0, 17);
-        vPutS(fmt::format("Left hand:  (" MSG_VALUE "{:+}" MSG_DECORATION ", "
-            MSG_VALUE"{}" MSG_DECORATION "d" MSG_VALUE "{}{:+}" MSG_DECORATION ")",
+        vPutS(fmt::format("Left hand:  (<VALUE>{:+}<DECORATION>, "
+            "<VALUE>{}<DECORATION>d<VALUE>{}{:+}<DECORATION>)",
             GetHIT() + wsk->GetHIT(hand_1->Item()->wt) + GetHITFHBonus(hand_1->Item()),
             hand_1->Item()->dice.GetCount(), hand_1->Item()->dice.GetSides(),
             hand_1->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)));
@@ -767,8 +767,8 @@ void XHero::InfoList()
 
     if (hand_2->Item() && hand_2->Item()->kind & ItemKind::WEAPON) {
         vGotoXY(0, 18);
-        vPutS(fmt::format("Right hand: (" MSG_VALUE "{:+}" MSG_DECORATION ", "
-            MSG_VALUE"{}" MSG_DECORATION "d" MSG_VALUE "{} {:+}" MSG_DECORATION ")",
+        vPutS(fmt::format("Right hand: (<VALUE>{:+}<DECORATION>, "
+            "<VALUE>{}<DECORATION>d<VALUE>{} {:+}<DECORATION>)",
             GetHIT() + wsk->GetHIT(hand_2->Item()->wt) + GetHITFHBonus(hand_2->Item()),
             hand_2->Item()->dice.GetCount(), hand_2->Item()->dice.GetSides(),
             hand_2->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_2->Item()->wt)));
@@ -781,9 +781,9 @@ void XHero::InfoList()
 
     if (range > 0) {
         vGotoXY(0, 19);
-        vPutS(fmt::format("Range Attack: <" MSG_VALUE "{}" MSG_DECORATION "> ("
-            MSG_VALUE "{:+}" MSG_DECORATION ", " MSG_VALUE "{}" MSG_DECORATION "d"
-            MSG_VALUE "{} {:+}" MSG_DECORATION ")", range, hit, dmg.GetCount(), dmg.GetSides(), dmg.GetBonus()));
+        vPutS(fmt::format("Range Attack: <<VALUE>{}<DECORATION>> ("
+            "<VALUE>{:+}<DECORATION>, <VALUE>{}<DECORATION>d"
+            "<VALUE>{} {:+}<DECORATION>)", range, hit, dmg.GetCount(), dmg.GetSides(), dmg.GetBonus()));
     }
 
     vGotoXY(0, size_y - 1);
@@ -866,12 +866,12 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
         XGuiList list;
 
         if (&contain == item_list) {
-            list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Inventory " MSG_DECORATION "###");
+            list.SetCaption("<DECORATION>###<TEXT> Inventory <DECORATION>###");
         } else {
-            list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Items " MSG_DECORATION "###");
+            list.SetCaption("<DECORATION>###<TEXT> Items <DECORATION>###");
         }
 
-        list.SetFooter(MSG_TEXT "filtr: " MSG_DECORATION "[" MSG_VALUE "[|{}'=!?\"\\%]$X" MSG_DECORATION "]");
+        list.SetFooter("<TEXT>filtr: <DECORATION>[<VALUE>[|{}'=!?\"\\%]$X<DECORATION>]");
 
         //count items for show
         int all_item_count = 0;
@@ -885,17 +885,17 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
         if (all_item_count == 0) {
             if ((mask == ItemKind::ALL) || (mask == ItemKind::UNKNOWN))
                 if (&contain == item_list) {
-                    list.AddItem(new XGuiItem_Text(MSG_TEXT "You have no such items."), 0);
+                    list.AddItem(new XGuiItem_Text("<TEXT>You have no such items."), 0);
                 } else {
-                    list.AddItem(new XGuiItem_Text(MSG_TEXT "There are no such items."), 0);
+                    list.AddItem(new XGuiItem_Text("<TEXT>There are no such items."), 0);
                 } else {
                 for (int oi = 0; oi < std::size(output_items_name); oi++) {
                     if (output_items_mask[oi] & mask) {
                         std::string msg;
                         if (&contain == item_list) {
-                            msg = fmt::format(MSG_TEXT "You have no {}.", output_items_name[oi]);
+                            msg = fmt::format("<TEXT>You have no {}.", output_items_name[oi]);
                         } else {
-                            msg = fmt::format(MSG_TEXT "There are no {}.", output_items_name[oi]);
+                            msg = fmt::format("<TEXT>There are no {}.", output_items_name[oi]);
                         }
 
                         list.AddItem(new XGuiItem_Text(msg), 0);
@@ -919,7 +919,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
                         for (int oi = 0; oi < std::size(output_items_name); oi++) {
                             if (output_items_mask[oi] & last_mask) {
                                 auto str = fmt::format(
-                                    MSG_VALUE "{} " MSG_DECORATION "('" MSG_VALUE "{}" MSG_DECORATION "')",
+                                    "<VALUE>{} <DECORATION>('<VALUE>{}<DECORATION>')",
                                     output_items_name[oi], output_items_ext[oi]);
                                 list.AddItem(new XGuiItem_Text(str), 0);
                             }
@@ -1028,8 +1028,8 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
 
         XGuiList list;
 
-        list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Equipment " MSG_DECORATION "###");
-        list.SetFooter(MSG_DECORATION "[" MSG_VALUE "V" MSG_DECORATION "]" MSG_TEXT " - show inventory.");
+        list.SetCaption("<DECORATION>###<TEXT> Equipment <DECORATION>###");
+        list.SetFooter("<DECORATION>[<VALUE>V<DECORATION>]<TEXT> - show inventory.");
 
         for (auto& xbp: components) {
             xqsa[counter] = xbp.get();
@@ -1050,7 +1050,7 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             }
 
             // Left column
-            std::string left = fmt::format(MSG_TEXT "{}", part_name);
+            std::string left = fmt::format("<TEXT>{}", part_name);
             const auto visible = static_cast<size_t>(x_strlen(left.c_str()));
             if (visible < 20)
                 left.append(20 - visible, ' ');
@@ -1058,10 +1058,10 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
             // Right column
             std::string right;
             if (xbp->Item()) {
-                right = fmt::format(MSG_DECORATION ": " MSG_TEXT "{}",
+                right = fmt::format("<DECORATION>: <TEXT>{}",
                                     xbp->Item()->toString());
             } else {
-                right = MSG_DECORATION ": " MSG_DECORATION "-";
+                right = "<DECORATION>: <DECORATION>-";
             }
 
             const std::string buf = left + right;
@@ -1536,9 +1536,9 @@ int XHero::XShoot()
                 msgwin.ClrMsg();
                 msgwin.Add(fmt::format("Load {}", it->toString()));
                 msgwin.Add("["
-                    MSG_KEY "Y" MSG_TEXT ", "
-                    MSG_KEY "N" MSG_TEXT ", "
-                    MSG_KEY "Esc" MSG_TEXT "]?");
+                    "<KEY>Y<TEXT>, "
+                    "<KEY>N<TEXT>, "
+                    "<KEY>Esc<TEXT>]?");
                 vRefresh();
                 const int ch = vGetch();
 
@@ -1751,9 +1751,9 @@ int XHero::SelectPosition(XPoint * pt, int flag)
 
     msgwin.ClrMsg(1);
     vGotoXY(0, 0);
-    vPutS("press [" MSG_KEY "1" MSG_TEXT ".." MSG_KEY "9"
-        MSG_TEXT "] - for move cursor, ["
-        MSG_KEY "z" MSG_TEXT ", " MSG_KEY "esc" MSG_TEXT "] - for exit");
+    vPutS("press [<KEY>1<TEXT>..<KEY>9"
+        "<TEXT>] - for move cursor, ["
+        "<KEY>z<TEXT>, <KEY>esc<TEXT>] - for exit");
 
     while (1) {
         l->map->Center(tx, ty);
@@ -1771,7 +1771,7 @@ int XHero::SelectPosition(XPoint * pt, int flag)
 
                 if (cr && cr->isVisible()) {
                     more_info_flag = 1;
-                    vPutS(fmt::format("{} ({}) [" MSG_KEY "space" MSG_TEXT "] - more.",
+                    vPutS(fmt::format("{} ({}) [<KEY>space<TEXT>] - more.",
                         cr->name, cr->GetWoundMsg()));
                 } else if (item_count == 1) {
                     vPutS("item");
@@ -1836,7 +1836,7 @@ int XHero::XCast(std::optional<std::reference_wrapper<std::ofstream>> file)
 
     while (true) {
         XGuiList list;
-        list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Cast Spell " MSG_DECORATION "###");
+        list.SetCaption("<DECORATION>###<TEXT> Cast Spell <DECORATION>###");
         if (m->spells.empty()) {
             list.AddItem(new XGuiItem_Text("You do not know any spells", 0));
         } else {
@@ -1912,7 +1912,7 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
             break;
 
         case TR_YES_NO:
-            msgwin.Add("(Yes/" MSG_KEY "N" MSG_TEXT "o)?");
+            msgwin.Add("(Yes/<KEY>N<TEXT>o)?");
             vRefresh();
             ch = vGetch();
             msgwin.ClrMsg();
@@ -1925,7 +1925,7 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
             break;
 
         case TR_NO_YES:
-            msgwin.Add("(" MSG_KEY "Y" MSG_TEXT "es/No)?");
+            msgwin.Add("(<KEY>Y<TEXT>es/No)?");
             vRefresh();
             ch = vGetch();
             msgwin.ClrMsg();
@@ -2046,7 +2046,7 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
 void XHero::MagicLevelList() const
 {
     XGuiList list;
-    list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Magic School " MSG_DECORATION "###");
+    list.SetCaption("<DECORATION>###<TEXT> Magic School <DECORATION>###");
 
     for (int i = 0; i < MS_EOF; i++) {
         auto s = m->LevelToString(static_cast<MAGIC_SCHOOL>(i));
@@ -2065,35 +2065,35 @@ XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, std
         XGuiList list;
 
         if (skill_flag == SKF_IMPROVE_SKILL) {
-            list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Improve Skill " MSG_DECORATION "###");
+            list.SetCaption("<DECORATION>###<TEXT> Improve Skill <DECORATION>###");
 
             const std::string footer = fmt::format(
-                MSG_TEXT "You have " MSG_VALUE "{}" MSG_TEXT " {} left.",
+                "<TEXT>You have <VALUE>{}<TEXT> {} left.",
                 marks_left,
                 marks_left > 1 ? "improvements" : "improvement");
 
             list.SetFooter(footer.c_str());
         } else if (skill_flag == SKF_LIST_SKILL) {
-            list.SetCaption(MSG_DECORATION "###" MSG_VALUE " Skills List " MSG_DECORATION "###");
+            list.SetCaption("<DECORATION>###<VALUE> Skills List <DECORATION>###");
         } else if (skill_flag == SKF_USE_SKILL) {
-            list.SetCaption(MSG_DECORATION "###" MSG_VALUE " Use Skill " MSG_DECORATION "###");
+            list.SetCaption("<DECORATION>###<VALUE> Use Skill <DECORATION>###");
         }
 
         for (const auto& [skt, skill] : sk->skills) {
             // Fill name up to 17 characters (excluding ANSI prefix) with '.'.
-            // MSG_TEXT is an ANSI escape prefix, and does not add to the visual width.
+            // "<TEXT>" is an ANSI escape prefix, and does not add to the visual width.
             const std::string_view raw_name = skill->GetName();
             const size_t visible_len = raw_name.size();
             const size_t pad = visible_len < 17 ? 17 - visible_len : 0;
 
             const std::string name_col = fmt::format(
-                MSG_TEXT "{}{}", raw_name, std::string(pad, '.'));
+                "<TEXT>{}{}", raw_name, std::string(pad, '.'));
 
             // Skill level column: colorful when still improvable, grey when maxed
             const std::string level_col = skill->GetLevel() < skill->GetMaxLevel()
-                ? fmt::format(MSG_DECORATION "[" MSG_TEXT " {:2} " MSG_DECORATION "from" MSG_TEXT " {:2} " MSG_DECORATION "] ",
+                ? fmt::format("<DECORATION>[<TEXT> {:2} <DECORATION>from<TEXT> {:2} <DECORATION>] ",
                               skill->GetLevel(), skill->GetMaxLevel())
-                : fmt::format(MSG_DECORATION "[ {:2} from {:2} ] ",
+                : fmt::format("<DECORATION>[ {:2} from {:2} ] ",
                               skill->GetLevel(), skill->GetMaxLevel());
 
             const std::string buf = name_col + level_col + skill->GetSkillLevel();
@@ -2195,27 +2195,27 @@ const char* wsk_levels_name[] = {
 void XHero::WarSkillsList(std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
     XGuiList list;
-    list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Weapon Skills " MSG_DECORATION "###");
+    list.SetCaption("<DECORATION>###<TEXT> Weapon Skills <DECORATION>###");
 
-    list.AddItem(new XGuiItem_Text(MSG_LABEL "Melee Weapon         DV  HIT  DMG      Level          required marks", 0), 0);
+    list.AddItem(new XGuiItem_Text("<LABEL>Melee Weapon         DV  HIT  DMG      Level          required marks", 0), 0);
 
     for (int i = 0; i < XWarSkills::ALL; i++) {
         const auto w_skill = static_cast<XWarSkills::Type>(i);
 
         if (w_skill == XWarSkills::BOW) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
-            list.AddItem(new XGuiItem_Text(MSG_LABEL "Missile Weapon       RNG HIT  DMG      Level          required marks", 0), 0);
+            list.AddItem(new XGuiItem_Text("<LABEL>Missile Weapon       RNG HIT  DMG      Level          required marks", 0), 0);
         }
 
         if (i == XWarSkills::SHIELD) {
             list.AddItem(new XGuiItem_Text("", 0), 0);
-            list.AddItem(new XGuiItem_Text(MSG_LABEL "Shields              DV                Level          required marks", 0), 0);
+            list.AddItem(new XGuiItem_Text("<LABEL>Shields              DV                Level          required marks", 0), 0);
         }
 
         auto str = fmt::format(
-            MSG_VALUE "{:<18} " MSG_TEXT "{:+4} {:+4} {:+4}      "
-            MSG_DECORATION "[" MSG_TEXT "{}" MSG_DECORATION "]"
-            MSG_TEXT " {:<10} " MSG_TEXT "{:8}",
+            "<VALUE>{:<18} <TEXT>{:+4} {:+4} {:+4}      "
+            "<DECORATION>[<TEXT>{}<DECORATION>]"
+            "<TEXT> {:<10} <TEXT>{:8}",
             wsk->GetName(w_skill),
             wsk->GetDV(w_skill), wsk->GetHIT(w_skill), wsk->GetDMG(w_skill),
             wsk->GetLevel(w_skill),
@@ -2263,21 +2263,21 @@ void XHero::LookAt()
         std::string str;
         if (xcr->isHero()) {
             str = fmt::format(
-                MSG_DECORATION "### " MSG_TEXT "'{}{}" MSG_TEXT "' {}, the {} {} {}" MSG_DECORATION " ###",
+                "<DECORATION>### <TEXT>'{}{}<TEXT>' {}, the {} {} {}<DECORATION> ###",
                 SCOLOR(xcr->color), xcr->view, xcr->name, GetGenderStr(), GetRaceStr(), GetProfessionStr());
         } else {
             str = fmt::format(
-                MSG_DECORATION "### " MSG_TEXT "'{}{}" MSG_TEXT "' {}" MSG_DECORATION " ###",
+                "<DECORATION>### <TEXT>'{}{}<TEXT>' {}<DECORATION> ###",
                 SCOLOR(xcr->color), xcr->view, xcr->GetNameEx(CRN_T1));
         }
 
         list.SetCaption(str.c_str());
 
         if (xcr->isHero()) {
-            str = fmt::format(MSG_EMPHASIS "You are {}.",
+            str = fmt::format("<EMPHASIS>You are {}.",
                 xcr->GetWoundMsg());
         } else {
-            str = fmt::format(MSG_EMPHASIS "{} is {}.",
+            str = fmt::format("<EMPHASIS>{} is {}.",
                 xcr->GetNameEx(CRN_T2),
                 xcr->GetWoundMsg());
 
@@ -2292,9 +2292,9 @@ void XHero::LookAt()
             if (xbp->Item()) {
                 if (!iflag) {
                     if (xcr->isHero()) {
-                        str = MSG_EMPHASIS "You are wearing the following items:";
+                        str = "<EMPHASIS>You are wearing the following items:";
                     } else {
-                        str = fmt::format(MSG_EMPHASIS "{} is wearing the following items:", xcr->GetNameEx(CRN_T2));
+                        str = fmt::format("<EMPHASIS>{} is wearing the following items:", xcr->GetNameEx(CRN_T2));
                         str[2] = toupper(str[2]);
                     }
 
@@ -2446,9 +2446,9 @@ void XHero::PayBill()
         }
 
         XGuiList list;
-        list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Bill " MSG_DECORATION "###");
+        list.SetCaption("<DECORATION>###<TEXT> Bill <DECORATION>###");
         list.SetFooter(fmt::format(
-            MSG_TEXT "Total owed: " MSG_VALUE "{}gp" MSG_TEXT "   Your money: " MSG_VALUE "{}gp",
+            "<TEXT>Total owed: <VALUE>{}gp<TEXT>   Your money: <VALUE>{}gp",
             total, MoneyOp(0)));
 
         for (const auto& item: pai->debt.unpaid_items) {
@@ -2588,8 +2588,8 @@ void XHero::SetTactics()
 
         vGotoXY(0, 1);
 
-        vPutS(MSG_TEXT "[" MSG_KEY "+" MSG_TEXT "," MSG_KEY "-"
-            MSG_TEXT "] - change, [" MSG_KEY "Z" MSG_TEXT "] - exit");
+        vPutS("<TEXT>[<KEY>+<TEXT>,<KEY>-"
+            "<TEXT>] - change, [<KEY>Z<TEXT>] - exit");
 
         vRefresh();
 
@@ -2616,7 +2616,7 @@ void XHero::SaveGame()
     vStore(&xyzbuf);
     vClrScr();
     vGotoXY(0, 0);
-    vPutS(MSG_TEXT "Storing the game:");
+    vPutS("<TEXT>Storing the game:");
     vRefresh();
     XGame::hero_guid = guid();
     XArchive::StoreGame();
@@ -2723,9 +2723,9 @@ int XHero::OrderCompanion()
 
     msgwin.ClrMsg();
     msgwin.Add(
-        "[" MSG_KEY "a" MSG_TEXT "] - attack, "
-        "[" MSG_KEY "f" MSG_TEXT "] - follow me, "
-        "[" MSG_KEY "w" MSG_TEXT "] - wait");
+        "[<KEY>a<TEXT>] - attack, "
+        "[<KEY>f<TEXT>] - follow me, "
+        "[<KEY>w<TEXT>] - wait");
 
     vRefresh();
     const int ch = vGetch();

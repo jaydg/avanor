@@ -488,6 +488,42 @@ const ColourScheme avanor_scheme = {
 
 const ColourScheme* current_scheme = &avanor_scheme;
 
+// What a role is called when it is written into a string. The order does
+// not matter here; the names do.
+const struct {
+    const char* name;
+    TextRole role;
+} role_names[] = {
+    {"TEXT", ROLE_TEXT},
+    {"DECORATION", ROLE_DECORATION},
+    {"LABEL", ROLE_LABEL},
+    {"VALUE", ROLE_VALUE},
+    {"EMPHASIS", ROLE_EMPHASIS},
+    {"KEY", ROLE_KEY},
+    {"SELECTOR", ROLE_SELECTOR},
+    {"WARNING", ROLE_WARNING},
+
+    {"PROGRESS_NONE", ROLE_PROGRESS_NONE},
+    {"PROGRESS_BASIC", ROLE_PROGRESS_BASIC},
+    {"PROGRESS_SKILLED", ROLE_PROGRESS_SKILLED},
+    {"PROGRESS_EXPERT", ROLE_PROGRESS_EXPERT},
+    {"PROGRESS_MASTER", ROLE_PROGRESS_MASTER},
+    {"PROGRESS_SENIOR_MASTER", ROLE_PROGRESS_SENIOR_MASTER},
+    {"PROGRESS_GRANDMASTER", ROLE_PROGRESS_GRANDMASTER},
+
+    {"QUALITY_TERRIBLE", ROLE_QUALITY_TERRIBLE},
+    {"QUALITY_POOR", ROLE_QUALITY_POOR},
+    {"QUALITY_NEUTRAL", ROLE_QUALITY_NEUTRAL},
+    {"QUALITY_FAIR", ROLE_QUALITY_FAIR},
+    {"QUALITY_GOOD", ROLE_QUALITY_GOOD},
+    {"QUALITY_PERFECT", ROLE_QUALITY_PERFECT},
+
+    {"SEVERITY_MILD", ROLE_SEVERITY_MILD},
+    {"SEVERITY_NOTABLE", ROLE_SEVERITY_NOTABLE},
+    {"SEVERITY_SEVERE", ROLE_SEVERITY_SEVERE},
+    {"SEVERITY_CRITICAL", ROLE_SEVERITY_CRITICAL}
+};
+
 // The macros in global.h spell these bytes out, because they must stay
 // string literals for the compiler to fold them into their text.
 static_assert(ROLE_TEXT == 0x10, "MSG_TEXT's escape byte no longer matches");
@@ -513,6 +549,54 @@ static_assert(ROLE_COUNT > 0x1F && ROLE_QUALITY_TERRIBLE > 0x1F, "a role would b
 void SetColourScheme(const ColourScheme& scheme)
 {
     current_scheme = &scheme;
+}
+
+std::string ExpandMarkup(const std::string_view text)
+{
+    std::string out;
+    out.reserve(text.size());
+
+    for (size_t pos = 0; pos < text.size(); pos++) {
+        if (text[pos] != '<') {
+            out += text[pos];
+            continue;
+        }
+
+        // "<<" is a '<' that means itself.
+        if (pos + 1 < text.size() && text[pos + 1] == '<') {
+            out += '<';
+            pos++;
+            continue;
+        }
+
+        const size_t close = text.find('>', pos + 1);
+
+        if (close == std::string_view::npos) {
+            out += text[pos];
+            continue;
+        }
+
+        const std::string_view name = text.substr(pos + 1, close - pos - 1);
+        bool known = false;
+
+        for (const auto& [role_name, role] : role_names) {
+            if (name == role_name) {
+                out += '\x1F';
+                out += static_cast<char>(role);
+                pos = close;
+                known = true;
+                break;
+            }
+        }
+
+        // Not one of ours - a creature's name, a bit of punctuation -
+        // so it stays as written.
+        if (!known) {
+            out += text[pos];
+        }
+    }
+
+    return out;
 }
 
 xColor ResolveColour(const unsigned char escape_byte)
@@ -544,6 +628,12 @@ void vClrEol()
 // (31, x) - change attr
 void vPutS(const char* s)
 {
+    // Roles may be written into any string the game prints; they become
+    // escape bytes here, on the way to the screen.
+    const std::string expanded = ExpandMarkup(s ? s : "");
+
+    s = expanded.c_str();
+
     if (cursor_pos_y >= size_y) {
         cursor_pos_x = cursor_pos_y = 0;
     }
