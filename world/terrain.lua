@@ -15,7 +15,8 @@ CAVE = {
 
 -- Built dungeons: one room per 200 cells of floor, and a door at one
 -- corridor junction in three. room_chance is how often the level is built
--- with one of the rooms from world/rooms.lua.
+-- with one of the rooms from world/rooms.lua; the rest are made up within
+-- the bounds below, one in ten of them trapped.
 function Dungeon(room_chance)
 	return {
 		wall = CAVE.wall,
@@ -23,6 +24,12 @@ function Dungeon(room_chance)
 		cells_per_room = 200,
 		door_odds = 3,
 		room_chance = room_chance or 0,
+
+		room_width = { 4, 10 },
+		room_height = { 4, 6 },
+		room_exits = { 2, 3 },
+		trap_odds = 10,
+		max_traps = 5,
 	}
 end
 

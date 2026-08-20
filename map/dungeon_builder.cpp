@@ -70,10 +70,7 @@ const RoomTemplate* PickRoom()
     return nullptr;
 }
 
-#define USUAL_CAVE_HGT 4
-#define USUAL_CAVE_LEN 4
-
-XRoom::XRoom(int len, int hgt, const RoomTemplate* _room)
+XRoom::XRoom(int len, int hgt, const RoomTemplate* _room, const RoomShape& shape)
 {
     assert(len > 4);
     assert(hgt > 4);
@@ -88,18 +85,17 @@ XRoom::XRoom(int len, int hgt, const RoomTemplate* _room)
     if (!room) { // plain rectangular room
 
         while (1) {
-            x = vRand() % (len - USUAL_CAVE_LEN - 2) + 1;
-            y = vRand() % (hgt - USUAL_CAVE_HGT - 2) + 1;
-            l = vRand() % 7 + USUAL_CAVE_LEN;
-            h = vRand() % 3 + USUAL_CAVE_HGT;
+            x = vRand() % (len - shape.min_width - 2) + 1;
+            y = vRand() % (hgt - shape.min_height - 2) + 1;
+            l = vRand() % (shape.max_width - shape.min_width + 1) + shape.min_width;
+            h = vRand() % (shape.max_height - shape.min_height + 1) + shape.min_height;
 
             if (x + l < len - 2 && y + h < hgt - 2) {
                 break;
             }
         }
 
-        // create from 1 to 4 random exits
-        int ec = vRand(2) + 2;
+        int ec = vRand(shape.max_exits - shape.min_exits + 1) + shape.min_exits;
         XPoint tpt;
 
         while (ec > 0) {
@@ -166,7 +162,7 @@ int XRoom::Intersect(XRoom * other, int dist)
     return tr.Intersect(&r);
 }
 
-void XRoom::Draw(XLocation * l, const XTileType::Id floor)
+void XRoom::Draw(XLocation * l, const XTileType::Id floor, const RoomShape& shape)
 {
     if (!room) {
         for (int i = r.top; i < r.bottom; i++)
@@ -174,10 +170,10 @@ void XRoom::Draw(XLocation * l, const XTileType::Id floor)
                 l->map->SetXY(j, i, floor);
             }
 
-        if (vRand(10) == 0) {
+        if (vRand(shape.trap_odds) == 0) {
             int i;
 
-            for (i = 0; i < vRand(5); i++) {
+            for (i = 0; i < vRand(shape.max_traps); i++) {
                 if (const auto pt = l->GetFreeXY(&r)) {
                     new XTrap(pt->x, pt->y, l, XTrap::Level::RANDOM);
                 }
@@ -226,7 +222,7 @@ bool XRoom::GetFreeExit(XPoint * pt)
 }
 
 XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
-                                 int _room_chance, int _cells_per_room, int _door_odds,
+                                 int _room_chance, int _cells_per_room, int _door_odds, const RoomShape& _shape,
                                  int create_door_trap_chest)
 {
     // Same as the other builders: a location arrives without a map and
@@ -239,6 +235,7 @@ XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _
     floor = _floor;
     cells_per_room = _cells_per_room;
     door_odds = _door_odds;
+    shape = _shape;
 
     m = _l->map;
     location = _l;
@@ -249,7 +246,7 @@ XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _
 bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, const RoomTemplate* room, int attempts)
 {
     while (attempts-- > 0) {
-        auto xc = std::make_unique<XRoom>(m->len, m->hgt, room);
+        auto xc = std::make_unique<XRoom>(m->len, m->hgt, room, shape);
         bool clear = true;
 
         for (size_t q = 0; q < placed.size() && clear; q++) {
@@ -259,7 +256,7 @@ bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, con
         }
 
         if (clear) {
-            xc->Draw(location, floor);
+            xc->Draw(location, floor, shape);
             placed.push_back(std::move(xc));
             return true;
         }

@@ -356,6 +356,19 @@ int Option(const sol::optional<sol::table>& options, const char* key, const int 
     return options ? options->get_or(key, fallback) : fallback;
 }
 
+// An inclusive pair, e.g. room_width = { 4, 10 }.
+std::pair<int, int> Range(const sol::optional<sol::table>& options, const char* key,
+                          const int low, const int high)
+{
+    if (options) {
+        if (const sol::optional<sol::table> pair = options->get<sol::optional<sol::table>>(key)) {
+            return {pair->get_or(1, low), pair->get_or(2, high)};
+        }
+    }
+
+    return {low, high};
+}
+
 } // namespace
 
 void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd,
@@ -552,14 +565,23 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
                          Option(options, "blob_radius", 3)).Build();
             break;
 
-        case Generator::DUNGEON:
+        case Generator::DUNGEON: {
+            const auto [min_w, max_w] = Range(options, "room_width", 4, 10);
+            const auto [min_h, max_h] = Range(options, "room_height", 4, 6);
+            const auto [min_exits, max_exits] = Range(options, "room_exits", 2, 3);
+            const RoomShape shape = {min_w, max_w, min_h, max_h, min_exits, max_exits,
+                                     Option(options, "trap_odds", 10),
+                                     Option(options, "max_traps", 5)};
+
             XDungeonBuilder(XLocation::current_location, width, height,
                             RequiredTile(options, "wall", loc_id),
                             RequiredTile(options, "floor", loc_id),
                             Option(options, "room_chance", 0),
                             Option(options, "cells_per_room", 200),
-                            Option(options, "door_odds", 3)).Build();
+                            Option(options, "door_odds", 3),
+                            shape).Build();
             break;
+        }
 
         case Generator::PLAIN:
             XPlainBuilder(XLocation::current_location, Option(options, "width", 200), Option(options, "height", 90),

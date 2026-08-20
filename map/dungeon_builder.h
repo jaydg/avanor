@@ -55,6 +55,24 @@ extern std::vector<RoomTemplate> room_templates;
 // Picks a room by weight, or null when the script defined none.
 const RoomTemplate* PickRoom();
 
+// How the generator's own plain rooms turn out. The defined rooms bring
+// their own shape and contents; these are made up, between the bounds
+// given here, and each pair is inclusive.
+struct RoomShape {
+    int min_width;
+    int max_width;
+    int min_height;
+    int max_height;
+
+    // How many sides a corridor may be dug to.
+    int min_exits;
+    int max_exits;
+
+    // One room in trap_odds is trapped, with up to max_traps of them.
+    int trap_odds;
+    int max_traps;
+};
+
 // One room of a generated dungeon level: where it sits, where a corridor
 // may attach to it, and how it puts itself on the map. Either a plain
 // rectangle the generator made up, or one of the rooms above.
@@ -72,7 +90,7 @@ class XRoom
         // used, so what is left over are the ways in nothing took.
         std::vector<XPoint> exits;
 
-        XRoom(int len, int hgt, const RoomTemplate* room);
+        XRoom(int len, int hgt, const RoomTemplate* room, const RoomShape& shape);
 
         ~XRoom() { }
 
@@ -82,7 +100,7 @@ class XRoom
         }
 
         int Intersect(XRoom * other, int dist);
-        void Draw(XLocation * l, XTileType::Id floor);
+        void Draw(XLocation * l, XTileType::Id floor, const RoomShape& shape);
         bool GetFreeExit(XPoint * pt);
 };
 
@@ -104,11 +122,14 @@ class XDungeonBuilder
         // gets a door, one time in door_odds.
         int cells_per_room;
         int door_odds;
+
+        // What its plain rooms look like.
+        RoomShape shape;
     public:
         XMap* m;
         XLocation* location;
         XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
-                        int _room_chance, int _cells_per_room, int _door_odds,
+                        int _room_chance, int _cells_per_room, int _door_odds, const RoomShape& _shape,
                         int create_door_trap_chest = 1);
         void Build();
         bool Link(XPoint * p1, XPoint * p2);
