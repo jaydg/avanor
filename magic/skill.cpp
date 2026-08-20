@@ -369,15 +369,15 @@ int XSkill::UseCreate(XCreature * user)
             } else {
                 switch (trap_create_rec[ch].var) {
                     case SPELL_MAGIC_ARROW:
-                        (new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_MAGICARROW, user))->activation_count = count;
+                        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::MAGICARROW, user))->activation_count = count;
                         break;
 
                     case SPELL_FIRE_BOLT:
-                        (new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_FIREBOLT, user))->activation_count = count;
+                        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::FIREBOLT, user))->activation_count = count;
                         break;
 
                     case SPELL_ACID_BOLT:
-                        (new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ACIDBOLT, user))->activation_count = count;
+                        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::ACIDBOLT, user))->activation_count = count;
                         break;
                 }
 
@@ -401,11 +401,11 @@ int XSkill::UseCreate(XCreature * user)
         if (trap_create_rec[ch].var2 == static_cast<unsigned int>(ItemType::PICKAXE)) {
             if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == ItemType::PICKAXE) {
                 if (item && trap_create_rec[ch].var > 0) {
-                    new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_SPEAR_PIT, user, item.get());
+                    new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::SPEAR_PIT, user, item.get());
                     user->sk->UseSkill(XSkill::Skill::CREATETRAP, 20);
                     msgwin.Add("You have successfuly created a trap!");
                 } else if (trap_create_rec[ch].var == 0) {
-                    new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_PIT, user, nullptr);
+                    new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::PIT, user, nullptr);
                     user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
                     msgwin.Add("You have successfuly created a trap!");
                 }
@@ -413,7 +413,7 @@ int XSkill::UseCreate(XCreature * user)
                 msgwin.Add("You should wield a pickaxe!");
             }
         } else if (item) {
-            new XTrap(user->x, user->y, user->l, TL_RANDOM, TT_ARROW, user, item.get());
+            new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::ARROW, user, item.get());
             user->sk->UseSkill(XSkill::Skill::CREATETRAP, 15);
             msgwin.Add("You have successfuly created a trap!");
         }

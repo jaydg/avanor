@@ -42,7 +42,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTrap);
 // instead of that assert.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XTrap, serialize);
 
-XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE tt, XCreature* _owner, XItem* items)
+XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::Type tt, XCreature* _owner, XItem* items)
 {
     SetLocation(_l);
     x = _x;
@@ -50,14 +50,14 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
     owner = XCreature::ToWeakPtr(_owner);
     trap_item = XItem::Own(items);
 
-    if (tt == TT_RANDOM) {
-        tt = static_cast<TRAP_TYPE>(vRand(TT_RANDOM));
+    if (tt == XTrap::Type::RANDOM) {
+        tt = static_cast<XTrap::Type>(vRand(static_cast<unsigned long>(XTrap::Type::RANDOM)));
     }
 
     trap_type = tt;
 
-    if (tl == TL_RANDOM) {
-        tl = static_cast<TRAP_LEVEL>(vRand(TL_RANDOM));
+    if (tl == XTrap::Level::RANDOM) {
+        tl = static_cast<XTrap::Level>(vRand(static_cast<unsigned long>(XTrap::Level::RANDOM)));
     }
 
     trap_level = tl;
@@ -65,22 +65,22 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
     isMagic = false;
 
     switch (tt) {
-        case TT_MAGICARROW:
+        case XTrap::Type::MAGICARROW:
             color = xBROWN;
             isMagic = true;
             break;
 
-        case TT_FIREBOLT:
+        case XTrap::Type::FIREBOLT:
             color = xRED;
             isMagic = true;
             break;
 
-        case TT_ACIDBOLT:
+        case XTrap::Type::ACIDBOLT:
             color = xGREEN;
             isMagic = true;
             break;
 
-        case TT_ARROW:
+        case XTrap::Type::ARROW:
             color = xBROWN;
 
             if (trap_item == nullptr) {
@@ -90,17 +90,17 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, TRAP_LEVEL tl, TRAP_TYPE
 
             break;
 
-        case TT_TELEPORT:
+        case XTrap::Type::TELEPORT:
             color = xLIGHTGREEN;
             isMagic = true;
             break;
 
-        case TT_PIT:
+        case XTrap::Type::PIT:
             color = xDARKGRAY;
             isMagic = false;
             break;
 
-        case TT_SPEAR_PIT:
+        case XTrap::Type::SPEAR_PIT:
             color = xDARKGRAY;
             isMagic = false;
 
@@ -156,7 +156,7 @@ int XTrap::MoveIn(XCreature* cr)
 
 int XTrap::MoveOut(XCreature* cr)
 {
-    if (last_activator == cr->guid() && (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT)) {
+    if (last_activator == cr->guid() && (trap_type == XTrap::Type::PIT || trap_type == XTrap::Type::SPEAR_PIT)) {
         // to climb out pits you should be lucky!
         if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(XStats::DEX) * 2) {
             cr->sk->UseSkill(XSkill::Skill::CLIMBING);
@@ -194,7 +194,7 @@ int XTrap::Activate(XCreature* cr)
     if (cr->isVisible()) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
 
-        if (trap_type == TT_PIT || trap_type == TT_SPEAR_PIT) {
+        if (trap_type == XTrap::Type::PIT || trap_type == XTrap::Type::SPEAR_PIT) {
             msgwin.Add(cr->GetVerb("fall"));
             msgwin.Add("down to a pit.");
         } else {
@@ -212,7 +212,7 @@ int XTrap::Activate(XCreature* cr)
         EFFECT_DATA ed{};
         ed.caller	= owner.lock().get();
         ed.l	= l;
-        ed.power	= 10 * (trap_level + 1);
+        ed.power	= 10 * (static_cast<int>(trap_level) + 1);
         ed.call_x	= x;
         ed.call_y	= y;
         ed.target_x	= x;
@@ -220,19 +220,19 @@ int XTrap::Activate(XCreature* cr)
         ed.target	= cr;
 
         switch (trap_type) {
-            case TT_MAGICARROW:
+            case XTrap::Type::MAGICARROW:
                 ed.effect = XEffect::MAGIC_ARROW;
                 break;
 
-            case TT_FIREBOLT:
+            case XTrap::Type::FIREBOLT:
                 ed.effect = XEffect::FIRE_BOLT;
                 break;
 
-            case TT_ACIDBOLT:
+            case XTrap::Type::ACIDBOLT:
                 ed.effect = XEffect::ACID_BOLT;
                 break;
 
-            case TT_TELEPORT:
+            case XTrap::Type::TELEPORT:
                 ed.effect = XEffect::TELEPORT;
                 break;
 
@@ -247,7 +247,7 @@ int XTrap::Activate(XCreature* cr)
         DAMAGE_DATA_EX dd{};
 
         switch (trap_type) {
-            case TT_ARROW:
+            case XTrap::Type::ARROW:
                 drop_item = trap_item->MakeCopy();
                 drop_item->quantity = 1;
 
@@ -285,7 +285,7 @@ int XTrap::Activate(XCreature* cr)
                 cr->InflictDamage(&dd);
                 break;
 
-            case TT_PIT:
+            case XTrap::Type::PIT:
                 dd.damage	= vRand(30) + 2;
                 dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the bottom of the pit";
@@ -295,7 +295,7 @@ int XTrap::Activate(XCreature* cr)
                 cr->InflictDamage(&dd);
                 break;
 
-            case TT_SPEAR_PIT: {
+            case XTrap::Type::SPEAR_PIT: {
                 dd.damage	= 0;
 
                 for (int i = 0; i < trap_item->quantity; i++) {
@@ -347,7 +347,7 @@ int XTrap::Check(XCreature* cr)
         chance += skill->GetLevel() * 50;
     }
 
-    chance -= trap_level * 100;
+    chance -= static_cast<int>(trap_level) * 100;
 
     if (vRand() % 1000 < chance) {
         if (cr->isVisible()) {
@@ -381,7 +381,7 @@ int XTrap::Disarm(XCreature * cr)
         chance += skill->GetLevel() * 100;
     }
 
-    chance -= trap_level * 100;
+    chance -= static_cast<int>(trap_level) * 100;
     int val = vRand() % 1000;
 
     if (val < chance) {

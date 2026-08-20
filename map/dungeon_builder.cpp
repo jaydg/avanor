@@ -179,7 +179,7 @@ void XRoom::Draw(XLocation * l)
 
             for (i = 0; i < vRand(5); i++) {
                 if (const auto pt = l->GetFreeXY(&r)) {
-                    new XTrap(pt->x, pt->y, l, TL_RANDOM);
+                    new XTrap(pt->x, pt->y, l, XTrap::Level::RANDOM);
                 }
             }
         }

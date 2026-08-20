@@ -34,28 +34,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "engine/xmapobj.h"
 
-enum TRAP_TYPE {
-    TT_UNKNOWN	= -1,
-    TT_MAGICARROW	= 0,
-    TT_FIREBOLT,
-    TT_ACIDBOLT,
-    TT_ARROW,
-    TT_TELEPORT,
-    TT_PIT,
-    TT_SPEAR_PIT,
-    TT_RANDOM
-};
-
-enum TRAP_LEVEL {
-    TL_VERY_LOW	= 0,
-    TL_LOW	= 1,
-    TL_AVG	= 2,
-    TL_HI	= 3,
-    TL_VERY_HI	= 4,
-    TL_MASTERWORK	= 5,
-    TL_RANDOM,
-};
-
 class XLocation;
 
 //////////////////////////////////////////////////////////////////////
@@ -63,8 +41,35 @@ class XLocation;
 /////////////////////////////////////////////////////////////////////
 class XTrap final : public XMapObject
 {
-        TRAP_TYPE trap_type = TT_UNKNOWN;
-        TRAP_LEVEL trap_level;
+    public:
+        // What the trap does when it goes off. RANDOM is not a trap but
+        // an instruction to pick one, the way the generators ask for it.
+        enum class Type {
+            UNKNOWN = -1,
+            MAGICARROW = 0,
+            FIREBOLT,
+            ACIDBOLT,
+            ARROW,
+            TELEPORT,
+            PIT,
+            SPEAR_PIT,
+            RANDOM
+        };
+
+        // How dangerous, and how well hidden. RANDOM again means "pick".
+        enum class Level {
+            VERY_LOW = 0,
+            LOW = 1,
+            AVG = 2,
+            HI = 3,
+            VERY_HI = 4,
+            MASTERWORK = 5,
+            RANDOM
+        };
+
+    private:
+        Type trap_type = Type::UNKNOWN;
+        Level trap_level;
 
         // owner to get exp.
         std::weak_ptr<XCreature> owner;
@@ -88,7 +93,7 @@ class XTrap final : public XMapObject
             assert(0);
         }
 
-        XTrap(int _x, int _y, XLocation* _l, TRAP_LEVEL tl = TL_RANDOM, TRAP_TYPE tt = TT_RANDOM, XCreature* _owner = nullptr, XItem* items = nullptr);
+        XTrap(int _x, int _y, XLocation* _l, XTrap::Level tl = XTrap::Level::RANDOM, XTrap::Type tt = XTrap::Type::RANDOM, XCreature* _owner = nullptr, XItem* items = nullptr);
 
         int MoveIn(XCreature * cr);
 
