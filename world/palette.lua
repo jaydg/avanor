@@ -32,3 +32,7 @@ SetFloorPriority{
 	XTileType.OBSIDIAN_FLOOR,
 	XTileType.GOLDEN_FLOOR,
 }
+
+-- Ground the hero has seen but is not looking at now is drawn at this
+-- share of its usual brightness, so the field of view reads at a glance.
+SetRememberedBrightness(60)

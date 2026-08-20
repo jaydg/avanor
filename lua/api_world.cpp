@@ -300,6 +300,14 @@ void DefineTile(sol::this_state s, const std::string& id_name, const std::string
     lua["XTileType"][id_name] = id;
 }
 
+//SetRememberedBrightness(80)
+// How bright ground the hero remembers but cannot currently see is
+// drawn, against 100 for what is in plain sight.
+void SetRememberedBrightness(const int percent)
+{
+    ::SetRememberedBrightness(percent);
+}
+
 //SetFloorPriority{ XTileType.GREEN_GRASS, XTileType.CAVE_FLOOR }
 // Which tiles a pattern may invent underneath the things it places,
 // later entries winning over earlier ones.
@@ -473,6 +481,7 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("AddTranslation", &lua_api::AddTranslation);
         lua.set_function("SetDefaultTranslations", &lua_api::SetDefaultTranslations);
         lua.set_function("SetFloorPriority", &lua_api::SetFloorPriority);
+        lua.set_function("SetRememberedBrightness", &lua_api::SetRememberedBrightness);
         lua.set_function("DefineTile", &lua_api::DefineTile);
         lua.set_function("Door", &lua_api::Door);
         lua.set_function("DrawPattern", &XLocation::DrawPattern);

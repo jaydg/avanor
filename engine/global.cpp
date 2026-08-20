@@ -74,6 +74,9 @@ int cursor_pos_x = 0;
 int cursor_pos_y = 0;
 unsigned current_attr = xLIGHTGRAY;
 
+// Out of sight, and drawn that way - see SetRememberedBrightness().
+int remembered_brightness = 100;
+
 #ifdef XLINUX
 // The terminal. Owned here, created by vInit() and stopped by vFinit().
 ncpp::NotCurses* nc = nullptr;
@@ -612,6 +615,25 @@ std::string ExpandMarkup(const std::string_view text)
     }
 
     return out;
+}
+
+unsigned DimRGB(const unsigned rgb, const int percent)
+{
+    const unsigned r = ((rgb >> 16) & 0xFF) * percent / 100;
+    const unsigned g = ((rgb >> 8) & 0xFF) * percent / 100;
+    const unsigned b = (rgb & 0xFF) * percent / 100;
+
+    return (r << 16) | (g << 8) | b;
+}
+
+void SetRememberedBrightness(const int percent)
+{
+    remembered_brightness = std::clamp(percent, 0, 100);
+}
+
+int RememberedBrightness()
+{
+    return remembered_brightness;
 }
 
 unsigned PaletteRGB(const unsigned char slot)

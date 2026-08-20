@@ -240,6 +240,15 @@ unsigned ResolveColour(unsigned char escape_byte);
 // what MSG_BROWN and its remaining siblings still emit.
 unsigned PaletteRGB(unsigned char slot);
 
+// The same colour at a fraction of its brightness: DimRGB(c, 80) is four
+// fifths as bright. Used for ground the hero remembers but cannot see.
+unsigned DimRGB(unsigned rgb, int percent);
+
+// How bright remembered ground is drawn, as a percentage of what it
+// looks like in plain sight. Set by the world script.
+void SetRememberedBrightness(int percent);
+[[nodiscard]] int RememberedBrightness();
+
 // Turns the roles written into a string - "<LABEL>Name:<VALUE> Deus" -
 // into the escape bytes the screen is painted from. Everything the game
 // prints goes through this, so a role can be written wherever text is,

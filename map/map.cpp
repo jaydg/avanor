@@ -541,8 +541,10 @@ void XMap::Put(XCreature * cr) const
                 vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
             }
 
+            // Remembered, not seen: the same glyph and colour, dimmed,
+            // so the hero's field of view reads at a glance.
             if (tmap->known && !tmap->visible) {
-                vPutCh(j + SCR_X, i + SCR_Y, tmap->known, tmap->color);
+                vPutCh(j + SCR_X, i + SCR_Y, tmap->known, DimRGB(tmap->color, RememberedBrightness()));
             }
         }
 }
