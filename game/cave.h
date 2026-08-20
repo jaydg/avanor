@@ -50,6 +50,10 @@ struct RoomTemplate {
 // get only the plain rectangular rooms the generator makes up.
 extern std::vector<RoomTemplate> room_templates;
 
+
+// Picks a room by weight, or null when the script defined none.
+const RoomTemplate* PickRoom();
+
 class XCave
 {
         // The template this room was stamped from, or null for one of the
@@ -60,7 +64,14 @@ class XCave
     public:
         XRect r;
         std::vector<XPoint> exits;
-        XCave(int len, int hgt, bool allow_special_rooms);
+        // room is the template to stamp, or null for one of the
+        // generator's own plain rectangles.
+        XCave(int len, int hgt, const RoomTemplate* room);
+
+        [[nodiscard]] bool isTemplateRoom() const
+        {
+            return room != nullptr;
+        }
         int Intersect(XCave * xc, int dist);
         void Draw(XLocation * l);
         ~XCave() { }

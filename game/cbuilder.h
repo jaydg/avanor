@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CBUILDER_H
 #define CBUILDER_H
 
+#include <memory>
+#include <vector>
+
 #include "game/cave.h"
 
 class XMap;
@@ -29,13 +32,26 @@ class XLocation;
 class XCaveBuilder
 {
         bool isCreateDoorTrapChest;
+
+        // The chance in a hundred that this level is built with one of the
+        // rooms the world script defined. Per level setting allows variety.
+        int room_chance;
     public:
         XMap* m;
         XLocation* location;
-        XCaveBuilder(XLocation * _l, int create_door_trap_chest = 1);
+        XCaveBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest = 1);
         void Build();
         bool Link(XPoint * p1, XPoint * p2);
         void CreateDoors();
+
+    private:
+        // Draws room (null for a plain one) at a random free spot, giving
+        // up after `attempts` tries. Returns whether it went down.
+        bool PlaceRoom(std::vector<std::unique_ptr<XCave>>& placed, const RoomTemplate* room, int attempts);
+
+        // Digs from a template room's unused door out to the nearest floor
+        // that is not part of that room.
+        bool DigOut(const XPoint& door, const XRect& room);
 };
 
 #endif

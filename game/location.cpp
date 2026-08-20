@@ -346,13 +346,13 @@ void XLocation::BuildCave()
     }
 }
 
-void XLocation::BuildDungeon(int create_trap_door_chest)
+void XLocation::BuildDungeon(int room_chance, int create_trap_door_chest)
 {
     if (!map) {
         map = new XMap(80, 20);
     }
 
-    XCaveBuilder * xcb = new XCaveBuilder(this, create_trap_door_chest);
+    XCaveBuilder * xcb = new XCaveBuilder(this, room_chance, create_trap_door_chest);
     xcb->Build();
     delete xcb;
 }
@@ -628,7 +628,8 @@ void XLocation::CreateNewGame()
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, const Generator generator)
+void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull,
+                               const Generator generator, sol::optional<int> room_chance)
 {
     XLocation::current_location = new XLocation(loc_id);
     XLocation::current_location->brief_name = lbrief;
@@ -640,7 +641,7 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
             break;
 
         case Generator::DUNGEON:
-            XLocation::current_location->BuildDungeon();
+            XLocation::current_location->BuildDungeon(room_chance.value_or(0));
             break;
 
         case Generator::PLAIN:

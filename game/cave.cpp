@@ -32,8 +32,6 @@ bool RoomTemplate::isExit(const int x, const int y) const
     return ch == '+' || ch == '.';
 }
 
-namespace {
-
 // Picks a room by weight. Null when the world script defined no rooms,
 // which is not an error - the generator then only makes plain ones.
 const RoomTemplate* PickRoom()
@@ -61,12 +59,10 @@ const RoomTemplate* PickRoom()
     return nullptr;
 }
 
-} // namespace
-
 #define USUAL_CAVE_HGT 4
 #define USUAL_CAVE_LEN 4
 
-XCave::XCave(int len, int hgt, bool allow_special_rooms)
+XCave::XCave(int len, int hgt, const RoomTemplate* _room)
 {
     assert(len > 4);
     assert(hgt > 4);
@@ -76,7 +72,7 @@ XCave::XCave(int len, int hgt, bool allow_special_rooms)
 
     int x, y, l, h;
 
-    room = allow_special_rooms && vRand(20) == 0 ? PickRoom() : nullptr;
+    room = _room;
 
     if (!room) { // plain rectangular room
 

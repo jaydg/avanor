@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -25,11 +26,34 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/cbuilder.h"
 #include "map/map_objects.h"
 
-XCaveBuilder::XCaveBuilder(XLocation * _l, int create_door_trap_chest)
+XCaveBuilder::XCaveBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest)
 {
     m = _l->map;
     location = _l;
     isCreateDoorTrapChest = create_door_trap_chest > 0;
+    room_chance = std::clamp(_room_chance, 0, 100);
+}
+
+bool XCaveBuilder::PlaceRoom(std::vector<std::unique_ptr<XCave>>& placed, const RoomTemplate* room, int attempts)
+{
+    while (attempts-- > 0) {
+        auto xc = std::make_unique<XCave>(m->len, m->hgt, room);
+        bool clear = true;
+
+        for (size_t q = 0; q < placed.size() && clear; q++) {
+            if (placed[q]->Intersect(xc.get(), 0)) {
+                clear = false;
+            }
+        }
+
+        if (clear) {
+            xc->Draw(location);
+            placed.push_back(std::move(xc));
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void XCaveBuilder::Build()
@@ -45,31 +69,19 @@ void XCaveBuilder::Build()
 
     int nCave = m->hgt * m->len / 200;
 
-    for (i = 0; i < nCave; i++) {
-        int iflag = 10000;
-
-        while (iflag--) {
-            auto xc = std::make_unique<XCave>(m->len, m->hgt, isCreateDoorTrapChest);
-
-            int tflag = 1;
-
-            for (unsigned int q = 0; q < quae.size() && tflag; q++) {
-                XCave * txc = quae[q].get();
-
-                if (txc->Intersect(xc.get(), 0)) {
-                    tflag = 0;
-                }
-            }
-
-            if (tflag) {
-                xc->Draw(location);
-                quae.push_back(std::move(xc));
-                iflag = 0;
-            }
+    // One roll for the level: does it get a defined room at all.
+    if (isCreateDoorTrapChest && vRand(100) < room_chance) {
+        if (const RoomTemplate* room = PickRoom()) {
+            PlaceRoom(quae, room, 200);
         }
     }
 
-    for (int k = 0; k < quae.size() - 1; k++) {
+    // Plain rectangles fill the level up to its room count.
+    for (i = static_cast<int>(quae.size()); i < nCave; i++) {
+        PlaceRoom(quae, nullptr, 10000);
+    }
+
+    for (size_t k = 0; k + 1 < quae.size(); k++) {
         XCave * tc1 = quae[k].get();
         XCave * tc2 = quae[k + 1].get();
         XPoint pt1;
@@ -82,8 +94,30 @@ void XCaveBuilder::Build()
         }
     }
 
+    // Every door a template drew should lead somewhere. The chain above
+    // uses one exit per room, so the rest would open into solid rock -
+    // and because Link() routes corridors *around* rooms, a large room
+    // can also cut a level in two. Digging the remaining doors out fixes
+    // both: each becomes another way into the level.
+    for (const auto& xc : quae) {
+        if (!xc->isTemplateRoom()) {
+            continue;
+        }
+
+        for (const XPoint& door : xc->exits) {
+            DigOut(door, xc->r);
+        }
+    }
+
     if (isCreateDoorTrapChest) {
         CreateDoors();
+    }
+
+    // Whatever the rooms and corridors ended up doing, the level has to
+    // be walkable end to end - its stairways are placed afterwards, on
+    // whatever free cell turns up.
+    if (!m->isFullyConnected()) {
+        m->ConnectAllRegions();
     }
 }
 
@@ -103,8 +137,7 @@ struct LINK_STACK {
 bool XCaveBuilder::Link(XPoint * p1, XPoint * p2)
 {
     //create and reset table equal with map
-    int* tbl = new int[m->hgt * m->len];
-    memset(tbl, 0, sizeof(int) * m->hgt * m->len);
+    std::vector<int> tbl(m->hgt * m->len, 0);
 
     //create stack of points (we will exchange them to increase perfomance)
     LINK_STACK st1;
@@ -243,4 +276,64 @@ void XCaveBuilder::CreateDoors()
                 }
             }
         }
+}
+
+bool XCaveBuilder::DigOut(const XPoint& door, const XRect& room)
+{
+    // Breadth-first out from the door, through rock and around every
+    // other room, until it meets floor belonging to the rest of the
+    // level - then carve the path it came by.
+    std::vector<int> came_from(m->len * m->hgt, -1);
+    std::vector<int> queue;
+    const int start = door.x + door.y * m->len;
+
+    queue.push_back(start);
+    came_from[start] = start;
+
+    static const int dx[4] = { 1, -1, 0, 0 };
+    static const int dy[4] = { 0, 0, 1, -1 };
+
+    for (size_t head = 0; head < queue.size(); head++) {
+        const int cx = queue[head] % m->len;
+        const int cy = queue[head] / m->len;
+
+        for (int d = 0; d < 4; d++) {
+            const int nx = cx + dx[d];
+            const int ny = cy + dy[d];
+
+            if (nx < 1 || ny < 1 || nx >= m->len - 1 || ny >= m->hgt - 1) {
+                continue;
+            }
+
+            const int next = nx + ny * m->len;
+
+            if (came_from[next] >= 0) {
+                continue;
+            }
+
+            // Inside the room this door belongs to: not an escape, and
+            // digging back through its own walls would ruin the art.
+            if (nx >= room.left && nx < room.right && ny >= room.top && ny < room.bottom) {
+                continue;
+            }
+
+            came_from[next] = queue[head];
+
+            if (m->GetMovability(nx, ny) < MO_UNWALKABLE || m->GetRoom(nx, ny) != 0) {
+                // Reached the level. Carve back to the door.
+                for (int at = came_from[next]; at != start; at = came_from[at]) {
+                    m->SetXY(at % m->len, at / m->len, XTileType::CAVE_FLOOR);
+                }
+
+                return true;
+            }
+
+            // Another room's wall is not something to tunnel through.
+            if (m->GetRoom(nx, ny) == 0) {
+                queue.push_back(next);
+            }
+        }
+    }
+
+    return false;
 }

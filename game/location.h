@@ -253,7 +253,11 @@ class XLocation : public XObject
 
         static void CreateNewGame();
         static void Restoration();
-        static void CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, Generator generator);
+        // room_chance, for a DUNGEON, is the chance in a hundred that
+        // the level is built with one of the rooms the world script
+        // defined through DefineRoom(); levels that say nothing get none.
+        static void CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull,
+                                   Generator generator, sol::optional<int> room_chance);
         static void DrawPattern(int x, int y);
         static void CreateTimerEvent(const std::string& event, int ttm);
 
@@ -294,7 +298,9 @@ class XLocation : public XObject
         void PutPalette(int x, int y);
 
         void BuildCave();
-        void BuildDungeon(int create_trap_door_chest = 1);
+        // room_chance is the chance in a hundred that this level is
+        // built with one of the rooms DefineRoom() registered.
+        void BuildDungeon(int room_chance, int create_trap_door_chest = 1);
         void BuildPlain(int w, int h);
 
         void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd = XShop::Door::UP);
