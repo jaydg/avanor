@@ -39,8 +39,9 @@ class XPlainBuilder
 {
     public:
         XPlainBuilder(XLocation* _location, int _w, int _h, XTileType::Id _ground, XTileType::Id _cover,
-                      std::vector<XTileType::Id> _slope)
-            : location(_location), w(_w), h(_h), ground(_ground), cover(_cover), slope(std::move(_slope))
+                      std::vector<XTileType::Id> _slope, int _cover_odds, int _border_depth, int _erosion)
+            : location(_location), w(_w), h(_h), ground(_ground), cover(_cover), slope(std::move(_slope)),
+              cover_odds(_cover_odds), border_depth(_border_depth), erosion(_erosion)
         {
         }
 
@@ -56,6 +57,16 @@ class XPlainBuilder
         XTileType::Id ground;
         XTileType::Id cover;
         std::vector<XTileType::Id> slope;
+
+        // One cell in cover_odds is cover rather than ground, so 3 leaves
+        // a third of the plain wooded.
+        int cover_odds;
+
+        // How deep the border may reach in, and how far each rung of the
+        // slope carries from a cell - a wider erosion makes gentler
+        // country, a narrower one makes cliffs.
+        int border_depth;
+        int erosion;
 };
 
 #endif

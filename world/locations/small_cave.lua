@@ -1,6 +1,3 @@
--- What the caves and dungeons of this world are cut out of.
-local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
-
 -----------------------------------------------------------
 -------------------- SMALL CAVE ---------------------------
 

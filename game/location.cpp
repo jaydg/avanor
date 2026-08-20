@@ -547,21 +547,28 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
         case Generator::CAVE:
             XCaveBuilder(XLocation::current_location, width, height,
                          RequiredTile(options, "wall", loc_id),
-                         RequiredTile(options, "floor", loc_id)).Build();
+                         RequiredTile(options, "floor", loc_id),
+                         Option(options, "blobs", 150),
+                         Option(options, "blob_radius", 3)).Build();
             break;
 
         case Generator::DUNGEON:
             XDungeonBuilder(XLocation::current_location, width, height,
                             RequiredTile(options, "wall", loc_id),
                             RequiredTile(options, "floor", loc_id),
-                            Option(options, "room_chance", 0)).Build();
+                            Option(options, "room_chance", 0),
+                            Option(options, "cells_per_room", 200),
+                            Option(options, "door_odds", 3)).Build();
             break;
 
         case Generator::PLAIN:
             XPlainBuilder(XLocation::current_location, Option(options, "width", 200), Option(options, "height", 90),
                           RequiredTile(options, "ground", loc_id),
                           RequiredTile(options, "cover", loc_id),
-                          TileList(options, "slope", loc_id)).Build();
+                          TileList(options, "slope", loc_id),
+                          Option(options, "cover_odds", 3),
+                          Option(options, "border_depth", 4),
+                          Option(options, "erosion", 2)).Build();
             break;
     }
 }

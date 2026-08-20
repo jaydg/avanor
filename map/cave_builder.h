@@ -30,8 +30,10 @@ class XLocation;
 class XCaveBuilder
 {
     public:
-        XCaveBuilder(XLocation* _location, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor)
-            : location(_location), w(_w), h(_h), wall(_wall), floor(_floor)
+        XCaveBuilder(XLocation* _location, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
+                     int _blobs, int _blob_radius)
+            : location(_location), w(_w), h(_h), wall(_wall), floor(_floor),
+              blobs(_blobs), blob_radius(_blob_radius)
         {
         }
 
@@ -42,6 +44,11 @@ class XCaveBuilder
         int w, h;
         XTileType::Id wall;
         XTileType::Id floor;
+
+        // How many rounded chambers to stamp, and how wide each is. More
+        // or wider makes an open cavern; fewer or narrower, a warren.
+        int blobs;
+        int blob_radius;
 };
 
 #endif

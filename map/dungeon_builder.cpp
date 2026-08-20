@@ -226,7 +226,8 @@ bool XRoom::GetFreeExit(XPoint * pt)
 }
 
 XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
-                                 int _room_chance, int create_door_trap_chest)
+                                 int _room_chance, int _cells_per_room, int _door_odds,
+                                 int create_door_trap_chest)
 {
     // Same as the other builders: a location arrives without a map and
     // leaves with one.
@@ -236,6 +237,8 @@ XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _
 
     wall = _wall;
     floor = _floor;
+    cells_per_room = _cells_per_room;
+    door_odds = _door_odds;
 
     m = _l->map;
     location = _l;
@@ -276,7 +279,7 @@ void XDungeonBuilder::Build()
 
     std::vector<std::unique_ptr<XRoom>> quae;
 
-    int nCave = m->hgt * m->len / 200;
+    const int nCave = m->hgt * m->len / cells_per_room;
 
     // One roll for the level: does it get a defined room at all.
     if (isCreateDoorTrapChest && vRand(100) < room_chance) {
@@ -477,7 +480,7 @@ void XDungeonBuilder::CreateDoors()
 
                 if ((((a11 && a13) || (a31 && a33)) && a32 && a12 && !a21 && !a23)
                     || (((a11 && a31) || (a13 && a33)) && a21 && a23 && !a12 && !a32)) {
-                    if (vRand(3) == 0) {
+                    if (vRand(door_odds) == 0) {
                         new XDoor(j, i, 0, location);
                     } else {
                         new XDoor(j, i, 1, location);

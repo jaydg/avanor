@@ -59,7 +59,7 @@ void XPlainBuilder::Build()
 
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
-            if (vRand() % 3) {
+            if (vRand() % cover_odds) {
                 map->SetXY(j, i, ground);
             } else {
                 map->SetXY(j, i, cover);
@@ -68,8 +68,8 @@ void XPlainBuilder::Build()
 
     // creating high mountains
     for (i = lm; i < rm; i++) {
-        int z1 = vRand() % ((i & 3) + 1) + 1;
-        int z2 = vRand() % ((i & 3) + 1) + 1;
+        int z1 = vRand() % ((i % border_depth) + 1) + 1;
+        int z2 = vRand() % ((i % border_depth) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
             map->SetXY(i, tm + j, peak);
@@ -81,8 +81,8 @@ void XPlainBuilder::Build()
     }
 
     for (i = tm; i < bm; i++) {
-        int z1 = vRand() % ((i & 3) + 1) + 1;
-        int z2 = vRand() % ((i & 3) + 1) + 1;
+        int z1 = vRand() % ((i % border_depth) + 1) + 1;
+        int z2 = vRand() % ((i % border_depth) + 1) + 1;
 
         for (j = 0; j < z1; j++) {
             map->SetXY(lm + j, i, peak);
@@ -99,8 +99,8 @@ void XPlainBuilder::Build()
             const int rung = Rung(map->GetXY(j, i));
 
             if (rung > 0) {
-                for (int q = -2; q < 3; q++)
-                    for (int w = -2; w < 3; w++) {
+                for (int q = -erosion; q <= erosion; q++)
+                    for (int w = -erosion; w <= erosion; w++) {
                         int lower = rung - std::max(abs(q), abs(w));
 
                         if (lower < 0) {

@@ -98,11 +98,18 @@ class XDungeonBuilder
         // What the level is cut out of, and what is left where it is cut.
         XTileType::Id wall;
         XTileType::Id floor;
+
+        // How much floor each room is worth - a level gets its area
+        // divided by this many rooms - and how often a corridor junction
+        // gets a door, one time in door_odds.
+        int cells_per_room;
+        int door_odds;
     public:
         XMap* m;
         XLocation* location;
         XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
-                        int _room_chance, int create_door_trap_chest = 1);
+                        int _room_chance, int _cells_per_room, int _door_odds,
+                        int create_door_trap_chest = 1);
         void Build();
         bool Link(XPoint * p1, XPoint * p2);
         void CreateDoors();

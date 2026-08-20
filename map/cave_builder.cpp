@@ -41,8 +41,8 @@ void XCaveBuilder::Build()
 
     // A random blob-stamp cave has no connectivity guarantee on its own -
     // regenerate from scratch until the whole floor is one reachable
-    // region (150 blobs over an 80x20 grid connects within a handful of
-    // tries in practice), so a level's stairways - placed afterward, once
+    // region (Avanor's 150 blobs over an 80x20 grid connect within a
+    // handful of tries), so a level's stairways - placed afterward, once
     // this returns, via GetFreeXY() over whatever floor exists - can never
     // end up in an isolated pocket the player can't get down/up through.
     constexpr int MAX_ATTEMPTS = 100;
@@ -55,16 +55,21 @@ void XCaveBuilder::Build()
             }
         }
 
-        for (int k = 0; k < 150; k++) {
-            int	qx = vRand() % (cl - 7) + 1;
-            int qy = vRand() % (ch - 5) + 1;
+        for (int k = 0; k < blobs; k++) {
+            // The margins the centres keep from the edge are the
+            // original's, expressed through the radius they were chosen
+            // for; they are not symmetric, and never were.
+            const int qx = vRand() % (cl - (2 * blob_radius + 1)) + 1;
+            const int qy = vRand() % (ch - (2 * blob_radius - 1)) + 1;
 
-            for (int q = 0; q < 360; q += 3) {
-                for (int w = 0; w < 3; w++) {
-                    int tx = qx + (int)(w * cos(q * M_PI / 180.0));
-                    int ty = qy + (int)(w * sin(q * M_PI / 180.0));
+            for (int angle = 0; angle < 360; angle += 3) {
+                for (int r = 0; r < blob_radius; r++) {
+                    const int tx = qx + (int)(r * cos(angle * M_PI / 180.0));
+                    const int ty = qy + (int)(r * sin(angle * M_PI / 180.0));
 
-                    if (tx > 0 && ty > 0 && tx < 79 && ty < 19) {
+                    // Clipped against the map, not against the 80x20 one
+                    // this generator was written for.
+                    if (tx > 0 && ty > 0 && tx < map->len - 1 && ty < map->hgt - 1) {
                         map->SetXY(tx, ty, floor);
                     }
                 }
