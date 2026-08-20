@@ -361,7 +361,7 @@ MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int col
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, CREATURE_SIZE size, const std::string& weight)
+MonsterBuilder& MonsterBuilder::Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, XCreature::Size size, const std::string& weight)
 {
     cr.speed = XDice(speed);
     cr.move_energy = XDice(move_energy);

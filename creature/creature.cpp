@@ -61,6 +61,14 @@ bool XCreature::isHero() const
 
 void XCreature::RegisterLua(sol::state_view& lua)
 {
+    lua.new_enum("CreatureSize",
+        "VERY_SMALL", Size::VERY_SMALL,
+        "SMALL", Size::SMALL,
+        "NORMAL", Size::NORMAL,
+        "LARGE", Size::LARGE,
+        "VERY_LARGE", Size::VERY_LARGE
+    );
+
     lua.new_enum("Gender",
         "MALE", XCreature::MALE,
         "FEMALE", XCreature::FEMALE,
@@ -161,7 +169,7 @@ XCreature::XCreature()
     level = 1;
     RNG = 3;
 
-    creature_size = CS_NORMAL;
+    creature_size = Size::NORMAL;
     creature_person_type = XCreature::HE;
 
     xai = std::make_unique<XStandardAI>(this);

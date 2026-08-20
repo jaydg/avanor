@@ -1,7 +1,7 @@
 
 Monster.new("roderik")
 	:View("Roderick, king of Avanor", 'p', xColor.xYELLOW, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.HUMAN)
-	:Basic("1d30+150", "0d0+700", "0d0+700", CS_NORMAL, "1d200+1200")
+	:Basic("1d30+150", "0d0+700", "0d0+700", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
 	:Stats("St 1d8+55 Dx 1d8+60 To 1d8+40 Le 1d5+35 Wi 1d5+20 Ma 1d5+20 Pe 8d6 Ch 12d5")

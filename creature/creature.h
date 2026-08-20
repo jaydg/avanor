@@ -205,6 +205,17 @@ typedef std::map<GROUP_ID, XCreature*> XCreatureGroupMap;
 class XCreature : public XBaseObject
 {
     public:
+        // How big the creature is. Recorded per creature and carried in
+        // the save, though nothing acts on it yet - the intent noted at
+        // the template field was a defence bonus for the small.
+        enum class Size {
+            VERY_SMALL = 1, // insects, rats, bats
+            SMALL,          // kobolds, hobbits
+            NORMAL,         // human sized
+            LARGE,          // trolls
+            VERY_LARGE      // titans, dragons
+        };
+
         enum Gender {
             NEUTER,
             MALE,
@@ -663,7 +674,7 @@ class XCreature : public XBaseObject
 
         void GetRangeAttackInfo(int* range, int* hit, XDice* dmg);
 
-        CREATURE_SIZE creature_size;
+        Size creature_size;
         int attack_energy;
         int move_energy;
         int base_speed;

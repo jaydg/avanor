@@ -3,7 +3,7 @@
 
 Monster.new("xshee_voo")
 	:View("Xshee-Voo, the Cyclope", 'H', xColor.xLIGHTMAGENTA, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.GIANT)
-	:Basic("1d30+120", "0d0+900", "0d0+900", CS_LARGE, "1d400+3000")
+	:Basic("1d30+120", "0d0+900", "0d0+900", CreatureSize.LARGE, "1d400+3000")
 	:Body("head neck body cloak hand hand boots", 50, 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 5d5+150 Dx 1d10+10 To 1d10+80 Le 1d5+5 Wi 1d5+5 Ma 1d5+5 Pe 1d6 Ch 1d5")

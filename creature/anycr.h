@@ -87,7 +87,7 @@ struct CreatureTemplate {
     XDice speed;                    // "2d5+50"
     XDice move_energy;              // 1000
     XDice attack_energy;            // 1000
-    CREATURE_SIZE creature_size;    // CS_SMALL (bonus for DV)
+    XCreature::Size creature_size;  // small creatures were meant to gain DV
     XDice creature_weight;          // how much corpse weight for example
 
     std::string body;
@@ -146,7 +146,7 @@ class MonsterBuilder
         explicit MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base = CN_NONE);
 
         MonsterBuilder& View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, CreatureClass cr_class);
-        MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, CREATURE_SIZE size, const std::string& weight);
+        MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, XCreature::Size size, const std::string& weight);
         MonsterBuilder& Body(const std::string& body, int prob, unsigned int gen_flags);
         MonsterBuilder& AI(unsigned int flags);
         MonsterBuilder& Stats(const std::string& stats);

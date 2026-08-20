@@ -1,7 +1,7 @@
 
 Monster.new("todin")
 	:View("Todin, dwarven weaponsmith", 'h', xColor.xBROWN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.HUMANOID)
-	:Basic("1d10+95", "0d0+1000", "0d0+1000", CS_NORMAL, "1d200+1200")
+	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
 	:Stats("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")

@@ -1,7 +1,7 @@
 
 Monster.new("gekta")
 	:View("Gekta, the sheep dog", 'C', xColor.xDARKGRAY, PersonType.NAMED_IT, CreatureTemplate.UNIQUE, CreatureClass.CANINE)
-	:Basic("1d10+200", "0d0+1000", "1d100+300", CS_SMALL, "1d200+400")
+	:Basic("1d10+200", "0d0+1000", "1d100+300", CreatureSize.SMALL, "1d200+400")
 	:Body("neck", 100, 0)
 	:AI(XStandardAI.HI_ANIMAL + XStandardAI.PEACEFUL)
 	:Stats("St 1d3+10 Dx 1d5+20 To 1d3+8 Le 1d3+3 Wi 1d3+3 Ma 1d3+3 Pe 5d6 Ch 4d5")

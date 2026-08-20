@@ -1,7 +1,7 @@
 
 Monster.new("beelzevile")
 	:View("Beelzevile, the horned demon", '&', xColor.xLIGHTCYAN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.DEMON)
-	:Basic("1d30+50", "0d0+1500", "0d0+900", CS_LARGE, "1d400+4000")
+	:Basic("1d30+50", "0d0+1500", "0d0+900", CreatureSize.LARGE, "1d400+4000")
 	:Body("head body ring ring", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 5d5+50 Dx 3d3+10 To 2d15+20 Le 9d5 Wi 3d4 Ma 5d4 Pe 1d3 Ch 1d3")

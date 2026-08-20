@@ -127,14 +127,6 @@ using GROUP_ID = std::string;
 // onDie), so a named symbol documents that repeated meaning.
 inline constexpr const char* GID_NONE = "";
 
-enum CREATURE_SIZE {
-    CS_VERY_SMALL = 1, // insects like, rats, bats
-    CS_SMALL      = 2, // kobold, hobbit like
-    CS_NORMAL     = 3, // human like
-    CS_LARGE      = 4, // TROLL
-    CS_VERY_LARGE = 5, // Titan, dragon
-};
-
 enum FOOD_FEELING {
     FF_TOLERANT,
     FF_NORMAL,

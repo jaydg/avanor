@@ -2,7 +2,7 @@
 
 Monster.new("gray_ooze")
 	:View("gray ooze", 'j', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, CreatureClass.BLOB)
-	:Basic("1d10+40", "0d0+1000", "1d100+600", CS_VERY_SMALL, "1d10+10")
+	:Basic("1d10+40", "0d0+1000", "1d100+600", CreatureSize.VERY_SMALL, "1d10+10")
 	:Body("", 0, 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
@@ -17,7 +17,7 @@ Monster.new("gray_ooze")
 
 Monster.new("gelatinous_cube")
 	:View("gelatinous cube", 'j', xColor.xWHITE, PersonType.IT, CreatureTemplate.AVG, CreatureClass.BLOB)
-	:Basic("1d10+50", "0d0+1000", "1d100+200", CS_LARGE, "20d4")
+	:Basic("1d10+50", "0d0+1000", "1d100+200", CreatureSize.LARGE, "20d4")
 	:Body("", 0, 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
