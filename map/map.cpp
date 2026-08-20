@@ -594,3 +594,134 @@ void XMap::ForceRecenter(const int x, const int y)
         wy = 0;
     }
 }
+
+namespace {
+
+// Whether the terrain itself can be walked on, ignoring whatever
+// happens to be standing there: a closed door opens, and a creature
+// moves. Connectivity is a property of the map, not of its occupants.
+bool isWalkableTerrain(const XMap* map, int x, int y)
+{
+    return std_tile_data[map->GetXY(x, y)].movability < MO_UNWALKABLE;
+}
+
+// 4-directional flood fill of every walkable tile reachable from (sx, sy),
+// marking each in visited[] (row-major, same indexing as XMap::map).
+// Returns the number of tiles marked (including the seed).
+int FloodFillWalkable(const XMap* map, int sx, int sy, std::vector<bool>& visited)
+{
+    std::vector<XPoint> stack;
+    stack.emplace_back(sx, sy);
+    visited[sx + sy * map->len] = true;
+    int count = 1;
+
+    static const int dx[4] = { 1, -1, 0, 0 };
+    static const int dy[4] = { 0, 0, 1, -1 };
+
+    while (!stack.empty()) {
+        XPoint p = stack.back();
+        stack.pop_back();
+
+        for (int i = 0; i < 4; i++) {
+            int nx = p.x + dx[i];
+            int ny = p.y + dy[i];
+
+            if (nx < 0 || nx >= map->len || ny < 0 || ny >= map->hgt) {
+                continue;
+            }
+
+            int idx = nx + ny * map->len;
+
+            if (visited[idx] || !isWalkableTerrain(map, nx, ny)) {
+                continue;
+            }
+
+            visited[idx] = true;
+            count++;
+            stack.emplace_back(nx, ny);
+        }
+    }
+
+    return count;
+}
+
+// True if the map's entire walkable floor is a single connected region -
+// i.e. any floor tile can be reached from any other, so a stairway placed
+// anywhere on it (chosen afterward, once generation returns) can never
+// land in an isolated pocket.
+} // namespace
+
+bool XMap::isFullyConnected() const
+{
+    const XMap* map = this;
+
+    int seed_x = -1;
+    int seed_y = -1;
+    int total_floor = 0;
+
+    for (int y = 0; y < map->hgt; y++) {
+        for (int x = 0; x < map->len; x++) {
+            if (isWalkableTerrain(map, x, y)) {
+                total_floor++;
+
+                if (seed_x < 0) {
+                    seed_x = x;
+                    seed_y = y;
+                }
+            }
+        }
+    }
+
+    if (total_floor == 0) {
+        return false;
+    }
+
+    std::vector<bool> visited(map->len * map->hgt, false);
+
+    return FloodFillWalkable(map, seed_x, seed_y, visited) == total_floor;
+}
+
+// Last-resort fallback if regeneration never produced a fully-connected
+// layout within the attempt budget below - carves a straight tunnel from
+// one tile of every disconnected pocket to a single hub tile, guaranteeing
+// full reachability regardless of how pathological the random layout was,
+// rather than silently shipping a map with an unreachable area.
+void XMap::ConnectAllRegions()
+{
+    XMap* map = this;
+
+    std::vector<bool> visited(map->len * map->hgt, false);
+    std::vector<XPoint> component_seeds;
+
+    for (int y = 0; y < map->hgt; y++) {
+        for (int x = 0; x < map->len; x++) {
+            if (!isWalkableTerrain(map, x, y) || visited[x + y * map->len]) {
+                continue;
+            }
+
+            component_seeds.emplace_back(x, y);
+            FloodFillWalkable(map, x, y, visited);
+        }
+    }
+
+    if (component_seeds.size() < 2) {
+        return;
+    }
+
+    const XPoint hub = component_seeds[0];
+
+    for (size_t i = 1; i < component_seeds.size(); i++) {
+        int x = component_seeds[i].x;
+        int y = component_seeds[i].y;
+
+        while (x != hub.x) {
+            map->SetXY(x, y, XTileType::CAVE_FLOOR);
+            x += (x < hub.x) ? 1 : -1;
+        }
+
+        while (y != hub.y) {
+            map->SetXY(x, y, XTileType::CAVE_FLOOR);
+            y += (y < hub.y) ? 1 : -1;
+        }
+    }
+}

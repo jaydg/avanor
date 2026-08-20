@@ -190,6 +190,16 @@ class XMap
         [[nodiscard]] int GetVisibility(int x, int y) const;
         void SetXY(int x, int y, XTileType::Type std_map) const;
         [[nodiscard]] XTileType::Type GetXY(int x, int y) const;
+        // True when the whole walkable floor is one connected region, so
+        // anything placed on it afterwards - a stairway, the hero - can be
+        // reached from anywhere else.
+        [[nodiscard]] bool isFullyConnected() const;
+
+        // Last-resort repair: carves a straight tunnel from every isolated
+        // pocket to a single hub, so no floor is left unreachable however
+        // pathological the layout was.
+        void ConnectAllRegions();
+
         void SetRoom(int x, int y, int room_id) const;
         [[nodiscard]] int GetRoom(int x, int y) const;
 
