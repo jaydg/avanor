@@ -288,8 +288,6 @@ class XLocation : public XObject
         void BuildCave();
         void BuildDungeon(int create_trap_door_chest = 1);
         void BuildPlain(int w, int h);
-        void CreateTraps();
-        void CreateChests();
 
         void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd = XShop::Door::UP);
 };

@@ -476,37 +476,6 @@ void XLocation::BuildDungeon(int create_trap_door_chest)
     delete xcb;
 }
 
-void XLocation::CreateTraps()
-{
-    if (vRand(3) == 1) {
-        XPoint pt;
-
-        for (int i = 0; i < vRand(7); i++) {
-            if (const auto pt = GetFreeXY()) {
-                new XTrap(pt->x, pt->y, this);
-            }
-        }
-    }
-}
-
-void XLocation::CreateChests()
-{
-    if (vRand(3) == 1) {
-        XPoint pt;
-
-        for (int i = 0; i < vRand(4); i++) {
-            const auto pt = GetFreeXY();
-
-            if (!pt) {
-                continue;
-            }
-
-            XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::ITEM, 1, 5000);
-            ch1->Drop(this, pt->x, pt->y);
-        }
-    }
-}
-
 XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
 {
     XCreature * cr = XCreatureStorage::Create(cn);
