@@ -117,6 +117,117 @@ void RegisterColorEnum(sol::state_view& lua);
 #define MSG_YELLOW         "\x1F\x0E"
 #define MSG_WHITE          "\x1F\x0F"
 
+// What a piece of text IS, rather than what colour it happens to be.
+// The colour comes from the current scheme, so a game can be recoloured
+// - or given a high-contrast reading - without touching a single string.
+//
+// The escape byte's values 0-15 stay literal xColors, which is what
+// SCOLOR() and anything drawing an object in its own colour still emits;
+// roles start above them.
+enum TextRole {
+    ROLE_FIRST = 16,
+
+    // Ordinary body text - the colour everything falls back to.
+    ROLE_TEXT = ROLE_FIRST,
+
+    // Frames, separators, brackets and the punctuation between values:
+    // the furniture a screen is drawn with.
+    ROLE_DECORATION,
+
+    // The name of a thing being shown - field names, column headings.
+    ROLE_LABEL,
+
+    // The thing itself: numbers, names, measurements.
+    ROLE_VALUE,
+
+    // A line meant to stand out from the ones around it.
+    ROLE_EMPHASIS,
+
+    // A key the player can press, named in running text.
+    ROLE_KEY,
+
+    // The letter that picks an entry out of a list or menu.
+    ROLE_SELECTOR,
+
+    // Something the player should notice before carrying on.
+    ROLE_WARNING,
+
+    // How far along a ladder of proficiency something is - a skill's
+    // mastery, a school of magic. The rungs are the game's, not the
+    // engine's; a game with fewer of them simply leaves some unused.
+    ROLE_PROGRESS_NONE,
+    ROLE_PROGRESS_BASIC,
+    ROLE_PROGRESS_SKILLED,
+    ROLE_PROGRESS_EXPERT,
+    ROLE_PROGRESS_MASTER,
+    ROLE_PROGRESS_SENIOR_MASTER,
+    ROLE_PROGRESS_GRANDMASTER,
+
+    // 0x1F is the escape byte itself, so no role may be given that
+    // value - the ladder above ends at 0x1E and the next one starts past
+    // it. The static_asserts in global.cpp hold everything to its byte.
+    // How good something is - a resistance, standing with a god.
+    ROLE_QUALITY_TERRIBLE = 0x20,
+    ROLE_QUALITY_POOR,
+    ROLE_QUALITY_NEUTRAL,
+    ROLE_QUALITY_FAIR,
+    ROLE_QUALITY_GOOD,
+    ROLE_QUALITY_PERFECT,
+
+    // How bad it has got - a wound, hunger, a condition.
+    ROLE_SEVERITY_MILD,
+    ROLE_SEVERITY_NOTABLE,
+    ROLE_SEVERITY_SEVERE,
+    ROLE_SEVERITY_CRITICAL,
+
+    ROLE_COUNT
+};
+
+// The literals below have to stay string literals, so that the compiler
+// keeps folding MSG_LABEL "Name:" into one string - hence the hand-written
+// escape bytes, checked against the enum in global.cpp.
+#define MSG_TEXT           "\x1F\x10"
+#define MSG_DECORATION     "\x1F\x11"
+#define MSG_LABEL          "\x1F\x12"
+#define MSG_VALUE          "\x1F\x13"
+#define MSG_EMPHASIS       "\x1F\x14"
+#define MSG_KEY            "\x1F\x15"
+#define MSG_SELECTOR       "\x1F\x16"
+#define MSG_WARNING        "\x1F\x17"
+
+#define MSG_PROGRESS_NONE          "\x1F\x18"
+#define MSG_PROGRESS_BASIC         "\x1F\x19"
+#define MSG_PROGRESS_SKILLED       "\x1F\x1A"
+#define MSG_PROGRESS_EXPERT        "\x1F\x1B"
+#define MSG_PROGRESS_MASTER        "\x1F\x1C"
+#define MSG_PROGRESS_SENIOR_MASTER "\x1F\x1D"
+#define MSG_PROGRESS_GRANDMASTER   "\x1F\x1E"
+
+#define MSG_QUALITY_TERRIBLE  "\x1F\x20"
+#define MSG_QUALITY_POOR      "\x1F\x21"
+#define MSG_QUALITY_NEUTRAL   "\x1F\x22"
+#define MSG_QUALITY_FAIR      "\x1F\x23"
+#define MSG_QUALITY_GOOD      "\x1F\x24"
+#define MSG_QUALITY_PERFECT   "\x1F\x25"
+
+#define MSG_SEVERITY_MILD     "\x1F\x26"
+#define MSG_SEVERITY_NOTABLE  "\x1F\x27"
+#define MSG_SEVERITY_SEVERE   "\x1F\x28"
+#define MSG_SEVERITY_CRITICAL "\x1F\x29"
+
+// The colour each role is drawn in. Swap the whole table to recolour the
+// game; see global.cpp for the one Avanor ships with.
+struct ColourScheme {
+    const char* name;
+    xColor role[ROLE_COUNT - ROLE_FIRST];
+};
+
+void SetColourScheme(const ColourScheme& scheme);
+
+// The colour an escape byte asks for: literal below ROLE_FIRST, and the
+// scheme's answer at or above it.
+xColor ResolveColour(unsigned char escape_byte);
+
 // next table helps to convert dynamic xCOLOR to text const char *
 // that allows to create construction such next
 // vPutS(MSG_YELLOW "yellow" SCOLOR(vRand(15)) "random color");

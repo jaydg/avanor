@@ -83,22 +83,22 @@ SKILL_DB skill_db[] = {
 };
 
 const char* skill_level_name[16] = {
-    MSG_LIGHTGRAY "NONE",
-    MSG_LIGHTGREEN "Basic",
-    MSG_LIGHTGREEN "Basic",
-    MSG_LIGHTGREEN "Basic",
-    MSG_GREEN "Skilled",
-    MSG_GREEN "Skilled",
-    MSG_GREEN "Skilled",
-    MSG_GREEN "Skilled",
-    MSG_YELLOW "Expert",
-    MSG_YELLOW "Expert",
-    MSG_YELLOW "Expert",
-    MSG_YELLOW "Expert",
-    MSG_LIGHTRED "Master",
-    MSG_LIGHTRED "Master",
-    MSG_LIGHTRED "Master",
-    MSG_DARKGRAY "Grand Master"
+    MSG_PROGRESS_NONE "NONE",
+    MSG_PROGRESS_BASIC "Basic",
+    MSG_PROGRESS_BASIC "Basic",
+    MSG_PROGRESS_BASIC "Basic",
+    MSG_PROGRESS_SKILLED "Skilled",
+    MSG_PROGRESS_SKILLED "Skilled",
+    MSG_PROGRESS_SKILLED "Skilled",
+    MSG_PROGRESS_SKILLED "Skilled",
+    MSG_PROGRESS_EXPERT "Expert",
+    MSG_PROGRESS_EXPERT "Expert",
+    MSG_PROGRESS_EXPERT "Expert",
+    MSG_PROGRESS_EXPERT "Expert",
+    MSG_PROGRESS_MASTER "Master",
+    MSG_PROGRESS_MASTER "Master",
+    MSG_PROGRESS_MASTER "Master",
+    MSG_PROGRESS_GRANDMASTER "Grand Master"
 };
 
 XSkill::XSkill(XSkill::Skill _skt, int _level)
@@ -348,7 +348,7 @@ int XSkill::UseCreate(XCreature * user)
     }
 
     XGuiList list;
-    list.SetCaption(MSG_BROWN "###" MSG_LIGHTGRAY " Create Trap " MSG_BROWN "###");
+    list.SetCaption(MSG_DECORATION "###" MSG_TEXT " Create Trap " MSG_DECORATION "###");
     int i = 0;
 
     while (trap_create_rec[i].name && trap_create_rec[i].level < level) {

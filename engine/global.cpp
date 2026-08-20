@@ -445,6 +445,89 @@ void vHideCursor()
 #endif
 }
 
+namespace {
+
+// The scheme in force. Avanor's own, which reproduces exactly the colours
+// the screens were written with: labels and framing in brown, values in
+// yellow, keys in cyan, everything else light gray.
+const ColourScheme avanor_scheme = {
+    "avanor",
+    {
+        xLIGHTGRAY,  // ROLE_TEXT
+        xBROWN,      // ROLE_DECORATION
+        xBROWN,      // ROLE_LABEL
+        xYELLOW,     // ROLE_VALUE
+        xYELLOW,     // ROLE_EMPHASIS
+        xCYAN,       // ROLE_KEY
+        xYELLOW,     // ROLE_SELECTOR
+        xYELLOW,     // ROLE_WARNING
+
+        xLIGHTGRAY,  // ROLE_PROGRESS_NONE
+        xLIGHTGREEN, // ROLE_PROGRESS_BASIC
+        xGREEN,      // ROLE_PROGRESS_SKILLED
+        xYELLOW,     // ROLE_PROGRESS_EXPERT
+        xLIGHTRED,   // ROLE_PROGRESS_MASTER
+        xRED,        // ROLE_PROGRESS_SENIOR_MASTER
+        xDARKGRAY,   // ROLE_PROGRESS_GRANDMASTER
+
+        xBLACK,      // 0x1F is the escape byte - never resolved, never used
+
+        xRED,        // ROLE_QUALITY_TERRIBLE
+        xLIGHTRED,   // ROLE_QUALITY_POOR
+        xLIGHTGRAY,  // ROLE_QUALITY_NEUTRAL
+        xLIGHTGREEN, // ROLE_QUALITY_FAIR
+        xYELLOW,     // ROLE_QUALITY_GOOD
+        xWHITE,      // ROLE_QUALITY_PERFECT
+
+        xLIGHTGRAY,  // ROLE_SEVERITY_MILD
+        xYELLOW,     // ROLE_SEVERITY_NOTABLE
+        xRED,        // ROLE_SEVERITY_SEVERE
+        xDARKGRAY    // ROLE_SEVERITY_CRITICAL
+    }
+};
+
+const ColourScheme* current_scheme = &avanor_scheme;
+
+// The macros in global.h spell these bytes out, because they must stay
+// string literals for the compiler to fold them into their text.
+static_assert(ROLE_TEXT == 0x10, "MSG_TEXT's escape byte no longer matches");
+static_assert(ROLE_DECORATION == 0x11, "MSG_DECORATION's escape byte no longer matches");
+static_assert(ROLE_LABEL == 0x12, "MSG_LABEL's escape byte no longer matches");
+static_assert(ROLE_VALUE == 0x13, "MSG_VALUE's escape byte no longer matches");
+static_assert(ROLE_EMPHASIS == 0x14, "MSG_EMPHASIS's escape byte no longer matches");
+static_assert(ROLE_KEY == 0x15, "MSG_KEY's escape byte no longer matches");
+static_assert(ROLE_SELECTOR == 0x16, "MSG_SELECTOR's escape byte no longer matches");
+static_assert(ROLE_WARNING == 0x17, "MSG_WARNING's escape byte no longer matches");
+static_assert(ROLE_PROGRESS_NONE == 0x18, "MSG_PROGRESS_NONE's escape byte no longer matches");
+static_assert(ROLE_PROGRESS_GRANDMASTER == 0x1E, "MSG_PROGRESS_GRANDMASTER's escape byte no longer matches");
+static_assert(ROLE_QUALITY_TERRIBLE == 0x20, "MSG_QUALITY_TERRIBLE's escape byte no longer matches");
+static_assert(ROLE_QUALITY_PERFECT == 0x25, "MSG_QUALITY_PERFECT's escape byte no longer matches");
+static_assert(ROLE_SEVERITY_MILD == 0x26, "MSG_SEVERITY_MILD's escape byte no longer matches");
+static_assert(ROLE_SEVERITY_CRITICAL == 0x29, "MSG_SEVERITY_CRITICAL's escape byte no longer matches");
+
+// No role may collide with the byte that introduces one.
+static_assert(ROLE_COUNT > 0x1F && ROLE_QUALITY_TERRIBLE > 0x1F, "a role would be indistinguishable from the escape");
+
+} // namespace
+
+void SetColourScheme(const ColourScheme& scheme)
+{
+    current_scheme = &scheme;
+}
+
+xColor ResolveColour(const unsigned char escape_byte)
+{
+    if (escape_byte < ROLE_FIRST) {
+        return static_cast<xColor>(escape_byte);
+    }
+
+    if (escape_byte >= ROLE_COUNT) {
+        return xLIGHTGRAY;
+    }
+
+    return current_scheme->role[escape_byte - ROLE_FIRST];
+}
+
 void vSetAttr(const int color)
 {
     current_attr = color;
@@ -471,7 +554,7 @@ void vPutS(const char* s)
                 return;
 
             case 31 :
-                vSetAttr(*s++);
+                vSetAttr(ResolveColour(static_cast<unsigned char>(*s++)));
                 break;
 
             case 13 :

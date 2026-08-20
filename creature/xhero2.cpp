@@ -144,11 +144,11 @@ void XHero::PlayerSetup()
 
     vClrScr();
     vGotoXY(7, 4);
-    vPutS(MSG_LIGHTGRAY "Choose a race:");
+    vPutS(MSG_TEXT "Choose a race:");
 
     for (int i = 0; i < 7; i++) {
         vGotoXY(7, 6 + i);
-        auto str = fmt::format(MSG_LIGHTGRAY "[" MSG_YELLOW "{:c}" MSG_LIGHTGRAY "] {} ",
+        auto str = fmt::format(MSG_TEXT "[" MSG_SELECTOR "{:c}" MSG_TEXT "] {} ",
             i + 97, cust_race[i].name);
 
         vPutS(str);
@@ -213,11 +213,11 @@ void XHero::PlayerSetup()
 
     vClrScr();
     vGotoXY(7, 4);
-    vPutS(MSG_LIGHTGRAY "Choose a gender:");
+    vPutS(MSG_TEXT "Choose a gender:");
 
     for (int i = 0; i < 2; i++) {
         vGotoXY(7, 6 + i);
-        auto str = fmt::format(MSG_LIGHTGRAY "[" MSG_YELLOW "{:c}" MSG_LIGHTGRAY "] {} ",
+        auto str = fmt::format(MSG_TEXT "[" MSG_SELECTOR "{:c}" MSG_TEXT "] {} ",
             i + 97, cust_gender[i].name);
 
         vPutS(str);
@@ -245,11 +245,11 @@ void XHero::PlayerSetup()
 
     vClrScr();
     vGotoXY(7, 4);
-    vPutS(MSG_LIGHTGRAY "Choose a profession:");
+    vPutS(MSG_TEXT "Choose a profession:");
 
     for (int i = 0; i < 8; i++) {
         vGotoXY(7, 6 + i);
-        auto str = fmt::format(MSG_LIGHTGRAY "[" MSG_YELLOW "{:c}" MSG_LIGHTGRAY "] {} ", i + 97, cust_profession[i].name);
+        auto str = fmt::format(MSG_TEXT "[" MSG_SELECTOR "{:c}" MSG_TEXT "] {} ", i + 97, cust_profession[i].name);
         vPutS(str);
     }
 
@@ -819,7 +819,7 @@ void XHero::PlayerSetup()
 
     vClrScr();
     vGotoXY(0, 4);
-    vPutS(MSG_LIGHTGRAY "Enter character name (15 letters max.): ");
+    vPutS(MSG_TEXT "Enter character name (15 letters max.): ");
     vRefresh();
     char char_name[20];
     vGetS(char_name, 15);

@@ -197,9 +197,9 @@ DEITY_RELATION XReligion::GetRelation(const XDeity::Id deity) const
 }
 
 const char* relation_name[] = {
-    MSG_RED "fallen champion", MSG_RED "very bad", MSG_RED "bad",
-    MSG_LIGHTGRAY "normal", MSG_LIGHTGRAY "adept", MSG_LIGHTGREEN "follower",
-    MSG_YELLOW "messiah", MSG_WHITE "champion"
+    MSG_QUALITY_TERRIBLE "fallen champion", MSG_QUALITY_TERRIBLE "very bad", MSG_QUALITY_TERRIBLE "bad",
+    MSG_QUALITY_NEUTRAL "normal", MSG_QUALITY_NEUTRAL "adept", MSG_QUALITY_FAIR "follower",
+    MSG_QUALITY_GOOD "messiah", MSG_QUALITY_PERFECT "champion"
 };
 
 const char* XReligion::GetRelationName(DEITY_RELATION dr)

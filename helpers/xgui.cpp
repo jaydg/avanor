@@ -195,7 +195,7 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
         if (cur_line < item_first_line + item_lines_count) {
 
             if (cur_line == item_first_line) {
-                vSetAttr(xLIGHTGRAY);
+                vSetAttr(ResolveColour(ROLE_TEXT));
             }
 
             if (cur_line == item_first_line && item->isSelectable()) {
@@ -203,7 +203,7 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
                     vFPutS(file.value(), " ");
                 } else {
                     char buf[256];
-                    sprintf(buf, MSG_BROWN "[" MSG_YELLOW "%c" MSG_BROWN "]", i++ + 65);
+                    sprintf(buf, MSG_DECORATION "[" MSG_SELECTOR "%c" MSG_DECORATION "]", i++ + 65);
                     vGotoXY(0, y_pos);
                     vPutS(buf);
                     selectable_items_count++;
@@ -228,18 +228,18 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
     }
 
     if (!file) {
-        const char* tprompt = MSG_LIGHTGRAY "Use " MSG_BROWN "[" MSG_YELLOW "/*-+" MSG_BROWN "]" MSG_LIGHTGRAY "to scroll up/down, " MSG_BROWN "[" MSG_YELLOW "ESC" MSG_LIGHTGRAY "," MSG_YELLOW "Z" MSG_BROWN "]" MSG_LIGHTGRAY " to exit.";
+        const char* tprompt = MSG_TEXT "Use " MSG_DECORATION "[" MSG_KEY "/*-+" MSG_DECORATION "]" MSG_TEXT "to scroll up/down, " MSG_DECORATION "[" MSG_KEY "ESC" MSG_TEXT "," MSG_KEY "Z" MSG_DECORATION "]" MSG_TEXT " to exit.";
         vGotoXY(size_x / 2 - x_strlen(tprompt) / 2, size_y - 1);
         vPutS(tprompt);
 
         if (top_line > 0) {
             vGotoXY(size_x - 6, 1);
-            vPutS(MSG_LIGHTGRAY "(" MSG_CYAN "more" MSG_LIGHTGRAY ")");
+            vPutS(MSG_TEXT "(" MSG_KEY "more" MSG_TEXT ")");
         }
 
         if (top_line + list_height < lines_count) {
             vGotoXY(size_x - 6, size_y - 3);
-            vPutS(MSG_LIGHTGRAY "(" MSG_CYAN "more" MSG_LIGHTGRAY ")");
+            vPutS(MSG_TEXT "(" MSG_KEY "more" MSG_TEXT ")");
         }
     }
 

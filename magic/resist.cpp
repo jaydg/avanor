@@ -217,14 +217,14 @@ const char* XResistance::GetResistanceName(const XResistance::Id r)
 }
 
 const char* resist_level[] = {
-    MSG_LIGHTRED "awful",
-    MSG_LIGHTRED "bad",
-    MSG_LIGHTGRAY "none",
-    MSG_LIGHTGREEN "mediocre",
-    MSG_LIGHTGREEN "fair",
-    MSG_LIGHTGREEN "good",
-    MSG_YELLOW "excellent",
-    MSG_WHITE "complete"
+    MSG_QUALITY_POOR "awful",
+    MSG_QUALITY_POOR "bad",
+    MSG_QUALITY_NEUTRAL "none",
+    MSG_QUALITY_FAIR "mediocre",
+    MSG_QUALITY_FAIR "fair",
+    MSG_QUALITY_FAIR "good",
+    MSG_QUALITY_GOOD "excellent",
+    MSG_QUALITY_PERFECT "complete"
 };
 
 const char* XResistance::GetResistanceLevel(const XResistance::Id r) const
