@@ -1682,7 +1682,7 @@ int XHero::Targeting(int range, XPoint * pt)
                 }
             }
 
-            if ((l->map->GetMovability(std::lround(mx), std::lround(my)) >= MO_WALL
+            if ((l->map->GetMovability(std::lround(mx), std::lround(my)) >= XTileType::Movability::WALL
                 || !l->map->GetVisible(std::lround(mx), std::lround(my)))
                 && flag) {
                 if (trange >= 0) {

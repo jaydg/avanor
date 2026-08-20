@@ -349,11 +349,7 @@ void XLocation::DumpLocation(std::ofstream &file)
 
 XLocation* XLocation::current_location = nullptr;
 XCreature* XLocation::last_creature = nullptr;
-int XLocation::pat_offs_x = 0;
-int XLocation::pat_offs_y = 0;
-
-LOCATION_PATTERN XLocation::current_pattern;
-std::vector<PALETTE_MAP> XLocation::pattern_translation;
+XPattern XLocation::current_pattern;
 
 
 //BuildShop(x, y, 9, 3, ItemKind::ARMOUR + ItemKind::WEAPON + ItemKind::POTION + ItemKind::BOOK + ItemKind::SCROLL + ItemKind::NECK + ItemKind::MISSILE + ItemKind::MISSILEW, 'Toberin, the dwarwen shopkeeper')
@@ -514,9 +510,7 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
 //DrawPattern(x, y)
 void XLocation::DrawPattern(int x, int y)
 {
-    pat_offs_x = x;
-    pat_offs_y = y;
-    XLocation::current_location->PutPalette(x, y);
+    XLocation::current_pattern.Draw(XLocation::current_location, x, y);
 }
 
 void XLocation::CreateTimerEvent(const std::string& event, int ttm)

@@ -43,31 +43,35 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SCR_X    0
 #define SCR_Y    2
 
-enum MOVABILITY {
-    MO_UNKNOWN,
-    MO_NORMAL,
-    MO_SHARD,
-    MO_AHARD,
-    MO_HARD,
-    MO_VHARD,
-    MO_UNWALKABLE,
-    MO_WATER,
-    MO_DEEPWATER,
-    MO_WALL = 80,
-    MO_MOUNTAIN
-};
-
-enum VISIBILITY {
-    VI_UNKNOWN,
-    VI_NORMAL,
-    VI_SHARD,
-    VI_AHARD,
-    VI_HARD,
-    VI_VHARD,
-    VI_WALL = 80
-};
-
 struct XTileType {
+    // How hard the tile is to cross. Anything from UNWALKABLE upwards
+    // cannot be walked at all, which is the comparison the map and the
+    // AI both make.
+    enum class Movability {
+        UNKNOWN,
+        NORMAL,
+        SHARD,
+        AHARD,
+        HARD,
+        VHARD,
+        UNWALKABLE,
+        WATER,
+        DEEPWATER,
+        WALL = 80,
+        MOUNTAIN
+    };
+
+    // How much the tile blocks sight, on the same scale.
+    enum class Visibility {
+        UNKNOWN,
+        NORMAL,
+        SHARD,
+        AHARD,
+        HARD,
+        VHARD,
+        WALL = 80
+    };
+
     enum Type {
         UNKNOWN,
         GREEN_GRASS,
@@ -105,8 +109,8 @@ struct XTileType {
     char view;
     char color;
     const char* name;
-    MOVABILITY movability; // 0 - normal, 1 -little hard, 80 - UNMOVEABLE
-    VISIBILITY visibility; // 0 - normal, 1 ... 80 - wall
+    Movability movability;
+    Visibility visibility;
 };
 
 extern XTileType std_tile_data[];
@@ -185,7 +189,7 @@ class XMap
         void Put(XCreature* cr) const;
         void Center(int x, int y);
         void PutChar(int x, int y, char c, int color) const;
-        [[nodiscard]] int GetMovability(int x, int y) const;
+        [[nodiscard]] XTileType::Movability GetMovability(int x, int y) const;
         [[nodiscard]] int XGetMovability(int x, int y) const;
         [[nodiscard]] int GetVisibility(int x, int y) const;
         void SetXY(int x, int y, XTileType::Type std_map) const;

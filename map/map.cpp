@@ -62,34 +62,34 @@ void XTileType::RegisterLua(sol::state_view& lua)
 }
 
 XTileType std_tile_data[] = {
-    {' ', xBLACK, "unknown", MO_UNKNOWN, VI_UNKNOWN},
-    {'.', xGREEN, "green grass", MO_NORMAL, VI_NORMAL},
-    {'T', xGREEN, "large tree", MO_HARD, VI_HARD},
-    {'.', xYELLOW, "sand", MO_SHARD, VI_NORMAL},
-    {'#', xCYAN, "window", MO_WALL, VI_NORMAL},
-    {'#', xDARKGRAY, "magma", MO_WALL, VI_WALL},
-    {'#', xLIGHTGRAY, "quartz", MO_WALL, VI_WALL},
-    {'.', xLIGHTGRAY, "cave floor", MO_NORMAL, VI_NORMAL},
-    {'.', xLIGHTGRAY, "stone floor", MO_NORMAL, VI_NORMAL},
-    {'.', xBROWN, "path", MO_NORMAL, VI_NORMAL},
-    {'#', xBROWN, "wooden wall", MO_WALL, VI_WALL},
-    {'#', xLIGHTGRAY, "stone wall", MO_WALL, VI_WALL},
-    {'=', xLIGHTBLUE, "water", MO_WATER, VI_NORMAL},
-    {'=', xBLUE, "deep water", MO_DEEPWATER, VI_NORMAL},
-    {'=', xRED, "lava", MO_WATER, VI_NORMAL},
-    {'^', xGREEN, "hill", MO_NORMAL, VI_NORMAL},
-    {'^', xBROWN, "low mountains", MO_VHARD, VI_AHARD},
-    {'^', xLIGHTGRAY, "mountains", MO_MOUNTAIN, VI_HARD},
-    {'^', xWHITE, "high mountains", MO_WALL, VI_VHARD},
-    {'=', xBROWN, "bridge", MO_NORMAL, VI_NORMAL},
-    {'.', xYELLOW, "road", MO_NORMAL, VI_NORMAL},
-    {'.', xDARKGRAY, "obsidian floor", MO_NORMAL, VI_NORMAL},
-    {'X', xBROWN, "fence", MO_WALL, VI_NORMAL},
-    {'.', xYELLOW, "golden floor", MO_NORMAL, VI_NORMAL},
-    {'#', xWHITE, "marble wall", MO_WALL, VI_WALL},
-    {'#', xDARKGRAY, "black marble wall", MO_WALL, VI_WALL},
-    {'X', xYELLOW, "golden fence", MO_WALL, VI_NORMAL},
-    {'0', xWHITE, "teleport circle", MO_NORMAL, VI_NORMAL},
+    {' ', xBLACK, "unknown", XTileType::Movability::UNKNOWN, XTileType::Visibility::UNKNOWN},
+    {'.', xGREEN, "green grass", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'T', xGREEN, "large tree", XTileType::Movability::HARD, XTileType::Visibility::HARD},
+    {'.', xYELLOW, "sand", XTileType::Movability::SHARD, XTileType::Visibility::NORMAL},
+    {'#', xCYAN, "window", XTileType::Movability::WALL, XTileType::Visibility::NORMAL},
+    {'#', xDARKGRAY, "magma", XTileType::Movability::WALL, XTileType::Visibility::WALL},
+    {'#', xLIGHTGRAY, "quartz", XTileType::Movability::WALL, XTileType::Visibility::WALL},
+    {'.', xLIGHTGRAY, "cave floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'.', xLIGHTGRAY, "stone floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'.', xBROWN, "path", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'#', xBROWN, "wooden wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
+    {'#', xLIGHTGRAY, "stone wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
+    {'=', xLIGHTBLUE, "water", XTileType::Movability::WATER, XTileType::Visibility::NORMAL},
+    {'=', xBLUE, "deep water", XTileType::Movability::DEEPWATER, XTileType::Visibility::NORMAL},
+    {'=', xRED, "lava", XTileType::Movability::WATER, XTileType::Visibility::NORMAL},
+    {'^', xGREEN, "hill", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'^', xBROWN, "low mountains", XTileType::Movability::VHARD, XTileType::Visibility::AHARD},
+    {'^', xLIGHTGRAY, "mountains", XTileType::Movability::MOUNTAIN, XTileType::Visibility::HARD},
+    {'^', xWHITE, "high mountains", XTileType::Movability::WALL, XTileType::Visibility::VHARD},
+    {'=', xBROWN, "bridge", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'.', xYELLOW, "road", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'.', xDARKGRAY, "obsidian floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'X', xBROWN, "fence", XTileType::Movability::WALL, XTileType::Visibility::NORMAL},
+    {'.', xYELLOW, "golden floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
+    {'#', xWHITE, "marble wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
+    {'#', xDARKGRAY, "black marble wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
+    {'X', xYELLOW, "golden fence", XTileType::Movability::WALL, XTileType::Visibility::NORMAL},
+    {'0', xWHITE, "teleport circle", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
 };
 
 XMapTile::XMapTile()
@@ -292,7 +292,7 @@ int XMap::GetVisibility(const int x, const int y) const
         return 0;
     }
 
-    if (std_tile_data[map[x + y * len].n].visibility == VI_WALL) {
+    if (std_tile_data[map[x + y * len].n].visibility == XTileType::Visibility::WALL) {
         return 0;
     }
 
@@ -307,7 +307,7 @@ const char* XMap::GetDescription(const int x, const int y) const
     return std_tile_data[map[x + y * len].n].name;
 }
 
-int XMap::GetMovability(const int x, const int y) const
+XTileType::Movability XMap::GetMovability(const int x, const int y) const
 {
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
@@ -316,7 +316,7 @@ int XMap::GetMovability(const int x, const int y) const
     auto* xdoor = dynamic_cast<XDoor *>(_map.pSpecialObject.get());
 
     if (xdoor && xdoor->isOpened == 0) {
-        return MO_WALL;
+        return XTileType::Movability::WALL;
     }
 
     return std_tile_data[_map.n].movability;
@@ -336,7 +336,7 @@ int XMap::XGetMovability(const int x, const int y) const
     XMapObject* spec = map[x + y * len].pSpecialObject.get();
     auto* xdoor = dynamic_cast<XDoor *>(spec);
 
-    if (std_tile_data[m->n].movability < MO_UNWALKABLE
+    if (std_tile_data[m->n].movability < XTileType::Movability::UNWALKABLE
         && !(xdoor && xdoor->isOpened == 0)) {
         return 0;
     }
@@ -602,7 +602,7 @@ namespace {
 // moves. Connectivity is a property of the map, not of its occupants.
 bool isWalkableTerrain(const XMap* map, int x, int y)
 {
-    return std_tile_data[map->GetXY(x, y)].movability < MO_UNWALKABLE;
+    return std_tile_data[map->GetXY(x, y)].movability < XTileType::Movability::UNWALKABLE;
 }
 
 // 4-directional flood fill of every walkable tile reachable from (sx, sy),

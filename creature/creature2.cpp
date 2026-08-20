@@ -248,7 +248,7 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
         epx = std::lround(nmx);
         epy = std::lround(nmy);
 
-        if (tmap->GetMovability(epx, epy) >= MO_WALL) {
+        if (tmap->GetMovability(epx, epy) >= XTileType::Movability::WALL) {
             epx = std::lround(mx);
             epy = std::lround(my);
             break;

@@ -21,8 +21,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/los.h"
 #include "creature/std_ai.h"
 
-#define NOT_EQUAL(a, b) ((a) - (b)) // is faster than a != b when we need int instead of bool
-
 struct opaque_info {
     XStandardAI* ai;
     XMap* map;
@@ -36,7 +34,7 @@ static int grid_callback(void* opaque, const int x, const int y, const int radiu
         info->ai->AnalyzeGrid(x, y, radius);
     }
 
-    return NOT_EQUAL(info->map->GetMovability(x, y), MO_WALL);
+    return info->map->GetMovability(x, y) != XTileType::Movability::WALL;
 }
 
 void XStandardAI::AnalyzeView(const int radius)

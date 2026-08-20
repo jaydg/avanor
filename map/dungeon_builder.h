@@ -24,10 +24,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
-#include "game/location.h"
 #include "helpers/point.h"
 #include "helpers/rect.h"
 #include "map/map.h"
+#include "map/pattern.h"
 
 class XMap;
 class XLocation;
@@ -40,8 +40,7 @@ class XLocation;
 // A border cell holding '+' or '.' is where a corridor may attach, which
 // is the one glyph convention the generator itself relies on.
 struct RoomTemplate {
-    LOCATION_PATTERN pattern;
-    std::vector<PALETTE_MAP> translation;
+    XPattern pattern;
     sol::protected_function on_drawn;
     int weight;
 

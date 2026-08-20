@@ -37,6 +37,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/shop.h"
 #include "item/itemdef.h"
 #include "map/map.h"
+#include "map/pattern.h"
 #include "map/map_objects.h"
 #include "map/xanyplace.h"
 
@@ -56,21 +57,6 @@ enum class LuaEvent {
 };
 
 void RegisterLuaEventEnum(sol::state_view& lua);
-
-struct PALETTE_MAP {
-    char this_view;
-    XTileType::Type real_view;
-
-    // Set instead of real_view when this translation resolves
-    // to a spawn callback rather than a plain tile type.
-    sol::protected_function callback;
-};
-
-struct LOCATION_PATTERN {
-    std::string pattern;
-    int w = 0;
-    int h = 0;
-};
 
 #define MAX_PLACES 8
 
@@ -263,10 +249,9 @@ class XLocation : public XObject
 
         static XLocation* current_location;
         static XCreature* last_creature;
-        static LOCATION_PATTERN current_pattern;
-        static std::vector<PALETTE_MAP> pattern_translation;
-        static int pat_offs_x;
-        static int pat_offs_y;
+        // The pattern the world script is building with, between its
+        // SetPattern() and its DrawPattern().
+        static XPattern current_pattern;
 
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name,
                               sol::optional<int> door);
@@ -282,20 +267,12 @@ class XLocation : public XObject
         static std::vector<int>* lua_int_buffer;
         static size_t lua_int_index;
 
-        // Draws a pattern through its palette at (x, y): each cell either
-        // becomes a tile or, for a glyph bound to a script callback, gets
-        // a terrain fitting its surroundings and then calls the callback.
-        // Public because it is the engine's general pattern-stamping
-        // service - the dungeon generator draws its rooms with it too.
-        void PutPalette(const LOCATION_PATTERN& pattern, const std::vector<PALETTE_MAP>& translation, int x, int y);
 
     protected:
         std::string brief_name; // max. 10 characters
         std::string full_name;  // max. 80 characters
         std::unique_ptr<XAnyPlace> places[MAX_PLACES];
 
-        // The pattern the world script is currently building with.
-        void PutPalette(int x, int y);
 
         void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd = XShop::Door::UP);
 };

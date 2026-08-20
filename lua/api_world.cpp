@@ -214,27 +214,18 @@ void DropItemAt(void* item, void* object)
 // "###")
 void SetPattern(int w, int h, const std::string& txt)
 {
-    XLocation::current_pattern.w = w;
-    XLocation::current_pattern.h = h;
-    XLocation::current_pattern.pattern = txt;
-    XLocation::pattern_translation.clear();
+    XLocation::current_pattern.Setup(w, h, txt);
 }
 
 //AddTranslation("1", GOLDEN_FLOOR)
 //AddTranslation("A", function(x, y) Guardian('dwarf_guard', GID_DWARVEN_GUARDIAN, x, y) end)
 void AddTranslation(const std::string& view, sol::object target)
 {
-    PALETTE_MAP pm;
-    pm.this_view = view[0];
-
     if (target.get_type() == sol::type::function) {
-        pm.callback = target.as<sol::protected_function>();
-        pm.real_view = XTileType::UNKNOWN;
+        XLocation::current_pattern.AddTranslation(view[0], target.as<sol::protected_function>());
     } else {
-        pm.real_view = (XTileType::Type)target.as<int>();
+        XLocation::current_pattern.AddTranslation(view[0], static_cast<XTileType::Type>(target.as<int>()));
     }
-
-    XLocation::pattern_translation.push_back(pm);
 }
 
 //DefineRoom(50, 9, 7, "####+####" .., { ['#'] = XTileType.MAGMA }, OnDrawn)
@@ -247,22 +238,16 @@ void DefineRoom(const int weight, const int w, const int h, const std::string& p
 {
     RoomTemplate room;
     room.weight = weight;
-    room.pattern.w = w;
-    room.pattern.h = h;
-    room.pattern.pattern = pattern;
+    room.pattern.Setup(w, h, pattern);
 
     for (auto& [glyph, target] : translations) {
-        PALETTE_MAP pm;
-        pm.this_view = glyph.as<std::string>()[0];
+        const char ch = glyph.as<std::string>()[0];
 
         if (target.get_type() == sol::type::function) {
-            pm.callback = target.as<sol::protected_function>();
-            pm.real_view = XTileType::UNKNOWN;
+            room.pattern.AddTranslation(ch, target.as<sol::protected_function>());
         } else {
-            pm.real_view = static_cast<XTileType::Type>(target.as<int>());
+            room.pattern.AddTranslation(ch, static_cast<XTileType::Type>(target.as<int>()));
         }
-
-        room.translation.push_back(pm);
     }
 
     if (on_drawn) {

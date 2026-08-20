@@ -38,7 +38,7 @@ std::vector<RoomTemplate> room_templates;
 
 bool RoomTemplate::isExit(const int x, const int y) const
 {
-    const char ch = pattern.pattern[x + y * pattern.w];
+    const char ch = pattern.At(x, y);
 
     return ch == '+' || ch == '.';
 }
@@ -129,8 +129,8 @@ XRoom::XRoom(int len, int hgt, const RoomTemplate* _room)
             ec--;
         }
     } else { // a room the world script defined
-        l = room->pattern.w;
-        h = room->pattern.h;
+        l = room->pattern.Width();
+        h = room->pattern.Height();
         x = vRand() % (len - l - 6) + 3;
         y = vRand() % (hgt - h - 6) + 3;
 
@@ -187,7 +187,7 @@ void XRoom::Draw(XLocation * l)
         // The room's own palette resolves its glyphs - tiles directly,
         // and chests, doors or traps through the script callbacks bound
         // to them, the same way a hand-built location's pattern works.
-        l->PutPalette(room->pattern, room->translation, r.left, r.top);
+        room->pattern.Draw(l, r.left, r.top);
 
         // Marked so the corridor pass routes around the room instead of
         // carving through its walls.
@@ -198,7 +198,7 @@ void XRoom::Draw(XLocation * l)
         }
 
         if (room->on_drawn.valid()) {
-            room->on_drawn(r.left, r.top, room->pattern.w, room->pattern.h);
+            room->on_drawn(r.left, r.top, room->pattern.Width(), room->pattern.Height());
         }
     }
 }
@@ -524,7 +524,7 @@ bool XDungeonBuilder::DigOut(const XPoint& door, const XRect& room)
 
             came_from[next] = queue[head];
 
-            if (m->GetMovability(nx, ny) < MO_UNWALKABLE || m->GetRoom(nx, ny) != 0) {
+            if (m->GetMovability(nx, ny) < XTileType::Movability::UNWALKABLE || m->GetRoom(nx, ny) != 0) {
                 // Reached the level. Carve back to the door.
                 for (int at = came_from[next]; at != start; at = came_from[at]) {
                     m->SetXY(at % m->len, at / m->len, XTileType::CAVE_FLOOR);
