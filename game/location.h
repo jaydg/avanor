@@ -57,24 +57,6 @@ enum class LuaEvent {
 
 void RegisterLuaEventEnum(sol::state_view& lua);
 
-enum PALETTE {
-    PAL_UNKNOWN	= 0x0000,
-    PAL_SMALL_TOWN	= 0x0001,
-    PAL_SMALL_VILLAGE	= 0x0002,
-    PAL_CITY	= 0x0003,
-    PAL_DWARF_CITY	= 0x0004,
-    PAL_WIZARD_TOWER	= 0x0005,
-    PAL_AHKULAN_CASTLE	= 0x0006,
-    PAL_RAT_CELLAR	= 0x0007,
-    PAL_TOWER_RUINS	= 0x0008,
-    PAL_DWARF_TREASURE	= 0x0009,
-    PAL_KINGS_TREASURE	= 0x000A,
-    PAL_WIZTOWER_TOP,
-    PAL_UNDEAD_TOMB0,
-    PAL_UNDEAD_TOMB1,
-    PAL_EXTINCT_VOLCANO
-};
-
 struct PALETTE_MAP {
     char this_view;
     XTileType::Type real_view;
