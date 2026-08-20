@@ -70,7 +70,7 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        creature2.cpp creature.cpp dungeon_builder.cpp cave_builder.cpp        \
        plain_builder.cpp bodypart.cpp anycr.cpp ai_view.cpp
 
-LIBS = $(shell pkg-config --libs fmt ncurses luajit) -lzstd
+LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
 
 ifdef debug
 	CFLAGS += -g

@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <fmt/format.h>
+
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
@@ -25,6 +27,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 
 #include <sol/sol.hpp>
+
+#include <ncpp/NotCurses.hh>
+#include <ncpp/Plane.hh>
 
 #include "engine/global.h"
 
@@ -55,17 +60,15 @@ unsigned long total_it = 0;
 unsigned long cr_kiled = 0;
 unsigned long cr_died = 0;
 
-const char* color_convert_table[] = {
-    "\x1F\x00", "\x1F\x01", "\x1F\x02", "\x1F\x03",
-    "\x1F\x04", "\x1F\x05", "\x1F\x06", "\x1F\x07",
-    "\x1F\x08", "\x1F\x09", "\x1F\x0A", "\x1F\x0B",
-    "\x1F\x0C", "\x1F\x0D", "\x1F\x0E", "\x1F\x0F",
-};
+std::string SCOLOR(const unsigned rgb)
+{
+    return fmt::format("<#{:06x}>", rgb & 0xFFFFFF);
+}
 
 int __animation_flag = 100;
 
 #ifndef XWIN32
-    char* vscreen;
+    VCell* vscreen;
 #endif
 
 int size_x = 80;
@@ -73,7 +76,18 @@ int size_y = 25;
 
 int cursor_pos_x = 0;
 int cursor_pos_y = 0;
-int current_attr = 7;
+unsigned current_attr = xLIGHTGRAY;
+
+#ifdef XLINUX
+// The terminal. Owned here, created by vInit() and stopped by vFinit().
+ncpp::NotCurses* nc = nullptr;
+ncpp::Plane* screen = nullptr;
+
+// vKbhit() has to take a key out of notcurses to know one is there, so
+// it keeps it for the vGetch() that follows.
+ncinput pending_key{};
+bool has_pending_key = false;
+#endif
 
 #ifdef XWIN32
     #include <windows.h>
@@ -113,37 +127,26 @@ void vInit()
 #endif //XWIN32
 
 #ifdef XLINUX
-    initscr();
-    cbreak();
-    noecho();
-    nonl();
-    raw();
-    start_color();
+    notcurses_options opts{
+        .loglevel = NCLOGLEVEL_SILENT,
+        .flags = NCOPTION_SUPPRESS_BANNERS,
+    };
 
-    init_pair(0, COLOR_BLACK, COLOR_BLACK);
-    init_pair(xBLUE, COLOR_BLUE, COLOR_BLACK);
-    init_pair(xGREEN, COLOR_GREEN, COLOR_BLACK);
-    init_pair(xRED, COLOR_RED, COLOR_BLACK);
-    init_pair(xMAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(xCYAN, COLOR_CYAN, COLOR_BLACK);
-    init_pair(xBROWN, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(xLIGHTGRAY, COLOR_WHITE, COLOR_BLACK);
+    nc = new ncpp::NotCurses(opts);
+    screen = nc->get_stdplane();
 
-    init_pair(xLIGHTBLUE, COLOR_BLUE, COLOR_BLACK);
-    init_pair(xLIGHTGREEN, COLOR_GREEN, COLOR_BLACK);
-    init_pair(xLIGHTRED, COLOR_RED, COLOR_BLACK);
-    init_pair(xLIGHTMAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(xLIGHTCYAN, COLOR_CYAN, COLOR_BLACK);
-    init_pair(xYELLOW, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(xWHITE, COLOR_WHITE, COLOR_BLACK);
+    unsigned rows = 0;
+    unsigned cols = 0;
+    screen->get_dim(&rows, &cols);
 
-    size_x = COLS;
-    size_y = LINES;
+    size_x = static_cast<int>(cols);
+    size_y = static_cast<int>(rows);
 
+    nc->cursor_disable();
 #endif //XLINUX
 
 #ifndef XWIN32
-    vscreen = new char[size_x * size_y * 2];
+    vscreen = new VCell[size_x * size_y];
 #endif
 
     vClrScr();
@@ -159,9 +162,9 @@ void vClrScr()
         vscreenw[i] = blank_char;
     }
 #else
-    for (int i = 0; i < size_x * size_y * 2; i += 2) {
-        vscreen[i] = 32;
-        vscreen[i + 1] = 7;
+    for (int i = 0; i < size_x * size_y; i++) {
+        vscreen[i].ch = ' ';
+        vscreen[i].rgb = xLIGHTGRAY;
     }
 #endif
 }
@@ -175,7 +178,12 @@ void vFinit()
     delete[] vscreenw;
 #endif
 #ifdef XLINUX
-    endwin();
+    if (nc) {
+        nc->stop();
+        delete nc;
+        nc = nullptr;
+        screen = nullptr;
+    }
 #endif
 #ifndef XWIN32
     delete[] vscreen;
@@ -193,36 +201,28 @@ void vRefresh()
 #endif
 
 #ifdef XLINUX
-    move(0, 0);
+    for (int y = 0; y < size_y; y++) {
+        for (int x = 0; x < size_x; x++) {
+            const VCell& cell = vscreen[x + y * size_x];
 
-    for (int i = 0; i < size_x * size_y; i++) {
-        char ch2 = vscreen[i * 2 + 1];
-        char ch1 = vscreen[i * 2];
-
-        if (ch1 < ' ') {
-            ch1 = ' ';
-        }
-
-        if (ch2 > 7) {
-            addch(ch1 | (ch2 << 8) | A_BOLD);
-        } else {
-            addch(ch1 | (ch2 << 8));
+            screen->set_fg_rgb(cell.rgb);
+            screen->set_bg_rgb(0x000000);
+            screen->putc(y, x, cell.ch < ' ' ? ' ' : cell.ch);
         }
     }
 
-    refresh();
+    nc->render();
 #endif
 }
 
-void vPutCh(const int x, const int y, char ch, int attr)
+void vPutCh(const int x, const int y, char ch, unsigned rgb)
 {
     assert(x >= 0 && y >= 0 && x <= size_x && y <= size_y);
 #ifdef XWIN32
     CHAR_INFO tmp = { ch, attr };
     vscreenw[x + y * size_x] = tmp;
 #else
-    vscreen[x * 2 + y * size_x * 2] = ch;
-    vscreen[x * 2 + y * size_x * 2 + 1] = attr;
+    vscreen[x + y * size_x] = {ch, rgb};
 #endif
 };
 
@@ -231,7 +231,7 @@ char vTestCh(const int x, const int y)
 #ifdef XWIN32
     return vscreenw[x + y * size_x].Char.AsciiChar;
 #else
-    return vscreen[x * 2 + y * size_x * 2];
+    return vscreen[x + y * size_x].ch;
 #endif
 }
 
@@ -240,7 +240,7 @@ void vPutCh(int x, int y, char ch)
 #ifdef XWIN32
     vscreenw[x + y * size_x].Char.AsciiChar = ch;
 #else
-    vscreen[x * 2 + y * size_x * 2] = ch;
+    vscreen[x + y * size_x].ch = ch;
 #endif
 };
 
@@ -313,16 +313,19 @@ void vDelay(int n)
 int vKbhit()
 {
 #ifdef XLINUX
-    timeout(0);
-    const int ch = getch();
-    timeout(-1);
+    ncinput ni{};
+    const struct timespec now = {0, 0};
 
-    if (ch == ERR) {
+    if (nc->get(&now, &ni) == 0) {
         return 0;
     }
 
-    ungetch(ch);
+    // Something was typed; hand it back on the next vGetch().
+    pending_key = ni;
+    has_pending_key = true;
+
     return 1;
+
 #else
     return kbhit();
 #endif
@@ -331,54 +334,58 @@ int vKbhit()
 int vGetch()
 {
 #ifdef XLINUX
-    int ch = getch();
+    // notcurses decodes the terminal's escape sequences itself, so what
+    // arrives here is either a Unicode codepoint or one of its NCKEY_*
+    // synthetic keys.
+    ncinput ni{};
 
-    if (ch != 27) {
-        return ch;
-    }
+    while (true) {
+        uint32_t key;
 
-    timeout(0);
-    ch = getch();
-    timeout(-1);
+        if (has_pending_key) {
+            ni = pending_key;
+            key = ni.id;
+            has_pending_key = false;
+        } else {
+            key = nc->get(true, &ni);
+        }
 
-    if (ch == ERR) {
-        return KEY_ESC;
-    }
 
-    if (ch != '[') {
-        ungetch(ch);
-        return KEY_ESC;
-    }
+        if (key == static_cast<uint32_t>(-1) || ni.evtype == NCTYPE_RELEASE) {
+            continue;
+        }
 
-    switch (getch()) {
-        case 'A':
-            return KEY_UP;
+        switch (key) {
+            case NCKEY_UP:        return KEY_UP;
+            case NCKEY_DOWN:      return KEY_DOWN;
+            case NCKEY_LEFT:      return KEY_LEFT;
+            case NCKEY_RIGHT:     return KEY_RIGHT;
+            case NCKEY_HOME:      return KEY_HOME;
+            case NCKEY_END:       return KEY_END;
+            case NCKEY_PGUP:      return KEY_PGUP;
+            case NCKEY_PGDOWN:    return KEY_PGDOWN;
+            case NCKEY_CENTER:    return KEY_CENTER;
+            case NCKEY_ENTER:     return KEY_ENTER;
+            case NCKEY_BACKSPACE: return KEY_BACKSPACE;
+            case NCKEY_DEL:       return KEY_DEL;
+            case NCKEY_ESC:       return KEY_ESC;
+            default:
+                break;
+        }
 
-        case 'B':
-            return KEY_DOWN;
+        // A terminal that reports modifiers separately hands us the plain
+        // letter plus a ctrl flag; the game expects the control code.
+        if (ni.ctrl && key >= 'a' && key <= 'z') {
+            return static_cast<int>(key - 'a' + 1);
+        }
 
-        case 'C':
-            return KEY_RIGHT;
+        if (ni.ctrl && key >= 'A' && key <= 'Z') {
+            return static_cast<int>(key - 'A' + 1);
+        }
 
-        case 'D':
-            return KEY_LEFT;
-
-        case 'G':
-            return KEY_CENTER;
-
-        case '1':
-            return getch() == '~' ? KEY_HOME : KEY_UNKNOWN;
-
-        case '4':
-            return getch() == '~' ? KEY_END : KEY_UNKNOWN;
-
-        case '5':
-            return getch() == '~' ? KEY_PGUP : KEY_UNKNOWN;
-
-        case '6':
-            return getch() == '~' ? KEY_PGDOWN : KEY_UNKNOWN;
-        default:
-            return KEY_UNKNOWN;
+        if (key < 0x80) {
+            return static_cast<int>(key);
+        }
     }
 
 #else
@@ -413,22 +420,8 @@ int vXGetch(const char* ch_buf)
 
 void vXGotoXY(int x, int y)
 {
-    cursor_pos_x = x;
-    cursor_pos_y = y;
-
-#ifdef XWIN32
-    CONSOLE_CURSOR_INFO ConsoleCursorInfo = ccInfo;
-    ConsoleCursorInfo.bVisible = TRUE;
-    SetConsoleCursorInfo(hStdout, &ConsoleCursorInfo);
-
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(hStdout, coord);
-#endif
-
 #ifdef XLINUX
-    move(y, x);
+    nc->cursor_enable(y, x);
 #endif
 }
 
@@ -441,7 +434,7 @@ void vHideCursor()
 #endif
 
 #ifdef XLINUX
-    vXGotoXY(size_x, size_y);
+    nc->cursor_disable();
 #endif
 }
 
@@ -487,6 +480,12 @@ const ColourScheme avanor_scheme = {
 };
 
 const ColourScheme* current_scheme = &avanor_scheme;
+
+// Escape bytes 0-15 are the old sixteen colours, in their old order.
+const unsigned legacy_palette[16] = {
+    xBLACK, xBLUE, xGREEN, xCYAN, xRED, xMAGENTA, xBROWN, xLIGHTGRAY,
+    xDARKGRAY, xLIGHTBLUE, xLIGHTGREEN, xLIGHTCYAN, xLIGHTRED, xLIGHTMAGENTA, xYELLOW, xWHITE
+};
 
 // What a role is called when it is written into a string. The order does
 // not matter here; the names do.
@@ -577,6 +576,16 @@ std::string ExpandMarkup(const std::string_view text)
         }
 
         const std::string_view name = text.substr(pos + 1, close - pos - 1);
+
+        // <#rrggbb>: a colour given outright.
+        if (name.size() == 7 && name[0] == '#'
+            && name.find_first_not_of("0123456789abcdefABCDEF", 1) == std::string_view::npos) {
+            out += RGB_ESCAPE;
+            out += name.substr(1);
+            pos = close;
+            continue;
+        }
+
         bool known = false;
 
         for (const auto& [role_name, role] : role_names) {
@@ -599,10 +608,15 @@ std::string ExpandMarkup(const std::string_view text)
     return out;
 }
 
-xColor ResolveColour(const unsigned char escape_byte)
+unsigned PaletteRGB(const unsigned char slot)
+{
+    return legacy_palette[slot & 0x0F];
+}
+
+unsigned ResolveColour(const unsigned char escape_byte)
 {
     if (escape_byte < ROLE_FIRST) {
-        return static_cast<xColor>(escape_byte);
+        return PaletteRGB(escape_byte);
     }
 
     if (escape_byte >= ROLE_COUNT) {
@@ -612,9 +626,9 @@ xColor ResolveColour(const unsigned char escape_byte)
     return current_scheme->role[escape_byte - ROLE_FIRST];
 }
 
-void vSetAttr(const int color)
+void vSetAttr(const unsigned rgb)
 {
-    current_attr = color;
+    current_attr = rgb;
 }
 
 void vClrEol()
@@ -647,6 +661,22 @@ void vPutS(const char* s)
                 vSetAttr(ResolveColour(static_cast<unsigned char>(*s++)));
                 break;
 
+            case RGB_ESCAPE : {
+                // Six hex digits follow, put there by ExpandMarkup(), so
+                // they are known to be six hex digits.
+                unsigned rgb = 0;
+
+                for (int i = 0; i < 6 && *s; i++) {
+                    const char digit = *s++;
+
+                    rgb = rgb * 16 + static_cast<unsigned>(digit <= '9' ? digit - '0'
+                                                                       : (digit | 0x20) - 'a' + 10);
+                }
+
+                vSetAttr(rgb);
+                break;
+            }
+
             case 13 :
             case '\n' :
                 cursor_pos_x = 0;
@@ -678,6 +708,11 @@ void vFPutS(std::ofstream &file, std::string_view s)
         if (s[pos] == '\x1F') {
             // Escape sequence: skip byte 31 and 1 following byte
             ++pos;
+            continue;
+        }
+
+        if (s[pos] == RGB_ESCAPE) {
+            pos += RGB_ESCAPE_LENGTH - 1;
             continue;
         }
         file << s[pos];
@@ -726,7 +761,7 @@ V_BUFFER::V_BUFFER()
 #ifdef XWIN32
     buffer = new char[size_x * size_y * sizeof(CHAR_INFO)];
 #else
-    buffer = new char[size_x * size_y * 2];
+    buffer = new char[size_x * size_y * sizeof(VCell)];
 #endif
 }
 
@@ -740,7 +775,7 @@ void vStore(const V_BUFFER* buf)
 #ifdef XWIN32
     memcpy(buf->buffer, vscreenw, size_x * size_y * sizeof(CHAR_INFO));
 #else
-    memcpy(buf->buffer, vscreen, size_x * size_y * 2);
+    memcpy(buf->buffer, vscreen, size_x * size_y * sizeof(VCell));
 #endif
 }
 
@@ -749,7 +784,7 @@ void vRestore(const V_BUFFER* buf)
 #ifdef XWIN32
     memcpy(vscreenw, buf->buffer, size_x * size_y * sizeof(CHAR_INFO));
 #else
-    memcpy(vscreen, buf->buffer, size_x * size_y * 2);
+    memcpy(vscreen, buf->buffer, size_x * size_y * sizeof(VCell));
 #endif
 }
 

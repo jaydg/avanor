@@ -51,7 +51,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #ifdef XLINUX
-    #include <curses.h>
+    // The terminal is driven by notcurses; see engine/global.cpp.
     #include <cstring>
     #define stricmp(a, b) strcasecmp(a, b)
     #define strnicmp(a, b, n) strncasecmp(a, b, n)
@@ -78,23 +78,28 @@ extern int __animation_flag; // 0 - none, other - delay milliseconds
     #define M_PI 3.1415926535897932384
 #endif
 
+// The sixteen colours Avanor was written in, as the colours they were
+// always meant to be rather than as terminal palette slots: brown is
+// brown here, not "yellow, but dim". A value IS an RGB triple, so
+// anything holding an xColor - a tile, an item, a creature - already
+// holds a colour a terminal can draw exactly.
 enum xColor {
-    xBLACK = 0,
-    xBLUE,
-    xGREEN,
-    xCYAN,
-    xRED,
-    xMAGENTA,
-    xBROWN,
-    xLIGHTGRAY,
-    xDARKGRAY,
-    xLIGHTBLUE,
-    xLIGHTGREEN,
-    xLIGHTCYAN,
-    xLIGHTRED,
-    xLIGHTMAGENTA,
-    xYELLOW,
-    xWHITE = 15
+    xBLACK        = 0x000000,
+    xBLUE         = 0x0000C4,
+    xGREEN        = 0x00A400,
+    xCYAN         = 0x00A6A6,
+    xRED          = 0xC00000,
+    xMAGENTA      = 0xA800A8,
+    xBROWN        = 0x8B5A2B,
+    xLIGHTGRAY    = 0xC0C0C0,
+    xDARKGRAY     = 0x707070,
+    xLIGHTBLUE    = 0x5A8BFF,
+    xLIGHTGREEN   = 0x50E050,
+    xLIGHTCYAN    = 0x50E0E0,
+    xLIGHTRED     = 0xFF5A5A,
+    xLIGHTMAGENTA = 0xFF60FF,
+    xYELLOW       = 0xFFD24A,
+    xWHITE        = 0xFFFFFF
 };
 
 // Registers this enum as the Lua table xColor.MEMBER (e.g. xColor.xBLUE)
@@ -219,14 +224,21 @@ enum TextRole {
 // game; see global.cpp for the one Avanor ships with.
 struct ColourScheme {
     const char* name;
-    xColor role[ROLE_COUNT - ROLE_FIRST];
+
+    // An RGB value per role. xColor's members are RGB values too, so a
+    // scheme may name them or write its own triples.
+    unsigned role[ROLE_COUNT - ROLE_FIRST];
 };
 
 void SetColourScheme(const ColourScheme& scheme);
 
 // The colour an escape byte asks for: literal below ROLE_FIRST, and the
 // scheme's answer at or above it.
-xColor ResolveColour(unsigned char escape_byte);
+unsigned ResolveColour(unsigned char escape_byte);
+
+// The colour behind one of the sixteen legacy escape bytes, which is
+// what MSG_BROWN and its remaining siblings still emit.
+unsigned PaletteRGB(unsigned char slot);
 
 // Turns the roles written into a string - "<LABEL>Name:<VALUE> Deus" -
 // into the escape bytes the screen is painted from. Everything the game
@@ -238,12 +250,25 @@ xColor ResolveColour(unsigned char escape_byte);
 // a string says a single '<' that must survive.
 std::string ExpandMarkup(std::string_view text);
 
-// next table helps to convert dynamic xCOLOR to text const char *
-// that allows to create construction such next
-// vPutS(MSG_YELLOW "yellow" SCOLOR(vRand(15)) "random color");
+// A colour written into a string by value rather than by name, for text
+// that takes its colour from something in the world: vPutS("that " +
+// SCOLOR(monster->color) + "cyclops" ). It is markup like any other, and
+// becomes the escape below when the text is drawn.
+std::string SCOLOR(unsigned rgb);
 
-#define SCOLOR(x) color_convert_table[x]
-extern const char* color_convert_table[];
+// Roles and the sixteen palette slots travel as 0x1F plus one byte. A
+// colour of its own needs more room, so it travels as 0x1E followed by
+// six hex digits - text, so that no part of it can be a NUL and cut a
+// C string short.
+constexpr char RGB_ESCAPE = 0x1E;
+constexpr int RGB_ESCAPE_LENGTH = 7;
+
+// One character of the screen the game paints into, and the colour it
+// is drawn in. vRefresh() hands these to the terminal.
+struct VCell {
+    char ch;
+    unsigned rgb;
+};
 
 struct V_BUFFER {
     char* buffer;
@@ -300,7 +325,7 @@ void vInit();
 void vFinit();
 void vRefresh();
 void vPutCh(int x, int y, char ch);
-void vPutCh(int x, int y, char ch, int attr);
+void vPutCh(int x, int y, char ch, unsigned rgb);
 char vTestCh(int x, int y);
 void vPutS(const char* s);
 
@@ -315,7 +340,7 @@ void vClrEol();
 void vGotoXY(int x, int y);
 void vXGotoXY(int x, int y);
 void vGetCursorPos(int* x, int* y);
-void vSetAttr(int color);
+void vSetAttr(unsigned rgb);
 void vDelay(int n);
 int vKbhit();
 int vGetch();

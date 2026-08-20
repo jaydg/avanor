@@ -60,7 +60,7 @@ namespace lua_api
     void SetDefaultTranslations(sol::table translations);
     void SetFloorPriority(sol::table floors);
     void DefineTile(sol::this_state s, const std::string& id_name, const std::string& name,
-                    const std::string& view, int color,
+                    const std::string& view, unsigned color,
                     XTileType::Movability movability, XTileType::Visibility visibility,
                     sol::optional<sol::table> properties);
     void Door(int x, int y, sol::optional<bool> opened);

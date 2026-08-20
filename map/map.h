@@ -90,7 +90,7 @@ struct XTileType {
     // Adds a tile and returns its id. Ids are handed out in definition
     // order, so they belong to one particular tiles.lua - see
     // XTileType::Names() for what that means for saved games.
-    static Id Define(const std::string& id_name, char view, char color, const std::string& name,
+    static Id Define(const std::string& id_name, char view, unsigned color, const std::string& name,
                      Movability movability, Visibility visibility);
 
     // What is left behind when this tile is dug through, or NONE when it
@@ -131,7 +131,7 @@ struct XTileType {
     bool fertile = false;
 
     char view;
-    char color;
+    unsigned color;
     std::string name;
     Movability movability;
     Visibility visibility;
@@ -158,7 +158,7 @@ struct XMapTile {
     std::shared_ptr<XMapObject> pSpecialObject; // door, way, trap door.
     bool visible;                    // visible for HERO!!!
     char known;                      // for hero memory
-    char color;                      // for hero memory
+    unsigned color;                  // for hero memory
 
     // Pointer to an object which describes this place. It can be nullptr, Shop,
     // special room etc. It will be useful to mark all rooms in cave (to create

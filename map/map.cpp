@@ -61,7 +61,7 @@ void XTileType::RegisterLua(sol::state_view& lua)
 
 std::vector<XTileType> std_tile_data;
 
-XTileType::Id XTileType::Define(const std::string& id_name, const char view, const char color,
+XTileType::Id XTileType::Define(const std::string& id_name, const char view, const unsigned color,
                                 const std::string& name, const Movability movability, const Visibility visibility)
 {
     if (const Id existing = ByName(id_name); existing != NONE || (!std_tile_data.empty() && std_tile_data[NONE].id_name == id_name)) {

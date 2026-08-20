@@ -39,6 +39,11 @@ int x_strlen(const char* str)
             continue;
         }
 
+        if (*str == RGB_ESCAPE) {
+            str += RGB_ESCAPE_LENGTH;
+            continue;
+        }
+
         count++;
         str++;
     }

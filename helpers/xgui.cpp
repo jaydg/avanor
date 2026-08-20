@@ -66,7 +66,10 @@ void XGuiItem_Text::WideBuffer(std::string& str, const std::string::size_type ne
 }
 
 bool XGuiItem_Text::SetWidth(const std::string::size_type new_width) {
-    char color = xLIGHTGRAY;
+    // The escape in force, re-emitted at the head of every wrapped line
+    // so a colour survives the break: two bytes for a role or a palette
+    // slot, seven for a colour given outright.
+    std::string colour = {0x1F, static_cast<char>(ROLE_TEXT)};
     std::size_t start = 0;
 
     Clear();
@@ -120,16 +123,18 @@ bool XGuiItem_Text::SetWidth(const std::string::size_type new_width) {
         std::string tmp;
         tmp.reserve(new_width + 2);
 
-        if (text[start] != 0x1F) {
-            tmp = {0x1F, color};
+        if (text[start] != 0x1F && text[start] != RGB_ESCAPE) {
+            tmp = colour;
         }
 
         tmp += text.substr(start, last_space - start);
 
         // memorize active color
         for(std::string::size_type i = 0; i < tmp.size(); ++i) {
-            if (tmp[i] == 0x1F) {
-                color = tmp[i + 1];
+            if (tmp[i] == 0x1F && i + 1 < tmp.size()) {
+                colour = tmp.substr(i, 2);
+            } else if (tmp[i] == RGB_ESCAPE && i + RGB_ESCAPE_LENGTH <= tmp.size()) {
+                colour = tmp.substr(i, RGB_ESCAPE_LENGTH);
             }
         }
 

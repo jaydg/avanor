@@ -284,11 +284,11 @@ void SetDefaultTranslations(sol::table translations)
 // Lua table XTileType under the name given here, so everything else
 // refers to it as XTileType.MAGMA.
 void DefineTile(sol::this_state s, const std::string& id_name, const std::string& name,
-                const std::string& view, const int color,
+                const std::string& view, const unsigned color,
                 const XTileType::Movability movability, const XTileType::Visibility visibility,
                 sol::optional<sol::table> properties)
 {
-    const XTileType::Id id = XTileType::Define(id_name, view[0], static_cast<char>(color), name,
+    const XTileType::Id id = XTileType::Define(id_name, view[0], static_cast<unsigned>(color), name,
                                                movability, visibility);
 
     if (properties) {
