@@ -60,6 +60,7 @@ namespace lua_api
     void Trap(int x, int y);
     void SetStartLocation(const std::string& loc_id, sol::optional<int> x, sol::optional<int> y,
                           sol::optional<int> w, sol::optional<int> h);
+    void SetWanderingAllowed(const std::string& loc_id, bool allowed);
     void EventPlace(const std::string& event);
     void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
 

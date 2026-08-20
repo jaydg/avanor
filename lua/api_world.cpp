@@ -128,6 +128,15 @@ void SetStartLocation(const std::string& loc_id, sol::optional<int> x, sol::opti
                             : std::nullopt;
 }
 
+//SetWanderingAllowed("MAIN", false)
+// Says whether AI creatures may wander into a location.
+void SetWanderingAllowed(const std::string& loc_id, const bool allowed)
+{
+    if (const auto loc = Game.Location(loc_id)) {
+        loc->allow_wandering_in = allowed;
+    }
+}
+
 //Teleport(23, 20, "MAIN", 154, 13)
 void Teleport(int x, int y, const std::string& target_loc_id, int dest_x, int dest_y)
 {
@@ -371,6 +380,7 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("Guardian", &lua_api::Guardian);
         lua.set_function("GuardianClass", &lua_api::GuardianClass);
         lua.set_function("SetStartLocation", &lua_api::SetStartLocation);
+        lua.set_function("SetWanderingAllowed", &lua_api::SetWanderingAllowed);
         lua.set_function("Teleport", &lua_api::Teleport);
         lua.set_function("Way", &lua_api::Way);
         lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectByPotion));

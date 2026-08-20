@@ -45,6 +45,10 @@ function MakeAvanorValley()
 	-- The hero starts on the green outside the village.
 	SetStartLocation("MAIN", 26, 4, 6, 5)
 
+	-- Dungeon monsters stay in their dungeons: only creatures with
+	-- ALLOW_MOVE_OUT (the hero's dog, escorts) follow a stairway up here.
+	SetWanderingAllowed("MAIN", false)
+
 	-- Orc war party and the village<->town teleports.
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).

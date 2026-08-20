@@ -120,6 +120,14 @@ class XLocation : public XObject
         // The location's key in Game.locations.
         std::string id;
 
+        // Whether an AI creature that happens to find a stairway leading here
+        // may take it. False for a game's hub location, so dungeon monsters do
+        // not wander into it; a creature with XStandardAI::ALLOW_MOVE_OUT
+        // ignores this and comes anyway.
+        //
+        // Set from the world script with SetWanderingAllowed().
+        bool allow_wandering_in = true;
+
         DECLARE_CREATOR(XLocation, XObject);
         explicit XLocation(const std::string& location_id);
         XLocation(XLocation * copy)
@@ -203,7 +211,7 @@ class XLocation : public XObject
                 ar(p);
             }
 
-            ar(brief_name, full_name, visited_by_hero, event);
+            ar(brief_name, full_name, visited_by_hero, event, allow_wandering_in);
 
             if constexpr (Archive::is_loading::value) {
                 for (auto& p : places) {
