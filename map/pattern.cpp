@@ -23,38 +23,43 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/location.h"
 #include "helpers/point.h"
 #include "map/map.h"
-#include "map/map_objects.h"
 #include "map/pattern.h"
 
-namespace {
+std::vector<XPattern::Translation> XPattern::default_translations;
+std::vector<XTileType::Type> XPattern::floor_priority;
 
-// The characters a pattern gets for free, so most maps need no palette
-// of their own. A translation added for the same character wins.
-//
-//   '.' green grass   ',' cave floor    ';' stone floor
-//   '#' stone wall    '=' water         '&' tree
-//   'X' fence         '+' closed door   '/' open door
-//   '^' trap          ' ' left as it is
-//
-// The list is Avanor's own map alphabet, which is the one piece of this
-// file that is content rather than mechanism.
+void XPattern::SetDefaults(std::vector<Translation> defaults)
+{
+    default_translations = std::move(defaults);
+}
 
-// What a callback cell - and any character with no meaning at all - ends
-// up standing on: whichever of these its neighbours suggest, latest in
-// the list winning, so a door in a stone corridor gets stone floor and
-// one in a field gets grass.
-XTileType::Type best_fit_terrain_table[] = {
-    XTileType::GREEN_GRASS,
-    XTileType::SAND,
-    XTileType::PATH,
-    XTileType::ROAD,
-    XTileType::CAVE_FLOOR,
-    XTileType::STONE_FLOOR,
-    XTileType::OBSIDIAN_FLOOR,
-    XTileType::GOLDEN_FLOOR,
-};
+void XPattern::SetFloorPriority(std::vector<XTileType::Type> floors)
+{
+    floor_priority = std::move(floors);
+}
 
-} // namespace
+void XPattern::ForgetScriptPalette()
+{
+    default_translations.clear();
+    floor_priority.clear();
+}
+
+const XPattern::Translation* XPattern::Lookup(const char glyph) const
+{
+    for (const auto& t : translations) {
+        if (t.glyph == glyph) {
+            return &t;
+        }
+    }
+
+    for (const auto& t : default_translations) {
+        if (t.glyph == glyph) {
+            return &t;
+        }
+    }
+
+    return nullptr;
+}
 
 void XPattern::Draw(XLocation* location, int x, int y) const
 {
@@ -62,100 +67,52 @@ void XPattern::Draw(XLocation* location, int x, int y) const
 
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
-            bool found_it = false;
+            const char glyph = text[i * w + j];
+            const Translation* translation = Lookup(glyph);
 
-            for (const auto& [glyph, tile, callback]: translations) {
-                if (glyph == text[i * w + j]) {
-                    if (callback.valid()) {
-                        points_to_resolve.emplace_back(x + j, y + i);
-                    } else {
-                        location->map->SetXY(x + j, y + i, tile);
-                    }
-
-                    found_it = true;
-                    break;
-                }
+            if (translation && !translation->callback.valid()) {
+                location->map->SetXY(x + j, y + i, translation->tile);
+                continue;
             }
 
-            if (!found_it) {
-                switch (text[i * w + j]) {
-                    case '+':
-                        new XDoor(x + j, y + i, 0, location);
-                        points_to_resolve.emplace_back(x + j, y + i);
-                        break;
-
-                    case '/':
-                        new XDoor(x + j, y + i, 1, location);
-                        points_to_resolve.emplace_back(x + j, y + i);
-                        break;
-
-                    case '^':
-                        new XTrap(x + j, y + i, location);
-                        points_to_resolve.emplace_back(x + j, y + i);
-                        break;
-
-                    case '.':
-                        location->map->SetXY(x + j, y + i, XTileType::GREEN_GRASS);
-                        break;
-
-                    case ',':
-                        location->map->SetXY(x + j, y + i, XTileType::CAVE_FLOOR);
-                        break;
-
-                    case ';':
-                        location->map->SetXY(x + j, y + i, XTileType::STONE_FLOOR);
-                        break;
-
-                    case '#':
-                        location->map->SetXY(x + j, y + i, XTileType::STONE_WALL);
-                        break;
-
-                    case '=':
-                        location->map->SetXY(x + j, y + i, XTileType::WATER);
-                        break;
-
-                    case '&':
-                        location->map->SetXY(x + j, y + i, XTileType::TREE);
-                        break;
-
-                    case 'X':
-                        location->map->SetXY(x + j, y + i, XTileType::FENCE);
-                        break;
-
-                    case ' ':
-                        break;
-
-                    default:
-                        points_to_resolve.emplace_back(x + j, y + i);
-                        break;
-                }
+            // A blank is a hole in the pattern: whatever is already on
+            // the map there stays. Everything else - a callback, or a
+            // character nothing accounts for - is resolved below, once
+            // its neighbours are drawn and can be looked at.
+            if (!translation && glyph == ' ') {
+                continue;
             }
+
+            points_to_resolve.emplace_back(x + j, y + i);
         }
     }
 
     for (const auto pt: points_to_resolve) {
-        int best_fit_index = 0;
+        if (!floor_priority.empty()) {
+            size_t best_fit_index = 0;
 
-        for (int q = -1; q <= 1; q++) {
-            for (int w = -1; w <= 1; w++) {
-                if (q != 0 || w != 0) {
-                    XTileType::Type tm = location->map->GetXY(pt.x + q, pt.y + w);
+            for (int q = -1; q <= 1; q++) {
+                for (int w2 = -1; w2 <= 1; w2++) {
+                    if (q == 0 && w2 == 0) {
+                        continue;
+                    }
 
-                    for (int i = 0; i < std::size(best_fit_terrain_table); i++) {
-                        if (best_fit_terrain_table[i] == tm && best_fit_index < i) {
+                    const XTileType::Type tm = location->map->GetXY(pt.x + q, pt.y + w2);
+
+                    for (size_t i = 0; i < floor_priority.size(); i++) {
+                        if (floor_priority[i] == tm && best_fit_index < i) {
                             best_fit_index = i;
                         }
                     }
                 }
             }
+
+            location->map->SetXY(pt.x, pt.y, floor_priority[best_fit_index]);
         }
 
-        location->map->SetXY(pt.x, pt.y, best_fit_terrain_table[best_fit_index]);
-
-        for (const auto& tit: translations) {
-            if (tit.glyph == text[(pt.y - y) * w + pt.x - x] && tit.callback.valid()) {
-                tit.callback(pt.x, pt.y);
-            }
+        if (const Translation* translation = Lookup(text[(pt.y - y) * w + pt.x - x]);
+            translation && translation->callback.valid()) {
+            translation->callback(pt.x, pt.y);
         }
     }
 }

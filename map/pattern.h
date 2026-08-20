@@ -69,6 +69,22 @@ class XPattern
         // (x, y).
         void Draw(XLocation* location, int x, int y) const;
 
+        // The alphabet every pattern falls back on for a character it has
+        // no translation of its own for - the world script's map notation.
+        // Nothing is built in: a character no palette accounts for simply
+        // gets a terrain fitting its surroundings.
+        static void SetDefaults(std::vector<Translation> defaults);
+
+        // Which tiles count as floor when one has to be invented for a
+        // callback's cell, later entries winning over earlier ones, so a
+        // door in a stone corridor gets stone floor and one in a field
+        // gets grass.
+        static void SetFloorPriority(std::vector<XTileType::Type> floors);
+
+        // Both of the above hold script callbacks and tile choices
+        // belonging to one Lua state; XLua::Init() drops them with it.
+        static void ForgetScriptPalette();
+
         [[nodiscard]] int Width() const
         {
             return w;
@@ -85,10 +101,17 @@ class XPattern
         }
 
     private:
+        // This pattern's own translation for a character, or the script's
+        // default, or none of the two.
+        [[nodiscard]] const Translation* Lookup(char glyph) const;
+
         std::string text;
         int w = 0;
         int h = 0;
         std::vector<Translation> translations;
+
+        static std::vector<Translation> default_translations;
+        static std::vector<XTileType::Type> floor_priority;
 };
 
 #endif

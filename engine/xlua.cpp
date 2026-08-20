@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/xlua.h"
 #include "map/dungeon_builder.h"
+#include "map/pattern.h"
 #include "game/location.h"
 #include "lua/api_actor.h"
 #include "lua/api_world.h"
@@ -47,10 +48,11 @@ lua_State* XLua::L = nullptr;
 
 void XLua::Init()
 {
-    // Every room holds sol::protected_functions belonging to the state
-    // being replaced here, so the registry cannot outlive it - the world
-    // scripts fill it again through DefineRoom() on the next load.
+    // The rooms and the map alphabet both hold sol::protected_functions
+    // belonging to the state being replaced here, so neither can outlive
+    // it - the world scripts fill both again on the next load.
     room_templates.clear();
+    XPattern::ForgetScriptPalette();
 
     L = lua_open();
     sol::state_view lua(L);

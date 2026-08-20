@@ -57,6 +57,9 @@ namespace lua_api
     void DefineRoom(int weight, int w, int h, const std::string& pattern, sol::table translations,
                     sol::optional<sol::protected_function> on_drawn);
     void AddTranslation(const std::string& view, sol::object target);
+    void SetDefaultTranslations(sol::table translations);
+    void SetFloorPriority(sol::table floors);
+    void Door(int x, int y, sol::optional<bool> opened);
     void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr);
     void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
     void* OuterObjectAt(int x, int y, int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);

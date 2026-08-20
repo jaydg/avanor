@@ -257,6 +257,47 @@ void DefineRoom(const int weight, const int w, const int h, const std::string& p
     room_templates.push_back(std::move(room));
 }
 
+//SetDefaultTranslations{ ['#'] = XTileType.STONE_WALL, ['+'] = Door }
+// The map alphabet: what a character means in any pattern that does not
+// translate it itself. Same shape as a room's own translations - a tile,
+// or a function(x, y) that puts something on the cell.
+void SetDefaultTranslations(sol::table translations)
+{
+    std::vector<XPattern::Translation> defaults;
+
+    for (auto& [glyph, target] : translations) {
+        const char ch = glyph.as<std::string>()[0];
+
+        if (target.get_type() == sol::type::function) {
+            defaults.push_back({ch, XTileType::UNKNOWN, target.as<sol::protected_function>()});
+        } else {
+            defaults.push_back({ch, static_cast<XTileType::Type>(target.as<int>()), {}});
+        }
+    }
+
+    XPattern::SetDefaults(std::move(defaults));
+}
+
+//SetFloorPriority{ XTileType.GREEN_GRASS, XTileType.CAVE_FLOOR }
+// Which tiles a pattern may invent underneath the things it places,
+// later entries winning over earlier ones.
+void SetFloorPriority(sol::table floors)
+{
+    std::vector<XTileType::Type> priority;
+
+    for (size_t i = 1; i <= floors.size(); i++) {
+        priority.push_back(static_cast<XTileType::Type>(floors.get<int>(i)));
+    }
+
+    XPattern::SetFloorPriority(std::move(priority));
+}
+
+//Door(x, y) / Door(x, y, true)
+void Door(const int x, const int y, sol::optional<bool> opened)
+{
+    new XDoor(x, y, opened.value_or(false) ? 1 : 0, XLocation::current_location);
+}
+
 //Furniture(x, y, xLIGHTRED, '~', 'a royal bad')
 void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr)
 {
@@ -408,6 +449,9 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("SetPattern", &lua_api::SetPattern);
         lua.set_function("DefineRoom", &lua_api::DefineRoom);
         lua.set_function("AddTranslation", &lua_api::AddTranslation);
+        lua.set_function("SetDefaultTranslations", &lua_api::SetDefaultTranslations);
+        lua.set_function("SetFloorPriority", &lua_api::SetFloorPriority);
+        lua.set_function("Door", &lua_api::Door);
         lua.set_function("DrawPattern", &XLocation::DrawPattern);
         lua.set_function("Furniture", &lua_api::Furniture);
         lua.set_function("OuterObject", sol::overload(&lua_api::OuterObject, &lua_api::OuterObjectAt));
