@@ -1,3 +1,6 @@
+-- What the caves and dungeons of this world are cut out of.
+local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
+
 
 -- Scatters herb bushes across the current location.
 --
@@ -40,7 +43,14 @@ function OrcWarPartyAttack(l)
 end
 
 function MakeAvanorValley()
-	CreateLocation("MAIN", "Valley", "Valley of Avanor", XLocation.PLAIN)
+	CreateLocation("MAIN", "Valley", "Valley of Avanor", XLocation.PLAIN, {
+		ground = XTileType.GREEN_GRASS,
+		cover = XTileType.TREE,
+		-- The border, from the inside out: hills give way to foothills,
+		-- then mountains, then the impassable peaks at the map's edge.
+		slope = { XTileType.HILL, XTileType.LOW_MOUNTAIN, XTileType.MOUNTAIN, XTileType.HIGH_MOUNTAIN },
+		width = 200, height = 90,
+	})
 
 	-- The hero starts on the green outside the village.
 	SetStartLocation("MAIN", 26, 4, 6, 5)
@@ -298,7 +308,14 @@ function MakeAvanorValley()
 	ScatterHerbBushes()
 
 -- KING'S TREASURE --
-	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", XLocation.PLAIN)
+	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", XLocation.PLAIN, {
+		ground = XTileType.GREEN_GRASS,
+		cover = XTileType.TREE,
+		-- The border, from the inside out: hills give way to foothills,
+		-- then mountains, then the impassable peaks at the map's edge.
+		slope = { XTileType.HILL, XTileType.LOW_MOUNTAIN, XTileType.MOUNTAIN, XTileType.HIGH_MOUNTAIN },
+		width = 200, height = 90,
+	})
 		SetPattern(21, 10,
 		"#####################" ..
 		"#######[~~~~[########" ..
@@ -319,7 +336,14 @@ function MakeAvanorValley()
 
 
 -- YOHJI's TOWER SECOND FLOOR--
-	CreateLocation("WIZTOWER_TOP", "WzTwr", "Yohjishiro's Tower", XLocation.PLAIN)
+	CreateLocation("WIZTOWER_TOP", "WzTwr", "Yohjishiro's Tower", XLocation.PLAIN, {
+		ground = XTileType.GREEN_GRASS,
+		cover = XTileType.TREE,
+		-- The border, from the inside out: hills give way to foothills,
+		-- then mountains, then the impassable peaks at the map's edge.
+		slope = { XTileType.HILL, XTileType.LOW_MOUNTAIN, XTileType.MOUNTAIN, XTileType.HIGH_MOUNTAIN },
+		width = 200, height = 90,
+	})
 		SetPattern(21, 11,
 		"XXXXXXXXXXXXXXXXXXXXX" ..
 		"X......##333##......X" ..
@@ -343,7 +367,7 @@ function MakeAvanorValley()
 
 
 -- UNDEAD's THOMB Underground --
-	CreateLocation("UNDEADS_TOMB1", "Tomb", "Tomb", XLocation.CAVE)
+	CreateLocation("UNDEADS_TOMB1", "Tomb", "Tomb", XLocation.CAVE, CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..

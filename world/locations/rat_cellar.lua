@@ -1,8 +1,11 @@
+-- What the caves and dungeons of this world are cut out of.
+local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
+
 -------------------------------------------------------------
 -------------------- RAT'S CELLAR ---------------------------
 
 function MakeRatCellar()
-	CreateLocation("RATCELLAR", "RC:1", "Rat's cellar", XLocation.CAVE)
+	CreateLocation("RATCELLAR", "RC:1", "Rat's cellar", XLocation.CAVE, CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"#A,,,,,,,,,,,######################################################A,,,,,,,,,,,#" ..

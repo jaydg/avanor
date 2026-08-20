@@ -166,10 +166,8 @@ int XRoom::Intersect(XRoom * other, int dist)
     return tr.Intersect(&r);
 }
 
-void XRoom::Draw(XLocation * l)
+void XRoom::Draw(XLocation * l, const XTileType::Id floor)
 {
-    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
-
     if (!room) {
         for (int i = r.top; i < r.bottom; i++)
             for (int j = r.left; j < r.right; j++) {
@@ -227,13 +225,17 @@ bool XRoom::GetFreeExit(XPoint * pt)
     return false;
 }
 
-XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest)
+XDungeonBuilder::XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
+                                 int _room_chance, int create_door_trap_chest)
 {
     // Same as the other builders: a location arrives without a map and
-    // leaves with one. XLocation::BuildDungeon() used to do this bit.
+    // leaves with one.
     if (!_l->map) {
-        _l->map = new XMap(80, 20);
+        _l->map = new XMap(_w, _h);
     }
+
+    wall = _wall;
+    floor = _floor;
 
     m = _l->map;
     location = _l;
@@ -254,7 +256,7 @@ bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, con
         }
 
         if (clear) {
-            xc->Draw(location);
+            xc->Draw(location, floor);
             placed.push_back(std::move(xc));
             return true;
         }
@@ -265,12 +267,11 @@ bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, con
 
 void XDungeonBuilder::Build()
 {
-    const XTileType::Id rock = XTileType::ByName("MAGMA");
     int i;
 
     for (i = 0; i < m->hgt; i++)
         for (int j = 0; j < m->len; j++) {
-            m->SetXY(j, i, rock);
+            m->SetXY(j, i, wall);
         }
 
     std::vector<std::unique_ptr<XRoom>> quae;
@@ -325,7 +326,7 @@ void XDungeonBuilder::Build()
     // be walkable end to end - its stairways are placed afterwards, on
     // whatever free cell turns up.
     if (!m->isFullyConnected()) {
-        m->ConnectAllRegions();
+        m->ConnectAllRegions(floor);
     }
 }
 
@@ -344,8 +345,6 @@ struct LINK_STACK {
 //linking of room is using standard flood-fill algorithm
 bool XDungeonBuilder::Link(XPoint * p1, XPoint * p2)
 {
-    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
-
     //create and reset table equal with map
     std::vector<int> tbl(m->hgt * m->len, 0);
 
@@ -490,8 +489,6 @@ void XDungeonBuilder::CreateDoors()
 
 bool XDungeonBuilder::DigOut(const XPoint& door, const XRect& room)
 {
-    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
-
     // Breadth-first out from the door, through rock and around every
     // other room, until it meets floor belonging to the rest of the
     // level - then carve the path it came by.

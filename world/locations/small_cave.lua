@@ -1,13 +1,16 @@
+-- What the caves and dungeons of this world are cut out of.
+local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
+
 -----------------------------------------------------------
 -------------------- SMALL CAVE ---------------------------
 
 function MakeSmallCave()
-	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", XLocation.CAVE)
+	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", XLocation.CAVE, CAVE)
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "SMALL_CAVE_2")
 		Settle(CreatureClass.RAT + CreatureClass.INSECT, CreatureTemplate.LOW)
 
-	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", XLocation.CAVE)
+	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", XLocation.CAVE, CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..

@@ -1,3 +1,6 @@
+-- What the caves and dungeons of this world are cut out of.
+local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
+
 ----------------------------------------------------------------
 -------------------- EXTINCT VULCANO ---------------------------
 
@@ -17,7 +20,7 @@ Monster.new("xshee_voo")
 	:Register()
 
 function MakeVulcano()
-	CreateLocation("EXTINCT_VOLCANO", "Volcano", "Crater of an Extinct Volcano", XLocation.CAVE)
+	CreateLocation("EXTINCT_VOLCANO", "Volcano", "Crater of an Extinct Volcano", XLocation.CAVE, CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"########################,#######################################################" ..

@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
 #include <cstdlib>
 
 #include "engine/global.h"
@@ -25,12 +26,24 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/map.h"
 #include "map/plain_builder.h"
 
+int XPlainBuilder::Rung(const XTileType::Id tile) const
+{
+    for (size_t i = 0; i < slope.size(); i++) {
+        if (slope[i] == tile) {
+            return static_cast<int>(i);
+        }
+    }
+
+    return -1;
+}
+
 void XPlainBuilder::Build()
 {
-    const XTileType::Id grass = XTileType::ByName("GREEN_GRASS");
-    const XTileType::Id tree = XTileType::ByName("TREE");
-    const XTileType::Id peak = XTileType::ByName("HIGH_MOUNTAIN");
-    const XTileType::Id foot = XTileType::ByName("HILL");
+    if (slope.empty()) {
+        return;
+    }
+
+    const XTileType::Id peak = slope.back();
 
     int lm = 0;
     int rm = w;
@@ -47,9 +60,9 @@ void XPlainBuilder::Build()
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
             if (vRand() % 3) {
-                map->SetXY(j, i, grass);
+                map->SetXY(j, i, ground);
             } else {
-                map->SetXY(j, i, tree);
+                map->SetXY(j, i, cover);
             }
         }
 
@@ -83,27 +96,21 @@ void XPlainBuilder::Build()
     //evaluate high mountains till hills!
     for (i = 0; i < map->hgt; i++)
         for (j = 0; j < map->len; j++) {
-            int m = map->GetXY(j, i);
+            const int rung = Rung(map->GetXY(j, i));
 
-            if (m > foot && m <= peak) {
+            if (rung > 0) {
                 for (int q = -2; q < 3; q++)
                     for (int w = -2; w < 3; w++) {
-                        int nm;
+                        int lower = rung - std::max(abs(q), abs(w));
 
-                        if (abs(q) >= abs(w)) {
-                            nm = m - abs(q);
-                        } else {
-                            nm = m - abs(w);
-                        }
-
-                        if (nm < foot) {
-                            nm = foot;
+                        if (lower < 0) {
+                            lower = 0;
                         }
 
                         if (j + q >= 0 && i + w >= 0
                             && j + q < map->len && i + w < map->hgt
-                            && map->GetXY(j + q, i + w) < nm) {
-                            map->SetXY(j + q, i + w, (XTileType::Id)nm);
+                            && Rung(map->GetXY(j + q, i + w)) < lower) {
+                            map->SetXY(j + q, i + w, slope[lower]);
                         }
                     }
             }

@@ -485,24 +485,78 @@ void XLocation::CreateNewGame()
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
+namespace {
+
+// A tile the generator cannot do without. Missing, it says which
+// location and which setting, then leaves the map to show it.
+XTileType::Id RequiredTile(const sol::optional<sol::table>& options, const char* key, const std::string& loc_id)
+{
+    const XTileType::Id tile = options ? options->get_or(key, XTileType::NONE) : XTileType::NONE;
+
+    if (tile == XTileType::NONE) {
+        std::cerr << "world: " << loc_id << " is built without a '" << key << "' tile" << std::endl;
+    }
+
+    return tile;
+}
+
+// An ordered list of tiles, e.g. a plain's border from the inside out.
+std::vector<XTileType::Id> TileList(const sol::optional<sol::table>& options, const char* key,
+                                    const std::string& loc_id)
+{
+    std::vector<XTileType::Id> tiles;
+
+    if (options) {
+        if (const sol::optional<sol::table> list = options->get<sol::optional<sol::table>>(key)) {
+            for (size_t i = 1; i <= list->size(); i++) {
+                tiles.push_back(static_cast<XTileType::Id>(list->get<int>(i)));
+            }
+        }
+    }
+
+    if (tiles.empty()) {
+        std::cerr << "world: " << loc_id << " is built without a '" << key << "' tile list" << std::endl;
+    }
+
+    return tiles;
+}
+
+int Option(const sol::optional<sol::table>& options, const char* key, const int fallback)
+{
+    return options ? options->get_or(key, fallback) : fallback;
+}
+
+} // namespace
+
 void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull,
-                               const Generator generator, sol::optional<int> room_chance)
+                               const Generator generator, sol::optional<sol::table> options)
 {
     XLocation::current_location = new XLocation(loc_id);
     XLocation::current_location->brief_name = lbrief;
     XLocation::current_location->full_name = lfull;
 
+    const int width = Option(options, "width", 80);
+    const int height = Option(options, "height", 20);
+
     switch (generator) {
         case Generator::CAVE:
-            XCaveBuilder(XLocation::current_location).Build();
+            XCaveBuilder(XLocation::current_location, width, height,
+                         RequiredTile(options, "wall", loc_id),
+                         RequiredTile(options, "floor", loc_id)).Build();
             break;
 
         case Generator::DUNGEON:
-            XDungeonBuilder(XLocation::current_location, room_chance.value_or(0)).Build();
+            XDungeonBuilder(XLocation::current_location, width, height,
+                            RequiredTile(options, "wall", loc_id),
+                            RequiredTile(options, "floor", loc_id),
+                            Option(options, "room_chance", 0)).Build();
             break;
 
         case Generator::PLAIN:
-            XPlainBuilder(XLocation::current_location, 200, 90).Build();
+            XPlainBuilder(XLocation::current_location, Option(options, "width", 200), Option(options, "height", 90),
+                          RequiredTile(options, "ground", loc_id),
+                          RequiredTile(options, "cover", loc_id),
+                          TileList(options, "slope", loc_id)).Build();
             break;
     }
 }

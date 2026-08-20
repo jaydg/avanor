@@ -1,3 +1,6 @@
+-- What the caves and dungeons of this world are cut out of.
+local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
+
 -----------------------------------------------------------
 -------------------- MUSHROOM CAVE ------------------------
 
@@ -30,7 +33,7 @@ Monster.new("magnush")
 	:Register()
 
 function MakeMushroomCave()
-	CreateLocation("MUSHROOMS_CAVE1", "MC:1", "Mushroom Caves Level 1", XLocation.CAVE)
+	CreateLocation("MUSHROOMS_CAVE1", "MC:1", "Mushroom Caves Level 1", XLocation.CAVE, CAVE)
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "MUSHROOMS_CAVE2")
 		Settle(CreatureClass.INSECT + CreatureClass.REPTILE, CreatureTemplate.VERY_LOW)
@@ -42,24 +45,24 @@ function MakeMushroomCave()
 		Creature("spider")
 		Creature("spider")
 
-	CreateLocation("MUSHROOMS_CAVE2", "MC:2", "Mushroom Caves Level 2", XLocation.CAVE)
+	CreateLocation("MUSHROOMS_CAVE2", "MC:2", "Mushroom Caves Level 2", XLocation.CAVE, CAVE)
 		Way(XStairWay.UP, "MUSHROOMS_CAVE1")
 		Way(XStairWay.DOWN, "MUSHROOMS_CAVE3")
 		Way(XStairWay.DOWN, "MUSHROOMS_CAVE5")
 		CreateBeelzevile()
 		Settle(CreatureClass.INSECT + CreatureClass.REPTILE, CreatureTemplate.VERY_LOW)
 
-	CreateLocation("MUSHROOMS_CAVE3", "KC:1", "Kobold Cavern Level 1", XLocation.CAVE)
+	CreateLocation("MUSHROOMS_CAVE3", "KC:1", "Kobold Cavern Level 1", XLocation.CAVE, CAVE)
 		Way(XStairWay.UP, "MUSHROOMS_CAVE2")
 		Way(XStairWay.DOWN, "MUSHROOMS_CAVE4")
 		Settle(CreatureClass.KOBOLD + CreatureClass.INSECT + CreatureClass.REPTILE, CreatureTemplate.VERY_LOW)
 
-	CreateLocation("MUSHROOMS_CAVE4", "KC:2", "Kobold Cavern Level 2", XLocation.CAVE)
+	CreateLocation("MUSHROOMS_CAVE4", "KC:2", "Kobold Cavern Level 2", XLocation.CAVE, CAVE)
 		Way(XStairWay.UP, "MUSHROOMS_CAVE3")
 		Settle(CreatureClass.KOBOLD, CreatureTemplate.LOW + CreatureTemplate.VERY_LOW)
 		Creature("magnush")
 
-	CreateLocation("MUSHROOMS_CAVE5", "MC:3", "Mushroom Caves Level 3", XLocation.CAVE)
+	CreateLocation("MUSHROOMS_CAVE5", "MC:3", "Mushroom Caves Level 3", XLocation.CAVE, CAVE)
 		Way(XStairWay.UP, "MUSHROOMS_CAVE2")
 		EventPlace('MushroomCaveEvent')
 		CreateTimerEvent('SpawnMushroomEvent', 40000)

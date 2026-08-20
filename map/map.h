@@ -213,7 +213,7 @@ class XMap
         // Last-resort repair: carves a straight tunnel from every isolated
         // pocket to a single hub, so no floor is left unreachable however
         // pathological the layout was.
-        void ConnectAllRegions();
+        void ConnectAllRegions(XTileType::Id floor);
 
         // Translates every cell's tile id through remap, for a map that
         // was saved when the ids meant something else.

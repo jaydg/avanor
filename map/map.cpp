@@ -731,7 +731,7 @@ bool XMap::isFullyConnected() const
 // one tile of every disconnected pocket to a single hub tile, guaranteeing
 // full reachability regardless of how pathological the random layout was,
 // rather than silently shipping a map with an unreachable area.
-void XMap::ConnectAllRegions()
+void XMap::ConnectAllRegions(const XTileType::Id floor)
 {
     XMap* map = this;
 
@@ -753,9 +753,6 @@ void XMap::ConnectAllRegions()
         return;
     }
 
-    // The tunnels are cut from whatever the script calls cave floor -
-    // this is a repair of last resort, not a place to be fussy.
-    const XTileType::Id floor = XTileType::ByName("CAVE_FLOOR");
     const XPoint hub = component_seeds[0];
 
     for (size_t i = 1; i < component_seeds.size(); i++) {

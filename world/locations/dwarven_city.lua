@@ -1,40 +1,43 @@
+-- What the caves and dungeons of this world are cut out of.
+local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
+
 -----------------------------------------------------------
 -------------------- DWARVEN CITY -------------------------
 
 function MakeDwarvenCity()
-	CreateLocation("DWARFCITYCAVE1", "PDC:1", "Path to the Dwarven City Level 1", XLocation.DUNGEON)
+	CreateLocation("DWARFCITYCAVE1", "PDC:1", "Path to the Dwarven City Level 1", XLocation.DUNGEON, CAVE)
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE2")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
-	CreateLocation("DWARFCITYCAVE2", "PDC:2", "Path to the Dwarven City Level 2", XLocation.DUNGEON, 40)
+	CreateLocation("DWARFCITYCAVE2", "PDC:2", "Path to the Dwarven City Level 2", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "DWARFCITYCAVE1")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE3")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
-	CreateLocation("DWARFCITYCAVE3", "PDC:3", "Path to the Dwarven City Level 3", XLocation.DUNGEON, 40)
+	CreateLocation("DWARFCITYCAVE3", "PDC:3", "Path to the Dwarven City Level 3", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "DWARFCITYCAVE2")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE4")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
-	CreateLocation("DWARFCITYCAVE4", "PDC:4", "Path to the Dwarven City Level 4", XLocation.DUNGEON, 40)
+	CreateLocation("DWARFCITYCAVE4", "PDC:4", "Path to the Dwarven City Level 4", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "DWARFCITYCAVE3")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE5")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
-	CreateLocation("DWARFCITYCAVE5", "PDC:5", "Path to the Dwarven City Level 5", XLocation.DUNGEON, 40)
+	CreateLocation("DWARFCITYCAVE5", "PDC:5", "Path to the Dwarven City Level 5", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "DWARFCITYCAVE4")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE6")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.LOW)
 
-	CreateLocation("DWARFCITYCAVE6", "PDC:6", "Path to the Dwarven City Level 6", XLocation.DUNGEON, 40)
+	CreateLocation("DWARFCITYCAVE6", "PDC:6", "Path to the Dwarven City Level 6", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "DWARFCITYCAVE5")
 		Way(XStairWay.DOWN, "DWARFCITY")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE + CreatureClass.GOBLIN + CreatureClass.KOBOLD, CreatureTemplate.LOW)
 		DropItem(CreateObject("XCookingSet"))
 
 
-	CreateLocation("DWARFCITY", "DvCty", "Dwarven City", XLocation.CAVE)
+	CreateLocation("DWARFCITY", "DvCty", "Dwarven City", XLocation.CAVE, CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"###############,,,,,,,############,,,,,,,####G####################,,,,##F++E,,A#" ..
@@ -74,7 +77,7 @@ function MakeDwarvenCity()
 		AddTranslation("G", function(x, y) Way(XStairWay.DOWN, "GASMINE1", x, y) end)
 		DrawPattern(0, 0)
 
-	CreateLocation("DWARFTREASURE", "DvTr", "Dwarven Treasure", XLocation.CAVE)
+	CreateLocation("DWARFTREASURE", "DvTr", "Dwarven Treasure", XLocation.CAVE, CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..
@@ -104,19 +107,19 @@ function MakeDwarvenCity()
 		DrawPattern(0, 0)
 
 
-	CreateLocation("GASMINE1", "GM:1", "Gassed Mine level 1", XLocation.DUNGEON)
+	CreateLocation("GASMINE1", "GM:1", "Gassed Mine level 1", XLocation.DUNGEON, CAVE)
 		Way(XStairWay.UP, "DWARFCITY")
 		Way(XStairWay.DOWN, "GASMINE2")
 --		Settle(CreatureClass.BLOB, CreatureTemplate.VERY_LOW)
 		EventPlace('GasMineEvent')
 
-	CreateLocation("GASMINE2", "GM:2", "Gassed Mine level 2", XLocation.DUNGEON, 40)
+	CreateLocation("GASMINE2", "GM:2", "Gassed Mine level 2", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "GASMINE1")
 		Way(XStairWay.DOWN, "GASMINE3")
 --		Settle(CreatureClass.BLOB, CreatureTemplate.VERY_LOW)
 		EventPlace('GasMineEvent')
 
-	CreateLocation("GASMINE3", "GM:3", "Gassed Mine level 3", XLocation.DUNGEON, 40)
+	CreateLocation("GASMINE3", "GM:3", "Gassed Mine level 3", XLocation.DUNGEON, { wall = CAVE.wall, floor = CAVE.floor, room_chance = 40 })
 		Way(XStairWay.UP, "GASMINE2")
 --		Settle(CreatureClass.BLOB, CreatureTemplate.VERY_LOW)
 		EventPlace('GasMineEvent')

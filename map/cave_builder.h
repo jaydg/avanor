@@ -21,14 +21,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CAVE_BUILDER_H
 #define CAVE_BUILDER_H
 
+#include "map/map.h"
+
 class XLocation;
 
-// A natural cave: circular blobs stamped out of solid rock until the
-// floor they leave behind is one connected whole.
+// A natural cave: circular blobs of `floor` stamped out of solid `wall`
+// until what they leave behind is one connected whole.
 class XCaveBuilder
 {
     public:
-        explicit XCaveBuilder(XLocation* _location) : location(_location)
+        XCaveBuilder(XLocation* _location, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor)
+            : location(_location), w(_w), h(_h), wall(_wall), floor(_floor)
         {
         }
 
@@ -36,6 +39,9 @@ class XCaveBuilder
 
     private:
         XLocation* location;
+        int w, h;
+        XTileType::Id wall;
+        XTileType::Id floor;
 };
 
 #endif

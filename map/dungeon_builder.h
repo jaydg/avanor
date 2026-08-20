@@ -73,6 +73,7 @@ class XRoom
         std::vector<XPoint> exits;
 
         XRoom(int len, int hgt, const RoomTemplate* room);
+
         ~XRoom() { }
 
         [[nodiscard]] bool isTemplateRoom() const
@@ -81,7 +82,7 @@ class XRoom
         }
 
         int Intersect(XRoom * other, int dist);
-        void Draw(XLocation * l);
+        void Draw(XLocation * l, XTileType::Id floor);
         bool GetFreeExit(XPoint * pt);
 };
 
@@ -93,13 +94,23 @@ class XDungeonBuilder
         // The chance in a hundred that this level is built with one of the
         // rooms the world script defined. Per level setting allows variety.
         int room_chance;
+
+        // What the level is cut out of, and what is left where it is cut.
+        XTileType::Id wall;
+        XTileType::Id floor;
     public:
         XMap* m;
         XLocation* location;
-        XDungeonBuilder(XLocation * _l, int _room_chance, int create_door_trap_chest = 1);
+        XDungeonBuilder(XLocation * _l, int _w, int _h, XTileType::Id _wall, XTileType::Id _floor,
+                        int _room_chance, int create_door_trap_chest = 1);
         void Build();
         bool Link(XPoint * p1, XPoint * p2);
         void CreateDoors();
+
+        [[nodiscard]] XTileType::Id Floor() const
+        {
+            return floor;
+        }
 
     private:
         // Draws room (null for a plain one) at a random free spot, giving

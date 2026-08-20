@@ -239,11 +239,13 @@ class XLocation : public XObject
 
         static void CreateNewGame();
         static void Restoration();
-        // room_chance, for a DUNGEON, is the chance in a hundred that
-        // the level is built with one of the rooms the world script
-        // defined through DefineRoom(); levels that say nothing get none.
+        // options carries what the chosen generator needs - which tiles
+        // it builds from, how large the map is, and for a DUNGEON the
+        // chance of a defined room. The engine supplies no tiles of its
+        // own, so a generator whose options leave one out says so and
+        // builds with nothing.
         static void CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull,
-                                   Generator generator, sol::optional<int> room_chance);
+                                   Generator generator, sol::optional<sol::table> options);
         static void DrawPattern(int x, int y);
         static void CreateTimerEvent(const std::string& event, int ttm);
 
