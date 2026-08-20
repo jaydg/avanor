@@ -28,7 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/anycr.h"
 #include "creature/creature.h"
-#include "creature/los.h"
+#include "map/fov.h"
 #include "creature/std_ai.h"
 #include "creature/xhero.h"
 #include "game/game.h"
@@ -532,54 +532,73 @@ static int is_grid_viewable(void* opaque, const int x, const int y)
     return (info->mover->l->map->GetVisibility(x, y) != 0);
 }
 
-static int set_grid_visible(void* opaque, int x, int y, int radius, int see_center)
+// The creature's own view of its location: what it can see stops at
+// anything the map says light does not pass, and everything seen is
+// marked on the map so the screen can draw it lit.
+namespace {
+
+class XCreatureView final : public XFieldOfView
 {
-    const auto info = static_cast<opaque_info *>(opaque);
+    public:
+        XCreatureView(XCreature* _mover, XMap* _map, bool _lit) : mover(_mover), map(_map), lit(_lit) {}
 
-    if (x < 0 || x >= info->map->len) return false;
-    if (y < 0 || y >= info->map->hgt) return false;
+    protected:
+        [[nodiscard]] bool BlocksLight(const int x, const int y) const override
+        {
+            if (x < 0 || x >= map->len || y < 0 || y >= map->hgt) {
+                return true;
+            }
 
-    if (!see_center && (info->map->GetVisibility(x, y) != 0)) {
-        return is_grid_viewable(opaque, x, y);
-    }
+            return map->GetVisibility(x, y) == 0;
+        }
 
-    info->map->SetVisible(x, y);
+        void MarkVisible(const int x, const int y) override
+        {
+            if (x < 0 || x >= map->len || y < 0 || y >= map->hgt) {
+                return;
+            }
 
-    return is_grid_viewable(opaque, x, y);
-}
+            if (lit) {
+                map->SetVisible(x, y);
+            } else {
+                map->ResVisible(x, y);
+            }
 
-static int set_grid_invisible(void* opaque, int x, int y, int radius, int see_center)
+            // Anything hostile in view is worth waking up for.
+            if (XCreature* tcr = map->GetMonster(x, y);
+                lit && tcr && tcr != mover && mover->isCreatureVisible(tcr) && tcr->xai->isEnemy(mover)) {
+                mover->isDisturb = 0;
+            }
+        }
+
+    private:
+        XCreature* mover;
+        XMap* map;
+        bool lit;
+};
+
+} // namespace
+
+// How far this creature sees here: its own eyes, or the light of the
+// place if that carries further - daylight over a valley, against a
+// torch in a cave.
+int XCreature::GetSightRange() const
 {
-    const auto info = static_cast<opaque_info *>(opaque);
-
-    if (x < 0 || x >= info->map->len) return false;
-    if (y < 0 || y >= info->map->hgt) return false;
-
-    info->map->ResVisible(x, y);
-
-    return is_grid_viewable(opaque, x, y);
+    return std::max(const_cast<XCreature*>(this)->GetVisibleRadius(), l->sight_range);
 }
 
 void XCreature::HideOldView()
 {
-    opaque_info info = { this, l->map };
-    LineOfSight(
-        x,
-        y,
-        GetVisibleRadius(),
-        &info,
-        set_grid_invisible);
+    XCreatureView view(this, l->map, false);
+
+    view.Compute(x, y, GetSightRange());
 }
 
 void XCreature::ShowNewView()
 {
-    opaque_info info = { this, l->map };
-    LineOfSight(
-        nx,
-        ny,
-        GetVisibleRadius(),
-        &info,
-        set_grid_visible);
+    XCreatureView view(this, l->map, true);
+
+    view.Compute(nx, ny, GetSightRange());
 }
 
 void XCreature::PutStatus()

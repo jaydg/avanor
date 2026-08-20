@@ -283,7 +283,6 @@ struct V_BUFFER {
     ~V_BUFFER();
 };
 
-extern int tri_table[120][10][2]; //120 a*3, 10 - r, 2 (0 - x, 1 - y)
 
 #undef KEY_EXTENDED_CODE
 #undef KEY_ESC

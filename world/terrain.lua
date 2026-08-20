@@ -11,6 +11,10 @@ CAVE = {
 	floor = XTileType.CAVE_FLOOR,
 	blobs = 150,
 	blob_radius = 3,
+
+	-- Underground you see by what you carry, so nothing is added to
+	-- what the creature's own eyes make out.
+	sight = 0,
 }
 
 -- Built dungeons: one room per 200 cells of floor, and a door at one
@@ -23,6 +27,7 @@ function Dungeon(room_chance)
 		floor = CAVE.floor,
 		cells_per_room = 200,
 		door_odds = 3,
+		sight = 0,
 		room_chance = room_chance or 0,
 
 		room_width = { 4, 10 },
@@ -42,6 +47,10 @@ PLAIN = {
 	cover_odds = 3,
 	border_depth = 4,
 	erosion = 2,
+
+	-- Open country under the sky: sight reaches as far as the trees
+	-- and hills allow, rather than as far as a torch.
+	sight = 30,
 	width = 200,
 	height = 90,
 }

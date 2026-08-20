@@ -18,33 +18,54 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "creature/los.h"
+#include "map/fov.h"
 #include "creature/std_ai.h"
 
-struct opaque_info {
-    XStandardAI* ai;
-    XMap* map;
+namespace {
+
+// What the creature can make out around it: the same sweep the hero's
+// view uses, reporting each lit cell to the AI instead of to the map.
+class XAIView final : public XFieldOfView
+{
+    public:
+        XAIView(XStandardAI* _ai, XMap* _map, const int _ox, const int _oy)
+            : ai(_ai), map(_map), ox(_ox), oy(_oy) {}
+
+    protected:
+        [[nodiscard]] bool BlocksLight(const int x, const int y) const override
+        {
+            if (x < 0 || x >= map->len || y < 0 || y >= map->hgt) {
+                return true;
+            }
+
+            return map->GetVisibility(x, y) == 0;
+        }
+
+        void MarkVisible(const int x, const int y) override
+        {
+            if (x >= 0 && x < map->len && y >= 0 && y < map->hgt) {
+                // The AI weighs what it sees by how far away it is - the
+                // nearest enemy, the nearest item, the nearest way out -
+                // so every cell has to report its own distance, not the
+                // radius of the sweep that found it. The creature's own
+                // cell reports 0, which is what keeps it from reading
+                // itself as something standing nearby.
+                ai->AnalyzeGrid(x, y, Distance(x - ox, y - oy));
+            }
+        }
+
+    private:
+        XStandardAI* ai;
+        XMap* map;
+        int ox;
+        int oy;
 };
 
-static int grid_callback(void* opaque, const int x, const int y, const int radius, const int see_center)
-{
-    const auto* info = static_cast<opaque_info *>(opaque);
-
-    if (see_center) {
-        info->ai->AnalyzeGrid(x, y, radius);
-    }
-
-    return info->map->GetMovability(x, y) != XTileType::Movability::WALL;
-}
+} // namespace
 
 void XStandardAI::AnalyzeView(const int radius)
 {
-    opaque_info info = { this, ai_owner->l->map };
+    XAIView view(this, ai_owner->l->map, ai_owner->x, ai_owner->y);
 
-    LineOfSight(
-        ai_owner->x,
-        ai_owner->y,
-        radius,
-        &info,
-        grid_callback);
+    view.Compute(ai_owner->x, ai_owner->y, radius);
 }

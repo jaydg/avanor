@@ -62,9 +62,9 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        uniquei.cpp shopkeeper.cpp keyword_dice.cpp std_ai.cpp lua_ai.cpp      \
        xshield.cpp stats.cpp skills.cpp skill.cpp attack_effect_type.cpp      \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp                  \
-       quest.cpp map_objects.cpp msgwin.cpp                                   \
+       quest.cpp map_objects.cpp msgwin.cpp fov.cpp                           \
        modifiers.cpp modifier.cpp map.cpp manual.cpp Main.cpp pattern.cpp     \
-       magic.cpp los.cpp location.cpp itemdef.cpp                             \
+       magic.cpp location.cpp itemdef.cpp                             \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
        game.cpp effect.cpp dice.cpp deity.cpp cr_defs.cpp                     \
        creature2.cpp creature.cpp dungeon_builder.cpp cave_builder.cpp        \

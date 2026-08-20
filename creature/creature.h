@@ -384,6 +384,10 @@ class XCreature : public XBaseObject
         int GetPV();
         int GetResistance(XResistance::Id tr);
         int GetVisibleRadius();
+
+        // How far this creature can actually see where it stands: its own
+        // eyes or the light of the place, whichever reaches further.
+        [[nodiscard]] int GetSightRange() const;
         int GetTacticsDVBonus();
         int GetTacticsHITBonus();
         int GetTacticsDMGBonus();

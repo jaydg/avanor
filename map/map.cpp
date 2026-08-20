@@ -373,7 +373,9 @@ int XMap::GetVisibility(const int x, const int y) const
         return 0;
     }
 
-    if (std_tile_data[map[x + y * len].n].visibility == XTileType::Visibility::WALL) {
+    // Anything from HARD upwards stops sight:
+    // a large tree or a mountain is as good as a wall to look through.
+    if (std_tile_data[map[x + y * len].n].visibility >= XTileType::Visibility::HARD) {
         return 0;
     }
 

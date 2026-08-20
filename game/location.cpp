@@ -556,6 +556,8 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
     const int width = Option(options, "width", 80);
     const int height = Option(options, "height", 20);
 
+    XLocation::current_location->sight_range = Option(options, "sight", 0);
+
     switch (generator) {
         case Generator::CAVE:
             XCaveBuilder(XLocation::current_location, width, height,

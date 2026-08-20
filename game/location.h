@@ -90,6 +90,11 @@ class XLocation : public XObject
         // The location's key in Game.locations.
         std::string id;
 
+        // How far light carries here: a cave is lit by what you carry,
+        // open country by the sky. Set from the world script with the
+        // generator's `sight` option.
+        int sight_range = 0;
+
         // Whether an AI creature that happens to find a stairway leading here
         // may take it. False for a game's hub location, so dungeon monsters do
         // not wander into it; a creature with XStandardAI::ALLOW_MOVE_OUT
@@ -181,7 +186,7 @@ class XLocation : public XObject
                 ar(p);
             }
 
-            ar(brief_name, full_name, visited_by_hero, event, allow_wandering_in);
+            ar(brief_name, full_name, visited_by_hero, event, allow_wandering_in, sight_range);
 
             if constexpr (Archive::is_loading::value) {
                 for (auto& p : places) {
