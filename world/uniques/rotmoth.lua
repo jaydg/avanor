@@ -243,7 +243,7 @@ function GianaHandler(e, t, p, v)
 			-- spawned) rather than just clearing GUARD_AREA outright, as
 			-- GUARD_AREA is ALSO the only thing suppressing a second, unrelated
 			-- behaviour: she inherits goodwife's HUMAN flag set, which includes
-			-- FREE_WAY (ALLOW_MOVE_WAY_UP|DOWN).
+			-- FREE_WAY (ALLOW_MOVE_WAY_UP|ALLOW_MOVE_WAY_DOWN).
 			giana.xai:SetGuardArea(VILLAGE_GUARD_AREA.x, VILLAGE_GUARD_AREA.y,
 				VILLAGE_GUARD_AREA.w, VILLAGE_GUARD_AREA.h, "MAIN")
 

@@ -420,7 +420,15 @@ REGISTER_CLASS(XStairWay);
 CEREAL_REGISTER_TYPE(XStairWay);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XStairWay);
 
-XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const std::string& _ln, const STAIRWAY_TYPE type)
+void XStairWay::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("XStairWay",
+        "UP", Type::UP,
+        "DOWN", Type::DOWN
+    );
+}
+
+XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const std::string& _ln, const Type type)
 {
     // Unbound until Bind() finds the matching stairway on the other side.
     dest_x = -1;
@@ -435,13 +443,13 @@ XStairWay::XStairWay(const int _x, const int _y, XLocation* loc, const std::stri
     assert(loc->map->GetSpecial(x, y) == nullptr);
 
     switch (type) {
-        case STW_UP:
+        case Type::UP:
             view = '<';
             loc->map->SetSpecial(x, y, this);
             name = "way up";
             break;
 
-        case STW_DOWN:
+        case Type::DOWN:
             view = '>';
             loc->map->SetSpecial(x, y, this);
             name = "way down";

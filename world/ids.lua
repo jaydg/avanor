@@ -1,6 +1,0 @@
-CAVE = 0
-DUNGEON = 1
-PLAIN = 2
-
-UP = 1
-DOWN = 2

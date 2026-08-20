@@ -28,6 +28,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/set.hpp>
 #include <cereal/types/string.hpp>
 
+#include <sol/forward.hpp>
+
 #include "creature/deity.h"
 #include "item/item.h"
 #include "engine/xmapobj.h"
@@ -118,8 +120,20 @@ class XTrap final : public XMapObject
 class XStairWay final : public XMapObject
 {
     public:
+        // Which way the stairway leads, which is also what it looks like
+        // ('<' or '>'). UNKNOWN builds a stairway that is not drawn and
+        // not placed on the map.
+        enum class Type {
+            UNKNOWN,
+            UP,
+            DOWN
+        };
+
+        // Registers this enum as the Lua table XStairWay.MEMBER.
+        static void RegisterLua(sol::state_view& lua);
+
         DECLARE_CREATOR(XStairWay, XMapObject);
-        XStairWay(int _x, int _y, XLocation* loc, const std::string& _ln, STAIRWAY_TYPE type);
+        XStairWay(int _x, int _y, XLocation* loc, const std::string& _ln, Type type);
         // The id of the location this stairway leads to.
         std::string ln;
 

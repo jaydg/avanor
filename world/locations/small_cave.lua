@@ -2,12 +2,12 @@
 -------------------- SMALL CAVE ---------------------------
 
 function MakeSmallCave()
-	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", CAVE)
-		Way(UP, "MAIN")
-		Way(DOWN, "SMALL_CAVE_2")
+	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", XLocation.CAVE)
+		Way(XStairWay.UP, "MAIN")
+		Way(XStairWay.DOWN, "SMALL_CAVE_2")
 		Settle(CreatureClass.RAT + CreatureClass.INSECT, CreatureTemplate.LOW)
 
-	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", CAVE)
+	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", XLocation.CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..
@@ -34,7 +34,7 @@ function MakeSmallCave()
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a bed') end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 20) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
-		AddTranslation("<", function(x, y) Way(UP, "SMALL_CAVE_1", x, y) end)
+		AddTranslation("<", function(x, y) Way(XStairWay.UP, "SMALL_CAVE_1", x, y) end)
 		AddTranslation("S", function(x, y) SmallCaveQuestPersons(x, y) end)
 		DrawPattern(0, 0)
 end

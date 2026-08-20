@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
+#include "game/location.h"
 #include "game/cbuilder.h"
 #include "map/map_objects.h"
 

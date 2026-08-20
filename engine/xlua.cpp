@@ -50,6 +50,7 @@ void XLua::Init()
     sol::state_view lua(L);
 
     XLocation::RegisterLua(lua);
+    XStairWay::RegisterLua(lua);
     RegisterLuaEventEnum(lua);
     CreatureTemplate::RegisterLua(lua);
     RegisterCrDefsEnums(lua);

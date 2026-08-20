@@ -26,6 +26,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
+#include "map/map_objects.h"
+
 // Script API for building the location currently under construction
 // (XLocation::current_location) - terrain patterns, ways, creatures,
 // items and the special objects placed on a map.
@@ -44,7 +46,7 @@ namespace lua_api
     void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
     void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
     void Teleport(int x, int y, const std::string& target_loc_id, int dest_x, int dest_y);
-    void Way(int type, const std::string& loc_id, sol::optional<int> x, sol::optional<int> y);
+    void Way(XStairWay::Type type, const std::string& loc_id, sol::optional<int> x, sol::optional<int> y);
     void* CreateObjectByName(const std::string& name);
     void* CreateObjectByMask(int flag, int min_val, int max_val);
     void* CreateObjectByPotion(int pn);

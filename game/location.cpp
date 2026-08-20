@@ -465,7 +465,7 @@ void XLocation::BuildCave()
     }
 }
 
-void XLocation::BuildLabirint(int create_trap_door_chest)
+void XLocation::BuildDungeon(int create_trap_door_chest)
 {
     if (!map) {
         map = new XMap(80, 20);
@@ -588,7 +588,7 @@ XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, 
     return cr;
 }
 
-XStairWay* XLocation::NewWay(const std::string& target_ln, STAIRWAY_TYPE s_type, XRect * area)
+XStairWay* XLocation::NewWay(const std::string& target_ln, const XStairWay::Type s_type, XRect * area)
 {
     // A location that cannot fit its own stairway is a broken map, not a
     // case to recover from - let the empty optional throw.
@@ -597,7 +597,7 @@ XStairWay* XLocation::NewWay(const std::string& target_ln, STAIRWAY_TYPE s_type,
     return NewWay(pt.x, pt.y, target_ln, s_type);
 }
 
-XStairWay* XLocation::NewWay(int x, int y, const std::string& target_ln, STAIRWAY_TYPE s_type)
+XStairWay* XLocation::NewWay(int x, int y, const std::string& target_ln, const XStairWay::Type s_type)
 {
     XStairWay * pWay = new XStairWay(x, y, this, target_ln, s_type);
     ways_list.push_back(pWay);
@@ -664,6 +664,12 @@ size_t XLocation::lua_int_index = 0;
 
 void XLocation::RegisterLua(sol::state_view& lua)
 {
+    lua.new_enum("XLocation",
+        "CAVE", Generator::CAVE,
+        "DUNGEON", Generator::DUNGEON,
+        "PLAIN", Generator::PLAIN
+    );
+
     lua.new_enum("ShopDoor",
         "UP", XShop::Door::UP,
         "LEFT", XShop::Door::LEFT,
@@ -772,18 +778,24 @@ void XLocation::CreateNewGame()
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, int type)
+void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, const Generator generator)
 {
     XLocation::current_location = new XLocation(loc_id);
     XLocation::current_location->brief_name = lbrief;
     XLocation::current_location->full_name = lfull;
 
-    if (type == 0) {
-        XLocation::current_location->BuildCave();
-    } else if (type == 1) {
-        XLocation::current_location->BuildLabirint();
-    } else {
-        XLocation::current_location->BuildPlain(200, 90);
+    switch (generator) {
+        case Generator::CAVE:
+            XLocation::current_location->BuildCave();
+            break;
+
+        case Generator::DUNGEON:
+            XLocation::current_location->BuildDungeon();
+            break;
+
+        case Generator::PLAIN:
+            XLocation::current_location->BuildPlain(200, 90);
+            break;
     }
 }
 

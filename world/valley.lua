@@ -40,7 +40,7 @@ function OrcWarPartyAttack(l)
 end
 
 function MakeAvanorValley()
-	CreateLocation("MAIN", "Valley", "Valley of Avanor", PLAIN)
+	CreateLocation("MAIN", "Valley", "Valley of Avanor", XLocation.PLAIN)
 
 	-- The hero starts on the green outside the village.
 	SetStartLocation("MAIN", 26, 4, 6, 5)
@@ -118,9 +118,9 @@ function MakeAvanorValley()
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
 		AddTranslation("F", function(x, y) for i = 1, 5 do CreateBandit(x, y) end end)
-		AddTranslation(">", function(x, y) Way(DOWN, "MUSHROOMS_CAVE1", x, y) end)
-		AddTranslation("*", function(x, y) Way(DOWN, "DWARFCITYCAVE1", x, y) end)
-		AddTranslation("9", function(x, y) Way(DOWN, "SMALL_CAVE_1", x, y) end)
+		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "MUSHROOMS_CAVE1", x, y) end)
+		AddTranslation("*", function(x, y) Way(XStairWay.DOWN, "DWARFCITYCAVE1", x, y) end)
+		AddTranslation("9", function(x, y) Way(XStairWay.DOWN, "SMALL_CAVE_1", x, y) end)
 		DrawPattern(0, 0)
 
 -- SMALL TOWN --
@@ -150,7 +150,7 @@ function MakeAvanorValley()
 		AddTranslation("F", function(x, y) CreateGuardians(x, y) end)
 		AddTranslation("G", function(x, y) CreateGekta(x, y) end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW, 'Noberik, the human shopkeeper') end)
-		AddTranslation(">", function(x, y) Way(DOWN, "RATCELLAR", x, y) end)
+		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "RATCELLAR", x, y) end)
 		DrawPattern(10, 40)
 
 
@@ -204,7 +204,7 @@ function MakeAvanorValley()
 
 		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
 		AddTranslation("G", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y) end)
-		AddTranslation("H", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP) Way(DOWN, "KINGS_TREASURE", x, y) end)
+		AddTranslation("H", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP) Way(XStairWay.DOWN, "KINGS_TREASURE", x, y) end)
 
 		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
 		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
@@ -231,7 +231,7 @@ function MakeAvanorValley()
 		AddTranslation(":", XTileType.LOW_MOUNTAIN)
 		AddTranslation(";", XTileType.MOUNTAIN)
 		AddTranslation("^", XTileType.HIGH_MOUNTAIN)
-		AddTranslation(">", function(x, y) Way(DOWN, "EXTINCT_VOLCANO", x, y) end)
+		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "EXTINCT_VOLCANO", x, y) end)
 		DrawPattern(46, 75)
 
 
@@ -247,7 +247,7 @@ function MakeAvanorValley()
 		"    ###########,,,,,,#" ..
 		"              ########")
 		AddTranslation(".", XTileType.CAVE_FLOOR)
-		AddTranslation(">", function(x, y) Way(DOWN, "UNDEADS_TOMB1", x, y) end)
+		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "UNDEADS_TOMB1", x, y) end)
 		AddTranslation("U", function(x, y) for i = 1, 20 do Creature('skeleton', x, y, 14, 4) end end)
 		DrawPattern(100, 50)
 
@@ -267,7 +267,7 @@ function MakeAvanorValley()
 		"X...................X" ..
 		"....XX..X...X.....X..")
 		AddTranslation("#", XTileType.BLACK_MARBLE_WALL)
-		AddTranslation(">", function(x, y) Way(DOWN, "WIZARD_DUNGEON1", x, y) end)
+		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "WIZARD_DUNGEON1", x, y) end)
 		DrawPattern(155, 44)
 
 
@@ -288,7 +288,7 @@ function MakeAvanorValley()
 		AddTranslation("1", XTileType.ROAD)
 		AddTranslation("2", XTileType.GOLDEN_FLOOR)
 		AddTranslation("#", XTileType.MARBLE_WALL)
-		AddTranslation("<", function(x, y) Way(UP, "WIZTOWER_TOP", x, y) end)
+		AddTranslation("<", function(x, y) Way(XStairWay.UP, "WIZTOWER_TOP", x, y) end)
 		DrawPattern(45, 25)
 
 	-- Last thing done to the Valley itself, after every pattern is
@@ -298,7 +298,7 @@ function MakeAvanorValley()
 	ScatterHerbBushes()
 
 -- KING'S TREASURE --
-	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", PLAIN)
+	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", XLocation.PLAIN)
 		SetPattern(21, 10,
 		"#####################" ..
 		"#######[~~~~[########" ..
@@ -315,11 +315,11 @@ function MakeAvanorValley()
 		AddTranslation("[", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 250) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
-		AddTranslation("<", function(x, y) Way(UP, "MAIN", x, y) end)
+		AddTranslation("<", function(x, y) Way(XStairWay.UP, "MAIN", x, y) end)
 
 
 -- YOHJI's TOWER SECOND FLOOR--
-	CreateLocation("WIZTOWER_TOP", "WzTwr", "Yohjishiro's Tower", PLAIN)
+	CreateLocation("WIZTOWER_TOP", "WzTwr", "Yohjishiro's Tower", XLocation.PLAIN)
 		SetPattern(21, 11,
 		"XXXXXXXXXXXXXXXXXXXXX" ..
 		"X......##333##......X" ..
@@ -336,14 +336,14 @@ function MakeAvanorValley()
 		AddTranslation("2", XTileType.GOLDEN_FLOOR)
 		AddTranslation("3", XTileType.WINDOW)
 		AddTranslation("#", XTileType.MARBLE_WALL)
-		AddTranslation(">", function(x, y) Way(DOWN, "MAIN", x, y) end)
+		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "MAIN", x, y) end)
 		AddTranslation("W", function(x, y) CreateYohji(x, y) end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'nice bed') end)
 		DrawPattern(45, 25)
 
 
 -- UNDEAD's THOMB Underground --
-	CreateLocation("UNDEADS_TOMB1", "Tomb", "Tomb", CAVE)
+	CreateLocation("UNDEADS_TOMB1", "Tomb", "Tomb", XLocation.CAVE)
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..
@@ -365,7 +365,7 @@ function MakeAvanorValley()
 		"###################################################D,,,,,,,,####################" ..
 		"################################################################################" ..
 		"################################################################################")
-		AddTranslation("<", function(x, y) Way(UP, "MAIN", x, y) end)
+		AddTranslation("<", function(x, y) Way(XStairWay.UP, "MAIN", x, y) end)
 		AddTranslation("A", function(x, y) Grave(x, y, 'Frederick III (760-805)', 'StandardGraveEvent') end)
 		AddTranslation("B", function(x, y) Grave(x, y, 'Frederick II (710-790)', 'StandardGraveEvent') end)
 		AddTranslation("C", function(x, y) Grave(x, y, 'Arthur IV (796-854)', 'StandardGraveEvent') end)

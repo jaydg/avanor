@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/types/string.hpp>
 
+#include "creature/cr_defs.h"
 #include "item/xanyfood.h"
 
 enum CORPSE_CONDITION {

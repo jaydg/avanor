@@ -37,13 +37,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/shop.h"
 #include "item/itemdef.h"
 #include "map/map.h"
+#include "map/map_objects.h"
 #include "map/xanyplace.h"
-
-enum STAIRWAY_TYPE {
-    STW_UNKNOWN,
-    STW_UP,
-    STW_DOWN
-};
 
 enum class LuaEvent {
     MOVE = 1,
@@ -107,6 +102,13 @@ class XLocation : public XObject
 {
         std::string event;
     public:
+
+        // How a location's map is laid out when it is created.
+        enum class Generator {
+            CAVE,
+            DUNGEON,
+            PLAIN
+        };
 
         // Registers the Lua enums that belong to the location layer.
         static void RegisterLua(sol::state_view& lua);
@@ -254,8 +256,8 @@ class XLocation : public XObject
         XCreature* NewCreature(CreatureClass crc);
         XCreature* NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
-        XStairWay* NewWay(const std::string& target_ln, STAIRWAY_TYPE s_type, XRect * area = nullptr); //creates way at random place
-        XStairWay* NewWay(int x, int y, const std::string& target_ln, STAIRWAY_TYPE s_type);
+        XStairWay* NewWay(const std::string& target_ln, XStairWay::Type s_type, XRect * area = nullptr); //creates way at random place
+        XStairWay* NewWay(int x, int y, const std::string& target_ln, XStairWay::Type s_type);
 
         // Checks every location reference in the finished world - each
         // stairway's and teleport's target - against the locations that
@@ -269,7 +271,7 @@ class XLocation : public XObject
 
         static void CreateNewGame();
         static void Restoration();
-        static void CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, int type);
+        static void CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull, Generator generator);
         static void DrawPattern(int x, int y);
         static void CreateTimerEvent(const std::string& event, int ttm);
 
@@ -302,7 +304,7 @@ class XLocation : public XObject
         void PutPalette(int x, int y);
 
         void BuildCave();
-        void BuildLabirint(int create_trap_door_chest = 1);
+        void BuildDungeon(int create_trap_door_chest = 1);
         void BuildPlain(int w, int h);
         void CreateTraps();
         void CreateChests();
