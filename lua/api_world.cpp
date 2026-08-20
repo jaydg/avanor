@@ -278,6 +278,15 @@ void SetDefaultTranslations(sol::table translations)
     XPattern::SetDefaults(std::move(defaults));
 }
 
+//DefineTile(XTileType.MAGMA, '#', xColor.xDARKGRAY, "magma", Movability.WALL, Visibility.WALL)
+// Says what one kind of ground looks like and how it behaves. Every type
+// needs one; XTileType::ValidateTiles() names the ones left out.
+void DefineTile(const XTileType::Type type, const std::string& view, const int color, const std::string& name,
+                const XTileType::Movability movability, const XTileType::Visibility visibility)
+{
+    XTileType::Define(type, view[0], static_cast<char>(color), name, movability, visibility);
+}
+
 //SetFloorPriority{ XTileType.GREEN_GRASS, XTileType.CAVE_FLOOR }
 // Which tiles a pattern may invent underneath the things it places,
 // later entries winning over earlier ones.
@@ -451,6 +460,7 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("AddTranslation", &lua_api::AddTranslation);
         lua.set_function("SetDefaultTranslations", &lua_api::SetDefaultTranslations);
         lua.set_function("SetFloorPriority", &lua_api::SetFloorPriority);
+        lua.set_function("DefineTile", &lua_api::DefineTile);
         lua.set_function("Door", &lua_api::Door);
         lua.set_function("DrawPattern", &XLocation::DrawPattern);
         lua.set_function("Furniture", &lua_api::Furniture);

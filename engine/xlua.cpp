@@ -53,6 +53,7 @@ void XLua::Init()
     // it - the world scripts fill both again on the next load.
     room_templates.clear();
     XPattern::ForgetScriptPalette();
+    XTileType::ForgetTiles();
 
     L = lua_open();
     sol::state_view lua(L);
@@ -137,5 +138,8 @@ void XLua::Init()
 
     // Catch Lua errors loading data
     assert(lua["LoadScripts"]().valid());
+
+    // Nothing can be drawn or walked on before this holds.
+    XTileType::ValidateTiles();
     XCreatureStorage::CreateQuickBase();
 }

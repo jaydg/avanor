@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fstream>
+#include <iostream>
 
 #include <cereal/types/polymorphic.hpp>
 #include <sol/sol.hpp>
@@ -30,6 +31,30 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void XTileType::RegisterLua(sol::state_view& lua)
 {
+    lua.new_enum("Movability",
+        "UNKNOWN", Movability::UNKNOWN,
+        "NORMAL", Movability::NORMAL,
+        "SHARD", Movability::SHARD,
+        "AHARD", Movability::AHARD,
+        "HARD", Movability::HARD,
+        "VHARD", Movability::VHARD,
+        "UNWALKABLE", Movability::UNWALKABLE,
+        "WATER", Movability::WATER,
+        "DEEPWATER", Movability::DEEPWATER,
+        "WALL", Movability::WALL,
+        "MOUNTAIN", Movability::MOUNTAIN
+    );
+
+    lua.new_enum("Visibility",
+        "UNKNOWN", Visibility::UNKNOWN,
+        "NORMAL", Visibility::NORMAL,
+        "SHARD", Visibility::SHARD,
+        "AHARD", Visibility::AHARD,
+        "HARD", Visibility::HARD,
+        "VHARD", Visibility::VHARD,
+        "WALL", Visibility::WALL
+    );
+
     lua.new_enum("XTileType",
         "GREEN_GRASS", XTileType::GREEN_GRASS,
         "TREE", XTileType::TREE,
@@ -61,36 +86,37 @@ void XTileType::RegisterLua(sol::state_view& lua)
     );
 }
 
-XTileType std_tile_data[] = {
-    {' ', xBLACK, "unknown", XTileType::Movability::UNKNOWN, XTileType::Visibility::UNKNOWN},
-    {'.', xGREEN, "green grass", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'T', xGREEN, "large tree", XTileType::Movability::HARD, XTileType::Visibility::HARD},
-    {'.', xYELLOW, "sand", XTileType::Movability::SHARD, XTileType::Visibility::NORMAL},
-    {'#', xCYAN, "window", XTileType::Movability::WALL, XTileType::Visibility::NORMAL},
-    {'#', xDARKGRAY, "magma", XTileType::Movability::WALL, XTileType::Visibility::WALL},
-    {'#', xLIGHTGRAY, "quartz", XTileType::Movability::WALL, XTileType::Visibility::WALL},
-    {'.', xLIGHTGRAY, "cave floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'.', xLIGHTGRAY, "stone floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'.', xBROWN, "path", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'#', xBROWN, "wooden wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
-    {'#', xLIGHTGRAY, "stone wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
-    {'=', xLIGHTBLUE, "water", XTileType::Movability::WATER, XTileType::Visibility::NORMAL},
-    {'=', xBLUE, "deep water", XTileType::Movability::DEEPWATER, XTileType::Visibility::NORMAL},
-    {'=', xRED, "lava", XTileType::Movability::WATER, XTileType::Visibility::NORMAL},
-    {'^', xGREEN, "hill", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'^', xBROWN, "low mountains", XTileType::Movability::VHARD, XTileType::Visibility::AHARD},
-    {'^', xLIGHTGRAY, "mountains", XTileType::Movability::MOUNTAIN, XTileType::Visibility::HARD},
-    {'^', xWHITE, "high mountains", XTileType::Movability::WALL, XTileType::Visibility::VHARD},
-    {'=', xBROWN, "bridge", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'.', xYELLOW, "road", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'.', xDARKGRAY, "obsidian floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'X', xBROWN, "fence", XTileType::Movability::WALL, XTileType::Visibility::NORMAL},
-    {'.', xYELLOW, "golden floor", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-    {'#', xWHITE, "marble wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
-    {'#', xDARKGRAY, "black marble wall", XTileType::Movability::WALL, XTileType::Visibility::WALL},
-    {'X', xYELLOW, "golden fence", XTileType::Movability::WALL, XTileType::Visibility::NORMAL},
-    {'0', xWHITE, "teleport circle", XTileType::Movability::NORMAL, XTileType::Visibility::NORMAL},
-};
+std::vector<XTileType> std_tile_data;
+
+void XTileType::Define(const Type type, const char view, const char color, const std::string& name,
+                       const Movability movability, const Visibility visibility)
+{
+    if (std_tile_data.size() <= static_cast<size_t>(type)) {
+        std_tile_data.resize(static_cast<size_t>(type) + 1);
+    }
+
+    std_tile_data[type] = {view, color, name, movability, visibility};
+}
+
+int XTileType::ValidateTiles()
+{
+    int bad = 0;
+
+    for (int type = UNKNOWN; type <= TELEPORT_WHITE; type++) {
+        if (static_cast<size_t>(type) >= std_tile_data.size() || std_tile_data[type].name.empty()) {
+            bad++;
+            std::cerr << "tiles: type " << type << " has no definition - the world script"
+                         " must DefineTile() it" << std::endl;
+        }
+    }
+
+    return bad;
+}
+
+void XTileType::ForgetTiles()
+{
+    std_tile_data.clear();
+}
 
 XMapTile::XMapTile()
 {
@@ -304,7 +330,7 @@ const char* XMap::GetDescription(const int x, const int y) const
     assert(x >= 0 && x < len);
     assert(y >= 0 && y < hgt);
 
-    return std_tile_data[map[x + y * len].n].name;
+    return std_tile_data[map[x + y * len].n].name.c_str();
 }
 
 XTileType::Movability XMap::GetMovability(const int x, const int y) const

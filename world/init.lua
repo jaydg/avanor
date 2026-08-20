@@ -1,4 +1,5 @@
 function LoadScripts()
+	dofile("./world/tiles.lua");
 	dofile("./world/palette.lua");
 	dofile("./world/rooms.lua");
 	dofile("./world/creatures/init.lua");

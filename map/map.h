@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MAP_H
 #define MAP_H
 
+#include <string>
+#include <vector>
+
 #include <memory>
 #include <set>
 
@@ -103,17 +106,33 @@ struct XTileType {
         TELEPORT_WHITE
     };
 
-    // Registers this enum as the Lua table XTileType.MEMBER.
+    // Registers this enum as the Lua table XTileType.MEMBER, and the two
+    // above as Movability.MEMBER / Visibility.MEMBER.
     static void RegisterLua(sol::state_view& lua);
+
+    // Fills in what a tile of this type looks like and how it behaves.
+    // Called for every type by the world script through DefineTile();
+    // the engine ships no tiles of its own.
+    static void Define(Type type, char view, char color, const std::string& name,
+                       Movability movability, Visibility visibility);
+
+    // Complains about every type the world script left undefined, and
+    // returns how many there were. A type with no definition would draw
+    // as a blank the player could walk through.
+    static int ValidateTiles();
+
+    // Dropped with the Lua state that defined them.
+    static void ForgetTiles();
 
     char view;
     char color;
-    const char* name;
+    std::string name;
     Movability movability;
     Visibility visibility;
 };
 
-extern XTileType std_tile_data[];
+// Indexed by XTileType::Type - see XTileType::Define().
+extern std::vector<XTileType> std_tile_data;
 
 /* Forward declarations */
 class XMapObject;
