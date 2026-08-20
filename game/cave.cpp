@@ -23,85 +23,50 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_misc.h"
 #include "map/map_objects.h"
 
-bool CAVE_DATA::isExit(int x, int y)
-{
-    char ch = cave[x + y * width];
+std::vector<RoomTemplate> room_templates;
 
-    if (ch == '+' || ch == '.') {
-        return true;
-    } else {
-        return false;
+bool RoomTemplate::isExit(const int x, const int y) const
+{
+    const char ch = pattern.pattern[x + y * pattern.w];
+
+    return ch == '+' || ch == '.';
+}
+
+namespace {
+
+// Picks a room by weight. Null when the world script defined no rooms,
+// which is not an error - the generator then only makes plain ones.
+const RoomTemplate* PickRoom()
+{
+    int total = 0;
+
+    for (const auto& room : room_templates) {
+        total += room.weight;
     }
+
+    if (total <= 0) {
+        return nullptr;
+    }
+
+    int roll = vRand(total);
+
+    for (const auto& room : room_templates) {
+        if (roll < room.weight) {
+            return &room;
+        }
+
+        roll -= room.weight;
+    }
+
+    return nullptr;
 }
 
-char CAVE_DATA::GetCode(int x, int y)
-{
-    return cave[x + y * width];
-}
-
-CAVE_DATA random_caves[] = {
-    // RCT_SIMPLE1
-    {
-        9, 7,
-        CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
-        50,
-        "####+####"
-        "##.....##"
-        "#.##.##.#"
-        "+.#~.~#.+"
-        "#.##.##.#"
-        "##.....##"
-        "####+####"
-    },
-    // RCT_SIMPLE2
-    {
-        9, 7,
-        CREATE_RANDOM_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
-        200,
-        "####+####"
-        "#.......#"
-        "#..#+#..#"
-        "+..#~#..+"
-        "#..###..#"
-        "#.......#"
-        "####+####"
-    },
-    // RCT_SIMPLE3
-    {
-        14, 9,
-        CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
-        25,
-        "##############"
-        "#............#"
-        "#.####..####.#"
-        "#.#~.#..#.~#.#"
-        "+.#..+..+..#.+"
-        "#.#~.#..#.~#.#"
-        "#.####..####.#"
-        "#............#"
-        "##############"
-    },
-    // RCT_SIMPLE4
-    {
-        17, 9,
-        CREATE_TRAP_ON_CHEST | CREATE_GUARD_ON_ROOM,
-        25,
-        "#################"
-        "#...............#"
-        "#.#+#####+#####.#"
-        "#.#..#~~#..#~~#.#"
-        "+.#..#..#..#..#.+"
-        "#.#~~#..#~~#..#.#"
-        "#.####+#####+##.#"
-        "#...............#"
-        "#################"
-    },
-};
+} // namespace
 
 #define USUAL_CAVE_HGT 4
 #define USUAL_CAVE_LEN 4
 
-XCave::XCave(int len, int hgt, bool isAllowSpecialRooms)
+XCave::XCave(int len, int hgt, bool allow_special_rooms)
 {
     assert(len > 4);
     assert(hgt > 4);
@@ -111,8 +76,9 @@ XCave::XCave(int len, int hgt, bool isAllowSpecialRooms)
 
     int x, y, l, h;
 
-    if (vRand(20) || !isAllowSpecialRooms) { // random cave
-        rct = RCT_USUAL;
+    room = allow_special_rooms && vRand(20) == 0 ? PickRoom() : nullptr;
+
+    if (!room) { // plain rectangular room
 
         while (1) {
             x = vRand() % (len - USUAL_CAVE_LEN - 2) + 1;
@@ -155,45 +121,29 @@ XCave::XCave(int len, int hgt, bool isAllowSpecialRooms)
             exits.push_back(tpt);
             ec--;
         }
-    } else { // special cave
-        static int cave_freq = 0;
-
-        if (cave_freq == 0) { //  run once
-            for (int i = 0; i < RCT_USUAL; i++) {
-                cave_freq += random_caves[i].freq;
-            }
-        }
-
-        int rn = vRand(cave_freq);
-        rct = RCT_SIMPLE1;
-
-        while (rn - random_caves[rct].freq > 0) {
-            rn -= random_caves[rct].freq;
-            rct = (RANDOM_CAVE_TYPE)(rct + 1);
-        }
-
-        l = random_caves[rct].width;
-        h = random_caves[rct].height;
+    } else { // a room the world script defined
+        l = room->pattern.w;
+        h = room->pattern.h;
         x = vRand() % (len - l - 6) + 3;
         y = vRand() % (hgt - h - 6) + 3;
 
         // searching for exits (doors, empty spaces etc.)
         for (int i = 0; i < l; i++) {
-            if (random_caves[rct].isExit(i, 0)) {
+            if (room->isExit(i, 0)) {
                 exits.push_back(XPoint(i + x, y));
             }
 
-            if (random_caves[rct].isExit(i, h - 1)) {
+            if (room->isExit(i, h - 1)) {
                 exits.push_back(XPoint(i + x, y + h - 1));
             }
         }
 
         for (int j = 0; j < h; j++) {
-            if (random_caves[rct].isExit(0, j)) {
+            if (room->isExit(0, j)) {
                 exits.push_back(XPoint(x, y + j));
             }
 
-            if (random_caves[rct].isExit(l - 1, j)) {
+            if (room->isExit(l - 1, j)) {
                 exits.push_back(XPoint(l - 1 + x, y + j));
             }
         }
@@ -211,7 +161,7 @@ int XCave::Intersect(XCave * xc, int dist)
 
 void XCave::Draw(XLocation * l)
 {
-    if (rct == RCT_USUAL) {
+    if (!room) {
         for (int i = r.top; i < r.bottom; i++)
             for (int j = r.left; j < r.right; j++) {
                 l->map->SetXY(j, i, XTileType::CAVE_FLOOR);
@@ -227,68 +177,21 @@ void XCave::Draw(XLocation * l)
             }
         }
     } else {
-        XTileType::Type sm = XTileType::CAVE_FLOOR;
+        // The room's own palette resolves its glyphs - tiles directly,
+        // and chests, doors or traps through the script callbacks bound
+        // to them, the same way a hand-built location's pattern works.
+        l->PutPalette(room->pattern, room->translation, r.left, r.top);
 
+        // Marked so the corridor pass routes around the room instead of
+        // carving through its walls.
         for (int i = r.top; i < r.bottom; i++) {
             for (int j = r.left; j < r.right; j++) {
-                char ch = random_caves[rct].GetCode(j - r.left, i - r.top);
-
-                switch (ch) {
-                    case '#':
-                        sm = XTileType::MAGMA;
-                        break;
-
-                    case '.':
-                        sm = XTileType::CAVE_FLOOR;
-                        break;
-
-                    case '+':
-                        sm = XTileType::CAVE_FLOOR;
-                        new XDoor(j, i, 0, l);
-                        break;
-
-                    case '~': {
-                        sm = XTileType::CAVE_FLOOR;
-                        XChest * ch1 = new XChest(vRand(6) + 1, ItemKind::ITEM, 1, 5000);
-                        ch1->Drop(l, j, i);
-
-                        if ((random_caves[rct].cf & CREATE_TRAP_ON_CHEST)
-                            || (random_caves[rct].cf & CREATE_RANDOM_TRAP_ON_CHEST && vRand(3) == 0)) {
-                            new XTrap(j, i, l, TL_RANDOM);
-                        }
-                    }
-                    break;
-
-                    default:
-                        sm = XTileType::CAVE_FLOOR;
-                        break;
-                }
-
-                l->map->SetXY(j, i, sm);
                 l->map->SetRoom(j, i, 1);
             }
         }
 
-        if (random_caves[rct].cf & CREATE_GUARD_ON_ROOM) {
-            CreatureClass crc = CreatureClass::UNDEAD;
-
-            switch (vRand(3)) {
-                case 0:
-                    crc = CreatureClass::UNDEAD;
-                    break;
-
-                case 1:
-                    crc = CreatureClass::GOBLIN;
-                    break;
-
-                case 2:
-                    crc = CreatureClass::KOBOLD;
-                    break;
-            }
-
-            for (int i = 0; i < 10; i++) {
-                l->NewCreature(crc, r, "random_guardian", XStandardAI::GUARD_AREA);
-            }
+        if (room->on_drawn.valid()) {
+            room->on_drawn(r.left, r.top, room->pattern.w, room->pattern.h);
         }
     }
 }

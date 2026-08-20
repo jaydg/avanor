@@ -1,4 +1,5 @@
 function LoadScripts()
+	dofile("./world/rooms.lua");
 	dofile("./world/creatures/init.lua");
 	dofile("./world/uniques/init.lua");
 	dofile("./world/valley.lua");

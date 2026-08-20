@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "engine/global.h"
 #include "engine/xlua.h"
+#include "game/cave.h"
 #include "game/location.h"
 #include "lua/api_actor.h"
 #include "lua/api_world.h"
@@ -46,6 +47,11 @@ lua_State* XLua::L = nullptr;
 
 void XLua::Init()
 {
+    // Every room holds sol::protected_functions belonging to the state
+    // being replaced here, so the registry cannot outlive it - the world
+    // scripts fill it again through DefineRoom() on the next load.
+    room_templates.clear();
+
     L = lua_open();
     sol::state_view lua(L);
 

@@ -278,11 +278,19 @@ class XLocation : public XObject
         static std::vector<int>* lua_int_buffer;
         static size_t lua_int_index;
 
+        // Draws a pattern through its palette at (x, y): each cell either
+        // becomes a tile or, for a glyph bound to a script callback, gets
+        // a terrain fitting its surroundings and then calls the callback.
+        // Public because it is the engine's general pattern-stamping
+        // service - the dungeon generator draws its rooms with it too.
+        void PutPalette(const LOCATION_PATTERN& pattern, const std::vector<PALETTE_MAP>& translation, int x, int y);
+
     protected:
         std::string brief_name; // max. 10 characters
         std::string full_name;  // max. 80 characters
         std::unique_ptr<XAnyPlace> places[MAX_PLACES];
 
+        // The pattern the world script is currently building with.
         void PutPalette(int x, int y);
 
         void BuildCave();

@@ -47,6 +47,11 @@ XTileType::Type best_fit_terrain_table[] = {
 
 void XLocation::PutPalette(int x, int y)
 {
+    PutPalette(current_pattern, pattern_translation, x, y);
+}
+
+void XLocation::PutPalette(const LOCATION_PATTERN& current_pattern, const std::vector<PALETTE_MAP>& pattern_translation, int x, int y)
+{
     std::vector<XPoint> points_to_resolve;
 
     for (int i = 0; i < current_pattern.h; i++) {

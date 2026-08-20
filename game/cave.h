@@ -24,44 +24,43 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xobject.h"
 #include "helpers/point.h"
 #include "helpers/rect.h"
+#include "game/location.h"
 #include "map/map.h"
 
 class XMap;
 
-enum RANDOM_CAVE_TYPE {
-    RCT_SIMPLE1 = 0,
-    RCT_SIMPLE2,
-    RCT_SIMPLE3,
-    RCT_SIMPLE4,
-    RCT_USUAL, //just a simple random XY cave
+// A room the dungeon generator can stamp into a level: a pattern and the
+// palette that resolves it - exactly what a hand-built location uses -
+// plus how often it should turn up relative to the other rooms, and an
+// optional hook run once it has been drawn (to post its own guards, say).
+//
+// A border cell holding '+' or '.' is where a corridor may attach, which
+// is the one glyph convention the generator itself relies on.
+struct RoomTemplate {
+    LOCATION_PATTERN pattern;
+    std::vector<PALETTE_MAP> translation;
+    sol::protected_function on_drawn;
+    int weight;
+
+    [[nodiscard]] bool isExit(int x, int y) const;
 };
 
-enum CAVE_FLAGS {
-    CREATE_RANDOM_TRAP_ON_CHEST	= 0x00000001,
-    CREATE_TRAP_ON_CHEST	= 0x00000002,
-    CREATE_GUARD_ON_ROOM	= 0x00000004,
-};
-
-struct CAVE_DATA {
-    int width;
-    int height;
-    unsigned int cf;
-    int freq;
-    const char* cave;
-
-    bool isExit(int x, int y);
-    char GetCode(int x, int y);
-};
+// Every room the world script has defined through DefineRoom(). The
+// engine ships none of its own, so an empty registry simply means levels
+// get only the plain rectangular rooms the generator makes up.
+extern std::vector<RoomTemplate> room_templates;
 
 class XCave
 {
-        RANDOM_CAVE_TYPE rct;
+        // The template this room was stamped from, or null for one of the
+        // generator's own plain rectangles.
+        const RoomTemplate* room;
         int map_len;
         int map_hgt;
     public:
         XRect r;
         std::vector<XPoint> exits;
-        XCave(int len, int hgt, bool isAllowSpecialRooms);
+        XCave(int len, int hgt, bool allow_special_rooms);
         int Intersect(XCave * xc, int dist);
         void Draw(XLocation * l);
         ~XCave() { }

@@ -236,6 +236,40 @@ void AddTranslation(const std::string& view, sol::object target)
     XLocation::pattern_translation.push_back(pm);
 }
 
+//DefineRoom(50, 9, 7, "####+####" .., { ['#'] = XTileType.MAGMA }, OnDrawn)
+// Adds a room the dungeon generator may stamp into a level. weight is
+// relative to the other rooms; translations reads like AddTranslation()'s
+// pairs, a glyph to either a tile or a function(x, y); on_drawn, if
+// given, is called with the room's (x, y, w, h) once it is on the map.
+void DefineRoom(const int weight, const int w, const int h, const std::string& pattern, sol::table translations,
+                sol::optional<sol::protected_function> on_drawn)
+{
+    RoomTemplate room;
+    room.weight = weight;
+    room.pattern.w = w;
+    room.pattern.h = h;
+    room.pattern.pattern = pattern;
+
+    for (auto& [glyph, target] : translations) {
+        PALETTE_MAP pm;
+        pm.this_view = glyph.as<std::string>()[0];
+
+        if (target.get_type() == sol::type::function) {
+            pm.callback = target.as<sol::protected_function>();
+            pm.real_view = XTileType::UNKNOWN;
+        } else {
+            pm.real_view = static_cast<XTileType::Type>(target.as<int>());
+        }
+
+        room.translation.push_back(pm);
+    }
+
+    if (on_drawn) {
+        room.on_drawn = *on_drawn;
+    }
+
+    room_templates.push_back(std::move(room));
+}
 
 //Furniture(x, y, xLIGHTRED, '~', 'a royal bad')
 void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr)
@@ -386,6 +420,7 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectByPotion));
         lua.set_function("DropItem", sol::overload(&lua_api::DropItem, &lua_api::DropItemAt));
         lua.set_function("SetPattern", &lua_api::SetPattern);
+        lua.set_function("DefineRoom", &lua_api::DefineRoom);
         lua.set_function("AddTranslation", &lua_api::AddTranslation);
         lua.set_function("DrawPattern", &XLocation::DrawPattern);
         lua.set_function("Furniture", &lua_api::Furniture);

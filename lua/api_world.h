@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
+#include "game/cave.h"
 #include "map/map_objects.h"
 
 // Script API for building the location currently under construction
@@ -53,6 +54,8 @@ namespace lua_api
     void DropItem(void* item, sol::optional<int> x, sol::optional<int> y);
     void DropItemAt(void* item, void* object);
     void SetPattern(int w, int h, const std::string& txt);
+    void DefineRoom(int weight, int w, int h, const std::string& pattern, sol::table translations,
+                    sol::optional<sol::protected_function> on_drawn);
     void AddTranslation(const std::string& view, sol::object target);
     void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr);
     void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
