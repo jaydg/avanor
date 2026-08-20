@@ -255,8 +255,10 @@ class XLocation : public XObject
         // SetPattern() and its DrawPattern().
         static XPattern current_pattern;
 
+        // options says which side the door is on and what the shop is
+        // built of - see the .cpp.
         static void BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name,
-                              sol::optional<int> door);
+                              sol::optional<sol::table> options);
 
         // Backing store for the Lua-facing StoreInt/RestoreInt pair (see
         // the .cpp): whichever XCreature/XAnyPlace is currently firing
@@ -276,7 +278,8 @@ class XLocation : public XObject
         std::unique_ptr<XAnyPlace> places[MAX_PLACES];
 
 
-        void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd = XShop::Door::UP);
+        void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd,
+                        XTileType::Id wall, XTileType::Id floor);
 };
 
 // Both of XLocation's no-args-shaped constructors assert(0) - route

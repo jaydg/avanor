@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/point.h"
 #include "item/itemkind.h"
+#include "map/map.h"
 #include "map/xanyplace.h"
 
 class XLocation;
@@ -52,7 +53,8 @@ class XShop : public XAnyPlace
 
     public:
         DECLARE_CREATOR(XShop, XAnyPlace);
-        XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd = Door::UP);
+        XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
+              XTileType::Id wall, XTileType::Id floor);
 
         int onCreatureEnter(XCreature * cr) override;
         int onCreatureLeave(XCreature * cr) override;

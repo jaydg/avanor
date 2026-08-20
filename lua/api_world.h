@@ -61,7 +61,8 @@ namespace lua_api
     void SetFloorPriority(sol::table floors);
     void DefineTile(sol::this_state s, const std::string& id_name, const std::string& name,
                     const std::string& view, int color,
-                    XTileType::Movability movability, XTileType::Visibility visibility);
+                    XTileType::Movability movability, XTileType::Visibility visibility,
+                    sol::optional<sol::table> properties);
     void Door(int x, int y, sol::optional<bool> opened);
     void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr);
     void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);

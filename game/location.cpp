@@ -315,9 +315,53 @@ XStairWay* XLocation::NewWay(int x, int y, const std::string& target_ln, const X
     return pWay;
 }
 
-void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd)
+namespace {
+
+// A tile the generator cannot do without. Missing, it says which
+// location and which setting, then leaves the map to show it.
+XTileType::Id RequiredTile(const sol::optional<sol::table>& options, const char* key, const std::string& loc_id)
 {
-    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd);
+    const XTileType::Id tile = options ? options->get_or(key, XTileType::NONE) : XTileType::NONE;
+
+    if (tile == XTileType::NONE) {
+        std::cerr << "world: " << loc_id << " is built without a '" << key << "' tile" << std::endl;
+    }
+
+    return tile;
+}
+
+// An ordered list of tiles, e.g. a plain's border from the inside out.
+std::vector<XTileType::Id> TileList(const sol::optional<sol::table>& options, const char* key,
+                                    const std::string& loc_id)
+{
+    std::vector<XTileType::Id> tiles;
+
+    if (options) {
+        if (const sol::optional<sol::table> list = options->get<sol::optional<sol::table>>(key)) {
+            for (size_t i = 1; i <= list->size(); i++) {
+                tiles.push_back(static_cast<XTileType::Id>(list->get<int>(i)));
+            }
+        }
+    }
+
+    if (tiles.empty()) {
+        std::cerr << "world: " << loc_id << " is built without a '" << key << "' tile list" << std::endl;
+    }
+
+    return tiles;
+}
+
+int Option(const sol::optional<sol::table>& options, const char* key, const int fallback)
+{
+    return options ? options->get_or(key, fallback) : fallback;
+}
+
+} // namespace
+
+void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd,
+                           const XTileType::Id wall, const XTileType::Id floor)
+{
+    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd, wall, floor);
     AddPlace(shop);
     XCreature * cr = NewCreature(CN_SHOPKEEPER, rect);
     ((XShopkeeper*)cr)->SetShop(sk_name, shop);
@@ -352,16 +396,20 @@ XCreature* XLocation::last_creature = nullptr;
 XPattern XLocation::current_pattern;
 
 
-//BuildShop(x, y, 9, 3, ItemKind::ARMOUR + ItemKind::WEAPON + ItemKind::POTION + ItemKind::BOOK + ItemKind::SCROLL + ItemKind::NECK + ItemKind::MISSILE + ItemKind::MISSILEW, 'Toberin, the dwarwen shopkeeper')
-// The door side used to be frozen at Door::BUILT_IN here, which is a map
-// authoring decision rather than an engine one - script picks it now, and
-// still gets Door::BUILT_IN when it says nothing.
+//BuildShop(x, y, 9, 3, ItemKind.FOOD, 'Nobel', { wall = XTileType.STONE_WALL, floor = XTileType.STONE_FLOOR })
+// options: `door` picks the side its entrance is on, defaulting to
+// Door::BUILT_IN (the pattern already drew one); `wall` and `floor` are
+// what it is built of, which is the script's call, not the engine's.
 void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::string& keeper_name,
-                          sol::optional<int> door)
+                          sol::optional<sol::table> options)
 {
     XRect shop_rect(x, y, x + w, y + h);
-    current_location->CreateShop(mask, shop_rect, keeper_name,
-        door ? static_cast<XShop::Door>(*door) : XShop::Door::BUILT_IN);
+    const auto door = options ? options->get_or("door", static_cast<int>(XShop::Door::BUILT_IN))
+                              : static_cast<int>(XShop::Door::BUILT_IN);
+
+    current_location->CreateShop(mask, shop_rect, keeper_name, static_cast<XShop::Door>(door),
+        RequiredTile(options, "wall", current_location->id),
+        RequiredTile(options, "floor", current_location->id));
 }
 
 
@@ -485,49 +533,6 @@ void XLocation::CreateNewGame()
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)
-namespace {
-
-// A tile the generator cannot do without. Missing, it says which
-// location and which setting, then leaves the map to show it.
-XTileType::Id RequiredTile(const sol::optional<sol::table>& options, const char* key, const std::string& loc_id)
-{
-    const XTileType::Id tile = options ? options->get_or(key, XTileType::NONE) : XTileType::NONE;
-
-    if (tile == XTileType::NONE) {
-        std::cerr << "world: " << loc_id << " is built without a '" << key << "' tile" << std::endl;
-    }
-
-    return tile;
-}
-
-// An ordered list of tiles, e.g. a plain's border from the inside out.
-std::vector<XTileType::Id> TileList(const sol::optional<sol::table>& options, const char* key,
-                                    const std::string& loc_id)
-{
-    std::vector<XTileType::Id> tiles;
-
-    if (options) {
-        if (const sol::optional<sol::table> list = options->get<sol::optional<sol::table>>(key)) {
-            for (size_t i = 1; i <= list->size(); i++) {
-                tiles.push_back(static_cast<XTileType::Id>(list->get<int>(i)));
-            }
-        }
-    }
-
-    if (tiles.empty()) {
-        std::cerr << "world: " << loc_id << " is built without a '" << key << "' tile list" << std::endl;
-    }
-
-    return tiles;
-}
-
-int Option(const sol::optional<sol::table>& options, const char* key, const int fallback)
-{
-    return options ? options->get_or(key, fallback) : fallback;
-}
-
-} // namespace
-
 void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbrief, const std::string& lfull,
                                const Generator generator, sol::optional<sol::table> options)
 {

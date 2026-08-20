@@ -303,7 +303,7 @@ bool XHerbBush::Run()
         for (int j = y - 1; j <= y + 1; j++) {
             XMapObject * obj = l->map->GetSpecial(i, j);
 
-            if (obj != 0 || l->map->GetXY(i, j) != XTileType::ByName("GREEN_GRASS")) {
+            if (obj != 0 || !XTileType::isFertile(l->map->GetXY(i, j))) {
                 continue;
             }
 

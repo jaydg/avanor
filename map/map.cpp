@@ -70,9 +70,45 @@ XTileType::Id XTileType::Define(const std::string& id_name, const char view, con
         return existing;
     }
 
-    std_tile_data.push_back({id_name, view, color, name, movability, visibility});
+    XTileType tile;
+    tile.id_name = id_name;
+    tile.view = view;
+    tile.color = color;
+    tile.name = name;
+    tile.movability = movability;
+    tile.visibility = visibility;
+
+    std_tile_data.push_back(tile);
 
     return static_cast<Id>(std_tile_data.size()) - 1;
+}
+
+void XTileType::SetDiggableInto(const Id tile, const std::string& into_name)
+{
+    if (static_cast<size_t>(tile) < std_tile_data.size()) {
+        std_tile_data[tile].diggable_into = into_name;
+    }
+}
+
+XTileType::Id XTileType::DiggableInto(const Id tile)
+{
+    if (static_cast<size_t>(tile) >= std_tile_data.size() || std_tile_data[tile].diggable_into.empty()) {
+        return NONE;
+    }
+
+    return ByName(std_tile_data[tile].diggable_into);
+}
+
+void XTileType::SetFertile(const Id tile, const bool fertile)
+{
+    if (static_cast<size_t>(tile) < std_tile_data.size()) {
+        std_tile_data[tile].fertile = fertile;
+    }
+}
+
+bool XTileType::isFertile(const Id tile)
+{
+    return static_cast<size_t>(tile) < std_tile_data.size() && std_tile_data[tile].fertile;
 }
 
 XTileType::Id XTileType::ByName(const std::string& id_name)

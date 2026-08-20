@@ -1,3 +1,6 @@
+-- What the shops of this world are built of.
+local SHOP = { wall = XTileType.STONE_WALL, floor = XTileType.STONE_FLOOR }
+
 -- What the caves and dungeons of this world are cut out of.
 local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
 
@@ -64,7 +67,7 @@ function MakeDwarvenCity()
 		AddTranslation(":", XTileType.BRIDGE)
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "DWARFCITYCAVE6", x, y) end)
 		AddTranslation("A", function(x, y) Guardian('dwarf_guard', "dwarven_guardian", x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.POTION + ItemKind.BOOK + ItemKind.SCROLL + ItemKind.NECK + ItemKind.MISSILE + ItemKind.MISSILEW, 'Toberin, the dwarwen shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.POTION + ItemKind.BOOK + ItemKind.SCROLL + ItemKind.NECK + ItemKind.MISSILE + ItemKind.MISSILEW, 'Toberin, the dwarwen shopkeeper', SHOP) end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a dinner table') end)
 		AddTranslation("C", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a round table') end)
 		AddTranslation("D", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'a royal bed') end)

@@ -67,7 +67,8 @@ std::optional<XPoint> XShop::FindDoor()
     return std::nullopt;
 }
 
-XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd)
+XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
+             const XTileType::Id wall, const XTileType::Id floor)
     : XAnyPlace(_area, _loc)
 {
     shop_mask = _kind;
@@ -102,7 +103,7 @@ XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd)
         }
 
         location->map->CreateRoom(area.left, area.top, area.Width(), area.Height(),
-            dx, dy, XTileType::ByName("STONE_FLOOR"), XTileType::ByName("STONE_WALL"));
+            dx, dy, floor, wall);
 
         for (int i = area.left + 1; i < area.right - 1; i++)
             for (int j = area.top + 1; j < area.bottom - 1; j++) {

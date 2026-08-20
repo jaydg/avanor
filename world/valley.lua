@@ -1,3 +1,6 @@
+-- What the shops of this world are built of.
+local SHOP = { wall = XTileType.STONE_WALL, floor = XTileType.STONE_FLOOR }
+
 -- What the caves and dungeons of this world are cut out of.
 local CAVE = { wall = XTileType.MAGMA, floor = XTileType.CAVE_FLOOR }
 
@@ -110,7 +113,7 @@ function MakeAvanorValley()
 		AddTranslation("2", XTileType.BRIDGE)
 		AddTranslation("3", XTileType.SAND)
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ItemKind.FOOD, 'Nobel, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ItemKind.FOOD, 'Nobel, the human shopkeeper', SHOP) end)
 		AddTranslation("P", function(x, y)
 			-- Single source of truth for the village's guard area - also
 			-- used to re-home Giana here once rescued (see GianaHandler,
@@ -159,7 +162,7 @@ function MakeAvanorValley()
 		AddTranslation("E", function(x, y) CreateOzorik(x, y) end)
 		AddTranslation("F", function(x, y) CreateGuardians(x, y) end)
 		AddTranslation("G", function(x, y) CreateGekta(x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW, 'Noberik, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW, 'Noberik, the human shopkeeper', SHOP) end)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "RATCELLAR", x, y) end)
 		DrawPattern(10, 40)
 
@@ -224,7 +227,7 @@ function MakeAvanorValley()
 		AddTranslation("N", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'bed') end)
 
 
-		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ItemKind.BOOK + ItemKind.SCROLL + ItemKind.POTION, 'Toberik, the human shopkeeper') end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ItemKind.BOOK + ItemKind.SCROLL + ItemKind.POTION, 'Toberik, the human shopkeeper', SHOP) end)
 		DrawPattern(129, 2)
 
 

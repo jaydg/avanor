@@ -93,6 +93,16 @@ struct XTileType {
     static Id Define(const std::string& id_name, char view, char color, const std::string& name,
                      Movability movability, Visibility visibility);
 
+    // What is left behind when this tile is dug through, or NONE when it
+    // cannot be dug. Held by name, because a tile may name one the script
+    // has not defined yet.
+    static void SetDiggableInto(Id tile, const std::string& into_name);
+    [[nodiscard]] static Id DiggableInto(Id tile);
+
+    // Whether things grow here - what a herb bush may spread onto.
+    static void SetFertile(Id tile, bool fertile);
+    [[nodiscard]] static bool isFertile(Id tile);
+
     // The id the script gave that name, or NONE if it never defined it.
     // A lookup per call site is deliberate: ids change when the scripts
     // are reloaded, so nothing may cache one across a game.
@@ -115,6 +125,10 @@ struct XTileType {
 
     // The name the script defined this tile under.
     std::string id_name;
+
+    // See SetDiggableInto()/SetFertile() above.
+    std::string diggable_into;
+    bool fertile = false;
 
     char view;
     char color;

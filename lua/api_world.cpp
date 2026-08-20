@@ -285,10 +285,16 @@ void SetDefaultTranslations(sol::table translations)
 // refers to it as XTileType.MAGMA.
 void DefineTile(sol::this_state s, const std::string& id_name, const std::string& name,
                 const std::string& view, const int color,
-                const XTileType::Movability movability, const XTileType::Visibility visibility)
+                const XTileType::Movability movability, const XTileType::Visibility visibility,
+                sol::optional<sol::table> properties)
 {
     const XTileType::Id id = XTileType::Define(id_name, view[0], static_cast<char>(color), name,
                                                movability, visibility);
+
+    if (properties) {
+        XTileType::SetDiggableInto(id, properties->get_or<std::string>("diggable_into", ""));
+        XTileType::SetFertile(id, properties->get_or("fertile", false));
+    }
 
     sol::state_view lua(s);
     lua["XTileType"][id_name] = id;
