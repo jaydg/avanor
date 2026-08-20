@@ -24,6 +24,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <sstream>
 #include <typeinfo>
+
+#include <argparse/argparse.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/polymorphic.hpp>
@@ -562,18 +564,64 @@ XGame Game;
 
 int main(int argc, char* argv[])
 {
-    vRandSeed(static_cast<unsigned long>(time(nullptr)));
+    argparse::ArgumentParser program("avanor", GAME_VERSION);
+    program.add_description("Avanor, the Land of Mystery - a roguelike.");
+
+    program.add_argument("-g", "--god")
+        .flag()
+        .help("play with a thousand extra hit points, and a say in whether you die");
+
+    program.add_argument("-s", "--seed")
+        .scan<'i', unsigned long>()
+        .metavar("N")
+        .help("build the world from this seed instead of the clock");
+
+    // One run does one of these, or none of them and plays the game.
+    auto& mode = program.add_mutually_exclusive_group();
+
+    mode.add_argument("--demo")
+        .flag()
+        .help("watch the world run itself, with no hero in it");
+
+    mode.add_argument("--test")
+        .flag()
+        .help("run the world without a hero, for finding bugs and benchmarking");
+
+    mode.add_argument("--test-save")
+        .flag()
+        .help("build a world, play a hundred turns, save it, and report");
+
+    mode.add_argument("--test-load")
+        .flag()
+        .help("restore what --test-save wrote, and report what came back");
+
+    mode.add_argument("--test-cereal")
+        .flag()
+        .help("round-trip the serialization of one location and report");
+
+    // Before the screen is taken over by curses, so that --help and any
+    // complaint about the command line can still be read.
+    try {
+        program.parse_args(argc, argv);
+    } catch (const std::exception& err) {
+        std::cerr << err.what() << std::endl << program;
+
+        return 1;
+    }
+
+    vRandSeed(program.is_used("--seed") ? program.get<unsigned long>("--seed")
+                                        : static_cast<unsigned long>(time(nullptr)));
     vInit();
     vClrScr();
     vHideCursor();
 
     ShowLogo();
 
-    if (argc > 1 && strcmp(argv[1], "-test-cereal") == 0) {
+    if (program.get<bool>("--test-cereal")) {
         RunCerealPilotTest();
         vFinit();
         return 0;
-    } else if (argc > 1 && strcmp(argv[1], "-test-save") == 0) {
+    } else if (program.get<bool>("--test-save")) {
         // End-to-end proof of the real XArchive::StoreGame()/RestoreGame()
         // entry points, as two separate process invocations (this one,
         // then -test-load in a fresh process) rather than one process
@@ -584,10 +632,6 @@ int main(int argc, char* argv[])
         // already-live Game.Create('T') world would silently orphan the
         // live locations via plain shared_ptr reassignment, without ever
         // Invalidate()ing them first.
-        if (argc > 2) {
-            vRandSeed(atoi(argv[2]));
-        }
-
         Game.Create('T');
 
         for (int i = 0; i < 100; i++) {
@@ -604,7 +648,7 @@ int main(int argc, char* argv[])
         XObject::InvalidateAllObjects();
         vFinit();
         return ok ? 0 : 1;
-    } else if (argc > 1 && strcmp(argv[1], "-test-load") == 0) {
+    } else if (program.get<bool>("--test-load")) {
         XLocation::Restoration();
         const int ok = XArchive::RestoreGame();
         std::cout << "RestoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
@@ -645,22 +689,14 @@ int main(int argc, char* argv[])
         XObject::InvalidateAllObjects();
         vFinit();
         return ok ? 0 : 1;
-    } else if (argc > 1 && strcmp(argv[1], "-test") == 0) {
-        if (argc > 2) {
-            vRandSeed(atoi(argv[2]));
-        }
-
+    } else if (program.get<bool>("--test")) {
         Game.Create('T');
         Game.RunWithoutHero();
-    } else if (argc > 1 && strcmp(argv[1], "-demo") == 0) {
+    } else if (program.get<bool>("--demo")) {
         Game.Create('D');
         Game.RunDemo();
     } else {
-        if (argc > 1 && strcmp(argv[1], "-god") == 0) {
-            Game.isGodMode = true;
-        } else {
-            Game.isGodMode = false;
-        }
+        Game.isGodMode = program.get<bool>("--god");
 
         char ch;
 

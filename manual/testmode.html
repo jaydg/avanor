@@ -6,15 +6,47 @@
 <div id=readarea>
 <h1>Game test modes</h1>
 <font color=silver>
-Avanor can currently be run in three different modes. When run normally, 
-Avanor will be in Game mode. 'avanor -demo' will run in Demo mode, so you can 
-see the Beelzevile, the horned demon in his dungeon. The SPACE key will pause the demo; 
-M will give you access to the message history; ESC will exit the demo. 
-'avanor -test' will run in Test mode.
+Run normally, Avanor plays as a game. A handful of command line options 
+put it into other modes instead, and 'avanor --help' lists them all.<br>
+<br>
 
-There is also a god mode for game testing without the fear of death in the middle of 
-a test.  You will be prompted if you wish to die or continue.  To access god mode, 
-type "avanor -god".
+<font color=yellow class=title>Demo mode</font><br>
+'avanor --demo' runs the world with no hero in it, so you can watch 
+Beelzevile, the horned demon, in his dungeon. SPACE pauses the demo; M gives 
+you the message history; ESC leaves it.<br>
+<br>
+
+<font color=yellow class=title>Test mode</font><br>
+'avanor --test' runs the world without a hero for as long as you let it, 
+which is how bugs are shaken out and how the game is timed. Two keys are 
+worth knowing while it runs: L writes every location's map into 
+location.txt, and I writes every item in the world into items.txt, both in 
+your Avanor directory. ESC ends the run.<br>
+<br>
+
+<font color=yellow class=title>God mode</font><br>
+'avanor --god', or 'avanor -g', is for testing a real game without fear of 
+dying in the middle of it. Your hero gets a thousand extra hit points and 
+power points, and when something finally does kill you, you are asked 
+whether you would rather carry on.<br>
+<br>
+
+<font color=yellow class=title>Choosing the world</font><br>
+'avanor --seed N' builds the world from the number N instead of from the 
+clock, so the same N always gives the same world. It works in every mode, 
+including an ordinary game - useful for meeting the same dungeon twice.<br>
+<br>
+
+<font color=yellow class=title>Self-tests</font><br>
+Three further modes check the game against itself and print a PASS or FAIL 
+rather than showing anything: '--test-save' builds a world, plays a hundred 
+turns and saves it; '--test-load' restores what it wrote; '--test-cereal' 
+round-trips a single location through the save format. They are meant for 
+the build, not for play.<br>
+<br>
+
+The mode options exclude one another - ask for two and Avanor says so 
+instead of guessing. 'avanor --version' prints the version and exits.<br>
 </font>
 </div>
 </body>
