@@ -140,41 +140,41 @@ int XSkill::IncLevel()
     }
 }
 
-SKILL_MASTERY XSkill::GetMastery()
+XSkill::Mastery XSkill::GetMastery()
 {
     switch (level) {
         case 1 :
         case 2 :
         case 3 :
-            return SM_BASIC;
+            return Mastery::BASIC;
             break;
 
         case 4 :
         case 5 :
         case 6 :
         case 7 :
-            return SM_SKILLED;
+            return Mastery::SKILLED;
             break;
 
         case 8 :
         case 9 :
         case 10:
         case 11:
-            return SM_EXPERT;
+            return Mastery::EXPERT;
             break;
 
         case 12:
         case 13:
         case 14:
-            return SM_MASTER;
+            return Mastery::MASTER;
             break;
 
         case 15:
-            return SM_GRANDMASTER;
+            return Mastery::GRANDMASTER;
             break;
     }
 
-    return SM_BASIC;
+    return Mastery::BASIC;
 }
 
 int XSkill::Use(XCreature * user)

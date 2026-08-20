@@ -33,17 +33,22 @@ class XCreature;
 
 #define SKILL_MAX_LEVEL 15
 
-enum SKILL_MASTERY {
-    SM_NONE	= 0,
-    SM_BASIC	= 1,
-    SM_SKILLED	= 2,
-    SM_EXPERT	= 3,
-    SM_MASTER	= 4,
-    SM_GRANDMASTER	= 5,
-};
-
 class XSkill
 {
+    public:
+        // How far the owner has got with a skill, derived from its level
+        // by GetMastery(). NONE is nobody's mastery - a creature without
+        // the skill at all has no XSkill to ask.
+        enum class Mastery {
+            NONE = 0,
+            BASIC = 1,
+            SKILLED = 2,
+            EXPERT = 3,
+            MASTER = 4,
+            GRANDMASTER = 5
+        };
+
+    private:
         int UseSteal(XCreature * user);
         int UseDisarm(XCreature * user);
         int UseCreate(XCreature * user);
@@ -103,7 +108,7 @@ class XSkill
         }
 
         int GetMaxLevel();
-        SKILL_MASTERY GetMastery();
+        Mastery GetMastery();
 
         // No LoadAndConstruct needed - unlike XSpell (see magic.h),
         // XSkills owns its XSkill instances as raw pointers in a plain
