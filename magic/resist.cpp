@@ -48,28 +48,6 @@ void XResistance::RegisterLua(sol::state_view& lua)
     );
 }
 
-RESIST_REC resists_data[] = {
-    {"unknown",	FLU_NONE},
-    {"white",	FLU_CREATURE},
-    {"black",	FLU_CREATURE},
-    {"fire",	FLU_ALL},
-    {"water",	FLU_ALL},
-    {"air",	FLU_ALL},
-    {"earth",	FLU_ALL},
-    {"acid",	FLU_ALL},
-    {"cold",	FLU_ALL},
-    {"poison",	FLU_CREATURE},
-    {"disease",	FLU_CREATURE},
-    {"paralyse",	FLU_CREATURE},
-    {"stun",	FLU_CREATURE},
-    {"confuse",	FLU_CREATURE},
-    {"blind",	FLU_CREATURE},
-    {"light",	FLU_CREATURE},
-    {"darkness",	FLU_CREATURE},
-    {"invisible",	FLU_CREATURE},
-    {"see_invisible",	FLU_CREATURE},
-    "eof",	FLU_NONE
-};
 
 XResistance::XResistance(const XResistance* xr)
 {
@@ -84,6 +62,46 @@ XResistance::XResistance()
 }
 
 namespace {
+
+// Which side of the game a resistance can turn up on. Recorded for every
+// one of them below, though nothing reads it yet.
+enum class Fluence {
+    NONE,
+    CREATURE,
+    ITEM,
+    ALL
+};
+
+// A resistance's name as the world scripts spell it - "fire:5d5-50" - in
+// XResistance::Id order, offset by one so that UNKNOWN sits at 0.
+struct ResistRecord {
+    const char* name;
+    Fluence fluence;
+};
+
+const ResistRecord resists_data[] = {
+    {"unknown",	Fluence::NONE},
+    {"white",	Fluence::CREATURE},
+    {"black",	Fluence::CREATURE},
+    {"fire",	Fluence::ALL},
+    {"water",	Fluence::ALL},
+    {"air",	Fluence::ALL},
+    {"earth",	Fluence::ALL},
+    {"acid",	Fluence::ALL},
+    {"cold",	Fluence::ALL},
+    {"poison",	Fluence::CREATURE},
+    {"disease",	Fluence::CREATURE},
+    {"paralyse",	Fluence::CREATURE},
+    {"stun",	Fluence::CREATURE},
+    {"confuse",	Fluence::CREATURE},
+    {"blind",	Fluence::CREATURE},
+    {"light",	Fluence::CREATURE},
+    {"darkness",	Fluence::CREATURE},
+    {"invisible",	Fluence::CREATURE},
+    {"see_invisible",	Fluence::CREATURE},
+    {"eof", Fluence::NONE}
+};
+
 
 // The value token following `param` in a "name value name value" string:
 // FindParam("fire 1d3 cold 2d2", "cold") is "2d2", and absent names give

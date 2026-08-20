@@ -28,19 +28,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/dice.h"
 
-enum FLUENCE {
-    FLU_NONE = 0,
-    FLU_CREATURE = 1,
-    FLU_ITEM = 2,
-    FLU_ALL = 3
-};
-
-struct RESIST_REC {
-    // life, fire, death etc.
-    const char* name;
-    FLUENCE flag;
-};
-
 class XResistance
 {
     public:
