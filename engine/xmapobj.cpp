@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 
 #include "engine/xmapobj.h"
+#include "game/location.h"
 #include "map/map.h"
 
 // XMapObject is never itself the dynamic type of a serialized object
@@ -118,4 +119,19 @@ int XMapObject::Distance(const XMapObject* other) const
     int d = (other->x - this->x) * (other->x - this->x) + (other->y - this->y) * (other->y - this->y);
 
     return static_cast<int>(sqrt(static_cast<double>(d)));
+}
+
+bool XMapObject::isVisible()
+{
+    return l->map->GetVisible(x, y);
+}
+
+int XMapObject::isInVisibleArea() const
+{
+    return l->map->GetVisible(x, y);
+}
+
+int XMapObject::isVisibleArea(const int px, const int py) const
+{
+    return l->map->GetVisible(px, py);
 }

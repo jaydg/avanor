@@ -25,7 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/string.hpp>
 
 #include "engine/xobject.h"
-#include "game/location.h"
 
 class XCreature;
 class XLocation;
@@ -85,10 +84,7 @@ class XMapObject : public XObject
             return true;
         }
 
-        virtual bool isVisible()
-        {
-            return l->map->GetVisible(x, y);
-        }
+        virtual bool isVisible();
 
         virtual int onOuterUse(XCreature * user)
         {
@@ -112,16 +108,10 @@ class XMapObject : public XObject
         }
 
         // Check if object is in visible area to write "Someone hits your" etc.
-        int isInVisibleArea() const
-        {
-            return l->map->GetVisible(x, y);
-        }
+        int isInVisibleArea() const;
 
         // Checks if this area is visible
-        int isVisibleArea(int px, int py) const
-        {
-            return l->map->GetVisible(px, py);
-        }
+        int isVisibleArea(int px, int py) const;
 
         // Calculate the distance to another XMapObjet
         int Distance(const XMapObject* other) const;
