@@ -1117,6 +1117,15 @@ void XStandardAI::SetGroupEnemy(XCreature* cr) const
 {
     if (ai_owner->groupID() != GID_NONE && cr) {
         for (const auto& buddy : ai_owner->getGroupMembers()) {
+            // Friendly fire within a group (a stray arrow, a confused
+            // orc) puts the attacker on this list too - skip it, or it
+            // ends up hunting itself: a permanent entry in its own
+            // personal_enemy list, and an enemy pointer to itself that
+            // Move() asserts on.
+            if (buddy == cr) {
+                continue;
+            }
+
             buddy->xai->AddPersonalEnemy(cr);
             buddy->xai->ResAIFlag(XStandardAI::GUARD_AREA);
             buddy->xai->enemy = cr;
