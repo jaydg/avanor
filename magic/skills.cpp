@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/skills.h"
 #include "engine/xobject.h"
 
-#include <stdexcept>
+#include <memory>
 
 int XSkills::GetLevel(XSkill::Skill skt)
 {
@@ -45,14 +45,14 @@ void XSkills::UseSkill(XSkill::Skill skt, int n)
 
 XSkill* XSkills::GetSkill(XSkill::Skill skt)
 {
-    try {
-        return skills.at(skt);
-    } catch (const std::out_of_range& ex) {
-        return nullptr;
-    }
+    const auto it = skills.find(skt);
+
+    return it == skills.end() ? nullptr : it->second.get();
 }
 
 void XSkills::Learn(XSkill::Skill skt, int level)
 {
-    skills[skt] = new XSkill(skt, level);
+    // Learning a skill already known replaces what was there - the old
+    // one is freed by the assignment rather than left behind.
+    skills[skt] = std::make_unique<XSkill>(skt, level);
 }

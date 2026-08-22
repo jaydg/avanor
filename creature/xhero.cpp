@@ -2117,7 +2117,7 @@ XSkill* XHero::SkillsList(const SKILL_FLAG skill_flag, const int marks_left, std
                     if (ch > 0) {
                         ch--;
                     } else {
-                        return skill;
+                        return skill.get();
                     }
                 }
             }

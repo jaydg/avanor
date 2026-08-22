@@ -22,12 +22,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SKILLS_H
 
 #include <map>
+#include <memory>
 
 #include <cereal/cereal.hpp>
 
 #include "magic/skill.h"
 
-typedef std::map<XSkill::Skill, XSkill*> XSkillMap;
+// Each skill belongs to the one creature that knows it, and lives
+// exactly as long as that creature's XSkills does - unique_ptr says so
+// and does the freeing, which raw pointers here never did: nothing
+// deleted them on Learn() overwriting an entry, and nothing deleted them
+// when the map itself went away.
+typedef std::map<XSkill::Skill, std::unique_ptr<XSkill>> XSkillMap;
 
 class XSkills
 {
@@ -46,10 +52,9 @@ class XSkills
         XSkill* GetSkill(XSkill::Skill skt);
         void Learn(XSkill::Skill skt, int level = 1);
 
-        // `skills` owns its XSkill* values as plain raw pointers (see
-        // Learn()), not a smart-pointer container Cereal has built-in
-        // support for - handled manually here rather than changing the
-        // map's value type.
+        // Cereal has no built-in support for a map of unique_ptr to a
+        // type without a default constructor, so the values are written
+        // and read one at a time here rather than as a container.
         template<class Archive>
         void save(Archive& ar) const
         {
@@ -68,9 +73,9 @@ class XSkills
             ar(count);
 
             for (size_t i = 0; i < count; i++) {
-                auto* skill = new XSkill(XSkill::Skill{}, 1);
+                auto skill = std::make_unique<XSkill>(XSkill::Skill{}, 1);
                 ar(*skill);
-                skills[skill->skt] = skill;
+                skills[skill->skt] = std::move(skill);
             }
         }
 };
