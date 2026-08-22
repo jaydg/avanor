@@ -200,7 +200,13 @@ struct DAMAGE_DATA_EX {
 
 struct CreatureTemplate;
 
-typedef std::map<GROUP_ID, XCreature*> XCreatureGroupMap;
+// Who belongs to which group, many creatures to one id. A multimap, not
+// a map: every member of a group registers under the same key, and both
+// XCreature::getGroupMembers() and the eviction in OnInvalidate() read it
+// back with equal_range(). A plain map silently keeps only whichever
+// creature was created first and drops the rest, which leaves every group
+// in the game with one member and nothing to rally.
+typedef std::multimap<GROUP_ID, XCreature*> XCreatureGroupMap;
 
 class XCreature : public XBaseObject
 {
@@ -596,6 +602,19 @@ class XCreature : public XBaseObject
             }
 
             ar(creature_class, creature_size, food_feeling, group_id);
+
+            if constexpr (Archive::is_loading::value) {
+                // group_id round-trips as a plain field, but what makes a
+                // group a group is the registry setGroupID() writes into
+                // - rebuild this creature's entry in it, the same
+                // structural re-derivation as `components`/SetOwner()
+                // above. Without it every restored world has groups whose
+                // members cannot find each other.
+                if (group_id != GID_NONE) {
+                    group_members.insert(std::make_pair(group_id, this));
+                }
+            }
+
             ar(level);
 
             if constexpr (Archive::is_loading::value) {
