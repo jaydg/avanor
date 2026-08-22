@@ -242,6 +242,12 @@ class XLocation : public XObject
         // references.
         static int ValidateWorld(bool new_game);
 
+        // Whether every stairway found the one leading back. Only meaningful
+        // once the world's ways have been paired up, so it stands apart from
+        // ValidateWorld() above, which runs before that. Returns the number
+        // of complaints, each already reported.
+        static int ValidateWays();
+
         static void CreateNewGame();
         static void Restoration();
         // options carries what the chosen generator needs - which tiles

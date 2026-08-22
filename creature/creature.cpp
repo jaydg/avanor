@@ -1390,8 +1390,29 @@ void XCreature::MoveStairWay()
 
     if (way) {
         XLocation * tgtloc = Game.Location(way->ln).get();
+
+        // A world script may name a location that was never built, or
+        // build a stairway with nothing leading back - XLocation::
+        // ValidateWorld()/ValidateWays() have already named both - but
+        // the engine must not walk off a map over it.
+        if (!tgtloc) {
+            return;
+        }
+
         int tgt_x = way->dest_x;
         int tgt_y = way->dest_y;
+
+        if (tgt_x < 0 || tgt_y < 0) {
+            const auto free_xy = tgtloc->GetFreeXY();
+
+            if (!free_xy) {
+                return;
+            }
+
+            tgt_x = free_xy->x;
+            tgt_y = free_xy->y;
+        }
+
         int n_x = tgt_x;
         int n_y = tgt_y;
 

@@ -537,6 +537,37 @@ int XLocation::ValidateWorld(const bool new_game)
     return bad;
 }
 
+int XLocation::ValidateWays()
+{
+    int bad = 0;
+
+    // Stairways are paired one for one after the world is built, and each
+    // end then knows where the other stands. One that finds no partner
+    // keeps dest_x/dest_y = -1, and walking into it would read off the
+    // front of the target's map - so ask each way, once the pairing pass
+    // has had its turn, whether it found its other end.
+    for (const auto& [key, loc] : Game.locations) {
+        if (!loc) {
+            continue;
+        }
+
+        for (const auto* obj : loc->ways_list) {
+            const auto* way = dynamic_cast<const XStairWay*>(obj);
+
+            if (!way || way->dest_x >= 0 || way->dest_y >= 0) {
+                continue;
+            }
+
+            bad++;
+            std::cerr << "world: the stairway in " << key << " at " << way->x << "," << way->y
+                      << " leads to '" << way->ln << "', but nothing there leads back - "
+                      << "it comes out nowhere" << std::endl;
+        }
+    }
+
+    return bad;
+}
+
 void XLocation::CreateNewGame()
 {
     XLua::Init();

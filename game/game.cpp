@@ -336,6 +336,8 @@ void XGame::CreateLocations() const
             }
         }
     }
+
+    XLocation::ValidateWays();
 }
 
 void XGame::CreateHero() const
