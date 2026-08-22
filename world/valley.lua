@@ -275,7 +275,7 @@ function MakeAvanorValley()
 -- YOHJI's TOWER --
 		SetPattern(21, 11,
 		"XXXXXXXXXXXXXXXXXXXXX" ..
-		"X...................X" ..
+		"Xq..............q...X" ..
 		"X......#######......X" ..
 		"X.....##22#22##.....X" ..
 		"X....##222#222##....X" ..
@@ -289,6 +289,17 @@ function MakeAvanorValley()
 		AddTranslation("2", XTileType.GOLDEN_FLOOR)
 		AddTranslation("#", XTileType.MARBLE_WALL)
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "WIZTOWER_TOP", x, y) end)
+
+		-- Yohjishiro's flock, grazing the grass either side of her
+		-- tower. Each mark is the corner of the strip its four sheep
+		-- keep to, so they stay inside the fence and out of the tower.
+		-- They share her group: harm one and she knows (see YOHJI's
+		-- TOWER SECOND FLOOR below, and XStandardAI::SetGroupEnemy).
+		AddTranslation("q", function(x, y)
+			for i = 1, 4 do
+				Guardian('sheep', "yohji_flock", x, y, 4, 8)
+			end
+		end)
 		DrawPattern(45, 25)
 
 	-- Last thing done to the Valley itself, after every pattern is

@@ -38,6 +38,7 @@ void RegisterCrDefsEnums(sol::state_view& lua)
         "GOBLIN", CreatureClass::GOBLIN,
         "DEMON", CreatureClass::DEMON,
         "HUMANOID", CreatureClass::HUMANOID,
-        "BLOB", CreatureClass::BLOB
+        "BLOB", CreatureClass::BLOB,
+        "OTHER", CreatureClass::OTHER
     );
 }

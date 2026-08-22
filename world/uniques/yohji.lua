@@ -3,7 +3,7 @@ Monster.new("yohjishiro")
 	:View("Yohjishiro, the elven wizard", 'h', xColor.xWHITE, PersonType.NAMED_SHE, CreatureTemplate.UNIQUE, CreatureClass.HUMANOID)
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
-	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
+	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL + XStandardAI.FIND_WAY)
 	:Stats("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5")
 	:Resist("see_invisible:0d0+100")
 	:Combat("1d3", "1d2")
@@ -19,7 +19,13 @@ Monster.new("yohjishiro")
 
 
 function CreateYohji(x, y)
-	local yohji = Guardian("yohjishiro", "", x, y, 5, 5)
+	-- She and her flock down in the yard are one group, which is the
+	-- whole of what makes her dangerous: kill a sheep and the engine
+	-- hands every other member of the group the killer's name, and
+	-- releases them from the ground they were keeping to. Until then
+	-- GUARD_AREA holds her to her tower room; after it, FIND_WAY is
+	-- what lets her take the stairs down after whoever did it.
+	local yohji = Guardian("yohjishiro", "yohji_flock", x, y, 5, 5)
 	SetEventHandler(yohji, 'YohjiHandler')
 end
 
