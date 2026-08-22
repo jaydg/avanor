@@ -2,7 +2,7 @@
 -------------------- RAT'S CELLAR ---------------------------
 
 function MakeRatCellar()
-	CreateLocation("RATCELLAR", "RC:1", "Rat's cellar", XLocation.CAVE, CAVE)
+	CreateLocation("RATCELLAR", "RC:1", "Rat's cellar", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"#A,,,,,,,,,,,######################################################A,,,,,,,,,,,#" ..

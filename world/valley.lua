@@ -298,7 +298,7 @@ function MakeAvanorValley()
 	ScatterHerbBushes()
 
 -- KING'S TREASURE --
-	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", XLocation.PLAIN, PLAIN)
+	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", XLocation.PATTERN, Drawn(21, 11))
 		SetPattern(21, 11,
 		"#####################" ..
 		"#######[~~~~[########" ..
@@ -344,7 +344,7 @@ function MakeAvanorValley()
 
 
 -- UNDEAD's THOMB Underground --
-	CreateLocation("UNDEADS_TOMB1", "Tomb", "Tomb", XLocation.CAVE, CAVE)
+	CreateLocation("UNDEADS_TOMB1", "Tomb", "Tomb", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..

@@ -7,7 +7,7 @@ function MakeSmallCave()
 		Way(XStairWay.DOWN, "SMALL_CAVE_2")
 		Settle(CreatureClass.RAT + CreatureClass.INSECT, CreatureTemplate.LOW)
 
-	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", XLocation.CAVE, CAVE)
+	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..

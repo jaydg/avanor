@@ -38,6 +38,25 @@ function Dungeon(room_chance)
 	}
 end
 
+-- A level drawn by hand: the engine invents nothing, the pattern the
+-- script draws is the whole of it. `fill` is what is left wherever that
+-- pattern draws nothing, so it wants to be something solid - and the
+-- level is exactly as large as it says, no bigger.
+function Drawn(width, height)
+	return {
+		-- What the level is cut out of, left wherever the pattern
+		-- draws nothing, and the ground it invents under a door or a
+		-- chest that no neighbour can speak for.
+		fill = XTileType.MAGMA,
+		floor = XTileType.CAVE_FLOOR,
+
+		sight = 0,
+
+		width = width or 80,
+		height = height or 20,
+	}
+end
+
 -- The valley: grassland, a third of it wooded, ringed by mountains that
 -- erode inward into foothills.
 PLAIN = {

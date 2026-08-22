@@ -17,7 +17,7 @@ Monster.new("xshee_voo")
 	:Register()
 
 function MakeVulcano()
-	CreateLocation("EXTINCT_VOLCANO", "Volcano", "Crater of an Extinct Volcano", XLocation.CAVE, CAVE)
+	CreateLocation("EXTINCT_VOLCANO", "Volcano", "Crater of an Extinct Volcano", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"########################,#######################################################" ..

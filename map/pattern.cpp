@@ -88,26 +88,37 @@ void XPattern::Draw(XLocation* location, int x, int y) const
     }
 
     for (const auto pt: points_to_resolve) {
-        if (!floor_priority.empty()) {
-            size_t best_fit_index = 0;
+        size_t best_fit_index = 0;
+        bool copied_a_neighbour = false;
 
-            for (int q = -1; q <= 1; q++) {
-                for (int w2 = -1; w2 <= 1; w2++) {
-                    if (q == 0 && w2 == 0) {
-                        continue;
-                    }
+        for (int q = -1; q <= 1; q++) {
+            for (int w2 = -1; w2 <= 1; w2++) {
+                if (q == 0 && w2 == 0) {
+                    continue;
+                }
 
-                    const XTileType::Id tm = location->map->GetXY(pt.x + q, pt.y + w2);
+                const XTileType::Id tm = location->map->GetXY(pt.x + q, pt.y + w2);
 
-                    for (size_t i = 0; i < floor_priority.size(); i++) {
-                        if (floor_priority[i] == tm && best_fit_index < i) {
-                            best_fit_index = i;
-                        }
+                for (size_t i = 0; i < floor_priority.size(); i++) {
+                    if (floor_priority[i] == tm && (!copied_a_neighbour || best_fit_index < i)) {
+                        best_fit_index = i;
+                        copied_a_neighbour = true;
                     }
                 }
             }
+        }
 
+        // Nothing around says what the ground is - a treasure alcove cut
+        // into solid rock, where every neighbour is wall and every cell
+        // of the alcove itself is waiting here in this same list. The
+        // level's own floor answers that; without one, the first of the
+        // world's floors does, which is what a level had before.
+        if (copied_a_neighbour) {
             location->map->SetXY(pt.x, pt.y, floor_priority[best_fit_index]);
+        } else if (location->default_floor != XTileType::NONE) {
+            location->map->SetXY(pt.x, pt.y, location->default_floor);
+        } else if (!floor_priority.empty()) {
+            location->map->SetXY(pt.x, pt.y, floor_priority[0]);
         }
 
         if (const Translation* translation = Lookup(text[(pt.y - y) * w + pt.x - x]);

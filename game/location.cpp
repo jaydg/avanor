@@ -31,6 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/lua_ai.h"
 #include "creature/shopkeeper.h"
 #include "engine/xgen.h"
+#include "map/pattern_builder.h"
 #include "map/cave_builder.h"
 #include "map/dungeon_builder.h"
 #include "map/plain_builder.h"
@@ -435,7 +436,8 @@ void XLocation::RegisterLua(sol::state_view& lua)
     lua.new_enum("XLocation",
         "CAVE", Generator::CAVE,
         "DUNGEON", Generator::DUNGEON,
-        "PLAIN", Generator::PLAIN
+        "PLAIN", Generator::PLAIN,
+        "PATTERN", Generator::PATTERN
     );
 
     lua.new_enum("ShopDoor",
@@ -589,6 +591,13 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
 
     XLocation::current_location->sight_range = Option(options, "sight", 0);
 
+    // The ground this level is floored with, for a pattern that has to
+    // invent some (a door in a wall of a hand-drawn cave has no floored
+    // neighbour to copy). A plain has none - open country says what its
+    // ground is cell by cell.
+    XLocation::current_location->default_floor =
+        options ? options->get_or("floor", XTileType::NONE) : XTileType::NONE;
+
     switch (generator) {
         case Generator::CAVE:
             XCaveBuilder(XLocation::current_location, width, height,
@@ -624,6 +633,13 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
                           Option(options, "cover_odds", 3),
                           Option(options, "border_depth", 4),
                           Option(options, "erosion", 2)).Build();
+            break;
+
+        case Generator::PATTERN:
+            // A level drawn by hand: a blank map of the size asked for,
+            // and the script's own pattern is all there ever is on it.
+            XPatternBuilder(XLocation::current_location, width, height,
+                           RequiredTile(options, "fill", loc_id)).Build();
             break;
     }
 }

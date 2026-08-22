@@ -34,7 +34,7 @@ function MakeDwarvenCity()
 		DropItem(CreateObject("XCookingSet"))
 
 
-	CreateLocation("DWARFCITY", "DvCty", "Dwarven City", XLocation.CAVE, CAVE)
+	CreateLocation("DWARFCITY", "DvCty", "Dwarven City", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"###############,,,,,,,############,,,,,,,####G####################,,,,##F++E,,A#" ..
@@ -74,7 +74,7 @@ function MakeDwarvenCity()
 		AddTranslation("G", function(x, y) Way(XStairWay.DOWN, "GASMINE1", x, y) end)
 		DrawPattern(0, 0)
 
-	CreateLocation("DWARFTREASURE", "DvTr", "Dwarven Treasure", XLocation.CAVE, CAVE)
+	CreateLocation("DWARFTREASURE", "DvTr", "Dwarven Treasure", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"################################################################################" ..

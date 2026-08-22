@@ -28,7 +28,7 @@ function MakeWizardDungeon()
 		Way(XStairWay.DOWN, "AHKULAN_CASTLE")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
 
-	CreateLocation("AHKULAN_CASTLE", "AC", "Ahk-Ulan's castle", XLocation.CAVE, CAVE)
+	CreateLocation("AHKULAN_CASTLE", "AC", "Ahk-Ulan's castle", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
 		"################################################################################" ..
 		"##################==############################################################" ..

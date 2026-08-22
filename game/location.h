@@ -75,7 +75,8 @@ class XLocation : public XObject
         enum class Generator {
             CAVE,
             DUNGEON,
-            PLAIN
+            PLAIN,
+            PATTERN // Nothing is generated at all
         };
 
         // Registers the Lua enums that belong to the location layer.
@@ -89,6 +90,13 @@ class XLocation : public XObject
         std::vector<XObject*> ways_list;
         // The location's key in Game.locations.
         std::string id;
+
+        // What a pattern puts under a door, a chest or a shopkeeper when
+        // none of the neighbours says what the ground is here (see
+        // XPattern::Draw). NONE leaves that to the world's own
+        // SetFloorPriority() list, which is all a level had before.
+        // Set from the world script with the generator's `floor` option.
+        XTileType::Id default_floor = XTileType::NONE;
 
         // How far light carries here: a cave is lit by what you carry,
         // open country by the sky. Set from the world script with the
@@ -186,7 +194,8 @@ class XLocation : public XObject
                 ar(p);
             }
 
-            ar(brief_name, full_name, visited_by_hero, event, allow_wandering_in, sight_range);
+            ar(brief_name, full_name, visited_by_hero, event, allow_wandering_in, sight_range,
+               default_floor);
 
             if constexpr (Archive::is_loading::value) {
                 for (auto& p : places) {
