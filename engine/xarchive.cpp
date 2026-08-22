@@ -32,6 +32,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xarchive.h"
 #include "map/map.h"
 #include "game/game.h"
+#include "game/location.h"
 #include "game/quest.h"
 #include "game/xtime.h"
 #include "item/xamulet.h"
@@ -41,7 +42,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xring.h"
 #include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x0000057;
+constexpr unsigned int SAVE_GAME_VERSION = 0x0000058;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 // ZSTD compression level: 1 provides excellent speed/size tradeoff
@@ -276,6 +277,16 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
             printf("File corrupted!");
             exit(0);
         }
+
+        // Everything the save does not carry, re-derived now that the
+        // whole world is back: a floor above another level saves only
+        // the *name* of the level it covers (XLocation::below), so the
+        // pointers that make a hole in that floor show the level below
+        // have to be made again here. This cannot happen before the
+        // load - XLocation::Restoration() runs first, when
+        // Game.locations is still empty and there is nothing to link.
+        XLocation::ValidateWorld(false);
+        XLocation::LinkLevels();
     } catch (const cereal::Exception&) {
         // Malformed/foreign/truncated file - same graceful "nothing to
         // load" outcome as the version check above, not a hard failure.

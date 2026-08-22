@@ -26,12 +26,10 @@ void XPatternBuilder::Build() const
     XMap*& map = location->map;
 
     if (!map) {
-        map = new XMap(w, h);
+        map = new XMap(w, h, at_x, at_y, part_w, part_h);
     }
 
-    for (int i = 0; i < map->hgt; i++) {
-        for (int j = 0; j < map->len; j++) {
-            map->SetXY(j, i, fill);
-        }
+    for (int i = 0; i < map->CellCount(); i++) {
+        map->map[i].n = fill;
     }
 }

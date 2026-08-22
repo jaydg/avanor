@@ -221,12 +221,9 @@ static bool TestRealCreature()
             continue;
         }
 
-        for (int y = 0; y < loc->map->hgt && !original; y++) {
-            for (int x = 0; x < loc->map->len; x++) {
-                if (auto& cr = loc->map->map[x + y * loc->map->len].pMonster) {
-                    original = cr;
-                    break;
-                }
+        for (int i = 0; i < loc->map->CellCount() && !original; i++) {
+            if (auto& cr = loc->map->map[i].pMonster) {
+                original = cr;
             }
         }
     }
@@ -323,7 +320,7 @@ static bool TestRealLocation()
     int original_monster_count = 0;
     int original_item_count = 0;
 
-    for (int i = 0; i < original_len * original_hgt; i++) {
+    for (int i = 0; i < original->map->CellCount(); i++) {
         if (original->map->map[i].pMonster) {
             original_monster_count++;
         }
@@ -373,7 +370,7 @@ static bool TestRealLocation()
     int restored_item_count = 0;
 
     if (restored && restored->map) {
-        for (int i = 0; i < restored->map->len * restored->map->hgt; i++) {
+        for (int i = 0; i < restored->map->CellCount(); i++) {
             if (restored->map->map[i].pMonster) {
                 restored_monster_count++;
             }
@@ -665,7 +662,7 @@ int main(int argc, char* argv[])
 
                 location_count++;
 
-                for (int i = 0; i < loc->map->len * loc->map->hgt; i++) {
+                for (int i = 0; i < loc->map->CellCount(); i++) {
                     if (loc->map->map[i].pMonster) {
                         monster_count++;
                     }
@@ -681,7 +678,34 @@ int main(int argc, char* argv[])
                 << ", hero " << (XCreature::main_creature ? "present" : "none")
                 << std::endl;
 
-            for (int i = 0; i < 100; i++) {
+            // A floor above another level saves the name of what it
+            // stands on, not the pointers - those are made again after
+            // the load. Unlinked, every cell outside such a floor's own
+            // corner of the map answers nothing, and the first creature
+            // up there to look out of a window walks into it. Checked
+            // here rather than left to the turns below, which only find
+            // it if that creature happens to get a turn.
+            int unlinked = 0;
+
+            for (const auto& [key, loc] : Game.locations) {
+                if (!loc || loc->below.empty()) {
+                    continue;
+                }
+
+                if (!loc->below_location || !loc->map || !loc->map->below) {
+                    unlinked++;
+                    std::cout << "  " << key << " stands on '" << loc->below
+                              << "' but is not linked to it" << std::endl;
+                }
+            }
+
+            std::cout << "Floors above: " << (unlinked ? "FAIL" : "PASS") << std::endl;
+
+            // Long enough for the creatures of a restored world to take
+            // real turns in it: at 100 the first restore bug of this
+            // kind (an unlinked floor above) went unnoticed, and needed
+            // 20000 to show up on its own.
+            for (int i = 0; i < 20000; i++) {
                 Game.Scheduler.Get()->Run();
             }
         }

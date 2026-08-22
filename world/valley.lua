@@ -320,20 +320,22 @@ function MakeAvanorValley()
 
 
 -- YOHJI's TOWER SECOND FLOOR--
-	CreateLocation("WIZTOWER_TOP", "WzTwr", "Yohjishiro's Tower", XLocation.PLAIN, PLAIN)
+	CreateLocation("WIZTOWER_TOP", "WzTwr", "Yohjishiro's Tower", XLocation.PATTERN, Above("MAIN", 45, 25, 21, 11))
+		-- Only the tower itself is up here. Every blank is a hole in
+		-- this floor: what shows through it is the valley below, drawn
+		-- from the same place it is drawn when you walk it.
 		SetPattern(21, 11,
-		"XXXXXXXXXXXXXXXXXXXXX" ..
-		"X......##333##......X" ..
-		"X.....#3W22223#.....X" ..
-		"X....##2222222##....X" ..
-		"X...#####222#####...X" ..
-		"X...3B22#222#2223...X" ..
-		"X...##22/2>2/22##...X" ..
-		"X....3#2#222#2#3....X" ..
-		"X.....###222###.....X" ..
-		"X......##333##......X" ..
-		"XXXXXXXXX111XXXXXXXXX")
-		AddTranslation("1", XTileType.ROAD)
+		"                     " ..
+		"       ##333##       " ..
+		"      #3W22223#      " ..
+		"     ##2222222##     " ..
+		"    #####222#####    " ..
+		"    3B22#222#2223    " ..
+		"    ##22/2>2/22##    " ..
+		"     3#2#222#2#3     " ..
+		"      ###222###      " ..
+		"       ##333##       " ..
+		"                     ")
 		AddTranslation("2", XTileType.GOLDEN_FLOOR)
 		AddTranslation("3", XTileType.WINDOW)
 		AddTranslation("#", XTileType.MARBLE_WALL)

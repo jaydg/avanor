@@ -204,11 +204,53 @@ class XMap
 {
     public:
         void ForceRecenter(int x, int y);
+
+        // The coordinate space: how far positions on this map reach. For
+        // nearly every level this is also how much of it exists.
         int hgt, len;
+
+        // Where the viewport is scrolled to.
         int wx, wy;
+
+        // The part of that space this map holds cells for. A floor built
+        // over another level holds only the cells it stands on, and takes
+        // its coordinate space from the level underneath, so that a
+        // position means the same place on both.
+        int stored_x, stored_y;
+        int stored_len, stored_hgt;
+
+        // stored_len * stored_hgt cells, row-major within the stored part.
         XMapTile* map;
+
+        // The level this one is a floor above, or null. Whatever this map
+        // holds no cell for - outside its own part of the space, or
+        // holding XTileType::NONE within it, which is a hole in the floor
+        // - is that level's: its ground, its creatures, its items, and
+        // the hero's memory of them. Rebuilt by XLocation::LinkLevels()
+        // rather than saved, the same way ways_list is.
+        XMap* below;
+
+        // The cell at these coordinates as the world sees it, read
+        // through to the level below wherever this map holds nothing of
+        // its own. Null only when the coordinates are nowhere at all.
+        [[nodiscard]] XMapTile* Cell(int x, int y) const;
+
+        // The cell this map holds itself, or null when it holds none
+        // here. Everything that changes a level goes through this, so a
+        // floor above can never write into the level it looks down on.
+        [[nodiscard]] XMapTile* StoredCell(int x, int y) const;
+
+        // How many cells this map holds, and where the nth of them is.
+        // A sweep over a whole map runs over these, not over the
+        // coordinate space, which for a floor above is far larger.
+        [[nodiscard]] int CellCount() const { return stored_len * stored_hgt; }
+        [[nodiscard]] int CellX(const int n) const { return stored_x + n % stored_len; }
+        [[nodiscard]] int CellY(const int n) const { return stored_y + n / stored_len; }
+
         XMap();
         XMap(int l, int h);
+        // A floor covering only part of a larger level's space.
+        XMap(int l, int h, int sx, int sy, int sl, int sh);
         ~XMap();
 
         void Put(XCreature* cr) const;
@@ -268,13 +310,13 @@ class XMap
         template<class Archive>
         void serialize(Archive& ar)
         {
-            ar(len, hgt, wx, wy);
+            ar(len, hgt, wx, wy, stored_x, stored_y, stored_len, stored_hgt);
 
             if constexpr (Archive::is_loading::value) {
-                map = new XMapTile[len * hgt];
+                map = new XMapTile[CellCount()];
             }
 
-            for (int i = 0; i < len * hgt; i++) {
+            for (int i = 0; i < CellCount(); i++) {
                 ar(map[i]);
             }
         }

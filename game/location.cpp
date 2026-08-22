@@ -60,7 +60,7 @@ void XLocation::FixupWaysList()
 {
     ways_list.clear();
 
-    for (int i = 0; i < map->len * map->hgt; i++) {
+    for (int i = 0; i < map->CellCount(); i++) {
         if (auto* way = dynamic_cast<XStairWay*>(map->map[i].pSpecialObject.get())) {
             ways_list.push_back(way);
         }
@@ -75,9 +75,11 @@ void XLocation::FixupWaysList()
 
 void XLocation::FixupMapObjectPositions()
 {
-    for (int y = 0; y < map->hgt; y++) {
-        for (int x = 0; x < map->len; x++) {
-            auto& cell = map->map[x + y * map->len];
+    for (int i = 0; i < map->CellCount(); i++) {
+        {
+            const int x = map->CellX(i);
+            const int y = map->CellY(i);
+            auto& cell = map->map[i];
 
             if (auto& cr = cell.pMonster) {
                 cr->x = x;
@@ -201,10 +203,13 @@ std::optional<XPoint> XLocation::GetFreeXY(XRect * area)
         dx = area->Width();
         dy = area->Height();
     } else {
-        bx = 0;
-        by = 0;
-        dx = map->len;
-        dy = map->hgt;
+        // The part of the map this level actually holds - for a floor
+        // above another one, looking anywhere else would be looking at
+        // the level below, where this level has no room to offer.
+        bx = map->stored_x;
+        by = map->stored_y;
+        dx = map->stored_len;
+        dy = map->stored_hgt;
     }
 
     for (int f = 10000; f-- > 0; ) {
@@ -471,8 +476,12 @@ void RegisterLuaEventEnum(sol::state_view& lua)
 
 void XLocation::Restoration()
 {
+    // Only what has to exist *before* a saved world can be read: the
+    // tile table, the creature templates, the map alphabet. The world
+    // itself arrives afterwards, in XArchive::RestoreGame(), which
+    // validates and links it once every location is back - doing either
+    // here would sweep an empty Game.locations and link nothing.
     XLua::Init();
-    ValidateWorld(false);
 }
 
 int XLocation::ValidateWorld(const bool new_game)
@@ -508,7 +517,7 @@ int XLocation::ValidateWorld(const bool new_game)
             continue;
         }
 
-        for (int i = 0; i < loc->map->len * loc->map->hgt; i++) {
+        for (int i = 0; i < loc->map->CellCount(); i++) {
             const auto& spec = loc->map->map[i].pSpecialObject;
 
             if (!spec) {
@@ -530,10 +539,54 @@ int XLocation::ValidateWorld(const bool new_game)
             }
 
             bad++;
-            std::cerr << "world: " << key << " at " << (i % loc->map->len) << ","
-                      << (i / loc->map->len) << " leads to '" << target
+            std::cerr << "world: " << key << " at " << loc->map->CellX(i) << ","
+                      << loc->map->CellY(i) << " leads to '" << target
                       << "', which is not a location" << std::endl;
         }
+    }
+
+    return bad;
+}
+
+int XLocation::LinkLevels()
+{
+    int bad = 0;
+
+    for (const auto& [key, loc] : Game.locations) {
+        if (!loc) {
+            continue;
+        }
+
+        loc->below_location = nullptr;
+
+        if (loc->below.empty()) {
+            continue;
+        }
+
+        const auto under = Game.Location(loc->below);
+
+        if (!under || under.get() == loc.get()) {
+            bad++;
+            std::cerr << "world: " << key << " is built over '" << loc->below
+                      << "', which is not a location it can stand on" << std::endl;
+            continue;
+        }
+
+        // A floor above shares the coordinate space of the level it
+        // stands on, and must sit within it.
+        if (loc->map->len != under->map->len || loc->map->hgt != under->map->hgt
+            || loc->map->stored_x < 0 || loc->map->stored_y < 0
+            || loc->map->stored_x + loc->map->stored_len > under->map->len
+            || loc->map->stored_y + loc->map->stored_hgt > under->map->hgt) {
+            bad++;
+            std::cerr << "world: " << key << " sits at " << loc->map->stored_x << ","
+                      << loc->map->stored_y << " on " << loc->below
+                      << ", which reaches past its edge" << std::endl;
+            continue;
+        }
+
+        loc->below_location = under.get();
+        loc->map->below = under->map;
     }
 
     return bad;
@@ -598,6 +651,12 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
     XLocation::current_location->default_floor =
         options ? options->get_or("floor", XTileType::NONE) : XTileType::NONE;
 
+    // A floor above another level, and where it sits on it.
+    XLocation::current_location->below = options ? options->get_or<std::string>("below", "") : "";
+    const auto [origin_x, origin_y] = Range(options, "origin", 0, 0);
+    XLocation::current_location->origin_x = origin_x;
+    XLocation::current_location->origin_y = origin_y;
+
     switch (generator) {
         case Generator::CAVE:
             XCaveBuilder(XLocation::current_location, width, height,
@@ -635,12 +694,43 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
                           Option(options, "erosion", 2)).Build();
             break;
 
-        case Generator::PATTERN:
+        case Generator::PATTERN: {
             // A level drawn by hand: a blank map of the size asked for,
             // and the script's own pattern is all there ever is on it.
-            XPatternBuilder(XLocation::current_location, width, height,
-                           RequiredTile(options, "fill", loc_id)).Build();
+            XLocation* here = XLocation::current_location;
+
+            // A floor above another level shares that level's coordinate
+            // space and covers only its own corner of it, so that a
+            // position means the same place on both.
+            int space_len = width;
+            int space_hgt = height;
+
+            if (!here->below.empty()) {
+                const auto under = Game.Location(here->below);
+
+                if (!under || !under->map) {
+                    std::cerr << "world: " << loc_id << " is built over '" << here->below
+                              << "', which has to be built before it" << std::endl;
+                } else {
+                    space_len = under->map->len;
+                    space_hgt = under->map->hgt;
+                }
+            }
+
+            // Nothing at all is a real answer here, and the usual one for
+            // a floor above: every cell its pattern leaves alone is a
+            // hole. A level standing on its own wants something solid.
+            const XTileType::Id fill = options ? options->get_or("fill", XTileType::NONE)
+                                               : XTileType::NONE;
+
+            if (fill == XTileType::NONE && here->below.empty()) {
+                std::cerr << "world: " << loc_id << " is built without a 'fill' tile" << std::endl;
+            }
+
+            XPatternBuilder(here, space_len, space_hgt, here->origin_x, here->origin_y,
+                            width, height, fill).Build();
             break;
+        }
     }
 }
 

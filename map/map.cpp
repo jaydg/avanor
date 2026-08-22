@@ -230,16 +230,57 @@ XMap::XMap()
     len = 0;
     wx = 0;
     wy = 0;
+    stored_x = 0;
+    stored_y = 0;
+    stored_len = 0;
+    stored_hgt = 0;
+    below = nullptr;
 }
 
-XMap::XMap(const int l, const int h)
+XMap::XMap(const int l, const int h) : XMap(l, h, 0, 0, l, h)
 {
-    map = new XMapTile[l * h];
+}
+
+XMap::XMap(const int l, const int h, const int sx, const int sy, const int sl, const int sh)
+{
+    map = new XMapTile[sl * sh];
 
     hgt = h;
     len = l;
     wx = 0;
     wy = 0;
+    stored_x = sx;
+    stored_y = sy;
+    stored_len = sl;
+    stored_hgt = sh;
+    below = nullptr;
+}
+
+XMapTile* XMap::StoredCell(const int x, const int y) const
+{
+    if (x < stored_x || x >= stored_x + stored_len || y < stored_y || y >= stored_y + stored_hgt) {
+        return nullptr;
+    }
+
+    return &map[(x - stored_x) + (y - stored_y) * stored_len];
+}
+
+XMapTile* XMap::Cell(const int x, const int y) const
+{
+    if (x < 0 || x >= len || y < 0 || y >= hgt) {
+        return nullptr;
+    }
+
+    XMapTile* cell = StoredCell(x, y);
+
+    // Nothing of this level's own here: either the floor above does not
+    // reach this far, or it does and there is a hole in it. Either way
+    // what is at these coordinates is what the level below has.
+    if (below && (!cell || cell->n == XTileType::NONE)) {
+        return below->Cell(x, y);
+    }
+
+    return cell;
 }
 
 XMap::~XMap()
@@ -249,73 +290,71 @@ XMap::~XMap()
 
 void XMap::ResVisible(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].visible = false;
+    if (XMapTile* cell = Cell(x, y)) {
+        cell->visible = false;
     }
 }
 
 void XMap::SetVisible(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        map[x + y * len].visible = true;
-        map[x + y * len].color = std_tile_data[map[x + y * len].n].color;
-        map[x + y * len].known = std_tile_data[map[x + y * len].n].view;
+    if (XMapTile* cell = Cell(x, y)) {
+        cell->visible = true;
+        cell->color = std_tile_data[cell->n].color;
+        cell->known = std_tile_data[cell->n].view;
     }
 }
 
 bool XMap::GetVisible(const int x, const int y) const
 {
-    if (x >= 0 && x < len && y >= 0 && y < hgt) {
-        return map[x + y * len].visible;
-    }
+    const XMapTile* cell = Cell(x, y);
 
-    return false;
+    return cell && cell->visible;
 }
 
 void XMap::SetPlace(const int x, const int y, XAnyPlace* place) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
-    map[x + y * len].place = place;
+    cell->place = place;
 }
 
 XAnyPlace* XMap::GetPlace(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].place;
+    return cell->place;
 }
 
 void XMap::ResKnown(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    map[x + y * len].known = 0;
+    cell->known = 0;
 }
 
 void XMap::SetKnown(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    map[x + y * len].known = 1;
+    cell->known = 1;
 }
 
 int XMap::GetKnown(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].known;
+    return cell->known;
 }
 
 void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
     // Callers only ever pass either a fresh object self-registering into an
     // empty slot, or nullptr to evict the current occupant (now always from
@@ -329,8 +368,8 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
         // objects, via a deleter that additionally destructs without
         // Invalidate(), tripping ~XObject's assert). Park the reference
         // in the graveyard instead; it's released between turns.
-        XObject::DeferRelease(std::move(map[x + y * len].pSpecialObject));
-        map[x + y * len].pSpecialObject = nullptr;
+        XObject::DeferRelease(std::move(cell->pSpecialObject));
+        cell->pSpecialObject = nullptr;
         return;
     }
 
@@ -341,7 +380,7 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
     // past this call. Any later placement (already shared_ptr-owned, e.g. via
     // the scheduler) just takes another reference to that same control block.
     if (spec->weak_from_this().expired()) {
-        map[x + y * len].pSpecialObject = std::shared_ptr<XMapObject>(spec, [](XMapObject* p) {
+        cell->pSpecialObject = std::shared_ptr<XMapObject>(spec, [](XMapObject* p) {
             if (p->isValid()) {
                 p->Invalidate();
             } else {
@@ -349,25 +388,24 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
             }
         });
     } else {
-        map[x + y * len].pSpecialObject = std::static_pointer_cast<XMapObject>(spec->shared_from_this());
+        cell->pSpecialObject = std::static_pointer_cast<XMapObject>(spec->shared_from_this());
     }
 }
 
 XMapObject* XMap::GetSpecial(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].pSpecialObject.get();
+    return cell->pSpecialObject.get();
 }
 
 int XMap::GetVisibility(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    XMapObject* spec = map[x + y * len].pSpecialObject.get();
-    auto* xdoor = dynamic_cast<XDoor *>(spec);
+    auto* xdoor = dynamic_cast<XDoor *>(cell->pSpecialObject.get());
 
     if (xdoor && xdoor->isOpened == 0) {
         return 0;
@@ -375,7 +413,7 @@ int XMap::GetVisibility(const int x, const int y) const
 
     // Anything from HARD upwards stops sight:
     // a large tree or a mountain is as good as a wall to look through.
-    if (std_tile_data[map[x + y * len].n].visibility >= XTileType::Visibility::HARD) {
+    if (std_tile_data[cell->n].visibility >= XTileType::Visibility::HARD) {
         return 0;
     }
 
@@ -384,40 +422,49 @@ int XMap::GetVisibility(const int x, const int y) const
 
 const char* XMap::GetDescription(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return std_tile_data[map[x + y * len].n].name.c_str();
+    return std_tile_data[cell->n].name.c_str();
 }
 
 XTileType::Movability XMap::GetMovability(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    // A floor above another level offers footing only where it has floor
+    // of its own. The ground below can be seen through the gaps, and
+    // walked when you are down there - not from up here.
+    const XMapTile* cell = StoredCell(x, y);
 
-    const XMapTile& _map = map[x + y * len];
-    auto* xdoor = dynamic_cast<XDoor *>(_map.pSpecialObject.get());
+    if (below && (!cell || cell->n == XTileType::NONE)) {
+        return XTileType::Movability::UNWALKABLE;
+    }
+
+    assert(cell);
+    auto* xdoor = dynamic_cast<XDoor *>(cell->pSpecialObject.get());
 
     if (xdoor && xdoor->isOpened == 0) {
         return XTileType::Movability::WALL;
     }
 
-    return std_tile_data[_map.n].movability;
+    return std_tile_data[cell->n].movability;
 }
 
 int XMap::XGetMovability(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    // See GetMovability(): open air is not somewhere to step.
+    const XMapTile* m = StoredCell(x, y);
 
-    const XMapTile* m = &map[x + y * len];
+    if (below && (!m || m->n == XTileType::NONE)) {
+        return 1;
+    }
+
+    assert(m);
 
     if (m->pMonster) {
         return 2;
     }
 
-    XMapObject* spec = map[x + y * len].pSpecialObject.get();
-    auto* xdoor = dynamic_cast<XDoor *>(spec);
+    auto* xdoor = dynamic_cast<XDoor *>(m->pSpecialObject.get());
 
     if (std_tile_data[m->n].movability < XTileType::Movability::UNWALKABLE
         && !(xdoor && xdoor->isOpened == 0)) {
@@ -429,34 +476,34 @@ int XMap::XGetMovability(const int x, const int y) const
 
 void XMap::PutItem(const int x, const int y, XItem* item) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
     item->x = x;
     item->y = y;
-    map[x + y * len].item_list.insert(XItem::Own(item));
+    cell->item_list.insert(XItem::Own(item));
 }
 
 XItemList* XMap::GetItemList(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return &map[x + y * len].item_list;
+    return &cell->item_list;
 }
 
 unsigned int XMap::GetItemCount(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].item_list.size();
+    return cell->item_list.size();
 }
 
 void XMap::SetMonster(const int x, const int y, XCreature* monst) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
     // First time this creature is ever placed on the map (birth): nothing
     // owns it yet, so this is the one place its master shared_ptr gets
@@ -475,7 +522,7 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
         // weak_ptr), so nothing can still be holding a legacy reference by
         // the time we get here - safe to delete unconditionally once
         // Invalidate() has run (or already had, on a previous pass).
-        map[x + y * len].pMonster = std::shared_ptr<XCreature>(monst, [](XCreature* p) {
+        cell->pMonster = std::shared_ptr<XCreature>(monst, [](XCreature* p) {
             if (p->isValid()) {
                 p->Invalidate();
             } else {
@@ -483,24 +530,24 @@ void XMap::SetMonster(const int x, const int y, XCreature* monst) const
             }
         });
     } else {
-        map[x + y * len].pMonster = std::static_pointer_cast<XCreature>(monst->shared_from_this());
+        cell->pMonster = std::static_pointer_cast<XCreature>(monst->shared_from_this());
     }
 }
 
 void XMap::ResMonster(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
-    map[x + y * len].pMonster = nullptr;
+    cell->pMonster = nullptr;
 }
 
 XCreature* XMap::GetMonster(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].pMonster.get();
+    return cell->pMonster.get();
 }
 
 void XMap::PutChar(const int x, const int y, const char c, const int color) const
@@ -514,7 +561,12 @@ void XMap::Put(XCreature * cr) const
 {
     for (int i = 0; i < SCR_HGT && wy + i < hgt; i++) {
         for (int j = 0; j < SCR_LEN && wx + j < len; j++) {
-            XMapTile * tmap = &map[(i + wy) * len + j + wx];
+            XMapTile* tmap = Cell(wx + j, wy + i);
+
+            if (!tmap) {
+                vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
+                continue;
+            }
 
             if (tmap->visible) {
                 auto* trap = dynamic_cast<XTrap *>(tmap->pSpecialObject.get());
@@ -598,34 +650,34 @@ void XMap::Center(const int x, const int y)
 
 void XMap::SetXY(const int x, const int y, const XTileType::Id std_map) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
-    map[x + y * len].n = std_map;
+    cell->n = std_map;
 }
 
 XTileType::Id XMap::GetXY(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].n;
+    return cell->n;
 }
 
 void XMap::SetRoom(const int x, const int y, const int room_id) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    XMapTile* cell = StoredCell(x, y);
+    assert(cell);
 
-    map[x + y * len].room_id = room_id;
+    cell->room_id = room_id;
 }
 
 int XMap::GetRoom(const int x, const int y) const
 {
-    assert(x >= 0 && x < len);
-    assert(y >= 0 && y < hgt);
+    const XMapTile* cell = Cell(x, y);
+    assert(cell);
 
-    return map[x + y * len].room_id;
+    return cell->room_id;
 }
 
 void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const XTileType::Id m1, const XTileType::Id m2) const
@@ -649,9 +701,9 @@ void XMap::CreateRoom(const int x, const int y, const int l, const int h, const 
 
 void XMap::Dump(std::ofstream &file) const
 {
-    for (int i = 0; i < hgt; i++) {
-        for (int j = 0; j < len; j++) {
-            XMapTile* tmap = &map[i * len + j];
+    for (int i = 0; i < stored_hgt; i++) {
+        for (int j = 0; j < stored_len; j++) {
+            XMapTile* tmap = &map[i * stored_len + j];
             int n = tmap->n;
             char vch = std_tile_data[n].view;
 
@@ -831,7 +883,7 @@ void XMap::ConnectAllRegions(const XTileType::Id floor)
 
 void XMap::RemapTiles(const std::vector<XTileType::Id>& remap) const
 {
-    for (int i = 0; i < len * hgt; i++) {
+    for (int i = 0; i < CellCount(); i++) {
         const size_t saved = static_cast<size_t>(map[i].n);
 
         map[i].n = saved < remap.size() ? remap[saved] : XTileType::NONE;

@@ -57,6 +57,24 @@ function Drawn(width, height)
 	}
 end
 
+-- A floor above another level: it covers only the part of that level
+-- named here, and shares its coordinates, so its pattern is drawn at the
+-- same place as the building it stands on. Everything the pattern leaves
+-- alone is a hole - what shows through is the level below, its ground
+-- and whatever walks there, and there is no floor to step onto.
+function Above(below, x, y, width, height)
+	return {
+		below = below,
+		origin = { x, y },
+
+		width = width,
+		height = height,
+
+		-- Looking out over open country, as far as the level below.
+		sight = 30,
+	}
+end
+
 -- The valley: grassland, a third of it wooded, ringed by mountains that
 -- erode inward into foothills.
 PLAIN = {

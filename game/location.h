@@ -98,6 +98,30 @@ class XLocation : public XObject
         // Set from the world script with the generator's `floor` option.
         XTileType::Id default_floor = XTileType::NONE;
 
+        // The level this one is built over, and where this level's (0,0)
+        // sits on it. A level with a `below` is a floor above another
+        // one: wherever its own map holds nothing at all
+        // (XTileType::NONE - a hole, see isHole()), what shows through
+        // is that level, its ground and whatever walks on it. Empty for
+        // a level that stands on its own, which is nearly all of them.
+        //
+        // Set from the world script with the generator's `below` and
+        // `origin` options.
+        std::string below;
+        int origin_x = 0;
+        int origin_y = 0;
+
+        // What `below` names, resolved once the whole world exists -
+        // levels are built in script order, so the one underneath may
+        // not have been built yet when this one is. Rebuilt by
+        // LinkLevels() rather than saved, exactly like ways_list.
+        XLocation* below_location = nullptr;
+
+        // Resolves every level's `below`. Complains about a level that
+        // names one which was never built; returns the number of
+        // complaints, and leaves those levels standing on nothing.
+        static int LinkLevels();
+
         // How far light carries here: a cave is lit by what you carry,
         // open country by the sky. Set from the world script with the
         // generator's `sight` option.
@@ -195,7 +219,7 @@ class XLocation : public XObject
             }
 
             ar(brief_name, full_name, visited_by_hero, event, allow_wandering_in, sight_range,
-               default_floor);
+               default_floor, below, origin_x, origin_y);
 
             if constexpr (Archive::is_loading::value) {
                 for (auto& p : places) {

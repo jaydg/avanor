@@ -32,14 +32,21 @@ class XLocation;
 // level built this way is as large as it draws and no larger.
 //
 // `fill` is what remains wherever the pattern draws nothing, so it wants
-// to be something solid - the rock a vault is cut out of, say. It is
-// never the tile a level shows by accident: tile id 0 would be, and that
-// one is walkable and see-through.
+// to be something solid - the rock a vault is cut out of, say. A floor
+// built over another level is the exception: there, nothing at all
+// (XTileType::NONE) is the point, since every cell the pattern leaves
+// alone is a hole the level below shows through.
 class XPatternBuilder
 {
     public:
-        XPatternBuilder(XLocation* _location, int _w, int _h, XTileType::Id _fill)
-            : location(_location), w(_w), h(_h), fill(_fill)
+        // `w` by `h` is the coordinate space the level lives in; the
+        // level itself covers `part_w` by `part_h` of it, at (`at_x`,
+        // `at_y`). For a level standing on its own those are the same
+        // thing, and it starts at the origin.
+        XPatternBuilder(XLocation* _location, int _w, int _h, int _at_x, int _at_y,
+                        int _part_w, int _part_h, XTileType::Id _fill)
+            : location(_location), w(_w), h(_h), at_x(_at_x), at_y(_at_y),
+              part_w(_part_w), part_h(_part_h), fill(_fill)
         {
         }
 
@@ -48,6 +55,8 @@ class XPatternBuilder
     private:
         XLocation* location;
         int w, h;
+        int at_x, at_y;
+        int part_w, part_h;
         XTileType::Id fill;
 };
 
