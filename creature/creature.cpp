@@ -328,22 +328,30 @@ std::vector<XCreature*> XCreature::getGroupMembers() const
 int XCreature::stopAction()
 {
     if (action_data.action == A_USE_TOOL) {
-        dynamic_cast<XTool *>(action_data.item.get())->onUse(XTool::FINISH, this);
-    } else {
-        if (action_data.item) {
-            contain.insert(action_data.item);
+        if (auto* tool = dynamic_cast<XTool*>(action_data.item.get())) {
+            tool->onUse(XTool::FINISH, this);
         }
+    } else if (action_data.item) {
+        contain.insert(action_data.item);
     }
 
     action_data.action = A_MOVE;
     action_data.item = nullptr;
-    isDisturb = 0; //prevents hero to continue automove when attaked by ghosts...
+
+    // prevents hero to continue automove when attaked by ghosts...
+    isDisturb = 0;
+
     return 1;
 }
 
 int XCreature::continueEat()
 {
-    XAnyFood * food = (XAnyFood*)action_data.item.get();
+    auto* food = dynamic_cast<XAnyFood*>(action_data.item.get());
+
+    if (!food) {
+        return stopAction();
+    }
+
     assert(food->kind & ItemKind::FOOD);
     int res = food->onEat(this);
 
@@ -1721,7 +1729,12 @@ void XCreature::LastStep()
 
 int XCreature::continueRead()
 {
-    XBook * book = (XBook*)action_data.item.get();
+    auto* book = dynamic_cast<XBook*>(action_data.item.get());
+
+    if (!book) {
+        return stopAction();
+    }
+
     book->onRead(this);
 
     if (book->left_to_read <= 0) {
@@ -1751,8 +1764,14 @@ int XCreature::Read(XItem * item)
     }
 
     if (item->kind & ItemKind::SCROLL) {
+        auto* scroll = dynamic_cast<XScroll*>(item);
+
+        if (!scroll) {
+            return 0;
+        }
+
         skill->UseSkill();
-        ((XScroll*)item)->onRead(this);
+        scroll->onRead(this);
         item->UnCarry();
         item->Invalidate();
 
@@ -1762,9 +1781,15 @@ int XCreature::Read(XItem * item)
 
         return 1;
     } else if (item->kind & ItemKind::BOOK) {
-        ((XBook*)item)->onRead(this);
+        auto* book = dynamic_cast<XBook*>(item);
 
-        if (((XBook*)item)->left_to_read <= 0) {
+        if (!book) {
+            return 0;
+        }
+
+        book->onRead(this);
+
+        if (book->left_to_read <= 0) {
             item->UnCarry();
             item->Invalidate();
         } else {

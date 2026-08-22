@@ -314,7 +314,16 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
 int XCreature::continueUseItem()
 {
     assert(isValid());
-    auto tool = dynamic_cast<XTool *>(action_data.item.get());
+
+    auto* tool = dynamic_cast<XTool*>(action_data.item.get());
+
+    if (!tool) {
+        action_data.action = A_MOVE;
+        action_data.item = nullptr;
+
+        return 1;
+    }
+
     assert(tool->kind & ItemKind::TOOL);
     RESULT res = tool->onUse(XTool::PROGRESS, this);
 
