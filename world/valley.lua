@@ -299,7 +299,7 @@ function MakeAvanorValley()
 
 -- KING'S TREASURE --
 	CreateLocation("KINGS_TREASURE", "RoyalTr", "Royal Treasure", XLocation.PLAIN, PLAIN)
-		SetPattern(21, 10,
+		SetPattern(21, 11,
 		"#####################" ..
 		"#######[~~~~[########" ..
 		"#####$$$$$$$$$$######" ..
@@ -316,6 +316,7 @@ function MakeAvanorValley()
 		AddTranslation("$", function(x, y) Treasure(x, y, 250) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "MAIN", x, y) end)
+		DrawPattern(0, 0)
 
 
 -- YOHJI's TOWER SECOND FLOOR--
