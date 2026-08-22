@@ -512,7 +512,7 @@ void XMap::PutChar(const int x, const int y, const char c, const int color) cons
 
 void XMap::Put(XCreature * cr) const
 {
-    for (int i = 0; i < SCR_HGT && wy + i < hgt; i++)
+    for (int i = 0; i < SCR_HGT && wy + i < hgt; i++) {
         for (int j = 0; j < SCR_LEN && wx + j < len; j++) {
             XMapTile * tmap = &map[(i + wy) * len + j + wx];
 
@@ -549,6 +549,24 @@ void XMap::Put(XCreature * cr) const
                 vPutCh(j + SCR_X, i + SCR_Y, tmap->known, DimRGB(tmap->color, RememberedBrightness()));
             }
         }
+
+        // A map narrower than the screen reaches only part of the way
+        // across it. Nothing clears the screen between turns, so the
+        // rest of the row would keep whatever was drawn there before -
+        // blank it. For a map at least as wide as the screen this loop
+        // does not run at all.
+        for (int j = len - wx; j < SCR_LEN; j++) {
+            vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
+        }
+    }
+
+    // The same for a map shorter than the screen: every row past its
+    // bottom edge.
+    for (int i = hgt - wy; i < SCR_HGT; i++) {
+        for (int j = 0; j < SCR_LEN; j++) {
+            vPutCh(j + SCR_X, i + SCR_Y, ' ', xBLACK);
+        }
+    }
 }
 
 void XMap::Center(const int x, const int y)
