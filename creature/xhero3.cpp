@@ -176,26 +176,37 @@ void XHero::Pray()
 
 void XHero::EndGame(const char* end_msg)
 {
-    unsigned long score = main_creature->experience + main_creature->MoneyOp(0);
+    // Static, so there is no `this` to write the tombstone for - it goes
+    // through main_creature, whoever is standing in for the hero. In
+    // "-demo" mode that is an ordinary creature (see SetMainCreature()),
+    // and then there is no hero's game to end. Asked once here, so that
+    // everything below is a hero by type rather than by assumption.
+    XHero* hero = dynamic_cast<XHero*>(main_creature);
+
+    if (!hero) {
+        return;
+    }
+
+    unsigned long score = hero->experience + hero->MoneyOp(0);
 
     XGuiList list;
 
     const std::string title = fmt::format("{}, {} {} {} (L{}).",
-        main_creature->name,
-        main_creature->GetGenderStr(),
-        dynamic_cast<XHero *>(main_creature)->GetRaceStr(),
-        dynamic_cast<XHero *>(main_creature)->GetProfessionStr(),
-        main_creature->level);
+        hero->name,
+        hero->GetGenderStr(),
+        hero->GetRaceStr(),
+        hero->GetProfessionStr(),
+        hero->level);
 
     list.AddItem(new XGuiItem_Text(title));
 
-    list.AddItem(new XGuiItem_Text(fmt::format("You survived {} turns.", dynamic_cast<XHero *>(main_creature)->turn_count)));
+    list.AddItem(new XGuiItem_Text(fmt::format("You survived {} turns.", hero->turn_count)));
 
     if (XQuest::quest.hero_win) {
         if (XQuest::quest.GetFlag("ahk_ulan_killed") && XQuest::quest.GetFlag("roderick_killed")) {
-            if (main_creature->GetGender() == XCreature::MALE) {
+            if (hero->GetGender() == XCreature::MALE) {
                 list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new King of Avanor."));
-            } else if (main_creature->GetGender() == XCreature::FEMALE) {
+            } else if (hero->GetGender() == XCreature::FEMALE) {
                 list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new Queen of Avanor."));
             }
 
@@ -222,8 +233,8 @@ void XHero::EndGame(const char* end_msg)
     score += place_count * 200;
     list.AddItem(new XGuiItem_Text(fmt::format("You visited {} places.", place_count)));
 
-    const DEITY_RELATION dr1 = main_creature->religion.GetRelation(XDeity::LIFE);
-    const DEITY_RELATION dr2 = main_creature->religion.GetRelation(XDeity::DEATH);
+    const DEITY_RELATION dr1 = hero->religion.GetRelation(XDeity::LIFE);
+    const DEITY_RELATION dr2 = hero->religion.GetRelation(XDeity::DEATH);
     int flag = 1;
 
     if (dr1 >= DR_ADEPT) {
@@ -289,28 +300,29 @@ void XHero::EndGame(const char* end_msg)
         msgwin.ClrMsg();
         msgwin.Add("### Screenshot ###");
 
-        auto filename = main_creature->name.append(".mem");
+        // Not name.append(): that would rename the hero as a side effect.
+        const std::string filename = hero->name + ".mem";
         std::ofstream file(vMakePath(HOME_DIR, filename));
         DumpVBuffer(file);
         list.Put(file);
         file << "\n";
-        dynamic_cast<XHero *>(main_creature)->Equipment(file);
+        hero->Equipment(file);
         file << "\n";
-        dynamic_cast<XHero *>(main_creature)->WarSkillsList(file);
+        hero->WarSkillsList(file);
         file << "\n";
-        dynamic_cast<XHero *>(main_creature)->SkillsList(SKF_LIST_SKILL, 0, file);
+        hero->SkillsList(SKF_LIST_SKILL, 0, file);
         file << "\n";
-        dynamic_cast<XHero *>(main_creature)->XCast(file);
+        hero->XCast(file);
         file << "\n";
-        dynamic_cast<XHero *>(main_creature)->ShowResistance(file);
+        hero->ShowResistance(file);
         file << "\n";
 
-        for (const auto item : main_creature->contain) {
+        for (const auto item : hero->contain) {
             item->Identify(1);
         }
 
-        dynamic_cast<XHero *>(main_creature)->Inventory(
-            &main_creature->contain, ItemKind::ALL, IF_NONE, 0, nullptr, file);
+        hero->Inventory(
+            &hero->contain, ItemKind::ALL, IF_NONE, 0, nullptr, file);
 
         vClrScr();
     }
