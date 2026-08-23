@@ -22,6 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 #include <sol/sol.hpp>
 
+#include <iostream>
+
 #include "creature/anycr.h"
 #include "creature/shopkeeper.h"
 #include "engine/xapi.h"
@@ -500,5 +502,32 @@ MonsterBuilder& MonsterBuilder::Unique()
 
 void MonsterBuilder::Register()
 {
+    // Last chance to catch a definition that says nothing. A Lua
+    // constant the engine never registered - a misspelt or missing
+    // CreatureClass/CreatureTemplate member - arrives here as 0 rather
+    // than as an error, and a creature built from it looks fine until
+    // something downstream asks it what it is, possibly hours into a
+    // game. Neither of these fields has a legitimate zero: every
+    // CreatureClass and every CreatureTemplate::Level is a bit.
+    if (XCreatureStorage::creature_storage.count(id)) {
+        std::cerr << "world: creature '" << id << "' is defined twice" << std::endl;
+    }
+
+    if (cr.name.empty()) {
+        std::cerr << "world: creature '" << id << "' has no name" << std::endl;
+    }
+
+    if (cr.cr_class == CreatureClass::NONE) {
+        std::cerr << "world: creature '" << id << "' has no class - the CreatureClass"
+                     " member named in its View() is misspelt, or the engine never"
+                     " registered it" << std::endl;
+    }
+
+    if (static_cast<unsigned int>(cr.crl) == 0) {
+        std::cerr << "world: creature '" << id << "' has no level - the CreatureTemplate"
+                     " member named in its View() is misspelt, or the engine never"
+                     " registered it" << std::endl;
+    }
+
     XCreatureStorage::creature_storage[id] = cr;
 }
