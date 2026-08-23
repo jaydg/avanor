@@ -39,8 +39,13 @@ class XAnyFood : public XItem
     public:
         DECLARE_CREATOR(XAnyFood, XItem);
         XAnyFood();
+        // Every member the class holds, food_type included: MakeCopy()
+        // is how a stack is split (drop 3 of 7 rations, sell 2 of 5),
+        // and the part that leaves the stack is the same food as the
+        // part that stays.
         XAnyFood(XAnyFood * food) : XItem((XItem*)food), food_nutrio(food->food_nutrio),
-            consumed_food(food->consumed_food), consume_nutrio(food->consume_nutrio) {}
+            consumed_food(food->consumed_food), food_type(food->food_type),
+            consume_nutrio(food->consume_nutrio) {}
 
         XItem* MakeCopy() override
         {
@@ -62,7 +67,14 @@ class XAnyFood : public XItem
         int food_nutrio;
         int consumed_food;  // how much is eated
         FOOD_TYPE FoodTypeForCreature(XCreature * creature);
-        FOOD_TYPE food_type;
+
+        // What it tastes like. Only XRation sets one of its own, from
+        // the rations table; everything else - bat wings, rat tails,
+        // bones - is plain food until something says otherwise. Needs a
+        // value here rather than in the constructor, because nothing but
+        // this declaration is common to every way a food comes into
+        // existence.
+        FOOD_TYPE food_type = FT_NORMALFOOD;
     protected:
         int consume_nutrio; // part of food eated for one turn
 
