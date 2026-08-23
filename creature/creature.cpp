@@ -699,6 +699,11 @@ void XCreature::PutStatus()
         case A_USE_TOOL	:
             vPutS("[using tool] ");
             break;
+
+        // Moving, attacking and casting take one turn each: there is no
+        // action in progress to announce.
+        default:
+            break;
     }
 
     CARRY_STATE cstate = GetCarryState();
@@ -963,6 +968,9 @@ int XCreature::GainAttr(XStats::Id st, int val)
                     case XStats::CHR:
                         msgwin.Add("Your beauty improves!");
                         break;
+
+                    default:
+                        break;
                 }
             }
 
@@ -1005,6 +1013,9 @@ int XCreature::GainAttr(XStats::Id st, int val)
                     case XStats::CHR:
                         msgwin.Add("Your features harden!");
                         break;
+
+                    default:
+                        break;
                 }
             }
 
@@ -1040,6 +1051,13 @@ int XCreature::GainResist(XResistance::Id rs, int val)
             case XResistance::PARALYSE:
                 msgwin.Add("Your movements grow stronger!");
                 break;
+
+            // The five above are the ones the body notices. Gaining
+            // resistance to disease, blindness, the elements or the
+            // schools of magic is real but goes unremarked - there is no
+            // message written for it yet.
+            default:
+                break;
         }
     } else {
         switch (rs) {
@@ -1061,6 +1079,10 @@ int XCreature::GainResist(XResistance::Id rs, int val)
 
             case XResistance::PARALYSE:
                 msgwin.Add("Your movements are unsure!");
+                break;
+
+            // As above, for losing one.
+            default:
                 break;
         }
     }
@@ -1900,6 +1922,12 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject**
     switch (tr) {
         case TR_ATTACK_TARGET:
             return xai->GetTargetPos(pt);
+            break;
+
+        // Every other reason asks the player something - a direction, a
+        // quantity, an item - and only XHero, which overrides this, can
+        // ask. A creature answers nothing.
+        default:
             break;
     }
 

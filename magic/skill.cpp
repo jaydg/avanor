@@ -189,6 +189,11 @@ int XSkill::Use(XCreature * user)
         case XSkill::Skill::CREATETRAP:
             return UseCreate(user);
 
+        // The rest are passive: they are consulted where they apply
+        // rather than used on command. isUseable() below names the same
+        // three.
+        default:
+            break;
     };
 
     return 1;

@@ -247,6 +247,12 @@ int XScroll::onRead(XCreature * cr)
                 }
 
                 break;
+
+            // A scroll that names a spell was already read as that
+            // spell's effect in the branch above; this one is only for
+            // the scrolls that do something else.
+            default:
+                break;
         }
     }
 

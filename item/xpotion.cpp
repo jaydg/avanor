@@ -376,14 +376,20 @@ int XPotion::onDrink(XCreature * cr)
                             case XCreature::NAMED_HE:
                             case XCreature::HE:
                                 msgwin.Add("his");
+                                break;
 
                             case XCreature::NAMED_SHE:
                             case XCreature::SHE:
                                 msgwin.Add("her");
+                                break;
 
-                            case XCreature::NAMED_IT:
-                            case XCreature::IT:
+                            // Everything else is an it, including the
+                            // person types that speak in the second
+                            // person - the hero is never the creature
+                            // being looked at here.
+                            default:
                                 msgwin.Add("its");
+                                break;
                         }
 
                         msgwin.Add("mind and throws the potion away!");

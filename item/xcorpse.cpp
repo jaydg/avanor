@@ -176,6 +176,12 @@ RESULT XCorpse::onEat(XCreature * eater)
                     }
 
                     break;
+
+                // CET_SATIATION is declared but never carried out, and
+                // nothing creates one - a corpse effect of a type this
+                // does not know is simply not applied.
+                default:
+                    break;
             }
         }
     }

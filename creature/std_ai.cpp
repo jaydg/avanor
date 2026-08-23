@@ -1298,6 +1298,13 @@ void XStandardAI::RunScript()
             flag = true;
         }
         break;
+
+        // SCC_MOVE_LOCATION is registered for Lua (ScriptCommand.
+        // MOVE_LOCATION) but nothing carries it out. Since flag stays
+        // false, a script that used it would never get past that step -
+        // no script does today.
+        default:
+            break;
     }
 
     if (flag) {
