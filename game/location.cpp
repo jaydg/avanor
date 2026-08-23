@@ -737,7 +737,23 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
 //DrawPattern(x, y)
 void XLocation::DrawPattern(int x, int y)
 {
-    XLocation::current_pattern.Draw(XLocation::current_location, x, y);
+    XLocation* here = XLocation::current_location;
+    const XMap* map = here->map;
+    const int outside = XLocation::current_pattern.Draw(here, x, y);
+
+    // The pattern is the whole of a hand-drawn level, so one that does
+    // not fit is a level with cells nothing ever drew - and, before the
+    // cells were counted rather than written, a write past the end of the
+    // map. ValidateWorld() cannot catch this: the world is built by the
+    // time it runs, and this happens while it is being built.
+    if (outside > 0) {
+        std::cerr << "world: " << here->id << " draws a "
+                  << XLocation::current_pattern.Width() << "x"
+                  << XLocation::current_pattern.Height() << " pattern at " << x << "," << y
+                  << ", which reaches past the " << map->stored_len << "x" << map->stored_hgt
+                  << " it holds at " << map->stored_x << "," << map->stored_y << " - "
+                  << outside << " cells are left undrawn" << std::endl;
+    }
 }
 
 void XLocation::CreateTimerEvent(const std::string& event, int ttm)

@@ -63,7 +63,7 @@ function MakeAvanorValley()
 	Teleport(154, 13, "MAIN", 23, 20)
 
 -- SMALL VILLAGE --
-		SetPattern(55, 30,
+		SetPattern(55, 31,
 		"                                                       " ..
 		"                        =======                        " ..
 		"       P  @@@@@@@  @@@@@@      ==        9             " ..

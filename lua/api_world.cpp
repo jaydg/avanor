@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
+#include <iostream>
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
@@ -214,6 +215,16 @@ void DropItemAt(void* item, void* object)
 // "###")
 void SetPattern(int w, int h, const std::string& txt)
 {
+    // A pattern is exactly w * h characters. A row miscounted or a character
+    // dropped would otherwise draw the level shifted by one from the typo
+    // onwards, which is harder to see in the finished map than here.
+    if (const size_t wanted = static_cast<size_t>(std::max(w, 0)) * std::max(h, 0);
+        txt.size() != wanted) {
+        std::cerr << "world: " << XLocation::current_location->id << " defines a "
+                  << w << "x" << h << " pattern, which wants " << wanted
+                  << " characters, and gives " << txt.size() << std::endl;
+    }
+
     XLocation::current_pattern.Setup(w, h, txt);
 }
 
@@ -238,6 +249,13 @@ void DefineRoom(const int weight, const int w, const int h, const std::string& p
 {
     RoomTemplate room;
     room.weight = weight;
+
+    if (const size_t wanted = static_cast<size_t>(std::max(w, 0)) * std::max(h, 0);
+        pattern.size() != wanted) {
+        std::cerr << "world: a room defined as " << w << "x" << h << " wants " << wanted
+                  << " characters, and gives " << pattern.size() << std::endl;
+    }
+
     room.pattern.Setup(w, h, pattern);
 
     for (auto& [glyph, target] : translations) {

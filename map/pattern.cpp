@@ -61,25 +61,39 @@ const XPattern::Translation* XPattern::Lookup(const char glyph) const
     return nullptr;
 }
 
-void XPattern::Draw(XLocation* location, int x, int y) const
+int XPattern::Draw(XLocation* location, int x, int y) const
 {
     std::vector<XPoint> points_to_resolve;
+    int outside = 0;
 
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
             const char glyph = text[i * w + j];
             const Translation* translation = Lookup(glyph);
 
-            if (translation && !translation->callback.valid()) {
-                location->map->SetXY(x + j, y + i, translation->tile);
-                continue;
-            }
-
             // A blank is a hole in the pattern: whatever is already on
             // the map there stays. Everything else - a callback, or a
             // character nothing accounts for - is resolved below, once
-            // its neighbours are drawn and can be looked at.
+            // its neighbours are drawn and can be looked at. Blanks are
+            // answered first, so a pattern whose border draws nothing may
+            // hang over the edge of its level without complaint.
             if (!translation && glyph == ' ') {
+                continue;
+            }
+
+            // This cell is not one the level holds - past the edge of the
+            // map, or, for a floor above another level, past the corner
+            // of it this floor covers. Drawing it would be writing into
+            // another level's cells or into none at all, so leave it and
+            // count it: the caller names the level that drew outside
+            // itself.
+            if (!location->map->StoredCell(x + j, y + i)) {
+                outside++;
+                continue;
+            }
+
+            if (translation && !translation->callback.valid()) {
+                location->map->SetXY(x + j, y + i, translation->tile);
                 continue;
             }
 
@@ -97,10 +111,17 @@ void XPattern::Draw(XLocation* location, int x, int y) const
                     continue;
                 }
 
-                const XTileType::Id tm = location->map->GetXY(pt.x + q, pt.y + w2);
+                // A cell on the border of the map has neighbours that are
+                // nowhere at all; they simply say nothing about what the
+                // ground here is.
+                const XMapTile* neighbour = location->map->Cell(pt.x + q, pt.y + w2);
+
+                if (!neighbour) {
+                    continue;
+                }
 
                 for (size_t i = 0; i < floor_priority.size(); i++) {
-                    if (floor_priority[i] == tm && (!copied_a_neighbour || best_fit_index < i)) {
+                    if (floor_priority[i] == neighbour->n && (!copied_a_neighbour || best_fit_index < i)) {
                         best_fit_index = i;
                         copied_a_neighbour = true;
                     }
@@ -126,4 +147,6 @@ void XPattern::Draw(XLocation* location, int x, int y) const
             translation->callback(pt.x, pt.y);
         }
     }
+
+    return outside;
 }

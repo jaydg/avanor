@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cassert>
 #include <cmath>
 #include <cstring>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -183,7 +184,15 @@ void XRoom::Draw(XLocation * l, const XTileType::Id floor, const RoomShape& shap
         // The room's own palette resolves its glyphs - tiles directly,
         // and chests, doors or traps through the script callbacks bound
         // to them, the same way a hand-built location's pattern works.
-        room->pattern.Draw(l, r.left, r.top);
+        if (const int outside = room->pattern.Draw(l, r.left, r.top); outside > 0) {
+            // The room is placed by its pattern's own size, so this is
+            // the generator having put it somewhere it does not fit
+            // rather than anything a script can ask for.
+            std::cerr << "world: a " << room->pattern.Width() << "x" << room->pattern.Height()
+                      << " room in " << l->id << " is placed at " << r.left << "," << r.top
+                      << ", which reaches past the level - " << outside
+                      << " cells are left undrawn" << std::endl;
+        }
 
         // Marked so the corridor pass routes around the room instead of
         // carving through its walls.

@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef PATTERN_H
 #define PATTERN_H
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -49,9 +50,17 @@ class XPattern
 
         void Setup(int _w, int _h, const std::string& _text)
         {
-            w = _w;
-            h = _h;
+            w = std::max(_w, 0);
+            h = std::max(_h, 0);
+
+            // Every use of a pattern indexes it as exactly w * h
+            // characters, so that is what is kept: a text one row short
+            // of what it says it is, or one character long, is a script
+            // typo - reported where it is written, and made harmless
+            // here with blanks, which draw nothing, rather than read
+            // past the end of the string.
             text = _text;
+            text.resize(static_cast<size_t>(w) * h, ' ');
             translations.clear();
         }
 
@@ -65,9 +74,12 @@ class XPattern
             translations.push_back({glyph, XTileType::NONE, std::move(callback)});
         }
 
-        // Stamps this pattern onto a location with its top-left corner at
-        // (x, y).
-        void Draw(XLocation* location, int x, int y) const;
+        // Stamps this pattern onto a location with its top-left corner
+        // at (x, y). Returns how many of its cells fell outside the part
+        // of the level the location's map holds and were left undrawn -
+        // a pattern that fits returns 0, and anything else is a level
+        // definition drawing outside itself, which its caller reports.
+        int Draw(XLocation* location, int x, int y) const;
 
         // The alphabet every pattern falls back on for a character it has
         // no translation of its own for - the world script's map notation.
