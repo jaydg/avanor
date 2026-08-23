@@ -42,9 +42,72 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/skill.h"
 #include "magic/stats.h"
 #include "magic/wskills.h"
+#include <iostream>
+
 #include "map/map.h"
 
 lua_State* XLua::L = nullptr;
+
+namespace {
+
+// An enum table the engine registered answers an unknown member with an
+// error rather than with nil. Lua hands nil back for a missing table
+// field, sol2 turns that nil into 0 for an enum-typed parameter, and
+// whatever was built from it - a creature with no class, a tile that is
+// "nothing here" - is quietly wrong, surfacing far from the line that
+// made it or not until someone is hours into a game. With this, a
+// misspelt member stops the world script at the line that misspelt it.
+void MakeStrict(sol::state_view& lua, const char* name)
+{
+    sol::optional<sol::table> table = lua[name];
+
+    if (!table) {
+        std::cerr << "lua: no table '" << name << "' to guard against typos" << std::endl;
+
+        return;
+    }
+
+    // The members are not in the table itself - sol2 keeps a read-only
+    // enum's entries behind its metatable's __index - so the guard has
+    // to ask that first and complain only when it has no answer, rather
+    // than replace it and take every member with it.
+    sol::object inherited = sol::lua_nil;
+
+    if (sol::object meta_object = (*table)[sol::metatable_key]; meta_object.is<sol::table>()) {
+        inherited = meta_object.as<sol::table>()["__index"];
+    }
+
+    sol::table meta = lua.create_table();
+    const std::string table_name = name;
+
+    meta.set_function(sol::meta_function::index,
+        [table_name, inherited](sol::this_state state, sol::table self, sol::object key) {
+            sol::object value = sol::lua_nil;
+
+            if (inherited.is<sol::table>()) {
+                value = inherited.as<sol::table>().get<sol::object>(key);
+            } else if (inherited.is<sol::protected_function>()) {
+                if (auto result = inherited.as<sol::protected_function>()(self, key); result.valid()) {
+                    value = result;
+                }
+            }
+
+            if (value.valid() && value != sol::lua_nil) {
+                return value;
+            }
+
+            const std::string member = key.is<std::string>() ? key.as<std::string>() : "?";
+
+            luaL_error(state, "%s.%s does not exist", table_name.c_str(), member.c_str());
+
+            return sol::object(sol::lua_nil);
+        });
+
+    (*table)[sol::metatable_key] = meta;
+}
+
+} // namespace
+
 
 void XLua::Init()
 {
@@ -80,6 +143,21 @@ void XLua::Init()
     XSkill::RegisterLua(lua);
     XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
+
+    // Every table above holds a fixed set of names the world scripts
+    // spell out by hand, so a name that is not in one is a typo, not a
+    // value. XTileType is here too: it is filled by DefineTile() as
+    // world/tiles.lua runs, and read by name everywhere after that.
+    for (const char* enum_table : {
+            "AttackEffectType", "BodyPart", "CreatureClass", "CreatureSize",
+            "CreatureTemplate", "Gender", "ItemKind", "ItemType", "LuaEvent",
+            "Movability", "PersonType", "PotionName", "ScriptCommand", "ShopDoor",
+            "Visibility", "xColor", "XDeity", "XEffect", "XLocation", "XQuest",
+            "XResistance", "XSkill", "XStairWay", "XStandardAI", "XStats",
+            "XTileType", "XWarSkills"
+        }) {
+        MakeStrict(lua, enum_table);
+    }
 
     // Still the only two bindings registered through the raw Lua C API
     // rather than sol2 - they take a lua_State* and hand-roll the stack.
