@@ -37,4 +37,9 @@ function MakeSmallCave()
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "SMALL_CAVE_1", x, y) end)
 		AddTranslation("S", function(x, y) SmallCaveQuestPersons(x, y) end)
 		DrawPattern(0, 0)
+
+		-- Rotmoth's lair is a scene, not a thoroughfare. Left open to wanderers it
+		-- fills up with whatever walks down from the valley. The stairway still
+		-- works for the hero, and level 1 above is still settled.
+		SetWanderingAllowed("SMALL_CAVE_2", false)
 end
