@@ -103,7 +103,11 @@ class XTrap final : public XMapObject
 
         int Check(XCreature * cr);
 
-        int isVisible(XCreature * cr) const;
+        // Whether the hero has found this trap - a different question
+        // from XMapObject::isVisible(), which asks whether the cell it
+        // sits in is in sight. Named apart from it so it neither hides
+        // it nor is mistaken for it.
+        [[nodiscard]] bool isDiscovered() const;
 
         int Disarm(XCreature * cr);
     protected:

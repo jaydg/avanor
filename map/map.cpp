@@ -571,7 +571,9 @@ void XMap::Put(XCreature * cr) const
             if (tmap->visible) {
                 auto* trap = dynamic_cast<XTrap *>(tmap->pSpecialObject.get());
 
-                if (tmap->pSpecialObject && !(trap && !trap->isVisible(nullptr))) {
+                // Everything standing here is drawn, except a trap the
+                // hero has not found yet.
+                if (tmap->pSpecialObject && (!trap || trap->isDiscovered())) {
                     vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
                     tmap->color = tmap->pSpecialObject->color;
                     tmap->known = tmap->pSpecialObject->view;

@@ -555,8 +555,15 @@ class XModDelayed : public XBasicModifier
 
         }
 
-        virtual void Concat(XModDelayed* mod)
+        void Concat(XBasicModifier* o) override
         {
+            auto* mod = dynamic_cast<XModDelayed*>(o);
+
+            if (!mod) {
+                XBasicModifier::Concat(o);
+                return;
+            }
+
             val = std::min(val, mod->val);
             set_val += mod->set_val;
             XBasicModifier::Concat(mod); //hack

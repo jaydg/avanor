@@ -367,9 +367,9 @@ int XTrap::Check(XCreature* cr)
     return 0;
 }
 
-int XTrap::isVisible(XCreature * cr) const
+bool XTrap::isDiscovered() const
 {
-    return isVisibleForHero;
+    return isVisibleForHero != 0;
 }
 
 int XTrap::Disarm(XCreature * cr)

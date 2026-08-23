@@ -94,7 +94,10 @@ class XHero final : public XCreature
         void ReadAll();
         void ExpList() const;
         void InfoList();
-        void Eat();
+        // The hero's eat command: choose something, then eat it
+        // through XCreature::Eat(). Named apart from that one the way
+        // ReadAll() is, so neither hides the other.
+        void EatFood();
         int XShoot();
         int Targeting(int range, XPoint* pt);
         int GetTarget(TARGET_REASON tr, XPoint* pt = nullptr, int max_range = 0, XObject** back = nullptr) override; //Get target for a spell

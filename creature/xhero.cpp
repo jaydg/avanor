@@ -310,7 +310,7 @@ void XHero::NewMove()
                     break;
 
                 case 'E' :
-                    Eat();
+                    EatFood();
                     break;
 
                 case 't' :
@@ -1111,7 +1111,7 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
     }
 }
 
-void XHero::Eat()
+void XHero::EatFood()
 {
     if (nutrio > base_nutrio * 16) {
         msgwin.Add("You can't eat any more!");
