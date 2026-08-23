@@ -317,7 +317,7 @@ int XCreature::continueUseItem()
 
     auto* tool = dynamic_cast<XTool*>(action_data.item.get());
 
-    if (!tool) {
+    if (!tool || !tool->isValid()) {
         action_data.action = A_MOVE;
         action_data.item = nullptr;
 

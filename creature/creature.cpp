@@ -331,8 +331,17 @@ int XCreature::stopAction()
         if (auto* tool = dynamic_cast<XTool*>(action_data.item.get())) {
             tool->onUse(XTool::FINISH, this);
         }
-    } else if (action_data.item) {
-        contain.insert(action_data.item);
+    } else {
+        // Back into the pack, so an interrupted meal or an unfinished
+        // book is not lost. Only if it still exists: a corpse rots on
+        // its own schedule (XCorpse::Run) and can be invalidated while
+        // it is the half-eaten thing in hand, and this reference is the
+        // last one keeping the memory alive. Putting that back would
+        // leave a dead item in the pack the player never picked up, to
+        // be eaten again later.
+        if (action_data.item && action_data.item->isValid()) {
+            contain.insert(action_data.item);
+        }
     }
 
     action_data.action = A_MOVE;
@@ -348,7 +357,9 @@ int XCreature::continueEat()
 {
     auto* food = dynamic_cast<XAnyFood*>(action_data.item.get());
 
-    if (!food) {
+    // Not just "is it food" - is it still there. A corpse can rot away
+    // between one bite and the next.
+    if (!food || !food->isValid()) {
         return stopAction();
     }
 
@@ -1731,7 +1742,7 @@ int XCreature::continueRead()
 {
     auto* book = dynamic_cast<XBook*>(action_data.item.get());
 
-    if (!book) {
+    if (!book || !book->isValid()) {
         return stopAction();
     }
 

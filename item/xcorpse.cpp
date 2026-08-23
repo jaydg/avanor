@@ -77,11 +77,17 @@ RESULT XCorpse::onEat(XCreature * eater)
     // the last reference to it, while the effect handling further down
     // still reads our own members. A real strong reference held for the
     // whole call.
-    // Every corpse is shared_ptr-owned from construction onwards
-    // (its constructor registers with the scheduler, which routes
-    // through XItem::Own()), so this always yields a reference.
+    // Every corpse is shared_ptr-owned from construction onwards (its
+    // constructor registers with the scheduler, which routes through
+    // XItem::Own()), so the only way this comes back empty is a corpse
+    // that has already been invalidated - rotted away while something
+    // still held a reference to it. There is nothing left to eat, and
+    // reading its members below would be reading a dead object.
     const auto keepalive = ToWeakPtr(this).lock();
-    assert(keepalive);
+
+    if (!keepalive) {
+        return FAIL;
+    }
 
     RESULT flag = XAnyFood::onEat(eater);
 
