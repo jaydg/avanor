@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <vector>
 
 #include <cereal/types/string.hpp>
+#include <sol/forward.hpp>
 
 #include "creature/cr_defs.h"
 #include "item/xanyfood.h"
@@ -44,46 +45,56 @@ enum CORPSE_FLAG {
     CF_FRIZED,
 };
 
-enum CORPSE_EFFECT_TYPE {
-    CET_MODIFY_ST,
-    CET_MODIFY_TO,
-    CET_MODIFY_MA,
-    CET_MODIFY_R_FIRE,
-    CET_MODIFY_R_COLD,
-    CET_MODIFY_R_ACID,
-    CET_MODIFY_R_POISON,
-    CET_MODIFY_R_PARALYSE,
-    CET_MODIFY_STOMACH,
-    CET_POISON,
-    CET_DISEASE,
-    CET_PARALYSE,
-    CET_CONFUSE,
-    CET_VOMIT,
-    CET_SATIATION,
-};
-
-struct CORPSE_EFFECT {
-    CORPSE_EFFECT_TYPE type;
-    int value;
-};
-
-struct CORPSE_DATA {
-    CORPSE_DATA() : roating_time(100), ft(FT_NORMALFOOD) {}
-
-    int roating_time;
-    FOOD_TYPE ft;
-    std::vector<CORPSE_EFFECT> effect;
-};
-
 class XCorpse : public XAnyFood
 {
+    public:
+        // What eating a corpse of this species does to the eater. The
+        // members carry no CET_ prefix any more: the class they now live
+        // in says which enum they belong to.
+        enum class EffectType {
+            MODIFY_ST,
+            MODIFY_TO,
+            MODIFY_MA,
+            MODIFY_R_FIRE,
+            MODIFY_R_COLD,
+            MODIFY_R_ACID,
+            MODIFY_R_POISON,
+            MODIFY_R_PARALYSE,
+            MODIFY_STOMACH,
+            POISON,
+            DISEASE,
+            PARALYSE,
+            CONFUSE,
+            VOMIT,
+            SATIATION,
+        };
+
+        // One of those, and how much of it.
+        struct Effect {
+            EffectType type;
+            int value;
+        };
+
+        // What the corpses of one species are: how long they keep, what
+        // they taste like, and what eating one does. Held once per
+        // species in XCreatureStorage's table - a corpse item points at
+        // its species' entry rather than carrying a copy (see
+        // pCorpseData below).
+        struct Data {
+            Data() : roating_time(100), ft(FT_NORMALFOOD) {}
+
+            int roating_time;
+            FOOD_TYPE ft;
+            std::vector<Effect> effect;
+        };
+
     protected:
         int time_of_roating;
         CREATURE_NAME cn; //need for correct restoration of corpse;
-        CORPSE_DATA* pCorpseData;
+        Data* pCorpseData;
     public:
         DECLARE_CREATOR(XCorpse, XAnyFood);
-        XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLAG cf = CF_RAW);
+        XCorpse(XCreature * corpse_owner, const Data * pData, CORPSE_FLAG cf = CF_RAW);
         XCorpse(XCorpse * copy);
         XCorpse()
         {
@@ -103,7 +114,7 @@ class XCorpse : public XAnyFood
         // table (XCreatureStorage), not owned/serialized data - only `cn`
         // (which species) is persisted, and pCorpseData is re-derived from
         // it on load via FixupCorpseData() (defined in the .cpp, where
-        // creature/anycr.h - which itself needs CORPSE_DATA from this
+        // creature/anycr.h - which itself needs XCorpse::Data from this
         // header - can be included without a cycle).
         //
         // One symmetric serialize() rather than a split save()/load()
@@ -155,5 +166,9 @@ class XCorpse : public XAnyFood
 // as XStandardAI/XSpell/XUniversalGen/XLocation/etc. earlier this
 // session.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XCorpse, serialize);
+
+// Registers CorpseEffectType.MEMBER in Lua - what a creature definition
+// names in its CorpseEffect() call.
+void RegisterCorpseEffectEnum(sol::state_view& lua);
 
 #endif

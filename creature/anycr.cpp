@@ -485,9 +485,9 @@ MonsterBuilder& MonsterBuilder::Corpse(int rotting_time, FOOD_TYPE ft)
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::CorpseEffect(CORPSE_EFFECT_TYPE cet, int val)
+MonsterBuilder& MonsterBuilder::CorpseEffect(XCorpse::EffectType cet, int val)
 {
-    CORPSE_EFFECT ce{};
+    XCorpse::Effect ce{};
     ce.type = cet;
     ce.value = val;
     cr.pCorpseData.effect.push_back(ce);

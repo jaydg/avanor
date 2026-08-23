@@ -627,7 +627,12 @@ void XLocation::CreateNewGame()
 {
     XLua::Init();
     sol::state_view lua(XLua::State());
-    assert(lua["InitWorld"]().valid());
+    if (const sol::protected_function_result result = lua["InitWorld"]();
+        !result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << err.what() << std::endl;
+        assert(false && "InitWorld() failed - see the message above");
+    }
     ValidateWorld(true);
 }
 

@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <fmt/format.h>
+#include <sol/sol.hpp>
 
 #include "creature/anycr.h"
 #include "game/game.h"
@@ -28,11 +29,33 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
+void RegisterCorpseEffectEnum(sol::state_view& lua)
+{
+    // The names a creature definition uses for what eating it does.
+    lua.new_enum("CorpseEffectType",
+        "MODIFY_ST", XCorpse::EffectType::MODIFY_ST,
+        "MODIFY_TO", XCorpse::EffectType::MODIFY_TO,
+        "MODIFY_MA", XCorpse::EffectType::MODIFY_MA,
+        "MODIFY_R_FIRE", XCorpse::EffectType::MODIFY_R_FIRE,
+        "MODIFY_R_COLD", XCorpse::EffectType::MODIFY_R_COLD,
+        "MODIFY_R_ACID", XCorpse::EffectType::MODIFY_R_ACID,
+        "MODIFY_R_POISON", XCorpse::EffectType::MODIFY_R_POISON,
+        "MODIFY_R_PARALYSE", XCorpse::EffectType::MODIFY_R_PARALYSE,
+        "MODIFY_STOMACH", XCorpse::EffectType::MODIFY_STOMACH,
+        "POISON", XCorpse::EffectType::POISON,
+        "DISEASE", XCorpse::EffectType::DISEASE,
+        "PARALYSE", XCorpse::EffectType::PARALYSE,
+        "CONFUSE", XCorpse::EffectType::CONFUSE,
+        "VOMIT", XCorpse::EffectType::VOMIT,
+        "SATIATION", XCorpse::EffectType::SATIATION
+    );
+}
+
 REGISTER_CLASS(XCorpse);
 CEREAL_REGISTER_TYPE(XCorpse);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCorpse);
 
-XCorpse::XCorpse(XCreature * corpse_owner, const CORPSE_DATA * pData, CORPSE_FLAG cf)
+XCorpse::XCorpse(XCreature * corpse_owner, const XCorpse::Data * pData, CORPSE_FLAG cf)
 {
     kind = ItemKind::FOOD;
     view = '%';
@@ -94,63 +117,63 @@ RESULT XCorpse::onEat(XCreature * eater)
     if (flag == SUCCESS) {
         for (auto it: pCorpseData->effect) {
             switch (it.type) {
-                case CET_MODIFY_ST:
+                case EffectType::MODIFY_ST:
                     eater->GainAttr(XStats::STR, it.value);
                     break;
 
-                case CET_MODIFY_TO:
+                case EffectType::MODIFY_TO:
                     eater->GainAttr(XStats::TOU, it.value);
                     break;
 
-                case CET_MODIFY_MA:
+                case EffectType::MODIFY_MA:
                     eater->GainAttr(XStats::MAN, it.value);
                     break;
 
-                case CET_MODIFY_R_FIRE:
+                case EffectType::MODIFY_R_FIRE:
                     eater->GainResist(XResistance::FIRE, it.value);
                     break;
 
-                case CET_MODIFY_R_COLD:
+                case EffectType::MODIFY_R_COLD:
                     eater->GainResist(XResistance::COLD, it.value);
                     break;
 
-                case CET_MODIFY_R_ACID:
+                case EffectType::MODIFY_R_ACID:
                     eater->GainResist(XResistance::ACID, it.value);
                     break;
 
-                case CET_MODIFY_R_POISON:
+                case EffectType::MODIFY_R_POISON:
                     eater->GainResist(XResistance::POISON, it.value);
                     break;
 
-                case CET_MODIFY_R_PARALYSE:
+                case EffectType::MODIFY_R_PARALYSE:
                     eater->GainResist(XResistance::PARALYSE, it.value);
                     break;
 
-                case CET_POISON: {
+                case EffectType::POISON: {
                     auto mod = std::make_unique<XModDelayed>(MOD_POISON, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
-                case CET_DISEASE: {
+                case EffectType::DISEASE: {
                     auto mod = std::make_unique<XModDelayed>(MOD_DISEASE, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
-                case CET_PARALYSE: {
+                case EffectType::PARALYSE: {
                     auto mod = std::make_unique<XModDelayed>(MOD_PARALYSE, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
-                case CET_CONFUSE: {
+                case EffectType::CONFUSE: {
                     auto mod = std::make_unique<XModDelayed>(MOD_CONFUSE, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
 
-                case CET_VOMIT:
+                case EffectType::VOMIT:
                     if (eater->isHero()) {
                         msgwin.Add("You vomit!");
 
@@ -161,7 +184,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 
                     break;
 
-                case CET_MODIFY_STOMACH:
+                case EffectType::MODIFY_STOMACH:
                     if (eater->isHero()) {
                         if (it.value < 0) {
                             msgwin.Add("You stomach shrinks from pain!");
@@ -177,7 +200,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 
                     break;
 
-                // CET_SATIATION is declared but never carried out, and
+                // EffectType::SATIATION is declared but never carried out, and
                 // nothing creates one - a corpse effect of a type this
                 // does not know is simply not applied.
                 default:

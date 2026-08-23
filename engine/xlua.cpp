@@ -35,6 +35,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/quest.h"
 #include "item/item.h"
 #include "item/itemdef.h"
+#include "item/xcorpse.h"
 #include "item/xpotion.h"
 #include "magic/attack_effect_type.h"
 #include "magic/effect.h"
@@ -129,6 +130,7 @@ void XLua::Init()
     XItem::RegisterLua(lua);
     RegisterItemDefEnums(lua);
     XPotion::RegisterLua(lua);
+    RegisterCorpseEffectEnum(lua);
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
@@ -149,8 +151,8 @@ void XLua::Init()
     // value. XTileType is here too: it is filled by DefineTile() as
     // world/tiles.lua runs, and read by name everywhere after that.
     for (const char* enum_table : {
-            "AttackEffectType", "BodyPart", "CreatureClass", "CreatureSize",
-            "CreatureTemplate", "Gender", "ItemKind", "ItemType", "LuaEvent",
+            "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
+            "CreatureSize", "CreatureTemplate", "Gender", "ItemKind", "ItemType", "LuaEvent",
             "Movability", "PersonType", "PotionName", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation", "XQuest",
             "XResistance", "XSkill", "XStairWay", "XStandardAI", "XStats",
@@ -214,8 +216,14 @@ void XLua::Init()
 
     lua.script_file("./world/init.lua");
 
-    // Catch Lua errors loading data
-    assert(lua["LoadScripts"]().valid());
+    // Catch Lua errors loading data.
+    // The message is what says which file and line went wrong.
+    if (const sol::protected_function_result result = lua["LoadScripts"]();
+        !result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << err.what() << std::endl;
+        assert(false && "LoadScripts() failed - see the message above");
+    }
 
     // Nothing can be drawn or walked on before this holds.
     XTileType::ValidateTiles();

@@ -102,7 +102,7 @@ struct CreatureTemplate {
     Level crl;
     XCreature::PersonType person;
     std::string creature_description;
-    CORPSE_DATA pCorpseData;
+    XCorpse::Data pCorpseData;
     unsigned int ai_flags;
     CreatureClass cr_class;        // class of creature
     std::vector<SKILL_REC> skills;
@@ -161,7 +161,7 @@ class MonsterBuilder
         MonsterBuilder& Equip(unsigned int mask, ItemType it, int prob);
         MonsterBuilder& EquipCount(unsigned int mask, int count, int prob);
         MonsterBuilder& Corpse(int rotting_time, FOOD_TYPE ft);
-        MonsterBuilder& CorpseEffect(CORPSE_EFFECT_TYPE cet, int val);
+        MonsterBuilder& CorpseEffect(XCorpse::EffectType cet, int val);
         MonsterBuilder& Unique();
 
         void Register();
