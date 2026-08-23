@@ -39,9 +39,8 @@ class XAnyFood : public XItem
     public:
         DECLARE_CREATOR(XAnyFood, XItem);
         XAnyFood();
-        XAnyFood(XAnyFood * food) : food_nutrio(food->food_nutrio),
-            consume_nutrio(food->consume_nutrio), consumed_food(food->consumed_food),
-            XItem((XItem*)food) {}
+        XAnyFood(XAnyFood * food) : XItem((XItem*)food), food_nutrio(food->food_nutrio),
+            consumed_food(food->consumed_food), consume_nutrio(food->consume_nutrio) {}
 
         XItem* MakeCopy() override
         {

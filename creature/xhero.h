@@ -196,8 +196,8 @@ class XGuiItem_Inventory final : public XGuiItem
             // escape codes that do not count toward the visible width.
             // x_strlen returns the visible length. The padding is based on this.
             const size_t visible = static_cast<size_t>(x_strlen(str.c_str()));
-            if (visible < size_x)
-                str.append(size_x - visible, ' ');
+            if (visible < static_cast<size_t>(size_x))
+                str.append(static_cast<size_t>(size_x) - visible, ' ');
 
             // Align the weight/price badge to the right. x_strlen measures
             // the visible width of the badge (excluding ANSI characters).

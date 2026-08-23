@@ -82,7 +82,7 @@ XHiScore::XHiScore()
 
         // an older or otherwise incompatible on-disk format:
         // discard rather than misinterpret its fields.
-        if (version != HISCORE_VERSION) {
+        if (version != static_cast<int>(HISCORE_VERSION)) {
             return;
         }
 
@@ -111,7 +111,7 @@ void XHiScore::AddRecord(const std::shared_ptr<XHiScoreItem>& item)
     );
 
     // trim to desired length
-    if (items.size() > TopRecords) {
+    if (items.size() > static_cast<size_t>(TopRecords)) {
         items.resize(TopRecords);
     }
 

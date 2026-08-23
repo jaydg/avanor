@@ -317,7 +317,7 @@ void XHero::EndGame(const char* end_msg)
         hero->ShowResistance(file);
         file << "\n";
 
-        for (const auto item : hero->contain) {
+        for (const auto& item : hero->contain) {
             item->Identify(1);
         }
 

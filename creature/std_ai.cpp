@@ -722,7 +722,7 @@ int XStandardAI::Wear() const
     }
 
     // Sacrifice useless items
-    for (const auto item: ai_owner->contain) {
+    for (const auto& item : ai_owner->contain) {
         assert(item->isValid());
 
         // Worn items stay resident in contain the whole time they're worn
@@ -746,8 +746,13 @@ int XStandardAI::Wear() const
             continue;
         }
 
-        ai_owner->contain.erase(item);
-        ai_owner->Sacrifice(item.get());
+        // A reference of our own, held across the erase: contain may
+        // be the item's last owner, and Sacrifice() still needs it. The
+        // loop ends right here, so the iterator the erase invalidates is
+        // never advanced.
+        const std::shared_ptr<XItem> sacrifice = item;
+        ai_owner->contain.erase(sacrifice);
+        ai_owner->Sacrifice(sacrifice.get());
         break;
     }
 
@@ -973,7 +978,7 @@ int XStandardAI::ReadScroll() const
 int XStandardAI::DrinkPotion() const
 {
     if (ai_owner->HP < ai_owner->GetMaxHP() / 3) {
-        for (const auto it: ai_owner->contain) {
+        for (const auto& it : ai_owner->contain) {
             if (it->kind & ItemKind::POTION) {
                 auto pot = dynamic_cast<XPotion *>(it.get());
 
@@ -989,7 +994,12 @@ int XStandardAI::DrinkPotion() const
                     if (pot->quantity > 1) {
                         pot->quantity--;
                     } else {
-                        ai_owner->contain.erase(it);
+                        // Held across the erase for the same reason
+                        // as in Sacrifice() above - Invalidate() runs on
+                        // it afterwards - and the loop returns just
+                        // below, leaving the invalidated iterator alone.
+                        const std::shared_ptr<XItem> drunk = it;
+                        ai_owner->contain.erase(drunk);
                         pot->Invalidate();
                     }
 

@@ -652,7 +652,7 @@ int XAlchemy::isValidRecipe(PotionName pn1, PotionName pn2, PotionName pn3)
 PotionName XAlchemy::GetPotionName(PotionName pn1, PotionName pn2)
 {
     for (auto& rec: alchemy.recipes) {
-        if (rec->pn1 == pn1 && rec->pn2 == pn2 || rec->pn2 == pn1 && rec->pn1 == pn2)
+        if ((rec->pn1 == pn1 && rec->pn2 == pn2) || (rec->pn2 == pn1 && rec->pn1 == pn2))
             return rec->result;
     }
 

@@ -225,17 +225,17 @@ class XObject : public std::enable_shared_from_this<XObject>
         // belonged there. Assigning a fresh ::guid++ here instead
         // guarantees every DUMMY_STRUCT-constructed object starts under
         // a unique key of its own, exactly like the normal constructor.
-        XObject(DUMMY_STRUCT* ds) : xguid(::guid++), is_valid(true)
+        XObject(DUMMY_STRUCT* ds) : is_valid(true), xguid(::guid++)
         {
             Create();
         }
 
-        XObject() : xguid(::guid++), is_valid(true)
+        XObject() : is_valid(true), xguid(::guid++)
         {
             Create();
         }
 
-        XObject(XObject* o) : xguid(::guid++), is_valid(true), ttm(o->ttm), ttmb(o->ttmb)
+        XObject(XObject* o) : is_valid(true), xguid(::guid++), ttm(o->ttm), ttmb(o->ttmb)
         {
             Create();
         }

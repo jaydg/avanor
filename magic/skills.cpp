@@ -25,9 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 int XSkills::GetLevel(XSkill::Skill skt)
 {
-    XSkill* xsk;
-
-    if (xsk = GetSkill(skt)) {
+    if (const XSkill* xsk = GetSkill(skt)) {
         return xsk->GetLevel();
     } else {
         return 0;

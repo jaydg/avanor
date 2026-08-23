@@ -415,7 +415,7 @@ int vXGetch(const char* ch_buf)
     while (true) {
         const int ch = vGetch();
 
-        for (int i = 0; i < slen; i++) {
+        for (size_t i = 0; i < slen; i++) {
             if (ch == ch_buf[i]) {
                 return ch;
             }

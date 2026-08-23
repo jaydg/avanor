@@ -111,7 +111,7 @@ class XBook;
 class XScroll;
 
 struct ACTION_DATA {
-    ACTION_DATA() : item(nullptr), action(A_MOVE) {}
+    ACTION_DATA() : action(A_MOVE), item(nullptr) {}
 
     ACTION action;
     // Owning, not weak: an in-progress action's target item is typically

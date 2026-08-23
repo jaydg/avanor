@@ -53,7 +53,7 @@ class XHerb : public XAnyFood
     public:
         DECLARE_CREATOR(XHerb, XAnyFood);
         XHerb(int _herb_index);
-        XHerb(XHerb * copy) : herb_index(copy->herb_index), XAnyFood((XAnyFood*)copy) { }
+        XHerb(XHerb * copy) : XAnyFood((XAnyFood*)copy), herb_index(copy->herb_index) { }
 
         XHerb()
         {

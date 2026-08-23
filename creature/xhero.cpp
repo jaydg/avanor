@@ -876,7 +876,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
         //count items for show
         int all_item_count = 0;
 
-        for (const auto it : *item_list) {
+        for (const auto& it : *item_list) {
             if ((ifiltr && ifiltr(it.get())) || it->kind & mask) {
                 all_item_count++;
             }
@@ -889,7 +889,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
                 } else {
                     list.AddItem(new XGuiItem_Text("<TEXT>There are no such items."), 0);
                 } else {
-                for (int oi = 0; oi < std::size(output_items_name); oi++) {
+                for (size_t oi = 0; oi < std::size(output_items_name); oi++) {
                     if (output_items_mask[oi] & mask) {
                         std::string msg;
                         if (&contain == item_list) {
@@ -905,7 +905,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
         } else {
             ItemKind last_mask = ItemKind::UNKNOWN;
 
-            for (const auto item: *item_list) {
+            for (const auto& item: *item_list) {
                 if ((ifiltr && ifiltr(item.get())) || (item->kind & mask)) {
                     // we need to show item group name (e.g. boots, weapons etc.)
                     if (item->kind != last_mask) {
@@ -916,7 +916,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
 
                         last_mask = item->kind;
 
-                        for (int oi = 0; oi < std::size(output_items_name); oi++) {
+                        for (size_t oi = 0; oi < std::size(output_items_name); oi++) {
                             if (output_items_mask[oi] & last_mask) {
                                 auto str = fmt::format(
                                     "<VALUE>{} <DECORATION>('<VALUE>{}<DECORATION>')",

@@ -43,10 +43,10 @@ int BOOK_REC::current_descr = 0;
 int BOOK_REC::total_value = 0;
 
 BOOK_REC::BOOK_REC(int _rarity, BOOK_NAME bn, SPELL_NAME sn)
-    : book_name(bn), spell_name(sn), identify(0), name_index(current_descr), rarity(_rarity)
+    : name_index(current_descr), book_name(bn), spell_name(sn), identify(0), rarity(_rarity)
 {
     current_descr++;
-    assert(current_descr <= BOOKS_DESCR_SZ);
+    assert(static_cast<size_t>(current_descr) <= BOOKS_DESCR_SZ);
     total_value += rarity;
 }
 
@@ -93,14 +93,14 @@ int BOOK_REC::GetBook(BOOK_NAME bn)
 
 void XBook::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (int i = 0; i < ARRAY_SIZE(book_descr); i++) {
+    for (size_t i = 0; i < ARRAY_SIZE(book_descr); i++) {
         ar(book_descr[i]);
     }
 }
 
 void XBook::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (int i = 0; i < ARRAY_SIZE(book_descr); i++) {
+    for (size_t i = 0; i < ARRAY_SIZE(book_descr); i++) {
         ar(book_descr[i]);
     }
 }

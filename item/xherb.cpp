@@ -113,7 +113,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XHerb);
 // construction through the DUMMY_STRUCT idiom instead of that assert.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XHerb, serialize);
 
-XHerb::XHerb(int _herb_index) : herb_index(_herb_index), XAnyFood()
+XHerb::XHerb(int _herb_index) : XAnyFood(), herb_index(_herb_index)
 {
     weight = 3;
     food_nutrio = 15;

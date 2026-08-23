@@ -1,5 +1,4 @@
 /*
-/*
 This file is part of "Avanor, the Land of Mystery" roguelike game
 Home page: http://www.avanor.com/
 Copyright (C) 2000-2003 Vadim Gaidukevich
