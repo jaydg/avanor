@@ -46,7 +46,7 @@ int _exit_flag = 0;
 
 static std::vector<MELEE_ATTACK> hero_melee;
 
-XHero::XHero(int flag)
+XHero::XHero(NewCharacter)
 {
     melee_attack = &hero_melee;
 

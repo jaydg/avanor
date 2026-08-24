@@ -78,7 +78,15 @@ class XHero final : public XCreature
         int PossibleWayCount(int px, int py) const;
     public:
         DECLARE_CREATOR(XHero, XCreature);
-        explicit XHero(int flag);
+
+        // Builds a brand-new character - rolls the dice, runs
+        // PlayerSetup(), equips a body. It cannot be the default
+        // constructor: that one is the quiet one above, which Cereal
+        // uses to bring a saved hero back without creating a character
+        // over the top of it. Hence a tag rather than the `int flag`
+        // this used to take, which named nothing and was ignored.
+        struct NewCharacter {};
+        explicit XHero(NewCharacter);
         void PlayerSetup();
         void NewMove() override;
         void Move() override;

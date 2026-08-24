@@ -365,7 +365,7 @@ void XGame::CreateHero() const
     // empty optional throw rather than inventing a coordinate.
     const XPoint hero_point = start->GetFreeXY(&area).value();
 
-    const auto hero = new XHero(1);
+    const auto hero = new XHero(XHero::NewCharacter{});
     Game.NewCreature(hero, hero_point.x, hero_point.y, start.get());
     hero->MoneyOp(2000);
 
