@@ -165,7 +165,7 @@ class XObject : public std::enable_shared_from_this<XObject>
         friend class XModSlowness;
 
     public:
-        const XGUID guid()
+        XGUID guid()
         {
             return xguid;
         }
