@@ -48,14 +48,6 @@ class XRect
             bottom = rb->y;
         }
 
-        XRect(const XRect& r)
-        {
-            left = r.left;
-            right = r.right;
-            top = r.top;
-            bottom = r.bottom;
-        }
-
         void Setup(XRect& r)
         {
             left = r.left;
