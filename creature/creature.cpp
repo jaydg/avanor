@@ -1546,15 +1546,16 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
 int XCreature::Shoot(int tx, int ty)
 {
     if (tx == x && ty == y) {
-        return 0; //can't do suicide!
+        // can't do suicide!
+        return 0;
     }
 
-    XItem * bow = GetItem(BP_MISSILE_WEAPON);
-    XItem * missile = GetItem(BP_MISSILE);
-    XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
+    XItem* launcher = GetItem(BP_MISSILE_WEAPON);
+    XItem* missile = GetItem(BP_MISSILE);
 
     if (!missile) {
-        return 0; //there are no missile to shoot!
+        // there are no missile to shoot!
+        return 0;
     }
 
     int hit = 0;
@@ -1567,9 +1568,9 @@ int XCreature::Shoot(int tx, int ty)
     if (vis1 || vis2) {
         msgwin.Add(GetNameEx(CRN_T1));
 
-        if (bow) {
+        if (launcher) {
             msgwin.Add(fmt::format("{} from {}.",
-                GetVerb("shoot"), bow->name));
+                GetVerb("shoot"), launcher->name));
         } else {
             msgwin.Add(fmt::format("{} {}.",
                 GetVerb("throw"), missile->name));
@@ -1577,11 +1578,11 @@ int XCreature::Shoot(int tx, int ty)
     }
 
     // split missile
-    XItem * msl = missile->MakeCopy();
+    XItem* msl = missile->MakeCopy();
     msl->quantity = 1;
 
     if (--missile->quantity <= 0) {
-        XBodyPart * xbp = GetBodyPart(BP_MISSILE);
+        XBodyPart* xbp = GetBodyPart(BP_MISSILE);
         auto used_up = xbp->UnWear();
 
         // UnWear() doesn't remove it from contain anymore (worn items stay
@@ -1609,13 +1610,13 @@ int XCreature::Shoot(int tx, int ty)
     MF_RESULT res = MissileFlight(&mfd);
 
     if (res == MF_HIT) {
-        XCreature * target = l->map->GetMonster(mfd.pt.x, mfd.pt.y);
+        XCreature* target = l->map->GetMonster(mfd.pt.x, mfd.pt.y);
         DAMAGE_DATA_EX dd;
         dd.damage	= dmg.Throw();
         dd.attacker	= this;
 
-        //temporary soulution, should be replaced in future on general solution
-        //which returns name of item with or without 'a'
+        // temporary solution, should be replaced in future on general
+        // solution which returns name of item with or without 'a'
         switch (msl->it) {
             case ItemType::ARROW:
                 dd.attack_name = "the arrow";
@@ -1643,9 +1644,9 @@ int XCreature::Shoot(int tx, int ty)
         dd.flags = DF_MAGIC_BOLT;
         target->InflictDamage(&dd);
 
-        //if successfull increase bow level
-        if (bow) {
-            wsk->UseSkill(bow->wt);
+        // if successfull increase bow level
+        if (launcher) {
+            wsk->UseSkill(launcher->wt);
         } else {
             wsk->UseSkill(XWarSkills::THROW);
         }
