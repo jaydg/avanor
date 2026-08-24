@@ -1651,6 +1651,12 @@ int XCreature::Shoot(int tx, int ty)
             wsk->UseSkill(XWarSkills::THROW);
         }
 
+        // ...and archery itself, which the shot has just practised. The
+        // proficiency above is for the kind of weapon; this is the skill
+        // that GetRangeAttackInfo() reads for range, damage and - the
+        // largest term in a ranged attack - to hit.
+        sk->UseSkill(XSkill::Skill::ARCHERY);
+
     } else {
         XCreature * tgt = l->map->GetMonster(tx, ty);
 
