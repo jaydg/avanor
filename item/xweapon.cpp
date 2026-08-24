@@ -225,7 +225,7 @@ std::string XWeapon::toString()
 
 std::string XWeapon::GetTemplate(AttackEffectType mask, int isRight)
 {
-    std::string brand_templ = nullptr;
+    std::string brand_templ;
 
     for (int j = 0; j < weapon_brand_name_db_size; j++) {
         if (weapon_brand_name_db[j].brt == mask) {
