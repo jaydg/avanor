@@ -20,11 +20,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include <chrono>
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <thread>
 
 #include <sol/sol.hpp>
 
@@ -312,11 +314,20 @@ int vGetS(char* s, const int buffer_size)
     return 1;
 }
 
-void vDelay(int n)
+void vDelay(const int n)
 {
-#ifdef XWIN32
+    // One animation step: the caller has already drawn the frame and called
+    // vRefresh(), and this is how long it stays on screen before the next one
+    // replaces it. n is milliseconds, as it was for the DOS build's delay()
+    // - the only platform where this was ever implemented; the Windows branch
+    // was empty from the 2003 import onwards, and Linux inherited that
+    // emptiness. std::this_thread needs no #ifdef and behaves the same on every
+    // platform this builds for.
+    if (n <= 0) {
+        return;
+    }
 
-#endif
+    std::this_thread::sleep_for(std::chrono::milliseconds(n));
 }
 
 int vKbhit()
