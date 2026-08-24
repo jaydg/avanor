@@ -328,13 +328,7 @@ void XItem::PropFill(ITEM_SET is, int val)
 
 void XItem::SpecialFill()
 {
-    int r_val;
-
-    if (kind & ItemKind::WEAPON) {
-        int uu = 0;
-    }
-
-    r_val = vRand() % ENH_DB_SZ;
+    int r_val = vRand() % ENH_DB_SZ;
 
     if (!(ienh_db[r_val].val < vRand() % 101 && (kind & ienh_db[r_val].kind))) {
         return;

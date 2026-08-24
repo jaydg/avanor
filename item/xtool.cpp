@@ -214,10 +214,10 @@ REGISTER_CLASS(XEyeOfRaa);
 CEREAL_REGISTER_TYPE(XEyeOfRaa);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XEyeOfRaa);
 
-RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature * cr)
+RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature* cr)
 {
     if (cr->isHero()) {
-        RESULT res = XEffect::Make(cr, XEffect::LIGHTNING_BOLT, 30);
+        XEffect::Make(cr, XEffect::LIGHTNING_BOLT, 30);
     }
 
     return SUCCESS;

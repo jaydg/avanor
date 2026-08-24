@@ -43,20 +43,19 @@ void XCreature::Attack()
     XItem * it1 = GetItem(BP_HAND, 0);
     XItem * it2 = GetItem(BP_HAND, 1);
     int flag = 0;
-    int ttm_res = 0;
 
     if (it1 && it1->kind & ItemKind::WEAPON) {
-        ttm_res += MeleeAttack(target, it1);
+        MeleeAttack(target, it1);
         flag++;
     }
 
     if (it2 && it2->kind & ItemKind::WEAPON && target->isValid()) {
-        ttm_res += MeleeAttack(target, it2);
+        MeleeAttack(target, it2);
         flag++;
     }
 
     if (flag == 0) {
-        ttm_res += MeleeAttack(target, nullptr);
+        MeleeAttack(target, nullptr);
     }
 }
 
