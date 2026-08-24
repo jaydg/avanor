@@ -36,7 +36,6 @@ class XShopkeeper : public XAnyCreature
     public:
         DECLARE_CREATOR(XShopkeeper, XAnyCreature);
         XShopkeeper(CreatureTemplate *cr);
-        XShopkeeper(char* _name, XShop * shop, CreatureTemplate::Level crl, CREATURE_EXP cre) {}
 
         std::string StdAnswer() override;
         void Die(XCreature * killer) override;
