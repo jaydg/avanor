@@ -191,6 +191,8 @@ void XHero::PlayerSetup()
             break;
 
         case 'd':
+            // Halflings: the smallest and joint-nimblest race
+            sk->Learn(XSkill::Skill::DODGE);
             break;
 
         case 'e':

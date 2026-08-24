@@ -435,7 +435,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
     if (pData->flags & DF_AFFECT_HIT) {
         //get creature overall DV
-        todv = GetDV();
+        todv = GetDV(pData->attacker);
         int tohit = pData->attack_HIT;
 
         if (tohit < 0) {
@@ -603,7 +603,8 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             }
 
             wsk->UseSkill(XWarSkills::SHIELD);
-        } else { // It was not shield (miss or avoid)
+        } else {
+            // It was not shield (miss or avoid)
             if (vis1 || vis2) {
                 if (pData->attack_name) {
                     msgwin.Add(fmt::format("{} {} {}.",
@@ -617,6 +618,12 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                         GetNameEx(CRN_T1),
                         pData->attacker->GetVerb("miss")));
                 }
+            }
+
+            // Practice, on the same terms the bonus is given:
+            // an attack that was seen and avoided.
+            if (!pData->attacker || isCreatureVisible(pData->attacker)) {
+                sk->UseSkill(XSkill::Skill::DODGE);
             }
         }
     }

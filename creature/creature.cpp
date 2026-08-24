@@ -796,6 +796,17 @@ int XCreature::GetHIT()
 int XCreature::GetDV(XCreature * attacker)
 {
     int tdv = added_DV + dv + GetTacticsDVBonus() + GetShieldDVBonus();
+
+    // Dodging is stepping out of the way of a blow you saw coming, so there is
+    // nothing to dodge from an attacker this creature cannot see - the same
+    // asymmetric test a backstab uses from the other side.
+    // A null attacker means nobody in particular is asking (the status line
+    // drawing DV, a missile working out its odds, the strength rating).
+    if (const int dodge = sk->GetLevel(XSkill::Skill::DODGE);
+        dodge > 0 && (!attacker || isCreatureVisible(attacker))) {
+        tdv += dodge;
+    }
+
     return tdv < 1 ? 1 : tdv;
 }
 
