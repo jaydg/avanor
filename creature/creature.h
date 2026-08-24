@@ -189,13 +189,24 @@ enum DAMAGE_FLAGS {
 };
 
 struct DAMAGE_DATA_EX {
-    XCreature* attacker;       // who is inflicting damage (to increase exp). can be nullptr
-    const char* attack_name;   // Attacking item (e.g. Arrow, Bolt of Fire)
-    int damage;                // supposed damage
-    int attack_HIT;            // the target can avoid attack.
-    AttackEffectType attack_effect; // such a cold, demon slaying,
-    unsigned int flags;        // see DAMAGE_FLAGS
-    XItem* weapon;             // used only in melee combat (can be undefined if attack_name is defined)
+    XCreature* attacker = nullptr;       // who is inflicting damage (to increase exp). can be nullptr
+    const char* attack_name = nullptr;   // Attacking item (e.g. Arrow, Bolt of Fire)
+    int damage = 0;                      // supposed damage
+    int attack_HIT = 0;                  // the target can avoid attack.
+    AttackEffectType attack_effect = AttackEffectType::NONE; // such a cold, demon slaying,
+    unsigned int flags = 0;              // see DAMAGE_FLAGS
+    XItem* weapon = nullptr;             // used only in melee combat (can be undefined if attack_name is defined)
+
+    // Whether this blow caught the victim unready. Decided by
+    // XCreature::MeleeAttack(), because InflictDamage() makes the victim
+    // an enemy with its very first statement and by then the question
+    // can no longer be asked; applied below, next to the other damage
+    // multiplier.
+    bool backstab = false;
+
+    // Every member above has a default: one caller (XCreature::Shoot())
+    // declares this without an initialiser and fills in only the fields
+    // a missile needs, leaving the rest to whatever was on the stack.
 };
 
 struct CreatureTemplate;

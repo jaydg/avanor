@@ -63,12 +63,6 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 {
     assert(isValid());
 
-    //need for backstub.
-    int wasEnemy = target->xai->isEnemy(this);
-
-    bool vis1 = isVisible();
-    bool vis2 = target->isVisible();
-
     int res = 0;
     int tohit;
     int tdam;
@@ -92,6 +86,18 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         }
     }
 
+    // A backstab is a blow the victim was not ready for. The engine has
+    // no facing or awareness model, so there are exactly two ways of
+    // being caught out: the attacker cannot be seen at all (invisible,
+    // and the victim has no way to see invisible), or the victim did not
+    // count the attacker as an enemy until this moment. Both have to be
+    // read here, before InflictDamage() - its first statement is
+    // onWasAttacked(), which makes the victim an enemy.
+    const int backstab_level = sk->GetLevel(XSkill::Skill::BACKSTABBING);
+    const bool backstab = weapon && backstab_level > 0
+                          && (!target->isCreatureVisible(this) || !target->xai->isEnemy(this))
+                          && vRand(100) < backstab_level * 5 + 5;
+
     DAMAGE_DATA_EX dd{};
     dd.damage	= tdam;
     dd.attacker	= this;
@@ -100,6 +106,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     dd.attack_effect	= aet;
     dd.flags	= DF_MAGIC_BOLT;
     dd.weapon	= weapon;
+    dd.backstab	= backstab;
 
     if (target->InflictDamage(&dd)) {
         if (weapon) {
@@ -109,18 +116,6 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         }
     }
 
-    /*			//backstab
-    			int backstab = 0;
-    			if (weapon && (!target->isCreatureVisible(this) || !wasEnemy))
-    			{
-    				if (vRand(100) < sk->GetLevel(XSkill::Skill::BACKSTABBING) * 5 + 5)
-    				{
-    					backstab = 1;
-    					tdam *= 3;
-    					sk->UseSkill(XSkill::Skill::BACKSTABBING, 3);
-    				}
-    			}
-    */
     return res;
 }
 
@@ -471,6 +466,14 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             dmg *= 3;
         }
 
+        // Trained here rather than where the blow was decided, so that a
+        // swing that misses entirely neither triples anything nor counts
+        // as practice.
+        if (pData->backstab) {
+            pData->attacker->sk->UseSkill(XSkill::Skill::BACKSTABBING, 3);
+            dmg *= 3;
+        }
+
         //calculates suposed damage counting creature type and resistance
         //also Adds modifers such 'Poison'
         if (pData->attack_name) { //this is poor magic
@@ -513,7 +516,11 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             auto str = fmt::format("{}{} {} {}{}.",
                 pData->attack_name ? pData->attack_name : pData->attacker->GetNameEx(CRN_T1),
                 critical_hit ? " exactly" : "",
-                pData->attack_name ? "hits" : pData->attacker->GetVerb(GetMeleeAttackMsg(pData->weapon)),
+                pData->attack_name
+                    ? std::string("hits")
+                    : pData->attacker->GetVerb(pData->backstab
+                                                   ? "backstab"
+                                                   : GetMeleeAttackMsg(pData->weapon)),
                 GetNameEx(CRN_T1),
                 ignore_armour ? ", penetrating a piece of armour" : ""
                 );
