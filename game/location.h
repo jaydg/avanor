@@ -137,10 +137,9 @@ class XLocation : public XObject
 
         DECLARE_CREATOR(XLocation, XObject);
         explicit XLocation(const std::string& location_id);
-        XLocation(XLocation * copy)
-        {
-            assert(0);
-        }
+        // A location is not something that can be duplicated: it owns a
+        // map, its places and everything standing on them.
+        XLocation(XLocation*) = delete;
 
         XLocation()
         {

@@ -85,14 +85,6 @@ XCorpse::XCorpse(XCreature * corpse_owner, const XCorpse::Data * pData, CORPSE_F
     Game.Scheduler.Add(this);
 }
 
-XCorpse::XCorpse(XCorpse * copy) : XAnyFood((XAnyFood*)copy)
-{
-    assert(0);
-    corpse_flag = copy->corpse_flag;
-    time_of_roating = copy->time_of_roating;
-    roating_stopped = copy->roating_stopped;
-}
-
 RESULT XCorpse::onEat(XCreature * eater)
 {
     // Prevent the corpse from being destroyed under us: XAnyFood::onEat()

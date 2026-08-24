@@ -126,19 +126,12 @@ class XChest : public XItem
         }
 
         XChest(int item_count, ItemKind kind_mask, int low_v, int high_v);
-        XChest(XChest * copy)
-        {
-            assert(0);
-        }
+        // Chests are not copyable
+        XChest(XChest*) = delete;
 
         int Compare(XObject * o) override
         {
             return -1;
-        }
-
-        XItem* MakeCopy() override
-        {
-            return new XChest(this);
         }
 
         std::string toString() override;
