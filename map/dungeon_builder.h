@@ -99,7 +99,7 @@ class XRoom
             return room != nullptr;
         }
 
-        int Intersect(XRoom * other, int dist);
+        int Intersect(XRoom* other);
         void Draw(XLocation * l, XTileType::Id floor, const RoomShape& shape);
         bool GetFreeExit(XPoint * pt);
 };

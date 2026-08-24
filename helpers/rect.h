@@ -67,7 +67,6 @@ class XRect
         int Intersect(const XRect * r) const;
         int PointIn(const XPoint * pt) const;
         [[nodiscard]] int PointIn(int x, int y) const;
-        void Grow(int r);
         [[nodiscard]] int Width() const;
         [[nodiscard]] int Height() const;
 

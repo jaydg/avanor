@@ -156,7 +156,7 @@ XRoom::XRoom(int len, int hgt, const RoomTemplate* _room, const RoomShape& shape
     r.Setup(x, y, x + l, y + h);
 }
 
-int XRoom::Intersect(XRoom * other, int dist)
+int XRoom::Intersect(XRoom* other)
 {
     XRect tr(other->r);
 
@@ -259,7 +259,7 @@ bool XDungeonBuilder::PlaceRoom(std::vector<std::unique_ptr<XRoom>>& placed, con
         bool clear = true;
 
         for (size_t q = 0; q < placed.size() && clear; q++) {
-            if (placed[q]->Intersect(xc.get(), 0)) {
+            if (placed[q]->Intersect(xc.get())) {
                 clear = false;
             }
         }
