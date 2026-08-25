@@ -62,6 +62,10 @@ enum SPELL_NAME {
     SPELL_EOF
 };
 
+// The highest rank a magic school can be trained to; mg_level_str[]
+// names every rank from 0 (unknown school) up to this one.
+constexpr int MAX_MAGIC_LEVEL = 9;
+
 enum MAGIC_SCHOOL {
     MS_UNKNOWN = -1,
     MS_ELEMENTAL,
@@ -144,7 +148,16 @@ class XMagic
         explicit XMagic(XMagic*) = delete;
 
         RESULT Cast(XSpell* spell, XCreature* caster);
+
+        // How hard a spell hits and how far it reaches: the caster's
+        // willpower, what they know of this particular spell, and what
+        // they know of its school as a whole.
+        static int GetSpellPower(const XSpell* spell, XCreature* caster);
         static int GetSpellRange(const XSpell* spell, XCreature* caster);
+
+        // Credits `count` towards the school's next rank, the way
+        // XWarSkills::UseSkill() credits a weapon class. Returns 1 if
+        // that was enough to gain a rank.
         int Train(MAGIC_SCHOOL school, int count);
         int GainLevel(MAGIC_SCHOOL school, int n = 1);
 

@@ -18,6 +18,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
+#include <iterator>
+
 #include <fmt/format.h>
 #include <cereal/archives/json.hpp>
 
@@ -214,22 +217,26 @@ std::string XSpell::toString() const
 
 XMagic::XMagic()
 {
-    for (int & i : magic_level) {
-        i = 1;
-    }
+    // Every school starts unknown; learning a spell opens its school
+    // (see Learn()), so the school list shows only what the caster
+    // actually practises.
 }
 
-int will_div[10] = {50, 25, 20, 15, 10, 8, 6, 3, 2, 1};
+int XMagic::GetSpellPower(const XSpell* spell, XCreature* caster)
+{
+    return caster->GetStats(XStats::WIL)
+        + spell->GetEffectivity()
+        + caster->m->GetLevel(spell->GetSchool());
+}
 
 int XMagic::GetSpellRange(const XSpell* spell, XCreature* caster)
 {
-    int power = caster->GetStats(XStats::WIL) + spell->GetEffectivity();
-    return XEffect::GetRange(spell->GetEffect(), power);
+    return XEffect::GetRange(spell->GetEffect(), GetSpellPower(spell, caster));
 }
 
 RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
 {
-    const int power = caster->GetStats(XStats::WIL) + spell->GetEffectivity();
+    const int power = GetSpellPower(spell, caster);
 
     if (caster->PP - spell->GetManaCost() >= 0) {
         if (caster->isInVisibleArea() && !caster->isHero()) {
@@ -271,34 +278,42 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
     return CONTINUE;
 }
 
-int XMagic::Train(MAGIC_SCHOOL school, int count)
+int XMagic::Train(const MAGIC_SCHOOL school, const int count)
 {
-    /*	magic_count[school] += count;
-    	if (magic_count[school] > (magic_level[school] + 1) * 100)
-    	{
-    		if (GainLevel(school))
-    		{
-    			magic_count[school] = 0;
-    			return 1;
-    		}
-    	}*/
+    if (school == MS_UNKNOWN || magic_level[school] >= MAX_MAGIC_LEVEL) {
+        return 0;
+    }
+
+    magic_count[school] += count;
+
+    if (magic_count[school] > (magic_level[school] + 1) * 100) {
+        magic_count[school] = 0;
+
+        return GainLevel(school);
+    }
+
     return 0;
 }
 
-int XMagic::GainLevel(MAGIC_SCHOOL school, int n)
+int XMagic::GainLevel(const MAGIC_SCHOOL school, const int n)
 {
-    /*	if (magic_level[school] < 9)
-    	{
-    		magic_level[school] += n;
-    		if (magic_level[school] > 9)
-    			magic_level[school] = 9;
-    		return 1;
-    	} */
-    return 0;
+    if (school == MS_UNKNOWN || magic_level[school] >= MAX_MAGIC_LEVEL) {
+        return 0;
+    }
+
+    magic_level[school] = std::min(magic_level[school] + n, MAX_MAGIC_LEVEL);
+
+    return 1;
 }
 
 void XMagic::Learn(const SPELL_NAME spell)
 {
+    // Knowing any spell of a school makes the caster a Beginner in it.
+    if (const MAGIC_SCHOOL school = spell_db[spell].school;
+        school != MS_UNKNOWN && magic_level[school] == 0) {
+        magic_level[school] = 1;
+    }
+
     for (const auto& tsp : spells) {
         if (tsp->GetSpellName() == spell) {
             tsp->GainLevel();
@@ -342,6 +357,9 @@ const char* mg_level_str[] = {
     "<PROGRESS_SENIOR_MASTER>Senior Master",
     "<PROGRESS_GRANDMASTER>Grand Master"
 };
+
+static_assert(std::size(mg_level_str) == MAX_MAGIC_LEVEL + 1,
+    "mg_level_str[] must name every rank from 0 to MAX_MAGIC_LEVEL");
 
 std::string XMagic::LevelToString(const MAGIC_SCHOOL school) const
 {
