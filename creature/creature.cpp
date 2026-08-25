@@ -2145,6 +2145,10 @@ const char* XCreature::GetGenderStr()
 const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
 {
     if (isVisible()) {
+        // Every inner switch answers all four CR_NAME_TYPEs, so the breaks
+        // below are never reached. They are there so that a value from
+        // outside the enum drops out to the assert instead of quietly
+        // picking up the next person type's answer.
         switch (creature_person_type) {
             case XCreature::YOU:
             case XCreature::MALE_YOU:
@@ -2163,6 +2167,8 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "your";
                 }
 
+                break;
+
             case XCreature::NAMED_HE:
                 switch (crn) {
                     case CRN_T1:
@@ -2177,6 +2183,8 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                     case CRN_T4:
                         return "his";
                 }
+
+                break;
 
             case XCreature::NAMED_SHE:
                 switch (crn) {
@@ -2193,6 +2201,8 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "hers";
                 }
 
+                break;
+
             case XCreature::NAMED_IT:
                 switch (crn) {
                     case CRN_T1:
@@ -2207,6 +2217,8 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                     case CRN_T4:
                         return "its";
                 }
+
+                break;
 
             case XCreature::HE:
                 switch (crn) {
@@ -2223,6 +2235,8 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                         return "his";
                 }
 
+                break;
+
             case XCreature::SHE:
                 switch (crn) {
                     case CRN_T1:
@@ -2237,6 +2251,8 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
                     case CRN_T4:
                         return "hers";
                 }
+
+                break;
 
             case XCreature::IT:
                 switch (crn) {
