@@ -245,16 +245,26 @@ std::string XModifier::toString() const
 
 int XModifier::Run(XCreature* cr)
 {
-    for (auto it = ml.begin(); it != ml.end(); )
-    {
-        auto& mfr = *it;
-        MODIFIER_RESULT mr = mfr->Run(cr);
+    // Running a modifier can add another one to this same list: a delayed
+    // effect applies itself the moment its timer runs out, and Add() pushes
+    // onto ml. That reallocates the vector, and any iterator or reference
+    // held across the call is left pointing into the freed buffer - which is
+    // what an eaten corpse's delayed poison used to crash on, roughly a
+    // hundred turns after the meal.
+    //
+    // So walk by index and read the element back out of the vector each time
+    // rather than holding on to it. Only the modifiers that were already here
+    // are run: one that arrives partway through starts counting down on the
+    // next turn instead of the one that set it.
+    for (size_t i = 0, count = ml.size(); i < count && i < ml.size(); ) {
+        const MODIFIER_RESULT mr = ml[i]->Run(cr);
 
         if (mr == MR_REMOVE) {
-            mfr->onRemove(cr);
-            it = ml.erase(it);
+            ml[i]->onRemove(cr);
+            ml.erase(ml.begin() + static_cast<std::ptrdiff_t>(i));
+            count--;
         } else if (mr == MR_OK) {
-            ++it;
+            i++;
         } else {
             return 0;
         }
