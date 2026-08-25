@@ -28,9 +28,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "magic/magic.h"
 
+// The school table below names one of these on almost every line.
+using School = XMagic::School;
+
 struct SPELL_REC {
     XEffect::Id effect;
-    MAGIC_SCHOOL school;
+    School school;
     int cost;
     std::string name;
     SPELL_REC();
@@ -41,132 +44,132 @@ SPELL_REC spell_db[SPELL_EOF];
 SPELL_REC::SPELL_REC()
 {
     spell_db[SPELL_CURE_LIGHT_WOUNDS].effect	= XEffect::CURE_LIGHT_WOUNDS;
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].school	= MS_BODY;
+    spell_db[SPELL_CURE_LIGHT_WOUNDS].school	= School::BODY;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].cost	= 5;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].name	= "cure light wounds";
 
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].effect	= XEffect::CURE_SERIOUS_WOUNDS;
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].school	= MS_BODY;
+    spell_db[SPELL_CURE_SERIOUS_WOUNDS].school	= School::BODY;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].cost	= 10;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].name	= "cure serious wounds";
 
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].effect = XEffect::CURE_CRITICAL_WOUNDS;
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].school = MS_BODY;
+    spell_db[SPELL_CURE_CRITICAL_WOUNDS].school = School::BODY;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].cost	= 15;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].name	= "cure critical wounds";
 
     spell_db[SPELL_CURE_MORTAL_WOUNDS].effect	= XEffect::CURE_MORTAL_WOUNDS;
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].school	= MS_BODY;
+    spell_db[SPELL_CURE_MORTAL_WOUNDS].school	= School::BODY;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].cost	= 20;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].name	= "cure mortal wounds";
 
     spell_db[SPELL_HEAL].effect	= XEffect::HEAL;
-    spell_db[SPELL_HEAL].school	= MS_BODY;
+    spell_db[SPELL_HEAL].school	= School::BODY;
     spell_db[SPELL_HEAL].cost	= 30;
     spell_db[SPELL_HEAL].name	= "heal";
 
     spell_db[SPELL_HEROISM].effect	= XEffect::HEROISM;
-    spell_db[SPELL_HEROISM].school	= MS_BODY;
+    spell_db[SPELL_HEROISM].school	= School::BODY;
     spell_db[SPELL_HEROISM].cost	= 5;
     spell_db[SPELL_HEROISM].name	= "heroism";
 
     spell_db[SPELL_CURE_POISON].effect	= XEffect::CURE_POISON;
-    spell_db[SPELL_CURE_POISON].school	= MS_BODY;
+    spell_db[SPELL_CURE_POISON].school	= School::BODY;
     spell_db[SPELL_CURE_POISON].cost	= 15;
     spell_db[SPELL_CURE_POISON].name	= "cure poison";
 
     spell_db[SPELL_CURE_DISEASE].effect	= XEffect::CURE_DISEASE;
-    spell_db[SPELL_CURE_DISEASE].school	= MS_BODY;
+    spell_db[SPELL_CURE_DISEASE].school	= School::BODY;
     spell_db[SPELL_CURE_DISEASE].cost	= 20;
     spell_db[SPELL_CURE_DISEASE].name	= "cure disease";
 
     spell_db[SPELL_BURNING_HANDS].effect	= XEffect::BURNING_HANDS;
-    spell_db[SPELL_BURNING_HANDS].school	= MS_ELEMENTAL;
+    spell_db[SPELL_BURNING_HANDS].school	= School::ELEMENTAL;
     spell_db[SPELL_BURNING_HANDS].cost	= 7;
     spell_db[SPELL_BURNING_HANDS].name	= "burning hands";
 
     spell_db[SPELL_ICE_TOUCH].effect	= XEffect::ICE_TOUCH;
-    spell_db[SPELL_ICE_TOUCH].school	= MS_ELEMENTAL;
+    spell_db[SPELL_ICE_TOUCH].school	= School::ELEMENTAL;
     spell_db[SPELL_ICE_TOUCH].cost	= 7;
     spell_db[SPELL_ICE_TOUCH].name	= "ice touch";
 
     spell_db[SPELL_MAGIC_ARROW].effect	= XEffect::MAGIC_ARROW;
-    spell_db[SPELL_MAGIC_ARROW].school	= MS_ELEMENTAL;
+    spell_db[SPELL_MAGIC_ARROW].school	= School::ELEMENTAL;
     spell_db[SPELL_MAGIC_ARROW].cost	= 5;
     spell_db[SPELL_MAGIC_ARROW].name	= "magic arrow";
 
     spell_db[SPELL_FIRE_BOLT].effect	= XEffect::FIRE_BOLT;
-    spell_db[SPELL_FIRE_BOLT].school	= MS_ELEMENTAL;
+    spell_db[SPELL_FIRE_BOLT].school	= School::ELEMENTAL;
     spell_db[SPELL_FIRE_BOLT].cost	= 12;
     spell_db[SPELL_FIRE_BOLT].name	= "fire bolt";
 
     spell_db[SPELL_ICE_BOLT].effect	= XEffect::ICE_BOLT;
-    spell_db[SPELL_ICE_BOLT].school	= MS_ELEMENTAL;
+    spell_db[SPELL_ICE_BOLT].school	= School::ELEMENTAL;
     spell_db[SPELL_ICE_BOLT].cost	= 12;
     spell_db[SPELL_ICE_BOLT].name	= "ice bolt";
 
     spell_db[SPELL_LIGHTNING_BOLT].effect	= XEffect::LIGHTNING_BOLT;
-    spell_db[SPELL_LIGHTNING_BOLT].school	= MS_ELEMENTAL;
+    spell_db[SPELL_LIGHTNING_BOLT].school	= School::ELEMENTAL;
     spell_db[SPELL_LIGHTNING_BOLT].cost	= 18;
     spell_db[SPELL_LIGHTNING_BOLT].name	= "lightning bolt";
 
     spell_db[SPELL_DRAIN_LIFE].effect	= XEffect::DRAIN_LIFE;
-    spell_db[SPELL_DRAIN_LIFE].school	= MS_DEATH;
+    spell_db[SPELL_DRAIN_LIFE].school	= School::DEATH;
     spell_db[SPELL_DRAIN_LIFE].cost	= 7;
     spell_db[SPELL_DRAIN_LIFE].name	= "drain life";
 
     spell_db[SPELL_ACID_BOLT].effect	= XEffect::ACID_BOLT;
-    spell_db[SPELL_ACID_BOLT].school	= MS_DEATH;
+    spell_db[SPELL_ACID_BOLT].school	= School::DEATH;
     spell_db[SPELL_ACID_BOLT].cost	= 25;
     spell_db[SPELL_ACID_BOLT].name	= "acid bolt";
 
     spell_db[SPELL_IDENTIFY].effect	= XEffect::IDENTIFY;
-    spell_db[SPELL_IDENTIFY].school	= MS_SURVIVING;
+    spell_db[SPELL_IDENTIFY].school	= School::SURVIVING;
     spell_db[SPELL_IDENTIFY].cost	= 25;
     spell_db[SPELL_IDENTIFY].name	= "identify";
 
     spell_db[SPELL_SUMMON_MONSTER].effect	= XEffect::SUMMON_MONSTER;
-    spell_db[SPELL_SUMMON_MONSTER].school	= MS_SURVIVING;
+    spell_db[SPELL_SUMMON_MONSTER].school	= School::SURVIVING;
     spell_db[SPELL_SUMMON_MONSTER].cost	= 15;
     spell_db[SPELL_SUMMON_MONSTER].name	= "summon monster";
 
     spell_db[SPELL_CREATE_ITEM].effect	= XEffect::CREATE_ITEM;
-    spell_db[SPELL_CREATE_ITEM].school	= MS_SURVIVING;
+    spell_db[SPELL_CREATE_ITEM].school	= School::SURVIVING;
     spell_db[SPELL_CREATE_ITEM].cost	= 100;
     spell_db[SPELL_CREATE_ITEM].name	= "create item";
 
     spell_db[SPELL_BLINK].effect	= XEffect::BLINK;
-    spell_db[SPELL_BLINK].school	= MS_SURVIVING;
+    spell_db[SPELL_BLINK].school	= School::SURVIVING;
     spell_db[SPELL_BLINK].cost	= 15;
     spell_db[SPELL_BLINK].name	= "blink";
 
     spell_db[SPELL_SELF_KNOWLEDGE].effect	= XEffect::SELF_KNOWLEDGE;
-    spell_db[SPELL_SELF_KNOWLEDGE].school	= MS_SURVIVING;
+    spell_db[SPELL_SELF_KNOWLEDGE].school	= School::SURVIVING;
     spell_db[SPELL_SELF_KNOWLEDGE].cost	= 25;
     spell_db[SPELL_SELF_KNOWLEDGE].name	= "self knowledge";
 
     spell_db[SPELL_SEE_INVISIBLE].effect	= XEffect::SEE_INVISIBLE;
-    spell_db[SPELL_SEE_INVISIBLE].school	= MS_PROTECTION;
+    spell_db[SPELL_SEE_INVISIBLE].school	= School::PROTECTION;
     spell_db[SPELL_SEE_INVISIBLE].cost	= 15;
     spell_db[SPELL_SEE_INVISIBLE].name	= "see invisible";
 
     spell_db[SPELL_ACID_RESISTANCE].effect	= XEffect::ACID_RESISTANCE;
-    spell_db[SPELL_ACID_RESISTANCE].school	= MS_PROTECTION;
+    spell_db[SPELL_ACID_RESISTANCE].school	= School::PROTECTION;
     spell_db[SPELL_ACID_RESISTANCE].cost	= 20;
     spell_db[SPELL_ACID_RESISTANCE].name	= "acid resistance";
 
     spell_db[SPELL_FIRE_RESISTANCE].effect	= XEffect::FIRE_RESISTANCE;
-    spell_db[SPELL_FIRE_RESISTANCE].school	= MS_PROTECTION;
+    spell_db[SPELL_FIRE_RESISTANCE].school	= School::PROTECTION;
     spell_db[SPELL_FIRE_RESISTANCE].cost	= 15;
     spell_db[SPELL_FIRE_RESISTANCE].name	= "fire resistance";
 
     spell_db[SPELL_COLD_RESISTANCE].effect	= XEffect::COLD_RESISTANCE;
-    spell_db[SPELL_COLD_RESISTANCE].school	= MS_PROTECTION;
+    spell_db[SPELL_COLD_RESISTANCE].school	= School::PROTECTION;
     spell_db[SPELL_COLD_RESISTANCE].cost	= 15;
     spell_db[SPELL_COLD_RESISTANCE].name	= "cold resistance";
 
     spell_db[SPELL_POISON_RESISTANCE].effect	= XEffect::POISON_RESISTANCE;
-    spell_db[SPELL_POISON_RESISTANCE].school	= MS_PROTECTION;
+    spell_db[SPELL_POISON_RESISTANCE].school	= School::PROTECTION;
     spell_db[SPELL_POISON_RESISTANCE].cost	= 15;
     spell_db[SPELL_POISON_RESISTANCE].name	= "poison resistance";
 }
@@ -201,7 +204,7 @@ int XSpell::GetManaCost() const
     return (spell_db[spell_name].cost * 15) / (14 + eff_level);
 }
 
-MAGIC_SCHOOL XSpell::GetSchool() const
+XMagic::School XSpell::GetSchool() const
 {
     return spell_db[spell_name].school;
 }
@@ -278,16 +281,17 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
     return CONTINUE;
 }
 
-int XMagic::Train(const MAGIC_SCHOOL school, const int count)
+int XMagic::Train(const School school, const int count)
 {
-    if (school == MS_UNKNOWN || magic_level[school] >= MAX_MAGIC_LEVEL) {
+    if (school == School::UNKNOWN || GetLevel(school) >= MAX_LEVEL) {
         return 0;
     }
 
-    magic_count[school] += count;
+    int& counter = magic_count[Index(school)];
+    counter += count;
 
-    if (magic_count[school] > (magic_level[school] + 1) * 100) {
-        magic_count[school] = 0;
+    if (counter > (GetLevel(school) + 1) * 100) {
+        counter = 0;
 
         return GainLevel(school);
     }
@@ -295,13 +299,14 @@ int XMagic::Train(const MAGIC_SCHOOL school, const int count)
     return 0;
 }
 
-int XMagic::GainLevel(const MAGIC_SCHOOL school, const int n)
+int XMagic::GainLevel(const School school, const int n)
 {
-    if (school == MS_UNKNOWN || magic_level[school] >= MAX_MAGIC_LEVEL) {
+    if (school == School::UNKNOWN || GetLevel(school) >= MAX_LEVEL) {
         return 0;
     }
 
-    magic_level[school] = std::min(magic_level[school] + n, MAX_MAGIC_LEVEL);
+    int& level = magic_level[Index(school)];
+    level = std::min(level + n, MAX_LEVEL);
 
     return 1;
 }
@@ -309,9 +314,9 @@ int XMagic::GainLevel(const MAGIC_SCHOOL school, const int n)
 void XMagic::Learn(const SPELL_NAME spell)
 {
     // Knowing any spell of a school makes the caster a Beginner in it.
-    if (const MAGIC_SCHOOL school = spell_db[spell].school;
-        school != MS_UNKNOWN && magic_level[school] == 0) {
-        magic_level[school] = 1;
+    if (const School school = spell_db[spell].school;
+        school != School::UNKNOWN && GetLevel(school) == 0) {
+        magic_level[Index(school)] = 1;
     }
 
     for (const auto& tsp : spells) {
@@ -358,13 +363,15 @@ const char* mg_level_str[] = {
     "<PROGRESS_GRANDMASTER>Grand Master"
 };
 
-static_assert(std::size(mg_level_str) == MAX_MAGIC_LEVEL + 1,
-    "mg_level_str[] must name every rank from 0 to MAX_MAGIC_LEVEL");
+static_assert(std::size(mg_name_str) == XMagic::SCHOOL_COUNT,
+    "mg_name_str[] must name every school");
+static_assert(std::size(mg_level_str) == XMagic::MAX_LEVEL + 1,
+    "mg_level_str[] must name every rank from 0 to MAX_LEVEL");
 
-std::string XMagic::LevelToString(const MAGIC_SCHOOL school) const
+std::string XMagic::LevelToString(const School school) const
 {
     if (GetLevel(school) > 0) {
-        return fmt::format("<VALUE>{:<30} {}", mg_name_str[school], mg_level_str[magic_level[school]]);
+        return fmt::format("<VALUE>{:<30} {}", mg_name_str[Index(school)], mg_level_str[GetLevel(school)]);
     }
 
     return "";

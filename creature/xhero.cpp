@@ -2048,8 +2048,8 @@ void XHero::MagicLevelList() const
     XGuiList list;
     list.SetCaption("<DECORATION>###<TEXT> Magic School <DECORATION>###");
 
-    for (int i = 0; i < MS_EOF; i++) {
-        auto s = m->LevelToString(static_cast<MAGIC_SCHOOL>(i));
+    for (int i = 0; i < XMagic::SCHOOL_COUNT; i++) {
+        auto s = m->LevelToString(static_cast<XMagic::School>(i));
 
         if (!s.empty()) {
             list.AddItem(new XGuiItem_SimpleSelect(s), 0);

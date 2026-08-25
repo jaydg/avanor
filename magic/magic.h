@@ -62,19 +62,81 @@ enum SPELL_NAME {
     SPELL_EOF
 };
 
-// The highest rank a magic school can be trained to; mg_level_str[]
-// names every rank from 0 (unknown school) up to this one.
-constexpr int MAX_MAGIC_LEVEL = 9;
+class XSpell;
 
-enum MAGIC_SCHOOL {
-    MS_UNKNOWN = -1,
-    MS_ELEMENTAL,
-    MS_BODY,
-    MS_PROTECTION,
-    MS_DEATH,
-    MS_SURVIVING,
-    MS_POWER,
-    MS_EOF
+// A creature's grasp of magic: the spells it knows, and how deeply it
+// has studied the schools those spells belong to.
+class XMagic
+{
+    public:
+        // The schools the scholars of old divided the Power into. Every
+        // spell belongs to exactly one, and a caster is ranked in each
+        // one separately.
+        enum class School {
+            UNKNOWN = -1,
+            ELEMENTAL,
+            BODY,
+            PROTECTION,
+            DEATH,
+            SURVIVING,
+            POWER,
+            COUNT       // bounds the per-school tables, never a school
+        };
+
+        static constexpr int SCHOOL_COUNT = static_cast<int>(School::COUNT);
+
+        // The highest rank a school can be trained to; mg_level_str[]
+        // names every rank from 0 (school unknown) up to this one.
+        static constexpr int MAX_LEVEL = 9;
+
+    private:
+        // A scoped enum never indexes a table on its own.
+        static constexpr int Index(const School school)
+        {
+            return static_cast<int>(school);
+        }
+
+    protected:
+        int magic_level[SCHOOL_COUNT]{};
+        int magic_count[SCHOOL_COUNT]{};
+
+    public:
+        XMagic();
+        explicit XMagic(XMagic*) = delete;
+
+        RESULT Cast(XSpell* spell, XCreature* caster);
+
+        // How hard a spell hits and how far it reaches: the caster's
+        // willpower, what they know of this particular spell, and what
+        // they know of its school as a whole.
+        static int GetSpellPower(const XSpell* spell, XCreature* caster);
+        static int GetSpellRange(const XSpell* spell, XCreature* caster);
+
+        // Credits `count` towards the school's next rank, the way
+        // XWarSkills::UseSkill() credits a weapon class. Returns 1 if
+        // that was enough to gain a rank.
+        int Train(School school, int count);
+        int GainLevel(School school, int n = 1);
+
+        std::string LevelToString(School school) const;
+        void Learn(SPELL_NAME spell);
+        [[nodiscard]] XSpell* GetSpell(SPELL_NAME spell) const;
+
+        [[nodiscard]] int GetLevel(const School school) const
+        {
+            return magic_level[Index(school)];
+        }
+
+        std::vector<std::unique_ptr<XSpell>> spells;
+
+        // The legacy Store/Restore (since removed) were already
+        // entirely stubbed out - this is new real persistence, not a
+        // mechanical port.
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(magic_level, magic_count, spells);
+        }
 };
 
 class XSpell
@@ -110,7 +172,7 @@ class XSpell
             return eff_level;
         }
 
-        [[nodiscard]] MAGIC_SCHOOL GetSchool() const;
+        [[nodiscard]] XMagic::School GetSchool() const;
 
         void GainLevel(const int n = 1)
         {
@@ -136,49 +198,5 @@ class XSpell
 // chain) - a specialization declared only in magic.cpp wouldn't be
 // visible to those other TUs.
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XSpell, serialize, SPELL_CURE_LIGHT_WOUNDS);
-
-class XMagic
-{
-    protected:
-        int magic_level[MS_EOF]{};
-        int magic_count[MS_EOF]{};
-
-    public:
-        XMagic();
-        explicit XMagic(XMagic*) = delete;
-
-        RESULT Cast(XSpell* spell, XCreature* caster);
-
-        // How hard a spell hits and how far it reaches: the caster's
-        // willpower, what they know of this particular spell, and what
-        // they know of its school as a whole.
-        static int GetSpellPower(const XSpell* spell, XCreature* caster);
-        static int GetSpellRange(const XSpell* spell, XCreature* caster);
-
-        // Credits `count` towards the school's next rank, the way
-        // XWarSkills::UseSkill() credits a weapon class. Returns 1 if
-        // that was enough to gain a rank.
-        int Train(MAGIC_SCHOOL school, int count);
-        int GainLevel(MAGIC_SCHOOL school, int n = 1);
-
-        std::string LevelToString(MAGIC_SCHOOL school) const;
-        void Learn(SPELL_NAME spell);
-        [[nodiscard]] XSpell* GetSpell(SPELL_NAME spell) const;
-
-        [[nodiscard]] int GetLevel(const MAGIC_SCHOOL ms) const {
-            return magic_level[ms];
-        }
-
-        std::vector<std::unique_ptr<XSpell>> spells;
-
-        // The legacy Store/Restore (since removed) were already
-        // entirely stubbed out - this is new real persistence, not a
-        // mechanical port.
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(magic_level, magic_count, spells);
-        }
-};
 
 #endif
