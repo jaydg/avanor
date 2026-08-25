@@ -38,7 +38,7 @@ function RoyalGuardHandler(e, t, p, v)
 		AddMessage("'Don't bother me!'")
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == WSK_SWORD) then
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == XWarSkills.SWORD) then
 			AddMessage("'Thank you!'")
 			if (QuestStatus(QUEST_OZORIK) < XQuest.COMPLETE) then
 				QuestModify(QUEST_OZORIK, XQuest.COMPLETE)

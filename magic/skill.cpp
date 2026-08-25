@@ -52,7 +52,11 @@ void XSkill::RegisterLua(sol::state_view& lua)
         "CREATETRAP", XSkill::CREATETRAP,
         "NECROMANCY", XSkill::NECROMANCY,
         "ATHLETICS", XSkill::ATHLETICS,
-        "CLIMBING", XSkill::CLIMBING
+        "CLIMBING", XSkill::CLIMBING,
+
+        // Not a skill: the ceiling the world scripts hand to LearnSkill()
+        // when a creature is meant to be as good as the game allows.
+        "MAX_LEVEL", XSkill::MAX_LEVEL
     );
 }
 
@@ -120,14 +124,14 @@ const char* XSkill::GetName()
 
 const char* XSkill::GetSkillLevel()
 {
-    assert(level <= SKILL_MAX_LEVEL);
+    assert(level <= MAX_LEVEL);
     return skill_level_name[level];
 }
 
 int XSkill::GetMaxLevel()
 {
     int xlevel = (int)(sqrt((float)(used_time / (2 * skill_db[skt].use_per_level) + 1)));
-    return xlevel < 15 ? xlevel : 15;
+    return xlevel < MAX_LEVEL ? xlevel : MAX_LEVEL;
 }
 
 int XSkill::IncLevel()

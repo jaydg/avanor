@@ -9,7 +9,7 @@ Monster.new("yohjishiro")
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d1", "1d5+10", "5d5+50")
 	:Description("Last of the elder wizards to live in the vale of Avanor, Yohjishiro quietly tends her herbs and gardens. Her white hair hangs down her back as she kneels down to look at one of her bushes.  Her pointed ears stick out from under a floppy hat that keeps the sun from her eyes.  As she walks through the garden, you notice plants sprouting wherever her feet touch the soil.  Truly she is a power of life.  Frail but intelligent, she remains apart from most of the happenings of Avanor.  Occasionally she will accept a pupil or give aid to those in need.")
-	:LearnSkill(SKT_HEALING, SKILL_MAX_LEVEL)
+	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSpell(SPELL_LIGHTNING_BOLT)
 	:LearnSpell(SPELL_HEAL)
 	:Equip(ItemKind.HAT, ItemType.HAT, 100)
@@ -33,7 +33,7 @@ end
 function YohjiHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local result
-		if (GetSkill(p, SKT_LITERACY) == 0) then
+		if (GetSkill(p, XSkill.LITERACY) == 0) then
 			result = AskQuestion("What do you wish to speak about?", "esc q l", "quest", "learn")
 		else
 			result = 'q'
@@ -53,7 +53,7 @@ function YohjiHandler(e, t, p, v)
 		elseif (result == 'l') then
 			if (AskQuestion("'Do you want to learn literacy for 500gp?'", "y n", "yes", "no") == 'y') then
 				if (MoneyOperation(p, -500) >= 0) then
-					LearnSkill(p, SKT_LITERACY, 1)
+					LearnSkill(p, XSkill.LITERACY, 1)
 					MoneyOperation(t, 500)
 					AddMessage("Yohjishiro touches you. You feel more educated.")
 				else

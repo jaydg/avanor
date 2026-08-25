@@ -9,8 +9,8 @@ Monster.new("ozorik")
 	:Combat("1d8", "2d2")
 	:Main("4d2", "1d3", "1d5+15", "1d3+5")
 	:Description("Standing just over five feet tall, Ozorick doesn't seem like such an imposing figure but the air of command about him is complete.  His thickly corded neck and arms lightly balance a huge broadsword covered with runes.  He swings it down as you enter and you can't help but gasp as the point cuts right through a stone in the floor and barely even slows.  No one who has seen him wield his mighty sword in battle would dream of opposing him.")
-	:LearnSkill(SKT_HEALING, 10)
-	:LearnSkill(SKT_FINDWEAKNESS, 10)
+	:LearnSkill(XSkill.HEALING, 10)
+	:LearnSkill(XSkill.FINDWEAKNESS, 10)
 	:Unique()
 	:Register()
 
@@ -58,7 +58,7 @@ function OzorikHandler(e, t, p, v)
 		end
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == WSK_SWORD) then
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == XWarSkills.SWORD) then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
 		else
 			AddMessage("'We are not looking for this.'")

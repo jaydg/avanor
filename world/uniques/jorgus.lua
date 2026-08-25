@@ -9,7 +9,7 @@ Monster.new("jorgus")
 	:Combat("1d8", "2d2")
 	:Main("4d2", "1d3", "1d5+15", "1d5+5")
 	:Description("As you enter his dwelling you keep a tight hold on your purse.  The shifty eyes and too quick smile of the owner makes you nervous.  Jorgush is the leader of his outlaw band.  They are known for stealing from the rich and keeping it for themselves.  He appears to evaluate you and the weapons you bear and then gestures to the cahir at the table.  Perhaps he has a proposition for you...")
-	:LearnSkill(SKT_STEALING, 15)
+	:LearnSkill(XSkill.STEALING, 15)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 30)
 	:Equip(ItemKind.BODY, ItemType.CLOTHES, 100)
 	:Unique()
@@ -24,7 +24,7 @@ end
 
 function JorgusHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		if (GetSkill(p, SKT_STEALING) > 0) then
+		if (GetSkill(p, XSkill.STEALING) > 0) then
 			if (Gender(p) == Gender.MALE) then
 				AddMessage("Good day, brother!")
 			else
@@ -34,7 +34,7 @@ function JorgusHandler(e, t, p, v)
 			if (AskQuestion("'I can teach you the great art of theft for 1000gp. Would you like to learn?'", "y n", "yes", "no") == 'y') then
 				if (MoneyOperation(p, -1000) >= 0) then
 					MoneyOperation(t, 1000)
-					LearnSkill(p, SKT_STEALING, 1)
+					LearnSkill(p, XSkill.STEALING, 1)
 					if (Gender(p) == Gender.MALE) then
 						AddMessage("You're welcome, brother!")
 					else

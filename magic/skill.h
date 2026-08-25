@@ -31,11 +31,13 @@ struct SKILL_DB {
 
 class XCreature;
 
-#define SKILL_MAX_LEVEL 15
-
 class XSkill
 {
     public:
+        // The highest level any skill can reach. Bounds
+        // skill_level_name[] and caps what GetMaxLevel() will grant.
+        static constexpr int MAX_LEVEL = 15;
+
         // How far the owner has got with a skill, derived from its level
         // by GetMastery(). NONE is nobody's mastery - a creature without
         // the skill at all has no XSkill to ask.
