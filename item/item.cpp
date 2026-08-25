@@ -264,7 +264,7 @@ void XItem::MainFill(ItemTemplate *is)
     RNG = d.NThrow();
 }
 
-void XItem::PropFill(ITEM_SET is, int val)
+void XItem::PropFill(ITEM_SET is)
 {
     int tval = 0;
 

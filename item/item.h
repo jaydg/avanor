@@ -71,7 +71,7 @@ class XItem : public XBaseObject
     public:
 
         int BasicFill(ItemType it, XItemBasicStructure * pData);
-        void PropFill(ITEM_SET is, int val = 1000);
+        void PropFill(ITEM_SET is);
         void SpecialFill();
 
         // Render an object as text
