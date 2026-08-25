@@ -1749,7 +1749,7 @@ int XHero::SelectPosition(XPoint * pt, int flag)
     int tx = x;
     int ty = y;
 
-    msgwin.ClrMsg(1);
+    msgwin.ClrMsg();
     vGotoXY(0, 0);
     vPutS("press [<KEY>1<TEXT>..<KEY>9"
         "<TEXT>] - for move cursor, ["

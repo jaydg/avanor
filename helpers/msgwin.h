@@ -43,9 +43,9 @@ class XMsgWin
         XMsgWin();
         ~XMsgWin();
 
-        void Add(std::string_view str, int flag = 0);
+        void Add(std::string_view str);
 
-        void ClrMsg(int flag = 0);
+        void ClrMsg();
         void ShowHistory() const;
 };
 
