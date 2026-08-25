@@ -481,7 +481,9 @@ class XCreature : public XBaseObject
 
         int InflictDamage(DAMAGE_DATA_EX* pData);
         int onMagicDamage(int dmg, XResistance::Id tr);
-        int CauseEffect(int dmg, AttackEffectType brt, XCreature* attacker);
+        // Immediate damage only - what the attack's elemental brands and
+        // slayer bonuses do against this creature's resistances and class.
+        int CauseEffect(int dmg, AttackEffectType brt);
         void CausePostEffect(int dmg, AttackEffectType brt, XCreature* attacker);
 
         virtual const char* GetMeleeAttackMsg(XItem* weapon);

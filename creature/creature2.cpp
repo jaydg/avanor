@@ -126,7 +126,7 @@ int XCreature::onMagicDamage(const int dmg, const XResistance::Id tr)
     return damage < 0 ? 0 : damage;
 }
 
-int XCreature::CauseEffect(int dmg, AttackEffectType aet, XCreature * attacker)
+int XCreature::CauseEffect(int dmg, AttackEffectType aet)
 {
     int damage = 0;
 
@@ -480,9 +480,9 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         //calculates suposed damage counting creature type and resistance
         //also Adds modifers such 'Poison'
         if (pData->attack_name) { //this is poor magic
-            dmg = CauseEffect(dmg, pData->attack_effect, pData->attacker);
+            dmg = CauseEffect(dmg, pData->attack_effect);
         } else { //this is hit with weapon or unarmed hit(snakes beat for example)
-            dmg += CauseEffect(dmg, pData->attack_effect, pData->attacker);
+            dmg += CauseEffect(dmg, pData->attack_effect);
         }
 
         //always count intrinsic PV
