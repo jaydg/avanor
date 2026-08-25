@@ -49,7 +49,7 @@ enum ENH_COLOR {
 struct ENH_COLOR_TABLE {
     int color;
     const char* color_name;
-    int is_used;
+    int is_used = 0;
 } ect[] = {
     {/* EC_WHITE */     xWHITE,      "white"},
     {/* EC_BLUE */      xBLUE,       "blue"},

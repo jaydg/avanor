@@ -128,10 +128,9 @@ void vInit()
 #endif //XWIN32
 
 #ifdef XLINUX
-    notcurses_options opts{
-        .loglevel = NCLOGLEVEL_SILENT,
-        .flags = NCOPTION_SUPPRESS_BANNERS,
-    };
+    notcurses_options opts{};
+    opts.loglevel = NCLOGLEVEL_SILENT;
+    opts.flags = NCOPTION_SUPPRESS_BANNERS;
 
     nc = new ncpp::NotCurses(opts);
     screen = nc->get_stdplane();
