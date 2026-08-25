@@ -201,6 +201,7 @@ void XHero::PlayerSetup()
 
         case 'f':
             sk->Learn(XSkill::Skill::MINING);
+            break;
 
         case 'g':
             sk->Learn(XSkill::Skill::MINING);
