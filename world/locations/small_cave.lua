@@ -2,7 +2,14 @@
 -------------------- SMALL CAVE ---------------------------
 
 function MakeSmallCave()
-	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", XLocation.CAVE, CAVE)
+	-- Small, and meant to stay small: a handful of chambers two tiles
+	-- to the cell, which keeps the caverns cave-sized rather than
+	-- hall-sized.
+	local caverns = Chambers(60, 40)
+	caverns.scale = 2
+	caverns.areas = { 7, 11 }
+
+	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", XLocation.CHAMBERS, caverns)
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "SMALL_CAVE_2")
 		Settle(CreatureClass.RAT + CreatureClass.INSECT, CreatureTemplate.LOW)

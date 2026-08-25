@@ -17,6 +17,70 @@ CAVE = {
 	sight = 0,
 }
 
+-- Chambers: rounded rooms grown a cell at a time, joined by single
+-- doorways, a third of them eroded down to corridors, with lakes wherever
+-- they do not cut the level in two. It wants room to work in - a dozen
+-- chambers three tiles to the cell will not fit on the 80x20 a cave is
+-- happy with.
+function Chambers(width, height)
+	return {
+		wall = CAVE.wall,
+		floor = CAVE.floor,
+		water = XTileType.WATER,
+		deep_water = XTileType.DEEP_WATER,
+
+		areas = { 9, 19 },
+		area_size = { 11, 14 },
+		scale = 3,
+		gamma = 4,
+		corridors = 30,
+		corridor_left = 35,
+		loop_odds = 25,
+
+		-- Rock does not run straight for a dozen tiles and turn a
+		-- right angle. Without these the chambers read as masonry.
+		roughness = 40,
+		roughness_grain = 6,
+		smooth = 1,
+
+		-- A seventh of the floor under water, and two fifths of that
+		-- out of your depth.
+		water_level = 14,
+		deep_level = 40,
+		water_grain = 24,
+
+		sight = 0,
+		width = width or 96,
+		height = height or 96,
+	}
+end
+
+-- The same generator with nothing underground about it: the rock is
+-- trees, the floor is grass, and what comes out is dense forest with
+-- glades in it, joined by paths, and ponds where they fit. Trees can be
+-- pushed through, unlike magma, so the woods are slow rather than solid.
+function Forest(width, height)
+	local wood = Chambers(width, height)
+
+	wood.wall = XTileType.TREE
+	wood.floor = XTileType.GREEN_GRASS
+
+	-- Woodland wanders more than rock does, and there is usually more
+	-- than one way round a tree.
+	wood.corridors = 20
+	wood.corridor_left = 40
+	wood.loop_odds = 40
+
+	wood.water_level = 12
+	wood.deep_level = 35
+	wood.water_grain = 20
+
+	-- Out under the sky, as far as the trees allow.
+	wood.sight = 30
+
+	return wood
+end
+
 -- Built dungeons: one room per 200 cells of floor, and a door at one
 -- corridor junction in three. room_chance is how often the level is built
 -- with one of the rooms from world/rooms.lua; the rest are made up within

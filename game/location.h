@@ -74,6 +74,7 @@ class XLocation : public XObject
         // How a location's map is laid out when it is created.
         enum class Generator {
             CAVE,
+            CHAMBERS,
             DUNGEON,
             PLAIN,
             PATTERN // Nothing is generated at all

@@ -33,6 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xgen.h"
 #include "map/pattern_builder.h"
 #include "map/cave_builder.h"
+#include "map/chambers_builder.h"
 #include "map/dungeon_builder.h"
 #include "map/plain_builder.h"
 #include "game/game.h"
@@ -336,6 +337,20 @@ XTileType::Id RequiredTile(const sol::optional<sol::table>& options, const char*
     return tile;
 }
 
+// A tile a generator can do without, e.g. the water a dry level has none
+// of. Absent, it reads as XTileType::NONE and the generator skips
+// whatever it was for.
+XTileType::Id OptionalTile(const sol::optional<sol::table>& options, const char* key)
+{
+    return options ? options->get_or(key, XTileType::NONE) : XTileType::NONE;
+}
+
+// A setting that is not a whole number, e.g. how round a chamber grows.
+double Number(const sol::optional<sol::table>& options, const char* key, const double fallback)
+{
+    return options ? options->get_or(key, fallback) : fallback;
+}
+
 // An ordered list of tiles, e.g. a plain's border from the inside out.
 std::vector<XTileType::Id> TileList(const sol::optional<sol::table>& options, const char* key,
                                     const std::string& loc_id)
@@ -440,6 +455,7 @@ void XLocation::RegisterLua(sol::state_view& lua)
 {
     lua.new_enum("XLocation",
         "CAVE", Generator::CAVE,
+        "CHAMBERS", Generator::CHAMBERS,
         "DUNGEON", Generator::DUNGEON,
         "PLAIN", Generator::PLAIN,
         "PATTERN", Generator::PATTERN
@@ -670,6 +686,31 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
                          Option(options, "blobs", 150),
                          Option(options, "blob_radius", 3)).Build();
             break;
+
+        case Generator::CHAMBERS: {
+            const auto [min_areas, max_areas] = Range(options, "areas", 9, 19);
+            const auto [min_size, max_size] = Range(options, "area_size", 11, 14);
+            const XChambersBuilder::Shape shape = {min_areas, max_areas, min_size, max_size,
+                                                   Option(options, "scale", 3),
+                                                   Number(options, "gamma", 4.0),
+                                                   Option(options, "corridors", 30),
+                                                   Option(options, "corridor_left", 35),
+                                                   Option(options, "loop_odds", 25),
+                                                   Option(options, "roughness", 40),
+                                                   Option(options, "roughness_grain", 6),
+                                                   Option(options, "smooth", 1)};
+            const XChambersBuilder::Water water = {OptionalTile(options, "water"),
+                                                   OptionalTile(options, "deep_water"),
+                                                   Option(options, "water_level", 14),
+                                                   Option(options, "deep_level", 40),
+                                                   Option(options, "water_grain", 24)};
+
+            XChambersBuilder(XLocation::current_location, width, height,
+                             RequiredTile(options, "wall", loc_id),
+                             RequiredTile(options, "floor", loc_id),
+                             shape, water).Build();
+            break;
+        }
 
         case Generator::DUNGEON: {
             const auto [min_w, max_w] = Range(options, "room_width", 4, 10);

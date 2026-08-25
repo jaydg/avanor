@@ -68,7 +68,7 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp global.cpp     \
        game.cpp effect.cpp dice.cpp deity.cpp cr_defs.cpp creature2.cpp       \
        creature.cpp dungeon_builder.cpp cave_builder.cpp pattern_builder.cpp   \
-       plain_builder.cpp bodypart.cpp anycr.cpp ai_view.cpp
+       chambers_builder.cpp plain_builder.cpp bodypart.cpp anycr.cpp ai_view.cpp
 
 LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
 
