@@ -1296,7 +1296,13 @@ unsigned long XCreature::ExpOfLevel(const int lev) const
     return static_cast<unsigned long>(2.0 * base_exp * std::pow(static_cast<float>(lev), 2.5f));
 }
 
-int XCreature::GetHITFHBonus(XItem* weapon)
+// A weapon heavier than its wielder can comfortably manage is hard to aim.
+// The measure is 30 * strength against the weapon's weight, halved again
+// when the other hand is full too - there is then no free hand left to
+// steady the blow. At or above that weight the penalty grows with the
+// logarithm of how far over the creature is; below it there is no bonus
+// for swinging something light, hence the clamp at zero.
+int XCreature::GetUnwieldyHITPenalty(XItem* weapon)
 {
     XItem * h1 = GetItem(BP_HAND, 0);
     XItem * h2 = GetItem(BP_HAND, 1);
@@ -1305,9 +1311,13 @@ int XCreature::GetHITFHBonus(XItem* weapon)
     return std::min((int)f, 0);
 }
 
-int XCreature::GetDMGFHBonus(XItem* weapon)
+// The same weapon also lands with less of the wielder behind it: a blow
+// you are fighting to control does not carry your weight into the target.
+// It costs half of what the aim costs and no more, because the weapon's
+// own mass arrives whether or not you meant it to.
+int XCreature::GetUnwieldyDMGPenalty(XItem* weapon)
 {
-    return 0;
+    return GetUnwieldyHITPenalty(weapon) / 2;
 }
 
 XBodyPart* XCreature::GetRNDBodyPart()

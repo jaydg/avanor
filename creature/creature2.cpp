@@ -70,8 +70,8 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
 
     if (weapon) {
         res += (wsk->GetUseTime(weapon->wt) * GetSpeed()) / 1000;
-        tohit = GetHIT() + wsk->GetHIT(weapon->wt) + GetHITFHBonus(weapon);
-        tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetDMGFHBonus(weapon) + GetDMG();
+        tohit = GetHIT() + wsk->GetHIT(weapon->wt) + GetUnwieldyHITPenalty(weapon);
+        tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetUnwieldyDMGPenalty(weapon) + GetDMG();
         aet = weapon->aet;
     } else {
         res += (wsk->GetUseTime(XWarSkills::UNARMED) * GetSpeed()) / 1000;

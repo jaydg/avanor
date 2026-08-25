@@ -760,18 +760,20 @@ void XHero::InfoList()
         vGotoXY(0, 17);
         vPutS(fmt::format("Left hand:  (<VALUE>{:+}<DECORATION>, "
             "<VALUE>{}<DECORATION>d<VALUE>{}{:+}<DECORATION>)",
-            GetHIT() + wsk->GetHIT(hand_1->Item()->wt) + GetHITFHBonus(hand_1->Item()),
+            GetHIT() + wsk->GetHIT(hand_1->Item()->wt) + GetUnwieldyHITPenalty(hand_1->Item()),
             hand_1->Item()->dice.GetCount(), hand_1->Item()->dice.GetSides(),
-            hand_1->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)));
+            hand_1->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_1->Item()->wt)
+                + GetUnwieldyDMGPenalty(hand_1->Item())));
     }
 
     if (hand_2->Item() && hand_2->Item()->kind & ItemKind::WEAPON) {
         vGotoXY(0, 18);
         vPutS(fmt::format("Right hand: (<VALUE>{:+}<DECORATION>, "
             "<VALUE>{}<DECORATION>d<VALUE>{} {:+}<DECORATION>)",
-            GetHIT() + wsk->GetHIT(hand_2->Item()->wt) + GetHITFHBonus(hand_2->Item()),
+            GetHIT() + wsk->GetHIT(hand_2->Item()->wt) + GetUnwieldyHITPenalty(hand_2->Item()),
             hand_2->Item()->dice.GetCount(), hand_2->Item()->dice.GetSides(),
-            hand_2->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_2->Item()->wt)));
+            hand_2->Item()->dice.GetBonus() + GetDMG() + wsk->GetDMG(hand_2->Item()->wt)
+                + GetUnwieldyDMGPenalty(hand_2->Item())));
     }
 
     int hit;

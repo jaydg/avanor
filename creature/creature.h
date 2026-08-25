@@ -392,9 +392,9 @@ class XCreature : public XBaseObject
 
         XBodyPart* GetRNDBodyPart(ItemKind kind, RBP_FLAG rbpf);
         XBodyPart* GetRNDBodyPart();
-        int GetHITFHBonus(XItem* weapon);
+        int GetUnwieldyHITPenalty(XItem* weapon);
         int GetShieldDVBonus();
-        int GetDMGFHBonus(XItem* weapon);
+        int GetUnwieldyDMGPenalty(XItem* weapon);
         int GetHIT();
         int GetDV(XCreature* attacker = nullptr);
         int GetDMG();
