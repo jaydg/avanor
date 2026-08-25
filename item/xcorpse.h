@@ -94,7 +94,7 @@ class XCorpse : public XAnyFood
         Data* pCorpseData;
     public:
         DECLARE_CREATOR(XCorpse, XAnyFood);
-        XCorpse(XCreature * corpse_owner, const Data * pData, CORPSE_FLAG cf = CF_RAW);
+        XCorpse(XCreature* corpse_owner, CORPSE_FLAG cf = CF_RAW);
         // Not copyable: a corpse points at its species'
         // shared data and is scheduled in its own right.
         XCorpse(XCorpse*) = delete;

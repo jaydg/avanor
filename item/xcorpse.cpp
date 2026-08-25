@@ -55,7 +55,7 @@ REGISTER_CLASS(XCorpse);
 CEREAL_REGISTER_TYPE(XCorpse);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCorpse);
 
-XCorpse::XCorpse(XCreature * corpse_owner, const XCorpse::Data * pData, CORPSE_FLAG cf)
+XCorpse::XCorpse(XCreature * corpse_owner, CORPSE_FLAG cf)
 {
     kind = ItemKind::FOOD;
     view = '%';

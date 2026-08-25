@@ -276,7 +276,7 @@ void XAnyCreature::Die(XCreature * killer)
     }
 
     if (vRand(5) == 0 && !(creature_class & CreatureClass::UNDEAD)) {
-        DropItem(new XCorpse(this, &super_info->pCorpseData));
+        DropItem(new XCorpse(this));
     }
 
     XCreature::Die(killer);
