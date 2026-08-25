@@ -39,10 +39,10 @@ class XAmulet : public XEnhance
             return new XAmulet(this);
         }
 
-        int isIdentified() override;
-        void Identify(int level) override;
+        bool isIdentified() override;
+        void Identify() override;
 
-        // aidentify_db is private to xamulet.cpp.
+        // aidentified_db is private to xamulet.cpp.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);
 

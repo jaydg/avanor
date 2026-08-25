@@ -50,7 +50,7 @@ struct BOOK_REC {
     int name_index;
     BOOK_NAME book_name;
     SPELL_NAME spell_name;
-    int identify;
+    bool identified;
     int rarity;
 
     static int GetBook(BOOK_NAME); //number in array of books
@@ -58,14 +58,14 @@ struct BOOK_REC {
     static int current_descr;
     static int total_value;
 
-    // rarity is a compile-time constant; identify/name_index/
+    // rarity is a compile-time constant; identified/name_index/
     // spell_name/book_name are per-game-session mutable state (the
     // book<->spell scrambling and identification progress), same fields
     // the legacy Store/Restore already persisted.
     template<class Archive>
     void serialize(Archive& ar)
     {
-        ar(identify, name_index, spell_name, book_name);
+        ar(identified, name_index, spell_name, book_name);
     }
 };
 
@@ -86,8 +86,8 @@ class XBook: public XItem
             return new XBook(this);
         }
 
-        int isIdentified() override;
-        void Identify(int level) override;
+        bool isIdentified() override;
+        void Identify() override;
         std::string toString() override;
         int Compare(XObject * o) override;
         virtual int onRead(XCreature * reader);

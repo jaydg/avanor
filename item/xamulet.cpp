@@ -25,19 +25,19 @@ REGISTER_CLASS(XAmulet);
 CEREAL_REGISTER_TYPE(XAmulet);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAmulet);
 
-int aidentify_db[20] = {};
+bool aidentified_db[20] = {};
 
 void XAmulet::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < 20; i++) {
-        ar(aidentify_db[i]);
+        ar(aidentified_db[i]);
     }
 }
 
 void XAmulet::LoadTable(cereal::JSONInputArchive& ar)
 {
     for (int i = 0; i < 20; i++) {
-        ar(aidentify_db[i]);
+        ar(aidentified_db[i]);
     }
 }
 
@@ -50,12 +50,12 @@ XAmulet::XAmulet(Type enh) : XEnhance(enh)
     view = '\'';
 }
 
-int XAmulet::isIdentified()
+bool XAmulet::isIdentified()
 {
-    return aidentify_db[descr];
+    return aidentified_db[descr];
 }
 
-void XAmulet::Identify(const int level)
+void XAmulet::Identify()
 {
-    aidentify_db[descr] = level;
+    aidentified_db[descr] = true;
 }

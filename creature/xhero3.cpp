@@ -318,7 +318,7 @@ void XHero::EndGame(const char* end_msg)
         file << "\n";
 
         for (const auto& item : hero->contain) {
-            item->Identify(1);
+            item->Identify();
         }
 
         hero->Inventory(

@@ -352,11 +352,11 @@ void XHero::PlayerSetup()
                     }
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     potion = new XPotion(PotionName::HEROISM);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     sk->Learn(XSkill::Skill::FINDWEAKNESS);
@@ -372,7 +372,7 @@ void XHero::PlayerSetup()
                     pbp->Wear(ICREATEB(ItemKind::WEAPON, ItemType::STAFF, 1, 100));
 
                     potion = new XPotion(PotionName::POWER);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     for (int t = 1; t < 3; t++) {
@@ -382,7 +382,7 @@ void XHero::PlayerSetup()
                             scroll = new XScroll(ScrollName::ICE_BOLT);
                         }
 
-                        scroll->Identify(1);
+                        scroll->Identify();
                         ContainItem(scroll);
                     }
 
@@ -392,11 +392,11 @@ void XHero::PlayerSetup()
                         book = new XBook(BOOK_ICE_BOLT);
                     }
 
-                    book->Identify(1);
+                    book->Identify();
                     ContainItem(book);
 
                     book = dynamic_cast<XBook *>(ICREATEA(ItemKind::BOOK));
-                    book->Identify(1);
+                    book->Identify();
                     ContainItem(book);
 
                     sk->Learn(XSkill::Skill::HEALING);
@@ -510,7 +510,7 @@ void XHero::PlayerSetup()
                     }
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     sk->Learn(XSkill::Skill::FINDWEAKNESS);
@@ -624,11 +624,11 @@ void XHero::PlayerSetup()
                     }
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     book = new XBook(BOOK_MAGIC_ARROW);
-                    book->Identify(1);
+                    book->Identify();
                     ContainItem(book);
 
                     sk->Learn(XSkill::Skill::FINDWEAKNESS);
@@ -650,15 +650,15 @@ void XHero::PlayerSetup()
                     pbp->Wear(ICREATEB(ItemKind::SHIELD, ItemType::SMALLSHIELD, 10, 150));
 
                     scroll = new XScroll(ScrollName::BLINK);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     scroll = new XScroll(ScrollName::HEROISM);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     sk->Learn(XSkill::Skill::HEALING);
@@ -695,15 +695,15 @@ void XHero::PlayerSetup()
                     pbp->Wear(ICREATEB(ItemKind::SHIELD, ItemType::LARGESHIELD, 10, 150));
 
                     scroll = new XScroll(ScrollName::BLINK);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     scroll = new XScroll(ScrollName::HEROISM);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     sk->Learn(XSkill::Skill::HEALING);
@@ -737,31 +737,31 @@ void XHero::PlayerSetup()
                     pbp->Wear(ICREATEB(ItemKind::WEAPON, ItemType::DAGGER, 10, 150));
 
                     scroll = new XScroll(ScrollName::BLINK);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     scroll = new XScroll(ScrollName::RECIPE);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     scroll = new XScroll(ScrollName::RECIPE);
-                    scroll->Identify(1);
+                    scroll->Identify();
                     ContainItem(scroll);
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     potion = new XPotion(PotionName::ORANGEJUCE);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     potion = new XPotion(PotionName::APPLEJUCE);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     potion = new XPotion(PotionName::WATER);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     {
@@ -782,7 +782,7 @@ void XHero::PlayerSetup()
                     pbp->Wear(ICREATEB(ItemKind::WEAPON, ItemType::CLUB, 10, 150));
 
                     potion = new XPotion(PotionName::CURE_LIGHT_WOUNDS);
-                    potion->Identify(1);
+                    potion->Identify();
                     ContainItem(potion);
 
                     sk->Learn(XSkill::Skill::HEALING);

@@ -66,8 +66,8 @@ class XScroll : public XItem
             return new XScroll(this);
         }
 
-        int isIdentified() override;
-        void Identify(int level) override;
+        bool isIdentified() override;
+        void Identify() override;
         std::string toString() override;
         int Compare(XObject * o) override;
         virtual int onRead(XCreature * cr);

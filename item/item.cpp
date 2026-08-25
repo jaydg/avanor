@@ -94,7 +94,7 @@ XItem::XItem()
     quantity = 1;
     wt = XWarSkills::OTHER;
     bp = BP_OTHER;
-    identify = 1;
+    identified = true;
     dv = pv = to_hit = RNG = 0;
     dice.Setup("0d0");
     special_number = -1;
@@ -372,7 +372,7 @@ XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
 
     bp = copy->bp;
     durability = copy->durability;
-    identify = copy->identify;
+    identified = copy->identified;
     is_selected = copy->is_selected;
     it = copy->it;
     kind = copy->kind;

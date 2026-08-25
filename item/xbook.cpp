@@ -43,7 +43,7 @@ int BOOK_REC::current_descr = 0;
 int BOOK_REC::total_value = 0;
 
 BOOK_REC::BOOK_REC(int _rarity, BOOK_NAME bn, SPELL_NAME sn)
-    : name_index(current_descr), book_name(bn), spell_name(sn), identify(0), rarity(_rarity)
+    : name_index(current_descr), book_name(bn), spell_name(sn), identified(false), rarity(_rarity)
 {
     current_descr++;
     assert(static_cast<size_t>(current_descr) <= BOOKS_DESCR_SZ);
@@ -125,14 +125,14 @@ XBook::XBook(BOOK_NAME bn)
     reader_guid = 0;
 }
 
-int XBook::isIdentified()
+bool XBook::isIdentified()
 {
-    return book_descr[descr].identify;
+    return book_descr[descr].identified;
 }
 
-void XBook::Identify(int level)
+void XBook::Identify()
 {
-    book_descr[descr].identify = level;
+    book_descr[descr].identified = true;
 }
 
 int XBook::Compare(XObject * o)
@@ -192,7 +192,7 @@ int XBook::onRead(XCreature * reader)
             msgwin.Add(fmt::format("You read the {}.", toString()));
 
             if (!isIdentified()) {
-                Identify(1);
+                Identify();
                 msgwin.Add(fmt::format("It was {}.", toString()));
             }
         } else if (reader->isVisible()) {
@@ -202,7 +202,7 @@ int XBook::onRead(XCreature * reader)
                 toString()));
 
             if (!isIdentified()) {
-                Identify(1);
+                Identify();
                 msgwin.Add(fmt::format("It was {}.", toString()));
             }
         }

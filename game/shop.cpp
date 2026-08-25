@@ -139,7 +139,7 @@ int XShop::onCreatureEnter(XCreature * cr)
                 XItemList* ilist = location->map->GetItemList(i, j);
 
                 for (auto it: *ilist) {
-                    it->Identify(1);
+                    it->Identify();
                 }
             }
     }

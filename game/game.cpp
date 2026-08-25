@@ -215,7 +215,7 @@ void XGame::RunWithoutHero() const
 
                 for (const auto&[pI, val] : ia) {
                     if (pI->kind & (ItemKind::VALUEDICE | ItemKind::ARMOUR)) {
-                        pI->Identify(1);
+                        pI->Identify();
                         f << fmt::format("{:<70}{}\n", pI->toString(), val);
                     }
                 }

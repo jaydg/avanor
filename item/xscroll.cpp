@@ -34,7 +34,7 @@ struct ScrollDescription {
         real_name = rn;
         effect = eff;
         scroll_name = scrn;
-        identify = 0;
+        identified = false;
         value = val;
         total_value += rar;
         rarity = rar;
@@ -70,7 +70,7 @@ struct ScrollDescription {
 
     XEffect::Id effect;
     ScrollName scroll_name;
-    int identify;
+    bool identified;
     std::string name;
     std::string_view real_name;
     int value;
@@ -80,14 +80,14 @@ struct ScrollDescription {
     static int GetRandomDescription(ScrollName scrn);
 
     // real_name/value/rarity are compile-time constants; effect/
-    // scroll_name/identify/name are per-game-session mutable state (the
+    // scroll_name/identified/name are per-game-session mutable state (the
     // scroll<->effect scrambling, its randomly-generated flavor name,
     // and identification progress), same fields the legacy Store/
     // Restore already persisted.
     template<class Archive>
     void serialize(Archive& ar)
     {
-        ar(effect, scroll_name, identify, name);
+        ar(effect, scroll_name, identified, name);
     }
 };
 
@@ -153,14 +153,14 @@ XScroll::XScroll(ScrollName scrn)
     dice.Setup("1d1");
 }
 
-int XScroll::isIdentified()
+bool XScroll::isIdentified()
 {
-    return scroll_descr[descr].identify;
+    return scroll_descr[descr].identified;
 }
 
-void XScroll::Identify(int level)
+void XScroll::Identify()
 {
-    scroll_descr[descr].identify = level;
+    scroll_descr[descr].identified = true;
 }
 
 int XScroll::Compare(XObject * o)
@@ -269,7 +269,7 @@ int XScroll::onRead(XCreature * cr)
         }
     } else {
         if (!isIdentified() && cr->isHero()) {
-            Identify(1);
+            Identify();
             msgwin.Add(fmt::format("It was {}.", toString()));
         }
     }

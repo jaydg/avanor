@@ -123,7 +123,7 @@ struct PotionDescription {
     int alchemy_power;
     int value; // how much it cost for one potion_power //value * potion_power * [spell_cost]
     PotionColor force_color;
-    int identify;
+    bool identified;
 
     static PotionColor SelectColor(PotionColor pnc = PotionColor::RANDOM);
     static PotionName GetRandomPotion();
@@ -132,13 +132,13 @@ struct PotionDescription {
     static PotionDescription* GetRec(PotionName pn);
 
     // name/effect/rarity/alchemy_power/value are compile-time constants
-    // (see potion_descr[]'s static initializer) - only identify/
+    // (see potion_descr[]'s static initializer) - only identified/
     // force_color are per-game-session mutable state, same fields the
     // legacy Store/Restore already persisted.
     template<class Archive>
     void serialize(Archive& ar)
     {
-        ar(identify, force_color);
+        ar(identified, force_color);
     }
 };
 
@@ -162,8 +162,8 @@ class XPotion : public XItem
             return new XPotion(this);
         }
 
-        int isIdentified() override;
-        void Identify(int level) override;
+        bool isIdentified() override;
+        void Identify() override;
         std::string toString() override;
         int Compare(XObject * o) override;
         int GetValue() override

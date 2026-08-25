@@ -406,7 +406,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
                             pData->caller->name));
                     }
                 } else {
-                    it->Identify(1);
+                    it->Identify();
 
                     if (pData->caller->isVisible()) {
                         msgwin.Add(fmt::format(
@@ -424,12 +424,12 @@ int XEffect::Make(const EFFECT_DATA* pData)
 
         case XEffect::GREAT_IDENTIFY: {
             for (auto i : pData->target->contain) {
-                i->Identify(1);
+                i->Identify();
             }
 
             for (auto& bp: pData->target->components) {
                 if (bp->Item()) {
-                    bp->Item()->Identify(1);
+                    bp->Item()->Identify();
                 }
             }
 

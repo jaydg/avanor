@@ -39,7 +39,7 @@ struct PlantDefinition {
     HERB_TYPE herb_type;
     PotionName pn;
     int difficulty;
-    int identify;
+    bool identified;
     static void Create();
 
     // herbs[] is private to xherb.cpp.
@@ -82,8 +82,8 @@ class XHerb : public XAnyFood
 
         PotionName GetTargetPotion();
 
-        void Identify(int level) override;
-        int isIdentified() override;
+        void Identify() override;
+        bool isIdentified() override;
 
         std::string toString() override;
                         template<class Archive>

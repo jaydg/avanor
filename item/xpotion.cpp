@@ -148,39 +148,39 @@ PotionColor PotionDescription::SelectColor(PotionColor pnc)
 }
 
 PotionDescription potion_descr[] = {
-    {PotionName::WATER,	"water",	XEffect::NONE,	100,	1,	1,	PotionDescription::SelectColor(PotionColor::CLEAR),	0},
-    {PotionName::APPLEJUCE,	"apple juice",	XEffect::NONE,	95,	1,	2,	PotionDescription::SelectColor(PotionColor::YELLOW),	0},
-    {PotionName::ORANGEJUCE,	"orange juice",	XEffect::NONE,	95,	1,	3,	PotionDescription::SelectColor(PotionColor::ORANGE),	0},
-    {PotionName::HEALING,	"healing",	XEffect::HEAL,	10,	4,	200, PotionDescription::SelectColor(PotionColor::WHITE),	0},
-    {PotionName::CURE_LIGHT_WOUNDS,	"cure light wounds",	XEffect::CURE_LIGHT_WOUNDS,	80,	2,	15,	PotionDescription::SelectColor(),	0},
-    {PotionName::CURE_SERIOUS_WOUNDS, "cure serious wounds",	XEffect::CURE_SERIOUS_WOUNDS,	70,	2,	40,	PotionDescription::SelectColor(),	0},
-    {PotionName::CURE_CRITICAL_WOUNDS, "cure critical wounds", XEffect::CURE_CRITICAL_WOUNDS,	40,	3,	60,	PotionDescription::SelectColor(),	0},
-    {PotionName::CURE_MORTAL_WOUNDS,	"cure mortal wounds",	XEffect::CURE_MORTAL_WOUNDS,	20,	3,	100, PotionDescription::SelectColor(),	0},
-    {PotionName::POWER,	"power",	XEffect::POWER,	80,	2,	15,	PotionDescription::SelectColor(),	0},
-    {PotionName::RESTORATION,	"restoration",	XEffect::RESTORATION,	5,	5,	400, PotionDescription::SelectColor(),	0},
-    {PotionName::GAIN_STRENGTH,	"strength",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
-    {PotionName::GAIN_WILLPOWER,	"willpower",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
-    {PotionName::GAIN_MANA,	"mana",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
-    {PotionName::GAIN_TOUGHNESS,	"toughness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
-    {PotionName::GAIN_DEXTERITY,	"swiftness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	0},
-    {PotionName::POISON,	"poison",	XEffect::NONE,	150,	1,	5,	PotionDescription::SelectColor(),	0},
-    {PotionName::CURE_POISON,	"cure poison",	XEffect::CURE_POISON,	80,	3,	25, PotionDescription::SelectColor(),	0},
-    {PotionName::BLEEDNESS,	"bleeding",	XEffect::NONE,	300,	1,	1, PotionDescription::SelectColor(),	0},
-    {PotionName::DISEASE,	"disease",	XEffect::NONE,	200,	1,	1, PotionDescription::SelectColor(),	0},
-    {PotionName::CURE_DISEASE,	"cure disease",	XEffect::CURE_DISEASE,	50,	3,	50, PotionDescription::SelectColor(),	0},
-    {PotionName::HEROISM,	"heroism",	XEffect::HEROISM,	75,	2,	20, PotionDescription::SelectColor(),	0},
-    {PotionName::SEE_INVISIBLE,	"see invisible",	XEffect::SEE_INVISIBLE,	30,	3,	30,	PotionDescription::SelectColor(),	0},
-    {PotionName::WEAKNESS,	"weakness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	0},
-    {PotionName::CLUMSINESS,	"clumsiness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	0},
-    {PotionName::DEATH,	"death",	XEffect::NONE,	1,	2,	5,	PotionDescription::SelectColor(),	0},
-    {PotionName::SATIATION,	"satiation",	XEffect::NONE,	50,	2,	15,	PotionDescription::SelectColor(),	0},
-    {PotionName::STARVATION,	"starvation",	XEffect::NONE,	40,	3,	15,	PotionDescription::SelectColor(),	0},
-    {PotionName::BOOST_SPEED,	"boost speed",	XEffect::NONE,	30,	3,	100, PotionDescription::SelectColor(),	0},
-    {PotionName::SLOWNESS,	"slowness",	XEffect::NONE,	150,	1,	2,	PotionDescription::SelectColor(),	0},
-    {PotionName::ACID_RESISTANCE,	"acid resistance",	XEffect::ACID_RESISTANCE,	35,	3,	70,	PotionDescription::SelectColor(),	0},
-    {PotionName::FIRE_RESISTANCE,	"fire resistance",	XEffect::FIRE_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	0},
-    {PotionName::COLD_RESISTANCE,	"cold resistance",	XEffect::COLD_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	0},
-    {PotionName::POISON_RESISTANCE,	"poison resistance",	XEffect::POISON_RESISTANCE,	40,	3,	50,	PotionDescription::SelectColor(),	0},
+    {PotionName::WATER,	"water",	XEffect::NONE,	100,	1,	1,	PotionDescription::SelectColor(PotionColor::CLEAR),	false},
+    {PotionName::APPLEJUCE,	"apple juice",	XEffect::NONE,	95,	1,	2,	PotionDescription::SelectColor(PotionColor::YELLOW),	false},
+    {PotionName::ORANGEJUCE,	"orange juice",	XEffect::NONE,	95,	1,	3,	PotionDescription::SelectColor(PotionColor::ORANGE),	false},
+    {PotionName::HEALING,	"healing",	XEffect::HEAL,	10,	4,	200, PotionDescription::SelectColor(PotionColor::WHITE),	false},
+    {PotionName::CURE_LIGHT_WOUNDS,	"cure light wounds",	XEffect::CURE_LIGHT_WOUNDS,	80,	2,	15,	PotionDescription::SelectColor(),	false},
+    {PotionName::CURE_SERIOUS_WOUNDS, "cure serious wounds",	XEffect::CURE_SERIOUS_WOUNDS,	70,	2,	40,	PotionDescription::SelectColor(),	false},
+    {PotionName::CURE_CRITICAL_WOUNDS, "cure critical wounds", XEffect::CURE_CRITICAL_WOUNDS,	40,	3,	60,	PotionDescription::SelectColor(),	false},
+    {PotionName::CURE_MORTAL_WOUNDS,	"cure mortal wounds",	XEffect::CURE_MORTAL_WOUNDS,	20,	3,	100, PotionDescription::SelectColor(),	false},
+    {PotionName::POWER,	"power",	XEffect::POWER,	80,	2,	15,	PotionDescription::SelectColor(),	false},
+    {PotionName::RESTORATION,	"restoration",	XEffect::RESTORATION,	5,	5,	400, PotionDescription::SelectColor(),	false},
+    {PotionName::GAIN_STRENGTH,	"strength",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
+    {PotionName::GAIN_WILLPOWER,	"willpower",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
+    {PotionName::GAIN_MANA,	"mana",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
+    {PotionName::GAIN_TOUGHNESS,	"toughness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
+    {PotionName::GAIN_DEXTERITY,	"swiftness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
+    {PotionName::POISON,	"poison",	XEffect::NONE,	150,	1,	5,	PotionDescription::SelectColor(),	false},
+    {PotionName::CURE_POISON,	"cure poison",	XEffect::CURE_POISON,	80,	3,	25, PotionDescription::SelectColor(),	false},
+    {PotionName::BLEEDNESS,	"bleeding",	XEffect::NONE,	300,	1,	1, PotionDescription::SelectColor(),	false},
+    {PotionName::DISEASE,	"disease",	XEffect::NONE,	200,	1,	1, PotionDescription::SelectColor(),	false},
+    {PotionName::CURE_DISEASE,	"cure disease",	XEffect::CURE_DISEASE,	50,	3,	50, PotionDescription::SelectColor(),	false},
+    {PotionName::HEROISM,	"heroism",	XEffect::HEROISM,	75,	2,	20, PotionDescription::SelectColor(),	false},
+    {PotionName::SEE_INVISIBLE,	"see invisible",	XEffect::SEE_INVISIBLE,	30,	3,	30,	PotionDescription::SelectColor(),	false},
+    {PotionName::WEAKNESS,	"weakness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	false},
+    {PotionName::CLUMSINESS,	"clumsiness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	false},
+    {PotionName::DEATH,	"death",	XEffect::NONE,	1,	2,	5,	PotionDescription::SelectColor(),	false},
+    {PotionName::SATIATION,	"satiation",	XEffect::NONE,	50,	2,	15,	PotionDescription::SelectColor(),	false},
+    {PotionName::STARVATION,	"starvation",	XEffect::NONE,	40,	3,	15,	PotionDescription::SelectColor(),	false},
+    {PotionName::BOOST_SPEED,	"boost speed",	XEffect::NONE,	30,	3,	100, PotionDescription::SelectColor(),	false},
+    {PotionName::SLOWNESS,	"slowness",	XEffect::NONE,	150,	1,	2,	PotionDescription::SelectColor(),	false},
+    {PotionName::ACID_RESISTANCE,	"acid resistance",	XEffect::ACID_RESISTANCE,	35,	3,	70,	PotionDescription::SelectColor(),	false},
+    {PotionName::FIRE_RESISTANCE,	"fire resistance",	XEffect::FIRE_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	false},
+    {PotionName::COLD_RESISTANCE,	"cold resistance",	XEffect::COLD_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	false},
+    {PotionName::POISON_RESISTANCE,	"poison resistance",	XEffect::POISON_RESISTANCE,	40,	3,	50,	PotionDescription::SelectColor(),	false},
 };
 
 int PotionDescription::potion_total_value = 0;
@@ -291,14 +291,14 @@ std::string XPotion::toString()
     return fmt::format("heap of {} {} potions", quantity, pnc_table[static_cast<int>(pdescr->force_color)].name);
 }
 
-int XPotion::isIdentified()
+bool XPotion::isIdentified()
 {
-    return pdescr->identify;
+    return pdescr->identified;
 }
 
-void XPotion::Identify(int level)
+void XPotion::Identify()
 {
-    pdescr->identify = level;
+    pdescr->identified = true;
 }
 
 int XPotion::onDrink(XCreature * cr)
@@ -508,7 +508,7 @@ int XPotion::onDrink(XCreature * cr)
             msgwin.Add(fmt::format("Nothing special happens to {}.", cr->name));
         }
     } else if (!isIdentified() && cr->isHero()) {
-        Identify(1);
+        Identify();
         msgwin.Add(fmt::format("It was {}.", toString()));
     }
 

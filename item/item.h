@@ -93,19 +93,19 @@ class XItem : public XBaseObject
         int durability; // DUR_INFINITE - infinite, Other - finite 1Dur == 1000 turn
         int ModifyDur(int val);
 
-        int identify;    // 0 - not identifed, 1 - identifed
+        bool identified; // does the hero know what this item is?
         int is_selected; // it is need to user interface....
 
         // Answer "can these two items stack?"
         virtual int Compare(XObject * o);
-        virtual int isIdentified()
+        virtual bool isIdentified()
         {
-            return identify; // object can be indetifed or not
+            return identified;
         }
 
-        virtual void Identify(int level)
+        virtual void Identify()
         {
-            identify = level; //set object indetifed
+            identified = true;
         }
 
         int value;
@@ -133,7 +133,7 @@ class XItem : public XBaseObject
         {
             ar(cereal::base_class<XBaseObject>(this));
             ar(
-                owner, bp, it, wt, quality, durability, identify,
+                owner, bp, it, wt, quality, durability, identified,
                 is_selected, value, special_property, special_number,
                 aet, material_index, quantity, kind
             );

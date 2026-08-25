@@ -29,25 +29,25 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define HERBS_COUNT 18
 
 PlantDefinition herbs[] = {
-    {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"trifolium flower",	"trifolium",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"urtica leave",	"urtica",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"convallaria flower",	"convallaria",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"tussilago farfara leave",	"tussilago farfara",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"melissa leave",	"melissa",	"delicate",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"mentha leave",	"mentha",	"mint",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"taraxacum flower",	"taraxacum",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"paeonia root",	"paeonia",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"plantago leave",	"plantago",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
-    {"chamomilla flower",	"chamomilla",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, 0},
+    {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"trifolium flower",	"trifolium",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"urtica leave",	"urtica",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"convallaria flower",	"convallaria",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"tussilago farfara leave",	"tussilago farfara",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"melissa leave",	"melissa",	"delicate",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"mentha leave",	"mentha",	"mint",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"taraxacum flower",	"taraxacum",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"paeonia root",	"paeonia",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"plantago leave",	"plantago",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"chamomilla flower",	"chamomilla",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
 
-    {"red mushroom",	"red mushroom",	"bitter",	xRED,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, 0},
-    {"green mushroom",	"green mushroom",	"bitter",	xGREEN,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, 0},
-    {"blue mushroom",	"blue mushroom",	"bitter",	xBLUE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, 0},
-    {"yellow mushroom",	"yellow mushroom",	"bitter",	xYELLOW,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, 0},
-    {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, 0},
+    {"red mushroom",	"red mushroom",	"bitter",	xRED,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
+    {"green mushroom",	"green mushroom",	"bitter",	xGREEN,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
+    {"blue mushroom",	"blue mushroom",	"bitter",	xBLUE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
+    {"yellow mushroom",	"yellow mushroom",	"bitter",	xYELLOW,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
+    {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
 };
 
 void PlantDefinition::Create()
@@ -94,14 +94,14 @@ void PlantDefinition::Create()
 void PlantDefinition::SaveTable(cereal::JSONOutputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
-        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
+        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identified);
     }
 }
 
 void PlantDefinition::LoadTable(cereal::JSONInputArchive& ar)
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
-        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identify);
+        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identified);
     }
 }
 
@@ -142,7 +142,7 @@ std::string XHerb::postEat(XCreature *eater)
 
 std::string XHerb::toString()
 {
-    if (herbs[herb_index].identify) {
+    if (herbs[herb_index].identified) {
         name = herbs[herb_index].herb_name;
     } else {
         if (herbs[herb_index].herb_type == HT_HERB) {
@@ -155,14 +155,14 @@ std::string XHerb::toString()
     return XAnyFood::toString();
 }
 
-void XHerb::Identify(int level)
+void XHerb::Identify()
 {
-    herbs[herb_index].identify = 1;
+    herbs[herb_index].identified = true;
 }
 
-int XHerb::isIdentified()
+bool XHerb::isIdentified()
 {
-    return herbs[herb_index].identify;
+    return herbs[herb_index].identified;
 }
 
 ////////////////////////////////////////////////////////////
@@ -248,11 +248,11 @@ const std::string XHerbBush::GetName(XCreature *viewer)
             break;
     }
 
-    if (herb_data->difficulty > val && !herb_data->identify) {
+    if (herb_data->difficulty > val && !herb_data->identified) {
         return fmt::format("{} bush of unknown herbs", size_name);
     }
 
-    herb_data->identify = 1;
+    herb_data->identified = true;
 
     return fmt::format("{} bush of {}", size_name, herb_data->bush_name);
 }
@@ -382,6 +382,6 @@ XObject* XMushSpawn::Pick(XCreature * picker)
     // herb_index read below even when the cell was its last owner.
     Invalidate();
     XHerb * it = new XHerb(herb_index);
-    it->Identify(1);
+    it->Identify();
     return it;
 }

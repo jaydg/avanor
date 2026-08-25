@@ -34,14 +34,14 @@ class XRing : public XEnhance
 
         explicit XRing(XRing* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
 
-        int isIdentified() override;
-        void Identify(int level) override;
+        bool isIdentified() override;
+        void Identify() override;
         XItem* MakeCopy() override
         {
             return new XRing(this);
         }
 
-        // ridentify_db is private to xring.cpp.
+        // ridentified_db is private to xring.cpp.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);
 

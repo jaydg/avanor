@@ -1178,7 +1178,7 @@ void XHero::DrinkPotion()
 
     if (pot) {
         if (pot->onDrink(this)) {
-            pot->Identify(1);
+            pot->Identify();
         }
 
         pot->UnCarry();
