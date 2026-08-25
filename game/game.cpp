@@ -91,6 +91,8 @@ void XGame::Create(const char type_of_start) const
             vRefresh();
             vGetch();
 
+            [[fallthrough]];
+
         case 'N' :
             XAlchemy::Init();
             PlantDefinition::Create();
