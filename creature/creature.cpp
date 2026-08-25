@@ -1910,7 +1910,7 @@ int XCreature::GetCreatureStrength()
     return 20 + hit_dmg_bonus + dv_pv_bonus;
 }
 
-int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int max_range, XObject** back)
+int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int /*max_range*/, XObject** /*back*/)
 {
     switch (tr) {
         case TR_ATTACK_TARGET:

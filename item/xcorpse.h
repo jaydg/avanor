@@ -137,7 +137,7 @@ class XCorpse : public XAnyFood
     public:
 
         [[nodiscard]] std::string postEat(XCreature *eater) override;
-        int Compare(XObject * o) override
+        int Compare(XObject * /*o*/) override
         {
             return -1;
         }

@@ -232,7 +232,7 @@ class XGuiItem_Inventory final : public XGuiItem
             return 1;
         }
 
-        bool SetWidth(std::string::size_type new_width) override
+        bool SetWidth(std::string::size_type /*new_width*/) override
         {
             return true;
         }
@@ -242,7 +242,7 @@ class XGuiItem_Inventory final : public XGuiItem
             return 1;
         }
 
-        const char* operator[](const std::size_t index) override
+        const char* operator[](const std::size_t /*index*/) override
         {
             return str.c_str();
         }

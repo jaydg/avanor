@@ -204,7 +204,7 @@ RESULT XCorpse::onEat(XCreature * eater)
     return flag;
 }
 
-std::string XCorpse::postEat(XCreature *eater)
+std::string XCorpse::postEat(XCreature * /*eater*/)
 {
     return "tasty";
 }

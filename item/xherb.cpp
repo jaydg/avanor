@@ -135,7 +135,7 @@ PotionName XHerb::GetTargetPotion()
     return herbs[herb_index].pn;
 }
 
-std::string XHerb::postEat(XCreature *eater)
+std::string XHerb::postEat(XCreature * /*eater*/)
 {
     return herbs[herb_index].post_eat;
 }
@@ -349,7 +349,7 @@ XMushSpawn::XMushSpawn(int _x, int _y, XLocation * _l)
     assert(placed);
 }
 
-const std::string XMushSpawn::GetName(XCreature *viewer)
+const std::string XMushSpawn::GetName(XCreature * /*viewer*/)
 {
     PlantDefinition * herb_data = &Species();
     return herb_data->bush_name;

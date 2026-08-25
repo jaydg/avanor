@@ -55,12 +55,12 @@ class XAnyPlace : public XObject
         virtual int onCreatureMove(XCreature* cr);
         virtual int onCreatureEnter(XCreature* cr);
         virtual int onCreatureLeave(XCreature* cr);
-        virtual int onCreaturePickItem(XCreature* cr, XItem* item)
+        virtual int onCreaturePickItem(XCreature* /*cr*/, XItem* /*item*/)
         {
             return 1;
         }
 
-        virtual int onCreatureDropItem(XCreature* cr, XItem* item)
+        virtual int onCreatureDropItem(XCreature* /*cr*/, XItem* /*item*/)
         {
             return 1;
         }

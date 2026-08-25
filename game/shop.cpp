@@ -169,7 +169,7 @@ int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
     return 1;
 }
 
-int XShop::onCreatureMove(XCreature * cr)
+int XShop::onCreatureMove(XCreature * /*cr*/)
 {
     return 1;
 }

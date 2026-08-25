@@ -86,7 +86,7 @@ class XMapObject : public XObject
 
         virtual bool isVisible();
 
-        virtual int onOuterUse(XCreature * user)
+        virtual int onOuterUse(XCreature * /*user*/)
         {
             return 0;
         }
@@ -102,7 +102,7 @@ class XMapObject : public XObject
             color = c;
         }
 
-        virtual const std::string GetName(XCreature *viewer)
+        virtual const std::string GetName(XCreature * /*viewer*/)
         {
             return name;
         }
@@ -117,7 +117,7 @@ class XMapObject : public XObject
         int Distance(const XMapObject* other) const;
 
         // Some objects (e.g. herbs) can be picked up.
-        virtual XObject* Pick(XCreature * picker)
+        virtual XObject* Pick(XCreature * /*picker*/)
         {
             return nullptr;
         }

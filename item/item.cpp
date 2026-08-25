@@ -648,12 +648,12 @@ int XItem::onPickUp(XCreature * cr)
     return 1;
 }
 
-int XItem::onPutOn(XCreature * cr)
+int XItem::onPutOn(XCreature * /*cr*/)
 {
     return 1;
 }
 
-int XItem::onHit(XCreature * user, XCreature * target)
+int XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
 {
     if ((ienh_db[special_number].brt & AttackEffectType::FIRE) != AttackEffectType::NONE) {
         //	user->MagicAttack(target, dice.Throw(), XResistance::FIRE);
@@ -685,7 +685,7 @@ bool XItem::SetOwner(XCreature * new_owner)
     return true;
 }
 
-void XItem::Pickup(XCreature * picker)
+void XItem::Pickup(XCreature * /*picker*/)
 {
     assert(0);
 }

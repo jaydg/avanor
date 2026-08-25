@@ -214,7 +214,7 @@ REGISTER_CLASS(XEyeOfRaa);
 CEREAL_REGISTER_TYPE(XEyeOfRaa);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XEyeOfRaa);
 
-RESULT XEyeOfRaa::onUse(ItemUsageState uis, XCreature* cr)
+RESULT XEyeOfRaa::onUse(ItemUsageState /*uis*/, XCreature* cr)
 {
     if (cr->isHero()) {
         XEffect::Make(cr, XEffect::LIGHTNING_BOLT, 30);
@@ -241,7 +241,7 @@ int RootsFiltr(XItem * item)
     }
 }
 
-RESULT XAlchemySet::onUse(ItemUsageState uis, XCreature * cr)
+RESULT XAlchemySet::onUse(ItemUsageState /*uis*/, XCreature * cr)
 {
     std::shared_ptr<XItem> herb_sp = cr->SelectItem(RootsFiltr);
     XHerb * herb = (XHerb*)herb_sp.get();

@@ -129,7 +129,7 @@ class XChest : public XItem
         // Chests are not copyable
         XChest(XChest*) = delete;
 
-        int Compare(XObject * o) override
+        int Compare(XObject * /*o*/) override
         {
             return -1;
         }

@@ -43,7 +43,7 @@ class XGuiItem
 
         virtual int isSelectable() = 0;
 
-        virtual bool SetWidth(std::string::size_type new_width)
+        virtual bool SetWidth(std::string::size_type /*new_width*/)
         {
             return false;
         }
@@ -53,7 +53,7 @@ class XGuiItem
             return 0;
         }
 
-        virtual const char* operator[](std::size_t index)
+        virtual const char* operator[](std::size_t /*index*/)
         {
             return nullptr;
         }
@@ -73,7 +73,7 @@ class XGuiItem_SimpleSelect final : public XGuiItem
             return 1;
         }
 
-        bool SetWidth(std::string::size_type new_width) override
+        bool SetWidth(std::string::size_type /*new_width*/) override
         {
             return true;
         }
@@ -83,7 +83,7 @@ class XGuiItem_SimpleSelect final : public XGuiItem
             return 1;
         }
 
-        const char* operator[](std::size_t index) override
+        const char* operator[](std::size_t /*index*/) override
         {
             return str.c_str();
         }

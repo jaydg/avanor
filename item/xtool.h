@@ -37,7 +37,7 @@ class XTool : public XItem {
             FINISH,
         };
 
-        virtual RESULT onUse(ItemUsageState uis, XCreature* cr)
+        virtual RESULT onUse(ItemUsageState /*uis*/, XCreature* /*cr*/)
         {
             return FAIL;
         }

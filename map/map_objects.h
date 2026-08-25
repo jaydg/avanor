@@ -160,7 +160,7 @@ class XStairWay final : public XMapObject
             ar(ln, dest_x, dest_y);
         }
 
-        const std::string GetName(XCreature *viewer) override
+        const std::string GetName(XCreature * /*viewer*/) override
         {
             return "a stairway";
         }
@@ -195,7 +195,7 @@ class XTeleport final : public XMapObject
             ar(ln, dest_x, dest_y);
         }
 
-        const std::string GetName(XCreature *viewer) override
+        const std::string GetName(XCreature * /*viewer*/) override
         {
             return "a magic circle";
         }
@@ -224,7 +224,7 @@ class XDoor final : public XMapObject
             ar(isOpened);
         }
 
-        const std::string GetName(XCreature *viewer) override
+        const std::string GetName(XCreature * /*viewer*/) override
         {
             return "a door";
         }
@@ -263,7 +263,7 @@ class XAltar final : public XMapObject
             ar(cereal::base_class<XMapObject>(this));
         }
 
-        const std::string GetName(XCreature *viewer) override
+        const std::string GetName(XCreature * /*viewer*/) override
         {
             return color == xWHITE ? "an altar of white granite" : "an altar of black granite";
         }

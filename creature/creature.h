@@ -416,7 +416,7 @@ class XCreature : public XBaseObject
             return nullptr;
         }
 
-        virtual std::shared_ptr<XItem> SelectItem(XItemFilter* filtr, bool isGetAll = false)
+        virtual std::shared_ptr<XItem> SelectItem(XItemFilter* /*filtr*/, bool /*isGetAll*/ = false)
         {
             return nullptr;
         }
