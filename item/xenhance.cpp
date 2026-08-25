@@ -81,7 +81,6 @@ struct ENH_REC {
     const char* s;      // stats
     int value;
     ENH_COLOR color;
-    int identify;
     static ENH_COLOR SelectColor(ENH_COLOR ec);
 } enh_db[] = {
     {
@@ -90,7 +89,7 @@ struct ENH_REC {
         "", "", "", "",
         "",
         "",
-        150, ENH_REC::SelectColor(EC_RANDOM), 0
+        150, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::DAMAGE, "of damage",
@@ -98,7 +97,7 @@ struct ENH_REC {
         "", "", "1d6-2", "",
         "",
         "",
-        150, ENH_REC::SelectColor(EC_RANDOM), 0
+        150, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::SLAYING, "of slaying",
@@ -106,7 +105,7 @@ struct ENH_REC {
         "1d6-2", "", "1d6-2", "",
         "",
         "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
+        300, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::FREEACTION, "of free action",
@@ -114,7 +113,7 @@ struct ENH_REC {
         "", "", "", "",
         "stun:8d5+50 confuse:8d5+50",
         "",
-        200, ENH_REC::SelectColor(EC_RANDOM), 0
+        200, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::INVISIBILITY, "of invisibility",
@@ -122,7 +121,7 @@ struct ENH_REC {
         "", "", "", "",
         "invisible:0d0+10",
         "",
-        500, ENH_REC::SelectColor(EC_RANDOM), 0
+        500, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::SEEINVISIBLE, "of see invisible",
@@ -130,7 +129,7 @@ struct ENH_REC {
         "", "", "", "",
         "see_invisible:0d0+10",
         "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
+        300, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::FIRERESIST, "of fire resistance",
@@ -138,7 +137,7 @@ struct ENH_REC {
         "", "", "", "",
         "fire:8d5+30",
         "",
-        250, ENH_REC::SelectColor(EC_RANDOM), 0
+        250, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::ACIDRESIST, "of acid resistance",
@@ -146,7 +145,7 @@ struct ENH_REC {
         "", "", "", "",
         "fire:8d5+25",
         "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
+        300, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::POISONRESIST, "of poison resistance",
@@ -154,7 +153,7 @@ struct ENH_REC {
         "", "", "", "",
         "fire:8d5+25",
         "",
-        300, ENH_REC::SelectColor(EC_RANDOM), 0
+        300, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::STRENGTH, "of Strength",
@@ -162,7 +161,7 @@ struct ENH_REC {
         "", "", "", "",
         "",
         "St:1d4",
-        400, ENH_REC::SelectColor(EC_RANDOM), 0
+        400, ENH_REC::SelectColor(EC_RANDOM)
     },
     {
         XEnhance::POWER, "of Power",
@@ -170,7 +169,7 @@ struct ENH_REC {
         "", "", "", "",
         "",
         "Wi:1d4",
-        400, ENH_REC::SelectColor(EC_RANDOM), 0
+        400, ENH_REC::SelectColor(EC_RANDOM)
     }
 };
 
