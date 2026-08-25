@@ -223,8 +223,11 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
 
     float mx = (float)mfd->sx;
     float my = (float)mfd->sy;
-    int epx;
-    int epy;
+
+    // Where the missile ends up. A missile with no range to fly never
+    // enters the loop below, and then it stops where it was launched.
+    int epx = mfd->sx;
+    int epy = mfd->sy;
     int fl_range = 0;
 
     bool self_flag = false;

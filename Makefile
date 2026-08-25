@@ -27,7 +27,7 @@ endif
 CX = g++
 CC = gcc
 LD = g++
-CFLAGS = -std=c++17 -fsigned-char -pipe
+CFLAGS = -std=c++17 -fsigned-char -pipe -Wall
 
 ifdef xmingw
     CX = i386-mingw32msvc-g++

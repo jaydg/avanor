@@ -526,31 +526,6 @@ void XCreature::Move()
 
 //////////////////////////////////////////////////////////////////////////////
 
-struct opaque_info {
-    XCreature* mover;
-    XMap* map;
-};
-
-static int is_grid_viewable(void* opaque, const int x, const int y)
-{
-    const auto info = static_cast<opaque_info *>(opaque);
-
-    if (x < 0 || x >= info->map->len) return false;
-    if (y < 0 || y >= info->map->hgt) return false;
-
-    XCreature* tcr = info->mover->l->map->GetMonster(x, y);
-
-    if (tcr
-        && tcr != info->mover
-        && info->mover->isCreatureVisible(tcr)
-        && tcr->xai->isEnemy(info->mover))
-    {
-        info->mover->isDisturb = 0;
-    }
-
-    return (info->mover->l->map->GetVisibility(x, y) != 0);
-}
-
 // The creature's own view of its location: what it can see stops at
 // anything the map says light does not pass, and everything seen is
 // marked on the map so the screen can draw it lit.
