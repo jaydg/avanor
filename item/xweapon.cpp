@@ -223,7 +223,7 @@ std::string XWeapon::toString()
     return fullname;
 }
 
-std::string XWeapon::GetTemplate(AttackEffectType mask, int isRight)
+std::string XWeapon::GetTemplate(AttackEffectType mask)
 {
     std::string brand_templ;
 
