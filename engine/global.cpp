@@ -392,13 +392,13 @@ int vGetch()
                 break;
         }
 
-        // A terminal that reports modifiers separately hands us the plain
-        // letter plus a ctrl flag; the game expects the control code.
-        if (ni.ctrl && key >= 'a' && key <= 'z') {
+        const bool ctrl_held = ncinput_ctrl_p(&ni);
+
+        if (ctrl_held && key >= 'a' && key <= 'z') {
             return static_cast<int>(key - 'a' + 1);
         }
 
-        if (ni.ctrl && key >= 'A' && key <= 'Z') {
+        if (ctrl_held && key >= 'A' && key <= 'Z') {
             return static_cast<int>(key - 'A' + 1);
         }
 
