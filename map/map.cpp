@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/creature.h"
+#include "game/game.h"
 #include "item/item.h"
 #include "map/map.h"
 #include "map/map_objects.h"
@@ -568,21 +569,31 @@ void XMap::Put(XCreature * cr) const
                 continue;
             }
 
-            if (tmap->visible) {
+            // God mode's reveal lights the whole level,
+            // but only the hero's own sight is remembered
+            const bool lit = tmap->visible || XGame::isMapRevealed;
+
+            if (lit) {
                 auto* trap = dynamic_cast<XTrap *>(tmap->pSpecialObject.get());
 
                 // Everything standing here is drawn, except a trap the
                 // hero has not found yet.
                 if (tmap->pSpecialObject && (!trap || trap->isDiscovered())) {
                     vPutCh(j + SCR_X, i + SCR_Y, tmap->pSpecialObject->view, tmap->pSpecialObject->color);
-                    tmap->color = tmap->pSpecialObject->color;
-                    tmap->known = tmap->pSpecialObject->view;
+
+                    if (tmap->visible) {
+                        tmap->color = tmap->pSpecialObject->color;
+                        tmap->known = tmap->pSpecialObject->view;
+                    }
                 } else if (!tmap->item_list.empty()) {
                     const XItem* item = tmap->item_list.begin()->get();
 
                     vPutCh(j + SCR_X, i + SCR_Y, item->view, item->color);
-                    tmap->color = item->color;
-                    tmap->known = item->view;
+
+                    if (tmap->visible) {
+                        tmap->color = item->color;
+                        tmap->known = item->view;
+                    }
                 } else {
                     //int tn = (i + wy) * len + j + wx;
                     int n = tmap->n;
@@ -599,7 +610,7 @@ void XMap::Put(XCreature * cr) const
 
             // Remembered, not seen: the same glyph and colour, dimmed,
             // so the hero's field of view reads at a glance.
-            if (tmap->known && !tmap->visible) {
+            if (tmap->known && !lit) {
                 vPutCh(j + SCR_X, i + SCR_Y, tmap->known, DimRGB(tmap->color, RememberedBrightness()));
             }
         }

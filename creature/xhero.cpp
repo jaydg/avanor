@@ -411,6 +411,14 @@ void XHero::NewMove()
                     moved = 0;
                     break;
 
+                case KEY_CTRL_F:
+                    if (XGame::isGodMode) {
+                        XGame::isMapRevealed = !XGame::isMapRevealed;
+                    }
+
+                    moved = 0;
+                    break;
+
                 case KEY_CTRL_T:
                     ActivateTrap();
                     break;

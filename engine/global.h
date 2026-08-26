@@ -320,6 +320,7 @@ struct V_BUFFER {
 #define KEY_DEL           127
 
 #define KEY_CTRL_Z		  26
+#define KEY_CTRL_F		  6
 #define KEY_CTRL_T		  20
 #define KEY_CTRL_O		  15
 #define KEY_CTRL_D		  4

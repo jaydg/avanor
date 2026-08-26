@@ -39,6 +39,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 bool XGame::isGodMode = false;
+bool XGame::isMapRevealed = false;
 XGUID XGame::hero_guid = 0;
 int XGame::current_location = 0;
 std::string XGame::start_location;

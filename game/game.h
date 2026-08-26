@@ -70,6 +70,9 @@ class XGame
         static int current_location;
         static XGUID hero_guid;
         static bool isGodMode;
+
+        // God mode's map reveal
+        static bool isMapRevealed;
 };
 
 extern XGame Game;
