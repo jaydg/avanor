@@ -419,6 +419,14 @@ void XHero::NewMove()
                     moved = 0;
                     break;
 
+                case KEY_CTRL_W:
+                    if (XGame::isGodMode) {
+                        GodJump();
+                    }
+
+                    moved = 0;
+                    break;
+
                 case KEY_CTRL_T:
                     ActivateTrap();
                     break;
@@ -1761,9 +1769,18 @@ int XHero::SelectPosition(XPoint * pt, int flag)
 
     msgwin.ClrMsg();
     vGotoXY(0, 0);
-    vPutS("press [<KEY>1<TEXT>..<KEY>9"
-        "<TEXT>] - for move cursor, ["
-        "<KEY>z<TEXT>, <KEY>esc<TEXT>] - for exit");
+
+    if (flag) {
+        vPutS("press [<KEY>1<TEXT>..<KEY>9"
+            "<TEXT>] - for move cursor, ["
+            "<KEY>z<TEXT>, <KEY>esc<TEXT>] - for exit");
+    } else {
+        // Without the description line, space is what picks the spot
+        // rather than what asks about it - so say so.
+        vPutS("press [<KEY>1<TEXT>..<KEY>9"
+            "<TEXT>] - for move cursor, [<KEY>space<TEXT>] - to choose, ["
+            "<KEY>z<TEXT>, <KEY>esc<TEXT>] - for exit");
+    }
 
     while (1) {
         l->map->Center(tx, ty);
@@ -2660,6 +2677,34 @@ int XHero::UseOuterObject()
     msgwin.Add("Nothing to use.");
 
     return 0;
+}
+
+// God mode's step-anywhere. The cursor is not held to what the hero can see:
+// SelectPosition() scrolls the level along under it, so the far corner of a
+// large map is as easy to reach as the next room. Costs no time.
+void XHero::GodJump()
+{
+    XPoint pt;
+    const int chosen = SelectPosition(&pt, 0);
+
+    // SelectPosition() leaves its own instructions across the two message
+    // rows; anything said here would be written over the top of them.
+    msgwin.ClrMsg();
+
+    if (chosen) {
+        // FirstStep() insists on an empty cell, and there is no sensible
+        // way to stand inside rock or on top of somebody in any case.
+        if (l->map->XGetMovability(pt.x, pt.y) == 0) {
+            LastStep();
+            FirstStep(pt.x, pt.y, l);
+        } else {
+            msgwin.Add("There is no room for you there.");
+        }
+    }
+
+    // However the choice ended, and wherever the cursor wandered off to
+    // on the way, the view comes back to the hero.
+    l->map->ForceRecenter(x, y);
 }
 
 void XHero::ActivateTrap()

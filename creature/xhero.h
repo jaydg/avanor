@@ -139,6 +139,7 @@ class XHero final : public XCreature
         std::shared_ptr<XItem> onIdentifyItem() override;
         void ShowResistance(std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt);
 
+        void GodJump();
         void ActivateTrap();
         void GiveItem();
         void ChatWithMonster();
