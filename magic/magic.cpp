@@ -72,6 +72,12 @@ struct SPELL_REC {
     School school;
     int cost;
     std::string name;
+
+    // What this spell is good for - see XSpell::Use. Defaults to OTHER,
+    // so a spell added below is inert to the AI until it is said to be
+    // an attack or a heal, rather than silently miscategorised.
+    XSpell::Use use = XSpell::Use::OTHER;
+
     SPELL_REC();
 };
 
@@ -83,26 +89,31 @@ SPELL_REC::SPELL_REC()
     spell_db[SPELL_CURE_LIGHT_WOUNDS].school	= School::BODY;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].cost	= 5;
     spell_db[SPELL_CURE_LIGHT_WOUNDS].name	= "cure light wounds";
+    spell_db[SPELL_CURE_LIGHT_WOUNDS].use	= XSpell::Use::HEALING;
 
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].effect	= XEffect::CURE_SERIOUS_WOUNDS;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].school	= School::BODY;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].cost	= 10;
     spell_db[SPELL_CURE_SERIOUS_WOUNDS].name	= "cure serious wounds";
+    spell_db[SPELL_CURE_SERIOUS_WOUNDS].use	= XSpell::Use::HEALING;
 
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].effect = XEffect::CURE_CRITICAL_WOUNDS;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].school = School::BODY;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].cost	= 15;
     spell_db[SPELL_CURE_CRITICAL_WOUNDS].name	= "cure critical wounds";
+    spell_db[SPELL_CURE_CRITICAL_WOUNDS].use	= XSpell::Use::HEALING;
 
     spell_db[SPELL_CURE_MORTAL_WOUNDS].effect	= XEffect::CURE_MORTAL_WOUNDS;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].school	= School::BODY;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].cost	= 20;
     spell_db[SPELL_CURE_MORTAL_WOUNDS].name	= "cure mortal wounds";
+    spell_db[SPELL_CURE_MORTAL_WOUNDS].use	= XSpell::Use::HEALING;
 
     spell_db[SPELL_HEAL].effect	= XEffect::HEAL;
     spell_db[SPELL_HEAL].school	= School::BODY;
     spell_db[SPELL_HEAL].cost	= 30;
     spell_db[SPELL_HEAL].name	= "heal";
+    spell_db[SPELL_HEAL].use	= XSpell::Use::HEALING;
 
     spell_db[SPELL_HEROISM].effect	= XEffect::HEROISM;
     spell_db[SPELL_HEROISM].school	= School::BODY;
@@ -123,41 +134,49 @@ SPELL_REC::SPELL_REC()
     spell_db[SPELL_BURNING_HANDS].school	= School::ELEMENTAL;
     spell_db[SPELL_BURNING_HANDS].cost	= 7;
     spell_db[SPELL_BURNING_HANDS].name	= "burning hands";
+    spell_db[SPELL_BURNING_HANDS].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_ICE_TOUCH].effect	= XEffect::ICE_TOUCH;
     spell_db[SPELL_ICE_TOUCH].school	= School::ELEMENTAL;
     spell_db[SPELL_ICE_TOUCH].cost	= 7;
     spell_db[SPELL_ICE_TOUCH].name	= "ice touch";
+    spell_db[SPELL_ICE_TOUCH].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_MAGIC_ARROW].effect	= XEffect::MAGIC_ARROW;
     spell_db[SPELL_MAGIC_ARROW].school	= School::ELEMENTAL;
     spell_db[SPELL_MAGIC_ARROW].cost	= 5;
     spell_db[SPELL_MAGIC_ARROW].name	= "magic arrow";
+    spell_db[SPELL_MAGIC_ARROW].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_FIRE_BOLT].effect	= XEffect::FIRE_BOLT;
     spell_db[SPELL_FIRE_BOLT].school	= School::ELEMENTAL;
     spell_db[SPELL_FIRE_BOLT].cost	= 12;
     spell_db[SPELL_FIRE_BOLT].name	= "fire bolt";
+    spell_db[SPELL_FIRE_BOLT].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_ICE_BOLT].effect	= XEffect::ICE_BOLT;
     spell_db[SPELL_ICE_BOLT].school	= School::ELEMENTAL;
     spell_db[SPELL_ICE_BOLT].cost	= 12;
     spell_db[SPELL_ICE_BOLT].name	= "ice bolt";
+    spell_db[SPELL_ICE_BOLT].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_LIGHTNING_BOLT].effect	= XEffect::LIGHTNING_BOLT;
     spell_db[SPELL_LIGHTNING_BOLT].school	= School::ELEMENTAL;
     spell_db[SPELL_LIGHTNING_BOLT].cost	= 18;
     spell_db[SPELL_LIGHTNING_BOLT].name	= "lightning bolt";
+    spell_db[SPELL_LIGHTNING_BOLT].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_DRAIN_LIFE].effect	= XEffect::DRAIN_LIFE;
     spell_db[SPELL_DRAIN_LIFE].school	= School::DEATH;
     spell_db[SPELL_DRAIN_LIFE].cost	= 7;
     spell_db[SPELL_DRAIN_LIFE].name	= "drain life";
+    spell_db[SPELL_DRAIN_LIFE].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_ACID_BOLT].effect	= XEffect::ACID_BOLT;
     spell_db[SPELL_ACID_BOLT].school	= School::DEATH;
     spell_db[SPELL_ACID_BOLT].cost	= 25;
     spell_db[SPELL_ACID_BOLT].name	= "acid bolt";
+    spell_db[SPELL_ACID_BOLT].use	= XSpell::Use::ATTACK;
 
     spell_db[SPELL_IDENTIFY].effect	= XEffect::IDENTIFY;
     spell_db[SPELL_IDENTIFY].school	= School::SURVIVING;
@@ -243,6 +262,35 @@ int XSpell::GetManaCost() const
 XMagic::School XSpell::GetSchool() const
 {
     return spell_db[spell_name].school;
+}
+
+XSpell::Use XSpell::GetUse() const
+{
+    return spell_db[spell_name].use;
+}
+
+bool XSpell::CanReach(const int distance, const int power) const
+{
+    const XEffect::Id effect = GetEffect();
+
+    switch (XEffect::GetReq(effect)) {
+        // A bolt flies as far as the spell carries it.
+        case ER_TARGET:
+            return distance <= XEffect::GetRange(effect, power);
+
+        // Touch spells land on the square the caster faces, and
+        // XEffect::Make() builds that square by adding one step to the
+        // caster's own position - so the target has to be standing in
+        // it. Diagonals count: a step is a step.
+        case ER_DIRECTION:
+            return distance <= 1;
+
+        // Anything else does not take aim at all, so there is no
+        // distance at which a creature could sensibly throw it at
+        // somebody.
+        default:
+            return false;
+    }
 }
 
 std::string XSpell::toString() const

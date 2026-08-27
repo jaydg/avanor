@@ -153,10 +153,32 @@ class XSpell
 
         explicit XSpell(SPELL_NAME spn);
 
+        // What a caster reaches for a spell FOR. The AI picks by this
+        // rather than by naming spells one at a time, so a spell added
+        // to the table is one every caster can already use - and a spell
+        // left out of the table's attack column is one no AI will waste
+        // a turn on. HEALING means "restores hit points"; a remedy like
+        // cure poison is OTHER, since it does nothing for a creature
+        // that is merely hurt.
+        enum class Use {
+            OTHER,
+            ATTACK,
+            HEALING,
+        };
+
         [[nodiscard]] SPELL_NAME GetSpellName() const
         {
             return spell_name;
         }
+
+        [[nodiscard]] Use GetUse() const;
+
+        // Whether this caster could actually land the spell on a target
+        // that far away right now. A bolt carries as far as its range
+        // allows; a touch spell reaches the next square and no further.
+        // Asking first is what keeps a creature from announcing a spell
+        // every turn and standing still while it fizzles.
+        [[nodiscard]] bool CanReach(int distance, int power) const;
 
         [[nodiscard]] XEffect::Id GetEffect() const;
 

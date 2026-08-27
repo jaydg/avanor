@@ -1925,11 +1925,27 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int /*max_range*/, XObje
     switch (tr) {
         case TR_ATTACK_TARGET:
             return xai->GetTargetPos(pt);
-            break;
 
-        // Every other reason asks the player something - a direction, a
-        // quantity, an item - and only XHero, which overrides this, can
-        // ask. A creature answers nothing.
+        case TR_ATTACK_DIRECTION: {
+            // A touch spell wants a step rather than a place:
+            // XEffect::Make() adds what comes back here to the caster's
+            // own position. The hero is asked which way; a creature
+            // answers with the way to whatever it is fighting.
+            XPoint target;
+
+            if (!xai->GetTargetPos(&target)) {
+                return 0;
+            }
+
+            pt->x = (target.x > x) - (target.x < x);
+            pt->y = (target.y > y) - (target.y < y);
+
+            return 1;
+        }
+
+        // Every other reason asks the player something - a quantity, an
+        // item - and only XHero, which overrides this, can ask. A
+        // creature answers nothing.
         default:
             break;
     }
