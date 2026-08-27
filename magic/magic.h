@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <vector>
 
+#include <sol/forward.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
 
@@ -138,6 +139,9 @@ class XMagic
             ar(magic_level, magic_count, spells);
         }
 };
+
+// Binds the Spell table the world scripts name their spells through.
+void RegisterSpellNameEnum(sol::state_view& lua);
 
 class XSpell
 {

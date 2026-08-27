@@ -25,7 +25,7 @@ Monster.new("magnush")
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 6, 20)
 	:Equip(ItemKind.WEAPON, ItemType.DAGGER, 100)
 	:CorpseEffect(CorpseEffectType.DISEASE, 30)
-	:LearnSpell(SPELL_CURE_SERIOUS_WOUNDS)
+	:LearnSpell(Spell.CURE_SERIOUS_WOUNDS)
 	:Unique()
 	:Register()
 

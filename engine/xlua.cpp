@@ -131,6 +131,7 @@ void XLua::Init()
     RegisterItemDefEnums(lua);
     XPotion::RegisterLua(lua);
     RegisterCorpseEffectEnum(lua);
+    RegisterSpellNameEnum(lua);
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
@@ -153,7 +154,7 @@ void XLua::Init()
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "Gender", "ItemKind", "ItemType", "LuaEvent",
-            "Movability", "PersonType", "PotionName", "ScriptCommand", "ShopDoor",
+            "Movability", "PersonType", "PotionName", "ScriptCommand", "ShopDoor", "Spell",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation", "XQuest",
             "XResistance", "XSkill", "XStairWay", "XStandardAI", "XStats",
             "XTileType", "XWarSkills"

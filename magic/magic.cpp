@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 #include <cereal/archives/json.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
@@ -30,6 +31,41 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // The school table below names one of these on almost every line.
 using School = XMagic::School;
+
+void RegisterSpellNameEnum(sol::state_view& lua)
+{
+    // The names a creature definition uses for the spells it knows.
+    // SPELL_EOF is the end marker of the enum, not a spell, so it is
+    // deliberately absent - a script asking for Spell.EOF should fail.
+    lua.new_enum("Spell",
+        "CURE_LIGHT_WOUNDS", SPELL_CURE_LIGHT_WOUNDS,
+        "CURE_SERIOUS_WOUNDS", SPELL_CURE_SERIOUS_WOUNDS,
+        "CURE_CRITICAL_WOUNDS", SPELL_CURE_CRITICAL_WOUNDS,
+        "CURE_MORTAL_WOUNDS", SPELL_CURE_MORTAL_WOUNDS,
+        "HEAL", SPELL_HEAL,
+        "BURNING_HANDS", SPELL_BURNING_HANDS,
+        "ICE_TOUCH", SPELL_ICE_TOUCH,
+        "HEROISM", SPELL_HEROISM,
+        "DRAIN_LIFE", SPELL_DRAIN_LIFE,
+        "IDENTIFY", SPELL_IDENTIFY,
+        "MAGIC_ARROW", SPELL_MAGIC_ARROW,
+        "FIRE_BOLT", SPELL_FIRE_BOLT,
+        "ICE_BOLT", SPELL_ICE_BOLT,
+        "LIGHTNING_BOLT", SPELL_LIGHTNING_BOLT,
+        "ACID_BOLT", SPELL_ACID_BOLT,
+        "SUMMON_MONSTER", SPELL_SUMMON_MONSTER,
+        "CREATE_ITEM", SPELL_CREATE_ITEM,
+        "CURE_POISON", SPELL_CURE_POISON,
+        "CURE_DISEASE", SPELL_CURE_DISEASE,
+        "BLINK", SPELL_BLINK,
+        "SELF_KNOWLEDGE", SPELL_SELF_KNOWLEDGE,
+        "SEE_INVISIBLE", SPELL_SEE_INVISIBLE,
+        "ACID_RESISTANCE", SPELL_ACID_RESISTANCE,
+        "FIRE_RESISTANCE", SPELL_FIRE_RESISTANCE,
+        "COLD_RESISTANCE", SPELL_COLD_RESISTANCE,
+        "POISON_RESISTANCE", SPELL_POISON_RESISTANCE
+    );
+}
 
 struct SPELL_REC {
     XEffect::Id effect;
