@@ -26,8 +26,21 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 void XWarSkills::RegisterLua(sol::state_view& lua)
 {
+    // Every weapon class a script can name
     lua.new_enum("XWarSkills",
-        "SWORD", XWarSkills::SWORD
+        "UNARMED", XWarSkills::UNARMED,
+        "DAGGER", XWarSkills::DAGGER,
+        "SWORD", XWarSkills::SWORD,
+        "CLUB", XWarSkills::CLUB,
+        "MACE", XWarSkills::MACE,
+        "POLEARM", XWarSkills::POLEARM,
+        "AXE", XWarSkills::AXE,
+        "STAVE", XWarSkills::STAVE,
+        "SHIELD", XWarSkills::SHIELD,
+        "BOW", XWarSkills::BOW,
+        "CROSSBOW", XWarSkills::CROSSBOW,
+        "SLING", XWarSkills::SLING,
+        "THROW", XWarSkills::THROW
     );
 }
 

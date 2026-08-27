@@ -53,10 +53,9 @@ class XWarSkills
             OTHER
         };
 
-        // Registers this enum as the Lua table XWarSkills.MEMBER.
-        // Only the members actually referenced from Lua today are
-        // registered (just SWORD), matching the old LUA_REG_ALTNAME
-        // scope exactly.
+        // Registers this enum as the Lua table XWarSkills.MEMBER - the
+        // thirteen real weapon classes, but none of the three sentinels
+        // above. See the comment on the definition.
         static void RegisterLua(sol::state_view& lua);
 
         XWarSkills();
