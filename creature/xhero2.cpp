@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <vector>
 #include "creature/xhero.h"
 #include "item/itemf.h"
 #include "item/xtool.h"
@@ -138,43 +139,64 @@ CUSTOM_GEND cust_gender[] = {
     },
 };
 
+namespace {
+
+// Draws a lettered menu and waits for one of its letters to be pressed.
+//
+// The menu is drawn inside the loop rather than before it, so that a
+// terminal which changes shape while somebody is choosing gets the menu
+// laid out again for the size it now is. Everything else on screen is
+// redrawn from scratch each time round, which costs nothing here and
+// means the resize needs no special case beyond falling through to the
+// next turn of the loop.
+int ChooseFromMenu(const char* title, const std::vector<const char*>& names)
+{
+    while (true) {
+        vClrScr();
+        vGotoXY(7, 4);
+        vPutS(title);
+
+        for (std::size_t i = 0; i < names.size(); i++) {
+            vGotoXY(7, 6 + static_cast<int>(i));
+            vPutS(fmt::format("<TEXT>[<SELECTOR>{:c}<TEXT>] {} ",
+                              static_cast<int>(i) + 'a', names[i]));
+        }
+
+        vRefresh();
+
+        if (const int ch = vGetch();
+            ch >= 'a' && ch < 'a' + static_cast<int>(names.size())) {
+            vClrScr();
+
+            return ch;
+        }
+    }
+}
+
+} // namespace
+
 void XHero::PlayerSetup()
 {
     XStats * stmp;
 
-    vClrScr();
-    vGotoXY(7, 4);
-    vPutS("<TEXT>Choose a race:");
+    std::vector<const char*> race_names;
 
-    for (int i = 0; i < 7; i++) {
-        vGotoXY(7, 6 + i);
-        auto str = fmt::format("<TEXT>[<SELECTOR>{:c}<TEXT>] {} ",
-            i + 97, cust_race[i].name);
-
-        vPutS(str);
+    for (const auto& entry : cust_race) {
+        race_names.push_back(entry.name);
     }
 
-    vRefresh();
+    const int race_choice = ChooseFromMenu("<TEXT>Choose a race:", race_names);
+    {
+        const CUSTOM_RACE& chosen = cust_race[race_choice - 'a'];
+        XDice d(chosen.speed);
+        ttmb = d.Throw();
+        ttm = ttmb;
 
-    int race_choice = ' ';
+        stats = std::make_unique<XStats>(chosen.stats);
+        max_stats.Set(chosen.max_stats);
+        food_feeling = chosen.ff;
 
-    while (true) {
-        int ch = vGetch();
-        race_choice = ch;
-
-        if (ch >= 97 && ch < 97 + 7) {
-            XDice d(cust_race[ch - 97].speed);
-            ttmb = d.Throw();
-            ttm = ttmb;
-
-            stats = std::make_unique<XStats>(cust_race[ch - 97].stats);
-            max_stats.Set(cust_race[ch - 97].max_stats);
-            food_feeling = cust_race[ch - 97].ff;
-
-            race = ch - 97;
-            vClrScr();
-            break;
-        }
+        race = race_choice - 'a';
     }
 
     switch (race_choice) {
@@ -214,52 +236,30 @@ void XHero::PlayerSetup()
 
     sk->Learn(XSkill::Skill::FIRST_AID);
 
-    vClrScr();
-    vGotoXY(7, 4);
-    vPutS("<TEXT>Choose a gender:");
+    std::vector<const char*> gender_names;
 
-    for (int i = 0; i < 2; i++) {
-        vGotoXY(7, 6 + i);
-        auto str = fmt::format("<TEXT>[<SELECTOR>{:c}<TEXT>] {} ",
-            i + 97, cust_gender[i].name);
-
-        vPutS(str);
+    for (const auto& entry : cust_gender) {
+        gender_names.push_back(entry.name);
     }
 
-    vRefresh();
+    {
+        const int ch = ChooseFromMenu("<TEXT>Choose a gender:", gender_names);
 
-    while (true) {
-        if (int ch = vGetch(); ch >= 97 && ch < 97 + 2)
-        {
-            stmp = new XStats(cust_gender[ch - 97].stats);
-            stats->Add(stmp);
-            delete stmp;
+        stmp = new XStats(cust_gender[ch - 'a'].stats);
+        stats->Add(stmp);
+        delete stmp;
 
-            if (ch == 'a') {
-                creature_person_type = XCreature::MALE_YOU;
-            } else if (ch == 'b') {
-                creature_person_type = XCreature::FEMALE_YOU;
-            }
-
-            vClrScr();
-            break;
-        }
+        creature_person_type = ch == 'a' ? XCreature::MALE_YOU : XCreature::FEMALE_YOU;
     }
 
-    vClrScr();
-    vGotoXY(7, 4);
-    vPutS("<TEXT>Choose a profession:");
+    std::vector<const char*> profession_names;
 
-    for (int i = 0; i < 8; i++) {
-        vGotoXY(7, 6 + i);
-        auto str = fmt::format("<TEXT>[<SELECTOR>{:c}<TEXT>] {} ", i + 97, cust_profession[i].name);
-        vPutS(str);
+    for (const auto& entry : cust_profession) {
+        profession_names.push_back(entry.name);
     }
 
-    vRefresh();
-
-    while (true) {
-        if (int ch = vGetch(); ch >= 97 && ch < 97 + 8)
+    {
+        const int ch = ChooseFromMenu("<TEXT>Choose a profession:", profession_names);
         {
             stmp = new XStats(cust_profession[ch - 97].stats);
             stats->Add(stmp);
@@ -797,8 +797,6 @@ void XHero::PlayerSetup()
                 default:
                     assert(0);
             }
-
-            break;
         }
     }
 

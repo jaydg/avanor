@@ -1051,6 +1051,23 @@ void vRestore(const V_BUFFER* buf)
 
     auto* copy = static_cast<ncplane*>(buf->saved);
 
+    unsigned saved_rows = 0;
+    unsigned saved_cols = 0;
+    ncplane_dim_yx(copy, &saved_rows, &saved_cols);
+
+    // A screen saved before the terminal changed shape is of no use: it
+    // was laid out for a size that is gone, and blitting it back would
+    // put an eighty-column picture in the corner of a wider window, or
+    // leave the parts the smaller copy never covered showing whatever
+    // happened to be under them. Clear instead and let whoever asked for
+    // the restore draw itself again - which every screen does on the next
+    // turn of its own loop, having been told about the resize.
+    if (static_cast<int>(saved_rows) != size_y || static_cast<int>(saved_cols) != size_x) {
+        vClrScr();
+
+        return;
+    }
+
     for (int y = 0; y < size_y; y++) {
         for (int x = 0; x < size_x; x++) {
             uint16_t stylemask = 0;
