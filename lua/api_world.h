@@ -43,7 +43,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 namespace lua_api
 {
     void Settle(CreatureClass crc, int crl);
-    void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+    sol::optional<void*> Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
     void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags);
     void Teleport(int x, int y, const std::string& target_loc_id, int dest_x, int dest_y);
@@ -67,7 +67,7 @@ namespace lua_api
                     sol::optional<sol::table> properties);
     void Door(int x, int y, sol::optional<bool> opened);
     void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr);
-    void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
+    sol::optional<void*> OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
     void* OuterObjectAt(int x, int y, int color, const std::string& view, const std::string& descr, sol::optional<std::string> event);
     void Treasure(int x, int y, int val);
     void Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval);

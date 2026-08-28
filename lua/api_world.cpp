@@ -62,7 +62,7 @@ void Settle(CreatureClass crc, int crl)
 
 //cr = Creature("rotmoth")
 //cr = Creature("rat", [x, y, [w, h]])
-void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
+sol::optional<void*> Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XCreature * cr = nullptr;
 
@@ -75,7 +75,13 @@ void* Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> 
         cr = XLocation::current_location->NewCreature(crn, rect);
     }
 
-    return cr;
+    // No room left to put one - nil, not a null pointer dressed as a
+    // value. See GetWornItem() in api_actor.cpp.
+    if (!cr) {
+        return sol::nullopt;
+    }
+
+    return static_cast<void*>(cr);
 }
 
 //cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
@@ -368,12 +374,14 @@ void* Furniture(int x, int y, int color, const std::string& view, const std::str
 }
 
 //OuterObject(xLIGHTRED, '~', 'a royal bad', 'EventHandler')
-void* OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
+sol::optional<void*> OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
 {
     const auto pt = XLocation::current_location->GetFreeXY();
 
+    // Nowhere to put it - nil rather than a null pointer that reads as a
+    // value. See GetWornItem() in api_actor.cpp.
     if (!pt) {
-        return nullptr;
+        return sol::nullopt;
     }
 
     return new XOuterObject(pt->x, pt->y, color, view[0], (char*)descr.c_str(), XLocation::current_location, event ? event->c_str() : nullptr);

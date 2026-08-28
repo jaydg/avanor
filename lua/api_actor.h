@@ -60,7 +60,7 @@ namespace lua_api
     int CreatureCountInLocation(const std::string& l_id, CreatureClass cc);
     void SetItEnemyFor(void* cr1, void* cr2);
     void SetEnemy(void* cr, int cr_class);
-    void* FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+    sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void ExecuteCreatureScript(void* cr, sol::table script);
     std::tuple<int, int> GetWayXY(const std::string& l_id);
@@ -82,7 +82,7 @@ namespace lua_api
     int RestoreInt(lua_State * L);
     bool BinaryAND(int v1, int v2);
 
-    void* GetWornItem(void* cr, int bodypart, int slot);
+    sol::optional<void*> GetWornItem(void* cr, int bodypart, int slot);
     std::string GetObjectClass(void* obj);
 
     // Registers every function above under its Lua name.

@@ -126,7 +126,7 @@ bool isEnemy(void* cr1, void* cr2)
     return p1 && p2 && p1->xai->isEnemy(p2);
 }
 
-void* FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
+sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XRect rect(0, 0, Game.Location(l_id)->map->len, Game.Location(l_id)->map->hgt);
 
@@ -146,7 +146,9 @@ void* FindCreature(const std::string& l_id, const std::string& gid, sol::optiona
             }
         }
 
-    return nullptr;
+    // Nothing found - nil, not a null pointer dressed as a value. See
+    // GetWornItem().
+    return sol::nullopt;
 }
 
 std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
@@ -482,11 +484,20 @@ bool BinaryAND(int v1, int v2)
 }
 
 // The item worn in a body part slot, or nil when the slot is empty.
-void* GetWornItem(void* cr, const int bodypart, const int slot)
+//
+// sol::optional and not a plain void*, because that is the only way to
+// say "nothing" to Lua: a null void* is pushed as light userdata, which
+// is not nil and is perfectly true, so `if (item)` let an empty slot
+// straight through and whatever came next was handed a null pointer.
+sol::optional<void*> GetWornItem(void* cr, const int bodypart, const int slot)
 {
     XBodyPart* bp = ((XCreature*)cr)->GetBodyPart((BODY_PART)bodypart, slot);
 
-    return (bp && bp->Item()) ? static_cast<void*>(bp->Item()) : nullptr;
+    if (!bp || !bp->Item()) {
+        return sol::nullopt;
+    }
+
+    return static_cast<void*>(bp->Item());
 }
 
 // An object's registered class name - the same identity CreateObject() and
@@ -494,6 +505,12 @@ void* GetWornItem(void* cr, const int bodypart, const int slot)
 // rather than only its broad ItemType.
 std::string GetObjectClass(void* obj)
 {
+    if (!obj) {
+        std::cerr << "lua: GetObjectClass() was given nothing to look at" << std::endl;
+
+        throw std::invalid_argument("GetObjectClass: null object");
+    }
+
     return ((XObject*)obj)->GetClassName();
 }
 

@@ -226,15 +226,7 @@ function GianaHandler(e, t, p, v)
 		-- following whoever paid it - stop here and settle in the valley
 		-- the moment she's made it out of the cave and back home, rather
 		-- than trailing the hero around forever.
-		--
-		-- FindCreature() returns a raw void* (nullptr when nothing
-		-- matches) - unlike a typed pointer return (e.g. AsCreature's own
-		-- XCreature*), sol2 pushes that as a light userdata that Lua
-		-- treats as truthy even when it wraps a null pointer, so testing
-		-- it directly here was always true the instant rotmoth_status hit
-		-- 1, regardless of whether she'd actually reached the village -
-		-- wrap it in AsCreature() so a real miss becomes proper Lua nil.
-		if (QuestState:GetFlag('rotmoth_status') == 1 and AsCreature(FindCreature("MAIN", "giana"))) then
+		if (QuestState:GetFlag('rotmoth_status') == 1 and FindCreature("MAIN", "giana")) then
 			local giana = AsCreature(t)
 			giana.xai:SetCompanion(nil)
 
