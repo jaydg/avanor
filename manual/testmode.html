@@ -51,7 +51,8 @@ Three further modes check the game against itself and print a PASS or FAIL
 rather than showing anything: '--test-save' builds a world, plays a hundred 
 turns and saves it; '--test-load' restores what it wrote; '--test-cereal' 
 round-trips a single location through the save format. They are meant for 
-the build, not for play.<br>
+the build, not for play. They keep their own save file, avanor-test.svg.zst, 
+and never touch the game you are playing.<br>
 <br>
 
 The mode options exclude one another - ask for two and Avanor says so 

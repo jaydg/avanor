@@ -208,7 +208,7 @@ static bool TestSelfReferentialWeakPtr()
 // (and round-tripping identically with) contain.
 static bool TestRealCreature()
 {
-    Game.Create('T');
+    static_cast<void>(Game.Create('T'));
 
     std::shared_ptr<XCreature> original;
 
@@ -629,13 +629,13 @@ int main(int argc, char* argv[])
         // already-live Game.Create('T') world would silently orphan the
         // live locations via plain shared_ptr reassignment, without ever
         // Invalidate()ing them first.
-        Game.Create('T');
+        static_cast<void>(Game.Create('T'));
 
         for (int i = 0; i < 100; i++) {
             Game.Scheduler.Get()->Run();
         }
 
-        const int ok = XArchive::StoreGame();
+        const int ok = XArchive::StoreGame(XArchive::TEST_SLOT);
         std::cout << "StoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
 
         for (int i = 0; i < 100; i++) {
@@ -647,7 +647,7 @@ int main(int argc, char* argv[])
         return ok ? 0 : 1;
     } else if (program.get<bool>("--test-load")) {
         XLocation::Restoration();
-        const int ok = XArchive::RestoreGame();
+        const int ok = XArchive::RestoreGame(XArchive::TEST_SLOT);
         std::cout << "RestoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
 
         if (ok) {
@@ -714,10 +714,10 @@ int main(int argc, char* argv[])
         vFinit();
         return ok ? 0 : 1;
     } else if (program.get<bool>("--test")) {
-        Game.Create('T');
+        static_cast<void>(Game.Create('T'));
         Game.RunWithoutHero();
     } else if (program.get<bool>("--demo")) {
-        Game.Create('D');
+        static_cast<void>(Game.Create('D'));
         Game.RunDemo();
     } else {
         Game.isGodMode = program.get<bool>("--god");
@@ -743,8 +743,11 @@ int main(int argc, char* argv[])
             }
         }
 
-        Game.Create(ch);
-        Game.Run();
+        // False only for a restore that produced nothing playable; the
+        // message has already been shown, so just do not run it.
+        if (Game.Create(ch)) {
+            Game.Run();
+        }
     }
 
     vFinit();

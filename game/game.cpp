@@ -71,7 +71,35 @@ XCreature* XGame::NewCreature(XCreature * cr, const int x, const int y, XLocatio
 // Create all the necessary objects in memory depending on user's choice    //
 //////////////////////////////////////////////////////////////////////////////
 
-void XGame::Create(const char type_of_start) const
+namespace {
+
+// Is there anybody in this world for the player to be? Asked of a
+// restored game, where the answer can be no: a world saved by
+// --test-save has no hero in it, and until this was checked, loading one
+// looked exactly like a hang. XGame::Run() hands turn after turn to the
+// monsters and never reaches anyone who waits for a key, so the screen
+// stays on the message the restore left behind while the scheduler runs
+// flat out.
+bool WorldHasHero()
+{
+    for (const auto& [id, loc] : Game.locations) {
+        if (!loc || !loc->map) {
+            continue;
+        }
+
+        for (int i = 0; i < loc->map->CellCount(); i++) {
+            if (const XCreature* cr = loc->map->map[i].pMonster.get(); cr && cr->isHero()) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+} // namespace
+
+bool XGame::Create(const char type_of_start) const
 {
     switch (type_of_start) {
         case 'R' :
@@ -82,7 +110,25 @@ void XGame::Create(const char type_of_start) const
             XLocation::Restoration();
 
             if (XArchive::RestoreGame()) {
-                break;
+                if (WorldHasHero()) {
+                    break;
+                }
+
+                // The world is loaded and there is nothing to be done
+                // with it. Nothing is torn down and no new game is
+                // started over the top of it - both would be building on
+                // a world that is already half in place - so say what is
+                // wrong and stop.
+                vGotoXY(0, 20);
+                vPutS("<WARNING>That saved game has no hero in it and cannot be played.");
+                vGotoXY(0, 21);
+                vPutS("<TEXT>Run Avanor again and start a new game.");
+                vGotoXY(0, 22);
+                vPutS("<KEY>Press any key...");
+                vRefresh();
+                vGetch();
+
+                return false;
             }
 
             vGotoXY(0, 20);
@@ -128,6 +174,8 @@ void XGame::Create(const char type_of_start) const
             CreateLocations();
             break;
     }
+
+    return true;
 }
 
 void XGame::RunDemo()

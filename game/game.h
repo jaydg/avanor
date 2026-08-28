@@ -41,7 +41,10 @@ class XGame
         static void Run();
         void RunWithoutHero() const;
         static void RunDemo();
-        void Create(char type_of_start) const;
+        // Sets the world up for a new, restored, test or demo game.
+        // False means the world is not playable and Run() must not be
+        // called on it - see the 'R' case.
+        [[nodiscard]] bool Create(char type_of_start) const;
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
         // Keyed by XLocation::id.
         //

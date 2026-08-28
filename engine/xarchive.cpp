@@ -109,7 +109,7 @@ std::string DecompressWithZstd(const std::vector<char>& compressed) {
 // ============================================================================
 // Store game state to compressed file
 // ============================================================================
-int XArchive::StoreGame()
+int XArchive::StoreGame(const char* slot)
 {
     // Saving happens mid-turn (from the hero's own key handling), so the
     // deferred-release graveyard could still hold objects evicted earlier
@@ -170,7 +170,7 @@ int XArchive::StoreGame()
     std::vector<char> compressed = CompressWithZstd(serialized_data, ZSTD_SAVEGAME_LEVEL);
 
     if (!compressed.empty()) {
-        std::ofstream file(vMakePath(HOME_DIR, "avanor.svg.zst"), std::ios::binary);
+        std::ofstream file(vMakePath(HOME_DIR, std::string(slot) + ".svg.zst"), std::ios::binary);
         if (file.is_open()) {
             file.write(compressed.data(), compressed.size());
             file.close();
@@ -185,11 +185,11 @@ int XArchive::StoreGame()
 // ============================================================================
 // Restore game state from file (compressed or uncompressed)
 // ============================================================================
-int XArchive::RestoreGame()
+int XArchive::RestoreGame(const char* slot)
 {
     // First try compressed format
     {
-        std::ifstream file(vMakePath(HOME_DIR, "avanor.svg.zst"), std::ios::binary | std::ios::ate);
+        std::ifstream file(vMakePath(HOME_DIR, std::string(slot) + ".svg.zst"), std::ios::binary | std::ios::ate);
         if (file.is_open()) {
             file.seekg(0, std::ios::end);
             size_t const file_size = file.tellg();
@@ -207,7 +207,7 @@ int XArchive::RestoreGame()
 
     // Fall back to uncompressed format
     {
-        std::ifstream file(vMakePath(HOME_DIR, "avanor.svg"));
+        std::ifstream file(vMakePath(HOME_DIR, std::string(slot) + ".svg"));
         if (file.is_open()) {
             std::string serialized_data((std::istreambuf_iterator<char>(file)),
                                         std::istreambuf_iterator<char>());
