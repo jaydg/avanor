@@ -186,6 +186,11 @@ class XGuiList final
 
         int last_pressed_key{};
 
+        // Measures the list against however much screen there is now.
+        // Called once as Run() starts and again whenever the terminal
+        // changes shape under it.
+        void Relayout();
+
     public:
         XGuiList() :
             head(nullptr), tail(nullptr), top_selectable_index(0), selectable_items_count(0), items_count(0), lines_count(0)

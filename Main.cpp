@@ -725,7 +725,17 @@ int main(int argc, char* argv[])
         char ch;
 
         while (true) {
-            ch = toupper(vGetch());
+            // Read the key whole before narrowing it: the extended codes
+            // do not fit in a char, and KEY_RESIZE truncates to 'Z',
+            // which is the key that leaves the game.
+            const int key = vGetch();
+
+            if (key == KEY_RESIZE) {
+                ShowLogo();
+                continue;
+            }
+
+            ch = static_cast<char>(toupper(key));
 
             if (ch == '?') {
                 XManual man;

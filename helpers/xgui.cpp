@@ -318,6 +318,30 @@ void XGuiList::PageDown()
     LineDown(list_height);
 }
 
+void XGuiList::Relayout()
+{
+    list_height = size_y - 5;
+    list_width = size_x - 6;
+
+    XGuiItem* item = head;
+    lines_count = 0;
+
+    while (item != nullptr) {
+        item->SetWidth(list_width);
+        lines_count += item->GetHeight();
+        item = item->next;
+    }
+
+    // Rewrapping moves every line, so the view goes back to the top
+    // rather than to a line that may no longer be where it was.
+    top_item = head;
+    top_item_first_line = 0;
+    top_item_lines_count = top_item ? top_item->GetHeight() : 0;
+    top_line = 0;
+    top_item_index = 0;
+    top_selectable_index = 0;
+}
+
 int XGuiList::Run(int flag, int flag2)
 {
     V_BUFFER xyzbuf;
@@ -325,21 +349,7 @@ int XGuiList::Run(int flag, int flag2)
     vClrScr();
     vHideCursor();
 
-    XGuiItem * item = head;
-    lines_count = 0;
-
-    while (item != nullptr) {
-        item->SetWidth(size_x - 6);
-        lines_count += item->GetHeight();
-        item = item->next;
-    }
-
-    top_item = head;
-    top_item_first_line = 0;
-    top_item_lines_count = top_item->GetHeight();
-    top_line = 0;
-    top_item_index = 0;
-    top_selectable_index = 0;
+    Relayout();
 
     if (flag2) {
         LineDown(flag2);
@@ -351,6 +361,15 @@ int XGuiList::Run(int flag, int flag2)
         last_pressed_key = ch;
 
         switch (ch) {
+            case KEY_RESIZE:
+                // The list was measured for the old screen: how many
+                // lines fit, and how wide an item may be before it wraps.
+                // Both have to be worked out again, and the items rewrapped
+                // to match, before Put() draws at the top of the next turn
+                // round this loop.
+                Relayout();
+                break;
+
             case KEY_ESC :
             case 'Z' :
             case 'z' :

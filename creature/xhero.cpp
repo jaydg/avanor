@@ -1831,6 +1831,11 @@ int XHero::SelectPosition(XPoint * pt, int flag)
             return 0;
         }
 
+        if (ch == KEY_RESIZE) {
+            l->map->ForceRecenter(tx, ty);
+            continue;
+        }
+
         int dx = 0;
         int dy = 0;
 

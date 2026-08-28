@@ -347,7 +347,18 @@ struct V_BUFFER {
 #define KEY_CTRL_W		  23
 #define KEY_CTRL_Z		  26
 
+// The terminal changed shape. vGetch() hands this back so that whatever
+// screen is waiting for a key can lay itself out again; size_x and size_y
+// have already been brought up to date by the time it arrives.
+#define KEY_RESIZE        (KEY_EXTENDED_CODE | 90)
+
 #define KEY_UNKNOWN       0xFFFF
+
+// Brings size_x/size_y back in line with the terminal and repaints what
+// is currently on screen at the new size. Called for you when vGetch()
+// sees a resize; the screen still has to lay itself out again to make use
+// of the new room.
+void vUpdateScreenSize();
 
 void vClrScr();
 void vInit();

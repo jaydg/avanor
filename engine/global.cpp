@@ -163,6 +163,24 @@ void vInit()
     vClrScr();
 }
 
+void vUpdateScreenSize()
+{
+#ifdef XLINUX
+    unsigned rows = 0;
+    unsigned cols = 0;
+
+    // refresh() repaints the terminal from the planes as they now stand
+    // and reports the size it found; get_dim() is asked afterwards
+    // because the standard plane is the one the game draws into and it
+    // is that which has to agree with size_x/size_y.
+    nc->refresh(&rows, &cols);
+    screen->get_dim(&rows, &cols);
+
+    size_x = static_cast<int>(cols);
+    size_y = static_cast<int>(rows);
+#endif
+}
+
 void vClrScr()
 {
 #ifdef XWIN32
@@ -380,6 +398,18 @@ int vGetch()
 
         if (key == static_cast<uint32_t>(-1) || ni.evtype == NCTYPE_RELEASE) {
             continue;
+        }
+
+        // SIGWINCH arrives on the input queue like anything else. notcurses
+        // has already resized its own planes by the time we see it; what is
+        // left is to tell the game how much room it has and to get the old
+        // picture back on the screen, which stops the display being left in
+        // pieces if whoever is waiting here does not know how to lay itself
+        // out again.
+        if (key == NCKEY_RESIZE) {
+            vUpdateScreenSize();
+
+            return KEY_RESIZE;
         }
 
         switch (key) {
@@ -891,15 +921,26 @@ void vPutS(const char* s)
                 break;
 
             default : {
-                if (cursor_pos_x >= size_x) {
-                    cursor_pos_x = 0;
-
-                    if (++cursor_pos_y >= size_y) {
-                        cursor_pos_y = 0;
-                    }
+                // Past the right edge the character is dropped, not
+                // wrapped onto the next line. Several screens are laid
+                // out at fixed columns for a terminal at least eighty
+                // wide - the status line is - and on a narrower one
+                // wrapping pushed everything below them down and took
+                // the bottom of the screen round to the top. A line too
+                // long for the terminal is now simply cut short.
+                //
+                // Line breaks written into the string still break the
+                // line: those are the cases above.
+                // Off the top or the left as well as off the right: on a
+                // terminal only a couple of rows tall, a screen that puts
+                // its status line three rows up from the bottom is
+                // addressing a negative row.
+                if (cursor_pos_x >= 0 && cursor_pos_x < size_x
+                    && cursor_pos_y >= 0 && cursor_pos_y < size_y) {
+                    vPutCh(cursor_pos_x, cursor_pos_y, ch, current_attr);
                 }
 
-                vPutCh(cursor_pos_x++, cursor_pos_y, ch, current_attr);
+                cursor_pos_x++;
             }
         }
     }
