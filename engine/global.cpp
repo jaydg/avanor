@@ -20,6 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include <algorithm>
+#include <cmath>
 #include <chrono>
 #include <cstdlib>
 #include <cstring>
@@ -27,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fstream>
 #include <string>
 #include <thread>
+#include <utility>
 
 #include <sol/sol.hpp>
 
@@ -78,6 +81,11 @@ unsigned current_attr = xLIGHTGRAY;
 
 // Out of sight, and drawn that way - see SetRememberedBrightness().
 int remembered_brightness = 100;
+
+// How much ground colour varies from cell to cell - see SetTileJitter().
+int tile_jitter = 10;
+int tile_hue_jitter = 12;
+int tile_saturation_jitter = 15;
 
 #ifdef XLINUX
 // The terminal. Owned here, created by vInit() and stopped by vFinit().
@@ -639,6 +647,163 @@ unsigned DimRGB(const unsigned rgb, const int percent)
 void SetRememberedBrightness(const int percent)
 {
     remembered_brightness = std::clamp(percent, 0, 100);
+}
+
+namespace {
+
+// A number in [0, 1) fixed by where the cell is and which of the three
+// qualities is asking. Not vRand(): the same cell has to come back with
+// the same answer every time it is drawn, or the ground would crawl as
+// the hero walks over it.
+float JitterAt(const int x, const int y, const unsigned quality)
+{
+    unsigned h = static_cast<unsigned>(x) * 374761393u
+               + static_cast<unsigned>(y) * 668265263u
+               + quality * 2246822519u;
+
+    h = (h ^ (h >> 13)) * 1274126177u;
+    h ^= h >> 16;
+
+    return static_cast<float>(h & 0xFFFFFFu) / static_cast<float>(0x1000000u);
+}
+
+// A number in [-1, 1), for the qualities that move either way.
+float SignedJitterAt(const int x, const int y, const unsigned quality)
+{
+    return JitterAt(x, y, quality) * 2.0F - 1.0F;
+}
+
+struct HSV {
+    float h;    // degrees, [0, 360)
+    float s;    // [0, 1]
+    float v;    // [0, 1]
+};
+
+HSV ToHSV(const unsigned r, const unsigned g, const unsigned b)
+{
+    const float rf = static_cast<float>(r) / 255.0F;
+    const float gf = static_cast<float>(g) / 255.0F;
+    const float bf = static_cast<float>(b) / 255.0F;
+
+    const float top = std::max({rf, gf, bf});
+    const float bottom = std::min({rf, gf, bf});
+    const float span = top - bottom;
+
+    float hue = 0.0F;
+
+    if (span > 0.0F) {
+        if (top == rf) {
+            hue = 60.0F * (gf - bf) / span;
+        } else if (top == gf) {
+            hue = 60.0F * (2.0F + (bf - rf) / span);
+        } else {
+            hue = 60.0F * (4.0F + (rf - gf) / span);
+        }
+    }
+
+    if (hue < 0.0F) {
+        hue += 360.0F;
+    }
+
+    return {hue, top > 0.0F ? span / top : 0.0F, top};
+}
+
+unsigned FromHSV(const HSV& c)
+{
+    const float sector = c.h / 60.0F;
+    const int part = static_cast<int>(sector) % 6;
+    const float frac = sector - static_cast<float>(static_cast<int>(sector));
+
+    const float p = c.v * (1.0F - c.s);
+    const float q = c.v * (1.0F - c.s * frac);
+    const float t = c.v * (1.0F - c.s * (1.0F - frac));
+
+    float rf = 0.0F;
+    float gf = 0.0F;
+    float bf = 0.0F;
+
+    switch (part) {
+        case 0:  rf = c.v; gf = t;   bf = p;   break;
+        case 1:  rf = q;   gf = c.v; bf = p;   break;
+        case 2:  rf = p;   gf = c.v; bf = t;   break;
+        case 3:  rf = p;   gf = q;   bf = c.v; break;
+        case 4:  rf = t;   gf = p;   bf = c.v; break;
+        default: rf = c.v; gf = p;   bf = q;   break;
+    }
+
+    const auto byte = [](const float f) {
+        return static_cast<unsigned>(std::lround(std::clamp(f, 0.0F, 1.0F) * 255.0F));
+    };
+
+    return (byte(rf) << 16) | (byte(gf) << 8) | byte(bf);
+}
+
+} // namespace
+
+unsigned JitterRGB(const unsigned rgb, const int x, const int y)
+{
+    if (TileJitter() <= 0 && TileHueJitter() <= 0 && TileSaturationJitter() <= 0) {
+        return rgb;
+    }
+
+    HSV c = ToHSV((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+
+    if (c.v <= 0.0F) {
+        return rgb;     // black: nothing to vary
+    }
+
+    // Hue and saturation are what make a stand of trees read as a wood
+    // rather than as one colour stamped out a hundred times: some of them
+    // a little yellower, some greyer, some deeper. The hue turns by a few
+    // degrees at most, so a green stays a green and a blue stays a blue.
+    // Scaling the channels apart instead would not turn a colour, it
+    // would replace it - water would wander off through lavender - and it
+    // would do so unevenly, since a colour with one channel to scale can
+    // only change brightness however far the factors are pushed.
+    //
+    // Saturation is scaled rather than offset, which is what keeps the
+    // greys grey without a special case: a grey has no saturation, and
+    // nothing times a factor is still nothing.
+    c.h += static_cast<float>(TileHueJitter()) * SignedJitterAt(x, y, 1);
+    c.h = std::fmod(c.h + 360.0F, 360.0F);
+
+    c.s = std::clamp(c.s * (1.0F + static_cast<float>(TileSaturationJitter()) / 100.0F
+                                       * SignedJitterAt(x, y, 2)),
+                     0.0F, 1.0F);
+
+    // Brightness keeps the shape it had: a factor either side of one, but
+    // never far enough for the brightest channel to reach 255 and clamp,
+    // since a channel that stops rising while the others carry on is hue
+    // drift by another route. A colour already at full value can only
+    // darken.
+    const float low = 1.0F - static_cast<float>(TileJitter()) / 100.0F;
+    const float high = std::min(low > 0.0F ? 1.0F / low : 1.0F, 1.0F / c.v);
+
+    c.v = std::clamp(c.v * (low + (std::max(high, low) - low) * JitterAt(x, y, 0)), 0.0F, 1.0F);
+
+    return FromHSV(c);
+}
+
+void SetTileJitter(const int percent, const int hue_degrees, const int saturation_percent)
+{
+    tile_jitter = std::clamp(percent, 0, 100);
+    tile_hue_jitter = std::clamp(hue_degrees, 0, 180);
+    tile_saturation_jitter = std::clamp(saturation_percent, 0, 100);
+}
+
+int TileJitter()
+{
+    return tile_jitter;
+}
+
+int TileHueJitter()
+{
+    return tile_hue_jitter;
+}
+
+int TileSaturationJitter()
+{
+    return tile_saturation_jitter;
 }
 
 int RememberedBrightness()

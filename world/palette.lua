@@ -36,3 +36,13 @@ SetFloorPriority{
 -- Ground the hero has seen but is not looking at now is drawn at this
 -- share of its usual brightness, so the field of view reads at a glance.
 SetRememberedBrightness(60)
+
+-- No two patches of the same ground are quite the same shade, so that a
+-- cavern floor or a stand of trees reads as ground rather than as one
+-- colour stamped out a hundred times. The three numbers are how far a
+-- cell may stray in brightness (per cent), in hue (degrees of turn) and
+-- in saturation (per cent of what the colour has). The hue turns only a
+-- few degrees, so a green stays a green and water stays the colour of
+-- water. Greys have no saturation to vary and stay exactly grey.
+-- SetTileJitter(0, 0, 0) gives back the flat colours.
+SetTileJitter(5, 12, 15)

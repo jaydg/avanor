@@ -249,6 +249,27 @@ unsigned DimRGB(unsigned rgb, int percent);
 void SetRememberedBrightness(int percent);
 [[nodiscard]] int RememberedBrightness();
 
+// The same colour, nudged a little lighter or darker, so that a field of
+// one tile type reads as ground rather than as a flat wash. Which way it
+// is nudged depends only on x and y, so a place keeps the same face for
+// as long as it holds the same tile - walking away and back, or saving
+// and loading, changes nothing.
+//
+// Only the brightness moves: all three channels are scaled together and
+// none is allowed to clamp, so the hue and the saturation come back
+// exactly as they went in. A grey stays on the grey ramp, and water stays
+// the colour of water. Black has nothing to scale and is returned as is.
+unsigned JitterRGB(unsigned rgb, int x, int y);
+
+// How far JitterRGB() may stray: brightness either side of the tile's own,
+// per cent; hue, in degrees of turn; and saturation, per cent of what the
+// colour has. All three zero gives back the flat colours. Set by the world
+// script.
+void SetTileJitter(int percent, int hue_degrees = 12, int saturation_percent = 15);
+[[nodiscard]] int TileJitter();
+[[nodiscard]] int TileHueJitter();
+[[nodiscard]] int TileSaturationJitter();
+
 // Turns the roles written into a string - "<LABEL>Name:<VALUE> Deus" -
 // into the escape bytes the screen is painted from. Everything the game
 // prints goes through this, so a role can be written wherever text is,

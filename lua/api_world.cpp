@@ -326,6 +326,21 @@ void SetRememberedBrightness(const int percent)
     ::SetRememberedBrightness(percent);
 }
 
+//SetTileJitter(10)
+//SetTileJitter(10, 12, 15)
+// How far the colour of one patch of ground may stray from the colour of
+// the tile it is, so that a field of one tile reads as ground rather than
+// as a flat wash: brightness either side of the tile's own, per cent; then
+// optionally how far the hue may turn, in degrees, and how much of the
+// colour's saturation may come and go, per cent. The hue turns only a few
+// degrees, so a green stays a green - it is what makes a stand of trees
+// look like a wood. All three zero turns it off.
+void SetTileJitter(const int percent, const sol::optional<int> hue_degrees,
+                   const sol::optional<int> saturation_percent)
+{
+    ::SetTileJitter(percent, hue_degrees.value_or(12), saturation_percent.value_or(15));
+}
+
 //SetFloorPriority{ XTileType.GREEN_GRASS, XTileType.CAVE_FLOOR }
 // Which tiles a pattern may invent underneath the things it places,
 // later entries winning over earlier ones.
@@ -500,6 +515,7 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("SetDefaultTranslations", &lua_api::SetDefaultTranslations);
         lua.set_function("SetFloorPriority", &lua_api::SetFloorPriority);
         lua.set_function("SetRememberedBrightness", &lua_api::SetRememberedBrightness);
+        lua.set_function("SetTileJitter", &lua_api::SetTileJitter);
         lua.set_function("DefineTile", &lua_api::DefineTile);
         lua.set_function("Door", &lua_api::Door);
         lua.set_function("DrawPattern", &XLocation::DrawPattern);

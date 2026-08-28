@@ -300,7 +300,9 @@ void XMap::SetVisible(const int x, const int y) const
 {
     if (XMapTile* cell = Cell(x, y)) {
         cell->visible = true;
-        cell->color = std_tile_data[cell->n].color;
+        // Remembered in the shade it was actually seen in, so a place
+        // does not change colour the moment it drops out of sight.
+        cell->color = JitterRGB(std_tile_data[cell->n].color, x, y);
         cell->known = std_tile_data[cell->n].view;
     }
 }
@@ -597,7 +599,8 @@ void XMap::Put(XCreature * cr) const
                 } else {
                     //int tn = (i + wy) * len + j + wx;
                     int n = tmap->n;
-                    vPutCh(j + SCR_X, i + SCR_Y, std_tile_data[n].view, std_tile_data[n].color);
+                    vPutCh(j + SCR_X, i + SCR_Y, std_tile_data[n].view,
+                           JitterRGB(std_tile_data[n].color, wx + j, wy + i));
                 }
 
                 if (tmap->pMonster && cr->isCreatureVisible(tmap->pMonster.get())) {
