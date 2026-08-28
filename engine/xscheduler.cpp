@@ -84,6 +84,16 @@ void XScheduler::Add(XObject* p)
 std::shared_ptr<XObject> XScheduler::Get()
 {
     while (true) {
+        // Counts whole sweeps of the ring that turned up nothing at all,
+        // and gives up below when there have been enough of them. It is
+        // declared here, inside the outer loop, so that it starts again
+        // from nothing every time something IS found - a dead entry to
+        // erase, or an object to move further ahead. That reads like a
+        // counter that never gets anywhere, and it is not: the question
+        // it answers is "has the whole ring been empty for a while", and
+        // work of any kind is the answer being no. Hoisting it out of
+        // this loop would make a busy scheduler eventually declare itself
+        // finished. In a two hundred second soak it reached one, once.
         int empty_count = 0;
 
         while (data[head].empty()) {

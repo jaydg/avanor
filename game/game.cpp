@@ -181,9 +181,28 @@ bool XGame::Create(const char type_of_start) const
 void XGame::RunDemo()
 {
     while (true) {
+        bool nothing_left = false;
+
         for (int i = 0; i < 100; i++) {
-            Game.Scheduler.Get()->Run();
+            const auto o = Game.Scheduler.Get();
+
+            // Nothing left with a turn to take. There is no waiting it
+            // out - an empty scheduler stays empty - so the demo is over.
+            // Out through the bottom of the loop rather than straight
+            // back to the caller: the tidying up after it still has to
+            // happen, or every object left alive is destroyed while it
+            // still believes it is.
+            if (!o) {
+                nothing_left = true;
+                break;
+            }
+
+            o->Run();
             XObject::DrainDeferred();
+        }
+
+        if (nothing_left) {
+            break;
         }
 
         if (vKbhit()) {
@@ -216,10 +235,23 @@ void XGame::RunWithoutHero() const
     clock_t start_clock = clock();
 
     while (true) {
+        bool nothing_left = false;
+
         for (int i = 0; i < 1000; i++) {
             auto o = Game.Scheduler.Get();
+
+            // Nothing left with a turn to take - see RunDemo().
+            if (!o) {
+                nothing_left = true;
+                break;
+            }
+
             o->Run();
             XObject::DrainDeferred();
+        }
+
+        if (nothing_left) {
+            break;
         }
 
         if (vKbhit()) {
@@ -312,6 +344,14 @@ void XGame::Run()
 
     while (!_exit_flag && XQuest::quest.hero_win == 0 && XQuest::quest.hero_die == 0) {
         const auto o = Game.Scheduler.Get();
+
+        // Nothing left with a turn to take. A game with a hero in it
+        // cannot get here - the hero is always scheduled - but Get() is
+        // entitled to say so, and following the null would end the
+        // process rather than the game.
+        if (!o) {
+            break;
+        }
 
         if (!o->Run()) {
             // object is dead!

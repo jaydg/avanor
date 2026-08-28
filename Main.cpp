@@ -499,7 +499,14 @@ static void RunCerealPilotTest()
     // through a corrupted vtable pointer, i.e. a stale/dangling entry in
     // the object registry), so mirror that by running a few ticks first.
     for (int i = 0; i < 100; i++) {
-        Game.Scheduler.Get()->Run();
+        const auto o = Game.Scheduler.Get();
+
+        // Nothing left to run: stop rather than follow a null.
+        if (!o) {
+            break;
+        }
+
+        o->Run();
     }
 
     XObject::InvalidateAllObjects();
@@ -632,14 +639,28 @@ int main(int argc, char* argv[])
         static_cast<void>(Game.Create('T'));
 
         for (int i = 0; i < 100; i++) {
-            Game.Scheduler.Get()->Run();
+            const auto o = Game.Scheduler.Get();
+
+            // Nothing left to run: stop rather than follow a null.
+            if (!o) {
+                break;
+            }
+
+            o->Run();
         }
 
         const int ok = XArchive::StoreGame(XArchive::TEST_SLOT);
         std::cout << "StoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
 
         for (int i = 0; i < 100; i++) {
-            Game.Scheduler.Get()->Run();
+            const auto o = Game.Scheduler.Get();
+
+            // Nothing left to run: stop rather than follow a null.
+            if (!o) {
+                break;
+            }
+
+            o->Run();
         }
 
         XObject::InvalidateAllObjects();
@@ -706,7 +727,14 @@ int main(int argc, char* argv[])
             // kind (an unlinked floor above) went unnoticed, and needed
             // 20000 to show up on its own.
             for (int i = 0; i < 20000; i++) {
-                Game.Scheduler.Get()->Run();
+                const auto o = Game.Scheduler.Get();
+
+            // Nothing left to run: stop rather than follow a null.
+            if (!o) {
+                break;
+            }
+
+            o->Run();
             }
         }
 
