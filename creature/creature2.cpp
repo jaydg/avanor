@@ -191,6 +191,27 @@ void XCreature::CausePostEffect(int dmg, AttackEffectType aet, XCreature * attac
         if ((aet & AttackEffectType::CONFUSE) != AttackEffectType::NONE) {
             md->Add(MOD_CONFUSE, dmg, this, attacker);
         }
+
+        // What makes draining life different from simply hurting
+        // somebody: half of what the victim loses, rounded up, the
+        // attacker gains. onHeal() will not take them past their own
+        // maximum, so this tops a wounded spectre up rather than
+        // inflating it.
+        //
+        // Only what the blow actually took counts - dmg here is what
+        // came off the victim's HP, after resistances and PV - so
+        // draining someone well armoured returns little. And like every
+        // other effect in this function it needs the victim to have
+        // survived: XCreature::InflictDamage() only gets this far when
+        // HP is still above zero, so a killing blow drains nothing.
+        if ((aet & AttackEffectType::DRAIN_LIFE) != AttackEffectType::NONE
+            && attacker && attacker->isValid() && dmg > 0) {
+            if (attacker->onHeal((dmg + 1) / 2) && attacker->isVisible()) {
+                msgwin.Add(fmt::format("{} {} stronger.",
+                    attacker->GetNameEx(CRN_T1),
+                    attacker->GetVerb("look")));
+            }
+        }
     }
 
     //this should be rewrited once.
