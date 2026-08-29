@@ -880,6 +880,22 @@ static XItemList* pLastList = nullptr;
 std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, const INVENTORY_FLAG flag, const int ret_item_count,
     XItemFilter* ifiltr, const std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
+    // Only while standing in a shop is there anything unpaid to mark.
+    const XCreature* shopkeeper = ShopkeeperHere();
+    const auto* keeper = shopkeeper
+        ? dynamic_cast<const XShopKeeperAI*>(shopkeeper->xai.get()) : nullptr;
+
+    // What this list will show. Everything that walks the list asks it -
+    // the count, the drawing, and the walk that turns the chosen line
+    // back into an item.
+    const auto shows = [this, mask, flag, ifiltr](XItem* item) {
+        if ((flag & IF_HIDE_WORN) && IsWorn(item)) {
+            return false;
+        }
+
+        return (ifiltr && ifiltr(item)) || static_cast<bool>(item->kind & mask);
+    };
+
     while (true) {
         XGuiList list;
 
@@ -895,7 +911,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
         int all_item_count = 0;
 
         for (const auto& it : *item_list) {
-            if ((ifiltr && ifiltr(it.get())) || it->kind & mask) {
+            if (shows(it.get())) {
                 all_item_count++;
             }
         }
@@ -924,7 +940,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
             ItemKind last_mask = ItemKind::UNKNOWN;
 
             for (const auto& item: *item_list) {
-                if ((ifiltr && ifiltr(item.get())) || (item->kind & mask)) {
+                if (shows(item.get())) {
                     // we need to show item group name (e.g. boots, weapons etc.)
                     if (item->kind != last_mask) {
                         // skip output empty string for first item in inventory
@@ -981,19 +997,22 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
             auto selected_it = item_list->begin();
             int stop_flag = -1;
 
-            while (true) {
-                if ((ifiltr && ifiltr(selected_it->get())) || ((*selected_it)->kind & mask)) {
-                    stop_flag++;
-                }
-
-                if (stop_flag == item_number) {
+            while (selected_it != item_list->end()) {
+                if (shows(selected_it->get()) && ++stop_flag == item_number) {
                     break;
                 }
 
                 ++selected_it;
             }
 
-            assert(stop_flag == item_number);
+            // Only reachable if the drawing and this walk disagreed about
+            // which items the list holds, which is what `shows` exists to
+            // prevent.
+            assert(selected_it != item_list->end());
+
+            if (selected_it == item_list->end()) {
+                break;
+            }
 
             // Capture the shared_ptr before any erase below - item_list
             // can be ritem's only reference, and erasing it while it's
@@ -1209,15 +1228,8 @@ void XHero::DropItem()
     std::shared_ptr<XItem> item;
     first_item = 0;
 
-    while (contain.begin() != contain.end() && (item = Inventory(&contain))) {
-        if (IsWorn(item.get())) {
-            // Inventory() erased it from contain even though it's worn -
-            // put it back, it never actually left.
-            contain.insert(item);
-            msgwin.Add(fmt::format("You can't drop {} - it's currently equipped.", item->toString()));
-            continue;
-        }
-
+    while (contain.begin() != contain.end()
+           && (item = Inventory(&contain, ItemKind::ALL, IF_HIDE_WORN))) {
         std::shared_ptr<XItem> drop_item = item;
 
         if (item->quantity > 1) {
@@ -2535,15 +2547,7 @@ void XHero::GiveItem()
         }
     }
 
-    if (auto item = Inventory(&contain)) {
-        if (IsWorn(item.get())) {
-            // Inventory() erased it from contain even though it's worn -
-            // put it back, it never actually left.
-            contain.insert(item);
-            msgwin.Add(fmt::format("You can't give away {} - it's currently equipped.", item->toString()));
-            return;
-        }
-
+    if (auto item = Inventory(&contain, ItemKind::ALL, IF_HIDE_WORN)) {
         if (item->kind & ItemKind::MONEY) {
             contain.insert(item);
             last_creature->xai->onGiveItem(this, item.get());

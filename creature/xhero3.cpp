@@ -50,22 +50,14 @@ void XHero::doSacrifice()
         XItemList* tmpquae = l->map->GetItemList(x, y);
 
         if (tmpquae->empty() || l->map->GetPlace(x, y)) {
-            item = Inventory(&contain);
+            item = Inventory(&contain, ItemKind::ALL, IF_HIDE_WORN);
         } else {
-            item = Inventory(tmpquae);
+            item = Inventory(tmpquae, ItemKind::ALL, IF_HIDE_WORN);
         }
 
         std::shared_ptr<XItem> drop_item = item;
 
         if (item) {
-            if (IsWorn(item.get())) {
-                // Inventory() erased it from contain even though it's
-                // worn - put it back, it never actually left.
-                contain.insert(item);
-                msgwin.Add(fmt::format("You can't sacrifice {} - it's currently equipped.", item->toString()));
-                continue;
-            }
-
             if (item->quantity > 1) {
                 XPoint pt(0, item->quantity);
                 msgwin.Add("How much?");

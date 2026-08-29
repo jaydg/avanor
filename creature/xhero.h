@@ -51,6 +51,13 @@ enum INVENTORY_FLAG {
     // function's own scope (e.g. through an XObject** out-param) without
     // item_list's shared_ptr ownership going away under it.
     IF_NO_ERASE = 4,
+
+    // Leave out anything the hero is currently wearing. Since worn items
+    // stay in contain, they turn up in every list drawn from it - which
+    // is right when you are looking at what you own, and wrong the
+    // moment the list is asking you to part with something. Offering a
+    // worn item and refusing it afterwards is worse than not offering it.
+    IF_HIDE_WORN = 8,
 };
 
 enum SKILL_FLAG {
