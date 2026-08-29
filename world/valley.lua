@@ -49,7 +49,7 @@ function MakeAvanorValley()
 	-- ALLOW_MOVE_OUT (the hero's dog, escorts) follow a stairway up here.
 	SetWanderingAllowed("MAIN", false)
 
-	-- Orc war party and the village<->town teleports.
+	-- Orcish war party.
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).
 	for i = 1, 20 do
@@ -59,8 +59,9 @@ function MakeAvanorValley()
 
 	CreateTimerEvent('OrcWarPartyAttack', ORC_ATTACK_DELAY)
 
-	Teleport(23, 20, "MAIN", 154, 13)
-	Teleport(154, 13, "MAIN", 23, 20)
+	-- The village <-> town teleports.
+	Teleport(23, 20, "MAIN", 153, 13)
+	Teleport(153, 13, "MAIN", 23, 20)
 
 -- SMALL VILLAGE --
 		SetPattern(55, 31,
