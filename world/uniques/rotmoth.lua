@@ -38,7 +38,25 @@ function BridaHandler(e, t, p, v)
 
 	local status = QuestState:GetFlag('rotmoth_status')
 
-	if (status == 0) then
+	-- Giana is dead (GianaAI.onDie). She cannot be told before she has
+	-- asked, though: a hero who happens into the cave without ever
+	-- speaking to her has nothing to report yet, so that case falls
+	-- through to the plea below and the news waits for the way back.
+	if (status == 3 and QuestStatus(QUEST_GIANA) ~= XQuest.UNKNOWN) then
+		if (QuestState:GetFlag('brida_told_of_death') ~= 1) then
+			AddMessage("Brida reads your face before you have said a word, and her hands go still.")
+			AddMessage("'...She isn't coming home. Is she.'")
+			AddMessage("She turns to the window with her back to you. 'You went. That is more than anyone else did. Please - leave me be now.'")
+
+			QuestState:SetFlag('brida_told_of_death', 1)
+			-- FAIL, not CLOSED: the quest is over either way and neither
+			-- shows in the log (ShowQuests lists only KNOWN), but this one
+			-- did not end well and the record should say so.
+			QuestModify(QUEST_GIANA, XQuest.FAIL)
+		else
+			AddMessage("Brida sits at the window with her back to the door, and does not answer.")
+		end
+	elseif (status == 0 or status == 3) then
 		AddMessage("'My Giana... she never came back from the valley!' Brida sobs.")
 		AddMessage("'A bandit - Rotmoth, he calls himself - is holding her in a cave east of here, past where the bandits lurk near the bridge. He wants 150 gold coins for her, but I have nothing left to give him.'")
 		AddMessage("'Please - if you have the coin, or the courage - bring my daughter home!'")
@@ -67,6 +85,10 @@ end
 function SmallCaveQuestPersons(x, y)
 	local giana = Guardian("giana", "giana", x + 1, y, 8, 4)
 	SetEventHandler(giana, 'GianaHandler')
+	-- Before the SetCompanion() below: SetCreatureAI() swaps in a fresh
+	-- XLuaAI and CopyBaseStateTo() carries the guard area across, but not
+	-- the companion.
+	SetCreatureAI(giana, 'GianaAI')
 	-- Rotmoth's kidnap victim
 	QuestState:SetCreatureRef('kidnapped_girl', AsCreature(giana))
 
@@ -220,13 +242,32 @@ function RotmothHandler(e, t, p, v)
 	return 1
 end
 
+-- She can still be killed - by the bandits if the hero is not wearing the
+-- cloak that shields them both, by anything else the valley throws at a
+-- civilian, or by the hero. Record it: without this rotmoth_status stays
+-- at 1 for the rest of the game, GianaHandler waits forever for a girl who
+-- will never arrive in the village, and Brida asks after her daughter
+-- every time she is spoken to, with QUEST_GIANA stuck short of CLOSED.
+GianaAI = {}
+function GianaAI.onDie(self)
+	QuestState:SetFlag('rotmoth_status', 3)
+end
+
 function GianaHandler(e, t, p, v)
 	if (e == LuaEvent.AI_TURN) then
 		-- Once ransomed (rotmoth_status == 1, see RotmothHandler) she's
 		-- following whoever paid it - stop here and settle in the valley
 		-- the moment she's made it out of the cave and back home, rather
 		-- than trailing the hero around forever.
-		if (QuestState:GetFlag('rotmoth_status') == 1 and FindCreature("MAIN", "giana")) then
+		-- Not merely "she has reached the valley": the road home crosses
+		-- the bandits' ground at the bridge, and it is being the hero's
+		-- companion that carries her past it (see BanditAI.isEnemy in
+		-- world/valley_extras.lua). Released at the stairhead, as she used
+		-- to be, she walked the rest of the way as a stranger with six hit
+		-- points. She stops following once she is actually home.
+		if (QuestState:GetFlag('rotmoth_status') == 1
+			and FindCreature("MAIN", "giana", VILLAGE_GUARD_AREA.x, VILLAGE_GUARD_AREA.y,
+				VILLAGE_GUARD_AREA.w, VILLAGE_GUARD_AREA.h)) then
 			local giana = AsCreature(t)
 			giana.xai:SetCompanion(nil)
 

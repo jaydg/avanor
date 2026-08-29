@@ -122,6 +122,15 @@ class XStandardAI
             ai_owner = cr;
         }
         void SetCompanion(XCreature * cr);
+
+        // Who this creature is following, or nobody. A bare pointer
+        // rather than the weak_ptr itself for the same reason
+        // XQuest::GetCreatureRef() returns one: sol2 pushes a null
+        // usertype pointer as nil, so `if (escort)` in a script means
+        // what it looks like. Out of line, so this header need not have
+        // XCreature complete to destroy the lock()'d shared_ptr.
+        [[nodiscard]] XCreature* GetCompanion() const;
+
         void SetOrderedEnemy(XCreature * cr);
 
         virtual void AnalyzeGrid(int j, int i, int w);

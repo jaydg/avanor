@@ -59,6 +59,7 @@ function CreateBandit(x, y)
 	local bandit = Guardian('bandit', "forest_brother", x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
 	AsCreature(bandit):PutOnBody(BodyPart.CLOAK, 0, CreateObject('XForestBrotherCloak'))
 	SetCreatureAI(bandit, 'BanditAI')
+
 end
 
 -- Note: does not re-check personal-enemy status before the cloak check the
@@ -71,6 +72,17 @@ end
 BanditAI = {}
 function BanditAI.isEnemy(self, cr)
 	if cr:IsWearingItemType(BodyPart.CLOAK, 0, ItemType.FORESTBROTHERCLOAK) then
+		return false
+	end
+
+	-- Whoever walks with a brother walks under his colours. The cloak is easy to
+	-- come by (one lies in the rat cellar), so a hero who has been down there
+	-- crosses the bridge untouched - but the camp's guard areas cover the whole
+	-- east bank, and anything of another group standing inside one is an enemy
+	-- by PROTECT_AREA alone (XStandardAI::isEnemy).
+	local escort = cr.xai:GetCompanion()
+
+	if (escort and escort:IsWearingItemType(BodyPart.CLOAK, 0, ItemType.FORESTBROTHERCLOAK)) then
 		return false
 	end
 

@@ -74,6 +74,7 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "SetGroupEnemy", &XStandardAI::SetGroupEnemy,
         "isEnemy", &XStandardAI::isEnemy,
         "SetCompanion", &XStandardAI::SetCompanion,
+        "GetCompanion", &XStandardAI::GetCompanion,
         "ReactToAttacker", &XStandardAI::ReactToAttacker,
         "ResAIFlag", &XStandardAI::ResAIFlag,
         "SetGuardArea", &XStandardAI::SetGuardArea
@@ -1073,6 +1074,11 @@ void XStandardAI::SetArea(XRect & area, const std::string& ln)
 void XStandardAI::SetCompanion(XCreature * cr)
 {
     companion = XCreature::ToWeakPtr(cr);
+}
+
+XCreature* XStandardAI::GetCompanion() const
+{
+    return companion.lock().get();
 }
 
 void XStandardAI::SetOrderedEnemy(XCreature * cr)
