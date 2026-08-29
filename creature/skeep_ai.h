@@ -69,6 +69,21 @@ class XShopKeeperAI : public XStandardAI
 
         SHOP_DEBT debt;
 
+        // Two items are the same thing for billing purposes exactly when
+        // they are the same thing for stacking purposes. The customer's
+        // item is never the object the bill holds - that is a MakeCopy()
+        // with its own guid - so identity is no use and this is what both
+        // onAnyoneDropItem() and the inventory compare on.
+        [[nodiscard]] static bool SameGoods(const XItem* a, const XItem* b);
+
+        // How many of this item the customer has picked up and not paid
+        // for. A heap is one entry carrying a quantity, and a customer
+        // can have several entries of the same goods from separate trips
+        // to the shelf, so this is a sum. Nought means the whole stack is
+        // theirs; less than the stack means part of it was already
+        // carried in through the door.
+        [[nodiscard]] int UnpaidQuantity(const XItem* item) const;
+
         // `shop` is deliberately not persisted here (see the comment on
         // it below) - XShop/XAnyPlace aren't part of the shared_ptr
         // graph yet, so there's no Cereal-trackable identity to resolve

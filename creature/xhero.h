@@ -97,6 +97,11 @@ class XHero final : public XCreature
         void PlayerSetup();
         void NewMove() override;
         void Move() override;
+        // The shopkeeper of the shop the hero is standing in, or null
+        // anywhere else. What the inventory needs to know whether it is
+        // looking at somebody else's goods.
+        [[nodiscard]] XCreature* ShopkeeperHere() const;
+
         std::shared_ptr<XItem> Inventory(XItemList* item_list, ItemKind mask = ItemKind::ALL, INVENTORY_FLAG flag = IF_NONE,
                          int ret_item_count = 0, XItemFilter* ifiltr = nullptr,
                          std::optional<std::reference_wrapper<std::ofstream>> file = std::nullopt) const;
@@ -200,12 +205,22 @@ class XGuiItem_Inventory final : public XGuiItem
     public:
         // show_price swaps the trailing badge from the
         // item's weight to its total gp value.
-        explicit XGuiItem_Inventory(XItem* item, bool worn = false, bool show_price = false) : pItem(item)
+        explicit XGuiItem_Inventory(XItem* item, bool worn = false, bool show_price = false,
+                                    int unpaid = 0) : pItem(item)
         {
             str = "<TEXT>" + item->toString();
 
             if (worn) {
                 str += "<DECORATION> (worn)";
+            }
+
+            // A heap can be part bought and part not - two rations carried
+            // in and one taken off the shelf - so say how many are owed
+            // unless the whole heap is.
+            if (unpaid >= item->quantity) {
+                str += "<WARNING> (unpaid)";
+            } else if (unpaid > 0) {
+                str += fmt::format("<WARNING> ({} unpaid)", unpaid);
             }
 
             // Pad to size_x characters using spaces. str may contain ANSI

@@ -200,6 +200,26 @@ void XShopKeeperAI::Move()
     }
 }
 
+bool XShopKeeperAI::SameGoods(const XItem* a, const XItem* b)
+{
+    // Compare() is not const in this codebase, hence the cast; it does
+    // not modify anything.
+    return a->kind == b->kind && const_cast<XItem*>(a)->Compare(const_cast<XItem*>(b)) == 0;
+}
+
+int XShopKeeperAI::UnpaidQuantity(const XItem* item) const
+{
+    int owed = 0;
+
+    for (const auto& unpaid : debt.unpaid_items) {
+        if (SameGoods(unpaid.get(), item)) {
+            owed += unpaid->quantity;
+        }
+    }
+
+    return owed;
+}
+
 int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
 {
     if (!customer->isHero()) {
@@ -245,7 +265,7 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
         auto it = debt.unpaid_items.begin();
 
         while (it != debt.unpaid_items.end()) {
-            if (item->kind != (*it)->kind || item->Compare(it->get()) != 0) {
+            if (!SameGoods(item, it->get())) {
                 it++;
                 continue;
             }

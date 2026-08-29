@@ -877,6 +877,17 @@ const char* output_items_name[] = {
 static int first_item = 0;
 static XItemList* pLastList = nullptr;
 
+XCreature* XHero::ShopkeeperHere() const
+{
+    XAnyPlace* place = l->map->GetPlace(x, y);
+
+    if (!place || place->GetClassName() != "XShop") {
+        return nullptr;
+    }
+
+    return place->GetOwner().lock().get();
+}
+
 std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, const INVENTORY_FLAG flag, const int ret_item_count,
     XItemFilter* ifiltr, const std::optional<std::reference_wrapper<std::ofstream>> file) const
 {
@@ -961,7 +972,8 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
                     }
 
                     //output item
-                    list.AddItem(new XGuiItem_Inventory(item.get(), IsWorn(item.get())), 0);
+                    list.AddItem(new XGuiItem_Inventory(item.get(), IsWorn(item.get()), false,
+                                                       keeper ? keeper->UnpaidQuantity(item.get()) : 0), 0);
                 }
             }
         }
@@ -2438,17 +2450,10 @@ int XHero::Chat(XCreature * /*chatter*/, const char* /*msg*/)
 
 void XHero::PayBill()
 {
-    XAnyPlace* pl = l->map->GetPlace(x, y);
-
-    //hack!!!
-    if (pl == nullptr || (pl->GetClassName() != "XShop")) {
-        msgwin.Add("You can pay only in shops.");
-        return;
-    }
-
-    XCreature* shopkeeper = pl->GetOwner().lock().get();
+    XCreature* shopkeeper = ShopkeeperHere();
 
     if (!shopkeeper) {
+        msgwin.Add("You can pay only in shops.");
         return;
     }
 
