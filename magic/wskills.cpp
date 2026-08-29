@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "engine/global.h"
 #include "magic/wskills.h"
 
 void XWarSkills::RegisterLua(sol::state_view& lua)

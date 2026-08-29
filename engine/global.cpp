@@ -87,7 +87,6 @@ int tile_jitter = 10;
 int tile_hue_jitter = 12;
 int tile_saturation_jitter = 15;
 
-#ifdef XLINUX
 // The terminal. Owned here, created by vInit() and stopped by vFinit().
 ncpp::NotCurses* nc = nullptr;
 ncpp::Plane* screen = nullptr;
@@ -96,46 +95,11 @@ ncpp::Plane* screen = nullptr;
 // it keeps it for the vGetch() that follows.
 ncinput pending_key{};
 bool has_pending_key = false;
-#endif
-
-#ifdef XWIN32
-    #include <windows.h>
-    HANDLE hStdout;
-    HANDLE hStdin;
-    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
-    CONSOLE_CURSOR_INFO ccInfo;
-    CHAR_INFO* vscreenw;
-#endif
 
 void vInit()
 {
-#ifdef XLINUX
     std::filesystem::create_directory(vMakePath(HOME_DIR, ""));
-#endif
 
-#ifdef XWIN32
-    hStdin = GetStdHandle(STD_INPUT_HANDLE);
-    hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    GetConsoleCursorInfo(hStdout, &ccInfo);
-
-    GetConsoleScreenBufferInfo(hStdout, &csbiInfo);
-    size_x = csbiInfo.srWindow.Right - csbiInfo.srWindow.Left + 1;
-    size_y = csbiInfo.srWindow.Bottom - csbiInfo.srWindow.Top + 1;
-
-    if (size_x != csbiInfo.dwSize.X || size_y != csbiInfo.dwSize.Y) {
-        COORD coord = { (short)size_x, (short)size_y };
-
-        if (!SetConsoleScreenBufferSize(hStdout, coord)) {
-            assert(false);
-        }
-    }
-
-    vscreenw = new CHAR_INFO[size_x * size_y];
-
-#endif //XWIN32
-
-#ifdef XLINUX
     notcurses_options opts{};
     opts.loglevel = NCLOGLEVEL_SILENT;
     opts.flags = NCOPTION_SUPPRESS_BANNERS;
@@ -158,14 +122,12 @@ void vInit()
     screen->set_base(" ", 0, opaque_black);
 
     nc->cursor_disable();
-#endif //XLINUX
 
     vClrScr();
 }
 
 void vUpdateScreenSize()
 {
-#ifdef XLINUX
     unsigned rows = 0;
     unsigned cols = 0;
 
@@ -178,77 +140,41 @@ void vUpdateScreenSize()
 
     size_x = static_cast<int>(cols);
     size_y = static_cast<int>(rows);
-#endif
 }
 
 void vClrScr()
 {
-#ifdef XWIN32
-    CHAR_INFO blank_char = { ' ', 7 };
-    int screenbuf_size = size_x * size_y;
-
-    for (int i = 0; i < screenbuf_size; i++) {
-        vscreenw[i] = blank_char;
-    }
-#else
     screen->erase();
     screen->set_fg_rgb(xLIGHTGRAY);
     screen->set_bg_rgb(xBLACK);
-#endif
 }
 
 void vFinit()
 {
-#ifdef XWIN32
-    SetConsoleScreenBufferSize(hStdout, csbiInfo.dwSize);
-    SetConsoleWindowInfo(hStdout, true, &csbiInfo.srWindow);
-    SetConsoleCursorInfo(hStdout, &ccInfo);
-    delete[] vscreenw;
-#endif
-#ifdef XLINUX
     if (nc) {
         nc->stop();
         delete nc;
         nc = nullptr;
         screen = nullptr;
     }
-#endif
 }
 
 void vRefresh()
 {
-#ifdef XWIN32
-    COORD buffer_size = { (short)size_x, (short)size_y };
-    COORD buffer_coord = { 0, 0 };
-    SMALL_RECT write_region = { 0, 0, size_x - 1, size_y - 1 };
-
-    WriteConsoleOutput(hStdout, vscreenw, buffer_size, buffer_coord, &write_region);
-#endif
-
-#ifdef XLINUX
     nc->render();
-#endif
 }
 
 void vPutCh(const int x, const int y, char ch, unsigned rgb)
 {
     assert(x >= 0 && y >= 0 && x <= size_x && y <= size_y);
-#ifdef XWIN32
-    CHAR_INFO tmp = { ch, attr };
-    vscreenw[x + y * size_x] = tmp;
-#else
     // The plane holds what the screen will look like; notcurses works
     // out what actually has to be sent when vRefresh() renders it.
     screen->set_fg_rgb(rgb);
     screen->putc(y, x, ch < ' ' ? ' ' : ch);
-#endif
 };
 
 char vTestCh(const int x, const int y)
 {
-#ifdef XWIN32
-    return vscreenw[x + y * size_x].Char.AsciiChar;
-#else
     uint16_t stylemask = 0;
     uint64_t channels = 0;
     char ch = ' ';
@@ -259,14 +185,10 @@ char vTestCh(const int x, const int y)
     }
 
     return ch;
-#endif
 }
 
 void vPutCh(int x, int y, char ch)
 {
-#ifdef XWIN32
-    vscreenw[x + y * size_x].Char.AsciiChar = ch;
-#else
     // No colour given: the cell keeps the one it already has.
     uint16_t stylemask = 0;
     uint64_t channels = 0;
@@ -277,7 +199,6 @@ void vPutCh(int x, int y, char ch)
     }
 
     screen->putc(y, x, ch < ' ' ? ' ' : ch);
-#endif
 };
 
 void vGotoXY(int x, int y)
@@ -357,7 +278,6 @@ void vDelay(const int n)
 
 int vKbhit()
 {
-#ifdef XLINUX
     ncinput ni{};
     const struct timespec now = {0, 0};
 
@@ -370,15 +290,10 @@ int vKbhit()
     has_pending_key = true;
 
     return 1;
-
-#else
-    return kbhit();
-#endif
 }
 
 int vGetch()
 {
-#ifdef XLINUX
     // notcurses decodes the terminal's escape sequences itself, so what
     // arrives here is either a Unicode codepoint or one of its NCKEY_*
     // synthetic keys.
@@ -444,16 +359,6 @@ int vGetch()
             return static_cast<int>(key);
         }
     }
-
-#else
-    int ch = getch();
-
-    if (ch == 0 || ch == 224) {
-        ch = KEY_EXTENDED_CODE | getch();
-    }
-
-    return ch;
-#endif
 }
 
 int vXGetch(const char* ch_buf)
@@ -477,22 +382,12 @@ int vXGetch(const char* ch_buf)
 
 void vXGotoXY(int x, int y)
 {
-#ifdef XLINUX
     nc->cursor_enable(y, x);
-#endif
 }
 
 void vHideCursor()
 {
-#ifdef XWIN32
-    //	CONSOLE_CURSOR_INFO ConsoleCursorInfo = ccInfo;
-    //	ConsoleCursorInfo.bVisible = FALSE;
-    //	SetConsoleCursorInfo(hStdout, &ConsoleCursorInfo);
-#endif
-
-#ifdef XLINUX
     nc->cursor_disable();
-#endif
 }
 
 namespace {
@@ -1002,27 +897,17 @@ long vRand(unsigned long n)
 
 V_BUFFER::V_BUFFER()
 {
-#ifdef XWIN32
-    buffer = new char[size_x * size_y * sizeof(CHAR_INFO)];
-#endif
 }
 
 V_BUFFER::~V_BUFFER()
 {
-#ifdef XWIN32
-    delete[] buffer;
-#else
     if (saved) {
         ncplane_destroy(static_cast<ncplane*>(saved));
     }
-#endif
 }
 
 void vStore(const V_BUFFER* buf)
 {
-#ifdef XWIN32
-    memcpy(buf->buffer, vscreenw, size_x * size_y * sizeof(CHAR_INFO));
-#else
     // A saved screen is a copy of the plane; putting it back is a blit
     // from that copy, which is what notcurses' own plane machinery does.
     if (buf->saved) {
@@ -1037,14 +922,10 @@ void vStore(const V_BUFFER* buf)
     ncplane_move_bottom(copy);
 
     const_cast<V_BUFFER*>(buf)->saved = copy;
-#endif
 }
 
 void vRestore(const V_BUFFER* buf)
 {
-#ifdef XWIN32
-    memcpy(vscreenw, buf->buffer, size_x * size_y * sizeof(CHAR_INFO));
-#else
     if (!buf->saved) {
         return;
     }
@@ -1080,21 +961,26 @@ void vRestore(const V_BUFFER* buf)
             }
         }
     }
-#endif
 }
 
 std::string vMakePath(std::string_view prefix, std::string_view filename)
 {
     std::string path_buffer;
 
-#ifdef XLINUX
     if (prefix[0] == '~') {
-        path_buffer.assign(getenv("HOME"))
+        // HOME is unset for a MinGW build run outside its MSYS2 shell (e.g.
+        // launched straight from Explorer); USERPROFILE is Windows' own
+        // equivalent and is always set there.
+        const char* home = getenv("HOME");
+
+        if (!home) {
+            home = getenv("USERPROFILE");
+        }
+
+        path_buffer.assign(home ? home : ".")
             .append(prefix.substr(1))
             .append(filename);
-    } else
-#endif
-    {
+    } else {
         path_buffer.append(prefix)
             .append(filename);
     }

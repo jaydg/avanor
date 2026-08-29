@@ -26,12 +26,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
-#ifdef WIN32
-    #define XWIN32
-#else
-    #define XLINUX
-#endif
-
 // Directory for common data files (game manual, hiscore, ...)
 #ifndef DATA_DIR
     #define DATA_DIR "./"
@@ -39,23 +33,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Directory for private data files (user settings, saved games, ...)
 #ifndef HOME_DIR
-    #ifdef XLINUX
-        #define HOME_DIR "~/.avanor/"
-    #else
-        #define HOME_DIR "./"
-    #endif
+    #define HOME_DIR "~/.avanor/"
 #endif
 
-#ifdef XWIN32
-    #include <conio.h>
-#endif
-
-#ifdef XLINUX
-    // The terminal is driven by notcurses; see engine/global.cpp.
-    #include <cstring>
-    #define stricmp(a, b) strcasecmp(a, b)
-    #define strnicmp(a, b, n) strncasecmp(a, b, n)
-#endif
+// The terminal is driven by notcurses on every platform this builds for -
+// see engine/global.cpp. MSYS2/MinGW ships notcurses the same as *nix does,
+// so Windows takes this path too rather than a Windows-only backend.
+#include <cstring>
+#define stricmp(a, b) strcasecmp(a, b)
+#define strnicmp(a, b, n) strncasecmp(a, b, n)
 
 #include <cmath>
 #include <cassert>
@@ -297,7 +283,6 @@ constexpr int RGB_ESCAPE_LENGTH = 7;
 // character sheet - and blitted back afterwards. On the terminal it is a
 // duplicate of the standard plane, made by notcurses itself.
 struct V_BUFFER {
-    char* buffer = nullptr;   // the Windows console's own copy
     void* saved = nullptr;    // ncplane*, the terminal's
 
     V_BUFFER();

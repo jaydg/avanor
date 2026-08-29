@@ -1,12 +1,19 @@
 ##############################################################################
-# Compiling Avanor: make {win=1} {debug=1}                                   #
+# Compiling Avanor: make {debug=1}                                           #
 #                                                                            #
-# Define win=1 when compiling with Mingw gcc compiler for windows            #
-# Define xmingw=1 when compiling win32-binary with Mingw gcc crosscompiler   #
+# Just typing 'make' builds the release version for the host platform - the  #
+# Windows/*nix split (native MinGW-w64 vs. notcurses-on-*nix's own build)    #
+# is detected from the environment, not a flag: $(OS) is Windows_NT on any   #
+# native Windows shell, MSYS2's UCRT64/MINGW64/CLANG64 included.             #
+# Define xmingw=1 when cross-compiling a Windows binary from *nix with the   #
+# MinGW-w64 crosscompiler - everything else about the build is identical     #
+# either way: same notcurses/fmt/luajit/zstd stack via pkg-config.           #
 # Define debug=1 when you want to build debug version of Avanor              #
 #                                                                            #
-# Just typing 'make' builds the release version of ufo2000 for *nix          #
-# (Linux, FreeBSD, ...)                                                      #
+# argparse is header-only and packaged on Fedora/Debian/Ubuntu, but not for  #
+# MSYS2's mingw environments - a Windows/xmingw=1 build fetches its single   #
+# header with wget into external/argparse/ on demand, pinned to the version  #
+# below, so the build stays reproducible without a manual install step.      #
 #                                                                            #
 # There are also targets for making tarballs with the sources and binaries   #
 # Example:                                                                   #
@@ -20,7 +27,7 @@ else
 	DISTNAME := avanor-r${shell svnversion .}
 endif
 
-ifdef WINDIR
+ifeq ($(OS),Windows_NT)
 	win = 1
 endif
 
@@ -30,9 +37,9 @@ LD = g++
 CFLAGS = -std=c++17 -fsigned-char -pipe -Wall -Wextra
 
 ifdef xmingw
-    CX = i386-mingw32msvc-g++
-    CC = i386-mingw32msvc-gcc
-    LD = i386-mingw32msvc-g++
+    CX = x86_64-w64-mingw32-g++
+    CC = x86_64-w64-mingw32-gcc
+    LD = x86_64-w64-mingw32-g++
     win = 1
 endif
 
@@ -47,8 +54,16 @@ endif
 OBJDIR = obj
 NAME = avanor
 
+ARGPARSE_VERSION = v3.2
+ARGPARSE_HEADER = external/argparse/argparse.hpp
+ARGPARSE_URL = https://raw.githubusercontent.com/p-ranav/argparse/$(ARGPARSE_VERSION)/include/argparse/argparse.hpp
+
 CFLAGS += -I.
-CFLAGS += $(shell pkg-config --cflags fmt ncurses luajit)
+CFLAGS += $(shell pkg-config --cflags fmt notcurses luajit)
+
+ifdef win
+	CFLAGS += -Iexternal
+endif
 
 VPATH = creature engine game global helpers item magic map other lua
 
@@ -81,9 +96,7 @@ else
 endif
 
 ifdef win
-	OBJDIR := ${addsuffix win,$(OBJDIR)}
-	NAME := ${addsuffix -win.exe,$(NAME)}
-	LIBS :=
+	NAME := ${addsuffix .exe,$(NAME)}
 endif
 
 OBJS := $(SRCS:.cpp=.o)
@@ -106,6 +119,14 @@ $(OBJDIR)/%.o: %.c
 
 $(NAME): $(OBJS)
 	$(LD) $(CFLAGS) -o $@ $^ $(LIBS)
+
+$(ARGPARSE_HEADER):
+	mkdir -p $(dir $@)
+	wget -q -O $@ $(ARGPARSE_URL)
+
+ifdef win
+$(OBJDIR)/Main.o: $(ARGPARSE_HEADER)
+endif
 
 clean:
 	$(RM) $(OBJDIR)/*.o
@@ -136,9 +157,8 @@ source-gz:
 
 binary-zip: all
 	-$(RM) $(DISTNAME).zip
-	cp $(NAME) avanor.exe
-	upx --best avanor.exe
-	7z a -tzip -mx $(DISTNAME).zip "avanor.exe" gpl.txt changes.txt "manual/*.html" "manual/*.css"
+	upx --best $(NAME)
+	7z a -tzip -mx $(DISTNAME).zip "$(NAME)" gpl.txt changes.txt "manual/*.html" "manual/*.css"
 
 binary-gz: all
 	-$(RM) $(DISTNAME).tar.gz
