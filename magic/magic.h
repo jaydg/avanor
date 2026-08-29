@@ -80,7 +80,6 @@ class XMagic
             PROTECTION,
             DEATH,
             SURVIVING,
-            POWER,
             COUNT       // bounds the per-school tables, never a school
         };
 

@@ -430,8 +430,7 @@ const char* mg_name_str[] = {
     "Body and Spirit",
     "Protection and Resistance",
     "Death and Devastation",
-    "Surviving and Enlightenment",
-    "Power"
+    "Surviving and Enlightenment"
 };
 
 const char* mg_level_str[] = {
