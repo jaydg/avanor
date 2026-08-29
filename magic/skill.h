@@ -74,9 +74,7 @@ class XSkill
             FIRST_AID,     // cure wounds
             TACTICS,
             ALCHEMY,
-            WOODCRAFT,
             CREATETRAP,
-            NECROMANCY,
             ATHLETICS,
             CLIMBING,      // at this time from pits only...
         };

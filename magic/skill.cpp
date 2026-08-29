@@ -48,9 +48,7 @@ void XSkill::RegisterLua(sol::state_view& lua)
         "FIRST_AID", XSkill::FIRST_AID,
         "TACTICS", XSkill::TACTICS,
         "ALCHEMY", XSkill::ALCHEMY,
-        "WOODCRAFT", XSkill::WOODCRAFT,
         "CREATETRAP", XSkill::CREATETRAP,
-        "NECROMANCY", XSkill::NECROMANCY,
         "ATHLETICS", XSkill::ATHLETICS,
         "CLIMBING", XSkill::CLIMBING,
 
@@ -79,9 +77,7 @@ SKILL_DB skill_db[] = {
     {"First aid",	2},
     {"Tactics",	1},
     {"Alchemy",	1},
-    {"Woodcraft",	1},
     {"Create trap",	1},
-    {"Necromancy",	1},
     {"Athletics",	1},
     {"Climbing",	1},
 };
