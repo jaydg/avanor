@@ -498,6 +498,14 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             dmg *= 3;
         }
 
+        // The stance the attacker was holding is in both halves of this
+        // blow - GetTacticsHITBonus() helped it land, GetTacticsDMGBonus()
+        // is in the damage - so a blow that lands is practice at holding
+        // it. On the same terms as the two above: landed, not swung.
+        if (pData->attacker) {
+            pData->attacker->sk->UseSkill(XSkill::Skill::TACTICS);
+        }
+
         //calculates suposed damage counting creature type and resistance
         //also Adds modifers such 'Poison'
         if (pData->attack_name) { //this is poor magic
@@ -649,6 +657,13 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             if (!pData->attacker || isCreatureVisible(pData->attacker)) {
                 sk->UseSkill(XSkill::Skill::DODGE);
             }
+
+            // The other half of what tactics is for: GetTacticsDVBonus()
+            // is part of what this attack had to beat, so turning one
+            // aside is practice at the stance as much as landing a blow
+            // is. Trained whether or not the attacker was seen - keeping
+            // a guard up does not require watching who tried.
+            sk->UseSkill(XSkill::Skill::TACTICS);
         }
     }
 
