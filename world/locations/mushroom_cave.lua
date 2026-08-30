@@ -66,15 +66,30 @@ function MakeMushroomCave()
 end
 
 function MushroomCaveEvent(e, p)
-	if (e == LuaEvent.MOVE) then
-		if (isHero(p) and Rand(3) == 0) then
-			AddMessage("You feel power swirling in the air...")
-		end
-		if (Rand(30) == 0) then
-			local st = Rand(XStats.COUNT)
-			if (GetStats(p, st) > 5) then
-				ChangeStats(p, st, -1)
-			end
+	if (e ~= LuaEvent.MOVE) then
+		return
+	end
+
+	if (isHero(p) and Rand(3) == 0) then
+		AddMessage("You feel power swirling in the air...")
+	end
+
+	-- Whatever is in the air down here works on anything that walks through
+	-- it, hero and monster alike - but not on the valley's own people. They
+	-- are only here because the Elder sent them for mushrooms once his
+	-- quest closed (SendFarmersToCollectMushrooms), their errand is a loop
+	-- that brings them back again and again, and a lost point is never
+	-- recovered. Draining them retires the village one stat at a time, for
+	-- doing what the player's own good deed set them to do.
+	if (GetGroupID(p) == VILLAGE_GROUP) then
+		return
+	end
+
+	if (Rand(30) == 0) then
+		local st = Rand(XStats.COUNT)
+
+		if (GetStats(p, st) > 5) then
+			ChangeStats(p, st, -1)
 		end
 	end
 end

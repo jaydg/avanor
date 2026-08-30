@@ -27,7 +27,7 @@ function CreateBrida(x, y)
 	-- Her house is a single-row 5-tile room (see world/valley.lua's "B"
 	-- placement) - x,y is the exact spawn tile, so center the guard rect
 	-- on the room rather than just the one tile.
-	local brida = Guardian("brida", "small_village_farmer", x - 2, y, 5, 1)
+	local brida = Guardian("brida", VILLAGE_GROUP, x - 2, y, 5, 1)
 	SetEventHandler(brida, 'BridaHandler')
 end
 

@@ -19,6 +19,13 @@ function ScatterHerbBushes()
 	end
 end
 
+-- The group the valley's own people belong to - the farmers and goodwives
+-- of the small village, and nobody else. Global rather than local: the
+-- mushroom caves need to recognise them when they come down on the Elder's
+-- errand (see MushroomCaveEvent), the same way VILLAGE_GUARD_AREA below is
+-- shared with the rescued girl's homecoming.
+VILLAGE_GROUP = "small_village_farmer"
+
 -- The orc war party musters in the southern hills and, after a long
 -- while, marches on the small town (the pattern drawn at 10,40 below).
 local ORC_WAR_PARTY = "orcs_war_party"
@@ -111,8 +118,8 @@ function MakeAvanorValley()
 			local area = VILLAGE_GUARD_AREA
 
 			for i = 1, 4 do
-				SetEventHandler(Guardian('farmer', "small_village_farmer", area.x, area.y, area.w, area.h), 'FarmerHandler')
-				SetEventHandler(Guardian('goodwife', "small_village_farmer", area.x, area.y, area.w, area.h), 'FarmerHandler')
+				SetEventHandler(Guardian('farmer', VILLAGE_GROUP, area.x, area.y, area.w, area.h), 'FarmerHandler')
+				SetEventHandler(Guardian('goodwife', VILLAGE_GROUP, area.x, area.y, area.w, area.h), 'FarmerHandler')
 			end
 		end)
 		AddTranslation("B", function(x, y) CreateBrida(x, y) end)

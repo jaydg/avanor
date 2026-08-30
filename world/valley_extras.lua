@@ -7,7 +7,7 @@ function SendFarmersToCollectMushrooms()
 		{cmd = ScriptCommand.DROP_ITEM, kind = ItemKind.FOOD},
 	}
 
-	for _, farmer in ipairs(FindCreatures("MAIN", "small_village_farmer")) do
+	for _, farmer in ipairs(FindCreatures("MAIN", VILLAGE_GROUP)) do
 		ExecuteCreatureScript(farmer, script)
 	end
 end

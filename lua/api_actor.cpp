@@ -126,6 +126,12 @@ bool isEnemy(void* cr1, void* cr2)
     return p1 && p2 && p1->xai->isEnemy(p2);
 }
 
+std::string GetGroupID(void* cr)
+{
+    XCreature* p = (XCreature*)cr;
+    return p ? p->groupID() : std::string();
+}
+
 sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XRect rect(0, 0, Game.Location(l_id)->map->len, Game.Location(l_id)->map->hgt);
@@ -519,6 +525,7 @@ void RegisterActorApi(sol::state_view& lua)
     lua_register(lua.lua_state(), "StoreInt", lua_api::StoreInt);
     lua_register(lua.lua_state(), "RestoreInt", lua_api::RestoreInt);
         lua.set_function("isHero", &lua_api::isHero);
+        lua.set_function("GetGroupID", &lua_api::GetGroupID);
         lua.set_function("isEnemy", &lua_api::isEnemy);
         lua.set_function("SetCreatureAI", &lua_api::SetCreatureAI);
         lua.set_function("AsCreature", &lua_api::AsCreature);

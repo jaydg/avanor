@@ -18,7 +18,7 @@ Monster.new("elder_gridor")
 
 
 function CreateElderGridor(x, y)
-	local elder = Guardian("elder_gridor", "small_village_farmer", x, y, 5, 1)
+	local elder = Guardian("elder_gridor", VILLAGE_GROUP, x, y, 5, 1)
 	SetEventHandler(elder, 'ElderGridorHandler')
 end
 

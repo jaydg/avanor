@@ -53,6 +53,11 @@ namespace lua_api
     void SetView(void* obj, const std::string& view, int color);
     std::string GetView(void* obj);
     bool isHero(void* cr);
+
+    // Which group a creature was raised into - the same string Guardian()
+    // was given and FindCreature()/FindCreatures() match on. Lets a script
+    // ask "whose people are these?" about a creature it was handed.
+    std::string GetGroupID(void* cr);
     bool isEnemy(void* cr1, void* cr2);
     void SetCreatureAI(void* cr, const std::string& lua_class);
     XCreature* AsCreature(void* p);
