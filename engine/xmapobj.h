@@ -41,6 +41,15 @@ class XMapObject : public XObject
 
         explicit XMapObject(XMapObject * copy);
 
+        // Mirrors XCreature::ToWeakPtr/XItem::ToWeakPtr: a map object is
+        // not shared_from_this()-safe until something owns it through a
+        // shared_ptr (XMapTile::pSpecialObject), so guard against that
+        // rather than letting shared_from_this() throw std::bad_weak_ptr.
+        // Lets an AI hold on to a door, stairway or trap without keeping
+        // a raw pointer to something the map may destroy under it - and
+        // lets that reference be saved.
+        static std::weak_ptr<XMapObject> ToWeakPtr(XMapObject* o);
+
     protected:
         // teardown hook, called by XObject::Invalidate()
         void OnInvalidate() override;

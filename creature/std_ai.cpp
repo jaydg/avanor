@@ -100,7 +100,7 @@ XStandardAI::XStandardAI(XCreature* _cr) : guard_area(1, 1, 2, 3),
     ai_flag = XStandardAI::NONE; //(XStandardAI::Flag)(XStandardAI::RANDOM_MOVE | XStandardAI::ALLOW_PICK_UP);
 
     enemy_class = CreatureClass::ALL;
-    last_moved_way = nullptr;
+    last_moved_way.reset();
 
     companion_command = CC_NONE;
     invisible_hunting_mode = 0;
@@ -157,7 +157,7 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
     XMapObject * spec = ai_owner->l->map->GetSpecial(j, i);
     XStairWay * way = dynamic_cast<XStairWay *>(spec);
 
-    if (way && (w < way_dist) && spec != last_moved_way &&
+    if (way && (w < way_dist) && spec != last_moved_way.lock().get() &&
         (((spec->view == '>') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_DOWN)) ||
         ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))
     ) {
@@ -296,7 +296,7 @@ void XStandardAI::Move()
             (((spec->view == '>') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_DOWN)) ||
             ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))) {
             ai_owner->MoveStairWay();
-            last_moved_way = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
+            last_moved_way = XMapObject::ToWeakPtr(ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y));
         } else {
             MoveTo(way_x, way_y);
         }
@@ -1322,7 +1322,7 @@ void XStandardAI::LearnTraps()
             XMapObject * pO = ai_owner->l->map->GetSpecial(i, j);
 
             if (dynamic_cast<XTrap *>(pO)) {
-                known_traps.push_back(pO);
+                known_traps.push_back(XMapObject::ToWeakPtr(pO));
             }
         }
 }
@@ -1332,5 +1332,5 @@ bool XStandardAI::isKnowThisTrap(const XMapObject* trap)
     return std::any_of(
         known_traps.begin(),
         known_traps.end(),
-        [trap](const XMapObject* t) { return trap == t; });
+        [trap](const std::weak_ptr<XMapObject>& t) { return trap == t.lock().get(); });
 }

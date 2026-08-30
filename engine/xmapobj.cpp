@@ -34,6 +34,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // (e.g. XScheduler::Entry) can resolve any XMapObject-derived leaf.
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XObject, XMapObject);
 
+std::weak_ptr<XMapObject> XMapObject::ToWeakPtr(XMapObject* o)
+{
+    if (o && o->isValid() && !o->weak_from_this().expired()) {
+        return std::static_pointer_cast<XMapObject>(o->shared_from_this());
+    }
+
+    return {};
+}
+
 XMapObject::XMapObject(XMapObject* copy) :
     XObject(static_cast<XObject *>(copy)),
     x(copy->x),

@@ -25,7 +25,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <vector>
 
 #include <cereal/cereal.hpp>
+#include <cereal/types/common.hpp>
 #include <cereal/types/deque.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
 #include <cereal/types/string.hpp>
 #include <sol/forward.hpp>
 
@@ -202,30 +205,35 @@ class XStandardAI
         void AddPersonalEnemy(XCreature * cr);
         void RemovePersonalEnemy(const XCreature* cr);
 
-        // Matches the legacy Store/Restore's actual scope, not just
-        // what's convenient - companion/ordered_enemy/personal_enemy/
-        // last_enemy (all weak_ptr<XCreature>, easy to serialize) were
-        // never persisted even before Cereal, a pre-existing design
-        // choice rather than a migration regression, so left alone here
-        // too.
+        // Everything an AI remembers between turns is saved.
         //
-        // last_moved_way/known_traps (raw XMapObject*) are also still
-        // deliberately unpersisted - unlike XShopKeeperAI::shop (see
-        // XLocation::FixupShops()), nothing currently re-derives these
-        // structurally after load, so a restored creature's AI starts
-        // with no memory of traps it had already found. Worth
-        // revisiting, but out of scope here.
+        // The creature and map-object references are all weak, so none of
+        // this owns anything: whatever a reference names is saved once,
+        // where it really lives (a map cell), and comes back expired if it
+        // did not survive - a remembered enemy that died, a trap that was
+        // dug out. The whole world goes into one archive (see
+        // XArchive::StoreGame's ar(Game.locations)), so a reference across
+        // levels resolves too, the same way the top-level weak_ptr to the
+        // hero already does.
         //
-        // ai_owner isn't serialized here either - XStandardAI always
-        // lives 1:1 inside its owning XCreature (see xai), so it's
-        // fixed up by that XCreature's own load(), same idea as
-        // XBodyPart::owner_raw.
+        // Left out deliberately, because Move() recomputes every one of
+        // them at the top of each turn before anything reads them: enemy,
+        // enemy_dist, item_dist/x/y, way_dist/x/y, friends_count and
+        // friend_avg_x/y. sleep_well is out for the same reason - it only
+        // suppresses the next few view scans, and starting a restored
+        // creature with a full scan is right.
+        //
+        // ai_owner isn't serialized either - XStandardAI always lives 1:1
+        // inside its owning XCreature (see xai), so it's fixed up by that
+        // XCreature's own load(), same idea as XBodyPart::owner_raw.
         template<class Archive>
         void serialize(Archive& ar)
         {
             ar(ai_flag, enemy_class, invisible_x, invisible_y, invisible_hunting_mode);
             ar(companion_command, guard_area, guard_area_location);
             ar(script);
+            ar(companion, ordered_enemy, last_enemy, personal_enemy);
+            ar(known_traps, last_moved_way);
         }
 
         void SetGroupEnemy(XCreature* cr) const;
@@ -241,7 +249,10 @@ class XStandardAI
 
         // the creature who knows a trap can't activate it
         // used for random rooms guardians.
-        std::vector<XMapObject*> known_traps;
+        //
+        // weak, not raw: a trap can be disarmed or dug out from under a
+        // guardian that has already learned it, and this list outlives it.
+        std::vector<std::weak_ptr<XMapObject>> known_traps;
         void LearnTraps();
         bool isKnowThisTrap(const XMapObject* trap);
 
@@ -282,7 +293,7 @@ class XStandardAI
         std::weak_ptr<XCreature> last_enemy;
 
         // used to prevent up/down moving way repeating...
-        XMapObject* last_moved_way;
+        std::weak_ptr<XMapObject> last_moved_way;
         int invisible_x;
         int invisible_y;
         int invisible_hunting_mode;
