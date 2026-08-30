@@ -25,6 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <vector>
 
 #include <cereal/cereal.hpp>
+#include <cereal/types/deque.hpp>
+#include <cereal/types/string.hpp>
 #include <sol/forward.hpp>
 
 #include "creature/creature.h"
@@ -56,6 +58,12 @@ struct SCRIPT_CMD {
     int pt_y;
     std::string ln;
     ItemKind kind;
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(cmd, pt_x, pt_y, ln, kind);
+    }
 };
 
 #define ENEMY_LIST_SIZE	5
@@ -196,12 +204,13 @@ class XStandardAI
 
         // Matches the legacy Store/Restore's actual scope, not just
         // what's convenient - companion/ordered_enemy/personal_enemy/
-        // last_enemy (all weak_ptr<XCreature>, easy to serialize) and
-        // script were never persisted even before Cereal, a
-        // pre-existing design choice rather than a migration
-        // regression, so left alone here too. last_moved_way/
-        // known_traps (raw XMapObject*) are also still deliberately
-        // unpersisted - unlike XShopKeeperAI::shop (see
+        // last_enemy (all weak_ptr<XCreature>, easy to serialize) were
+        // never persisted even before Cereal, a pre-existing design
+        // choice rather than a migration regression, so left alone here
+        // too.
+        //
+        // last_moved_way/known_traps (raw XMapObject*) are also still
+        // deliberately unpersisted - unlike XShopKeeperAI::shop (see
         // XLocation::FixupShops()), nothing currently re-derives these
         // structurally after load, so a restored creature's AI starts
         // with no memory of traps it had already found. Worth
@@ -216,6 +225,7 @@ class XStandardAI
         {
             ar(ai_flag, enemy_class, invisible_x, invisible_y, invisible_hunting_mode);
             ar(companion_command, guard_area, guard_area_location);
+            ar(script);
         }
 
         void SetGroupEnemy(XCreature* cr) const;
