@@ -24,8 +24,16 @@ end
 function FarmerHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
+
 		if (qs == XQuest.COMPLETE or qs == XQuest.CLOSED) then
 			AddMessage("'Thank you, great hero!'")
+		elseif (Rand(2) == 0) then
+			-- The other half of the time, the thing a newcomer most needs
+			-- to hear. Said here as well as shouted at the bridge, because
+			-- a player who never crosses the river still ought to learn
+			-- that east is not the way out of the valley.
+			AddMessage("'You'll not be going east, will you? The forest brothers hold the bridge.'")
+			AddMessage("'There's five of them and they don't ask twice. Better men than us have gone that way and not come back.'")
 		else
 			AddMessage("'Please speak with our elder. He lives in the stone house.'")
 		end
@@ -61,11 +69,13 @@ function RoyalGuardHandler(e, t, p, v)
 end
 
 
+local BANDIT_GROUP = "forest_brother"
+
 -- Recognizes fellow forest-brotherhood members by their cloak and never
 -- treats them as enemies, regardless of the usual class-based hostility
 -- rules.
 function CreateBandit(x, y)
-	local bandit = Guardian('bandit', "forest_brother", x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
+	local bandit = Guardian('bandit', BANDIT_GROUP, x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
 	AsCreature(bandit):PutOnBody(BodyPart.CLOAK, 0, CreateObject('XForestBrotherCloak'))
 	SetCreatureAI(bandit, 'BanditAI')
 
@@ -96,6 +106,48 @@ function BanditAI.isEnemy(self, cr)
 	end
 
 	return nil
+end
+
+-- The forest brothers hold the only bridge across the river, and a hero who
+-- walks into them at level 1 dies.
+--
+-- So they call out as the hero sets foot on the span. The bridge is the one
+-- tile at (34, 8) and their guard area only begins at x 35, so this is the
+-- last square from which turning back is still free - they have not decided
+-- to kill anyone yet.
+-- The one crossing on the river, and the road tile just short of it. The
+-- brothers' guard area begins at x 35, on the far bank, so a hero standing
+-- here has not yet been decided about.
+BANDIT_BRIDGE = {x = 33, y = 8, w = 2, h = 1}
+
+function BanditBridgeEvent(e, p)
+	if (e ~= LuaEvent.MOVE_IN or not isHero(p)) then
+		return
+	end
+
+	-- Only warn somebody about to cross, not somebody coming home. MOVE_IN
+	-- fires before the step commits (XCreature::NewMove places the creature
+	-- afterwards), so this is still the tile being stepped off: east of the
+	-- bridge means the hero is arriving from the brothers' own bank, has
+	-- already met them, and needs no telling.
+	local from_x = GetCreatureXY(p)
+
+	if (from_x >= BANDIT_BRIDGE.x + BANDIT_BRIDGE.w) then
+		return
+	end
+
+	-- Nobody left to shout: the road is the player's, and silence says so.
+	if (not FindCreature("MAIN", BANDIT_GROUP)) then
+		return
+	end
+
+	if (QuestState:GetFlag('bandit_bridge_warned') == 0) then
+		QuestState:SetFlag('bandit_bridge_warned', 1)
+		AddMessage("A voice comes out of the trees on the far bank. 'Far enough!'")
+		AddMessage("'This road is ours now. Set one foot past the water and we will have everything you carry - and your life to finish with.'")
+	else
+		AddMessage("From the trees on the far bank: 'Still breathing? Come across, then.'")
+	end
 end
 
 function Grave(x, y, s, e)

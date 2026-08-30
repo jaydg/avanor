@@ -410,18 +410,25 @@ void Trap(int x, int y)
     new XTrap(x, y, XLocation::current_location);
 }
 
+// Hands the new place to the location.
+static void AddEventPlace(const XRect& area, const std::string& event)
+{
+    XLocation::current_location->AddPlace(
+        new XAnyPlace(area, XLocation::current_location, event));
+}
+
 //EventPlace('MushroomCaveEvent')
 void EventPlace(const std::string& event)
 {
     XRect area(0, 0, XLocation::current_location->map->len, XLocation::current_location->map->hgt);
-    new XAnyPlace(area, XLocation::current_location, event);
+    AddEventPlace(area, event);
 }
 
 //EventPlace(x, y, 5, 2, 'SmallCaveEvent')
 void EventPlaceArea(int x, int y, int w, int h, const std::string& event)
 {
     XRect area(x, y, x + w, y + h);
-    new XAnyPlace(area, XLocation::current_location, event);
+    AddEventPlace(area, event);
 }
 
 

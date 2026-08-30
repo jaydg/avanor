@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef LUA_API_ACTOR_H
 #define LUA_API_ACTOR_H
 
+#include <tuple>
 #include <string>
 
 #include <sol/forward.hpp>
@@ -58,6 +59,13 @@ namespace lua_api
     // was given and FindCreature()/FindCreatures() match on. Lets a script
     // ask "whose people are these?" about a creature it was handed.
     std::string GetGroupID(void* cr);
+
+    // Where a creature is standing. Mirrors GetWayXY()'s two-value return.
+    // Note when calling this from a place's MOVE_IN handler: the event
+    // fires before the step commits (XCreature::NewMove), so what comes
+    // back is the tile the creature is stepping *off*, which is what tells
+    // a handler which way it is travelling.
+    std::tuple<int, int> GetCreatureXY(void* cr);
     bool isEnemy(void* cr1, void* cr2);
     void SetCreatureAI(void* cr, const std::string& lua_class);
     XCreature* AsCreature(void* p);

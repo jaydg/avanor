@@ -137,6 +137,13 @@ function MakeAvanorValley()
 		AddTranslation("9", function(x, y) Way(XStairWay.DOWN, "SMALL_CAVE_1", x, y) end)
 		DrawPattern(0, 0)
 
+		-- The bandits shout across the water as the hero reaches the bridge
+		-- (see BanditBridgeEvent). The tiles it covers are named once, in
+		-- BANDIT_BRIDGE, because the handler needs them too - it compares the
+		-- hero's position against them to tell a crossing from a homecoming.
+		EventPlace(BANDIT_BRIDGE.x, BANDIT_BRIDGE.y,
+			BANDIT_BRIDGE.w, BANDIT_BRIDGE.h, 'BanditBridgeEvent')
+
 -- SMALL TOWN --
 		SetPattern(46, 15,
 		".............................................." ..

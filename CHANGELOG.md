@@ -46,6 +46,17 @@ straight exchange of blows — but he is slower than you are, which he always
 was, and that is the opening. Back away, shoot, drink something, and pick
 your ground.
 
+**The bandits at the bridge say so first.** Five forest brothers hold the
+only crossing of the river, and until now the first a new character knew of
+them was dying to one. They call out from the trees as you set foot on the
+span — the last square from which turning back is still free, since their
+ground begins on the far bank — and the villagers will warn you too, if you
+ask anyone before you go. Cross anyway and that is your decision, which is
+all the warning was ever meant to buy you.
+
+They only shout at somebody about to cross. Coming home the other way, they
+have nothing to say to you; and once they are dead the road is quiet.
+
 **Caves that look like caves.**
 A second kind of cavern joins the old blob-shaped ones: rounded chambers grown
 one at a time and joined by single doorways cut through the rock, some of them
