@@ -222,8 +222,13 @@ int XItem::BasicFill(ItemType it, XItemBasicStructure * pData)
     }
 
     if (x_struct) {
+        // Whether this kind of item is meant to protect at all, read from
+        // the template rather than from the roll - see PropFill().
+        const XDice template_pv(x_struct->pv);
+        const bool protective = template_pv.GetSides() > 0 || template_pv.GetBonus() > 0;
+
         MainFill(x_struct);
-        PropFill(x_struct->iset);
+        PropFill(x_struct->iset, protective);
 
         if (vRand() % 20 > 18) {
             SpecialFill();
@@ -264,7 +269,7 @@ void XItem::MainFill(ItemTemplate *is)
     RNG = d.NThrow();
 }
 
-void XItem::PropFill(ITEM_SET is)
+void XItem::PropFill(ITEM_SET is, bool protective)
 {
     int tval = 0;
 

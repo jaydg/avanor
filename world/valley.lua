@@ -150,7 +150,20 @@ function MakeAvanorValley()
 		AddTranslation("E", function(x, y) CreateOzorik(x, y) end)
 		AddTranslation("F", function(x, y) CreateGuardians(x, y) end)
 		AddTranslation("G", function(x, y) CreateGekta(x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW, 'Noberik, the human shopkeeper', SHOP) end)
+		-- min_value keeps the junk off the armourer's floor. GetValue()
+		-- weights a point of protection six times as heavily as a point of
+		-- defence, so a price floor is the bluntest way to ask for armour
+		-- that actually protects: at 20 it takes the protective share of his
+		-- stock from 42% to 59%, and it is still low enough that a hero who
+		-- has only just arrived can afford part of the shelf. Raising it much
+		-- past 25 starts selecting expensive weapons instead and prices the
+		-- shop out of the early game entirely.
+		AddTranslation("S", function(x, y)
+			BuildShop(x, y, 9, 3,
+				ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW,
+				'Noberik, the human shopkeeper',
+				{ wall = SHOP.wall, floor = SHOP.floor, min_value = 20 })
+		end)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "RATCELLAR", x, y) end)
 		DrawPattern(10, 40)
 

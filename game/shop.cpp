@@ -68,10 +68,13 @@ std::optional<XPoint> XShop::FindDoor()
 }
 
 XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
-             const XTileType::Id wall, const XTileType::Id floor)
+             const XTileType::Id wall, const XTileType::Id floor,
+             const int _min_value, const int _max_value)
     : XAnyPlace(_area, _loc)
 {
     shop_mask = _kind;
+    min_value = _min_value;
+    max_value = _max_value;
 
     if (sd != Door::BUILT_IN) {
         int dx = 0;
@@ -107,14 +110,14 @@ XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
 
         for (int i = area.left + 1; i < area.right - 1; i++)
             for (int j = area.top + 1; j < area.bottom - 1; j++) {
-                XItem * item = ICREATEA(shop_mask);
+                XItem * item = ICREATE(shop_mask, min_value, max_value);
                 item->Drop(location, i, j);
             }
 
     } else {
         for (int i = area.left; i < area.right; i++)
             for (int j = area.top; j < area.bottom; j++) {
-                XItem * item = ICREATEA(shop_mask);
+                XItem * item = ICREATE(shop_mask, min_value, max_value);
                 item->Drop(location, i, j);
             }
     }

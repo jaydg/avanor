@@ -393,9 +393,10 @@ std::pair<int, int> Range(const sol::optional<sol::table>& options, const char* 
 } // namespace
 
 void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd,
-                           const XTileType::Id wall, const XTileType::Id floor)
+                           const XTileType::Id wall, const XTileType::Id floor,
+                           const int min_value, const int max_value)
 {
-    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd, wall, floor);
+    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd, wall, floor, min_value, max_value);
     AddPlace(shop);
     XCreature * cr = NewCreature(CN_SHOPKEEPER, rect);
     ((XShopkeeper*)cr)->SetShop(sk_name, shop);
@@ -441,9 +442,16 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
     const auto door = options ? options->get_or("door", static_cast<int>(XShop::Door::BUILT_IN))
                               : static_cast<int>(XShop::Door::BUILT_IN);
 
+    // `min_value`/`max_value` bound what the shop will stock, in gold - see
+    // XShop::MinValue(). Absent, it stocks anything, which is what every
+    // shop did before the option existed.
+    const auto min_value = options ? options->get_or("min_value", 0) : 0;
+    const auto max_value = options ? options->get_or("max_value", 10000) : 10000;
+
     current_location->CreateShop(mask, shop_rect, keeper_name, static_cast<XShop::Door>(door),
         RequiredTile(options, "wall", current_location->id),
-        RequiredTile(options, "floor", current_location->id));
+        RequiredTile(options, "floor", current_location->id),
+        min_value, max_value);
 }
 
 

@@ -54,7 +54,19 @@ class XShop : public XAnyPlace
     public:
         DECLARE_CREATOR(XShop, XAnyPlace);
         XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
-              XTileType::Id wall, XTileType::Id floor);
+              XTileType::Id wall, XTileType::Id floor,
+              int _min_value, int _max_value);
+
+        // What this shop is willing to have on its floor, in gold. The
+        // generator rolls an item up to a hundred times looking for one
+        // inside the range (XItemFactory::CreateAnyItem), so a floor here
+        // is a quality floor: GetValue() weights a point of protection six
+        // times as heavily as a point of defence, which makes a minimum
+        // price the bluntest available way of asking for armour that
+        // actually protects. It is also what the customer pays, so raising
+        // it stocks a better shop and an unaffordable one in equal measure.
+        [[nodiscard]] int MinValue() const { return min_value; }
+        [[nodiscard]] int MaxValue() const { return max_value; }
 
         int onCreatureEnter(XCreature * cr) override;
         int onCreatureLeave(XCreature * cr) override;
@@ -84,6 +96,7 @@ class XShop : public XAnyPlace
         {
             ar(cereal::base_class<XAnyPlace>(this));
             ar(shop_mask);
+            ar(min_value, max_value);
 
             if constexpr (Archive::is_loading::value) {
                 hero_in = 0;
@@ -92,6 +105,8 @@ class XShop : public XAnyPlace
 
         ItemKind shop_mask;
     protected:
+        int min_value = 0;
+        int max_value = 10000;
         int hero_in;
 
         // Not persisted: purely derived from the (already-persisted) map

@@ -323,7 +323,8 @@ class XLocation : public XObject
 
 
         void CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd,
-                        XTileType::Id wall, XTileType::Id floor);
+                        XTileType::Id wall, XTileType::Id floor,
+                        int min_value, int max_value);
 };
 
 // Both of XLocation's no-args-shaped constructors assert(0) - route
