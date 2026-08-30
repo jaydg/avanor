@@ -660,6 +660,13 @@ int XStandardAI::Wear() const
 {
 
     for (auto item: ai_owner->contain) {
+        // Worn items stay resident in contain the whole time they are worn
+        // (XBodyPart::Wear()), so this walk sees what the creature already
+        // has on. Skip those.
+        if (ai_owner->IsWorn(item.get())) {
+            continue;
+        }
+
         XBodyPart * xbp = ai_owner->GetBodyPart(item->bp);
 
         if (!xbp) {
