@@ -262,7 +262,7 @@ function MakeAvanorValley()
 		DrawPattern(46, 75)
 
 
--- UNDEAD's THOMB --
+-- UNDEAD's TOMB --
 		SetPattern(22, 9,
 		"              ########" ..
 		"    ###########,,,,,,#" ..
