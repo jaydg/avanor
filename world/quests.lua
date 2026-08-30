@@ -5,6 +5,7 @@ QUEST_YOHJI_BAT		= 4
 QUEST_YOHJI_RAT		= 5
 QUEST_ANCIENT_PART	= 6
 QUEST_GIANA			= 7
+QUEST_BANDITS		= 8
 
 
 function CreateAllQuests()
@@ -36,6 +37,11 @@ function CreateAllQuests()
 
 	Quest(QUEST_ANCIENT_PART, XQuest.UNKNOWN,
 		"Ahk-Ulan asked you to bring 3 parts of ancient machine.",
+		"",
+		"")
+
+	Quest(QUEST_BANDITS, XQuest.UNKNOWN,
+		"Elder Gridor asked you to clear the forest brothers off the old road east of the village. Five of them hold the bridge, and the village has not been able to use the road in years.",
 		"",
 		"")
 

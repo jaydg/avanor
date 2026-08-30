@@ -69,7 +69,10 @@ function RoyalGuardHandler(e, t, p, v)
 end
 
 
-local BANDIT_GROUP = "forest_brother"
+-- The brotherhood that holds the bridge. Global rather than local: the
+-- Elder's second quest is to clear them off the road, so his handler has to
+-- be able to ask whether any are left (see ElderGridorHandler).
+BANDIT_GROUP = "forest_brother"
 
 -- Recognizes fellow forest-brotherhood members by their cloak and never
 -- treats them as enemies, regardless of the usual class-based hostility
@@ -120,6 +123,23 @@ end
 -- here has not yet been decided about.
 BANDIT_BRIDGE = {x = 33, y = 8, w = 2, h = 1}
 
+-- How many of the five still hold the road. Counted by name, not by group:
+-- Jorgus shares their group id because he leads them (see CreateJorgus),
+-- but he sits peacefully in his own house behind the camp and is the only
+-- person in the valley who will teach stealing. What the Elder wants
+-- cleared is the road, not the man.
+function BanditsOnTheRoad()
+	local n = 0
+
+	for _, b in ipairs(FindCreatures("MAIN", BANDIT_GROUP)) do
+		if (AsCreature(b).name == "bandit") then
+			n = n + 1
+		end
+	end
+
+	return n
+end
+
 function BanditBridgeEvent(e, p)
 	if (e ~= LuaEvent.MOVE_IN or not isHero(p)) then
 		return
@@ -137,7 +157,7 @@ function BanditBridgeEvent(e, p)
 	end
 
 	-- Nobody left to shout: the road is the player's, and silence says so.
-	if (not FindCreature("MAIN", BANDIT_GROUP)) then
+	if (BanditsOnTheRoad() == 0) then
 		return
 	end
 

@@ -23,6 +23,52 @@ function CreateElderGridor(x, y)
 end
 
 
+-- The Elder's second errand: the forest brothers on the old road east.
+-- Split out of ElderGridorHandler only because it has four states of its
+-- own and would otherwise bury the demon quest above it.
+function ElderBanditQuest(p)
+	local bq = QuestStatus(QUEST_BANDITS)
+
+	if (bq >= XQuest.CLOSED) then
+		AddMessage("'The road is open and the carts come through. Have a nice day,'")
+
+		if (Gender(p) == Gender.MALE) then
+			AddMessage('sir!')
+		else
+			AddMessage("ma'am!")
+		end
+
+		return
+	end
+
+	-- The road clear - whether he asked for it or not. Counted by
+	-- BanditsOnTheRoad(), which leaves Jorgus out of it: he leads them, but
+	-- killing a peaceful man in his house is not what was asked, and he is
+	-- the valley's only teacher of stealing.
+	if (BanditsOnTheRoad() == 0) then
+		if (bq == XQuest.UNKNOWN) then
+			AddMessage("'You have been east already, have you? We wondered why the smoke over the bridge went out.'")
+		else
+			AddMessage("'The road is open! We have not walked it in years.'")
+		end
+
+		AddMessage("'This is what the village can spare, and it is given gladly.'")
+		MoneyOperation(p, 250)
+		QuestModify(QUEST_BANDITS, XQuest.CLOSED)
+		return
+	end
+
+	if (bq == XQuest.UNKNOWN) then
+		AddMessage("'There is one thing more, if you have the stomach for it.'")
+		AddMessage("'The old road east is ours by right and we have not used it in years. Five of them hold the bridge - forest brothers, they call themselves, as if robbery were a family trade.'")
+		AddMessage("'And one of them took one of ours. Brida's girl. Go and speak to her; she will tell it better than I can.'")
+		AddMessage("'Clear the road for us and the valley will not forget it.'")
+		QuestModify(QUEST_BANDITS, XQuest.KNOWN)
+	else
+		AddMessage("'They are still out there. We hear them at night, on the far bank.'")
+	end
+end
+
 function ElderGridorHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus(QUEST_ELDER)
@@ -40,12 +86,12 @@ function ElderGridorHandler(e, t, p, v)
 			QuestModify(QUEST_ELDER, XQuest.CLOSED)
 			SendFarmersToCollectMushrooms()
 		else
-			AddMessage('Have a nice day,')
-			if (Gender(p) == Gender.MALE) then
-				AddMessage('sir!')
-			else
-				AddMessage("ma'am!")
-			end
+			-- The demon is dealt with and the farmers are back at work. The
+			-- road east is the village's other old grievance, and this is
+			-- the point in the game where it becomes a fight the player can
+			-- have: one of the brothers loses to a level-5 hero about seven
+			-- times in eight, where at level 1 it is the other way round.
+			ElderBanditQuest(p)
 		end
 	elseif (e == LuaEvent.SAVE) then
 	elseif (e == LuaEvent.LOAD) then

@@ -46,6 +46,20 @@ straight exchange of blows — but he is slower than you are, which he always
 was, and that is the opening. Back away, shoot, drink something, and pick
 your ground.
 
+**Clear the old road east.** Once the demon is dead and his farmers are
+back at work, Elder Gridor has a second thing to ask. The road east has been
+shut for years — five forest brothers hold the bridge, and the village has
+not walked it since. He is asking at the point in the game where it becomes
+a fight you can have rather than one you lose.
+
+He also tells you what Brida has not had the chance to: one of them took one
+of hers. If you had not yet met the girl's mother, you know now where to
+ask.
+
+The road is what he wants cleared, not the brotherhood. Jorgus keeps his
+house behind the camp and his own counsel, and the man who teaches thieving
+is not part of the bargain.
+
 **The bandits at the bridge say so first.** Five forest brothers hold the
 only crossing of the river, and until now the first a new character knew of
 them was dying to one. They call out from the trees as you set foot on the
