@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xgen.h"
 #include "engine/xlua.h"
 #include "map/dungeon_builder.h"
+#include "map/windroad.h"
 #include "game/game.h"
 #include "game/location.h"
 #include "game/shop.h"
@@ -470,6 +471,62 @@ bool HasSpecial(const int x, const int y, sol::optional<void*> location)
     return ResolveLocation(location)->map->GetSpecial(x, y) != nullptr;
 }
 
+//SetTile(x, y, XTileType.ROAD)
+// The counterpart to GetTile(). Returns false and writes nothing for a cell
+// outside the map - XMap::SetXY() asserts on one, and a script is allowed to
+// ask about anywhere.
+bool SetTile(const int x, const int y, const int tile, sol::optional<void*> location)
+{
+    const XMap* map = ResolveLocation(location)->map;
+
+    if (x < 0 || y < 0 || x >= map->len || y >= map->hgt) {
+        return false;
+    }
+
+    map->SetXY(x, y, static_cast<XTileType::Id>(tile));
+
+    return true;
+}
+
+// One path, as an array of {x =, y =} in walking order.
+static sol::table ToLuaPath(sol::this_state s, const std::vector<XPoint>& path)
+{
+    sol::state_view lua(s);
+    sol::table road = lua.create_table(static_cast<int>(path.size()), 0);
+    int i = 1;
+
+    for (const XPoint& pt : path) {
+        road[i++] = lua.create_table_with("x", pt.x, "y", pt.y);
+    }
+
+    return road;
+}
+
+//road = WindingRoad(x1, y1, x2, y2, 10)
+sol::table WindingRoad(sol::this_state s, const int x1, const int y1,
+                       const int x2, const int y2, const int pertamt,
+                       sol::optional<void*> location)
+{
+    return ToLuaPath(s, windroad::Wind(*ResolveLocation(location)->map,
+                                       XPoint(x1, y1), XPoint(x2, y2), pertamt));
+}
+
+//road = ZigzagRoad(x1, y1, x2, y2, 30, 0)
+sol::table ZigzagRoad(sol::this_state s, const int x1, const int y1,
+                      const int x2, const int y2, const int turnpct, const int diagpct)
+{
+    return ToLuaPath(s, windroad::Zigzag(XPoint(x1, y1), XPoint(x2, y2),
+                                         turnpct, diagpct));
+}
+
+//road = SigsagRoad(x1, y1, x2, y2, 30, 0)
+sol::table SigsagRoad(sol::this_state s, const int x1, const int y1,
+                      const int x2, const int y2, const int turnpct, const int diagpct)
+{
+    return ToLuaPath(s, windroad::Sigsag(XPoint(x1, y1), XPoint(x2, y2),
+                                         turnpct, diagpct));
+}
+
 // A randomly chosen walkable, unoccupied cell, or nil when the map has
 // none - a direct pass-through of XLocation::GetFreeXY()'s own optional.
 sol::optional<std::tuple<int, int>> GetFreeXY(sol::optional<void*> location)
@@ -509,6 +566,10 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("GetMapSize", &lua_api::GetMapSize);
     lua.set_function("GetTile", &lua_api::GetTile);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
+    lua.set_function("SetTile", &lua_api::SetTile);
+    lua.set_function("WindingRoad", &lua_api::WindingRoad);
+    lua.set_function("ZigzagRoad", &lua_api::ZigzagRoad);
+    lua.set_function("SigsagRoad", &lua_api::SigsagRoad);
     lua.set_function("GetFreeXY", &lua_api::GetFreeXY);
     lua.set_function("PlaceSpecial", &lua_api::PlaceSpecial);
 

@@ -336,6 +336,22 @@ function MakeAvanorValley()
 		end)
 		DrawPattern(45, 25)
 
+	-- The road east out of the village has always stopped dead in open country,
+	-- and the city's western gate has always been reached over a bridge with
+	-- nothing on the near side of it. Lay the track that ought to have joined
+	-- them, wandering the way a road worn by use wanders rather than ruled
+	-- straight across the plain. Placed here because it has to come after every
+	--  pattern that is stamped onto the Valley.
+	for _, c in ipairs(WindingRoad(53, 9, 128, 13, 14)) do
+		local t = GetTile(c.x, c.y)
+
+		if (t == XTileType.WATER or t == XTileType.DEEP_WATER) then
+			SetTile(c.x, c.y, XTileType.BRIDGE)
+		else
+			SetTile(c.x, c.y, XTileType.ROAD)
+		end
+	end
+
 	-- Last thing done to the Valley itself, after every pattern is
 	-- stamped onto it - restored alongside the orc war party/teleports
 	-- above, see the comment there. Runs last so bushes don't end up

@@ -81,6 +81,18 @@ namespace lua_api
     std::tuple<int, int> GetMapSize(sol::optional<void*> location);
     int GetTile(int x, int y, sol::optional<void*> location);
     bool HasSpecial(int x, int y, sol::optional<void*> location);
+    bool SetTile(int x, int y, int tile, sol::optional<void*> location);
+
+    // Winding paths, from map/windroad.h. Each returns an array of {x=, y=}
+    // in order from the first point to the second, for the caller to lay
+    // whatever it likes along - a road, a river, a corridor, a line of
+    // herbs. Empty if no path could be built.
+    sol::table WindingRoad(sol::this_state s, int x1, int y1, int x2, int y2,
+                           int pertamt, sol::optional<void*> location);
+    sol::table ZigzagRoad(sol::this_state s, int x1, int y1, int x2, int y2,
+                          int turnpct, int diagpct);
+    sol::table SigsagRoad(sol::this_state s, int x1, int y1, int x2, int y2,
+                          int turnpct, int diagpct);
     sol::optional<std::tuple<int, int>> GetFreeXY(sol::optional<void*> location);
     sol::object PlaceSpecial(const std::string& class_name, int x, int y,
                              sol::this_state s, sol::optional<void*> location);
