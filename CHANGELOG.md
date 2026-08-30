@@ -141,6 +141,20 @@ what Create Trap could build.
 
 ### Magic and combat
 
+**The villagers are mushroom farmers, and now they look it.** They were
+described as sunburnt, leaning on pitchforks, gathering food from the fields
+— but there are no fields in this story. The village lives on mushrooms, and
+mushrooms come out of the caves to the west. Its people are pale as things
+grown under a stone, they have spent their working lives underground, and
+what they lean on is a long spear, because there are things down there that
+bite. The goodwives take their turn below as well; they have a spear apiece
+now instead of going bare-handed.
+
+They are a little harder to kill than they were, too, which they had earned.
+Once the demon in the caves is dead and the Elder sets them back to work,
+they walk down past the snakes and the beetles four times a trip and they do
+it for the rest of the game.
+
 **Sandals made you easier to hit than bare feet.** So did plate mail, chain
 mail and ring mail — the heaviest armour in the game was quietly *reducing*
 your defence — and a war hammer, a knife, a scimitar, a great axe, a pike, a

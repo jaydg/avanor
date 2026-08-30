@@ -7,8 +7,17 @@ function SendFarmersToCollectMushrooms()
 		{cmd = ScriptCommand.DROP_ITEM, kind = ItemKind.FOOD},
 	}
 
-	for _, farmer in ipairs(FindCreatures("MAIN", VILLAGE_GROUP)) do
-		ExecuteCreatureScript(farmer, script)
+	-- Everyone who lives in the village shares VILLAGE_GROUP - it is what
+	-- gives them their patrol area and what keeps the mushroom caves from
+	-- draining them (see MushroomCaveEvent). It is not a list of gatherers.
+	-- The goodwives keep the cottages and do not go below, and the Elder and
+	-- Brida have names, dialogue and quests of their own; sending those two
+	-- down a dungeon can end with the Elder's own errand or Giana's rescue
+	-- unfinishable. Only the farmers make the trip.
+	for _, villager in ipairs(FindCreatures("MAIN", VILLAGE_GROUP)) do
+		if (AsCreature(villager).name == "farmer") then
+			ExecuteCreatureScript(villager, script)
+		end
 	end
 end
 
