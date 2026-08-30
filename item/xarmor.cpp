@@ -30,10 +30,10 @@ ItemTemplate ARMOR_STRUCT[] = {
     {ItemType::DRESS,	"dress",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	3,	5,	100,	IQ_POOR,	""},
     {ItemType::ROBE,	"robe",	'[',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	5,	9,	150,	IQ_POOR,	""},
     {ItemType::LIGHTMAIL,	"scale mail",	'[',	"1d3+1", "1d2",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	15,	15,	70,	IQ_AVG,	""},
-    {ItemType::SCALEMAIL,	"scale mail",	'[',	"1d3",	"1d2+2", "1d2-2", "1d4",	"",	"",	ISET_ALLMETAL,	30,	30,	20,	IQ_FAIR,	""},
-    {ItemType::PLATEMAIL,	"plate mail",	'[',	"1d3-1", "1d2+3", "1d2-3", "1d4",	"",	"",	ISET_ALLMETAL,	45,	30,	15,	IQ_FAIR,	""},
-    {ItemType::CHAINMAIL,	"chain mail",	'[',	"1d3-1", "1d2+4", "1d2-4", "1d4",	"",	"",	ISET_ALLMETAL,	45,	30,	10,	IQ_GOOD,	""},
-    {ItemType::RINGMAIL,	"ring mail",	'[',	"1d3-1", "1d2+4", "1d2-4", "1d4",	"",	"",	ISET_ALLMETAL,	50,	30,	10,	IQ_GOOD,	""}
+    {ItemType::SCALEMAIL,	"scale mail",	'[',	"1d3",	"1d2+2", "1d2", "1d4",	"",	"",	ISET_ALLMETAL,	30,	30,	20,	IQ_FAIR,	""},
+    {ItemType::PLATEMAIL,	"plate mail",	'[',	"1d3", "1d2+3", "1d2", "1d4",	"",	"",	ISET_ALLMETAL,	45,	30,	15,	IQ_FAIR,	""},
+    {ItemType::CHAINMAIL,	"chain mail",	'[',	"1d3", "1d2+4", "1d2", "1d4",	"",	"",	ISET_ALLMETAL,	45,	30,	10,	IQ_GOOD,	""},
+    {ItemType::RINGMAIL,	"ring mail",	'[',	"1d3", "1d2+4", "1d2", "1d4",	"",	"",	ISET_ALLMETAL,	50,	30,	10,	IQ_GOOD,	""}
 };
 
 XItemBasicStructure gi_armour(ARMOR_STRUCT, 8);

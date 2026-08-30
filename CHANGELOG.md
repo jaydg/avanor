@@ -141,6 +141,27 @@ what Create Trap could build.
 
 ### Magic and combat
 
+**Sandals made you easier to hit than bare feet.** So did plate mail, chain
+mail and ring mail — the heaviest armour in the game was quietly *reducing*
+your defence — and a war hammer, a knife, a scimitar, a great axe, a pike, a
+halberd and a staff all came out of the forge less accurate than they should
+be. Anything made of wood, stone, iron, bronze or brass carried its own
+hidden penalty on top.
+
+The cause was a conversion begun on New Year's Day 2004 and never finished.
+Item statistics had been rewritten that day to use a different kind of roll,
+one where the worst case is nothing rather than something, and most of the
+tables were rewritten to match — but a few dozen entries were left in the old
+notation, where they now read as a penalty instead of a floor. Sandals were a
+line that got half converted: the protection column was corrected and the
+defence column beside it was not.
+
+Forty-three entries are now finished the way the rest were. Nothing an item
+gives you can come out negative, and the spread of qualities is the one the
+distribution was designed for: most specimens ordinary, the occasional one
+notably better. The genuine penalties stay — heavy armour still costs
+accuracy by its weight, and a ring can still be cursed.
+
 **Every blow you strike counted twice.** For as long as anyone has played
 this version, a weapon with no fire or frost on it — which is to say almost
 every weapon in the game — dealt double what its dice said, and so did every

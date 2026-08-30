@@ -33,7 +33,7 @@ ItemTemplate MWEAPON_STRUCT[] = {
     {ItemType::SHORTBOW,	"short bow",	'{',	"",	"",	"1d2",	"1d4", "1d2",	"1d2",	ISET_BOW,	10,	5,	150,	IQ_AVG,	""},
     {ItemType::LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",	"1d2",	"1d5", "1d3",	"1d2",	ISET_BOW,	10,	5,	120,	IQ_AVG,	""},
     {ItemType::CROSSBOW,	"crossbow",	'{',	"",	"",	"1d4",	"1d6", "1d3+1",	"1d2",	ISET_BOW,	15,	5,	70,	IQ_AVG,	""},
-    {ItemType::HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",	"1d3-1",	"1d8", "1d4+2",	"1d2+1",	ISET_BOW,	35,	30,	10,	IQ_GOOD,	""},
+    {ItemType::HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",	"1d3",	"1d8", "1d4+2",	"1d2+1",	ISET_BOW,	35,	30,	10,	IQ_GOOD,	""},
     {ItemType::SLING,	"sling",	'{',	"",	"",	"1d2",	"1d3+1", "1d3",	"1d1+1",	ISET_ALLLEATHER,	5,	2,	200,	IQ_POOR,	""}
 };
 

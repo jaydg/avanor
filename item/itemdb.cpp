@@ -51,78 +51,78 @@ ItemMaterial item_prop[DB_PROP_SZ] = {
         SPP_NONE
     },
     {
-        "wooden",	xBROWN,	"1d2-1",	"1d3",
-        "1d2-1",	"0d0",	"1d2-1",	"",
+        "wooden",	xBROWN,	"1d2",	"1d3",
+        "1d2",	"0d0",	"1d2",	"",
         ISET_WOOD,	200,	IQ_POOR,	8,	7, CAN_WOODLIKE,
         "",
         SPP_NONE
     },
     {
-        "stone", xLIGHTGRAY,	"1d3-2",	"1d4+1",
-        "1d3-1",	"0d0",	"1d2-1",	"1d2-1",
+        "stone", xLIGHTGRAY,	"1d3",	"1d4+1",
+        "1d3",	"0d0",	"1d2",	"1d2",
         ISET_STONE,	200,	IQ_POOR,	20,	5, CAN_STONELIKE,
         "earth:0d0+10",
         SPP_NONE
     },
     {
-        "iron", xDARKGRAY,	"1d3-2",	"1d5+1",
-        "1d2-1",	"0d0",	"1d3+0",	"1d2-1",
+        "iron", xDARKGRAY,	"1d3",	"1d5+1",
+        "1d2",	"0d0",	"1d3+0",	"1d2",
         ISET_IRON,	120,	IQ_POOR,	30,	15, CAN_BLACKMETALLIKE,
         "",
         SPP_NONE
     },
     {
-        "bronze",	xBROWN,	"1d3-1",	"1d5+1",
-        "1d4-1",	"0d0",	"1d3+0",	"1d2-1",
+        "bronze",	xBROWN,	"1d3",	"1d5+1",
+        "1d4",	"0d0",	"1d3+0",	"1d2",
         ISET_BRONZE,	60,	IQ_AVG,	26,	17, CAN_GOODMETALLIKE,
         "stun:0d0+5",
         SPP_NONE
     },
     {
-        "brass", xBROWN,	"1d3-1",	"1d5+1",
-        "1d3-2",	"0d0",	"1d3+0",	"1d2-1",
+        "brass", xBROWN,	"1d3",	"1d5+1",
+        "1d3",	"0d0",	"1d3+0",	"1d2",
         ISET_BRASS,	60,	IQ_AVG,	30,	30, CAN_GOODMETALLIKE,
         "stun:0d0+10",
         SPP_SLOWDIGESTION
     },
     {
         "silver",	xLIGHTGRAY,	"1d3",	"1d5+2",
-        "1d4+0",	"0d0",	"1d4+0",	"1d3-1",
+        "1d4+0",	"0d0",	"1d4+0",	"1d3",
         ISET_SILVER,	30,	IQ_FAIR,	20,	30, CAN_GOODMETALLIKE,
         "acid:0d0+10",
         SPP_NONE
     },
     {
         "golden",	xYELLOW,	"1d3+1",	"1d5+2",
-        "1d5-1",	"0d0",	"1d5+0",	"1d4-1",
+        "1d5",	"0d0",	"1d5+0",	"1d4",
         ISET_GOLD,	15,	IQ_GOOD,	22,	50, CAN_BROKE,
         "acid:0d0+20",
         (SPECIAL_PROPERTY)(SPP_REGENERATION | SPP_FASTDIGESTION)
     },
     {
         "crystal",	xLIGHTMAGENTA, "1d3+3",	"1d5+2",
-        "1d5+1",	"0d0",	"1d5+1",	"1d2-1",
+        "1d5+1",	"0d0",	"1d5+1",	"1d2",
         ISET_CRYSTAL,	50,	IQ_AVG,	25,	14, CAN_STONELIKE,
         "water:0d0+10",
         SPP_NONE
     },
     {
         "steel",	xLIGHTBLUE,	"1d3+3",	"1d5+2",
-        "1d6+1",	"0d0",	"1d5+1",	"1d2-1",
+        "1d6+1",	"0d0",	"1d5+1",	"1d2",
         ISET_STEEL,	50,	IQ_FAIR,	15,	20, CAN_BLACKMETALLIKE,
         "stun:0d0+15",
         SPP_NONE
     },
     {
         "obsidian", xDARKGRAY,	"1d3+3",	"1d6+2",
-        "1d6+1",	"0d0",	"1d6+1",	"1d3-1",
+        "1d6+1",	"0d0",	"1d6+1",	"1d3",
         ISET_OBSIDIAN,	50,	IQ_FAIR,	13,	20, CAN_STONELIKE,
         "fire:0d0+15",
         SPP_NONE
     },
     {
         "mithril",	xLIGHTCYAN,	"1d3+6",	"2d3+3",
-        "2d4+4",	"0d1",	"2d4+3",	"1d4-1",
+        "2d4+4",	"0d1",	"2d4+3",	"1d4",
         ISET_MITHRIL,	5,	IQ_GOOD,	11,	100, CAN_NICEMETALLIKE,
         "poison:0d0+10 stun:0d0+10 confuse:0d0+20",
         SPP_NONE

@@ -26,7 +26,7 @@ CEREAL_REGISTER_TYPE(XBoots);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBoots);
 
 ItemTemplate BOOTS_STRUCT[] = {
-    {ItemType::SANDALS,	"sandals",	']',	"1d2-1",	"0d0",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	1,	1,	150,	IQ_POOR,	""},
+    {ItemType::SANDALS,	"sandals",	']',	"1d2",	"0d0",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	1,	1,	150,	IQ_POOR,	""},
     {ItemType::LIGHTBOOTS,	"light boots",	']',	"1d3",	"1d1",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	2,	2,	80,	IQ_AVG,	""},
     {ItemType::SOFTBOOTS,	"soft boots",	']',	"1d4",	"1d2",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	3,	3,	40,	IQ_FAIR,	""},
     {ItemType::HARDBOOTS,	"hard boots",	']',	"1d3",	"1d2+1", "",	"1d1",	"",	"",	ISET_OBSIMETAL,	5,	5,	10,	IQ_GOOD,	""}
