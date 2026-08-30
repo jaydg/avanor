@@ -52,6 +52,8 @@ function AhkUlanHandler(e, t, p, v)
 			AddMessage("Are you jeering at me?")
 			return 0
 		end
+	elseif (e == LuaEvent.DIE) then
+		QuestState:SetFlag('ahk_ulan_killed', 1)
 	end
 	return 1
 end
