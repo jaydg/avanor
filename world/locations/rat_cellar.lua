@@ -27,7 +27,7 @@ function MakeRatCellar()
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "MAIN", x, y) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("A", function(x, y) for i = 1, 8 do Creature('rat', x, y, 12, 4) end end)
-		AddTranslation("B", function(x, y) for i = 1, 2 do Creature('ghost', x, y, 4, 4) end end)
+		AddTranslation("B", function(x, y) for i = 1, 2 do Creature('zombie', x, y, 4, 4) end end)
 		local trnd = Rand(4)
 		if (trnd == 0) then
 			AddTranslation("C", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
