@@ -310,7 +310,17 @@ void XItem::PropFill(ITEM_SET is, bool protective)
         dv += d.NThrow();
     }
 
-    if (pv) {
+    // What the thing is made of adds to what it stops - for anything whose
+    // template says it stops something at all.
+    //
+    // This used to test the rolled `pv` instead, which quietly made the
+    // material irrelevant to most armour: NThrow() returns zero for three
+    // rolls in four, so a robe or a cap or a pair of boots usually rolled
+    // no protection, and once it had rolled none, being made of steel or
+    // obsidian could no longer give it any. Testing the template instead
+    // lets the material always have its say, while still keeping armour
+    // off a sword - whose pv column is empty, so `protective` is false.
+    if (protective) {
         d.Setup(item_prop[r_val].pv);
         pv += d.NThrow();
     }
