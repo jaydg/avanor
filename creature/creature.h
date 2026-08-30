@@ -483,7 +483,13 @@ class XCreature : public XBaseObject
         int onMagicDamage(int dmg, XResistance::Id tr);
         // Immediate damage only - what the attack's elemental brands and
         // slayer bonuses do against this creature's resistances and class.
-        int CauseEffect(int dmg, AttackEffectType brt);
+        // The elemental/slayer damage `brt` produces against this
+        // creature - the bonus alone, never the base damage back. `applied`
+        // reports whether any effect this function implements actually
+        // fired, which is the one thing its two callers need to answer
+        // differently: a weapon's brand adds to the weapon, while a bolt
+        // of fire IS its element and has nothing left when it is resisted.
+        int CauseEffect(int dmg, AttackEffectType brt, bool* applied);
         void CausePostEffect(int dmg, AttackEffectType brt, XCreature* attacker);
 
         virtual const char* GetMeleeAttackMsg(XItem* weapon);

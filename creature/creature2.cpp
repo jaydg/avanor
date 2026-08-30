@@ -126,47 +126,58 @@ int XCreature::onMagicDamage(const int dmg, const XResistance::Id tr)
     return damage < 0 ? 0 : damage;
 }
 
-int XCreature::CauseEffect(int dmg, AttackEffectType aet)
+// One convention, honestly: what comes back is the effect's own damage and
+// nothing else, and `applied` says whether any of it was even attempted.
+//
+// This used to answer `dmg` - the caller's own base damage - whenever no
+// effect produced anything, which conflated three different situations that
+// need three different answers: an attack with no brand at all, a brand this
+// function does not implement, and a brand the target resists completely.
+// Returning the base for all three doubled every unbranded melee blow in the
+// game (the caller added the result to the damage it had just passed in), and
+// made a creature immune to fire take full damage from a bolt of fire while a
+// half-resistant one took half.
+int XCreature::CauseEffect(int dmg, AttackEffectType aet, bool* applied)
 {
     int damage = 0;
+    bool matched = false;
 
-    if (aet > AttackEffectType::NONE) {
-        if ((aet & AttackEffectType::FIRE) != AttackEffectType::NONE) {
-            damage += onMagicDamage(dmg, XResistance::FIRE);
+    // An element the attack carries always counts as applied, even when
+    // resistance leaves nothing of it - that zero is the whole point.
+    const auto element = [&](const AttackEffectType bit, const XResistance::Id resist) {
+        if ((aet & bit) != AttackEffectType::NONE) {
+            matched = true;
+            damage += onMagicDamage(dmg, resist);
         }
+    };
 
-        if ((aet & AttackEffectType::COLD) != AttackEffectType::NONE) {
-            damage += onMagicDamage(dmg, XResistance::COLD);
-        }
+    element(AttackEffectType::FIRE, XResistance::FIRE);
+    element(AttackEffectType::COLD, XResistance::COLD);
+    element(AttackEffectType::ACID, XResistance::ACID);
+    element(AttackEffectType::EARTH, XResistance::EARTH);
+    element(AttackEffectType::LIGHTNING, XResistance::AIR);
 
-        if ((aet & AttackEffectType::ACID) != AttackEffectType::NONE) {
-            damage += onMagicDamage(dmg, XResistance::ACID);
-        }
-
-        if ((aet & AttackEffectType::EARTH) != AttackEffectType::NONE) {
-            damage += onMagicDamage(dmg, XResistance::EARTH);
-        }
-
-        if ((aet & AttackEffectType::LIGHTNING) != AttackEffectType::NONE) {
-            damage += onMagicDamage(dmg, XResistance::AIR);
-        }
-
-        if ((aet & AttackEffectType::DEMONSLAYER) != AttackEffectType::NONE && creature_class & CreatureClass::DEMON) {
+    // A slayer brand against something it does not slay has not applied at
+    // all - unlike a resisted element, there is nothing here to reduce.
+    const auto slayer = [&](const AttackEffectType bit, const CreatureClass prey) {
+        if ((aet & bit) != AttackEffectType::NONE && creature_class & prey) {
+            matched = true;
             damage += dmg * 3;
         }
+    };
 
-        if ((aet & AttackEffectType::ORCSLAYER) != AttackEffectType::NONE && creature_class & CreatureClass::ORC) {
-            damage += dmg * 3;
-        }
+    slayer(AttackEffectType::DEMONSLAYER, CreatureClass::DEMON);
+    slayer(AttackEffectType::ORCSLAYER, CreatureClass::ORC);
 
-        if (damage == 0) {
-            return dmg;
-        } else {
-            return damage;
-        }
-    } else {
-        return dmg;
+    // HELLFIRE, ULTIMATECOLD, DEATH and six of the eight slayer brands are
+    // named by the weapon tables but implemented nowhere, so they match
+    // nothing here and a weapon carrying one behaves as a plain weapon -
+    // which is what it has always been.
+    if (applied) {
+        *applied = matched;
     }
+
+    return damage;
 }
 
 void XCreature::CausePostEffect(int dmg, AttackEffectType aet, XCreature * attacker)
@@ -506,12 +517,24 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             pData->attacker->sk->UseSkill(XSkill::Skill::TACTICS);
         }
 
-        //calculates suposed damage counting creature type and resistance
-        //also Adds modifers such 'Poison'
-        if (pData->attack_name) { //this is poor magic
-            dmg = CauseEffect(dmg, pData->attack_effect);
-        } else { //this is hit with weapon or unarmed hit(snakes beat for example)
-            dmg += CauseEffect(dmg, pData->attack_effect);
+        // What the attack's brand does, on top of or instead of the blow
+        // itself - see CauseEffect() for why those two are not the same.
+        bool effect_applied = false;
+        const int effect = CauseEffect(dmg, pData->attack_effect, &effect_applied);
+
+        if (pData->attack_name) {
+            // A spell, a missile or a trap. When it is elemental the
+            // element is the whole of it, so resistance takes from the
+            // whole of it - down to nothing against something immune.
+            // Carrying no element it keeps the damage it arrived with.
+            if (effect_applied) {
+                dmg = effect;
+            }
+        } else {
+            // A weapon or an unarmed blow: whatever the brand adds is on
+            // top of what the weapon itself does, and an unbranded weapon
+            // adds nothing.
+            dmg += effect;
         }
 
         //always count intrinsic PV
