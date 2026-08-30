@@ -73,9 +73,9 @@ function MakeAvanorValley()
 -- SMALL VILLAGE --
 		SetPattern(55, 31,
 		"                       =                               " ..
-		"                       ========                        " ..
+		"                       ========                       9" ..
 		"       P  @@@@@@@  @@@@@@G.....==                      " ..
-		"        ..@A;B;A@..@...A@......X.=                 9   " ..
+		"        ..@A;B;A@..@...A@......X.=                     " ..
 		"        ..@@@/@@@..@+@@@@XXXXXXX..=                    " ..
 		"        .....1......1.............=                    " ..
 		"   >111111111111111111111111111...=F                   " ..
@@ -143,6 +143,13 @@ function MakeAvanorValley()
 		-- hero's position against them to tell a crossing from a homecoming.
 		EventPlace(BANDIT_BRIDGE.x, BANDIT_BRIDGE.y,
 			BANDIT_BRIDGE.w, BANDIT_BRIDGE.h, 'BanditBridgeEvent')
+
+		-- Connect Rotmoth's hideout with Jorgus' HQ
+		for _, c in ipairs(WindingRoad(53, 2, 43, 10, 9)) do
+			local t = GetTile(c.x, c.y)
+			SetTile(c.x, c.y, XTileType.ROAD)
+		end
+
 
 -- SMALL TOWN --
 		SetPattern(46, 15,
