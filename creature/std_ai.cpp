@@ -1145,8 +1145,16 @@ void XStandardAI::SetGroupEnemy(XCreature* cr) const
                 continue;
             }
 
+            // Deliberately no ResAIFlag(GUARD_AREA) here. Rousing a group
+            // used to unleash it permanently, and nothing ever put the flag
+            // back. Guards drifted off their posts for good.
+            //
+            // It bought nothing anyway. Move() already lets a guard leave
+            // its area to pursue ("we can leave the area only to pursuit
+            // enemies, otherwise come back"), so the leash is suspended for
+            // exactly as long as the fight lasts, and reels them back in
+            // afterwards.
             buddy->xai->AddPersonalEnemy(cr);
-            buddy->xai->ResAIFlag(XStandardAI::GUARD_AREA);
             buddy->xai->enemy = cr;
         }
     }

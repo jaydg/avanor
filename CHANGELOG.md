@@ -303,6 +303,13 @@ Things that simply did not happen:
 - Reading the high score table, writing recipes, the backspace key, and the
   status line
 
+Things that went quietly wrong the longer you played:
+
+- Guards, smiths and kings abandoned their posts for good. Rousing a group
+  against an attacker — a monster killing one of them, a quarrel picked in
+  the wrong room — unleashed every member of that group, and nothing ever
+  leashed them again. The anger wore off; the wandering did not.
+
 ---
 
 ### For the curious
