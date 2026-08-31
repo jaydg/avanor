@@ -1033,7 +1033,7 @@ int XStandardAI::Shoot() const
     return 0;
 }
 
-int XStandardAI::PickUpItems() const
+bool XStandardAI::PickUpItems() const
 {
     XItemList *item_list = ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y);
     bool item_picked = false;
@@ -1065,7 +1065,7 @@ int XStandardAI::PickUpItems() const
     }
 
     if (!item_picked) {
-        return 0;
+        return false;
     }
 
     ai_owner->nx = ai_owner->x;
@@ -1076,7 +1076,7 @@ int XStandardAI::PickUpItems() const
             ai_owner->name));
     }
 
-    return 1;
+    return true;
 }
 
 void XStandardAI::SetArea(XRect & area, const std::string& ln)

@@ -266,7 +266,7 @@ class XStandardAI
         int Shoot() const;
         int ReadScroll() const;
         int DrinkPotion() const;
-        int PickUpItems() const;
+        bool PickUpItems() const;
 
         int MoveTo(int x, int y, XLocation* l = nullptr) const;
 

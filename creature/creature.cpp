@@ -1148,7 +1148,7 @@ void XCreature::Die(XCreature* killer)
     Invalidate();
 }
 
-int XCreature::DropItem(XItem * i)
+bool XCreature::DropItem(XItem* i)
 {
     XAnyPlace * place = l->map->GetPlace(x, y);
     bool flag = true;
@@ -1177,7 +1177,7 @@ int XCreature::DropItem(XItem * i)
     return flag;
 }
 
-int XCreature::PickUpItem(XItem * i)
+bool XCreature::PickUpItem(XItem* i)
 {
     XAnyPlace * place = l->map->GetPlace(x, y);
     bool flag = true;
@@ -1201,8 +1201,9 @@ int XCreature::PickUpItem(XItem * i)
                 contain.insert(XItem::Own(i));
             }
 
-            return 1;
-        } else { //if we can't pick item, then drop it
+            return true;
+        } else {
+            // if we can't pick item, then drop it
             if (isHero()) {
                 msgwin.ClrMsg();
                 msgwin.Add(fmt::format("{} is to heavy for you!", i->toString()));
@@ -1220,10 +1221,10 @@ int XCreature::PickUpItem(XItem * i)
             i->x = tx;
             i->y = ty;
 
-            return 0;
+            return false;
         }
     } else {
-        return 0;
+        return false;
     }
 }
 

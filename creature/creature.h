@@ -461,8 +461,8 @@ class XCreature : public XBaseObject
         // `item` again after calling this without doing that check first.
         std::shared_ptr<XItem> ContainItem(XItem* item);
 
-        int DropItem(XItem* i);
-        int PickUpItem(XItem* i);
+        bool DropItem(XItem* i);
+        bool PickUpItem(XItem* i);
         CARRY_STATE GetCarryState();
         int CarryValue(CARRY_STATE cs);
         bool CarryItem(XItem* item);
