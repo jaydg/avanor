@@ -102,6 +102,43 @@ function Dungeon(room_chance)
 	}
 end
 
+-- Delved: floor eaten out of solid rock one cell at a time, where what may
+-- be eaten next is decided by a table of neighbourhood patterns. That table
+-- is the whole character of the level, and the tables live in
+-- world/delve_patterns.lua - add one there and it is usable here by name.
+--
+-- Delve("rmaze1")      one of the named patterns
+-- Delve("rmaze1", 500) the same, but dig 500 cells rather than a fifth
+-- Delve()              a table invented on the spot, different every game
+--
+-- A pattern that carries `pull` or `store` brings them with it, because a
+-- few of them only come out right one way round.
+--
+-- `cells` is the most floor it may dig, and so how much of the level is
+-- open; left out, it takes a fifth of the map.
+function Delve(pattern, cells)
+	local p = pattern and DELVE_PATTERNS[pattern]
+
+	if (pattern and not p) then
+		error("no delve pattern named '" .. pattern .. "'")
+	end
+
+	p = p or {}
+
+	return {
+		wall = CAVE.wall,
+		floor = CAVE.floor,
+		sight = 0,
+
+		desc = p.desc or "",
+		ngb = p.ngb or { 0, 0 },
+		conmil = p.conmil or 0,
+		cells = cells or 0,
+		pull = p.pull or XDelve.CUBEROOT,
+		store = p.store or XDelveStore.PERM,
+	}
+end
+
 -- A level drawn by hand: the engine invents nothing, the pattern the
 -- script draws is the whole of it. `fill` is what is left wherever that
 -- pattern draws nothing, so it wants to be something solid - and the

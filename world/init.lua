@@ -2,6 +2,7 @@ function LoadScripts()
 	dofile("./world/tiles.lua");
 	dofile("./world/palette.lua");
 	dofile("./world/terrain.lua");
+	dofile("./world/delve_patterns.lua");
 	dofile("./world/rooms.lua");
 	dofile("./world/creatures/init.lua");
 	dofile("./world/uniques/init.lua");

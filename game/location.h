@@ -75,6 +75,7 @@ class XLocation : public XObject
         enum class Generator {
             CAVE,
             CHAMBERS,
+            DELVE,
             DUNGEON,
             PLAIN,
             PATTERN // Nothing is generated at all

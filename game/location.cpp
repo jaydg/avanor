@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/pattern_builder.h"
 #include "map/cave_builder.h"
 #include "map/chambers_builder.h"
+#include "map/delve_builder.h"
 #include "map/dungeon_builder.h"
 #include "map/plain_builder.h"
 #include "game/game.h"
@@ -464,9 +465,22 @@ void XLocation::RegisterLua(sol::state_view& lua)
     lua.new_enum("XLocation",
         "CAVE", Generator::CAVE,
         "CHAMBERS", Generator::CHAMBERS,
+        "DELVE", Generator::DELVE,
         "DUNGEON", Generator::DUNGEON,
         "PLAIN", Generator::PLAIN,
         "PATTERN", Generator::PATTERN
+    );
+
+    lua.new_enum("XDelve",
+        "CUBEROOT", XDelveBuilder::Pull::CUBEROOT,
+        "ALL", XDelveBuilder::Pull::ALL,
+        "BOTTOM", XDelveBuilder::Pull::BOTTOM
+    );
+
+    lua.new_enum("XDelveStore",
+        "PERM", XDelveBuilder::Store::PERM,
+        "CW", XDelveBuilder::Store::CW,
+        "CCW", XDelveBuilder::Store::CCW
     );
 
     lua.new_enum("ShopDoor",
@@ -717,6 +731,28 @@ void XLocation::CreateLocation(const std::string& loc_id, const std::string& lbr
                              RequiredTile(options, "wall", loc_id),
                              RequiredTile(options, "floor", loc_id),
                              shape, water).Build();
+            break;
+        }
+
+        case Generator::DELVE: {
+            // The digging table itself comes from the world scripts - see
+            // world/delve_patterns.lua - either written out as one of
+            // Kusigrosz's description strings or asked for by neighbour
+            // count. Nothing here knows any pattern by name.
+            const std::string desc =
+                options ? options->get_or<std::string>("desc", "") : "";
+            const auto [ngb_min, ngb_max] = Range(options, "ngb", 0, 0);
+
+            XDelveBuilder(XLocation::current_location, width, height,
+                          RequiredTile(options, "wall", loc_id),
+                          RequiredTile(options, "floor", loc_id),
+                          desc, ngb_min, ngb_max,
+                          Option(options, "conmil", 0),
+                          Option(options, "cells", 0),
+                          static_cast<XDelveBuilder::Pull>(
+                              Option(options, "pull", static_cast<int>(XDelveBuilder::Pull::CUBEROOT))),
+                          static_cast<XDelveBuilder::Store>(
+                              Option(options, "store", static_cast<int>(XDelveBuilder::Store::PERM)))).Build();
             break;
         }
 
