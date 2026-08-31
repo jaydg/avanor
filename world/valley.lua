@@ -43,7 +43,7 @@ function OrcWarPartyAttack(l)
 			ORC_TARGET_AREA.w, ORC_TARGET_AREA.h, "MAIN")
 	end
 
-	return 0
+	return false
 end
 
 function MakeAvanorValley()

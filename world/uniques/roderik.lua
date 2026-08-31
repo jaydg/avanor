@@ -72,12 +72,12 @@ function RoderikHandler(e, t, p, v)
 			end
 		end
 
-		return 1
+		return true
 	end
 
 	if (e == LuaEvent.DIE) then
 		QuestState:SetFlag('roderick_killed', 1)
-		return 1
+		return true
 	end
 
 	if (e == LuaEvent.GIVE_ITEM) then
@@ -87,13 +87,13 @@ function RoderikHandler(e, t, p, v)
 			AddMessage("Thank you for your great help. The citizens of Avanor never forget your exploits!")
 			QuestState:SetFlag('roderick_quest', 2)
 			roderik:ContainItem(item)
-			return 1
+			return true
 		else
 			AddMessage("I don't need this")
 		end
 
-		return 0
+		return false
 	end
 
-	return 0
+	return false
 end

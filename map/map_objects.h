@@ -284,7 +284,7 @@ class XGrave: public XMapObject
         DECLARE_CREATOR(XGrave, XMapObject);
         XGrave(int _x, int _y, char* subscr, XLocation* _l);
         void HideItem(XItem* item);
-        int onOuterUse(XCreature* cr) override;
+        bool onOuterUse(XCreature* cr) override;
     protected:
         // teardown hook, called by XObject::Invalidate()
         void OnInvalidate() override;
@@ -331,7 +331,7 @@ class XOuterObject final : public XMapObject
     public:
         DECLARE_CREATOR(XOuterObject, XMapObject);
         XOuterObject(int _x, int _y, int _c, char _v, const char* subscr, XLocation* _l, const char* event);
-        int onOuterUse(XCreature* cr) override;
+        bool onOuterUse(XCreature* cr) override;
 
         // One symmetric serialize() rather than a split save()/load()
         // pair: as found and fixed for XCreature/XPotion/XCorpse earlier

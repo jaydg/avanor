@@ -220,14 +220,14 @@ int XShopKeeperAI::UnpaidQuantity(const XItem* item) const
     return owed;
 }
 
-int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
+bool XShopKeeperAI::onAnyonePickItem(XCreature* customer, XItem* item)
 {
     if (!customer->isHero()) {
-        return 0;
+        return false;
     }
 
     if (!(shop->shop_mask & item->kind)) {
-        return 1;
+        return true;
     }
 
     // hack!!!
@@ -238,7 +238,7 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
     debt.unpaid_items.push_back(XItem::Own(titem));
 
     if (debt.debtor_leave_shop == 0) {
-        return 1;
+        return true;
     }
 
     if (!isEnemy(customer)) {
@@ -249,15 +249,15 @@ int XShopKeeperAI::onAnyonePickItem(XCreature * customer, XItem * item)
 
     AddPersonalEnemy(customer);
 
-    return 1;
+    return true;
 }
 
-int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
+bool XShopKeeperAI::onAnyoneDropItem(XCreature* customer, XItem* item)
 {
     //	Shopkeeper takes only items of appropriate type
     if (!(item->kind & shop->shop_mask)) {
         msgwin.Add(GMSG_SHOPKEEPER_REJECT_ITEM);
-        return 0;
+        return false;
     }
 
     //	Return taken and unpaid items back to the shop (only for HERO)
@@ -272,12 +272,12 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
 
             if ((*it)->quantity > item->quantity) {
                 (*it)->quantity -= item->quantity;
-                return 1;
+                return true;
             }
 
             if ((*it)->quantity == item->quantity) {
                 debt.unpaid_items.erase(it);
-                return 1;
+                return true;
             }
 
             item->quantity -= (*it)->quantity;
@@ -288,7 +288,6 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
     }
 
     //	Sell the remaining items to the shopkeeper
-    ;
     int price = (item->GetValue() / 4 + 1) * item->quantity;
 
     if (customer->isHero()) {
@@ -302,7 +301,7 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
         if (debt.debtor.lock().get() == customer) {
             if ((int)debt.debtor_sum > price) {
                 debt.debtor_sum -= price;
-                return 1;
+                return true;
             } else {
                 money_to_add = price - (int)debt.debtor_sum;
                 RemovePersonalEnemy(customer);
@@ -311,25 +310,26 @@ int XShopKeeperAI::onAnyoneDropItem(XCreature * customer, XItem * item)
                 debt.debtor_leave_shop = 0;
 
                 if (money_to_add == 0) {
-                    return 1;
+                    return true;
                 }
             }
         }
 
         assert(money_to_add > 0);
         customer->MoneyOp(money_to_add);
-        return 1;
+
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
+bool XShopKeeperAI::onGiveItem(XCreature* giver, XItem* item)
 {
     //	Attempt to give item to the shopkeeper results in selling
     //	of that item (by dropping it to the ground)
     if (!(item->kind & ItemKind::MONEY)) {
-        int res = onAnyoneDropItem(giver, item);
+        const bool res = onAnyoneDropItem(giver, item);
 
         if (res) {
             ai_owner->ContainItem(item);
@@ -342,7 +342,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
     //	completely clearing off a debt
     if (debt.debtor_sum == 0 && debt.unpaid_items.empty()) {
         msgwin.Add(GMSG_SHOPKEEPER_REJECT_MONEY);
-        return 0;
+        return false;
     }
 
     // Prevent the money object from being destroyed under us: the MoneyOp()
@@ -396,7 +396,7 @@ int XShopKeeperAI::onGiveItem(XCreature * giver, XItem * item)
         }
     }
 
-    return 0;
+    return false;
 }
 
 void XShopKeeperAI::onCreatureEnterShop(XCreature * customer)
@@ -456,4 +456,3 @@ void XShopKeeperAI::onCreatureLeaveShop(XCreature * customer)
         msgwin.Add(str);
     }
 }
-

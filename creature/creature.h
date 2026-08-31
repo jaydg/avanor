@@ -702,9 +702,9 @@ class XCreature : public XBaseObject
             return "You receive no answer.";
         }
 
-        virtual int Chat(XCreature* chatter, const char* msg);
+        virtual bool Chat(XCreature* chatter, const char* msg);
 
-        virtual int onGiveItem(XCreature* giver, XItem * item);
+        virtual bool onGiveItem(XCreature* giver, XItem* item);
 
         TACTICS_STATE tactics;
         void ChangeTactics(const TACTICS_STATE tact)

@@ -52,17 +52,17 @@ class XAnyPlace : public XObject
         void OnInvalidate() override;
     public:
 
-        virtual int onCreatureMove(XCreature* cr);
-        virtual int onCreatureEnter(XCreature* cr);
-        virtual int onCreatureLeave(XCreature* cr);
-        virtual int onCreaturePickItem(XCreature* /*cr*/, XItem* /*item*/)
+        virtual bool onCreatureMove(XCreature* cr);
+        virtual bool onCreatureEnter(XCreature* cr);
+        virtual bool onCreatureLeave(XCreature* cr);
+        virtual bool onCreaturePickItem(XCreature* /*cr*/, XItem* /*item*/)
         {
-            return 1;
+            return true;
         }
 
-        virtual int onCreatureDropItem(XCreature* /*cr*/, XItem* /*item*/)
+        virtual bool onCreatureDropItem(XCreature* /*cr*/, XItem* /*item*/)
         {
-            return 1;
+            return true;
         }
 
         virtual std::string onShowItem(XItem * item);

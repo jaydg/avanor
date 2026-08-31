@@ -49,15 +49,16 @@ class XShopKeeperAI : public XStandardAI
 {
     public:
         XShopKeeperAI() = delete;
-        XShopKeeperAI(XCreature * shoopkeeper, XShop * _shop);
+        XShopKeeperAI(XCreature* shoopkeeper, XShop* _shop);
         virtual void Invalidate();
         void Move() override;
-        virtual void onCreatureEnterShop(XCreature * customer);
-        virtual void onCreatureLeaveShop(XCreature * customer);
-        virtual int onAnyonePickItem(XCreature * customer, XItem * item);
-        virtual int onAnyoneDropItem(XCreature * customer, XItem * item);
-        int onGiveItem(XCreature * giver, XItem * item) override;
-        void SetShop(XShop * _shop)
+        virtual void onCreatureEnterShop(XCreature* customer);
+        virtual void onCreatureLeaveShop(XCreature* customer);
+        virtual bool onAnyonePickItem(XCreature* customer, XItem* item);
+        virtual bool onAnyoneDropItem(XCreature* customer, XItem* item);
+        bool onGiveItem(XCreature* giver, XItem* item) override;
+
+        void SetShop(XShop* _shop)
         {
             shop = _shop;
         }

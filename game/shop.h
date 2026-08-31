@@ -68,13 +68,13 @@ class XShop : public XAnyPlace
         [[nodiscard]] int MinValue() const { return min_value; }
         [[nodiscard]] int MaxValue() const { return max_value; }
 
-        int onCreatureEnter(XCreature * cr) override;
-        int onCreatureLeave(XCreature * cr) override;
-        int onCreaturePickItem(XCreature * cr, XItem * item) override;
-        int onCreatureDropItem(XCreature * cr, XItem * item) override;
-        int onCreatureMove(XCreature * cr) override;
+        bool onCreatureEnter(XCreature* cr) override;
+        bool onCreatureLeave(XCreature* cr) override;
+        bool onCreaturePickItem(XCreature* cr, XItem* item) override;
+        bool onCreatureDropItem(XCreature* cr, XItem* item) override;
+        bool onCreatureMove(XCreature* cr) override;
         std::string onShowItem(XItem* item) override;
-        void SetShopkeeper(XCreature * shopkeeper);
+        void SetShopkeeper(XCreature* shopkeeper);
 
         // Shops have no formal notion of "the door".
         // Every shop is hand-drawn as a walled room with a single opening one

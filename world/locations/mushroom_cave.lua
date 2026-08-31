@@ -103,5 +103,5 @@ function SpawnMushroomEvent(l)
 		PlaceSpecial(MUSHROOM_CLASS, x, y, l)
 	end
 
-	return 1
+	return true
 end

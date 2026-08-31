@@ -57,53 +57,41 @@ XAnyPlace::XAnyPlace(const XRect& _area, XLocation* _loc, const std::string& _on
     Setup(_loc);
 }
 
-int XAnyPlace::onCreatureMove(XCreature* cr)
+bool XAnyPlace::onCreatureMove(XCreature* cr)
 {
     if (onEventLua.empty()) {
-        return 0;
+        return false;
     }
 
     // cr stays void*, not XCreature* - Sol2 pushes void* as light userdata
     sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE, (void*)cr);
 
-    if (!result.valid()) {
-        return 0;
-    }
-
-    return result.get<sol::optional<int>>().value_or(0);
+    return XLua::ResultToBool(result, onEventLua);
 }
 
-int XAnyPlace::onCreatureEnter(XCreature* cr)
+bool XAnyPlace::onCreatureEnter(XCreature* cr)
 {
     if (onEventLua.empty()) {
-        return 0;
+        return false;
     }
 
     sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE_IN, (void*)cr);
 
-    if (!result.valid()) {
-        return 0;
-    }
-
-    return result.get<sol::optional<int>>().value_or(0);
+    return XLua::ResultToBool(result, onEventLua);
 }
 
-int XAnyPlace::onCreatureLeave(XCreature* cr)
+bool XAnyPlace::onCreatureLeave(XCreature* cr)
 {
     if (onEventLua.empty()) {
-        return 0;
+        return false;
     }
 
     sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::MOVE_OUT, (void*)cr);
 
-    if (!result.valid()) {
-        return 0;
-    }
-
-    return result.get<sol::optional<int>>().value_or(0);
+    return XLua::ResultToBool(result, onEventLua);
 }
 
 void XAnyPlace::OnInvalidate()

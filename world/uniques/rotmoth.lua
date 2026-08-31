@@ -33,7 +33,7 @@ end
 
 function BridaHandler(e, t, p, v)
 	if (e ~= LuaEvent.CHAT) then
-		return 0
+		return false
 	end
 
 	local status = QuestState:GetFlag('rotmoth_status')
@@ -79,7 +79,7 @@ function BridaHandler(e, t, p, v)
 		end
 	end
 
-	return 1
+	return true
 end
 
 function SmallCaveQuestPersons(x, y)
@@ -198,7 +198,7 @@ end
 
 function RotmothHandler(e, t, p, v)
 	if (e ~= LuaEvent.CHAT) then
-		return 0
+		return false
 	end
 
 	local rotmoth = AsCreature(t)
@@ -206,19 +206,19 @@ function RotmothHandler(e, t, p, v)
 
 	if (rotmoth.xai:isEnemy(chatter)) then
 		AddMessage("You will be rewarded for your stupidness!")
-		return 1
+		return true
 	end
 
 	if (QuestState:GetFlag('rotmoth_status') ~= 0) then
 		AddMessage("Run away quickly before I change my mind!")
-		return 1
+		return true
 	end
 
 	local girl = QuestState:GetCreatureRef('kidnapped_girl')
 
 	if (not girl or not rotmoth:IsCreatureVisible(girl)) then
 		AddMessage("I dont know what you are asking about.")
-		return 1
+		return true
 	end
 
 	AddMessage("Bring me 150 gold coins, or the girl dies.")
@@ -239,7 +239,7 @@ function RotmothHandler(e, t, p, v)
 		end
 	end
 
-	return 1
+	return true
 end
 
 -- She can still be killed - by the bandits if the hero is not wearing the
@@ -284,11 +284,11 @@ function GianaHandler(e, t, p, v)
 			DisableMoveHandler(t)
 		end
 
-		return 0
+		return false
 	end
 
 	if (e ~= LuaEvent.CHAT) then
-		return 0
+		return false
 	end
 
 	local giana = AsCreature(t)
@@ -302,7 +302,7 @@ function GianaHandler(e, t, p, v)
 		AddMessage("Thank you again for saving me. I'm happy to be back home.")
 	end
 
-	return 1
+	return true
 end
 
 function SmallCaveEvent(e, p)

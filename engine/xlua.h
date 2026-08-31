@@ -21,6 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XLUA_H
 #define XLUA_H
 
+#include <string_view>
+
+#include <sol/sol.hpp>
+
 struct lua_State;
 
 // The game's single Lua runtime.
@@ -37,6 +41,12 @@ class XLua
         {
             return L;
         }
+
+        // Reads what an event handler answered. Handlers answer true or
+        // false; a handler that answers nothing at all means false, and so
+        // does one that could not be run.
+        static bool ResultToBool(const sol::protected_function_result& result,
+                                 std::string_view handler);
 
     private:
         static lua_State* L;

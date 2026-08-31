@@ -62,12 +62,12 @@ function OzorikHandler(e, t, p, v)
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
 		else
 			AddMessage("'We are not looking for this.'")
-			return 0
+			return false
 		end
 	elseif (e == LuaEvent.SAVE) then
 		StoreInt(ozorik_award)
 	elseif (e == LuaEvent.LOAD) then
 		ozorik_award = RestoreInt()
 	end
-	return 1
+	return true
 end

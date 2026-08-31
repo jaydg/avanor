@@ -599,7 +599,7 @@ void XGrave::OnInvalidate()
     XMapObject::OnInvalidate();
 }
 
-int XGrave::onOuterUse(XCreature* cr)
+bool XGrave::onOuterUse(XCreature* cr)
 {
     if (cr->isHero()) {
         if (isOpened) {
@@ -618,7 +618,7 @@ int XGrave::onOuterUse(XCreature* cr)
     }
 
     isOpened = 1;
-    return 1;
+    return true;
 }
 
 REGISTER_CLASS(XFurniture);
@@ -656,7 +656,7 @@ XOuterObject::XOuterObject(const int _x, const int _y, const int _c, const char 
     }
 }
 
-int XOuterObject::onOuterUse(XCreature* cr)
+bool XOuterObject::onOuterUse(XCreature* cr)
 {
     if (onEventLua.empty()) {
         return XMapObject::onOuterUse(cr);
@@ -665,10 +665,6 @@ int XOuterObject::onOuterUse(XCreature* cr)
     sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[onEventLua](LuaEvent::OUTER_USE, (void*)cr, (void*)this);
 
-    if (!result.valid()) {
-        return 0;
-    }
-
-    return result.get<sol::optional<int>>().value_or(0);
+    return XLua::ResultToBool(result, onEventLua);
 }
 

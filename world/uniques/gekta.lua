@@ -46,8 +46,8 @@ function GektaHandler(e, t, p, v)
 			DestroyObject(v)
 		else
 			AddMessage('Woof?');
-			return 0;
+			return false;
 		end
 	end
-	return 1
+	return true
 end

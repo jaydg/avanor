@@ -43,17 +43,17 @@ function AhkUlanHandler(e, t, p, v)
 			if (count == 3) then
 				AddMessage("Very nice job, servant!")
 				QuestModify(QUEST_ANCIENT_PART, XQuest.CLOSED)
-				return 1
+				return true
 			else
 				AddMessage("PLEASE! Return with THREE... THREE parts of an ancient machine!")
-				return 0
+				return false
 			end
 		else
 			AddMessage("Are you jeering at me?")
-			return 0
+			return false
 		end
 	elseif (e == LuaEvent.DIE) then
 		QuestState:SetFlag('ahk_ulan_killed', 1)
 	end
-	return 1
+	return true
 end

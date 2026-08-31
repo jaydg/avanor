@@ -50,5 +50,5 @@ function TorinHandler(e, t, p, v)
 	elseif (e == LuaEvent.LOAD) then
 		torin_award = RestoreInt()
 	end
-	return 1
+	return true
 end

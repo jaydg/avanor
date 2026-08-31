@@ -48,5 +48,5 @@ function JorgusHandler(e, t, p, v)
 			end
 		end
 	end
-	return 1
+	return true
 end

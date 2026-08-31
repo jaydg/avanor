@@ -83,8 +83,8 @@ function YohjiHandler(e, t, p, v)
 			end
 		else
 			AddMessage("'It is not of interest for me.'")
-			return 0
+			return false
 		end
 	end
-	return 1
+	return true
 end

@@ -28,5 +28,5 @@ function BeelzevileHandler(e, t, p, v)
 	if (e == LuaEvent.DIE) then
 		QuestModify(QUEST_ELDER, XQuest.COMPLETE)
 	end
-	return 0
+	return false
 end

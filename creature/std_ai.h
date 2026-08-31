@@ -160,14 +160,14 @@ class XStandardAI
         // reimplement last_enemy/invisible_hunting_mode tracking in Lua,
         // neither of which is otherwise exposed. onWasAttacked() itself
         // just forwards to this by default.
-        void ReactToAttacker(XCreature * attacker);
+        void ReactToAttacker(XCreature* attacker);
 
-        virtual void onDie(XCreature * killer);
-        virtual void onSteal(XCreature * rogue);
+        virtual void onDie(XCreature* killer);
+        virtual void onSteal(XCreature* rogue);
 
-        virtual int Chat(XCreature* chatter, const char* msg);
-        virtual int onGiveItem(XCreature * giver, XItem * item);
-        virtual int GetTargetPos(XPoint * pt);
+        virtual bool Chat(XCreature* chatter, const char* msg);
+        virtual bool onGiveItem(XCreature* giver, XItem* item);
+        virtual int GetTargetPos(XPoint* pt);
 
         int Wear() const;
 

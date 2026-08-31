@@ -24,7 +24,7 @@ end
 function TodinHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		AddMessage("'Give me your weapon, and I'll make it the best!'")
-		return 1
+		return true
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(kind, ItemKind.WEAPON)) then
@@ -54,8 +54,8 @@ function TodinHandler(e, t, p, v)
 			AddMessage("'Sorry, I don't need this.'")
 		end
 	end
-	-- The give-item path ends here, and must answer 0: Todin brands the
-	-- weapon where it lies and the player walks off with it, while a
-	-- non-zero answer would mean he kept it (see XHero::GiveItem).
-	return 0
+	-- The give-item path ends here, and must answer false: Todin brands the
+	-- weapon where it lies and the player walks off with it, while a true
+	-- answer would mean he kept it (see XHero::GiveItem).
+	return false
 end

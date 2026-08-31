@@ -1151,7 +1151,7 @@ void XCreature::Die(XCreature* killer)
 int XCreature::DropItem(XItem * i)
 {
     XAnyPlace * place = l->map->GetPlace(x, y);
-    int flag = 1;
+    bool flag = true;
 
     if (place) {
         flag = place->onCreatureDropItem(this, i);
@@ -1180,7 +1180,7 @@ int XCreature::DropItem(XItem * i)
 int XCreature::PickUpItem(XItem * i)
 {
     XAnyPlace * place = l->map->GetPlace(x, y);
-    int flag = 1;
+    bool flag = true;
 
     if (place) {
         flag = place->onCreaturePickItem(this, i);
@@ -1957,20 +1957,16 @@ int XCreature::GetTarget(TARGET_REASON tr, XPoint * pt, int /*max_range*/, XObje
     return 0;
 }
 
-int XCreature::Chat(XCreature * chatter, const char* msg)
+bool XCreature::Chat(XCreature* chatter, const char* msg)
 {
     if (event_handler.empty()) {
-        return 0;
+        return false;
     }
 
     sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[event_handler](LuaEvent::CHAT, (void*)this, (void*)chatter, std::string(msg));
 
-    if (!result.valid()) {
-        return 0;
-    }
-
-    return result.get<sol::optional<int>>().value_or(0);
+    return XLua::ResultToBool(result, event_handler);
 }
 
 std::shared_ptr<XItem> XCreature::ContainItem(XItem * item)
@@ -2081,20 +2077,16 @@ int XCreature::GetVisibleRadius()
     }
 }
 
-int XCreature::onGiveItem(XCreature* giver, XItem* item)
+bool XCreature::onGiveItem(XCreature* giver, XItem* item)
 {
     if (event_handler.empty()) {
-        return 0;
+        return false;
     }
 
     sol::state_view lua(XLua::State());
     sol::protected_function_result result = lua[event_handler](LuaEvent::GIVE_ITEM, (void*)this, (void*)giver, (void*)item);
 
-    if (!result.valid()) {
-        return 0;
-    }
-
-    return result.get<sol::optional<int>>().value_or(0);
+    return XLua::ResultToBool(result, event_handler);
 }
 
 int XCreature::MoneyOp(int money_count)

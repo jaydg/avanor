@@ -95,9 +95,9 @@ class XMapObject : public XObject
 
         virtual bool isVisible();
 
-        virtual int onOuterUse(XCreature * /*user*/)
+        virtual bool onOuterUse(XCreature * /*user*/)
         {
-            return 0;
+            return false;
         }
 
         void SetName(std::string_view _name)

@@ -96,5 +96,5 @@ function ElderGridorHandler(e, t, p, v)
 	elseif (e == LuaEvent.SAVE) then
 	elseif (e == LuaEvent.LOAD) then
 	end
-	return 1
+	return true
 end

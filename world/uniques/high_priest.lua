@@ -39,7 +39,7 @@ function HighPriestHandler(e, t, p, v)
 			AddMessage("Blessings on you.")
 		end
 
-		return 1
+		return true
 	end
 
 	if (e == LuaEvent.DIE) then
@@ -52,7 +52,7 @@ function HighPriestHandler(e, t, p, v)
 		end
 
 		killer.religion.life_act = killer.religion.life_act - 50
-		return 1
+		return true
 	end
 
 	if (e == LuaEvent.GIVE_ITEM) then
@@ -61,8 +61,8 @@ function HighPriestHandler(e, t, p, v)
 
 		AddMessage("Thank you for your charitable donation!")
 		giver.religion:SacrificeItem(giver, item, XDeity.LIFE)
-		return 1
+		return true
 	end
 
-	return 0
+	return false
 end

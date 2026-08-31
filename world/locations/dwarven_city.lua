@@ -193,5 +193,5 @@ function GasPumpEvent(e, p)
 			AddMessage('You can\'t seem to stop the pump.')
 		end
 	end
-	return 1
+	return true
 end

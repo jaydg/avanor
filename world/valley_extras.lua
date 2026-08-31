@@ -38,7 +38,7 @@ function FarmerHandler(e, t, p, v)
 			AddMessage("'Please speak with our elder. He lives in the stone house.'")
 		end
 	end
-	return 1
+	return true
 end
 
 function CreateGuardians(x, y)
@@ -62,10 +62,10 @@ function RoyalGuardHandler(e, t, p, v)
 			end
 		else
 			AddMessage("'I do not need this!'")
-			return 0;
+			return false;
 		end
 	end
-	return 1
+	return true
 end
 
 
@@ -187,7 +187,7 @@ function StandardGraveEvent(e, cr, o)
 			AddMessage('This grave has already been looted.')
 		end
 	end
-	return 1
+	return true
 end
 
 function AvanorDefenderGraveEvent(e, cr, o)

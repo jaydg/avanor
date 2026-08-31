@@ -230,3 +230,25 @@ void XLua::Init()
     XTileType::ValidateTiles();
     XCreatureStorage::CreateQuickBase();
 }
+
+bool XLua::ResultToBool(const sol::protected_function_result& result,
+                        const std::string_view handler)
+{
+    if (!result.valid()) {
+        return false;
+    }
+
+    if (const sol::optional<bool> answer = result.get<sol::optional<bool>>()) {
+        return *answer;
+    }
+
+    // See the declaration in engine/xlua.h for why a number has to be
+    // called out rather than quietly taken for a "no".
+    if (result.get_type() == sol::type::number) {
+        std::cerr << "world: " << handler
+                  << " answered with a number - event handlers answer true or false"
+                  << std::endl;
+    }
+
+    return false;
+}

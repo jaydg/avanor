@@ -2442,10 +2442,10 @@ void XHero::ChatWithMonster()
     }
 }
 
-int XHero::Chat(XCreature * /*chatter*/, const char* /*msg*/)
+bool XHero::Chat(XCreature * /*chatter*/, const char* /*msg*/)
 {
     msgwin.Add("You don't like to speak yourself");
-    return 1;
+    return true;
 }
 
 void XHero::PayBill()
@@ -2564,7 +2564,7 @@ void XHero::GiveItem()
                 res = GetTarget(TR_HOW_MUCH, &pt, res);
             }
 
-            int flag = 1;
+            bool flag = true;
             std::shared_ptr<XItem> gitem;
 
             if (res < item->quantity && res > 0) {

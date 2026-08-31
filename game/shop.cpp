@@ -125,16 +125,16 @@ XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
     hero_in = 0;
 }
 
-int XShop::onCreaturePickItem(XCreature * cr, XItem * item)
+bool XShop::onCreaturePickItem(XCreature* cr, XItem* item)
 {
     if (auto o = owner.lock()) {
         return dynamic_cast<XShopKeeperAI *>(o->xai.get())->onAnyonePickItem(cr, item);
     }
 
-    return 1;
+    return true;
 }
 
-int XShop::onCreatureEnter(XCreature * cr)
+bool XShop::onCreatureEnter(XCreature* cr)
 {
     if (cr->isHero()) {
         for (int i = area.left + 1; i < area.right - 1; i++)
@@ -151,30 +151,30 @@ int XShop::onCreatureEnter(XCreature * cr)
         dynamic_cast<XShopKeeperAI *>(o->xai.get())->onCreatureEnterShop(cr);
     }
 
-    return 1;
-};
+    return true;
+}
 
-int XShop::onCreatureLeave(XCreature * cr)
+bool XShop::onCreatureLeave(XCreature* cr)
 {
     if (auto o = owner.lock()) {
         dynamic_cast<XShopKeeperAI *>(o->xai.get())->onCreatureLeaveShop(cr);
     }
 
-    return 1;
-};
+    return true;
+}
 
-int XShop::onCreatureDropItem(XCreature * cr, XItem * item)
+bool XShop::onCreatureDropItem(XCreature* cr, XItem* item)
 {
     if (auto o = owner.lock()) {
         return dynamic_cast<XShopKeeperAI *>(o->xai.get())->onAnyoneDropItem(cr, item);
     }
 
-    return 1;
+    return true;
 }
 
-int XShop::onCreatureMove(XCreature * /*cr*/)
+bool XShop::onCreatureMove(XCreature * /*cr*/)
 {
-    return 1;
+    return true;
 }
 
 std::string XShop::onShowItem(XItem* item)

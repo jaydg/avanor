@@ -174,11 +174,13 @@ bool XLocation::Run()
         sol::protected_function_result result = lua[event]((void*)this);
         ttm = ttmb;
 
+        // Unlike the other handlers, a location event that could not be
+        // run answers true: false here would unschedule the location.
         if (!result.valid()) {
             return true;
         }
 
-        return result.get<sol::optional<int>>().value_or(0) != 0;
+        return XLua::ResultToBool(result, event);
     }
 
     return true;

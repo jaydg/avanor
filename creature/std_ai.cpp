@@ -1204,16 +1204,16 @@ void XStandardAI::RemovePersonalEnemy(const XCreature* cr)
     }
 }
 
-int XStandardAI::Chat(XCreature* chatter, const char* msg)
+bool XStandardAI::Chat(XCreature* chatter, const char* msg)
 {
     if (!ai_owner->Chat(chatter, msg)) {
         msgwin.Add(ai_owner->StdAnswer());
     }
 
-    return 1;
+    return true;
 }
 
-int XStandardAI::onGiveItem(XCreature * giver, XItem * item)
+bool XStandardAI::onGiveItem(XCreature* giver, XItem* item)
 {
     return ai_owner->onGiveItem(giver, item);
 }

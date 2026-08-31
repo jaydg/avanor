@@ -155,7 +155,7 @@ class XHero final : public XCreature
         void ActivateTrap();
         void GiveItem();
         void ChatWithMonster();
-        int Chat(XCreature* chatter, const char* msg) override;
+        bool Chat(XCreature* chatter, const char* msg) override;
 
         void FirstStep(int _x, int _y, XLocation* _l) override;
         void LastStep() override;
