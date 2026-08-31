@@ -26,6 +26,13 @@ end
 -- shared with the rescued girl's homecoming.
 VILLAGE_GROUP = "small_village_farmer"
 
+-- The village's guard area - fixed by the "P" tile's spot in the ASCII
+-- pattern below (DrawPattern places it at the map's origin, so this never
+-- varies between games) and given here, so this stays set regardless for
+-- an new game or a restored one. If the "P" tile in the pattern ever moves,
+-- update this to match.
+VILLAGE_GUARD_AREA = {x = 7, y = 2, w = 20, h = 16}
+
 -- The orc war party musters in the southern hills and, after a long
 -- while, marches on the small town (the pattern drawn at 10,40 below).
 local ORC_WAR_PARTY = "orcs_war_party"
@@ -110,12 +117,11 @@ function MakeAvanorValley()
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'plain bed') end)
 		AddTranslation("S", function(x, y) BuildShop(x, y, 8, 2, ItemKind.FOOD, 'Nobel, the human shopkeeper', SHOP) end)
 		AddTranslation("P", function(x, y)
-			-- Single source of truth for the village's guard area - also
-			-- used to re-home Giana here once rescued (see GianaHandler,
-			-- world/uniques/rotmoth.lua), so she settles into exactly the
-			-- same area the farmers.
-			VILLAGE_GUARD_AREA = {x = x, y = y, w = 20, h = 16}
-			local area = VILLAGE_GUARD_AREA
+			-- Where the farmers themselves guard - also the exact spot
+			-- VILLAGE_GUARD_AREA above is fixed to (this is the "P" tile
+			-- it's derived from), so this and that constant had better
+			-- agree.
+			local area = {x = x, y = y, w = 20, h = 16}
 
 			for i = 1, 4 do
 				SetEventHandler(Guardian('farmer', VILLAGE_GROUP, area.x, area.y, area.w, area.h), 'FarmerHandler')
