@@ -66,11 +66,13 @@ function YohjiHandler(e, t, p, v)
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == ItemType.RATTAIL or it == ItemType.BATWING) then
+			local success_msg = "'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory."
 			if (it == ItemType.RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
-				AddMessage("'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory.")
+				AddMessage(success_msg)
+				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify(QUEST_YOHJI_RAT, XQuest.UNKNOWN)
 			elseif (it == ItemType.BATWING and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
-				AddMessage("'Oh, thank you!'")
+				AddMessage(success_msg)
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify(QUEST_YOHJI_BAT, XQuest.UNKNOWN)
 			else
