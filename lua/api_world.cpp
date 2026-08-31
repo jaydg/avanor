@@ -56,9 +56,17 @@ namespace lua_api
 // public seam for them.
 
 //Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
-void Settle(CreatureClass crc, int crl)
+//Settle(CreatureClass.RAT, CreatureTemplate.LOW)
+//Settle(CreatureClass.RAT, CreatureTemplate.LOW, 4, 50000)
+//
+// `max_creature` is a ceiling per creature *class*, not per level: a mask
+// naming eight classes settles up to eight times that many. `refresh` is
+// how long between one spawn attempt and the next.
+void Settle(CreatureClass crc, int crl, sol::optional<int> max_creature, sol::optional<int> refresh)
 {
-    Game.Scheduler.Add(new XUniversalGen(XLocation::current_location, crc, static_cast<CreatureTemplate::Level>(crl), 5, 25000));
+    Game.Scheduler.Add(new XUniversalGen(XLocation::current_location, crc,
+                                         static_cast<CreatureTemplate::Level>(crl),
+                                         max_creature.value_or(5), refresh.value_or(25000)));
 }
 
 //cr = Creature("rotmoth")
