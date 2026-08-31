@@ -1043,6 +1043,13 @@ int XStandardAI::PickUpItems() const
             break;
         }
 
+        // An artifact is not loot. It was put where it is because
+        // something depends on it being findable there.
+        if ((*it)->isArtifact()) {
+            ++it;
+            continue;
+        }
+
         // Hold a live shared_ptr across the erase - item_list can be this
         // item's only reference, and PickUpItem() failing needs to hand it
         // right back, so it must not be destroyed in between.

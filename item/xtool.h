@@ -172,6 +172,15 @@ class XEyeOfRaa : public XTool
             dice.Setup(1, 10, 0);
         }
 
+        // The Eye is the point of Roderick's quest and sits at the bottom
+        // of the Forlorn Mine waiting to be found. An undead wandering that
+        // level would otherwise pocket it - every undead template has
+        // ALLOW_PICK_UP - and the player would have to guess which one.
+        [[nodiscard]] bool isArtifact() const override
+        {
+            return true;
+        }
+
         XEyeOfRaa(XEyeOfRaa* copy) : XTool(copy) {}
 
         XItem* MakeCopy() override

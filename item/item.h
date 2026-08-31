@@ -112,6 +112,16 @@ class XItem : public XBaseObject
         }
 
         int value;
+        // Whether this is one of the world's artifacts - a thing placed
+        // somewhere on purpose, for a reason the game depends on, rather
+        // than loot that happens to be lying about.
+        //
+        // A wandering monster leaves these alone.
+        [[nodiscard]] virtual bool isArtifact() const
+        {
+            return false;
+        }
+
         virtual int GetValue(); // Get Value of Object (for shop, monster AI etc.)
 
         SPECIAL_PROPERTY special_property; // slow digestion and other propertyes
