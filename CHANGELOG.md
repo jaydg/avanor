@@ -104,6 +104,18 @@ Nothing in it knows it is underground. Hand it trees instead of walls and
 grass instead of floor and the same code lays out a forest of glades joined by
 paths, which is waiting for a level to use it.
 
+**The dwarves cut their own road, and it looks like it.** The six levels
+between the valley and the dwarven gate used to be rooms and corridors, the
+same shape as everywhere else underground. They are mazes now — square
+corners, straight runs, passages doubling back on themselves: worked stone
+rather than a cave somebody happened to find. Each level draws its own
+pattern, so the descent changes character as you go down instead of being
+one warren repeated six times, and the levels are twice as deep from north
+to south as they were.
+
+They are cut by a new generator, written by Kusigrosz and given to the
+public domain. The Forlorn Mine above is dug by the same generator.
+
 **A tower with an upstairs, and something to look at from it.**
 Yohjishiro's tower now has a real second floor. Not a separate room that
 happens to be reached by a staircase — a floor that sits directly above the
