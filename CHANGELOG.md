@@ -71,6 +71,25 @@ all the warning was ever meant to buy you.
 They only shout at somebody about to cross. Coming home the other way, they
 have nothing to say to you; and once they are dead the road is quiet.
 
+**The Forlorn Mine, and the artifact at the bottom of it.** A ruined
+head-house stands on the plain far south of the valley, roof down in two
+places, an apron of spoil and dressed stone spreading out around it and
+saplings coming up in what was the yard. The shaft inside it still goes
+down — five to ten levels of galleries and halls, harder the deeper you
+go, and at the very bottom the Eye of Raa.
+
+The mine stands where one of the three unnamed random dungeons of old
+stood — "Random Place Level 1" and so on, three of them, cut when the world
+moved to Lua and never replaced, taking the Eye with them. This is one
+mine rather than three caves, and it has a name and a reason to be there:
+it was a gem mine, and the miners who sank it followed the seams down and
+then kept following them, until they broke into something that was not a
+seam. What came up through that hole took the mine in a night. Nobody has
+been back for the tools, let alone the stones.
+
+Every game digs it afresh, and the whole mine takes one shape — you will
+not find a warren of passages on one level and a hall on the next.
+
 **Caves that look like caves.**
 A second kind of cavern joins the old blob-shaped ones: rounded chambers grown
 one at a time and joined by single doorways cut through the rock, some of them

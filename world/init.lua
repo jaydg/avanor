@@ -23,6 +23,7 @@ function InitWorld()
 	MakeRatCellar()
 	MakeVulcano()
 	MakeWizardDungeon()
+	MakeDungeonForlorn()
 	CreateAllQuests()
 end
 
