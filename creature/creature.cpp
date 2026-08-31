@@ -597,8 +597,14 @@ void XCreature::ShowNewView()
 
 void XCreature::PutStatus()
 {
-    vGotoXY(0, size_y - 3);
     vSetAttr(xLIGHTGRAY);
+
+    for (int row = size_y - 3; row < size_y; row++) {
+        vGotoXY(0, row);
+        vClrEol();
+    }
+
+    vGotoXY(0, size_y - 3);
     vPutS(name);
 
     vGotoXY(0, size_y - 2);
@@ -617,7 +623,6 @@ void XCreature::PutStatus()
         GetStats(XStats::CHR),
         100000 / GetSpeed(),
         l->GetBriefName()));
-    vClrEol();
 
     vGotoXY(14, size_y - 2);
     vPutS(fmt::format("HP:{}({})  PP:{}({})  ", HP, GetMaxHP(), PP, GetMaxPP()));
@@ -704,7 +709,6 @@ void XCreature::PutStatus()
     };
 
     vPutS(md->toString());
-    vClrEol();
     vSetAttr(xLIGHTGRAY);
 }
 
