@@ -2584,6 +2584,25 @@ void XHero::GiveItem()
             if (!flag || res == 0) {
                 carried_weight += gitem->weight;
                 contain.insert(gitem);
+            } else {
+                // onGiveItem() answered true: the NPC keeps it, and
+                // nothing above puts it anywhere else - gitem and item
+                // (the same object, whole-stack gives alias one another)
+                // are about to drop their last reference. XItem::Own()'s
+                // deleter would normally catch that and Invalidate() it,
+                // but an item that was sitting on the ground rather than
+                // in a creature's contain when the game was last saved
+                // never got Own()'s deleter in the first place - Cereal
+                // constructs its own shared_ptr for that case, a plain
+                // one with no such safety net, and every later reference
+                // (including the one PickUpItem() just handed this
+                // function via shared_from_this()) aliases that same
+                // control block. Invalidate() explicitly rather than
+                // trust the deleter, same idiom XItem::Concat() and
+                // PickItem()'s reject path already use - it sets
+                // is_valid false itself, so whichever deleter actually
+                // runs, ~XObject()'s assert sees it already cleared.
+                gitem->Invalidate();
             }
         }
     }
