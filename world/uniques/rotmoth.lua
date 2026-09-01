@@ -287,6 +287,29 @@ function GianaHandler(e, t, p, v)
 		return false
 	end
 
+	if (e == LuaEvent.GIVE_ITEM) then
+		-- Armour or a weapon, so she can actually defend herself on the
+		-- road home rather than just running for it - her body slots and
+		-- ALLOW_WEAR_ITEM come from the "goodwife" template she's built
+		-- on (world/creatures/humans.lua), same as any other HUMAN-
+		-- flagged villager, so nothing else needs setting up for her to
+		-- wear it once she owns it: her own AI (XStandardAI::Wear(),
+		-- unchanged) puts it on if it beats whatever she already has in
+		-- that slot, the very next turn it gets to run.
+		local kind, brt, wt, it, count, name = GetItemParam(v)
+
+		if (kind == ItemKind.WEAPON or kind == ItemKind.HAT or kind == ItemKind.BODY
+			or kind == ItemKind.CLOAK or kind == ItemKind.SHIELD or kind == ItemKind.GLOVES
+			or kind == ItemKind.BOOTS) then
+			AsCreature(t):ContainItem(AsItem(v))
+			AddMessage(string.format("'Thank you - %s will serve me well on the road home.'", name))
+			return true
+		end
+
+		AddMessage("'I don't need this for the journey home.'")
+		return false
+	end
+
 	if (e ~= LuaEvent.CHAT) then
 		return false
 	end
