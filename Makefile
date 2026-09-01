@@ -10,10 +10,18 @@
 # either way: same notcurses/fmt/luajit/zstd stack via pkg-config.           #
 # Define debug=1 when you want to build debug version of Avanor              #
 #                                                                            #
-# argparse is header-only and packaged on Fedora/Debian/Ubuntu, but not for  #
-# MSYS2's mingw environments - a Windows/xmingw=1 build fetches its single   #
-# header with wget into external/argparse/ on demand, pinned to the version  #
-# below, so the build stays reproducible without a manual install step.      #
+# Define stc=1 to swap notcurses for a plain-ANSI terminal backend built on  #
+# the header-only stc.hpp, for a Windows terminal where notcurses' ConPTY/   #
+# terminfo negotiation doesn't come good (garbage escapes, or a crash).      #
+# Windows-only - it's built on conio.h and the Win32 console API. See        #
+# engine/global.cpp's USE_STC-guarded code for what it can't do that the     #
+# notcurses backend can (live resize, mainly).                               #
+#                                                                            #
+# argparse and stc.hpp are both header-only and not packaged for MSYS2's     #
+# mingw environments (argparse is on Fedora/Debian/Ubuntu, at least) - a     #
+# Windows/xmingw=1 build fetches whichever it needs with wget into           #
+# external/ on demand, pinned to the versions below, so the build stays      #
+# reproducible without a manual install step.                                #
 #                                                                            #
 # There are also targets for making tarballs with the sources and binaries   #
 # Example:                                                                   #
@@ -58,11 +66,26 @@ ARGPARSE_VERSION = v3.2
 ARGPARSE_HEADER = external/argparse/argparse.hpp
 ARGPARSE_URL = https://raw.githubusercontent.com/p-ranav/argparse/$(ARGPARSE_VERSION)/include/argparse/argparse.hpp
 
+# simple_term_colors has no tagged releases, so this pins a commit instead.
+STC_VERSION = 85c2194fe861d411c9790ea5362953ff5ca1bcd0
+STC_HEADER = external/stc.hpp
+STC_URL = https://raw.githubusercontent.com/illyigan/simple_term_colors/$(STC_VERSION)/include/stc.hpp
+
 CFLAGS += -I.
-CFLAGS += $(shell pkg-config --cflags fmt notcurses luajit)
 
 ifdef win
 	CFLAGS += -Iexternal
+endif
+
+ifdef stc
+	CFLAGS += -DUSE_STC
+	CFLAGS += $(shell pkg-config --cflags fmt luajit)
+
+	ifndef win
+		CFLAGS += -Iexternal
+	endif
+else
+	CFLAGS += $(shell pkg-config --cflags fmt notcurses luajit)
 endif
 
 VPATH = creature engine game global helpers item magic map other lua
@@ -85,7 +108,11 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        pattern_builder.cpp chambers_builder.cpp plain_builder.cpp             \
        delve_builder.cpp bodypart.cpp anycr.cpp ai_view.cpp
 
-LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
+ifdef stc
+	LIBS = $(shell pkg-config --libs fmt luajit) -lzstd
+else
+	LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
+endif
 
 ifdef debug
 	CFLAGS += -g
@@ -124,8 +151,16 @@ $(ARGPARSE_HEADER):
 	mkdir -p $(dir $@)
 	wget -q -O $@ $(ARGPARSE_URL)
 
+$(STC_HEADER):
+	mkdir -p $(dir $@)
+	wget -q -O $@ $(STC_URL)
+
 ifdef win
 $(OBJDIR)/Main.o: $(ARGPARSE_HEADER)
+endif
+
+ifdef stc
+$(OBJDIR)/global.o: $(STC_HEADER)
 endif
 
 clean:

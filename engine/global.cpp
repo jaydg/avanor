@@ -27,14 +27,36 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <utility>
 
 #include <sol/sol.hpp>
 
-#include <ncpp/NotCurses.hh>
-#include <ncpp/Plane.hh>
+// Two interchangeable terminal backends, chosen at compile time (-DUSE_STC):
+// notcurses, the default everywhere, and a plain-ANSI backend built on the
+// header-only stc.hpp for when notcurses' ConPTY/terminfo negotiation
+// doesn't work out on a given Windows terminal - see engine/global.h and
+// the Makefile's `stc` variable.
+#ifdef USE_STC
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #include <windows.h>
+    #include <conio.h>
+
+    #include <iostream>
+    #include <vector>
+
+    #include <stc.hpp>
+#else
+    #include <ncpp/NotCurses.hh>
+    #include <ncpp/Plane.hh>
+#endif
 
 #include "engine/global.h"
 
@@ -86,6 +108,154 @@ int remembered_brightness = 100;
 int tile_jitter = 10;
 int tile_hue_jitter = 12;
 int tile_saturation_jitter = 15;
+
+#ifdef USE_STC
+
+namespace {
+
+struct STCCell {
+    char ch = ' ';
+    unsigned rgb = xLIGHTGRAY;
+};
+
+// The whole screen, redrawn in full by every vRefresh() - simplest thing
+// that works for a turn-based game with no real-time animation beyond the
+// occasional vDelay()'d effect, and it sidesteps ever having to diff
+// against what the terminal last actually showed.
+std::vector<STCCell> stc_screen;
+
+// Re-reads the console's size into size_x/size_y and matches the buffer to
+// it. Falls back to a fixed 80x25 when there is no real console behind
+// stdout - e.g. under mintty, which never gives a native Win32 program one
+// - since GetConsoleScreenBufferInfo() then simply fails.
+void QueryScreenSize()
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    if (hstdout != INVALID_HANDLE_VALUE && GetConsoleScreenBufferInfo(hstdout, &csbi)) {
+        size_x = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        size_y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    } else {
+        size_x = 80;
+        size_y = 25;
+    }
+
+    stc_screen.assign(static_cast<size_t>(size_x) * static_cast<size_t>(size_y), STCCell{});
+}
+
+} // namespace
+
+void vInit()
+{
+    std::filesystem::create_directory(vMakePath(HOME_DIR, ""));
+
+    // The classic Windows console (conhost, behind cmd.exe/Windows Terminal)
+    // only interprets the ANSI escapes below once this is turned on; mintty
+    // (MSYS2's own terminal) already speaks them natively and simply leaves
+    // a mode alone that it doesn't recognise on a handle it doesn't own.
+    if (HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE); hstdout != INVALID_HANDLE_VALUE) {
+        DWORD out_mode = 0;
+
+        if (GetConsoleMode(hstdout, &out_mode)) {
+            SetConsoleMode(hstdout, out_mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
+    }
+
+    QueryScreenSize();
+
+    std::cout << stc::true_color;
+    // Alternate screen buffer, so quitting leaves the terminal's own
+    // scrollback exactly as it was - notcurses does the same - and hide the
+    // hardware cursor; vXGotoXY() shows it again for text entry.
+    std::cout << "\x1b[?1049h\x1b[?25l" << std::flush;
+
+    vClrScr();
+}
+
+void vUpdateScreenSize()
+{
+    // Not wired up to anything that can detect a live resize - conio.h has
+    // no such event - so this only matters if something calls it directly.
+    QueryScreenSize();
+}
+
+void vClrScr()
+{
+    std::fill(stc_screen.begin(), stc_screen.end(), STCCell{});
+}
+
+void vFinit()
+{
+    std::cout << stc::reset;
+    std::cout << "\x1b[?25h\x1b[?1049l" << std::flush;
+}
+
+void vRefresh()
+{
+    std::ostringstream oss;
+    oss << stc::true_color;
+    oss << "\x1b[H";
+
+    // A colour is only worth re-emitting when it actually changes - a run
+    // of same-coloured cells (most of any given row, usually) costs one
+    // escape sequence instead of one per cell.
+    unsigned last_rgb = ~0u;
+
+    for (int y = 0; y < size_y; y++) {
+        oss << "\x1b[" << (y + 1) << ";1H";
+
+        for (int x = 0; x < size_x; x++) {
+            const STCCell& cell = stc_screen[static_cast<size_t>(y) * size_x + x];
+
+            if (cell.rgb != last_rgb) {
+                oss << stc::rgb_fg(static_cast<int>((cell.rgb >> 16) & 0xFF),
+                                    static_cast<int>((cell.rgb >> 8) & 0xFF),
+                                    static_cast<int>(cell.rgb & 0xFF));
+                last_rgb = cell.rgb;
+            }
+
+            oss << cell.ch;
+        }
+    }
+
+    oss << stc::reset;
+    std::cout << oss.str() << std::flush;
+}
+
+void vPutCh(const int x, const int y, char ch, unsigned rgb)
+{
+    assert(x >= 0 && y >= 0 && x <= size_x && y <= size_y);
+
+    if (x < 0 || y < 0 || x >= size_x || y >= size_y) {
+        return;
+    }
+
+    STCCell& cell = stc_screen[static_cast<size_t>(y) * size_x + x];
+    cell.ch = ch < ' ' ? ' ' : ch;
+    cell.rgb = rgb;
+};
+
+char vTestCh(const int x, const int y)
+{
+    if (x < 0 || y < 0 || x >= size_x || y >= size_y) {
+        return ' ';
+    }
+
+    return stc_screen[static_cast<size_t>(y) * size_x + x].ch;
+}
+
+void vPutCh(int x, int y, char ch)
+{
+    if (x < 0 || y < 0 || x >= size_x || y >= size_y) {
+        return;
+    }
+
+    // No colour given: the cell keeps the one it already has.
+    stc_screen[static_cast<size_t>(y) * size_x + x].ch = ch < ' ' ? ' ' : ch;
+};
+
+#else // notcurses
 
 // The terminal. Owned here, created by vInit() and stopped by vFinit().
 ncpp::NotCurses* nc = nullptr;
@@ -201,6 +371,8 @@ void vPutCh(int x, int y, char ch)
     screen->putc(y, x, ch < ' ' ? ' ' : ch);
 };
 
+#endif // USE_STC
+
 void vGotoXY(int x, int y)
 {
     cursor_pos_x = x;
@@ -275,6 +447,30 @@ void vDelay(const int n)
 
     std::this_thread::sleep_for(std::chrono::milliseconds(n));
 }
+
+#ifdef USE_STC
+
+int vKbhit()
+{
+    return _kbhit();
+}
+
+int vGetch()
+{
+    // Same decoding the pre-notcurses Windows build used: an extended key
+    // (arrows, Home/End, ...) arrives as a 0 or 0xE0 prefix byte followed by
+    // a scancode, which is exactly what KEY_UP and its siblings in
+    // engine/global.h are defined in terms of.
+    int ch = _getch();
+
+    if (ch == 0 || ch == 224) {
+        ch = KEY_EXTENDED_CODE | _getch();
+    }
+
+    return ch;
+}
+
+#else // notcurses
 
 int vKbhit()
 {
@@ -361,6 +557,8 @@ int vGetch()
     }
 }
 
+#endif // USE_STC
+
 int vXGetch(const char* ch_buf)
 {
     size_t slen = strlen(ch_buf);
@@ -380,6 +578,23 @@ int vXGetch(const char* ch_buf)
     }
 }
 
+#ifdef USE_STC
+
+void vXGotoXY(int x, int y)
+{
+    // Shows the hardware cursor at this position - vGetS() uses this to
+    // give visible feedback while the player is typing, mirroring
+    // ncpp::Plane::cursor_enable(), which both shows and moves it at once.
+    std::cout << "\x1b[" << (y + 1) << ';' << (x + 1) << "H\x1b[?25h" << std::flush;
+}
+
+void vHideCursor()
+{
+    std::cout << "\x1b[?25l" << std::flush;
+}
+
+#else // notcurses
+
 void vXGotoXY(int x, int y)
 {
     nc->cursor_enable(y, x);
@@ -389,6 +604,8 @@ void vHideCursor()
 {
     nc->cursor_disable();
 }
+
+#endif // USE_STC
 
 namespace {
 
@@ -895,6 +1112,41 @@ long vRand(unsigned long n)
     }
 }
 
+#ifdef USE_STC
+
+V_BUFFER::V_BUFFER()
+{
+}
+
+V_BUFFER::~V_BUFFER()
+{
+    delete static_cast<std::vector<STCCell>*>(saved);
+}
+
+void vStore(const V_BUFFER* buf)
+{
+    delete static_cast<std::vector<STCCell>*>(buf->saved);
+    const_cast<V_BUFFER*>(buf)->saved = new std::vector<STCCell>(stc_screen);
+}
+
+void vRestore(const V_BUFFER* buf)
+{
+    const auto* saved = static_cast<std::vector<STCCell>*>(buf->saved);
+
+    // A screen saved before the terminal changed shape is of no use - see
+    // the notcurses version of this function for why it is safe to just
+    // clear and let whoever asked for the restore draw itself again.
+    if (!saved || saved->size() != stc_screen.size()) {
+        vClrScr();
+
+        return;
+    }
+
+    stc_screen = *saved;
+}
+
+#else // notcurses
+
 V_BUFFER::V_BUFFER()
 {
 }
@@ -962,6 +1214,8 @@ void vRestore(const V_BUFFER* buf)
         }
     }
 }
+
+#endif // USE_STC
 
 std::string vMakePath(std::string_view prefix, std::string_view filename)
 {
