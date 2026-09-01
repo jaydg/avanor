@@ -54,6 +54,19 @@ function AhkUlanHandler(e, t, p, v)
 		end
 	elseif (e == LuaEvent.DIE) then
 		QuestState:SetFlag('ahk_ulan_killed', 1)
+
+		-- He was the only buyer for the parts of the ancient machine, and there is
+		-- no one else in the world to hand them to. The errand ends here, and the
+		-- record should say that it ended badly rather than leave it open.
+		local qs = QuestStatus(QUEST_ANCIENT_PART)
+
+		if (qs < XQuest.CLOSED) then
+			if (qs == XQuest.KNOWN) then
+				AddMessage("Whatever Ahk-Ulan wanted with the ancient machine, he will not be asking for its parts now.")
+			end
+
+			QuestModify(QUEST_ANCIENT_PART, XQuest.FAIL)
+		end
 	end
 	return true
 end

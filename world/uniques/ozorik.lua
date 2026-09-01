@@ -64,6 +64,15 @@ function OzorikHandler(e, t, p, v)
 			AddMessage("'We are not looking for this.'")
 			return false
 		end
+	elseif (e == LuaEvent.DIE) then
+		-- The captain is the quest. He is the only one who judges the orc-slaying
+		-- sword, the only one who pays for it, and the only one his guards take
+		-- orders from - his men fight on, but there is nothing left to finish. Fail
+		-- it silently: he may well go down while the hero is far away, and the news
+		-- belongs to whichever of his guards the hero speaks to next.
+		if (QuestStatus(QUEST_OZORIK) < XQuest.CLOSED) then
+			QuestModify(QUEST_OZORIK, XQuest.FAIL)
+		end
 	elseif (e == LuaEvent.SAVE) then
 		StoreInt(ozorik_award)
 	elseif (e == LuaEvent.LOAD) then

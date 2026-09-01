@@ -52,11 +52,25 @@ end
 
 function RoyalGuardHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		AddMessage("'Don't bother me!'")
+		-- The captain died with his errand unfinished (OzorikHandler's DIE case).
+		-- His guards are where the hero learns of it - the quest itself is just
+		-- stops appearing in the log.
+		if (QuestStatus(QUEST_OZORIK) == XQuest.FAIL) then
+			AddMessage("'The captain is dead. We hold this ground because it is ours to hold, not because anyone is left to order it.'")
+		else
+			AddMessage("'Don't bother me!'")
+		end
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == XWarSkills.SWORD) then
-			AddMessage("'Thank you!'")
+			-- A dead captain cannot judge the blade or pay for it. The guard still
+			-- takes it - it is exactly what he wants against the orcs.
+			if (QuestStatus(QUEST_OZORIK) == XQuest.FAIL) then
+				AddMessage("'A fine blade. It comes a little late.'")
+			else
+				AddMessage("'Thank you!'")
+			end
+
 			if (QuestStatus(QUEST_OZORIK) < XQuest.COMPLETE) then
 				QuestModify(QUEST_OZORIK, XQuest.COMPLETE)
 			end
