@@ -329,31 +329,31 @@ int XPotion::onDrink(XCreature * cr)
                 break;
 
             case PotionName::GAIN_STRENGTH:
-                cr->GainAttr(XStats::STR, 1);
+                flag = cr->GainAttr(XStats::STR, 1);
                 break;
 
             case PotionName::GAIN_TOUGHNESS:
-                cr->GainAttr(XStats::TOU, 1);
+                flag = cr->GainAttr(XStats::TOU, 1);
                 break;
 
             case PotionName::GAIN_WILLPOWER:
-                cr->GainAttr(XStats::WIL, 1);
+                flag = cr->GainAttr(XStats::WIL, 1);
                 break;
 
             case PotionName::GAIN_DEXTERITY:
-                cr->GainAttr(XStats::DEX, 1);
+                flag = cr->GainAttr(XStats::DEX, 1);
                 break;
 
             case PotionName::GAIN_MANA:
-                cr->GainAttr(XStats::MAN, 1);
+                flag = cr->GainAttr(XStats::MAN, 1);
                 break;
 
             case PotionName::WEAKNESS:
-                cr->GainAttr(XStats::STR, -1);
+                flag = cr->GainAttr(XStats::STR, -1);
                 break;
 
             case PotionName::CLUMSINESS:
-                cr->GainAttr(XStats::DEX, -1);
+                flag = cr->GainAttr(XStats::DEX, -1);
                 break;
 
             case PotionName::DEATH:

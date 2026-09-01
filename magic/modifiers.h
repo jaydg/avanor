@@ -743,7 +743,7 @@ class XModAcidResistance : public XBasicModifier
 
         const char* ChangeMsg(int val) override
         {
-            return val > 0 ? "." : ".";
+            return val > 0 ? "Your resistance to acid grows." : "Your resistance to acid fades.";
         }
 
         const char* ApplyMsg() override
@@ -788,7 +788,7 @@ class XModFireResistance : public XBasicModifier
 
         const char* ChangeMsg(int val) override
         {
-            return val > 0 ? "." : ".";
+            return val > 0 ? "Your resistance to fire grows." : "Your resistance to fire fades.";
         }
 
         const char* ApplyMsg() override
@@ -833,7 +833,7 @@ class XModColdResistance : public XBasicModifier
 
         const char* ChangeMsg(int val) override
         {
-            return val > 0 ? "." : ".";
+            return val > 0 ? "Your resistance to cold grows." : "Your resistance to cold fades.";
         }
 
         const char* ApplyMsg() override
@@ -878,7 +878,7 @@ class XModPoisonResistance : public XBasicModifier
 
         const char* ChangeMsg(int val) override
         {
-            return val > 0 ? "." : ".";
+            return val > 0 ? "Your resistance to poison grows." : "Your resistance to poison fades.";
         }
 
         const char* ApplyMsg() override
