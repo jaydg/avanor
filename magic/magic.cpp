@@ -374,7 +374,7 @@ int XMagic::Train(const School school, const int count)
     int& counter = magic_count[Index(school)];
     counter += count;
 
-    if (counter > (GetLevel(school) + 1) * 100) {
+    if (counter > GetNextLevelAt(school)) {
         counter = 0;
 
         return GainLevel(school);
@@ -458,5 +458,13 @@ std::string XMagic::LevelToString(const School school) const
     }
 
     return "";
+}
+
+int XMagic::GetLevelNameLength(const int level)
+{
+    const std::string_view s = mg_level_str[level];
+    const auto tag_end = s.find('>');
+
+    return static_cast<int>(tag_end == std::string_view::npos ? s.size() : s.size() - tag_end - 1);
 }
 

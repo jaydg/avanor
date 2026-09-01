@@ -119,12 +119,36 @@ class XMagic
         int GainLevel(School school, int n = 1);
 
         std::string LevelToString(School school) const;
+
+        // Visible length of a rank's name alone, skipping the color tag
+        // LevelToString() bakes in front of it - lets a caller right-pad
+        // a line ending in LevelToString() output without having to
+        // parse that tag itself.
+        static int GetLevelNameLength(int level);
+
         void Learn(SPELL_NAME spell);
         [[nodiscard]] XSpell* GetSpell(SPELL_NAME spell) const;
 
         [[nodiscard]] int GetLevel(const School school) const
         {
             return magic_level[Index(school)];
+        }
+
+        // Successful casts of this school's spells credited so far
+        // towards its next rank - the numerator Train() compares
+        // against GetNextLevelAt() below, exposed so the UI can show
+        // real progress instead of guessing it.
+        [[nodiscard]] int GetCount(const School school) const
+        {
+            return magic_count[Index(school)];
+        }
+
+        // The count GetCount() needs to pass for Train() to grant the
+        // next rank - single source of truth for both Train()'s own
+        // check and the UI's progress readout.
+        [[nodiscard]] int GetNextLevelAt(const School school) const
+        {
+            return (GetLevel(school) + 1) * 10;
         }
 
         std::vector<std::unique_ptr<XSpell>> spells;

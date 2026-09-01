@@ -2104,12 +2104,35 @@ void XHero::MagicLevelList() const
     XGuiList list;
     list.SetCaption("<DECORATION>###<TEXT> Magic School <DECORATION>###");
 
-    for (int i = 0; i < XMagic::SCHOOL_COUNT; i++) {
-        auto s = m->LevelToString(static_cast<XMagic::School>(i));
+    list.AddItem(new XGuiItem_Text(
+        fmt::format("<LABEL>{:<30} {:<14}  {}", "School", "Rank", "Spells Cast"), 0), 0);
 
-        if (!s.empty()) {
-            list.AddItem(new XGuiItem_SimpleSelect(s), 0);
+    for (int i = 0; i < XMagic::SCHOOL_COUNT; i++) {
+        const auto school = static_cast<XMagic::School>(i);
+        auto s = m->LevelToString(school);
+
+        if (s.empty()) {
+            continue;
         }
+
+        const int level = m->GetLevel(school);
+
+        // Rank name is the last thing LevelToString() wrote, colored and
+        // unpadded - pad it out here (accounting for its own color tag,
+        // which GetLevelNameLength() already skips) so the progress
+        // column that follows lines up regardless of which rank it is.
+        constexpr int kRankColumnWidth = 14;
+
+        if (const int pad = kRankColumnWidth - XMagic::GetLevelNameLength(level); pad > 0) {
+            s += std::string(pad, ' ');
+        }
+
+        const std::string progress = level >= XMagic::MAX_LEVEL
+            ? "<DECORATION>[<TEXT>mastered<DECORATION>]"
+            : fmt::format("<DECORATION>[<TEXT>{:>4}<DECORATION>/<TEXT>{:<4}<DECORATION>]",
+                          m->GetCount(school), m->GetNextLevelAt(school) + 1);
+
+        list.AddItem(new XGuiItem_SimpleSelect(s + "  " + progress), 0);
     }
 
     list.Run();
