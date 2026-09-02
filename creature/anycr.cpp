@@ -27,7 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/anycr.h"
 #include "creature/shopkeeper.h"
 #include "engine/xapi.h"
-#include "game/quest.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
 #include "magic/attack_effect_type.h"
@@ -255,14 +254,6 @@ void XAnyCreature::Die(XCreature * killer)
             XItem * it = new XBone();
             it->Drop(l, x, y);
         }
-    }
-
-    if (creature_class == CreatureClass::ORC) {
-        if (killer && killer->isHero()) {
-            XQuest::quest.SetFlag("orcs_killed", XQuest::quest.GetFlag("orcs_killed") + 1);
-        }
-
-        XQuest::quest.SetFlag("total_orcs_killed", XQuest::quest.GetFlag("total_orcs_killed") + 1);
     }
 
     if (creature_class == CreatureClass::RAT && vRand(40) == 0) {

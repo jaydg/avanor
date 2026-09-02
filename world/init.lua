@@ -10,6 +10,7 @@ function LoadScripts()
 	dofile("./world/valley_extras.lua");
 	dofile("./world/locations/init.lua");
 	dofile("./world/quests.lua");
+	dofile("./world/tally.lua");
 end
 
 -- Actually builds the world (as opposed to LoadScripts(), which only

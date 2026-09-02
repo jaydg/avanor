@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xlua.h"
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <fmt/format.h>
 
 #include <cereal/archives/json.hpp>
@@ -1104,11 +1105,30 @@ void XCreature::Die(XCreature* killer)
     // alive for the rest of this function regardless.
     auto self = shared_from_this();
 
+    sol::state_view lua(XLua::State());
+
     if (!event_handler.empty()) {
         // this/killer stay void*, not XCreature* -  killer can legitimately be
         // nullptr (e.g. DecNutrio()'s Die(nullptr))
-        sol::state_view lua(XLua::State());
         lua[event_handler](LuaEvent::DIE, (void*)this, (void*)killer);
+    }
+
+    // World-level death notification, in addition to the actor's own handler
+    // above. Content that has to know about deaths it never placed a handler
+    // on - kill tallies, faction bookkeeping, a bounty board - defines
+    // OnCreatureDie() in world/; a world that defines none pays one global
+    // lookup per death. The creature's class comes along as an argument
+    // rather than through a new XCreature binding, deliberately: see the
+    // string-interning hazard documented at XCreature::RegisterLua().
+    //
+    // Protected, unlike the handler above: a fault in a bookkeeping script
+    // must not take the game down in the middle of a death.
+    if (sol::protected_function on_die = lua["OnCreatureDie"]; on_die.valid()) {
+        if (const auto result = on_die((void*)this, (void*)killer, creature_class);
+            !result.valid()) {
+            const sol::error err = result;
+            std::cerr << "world: OnCreatureDie: " << err.what() << std::endl;
+        }
     }
 
     // Unwear everything first, firing onUnWear() side effects - the items
