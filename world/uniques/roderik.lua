@@ -65,7 +65,6 @@ function RoderikHandler(e, t, p, v)
 				if (GetCreatureCount("UNDEADS_TOMB1", CreatureClass.UNDEAD) == 0) then
 					AddMessage("Thank you for destroying the evil in our crypt. Please accept these coins and my gratitude for a job well done.")
 					QuestModify(QUEST_RODERICK_CRYPT, XQuest.CLOSED)
-					QuestState:SetFlag('roderick_quest2', 2)
 					chatter:MoneyOp(1000)
 				else
 					AddMessage("You still have not cleansed my ancestor's crypt.")
@@ -100,7 +99,6 @@ function RoderikHandler(e, t, p, v)
 		if (item.it == ItemType.EYEOFRAA) then
 			AddMessage("Thank you for your great help. The citizens of Avanor never forget your exploits!")
 			QuestModify(QUEST_RODERICK_EYE, XQuest.CLOSED)
-			QuestState:SetFlag('roderick_quest', 2)
 			roderik:ContainItem(item)
 			return true
 		else

@@ -108,16 +108,27 @@ class XQuest
 };
 
 struct XQuestRec {
+    // What the quest log shows while the quest is KNOWN, and what the
+    // achievements screen shows once it is COMPLETE (the deed done) or
+    // CLOSED (done and reported). Either may be empty, in which case that
+    // state simply says nothing. All three are written by content, from
+    // Quest() in world/quests.lua - the engine never composes quest text.
     std::string know;
     std::string complete;
     std::string closed;
+
+    // What finishing this quest is worth on the achievements screen.
+    // Awarded once, on either COMPLETE or CLOSED, so a hero who did the
+    // deed but never went back to be thanked still gets the credit.
+    int score;
+
     XQuest::Id status;
     int quest_id;
 
     template<class Archive>
     void serialize(Archive& ar)
     {
-        ar(know, complete, closed, status, quest_id);
+        ar(know, complete, closed, score, status, quest_id);
     }
 };
 

@@ -188,11 +188,10 @@ function GasPumpEvent(e, p)
 	if (e == LuaEvent.OUTER_USE) then
 		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE) then
 			AddMessage('You hear hollow rumble as the pump starts.')
+			-- The mine is breathing again whatever happens to the errand
+			-- from here. COMPLETE is already what the achievements screen
+			-- pays for, so the deed counts even if Torin is never told.
 			QuestModify(QUEST_TORIN, XQuest.COMPLETE)
-
-			-- The mine is breathing again. The achievements screen reads
-			-- this (XHero::EndGame) and it is worth 5000 points.
-			QuestState:SetFlag('torin_quest', 1)
 		else
 			AddMessage('You can\'t seem to stop the pump.')
 		end

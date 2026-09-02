@@ -253,23 +253,25 @@ void XHero::EndGame(const char* end_msg)
         list.AddItem(new XGuiItem_Text("You were not very religious."));
     }
 
-    if (XQuest::quest.GetFlag("torin_quest")) {
-        list.AddItem(new XGuiItem_Text("You helped to pump out gas from the dwarven golden mine."));
-        score += 5000;
-    }
+    // Quests are defined world/quests.lua, with all messages and the score.
+    // COMPLETE means the deed was done, CLOSED that it was done and reported;
+    // a quest that has nothing to say about one of those leaves that string
+    // empty, and the score is paid either way so that never going back to be
+    // thanked does not cost the credit.
+    for (const auto& quest: XQuest::quest.quests) {
+        if (quest->status != XQuest::COMPLETE && quest->status != XQuest::CLOSED) {
+            continue;
+        }
 
-    if (XQuest::quest.GetFlag("guards_get_orc_slay")) {
-        list.AddItem(new XGuiItem_Text("You brought a useful thing to Ozorik."));
-    }
+        const std::string& line = quest->status == XQuest::CLOSED
+            ? quest->closed
+            : quest->complete;
 
-    if (XQuest::quest.GetFlag("roderick_quest") == 2) {
-        list.AddItem(new XGuiItem_Text("You returned 'Eye of Raa' to Roderick."));
-        score += 10000;
-    }
+        if (!line.empty()) {
+            list.AddItem(new XGuiItem_Text(line));
+        }
 
-    if (XQuest::quest.GetFlag("roderick_quest2") == 2) {
-        list.AddItem(new XGuiItem_Text("You cleansed the tomb of Roderick's ancestors."));
-        score += 5000;
+        score += quest->score;
     }
 
     if (const int orcs_killed = XQuest::quest.GetFlag("orcs_killed"); orcs_killed > 0 && XQuest::quest.GetFlag("total_orcs_killed") == 30) {

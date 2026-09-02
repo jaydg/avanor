@@ -449,7 +449,7 @@ bool GiveAward(void* owner_ptr, XGUID aguid, void* target_ptr)
     return false;
 }
 
-void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed)
+void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed, sol::optional<int> score)
 {
     auto qr = std::make_unique<XQuestRec>();
     qr->quest_id = quest_id;
@@ -457,6 +457,7 @@ void Quest(int quest_id, int status, const std::string& know, const std::string&
     qr->know = know;
     qr->complete = complete;
     qr->closed = closed;
+    qr->score = score.value_or(0);
     XQuest::quest.quests.push_back(std::move(qr));
 }
 

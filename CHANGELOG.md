@@ -170,6 +170,13 @@ It now uses the whole terminal, and follows it when you resize the window —
 the map grows, the menus and the title recentre, and lists re-flow. Narrow
 windows no longer scramble the display.
 
+**The achievements screen remembers everything you did.**
+When your game ends it used to name four things: the gas pump, the crypt, the
+Eye of Raa, and how the story finished. Every other errand you ran — the demon
+in the caves, the road east, Brida's daughter, the machine parts — went
+unmentioned, however it turned out. Each quest now carries its own line and
+says what became of it, and the same list is what goes into the memorial file.
+
 ---
 
 ### Skills

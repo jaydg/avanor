@@ -88,7 +88,7 @@ namespace lua_api
     void SetCompanion(void* owner, void* slave, bool flag);
     void GiveObjectToCreature(void* item, void* cr);
     bool GiveAward(void* owner, XGUID aguid, void* target);
-    void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed);
+    void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed, sol::optional<int> score);
     void QuestModify(int id, int status);
     int QuestStatus(int id);
     int StoreInt(lua_State * L);
