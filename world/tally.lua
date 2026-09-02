@@ -74,4 +74,5 @@ end
 
 function OnCreatureDie(cr, killer, class)
 	TallyOrcs(cr, killer, class)
+	DropYohjiTrophy(cr, class)
 end

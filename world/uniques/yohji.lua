@@ -18,6 +18,37 @@ Monster.new("yohjishiro")
 	:Register()
 
 
+-- Rats have tails worth keeping and bats have wings worth keeping for
+-- exactly one reason: Yohjishiro asks for them, and nothing else in the
+-- world wants either. So the trophies are dropped here, beside the errand
+-- that gives them their point.
+local YOHJI_TROPHIES = {
+	["rat"] = "XRatTail",
+	["large rat"] = "XRatTail",
+	["bat"] = "XBatWing",
+	["huge bat"] = "XBatWing",
+}
+
+-- One roll per rat-kin death, whatever kind it was, exactly as the engine
+-- used to make it - the creatures that carry nothing still spend the roll.
+local YOHJI_TROPHY_ODDS = 40
+
+function DropYohjiTrophy(cr, class)
+	if (class ~= CreatureClass.RAT or Rand(YOHJI_TROPHY_ODDS) ~= 0) then
+		return
+	end
+
+	local trophy = YOHJI_TROPHIES[AsCreature(cr).name]
+
+	if (trophy) then
+		-- At the dead creature's own feet, in its own location: DropItem's
+		-- two-argument form takes the position from the object, and never
+		-- looks at whatever location happened to be current.
+		DropItem(CreateObject(trophy), cr)
+	end
+end
+
+
 function CreateYohji(x, y)
 	-- She and her flock down in the yard are one group, which is the
 	-- whole of what makes her dangerous: kill a sheep and the engine

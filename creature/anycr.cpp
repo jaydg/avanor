@@ -256,16 +256,6 @@ void XAnyCreature::Die(XCreature * killer)
         }
     }
 
-    if (creature_class == CreatureClass::RAT && vRand(40) == 0) {
-        if (creature_name == CN_RAT || creature_name == CN_LARGE_RAT) {
-            XItem * it = new XRatTail();
-            DropItem(it);
-        } else if (creature_name == CN_BAT || creature_name == CN_HUGE_BAT) {
-            XItem * it = new XBatWing();
-            DropItem(it);
-        }
-    }
-
     if (vRand(5) == 0 && !(creature_class & CreatureClass::UNDEAD)) {
         DropItem(new XCorpse(this));
     }
