@@ -11,6 +11,7 @@ function LoadScripts()
 	dofile("./world/valley.lua");
 	dofile("./world/valley_extras.lua");
 	dofile("./world/locations/init.lua");
+	dofile("./world/hero.lua");
 	dofile("./world/quests.lua");
 	dofile("./world/tally.lua");
 end

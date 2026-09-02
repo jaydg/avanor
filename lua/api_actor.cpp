@@ -81,6 +81,54 @@ void ChangeStats(void* cr, int st, int val)
     ((XCreature*)cr)->GainAttr((XStats::Id)st, val);
 }
 
+// Character building, for InitHero (world/hero.lua). Free functions rather
+// than methods on the XCreature usertype: adding names there is the one
+// operation this codebase has caught corrupting the Lua state (see the note
+// at XCreature::RegisterLua).
+void SetStats(void* cr, const std::string& dice)
+{
+    // Replaces, and does not add to, whatever the creature had: XStats::Set
+    // accumulates (stats[i] += ...), so setting a character's figures has to
+    // start from a fresh object or a second call would double them.
+    ((XCreature*)cr)->stats = std::make_unique<XStats>(dice.c_str());
+}
+
+void AddStats(void* cr, const std::string& dice)
+{
+    const XStats extra(dice.c_str());
+    ((XCreature*)cr)->stats->Add(&extra);
+}
+
+void SetMaxStats(void* cr, const std::string& dice)
+{
+    ((XCreature*)cr)->max_stats.Set(dice.c_str());
+}
+
+// No stat may end below 1, however unkind the race and profession were to
+// each other.
+void ClampStats(void* cr)
+{
+    auto* c = (XCreature*)cr;
+
+    for (int i = XStats::STR; i < XStats::COUNT; i++) {
+        if (c->stats->Get(static_cast<XStats::Id>(i)) < 1) {
+            c->stats->SetStat(static_cast<XStats::Id>(i), 1);
+        }
+    }
+}
+
+// How long a turn takes this character - "0d0+1000" is the ordinary pace.
+void SetMoveEnergy(void* cr, const std::string& dice)
+{
+    XDice d(dice.c_str());
+    ((XCreature*)cr)->SetMoveEnergy(d.Throw());
+}
+
+void SetFoodFeeling(void* cr, int ff)
+{
+    ((XCreature*)cr)->food_feeling = static_cast<FOOD_FEELING>(ff);
+}
+
 int GetStats(void* cr, int st)
 {
     return ((XCreature*)cr)->GetStats((XStats::Id)st);
@@ -577,6 +625,12 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetEnemy", &lua_api::SetEnemy);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);
         lua.set_function("GetStats", &lua_api::GetStats);
+        lua.set_function("SetStats", &lua_api::SetStats);
+        lua.set_function("AddStats", &lua_api::AddStats);
+        lua.set_function("SetMaxStats", &lua_api::SetMaxStats);
+        lua.set_function("ClampStats", &lua_api::ClampStats);
+        lua.set_function("SetMoveEnergy", &lua_api::SetMoveEnergy);
+        lua.set_function("SetFoodFeeling", &lua_api::SetFoodFeeling);
         lua.set_function("InflictDamage", &lua_api::InflictDamage);
         lua.set_function("Rand", &lua_api::Rand);
         lua.set_function("SetEventHandler", &lua_api::SetEventHandler);

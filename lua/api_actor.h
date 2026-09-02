@@ -42,6 +42,12 @@ namespace lua_api
     void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg);
     void ChangeStats(void* cr, int st, int val);
     int GetStats(void* cr, int st);
+    void SetStats(void* cr, const std::string& dice);
+    void AddStats(void* cr, const std::string& dice);
+    void SetMaxStats(void* cr, const std::string& dice);
+    void ClampStats(void* cr);
+    void SetMoveEnergy(void* cr, const std::string& dice);
+    void SetFoodFeeling(void* cr, int ff);
     int Rand(int val);
     void SetEventHandler(void* cr, const std::string& event);
     void EnableMoveHandler(void* cr);

@@ -152,8 +152,13 @@ void XLua::Init()
     XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
 
-    // What a scroll or a book can be. Neither was exposed before, because
-    // nothing outside C++ handed one out; the hero's starting kit does.
+    lua.new_enum("FoodFeeling",
+        "TOLERANT", FF_TOLERANT,
+        "NORMAL", FF_NORMAL,
+        "SENSITIVE", FF_SENSITIVE
+    );
+
+    // What a scroll or a book can be.
     lua.new_enum("ScrollName",
         "BURNING_HANDS", ScrollName::BURNING_HANDS, "ICE_TOUCH", ScrollName::ICE_TOUCH,
         "HEROISM", ScrollName::HEROISM, "HEALING", ScrollName::HEALING,
@@ -263,7 +268,7 @@ void XLua::Init()
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
-            "ItemKind", "ItemType", "BookName", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
+            "ItemKind", "ItemType", "BookName", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "PersonType", "PotionName", "Result", "ScriptCommand", "ShopDoor",
             "Spell", "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",

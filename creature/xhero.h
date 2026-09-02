@@ -176,15 +176,22 @@ class XHero final : public XCreature
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XCreature>(this));
-            ar(race, profession, turn_count, recipe_list);
+            ar(race, race_name, profession, profession_name, turn_count, recipe_list);
             FixupHeroDefaults();
         }
 
         void doSacrifice();
         int OrderCompanion();
 
-        int race{};
-        int profession{};
+        // The keys world/hero.lua defined these under, and the names it
+        // showed in the menus. Both are kept: the key is what content
+        // matches on, and the name is what the character sheet and the
+        // memorial show - which must still read correctly for a character
+        // whose race the world has since renamed or dropped.
+        std::string race;
+        std::string race_name;
+        std::string profession;
+        std::string profession_name;
 
         const char* GetRaceStr() const;
         const char* GetProfessionStr() const;

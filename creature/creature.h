@@ -385,6 +385,16 @@ class XCreature : public XBaseObject
         int DecNutrio();
         FOOD_FEELING food_feeling;
 
+        // How long a turn takes this creature. ttm/ttmb live on XObject and
+        // are protected there; character building sets them from content
+        // (world/hero.lua, through SetMoveEnergy), so one accessor rather
+        // than opening the fields to everything.
+        void SetMoveEnergy(int energy)
+        {
+            ttmb = energy;
+            ttm = energy;
+        }
+
         void MoveStairWay();
 
         virtual void Attack();

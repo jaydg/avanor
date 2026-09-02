@@ -18,126 +18,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
 #include <vector>
+
+#include <sol/sol.hpp>
+
 #include "creature/xhero.h"
+#include "engine/xlua.h"
 #include "item/itemf.h"
 #include "item/xtool.h"
-
-struct CUSTOM_RACE {
-    const char* name;
-    const char* stats;
-    const char* max_stats;
-    const char* speed;
-    FOOD_FEELING ff;
-};
-
-struct CUSTOM_PROF {
-    const char* name;
-    const char* stats;
-};
-
-struct CUSTOM_GEND {
-    const char* name;
-    const char* stats;
-};
-
-CUSTOM_RACE cust_race[] = {
-    {
-        "human",
-        "St:1d4+8 Dx:1d4+8 To:1d4+8 Le:1d4+8 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
-        "St:1d8+18 Dx:1d8+18 To:1d8+18 Le:1d8+18 Wi:1d8+18 Ma:1d8+18 Pe:1d8+18 Ch:1d8+18",
-        "0d0+1000",
-        FF_NORMAL
-    },
-    {
-        "half elf",
-        "St:1d4+6 Dx:1d4+10 To:1d4+6 Le:1d4+10 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
-        "St:1d8+16 Dx:1d8+20 To:1d8+16 Le:1d8+20 Wi:1d8+18 Ma:1d8+18 Pe:1d8+18 Ch:1d8+18",
-        "0d0+1000",
-        FF_NORMAL
-    },
-    {
-        "high elf",
-        "St:1d4+5 Dx:1d4+12 To:1d4+4 Le:1d4+12 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
-        "St:1d8+15 Dx:1d8+22 To:1d8+14 Le:1d8+22 Wi:1d8+18 Ma:1d8+18 Pe:1d8+18 Ch:1d8+18",
-        "0d0+1000",
-        FF_NORMAL
-    },
-    {
-        "halfling",
-        "St:1d4+5 Dx:1d4+12 To:1d4+4 Le:1d4+8 Wi:1d4+8 Ma:1d4+8 Pe:1d4+10 Ch:1d4+10",
-        "St:1d8+15 Dx:1d8+22 To:1d8+14 Le:1d8+18 Wi:1d8+18 Ma:1d8+18 Pe:1d8+20 Ch:1d8+20",
-        "0d0+1000",
-        FF_SENSITIVE
-    },
-    {
-        "half orc",
-        "St:1d4+14 Dx:1d4+10 To:1d4+12 Le:1d4+4 Wi:1d4+4 Ma:1d4+4 Pe:1d4+10 Ch:1d4+6",
-        "St:1d8+24 Dx:1d8+20 To:1d8+22 Le:1d8+14 Wi:1d4+14 Ma:1d8+14 Pe:1d8+20 Ch:1d8+16",
-        "0d0+1000",
-        FF_TOLERANT
-    },
-    {
-        "dwarf",
-        "St:1d4+10 Dx:1d4+4 To:1d4+14 Le:1d4+8 Wi:1d4+10 Ma:1d4+6 Pe:1d4+6 Ch:1d4+6",
-        "St:1d8+20 Dx:1d8+14 To:1d8+24 Le:1d8+18 Wi:1d8+20 Ma:1d8+16 Pe:1d8+16 Ch:1d8+16",
-        "0d0+1000",
-        FF_NORMAL
-    },
-    {
-        "gnome",
-        "St:1d4+5 Dx:1d4+8 To:1d4+5 Le:1d4+12 Wi:1d4+12 Ma:1d4+8 Pe:1d4+8 Ch:1d4+6",
-        "St:1d8+15 Dx:1d8+18 To:1d8+15 Le:1d8+22 Wi:1d8+22 Ma:1d8+18 Pe:1d8+18 Ch:1d8+16",
-        "0d0+1000",
-        FF_NORMAL
-    }
-};
-
-CUSTOM_PROF cust_profession[] = {
-    {
-        "warrior",
-        "St:0d0+4 Dx:0d0+4 To:0d0+4 Le:0d0-3 Wi:0d0-3 Ma:0d0-6 Pe:0d0+0 Ch:0d0+0"
-    },
-    {
-        "wizard",
-        "St:0d0-3 Dx:0d0-3 To:0d0-3 Le:0d0+3 Wi:0d0+3 Ma:0d0+3 Pe:0d0+0 Ch:0d0+0"
-    },
-    {
-        "archer",
-        "St:0d0+1 Dx:0d0+4 To:0d0+2 Le:0d0-2 Wi:0d0-2 Ma:0d0-4 Pe:0d0+1 Ch:0d0+0"
-    },
-    {
-        "ranger",
-        "St:0d0+0 Dx:0d0+2 To:0d0+2 Le:0d0-2 Wi:0d0-1 Ma:0d0-0 Pe:0d0+0 Ch:0d0+0"
-    },
-    {
-        "cleric",
-        "St:0d0-2 Dx:0d0-2 To:0d0-1 Le:0d0+2 Wi:0d0+2 Ma:0d0-2 Pe:0d0+3 Ch:0d0+0"
-    },
-    {
-        "paladin",
-        "St:0d0+2 Dx:0d0+0 To:0d0+2 Le:0d0-2 Wi:0d0+1 Ma:0d0-3 Pe:0d0+0 Ch:0d0+0"
-    },
-    {
-        "alchemist",
-        "St:0d0-2 Dx:0d0-2 To:0d0-2 Le:0d0+3 Wi:0d0+1 Ma:0d0-2 Pe:0d0+2 Ch:0d0+0"
-    },
-    {
-        "bard",
-        "St:0d0+1 Dx:0d0+1 To:0d0 Le:0d0-2 Wi:0d0 Ma:0d0 Pe:0d0 Ch:0d0+0"
-    },
-};
-
-CUSTOM_GEND cust_gender[] = {
-    {
-        "male",
-        "St:0d0+1 Dx:0d0+0 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"
-    },
-    {
-        "female",
-        "St:0d0+0 Dx:0d0+1 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0"
-    },
-};
 
 namespace {
 
@@ -149,7 +38,7 @@ namespace {
 // redrawn from scratch each time round, which costs nothing here and
 // means the resize needs no special case beyond falling through to the
 // next turn of the loop.
-int ChooseFromMenu(const char* title, const std::vector<const char*>& names)
+int ChooseFromMenu(const char* title, const std::vector<std::string>& names)
 {
     while (true) {
         vClrScr();
@@ -177,103 +66,61 @@ int ChooseFromMenu(const char* title, const std::vector<const char*>& names)
 
 void XHero::PlayerSetup()
 {
-    XStats * stmp;
+    sol::state_view lua(XLua::State());
 
-    std::vector<const char*> race_names;
+    // The whole of the offer in one answer: every race, and for each of
+    // them the professions it allows. The engine builds menus from this and
+    // decides none of it - world/hero.lua does.
+    sol::table races = lua["HeroRaces"]();
+    std::vector<std::string> race_labels;
 
-    for (const auto& entry : cust_race) {
-        race_names.push_back(entry.name);
+    for (auto& [_, row] : races) {
+        race_labels.push_back(row.as<sol::table>()["name"]);
     }
 
-    const int race_choice = ChooseFromMenu("<TEXT>Choose a race:", race_names);
-    {
-        const CUSTOM_RACE& chosen = cust_race[race_choice - 'a'];
-        XDice d(chosen.speed);
-        ttmb = d.Throw();
-        ttm = ttmb;
+    const int race_choice = ChooseFromMenu("<TEXT>Choose a race:", race_labels);
+    sol::table chosen_race = races[race_choice - 'a' + 1];
+    race = chosen_race["key"];
+    race_name = chosen_race["name"];
 
-        stats = std::make_unique<XStats>(chosen.stats);
-        max_stats.Set(chosen.max_stats);
-        food_feeling = chosen.ff;
+    sol::table genders = lua["HeroGenders"]();
+    std::vector<std::string> gender_labels;
 
-        race = race_choice - 'a';
+    for (auto& [_, row] : genders) {
+        gender_labels.push_back(row.as<sol::table>()["name"]);
     }
 
-    switch (race_choice) {
-        case 'a':
-            sk->Learn(XSkill::Skill::COOKING);
-            sk->Learn(XSkill::Skill::BACKSTABBING);
-            break;
+    const int gender_choice = ChooseFromMenu("<TEXT>Choose a gender:", gender_labels);
+    sol::table chosen_gender = genders[gender_choice - 'a' + 1];
+    const std::string gender_key = chosen_gender["key"];
+    creature_person_type = gender_choice == 'a' ? XCreature::MALE_YOU : XCreature::FEMALE_YOU;
 
-        case 'b':
-            break;
+    // Only what this race may take up.
+    sol::table professions = chosen_race["professions"];
+    std::vector<std::string> profession_labels;
 
-        case 'c':
-            sk->Learn(XSkill::Skill::COOKING);
-            break;
-
-        case 'd':
-            // Halflings: the smallest and joint-nimblest race
-            sk->Learn(XSkill::Skill::DODGE);
-            break;
-
-        case 'e':
-            sk->Learn(XSkill::Skill::ATHLETICS);
-            break;
-
-        case 'f':
-            sk->Learn(XSkill::Skill::MINING);
-            break;
-
-        case 'g':
-            sk->Learn(XSkill::Skill::MINING);
-            sk->Learn(XSkill::Skill::FINDWEAKNESS);
-            break;
-
-        default:
-            assert(0);
-    }
-
-    sk->Learn(XSkill::Skill::FIRST_AID);
-
-    std::vector<const char*> gender_names;
-
-    for (const auto& entry : cust_gender) {
-        gender_names.push_back(entry.name);
+    for (auto& [_, row] : professions) {
+        profession_labels.push_back(row.as<sol::table>()["name"]);
     }
 
     {
-        const int ch = ChooseFromMenu("<TEXT>Choose a gender:", gender_names);
+        const int ch = ChooseFromMenu("<TEXT>Choose a profession:", profession_labels);
+        sol::table chosen_profession = professions[ch - 'a' + 1];
+        profession = chosen_profession["key"];
+        profession_name = chosen_profession["name"];
 
-        stmp = new XStats(cust_gender[ch - 'a'].stats);
-        stats->Add(stmp);
-        delete stmp;
-
-        creature_person_type = ch == 'a' ? XCreature::MALE_YOU : XCreature::FEMALE_YOU;
-    }
-
-    std::vector<const char*> profession_names;
-
-    for (const auto& entry : cust_profession) {
-        profession_names.push_back(entry.name);
-    }
-
-    {
-        const int ch = ChooseFromMenu("<TEXT>Choose a profession:", profession_names);
-        {
-            stmp = new XStats(cust_profession[ch - 97].stats);
-            stats->Add(stmp);
-            delete stmp;
-
-            for (int ii = XStats::STR; ii < XStats::COUNT; ii++) {
-                if (stats->Get(static_cast<XStats::Id>(ii)) < 1) {
-                    stats->SetStat(static_cast<XStats::Id>(ii), 1);
-                }
+        // Everything those three choices mean - the figures, the pace, the
+        // stomach, what the race simply knows - belongs to content.
+        if (sol::protected_function init = lua["InitHero"]; init.valid()) {
+            if (const auto result = init((void*)this, race, gender_key, profession);
+                !result.valid()) {
+                const sol::error err = result;
+                std::cerr << "world: InitHero: " << err.what() << std::endl;
             }
+        }
 
+        {
             vClrScr();
-
-            profession = ch - 97;
 
             XBodyPart * pbp;
             XPotion * potion;
@@ -829,10 +676,10 @@ void XHero::PlayerSetup()
 
 const char* XHero::GetRaceStr() const
 {
-    return cust_race[race].name;
+    return race_name.c_str();
 }
 
 const char* XHero::GetProfessionStr() const
 {
-    return cust_profession[profession].name;
+    return profession_name.c_str();
 }
