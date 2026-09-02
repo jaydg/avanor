@@ -343,6 +343,12 @@ Things that went quietly wrong the longer you played:
 - Ahk-Ulan's errand outlived Ahk-Ulan. Kill him and his request for the
   three parts of an ancient machine stayed in your quest log for the rest of
   the game. It now ends when he does, and ends as a failure.
+- Collecting Torin's reward cost you the credit for earning it. Starting the
+  gas pump at the bottom of the dwarven gold mine is worth 5000 points on
+  the achievements screen at the end of the game — but the moment Torin
+  thanked you and handed over your reward, the game stopped counting it, and
+  only players who never went back to claim it were ever paid. The pump is
+  what earns those points now, and nothing afterwards takes them away.
 
 ---
 

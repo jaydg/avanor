@@ -189,6 +189,10 @@ function GasPumpEvent(e, p)
 		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE) then
 			AddMessage('You hear hollow rumble as the pump starts.')
 			QuestModify(QUEST_TORIN, XQuest.COMPLETE)
+
+			-- The mine is breathing again. The achievements screen reads
+			-- this (XHero::EndGame) and it is worth 5000 points.
+			QuestState:SetFlag('torin_quest', 1)
 		else
 			AddMessage('You can\'t seem to stop the pump.')
 		end

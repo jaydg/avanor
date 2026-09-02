@@ -253,7 +253,7 @@ void XHero::EndGame(const char* end_msg)
         list.AddItem(new XGuiItem_Text("You were not very religious."));
     }
 
-    if (XQuest::quest.GetFlag("torin_quest") == 2) {
+    if (XQuest::quest.GetFlag("torin_quest")) {
         list.AddItem(new XGuiItem_Text("You helped to pump out gas from the dwarven golden mine."));
         score += 5000;
     }
