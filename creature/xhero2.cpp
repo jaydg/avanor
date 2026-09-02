@@ -93,7 +93,14 @@ void XHero::PlayerSetup()
     const int gender_choice = ChooseFromMenu("<TEXT>Choose a gender:", gender_labels);
     sol::table chosen_gender = genders[gender_choice - 'a' + 1];
     const std::string gender_key = chosen_gender["key"];
-    creature_person_type = gender_choice == 'a' ? XCreature::MALE_YOU : XCreature::FEMALE_YOU;
+
+    // The pronoun comes from the entry rather than from its place in the
+    // menu, so a world may offer these in any order or offer more of them.
+    // YOU is added here and not there: being addressed in the second person
+    // is what makes this creature the player, which is the engine's business
+    // and not the world's.
+    const int pronoun = chosen_gender["pronoun"];
+    creature_person_type = static_cast<XCreature::PersonType>(pronoun | XCreature::YOU);
 
     // Only what this race may take up.
     sol::table professions = chosen_race["professions"];

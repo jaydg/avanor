@@ -123,10 +123,16 @@ HERO_PROFESSIONS = {
 }
 
 
+-- Who the character may be, in menu order. Each names the pronoun the game
+-- should use for them - not the engine assuming that the first entry in the
+-- menu means male - so this list can be reordered, or added to, freely.
+--
+-- Only the pronoun: that the player is spoken to as "you" is a fact about
+-- playing the game rather than about the world, so the engine adds it.
 HERO_GENDERS = {
-	{ key = "male", name = "male",
+	{ key = "male", name = "male", pronoun = PersonType.HE,
 	  stats = "St:0d0+1 Dx:0d0+0 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0" },
-	{ key = "female", name = "female",
+	{ key = "female", name = "female", pronoun = PersonType.SHE,
 	  stats = "St:0d0+0 Dx:0d0+1 To:0d0+0 Le:0d0+0 Wi:0d0+0 Ma:0d0+0 Pe:0d0+0 Ch:0d0+0" },
 }
 
@@ -165,7 +171,7 @@ function HeroGenders()
 	local out = {}
 
 	for i, gender in ipairs(HERO_GENDERS) do
-		out[i] = { key = gender.key, name = gender.name }
+		out[i] = { key = gender.key, name = gender.name, pronoun = gender.pronoun }
 	end
 
 	return out
