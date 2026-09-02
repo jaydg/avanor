@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
+#include "item/xscroll.h"
+#include "item/xbook.h"
 #include "item/itemdb.h"
 #include "item/item_misc.h"
 #include "item/xtool.h"
@@ -150,6 +152,33 @@ void XLua::Init()
     XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
 
+    // What a scroll or a book can be. Neither was exposed before, because
+    // nothing outside C++ handed one out; the hero's starting kit does.
+    lua.new_enum("ScrollName",
+        "BURNING_HANDS", ScrollName::BURNING_HANDS, "ICE_TOUCH", ScrollName::ICE_TOUCH,
+        "HEROISM", ScrollName::HEROISM, "HEALING", ScrollName::HEALING,
+        "POWER", ScrollName::POWER, "IDENTIFY", ScrollName::IDENTIFY,
+        "MAGIC_ARROW", ScrollName::MAGIC_ARROW, "FIRE_BOLT", ScrollName::FIRE_BOLT,
+        "ICE_BOLT", ScrollName::ICE_BOLT, "LIGHTNING_BOLT", ScrollName::LIGHTNING_BOLT,
+        "ACID_BOLT", ScrollName::ACID_BOLT, "SUMMON_MONSTER", ScrollName::SUMMON_MONSTER,
+        "CREATE_ITEM", ScrollName::CREATE_ITEM, "CURE_DISEASE", ScrollName::CURE_DISEASE,
+        "CURE_POISON", ScrollName::CURE_POISON, "BLINK", ScrollName::BLINK,
+        "SELF_KNOWLEDGE", ScrollName::SELF_KNOWLEDGE,
+        "SEE_INVISIBLE", ScrollName::SEE_INVISIBLE, "RECIPE", ScrollName::RECIPE,
+        "RANDOM", ScrollName::RANDOM
+    );
+
+    lua.new_enum("BookName",
+        "BURNING_HANDS", BOOK_BURNING_HANDS, "ICE_TOUCH", BOOK_ICE_TOUCH,
+        "CURE_LIGHT_WOUNDS", BOOK_CURE_LIGHT_WOUNDS, "DRAIN_LIFE", BOOK_DRAIN_LIFE,
+        "IDENTIFY", BOOK_IDENTIFY, "MAGIC_ARROW", BOOK_MAGIC_ARROW,
+        "FIRE_BOLT", BOOK_FIRE_BOLT, "ICE_BOLT", BOOK_ICE_BOLT,
+        "LIGHTNING_BOLT", BOOK_LIGHTNING_BOLT, "ACID_BOLT", BOOK_ACID_BOLT,
+        "CURE_DISEASE", BOOK_CURE_DISEASE, "CURE_POISON", BOOK_CURE_POISON,
+        "BLINK", BOOK_BLINK, "SELF_KNOWLEDGE", BOOK_SELF_KNOWLEDGE,
+        "RANDOM", BOOK_RANDOM
+    );
+
     // What an ordinary item can be made of, and how well made it is. Both
     // are for the templates in world/items/ (TemplateBuilder): the set says
     // which materials the game may pick from when it builds one.
@@ -234,7 +263,7 @@ void XLua::Init()
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
-            "ItemKind", "ItemType", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
+            "ItemKind", "ItemType", "BookName", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "PersonType", "PotionName", "Result", "ScriptCommand", "ShopDoor",
             "Spell", "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",

@@ -36,6 +36,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/uniquei.h"
 #include "item/xherb.h"
 #include "item/xmoney.h"
+#include "item/xscroll.h"
+#include "item/xbook.h"
 #include "item/xpotion.h"
 #include "lua/api_world.h"
 #include "map/map_objects.h"
@@ -194,6 +196,42 @@ void* CreateObjectByMask(int flag, int min_val, int max_val)
 void* CreateObjectByPotion(int pn)
 {
     return new XPotion(static_cast<PotionName>(pn));
+}
+
+//CreateObject(ItemKind.WEAPON, ItemType.LONGSWORD, 1, 100)
+//
+// One particular sort of item, worth somewhere between the two figures -
+// what the hero's starting kit asks for. The material and the exact numbers
+// are still rolled, so two long swords are not the same long sword.
+void* CreateObjectOfType(ItemKind kind, ItemType it, int min_val, int max_val)
+{
+    return XItemFactory::CreateAnyItem(kind, it, min_val, max_val);
+}
+
+//CreateScroll(ScrollName.FIRE_BOLT)
+//
+// Scrolls and books are their own kinds rather than another form of
+// CreateObject: all three of PotionName, ScrollName and BookName reach Lua
+// as plain numbers, so a single-argument CreateObject could not tell which
+// of them it had been handed.
+void* CreateScroll(int scrn)
+{
+    return new XScroll(static_cast<ScrollName>(scrn));
+}
+
+//CreateBook(BookName.FIRE_BOLT)
+void* CreateBook(int bn)
+{
+    return new XBook(static_cast<BOOK_NAME>(bn));
+}
+
+// Makes an item known, as the hero's own starting gear is: nothing they
+// began the game with should need identifying.
+void IdentifyItem(void* item)
+{
+    if (item) {
+        ((XItem*)item)->Identify();
+    }
 }
 
 //DropItem(item, 0, 0)
@@ -598,7 +636,10 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("SetWanderingAllowed", &lua_api::SetWanderingAllowed);
         lua.set_function("Teleport", &lua_api::Teleport);
         lua.set_function("Way", &lua_api::Way);
-        lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectByPotion));
+        lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectByPotion, &lua_api::CreateObjectOfType));
+        lua.set_function("CreateScroll", &lua_api::CreateScroll);
+        lua.set_function("CreateBook", &lua_api::CreateBook);
+        lua.set_function("Identify", &lua_api::IdentifyItem);
         lua.set_function("DropItem", sol::overload(&lua_api::DropItem, &lua_api::DropItemAt));
         lua.set_function("SetPattern", &lua_api::SetPattern);
         lua.set_function("DefineRoom", &lua_api::DefineRoom);
