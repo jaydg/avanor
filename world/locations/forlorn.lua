@@ -51,6 +51,40 @@ DUNGEON_FORLORN_LADDER = {
 	CreatureTemplate.HI,
 }
 
+-- The artifact Roderick wants back, waiting at the bottom of the mine.
+--
+-- The first content item with behaviour of its own: using it throws a
+-- lightning bolt, and CastEffect() is the form that asks the wielder which
+-- way to aim it - MakeEffect() would fire it in no direction at all.
+--
+-- :Artifact() is what keeps it where it was put: every undead template can
+-- pick things up, and one that pocketed this would leave the player
+-- guessing which of them to hunt (XStandardAI::PickUpItems).
+Item.new("eye_of_raa")
+	:Tool(ItemType.EYEOFRAA)
+	:View("Eye of Raa", '*', xColor.xCYAN)
+	:Basic(150, 100)
+	:Combat(0, 1, 10, 0)
+	:Stats("Ma:0d0+10 Wi:0d0+10")
+	:Resist("air:0d0+100")
+	:Artifact()
+	:Use('EyeOfRaaUse')
+	:Register()
+
+
+-- Only the hero gets the lightning; a monster that somehow used it just
+-- wastes the turn, exactly as before.
+function EyeOfRaaUse(state, item, user)
+	if (state ~= ItemUse.START or not isHero(user)) then
+		return Result.SUCCESS
+	end
+
+	CastEffect(user, XEffect.LIGHTNING_BOLT, 30)
+
+	return Result.SUCCESS
+end
+
+
 function MakeDungeonForlorn()
 	-- Five to ten levels, as the caves this replaces had.
 	local depth = Rand(6) + 5
@@ -91,7 +125,7 @@ function MakeDungeonForlorn()
 
 		-- The thief got this far and no further.
 		if (i == depth) then
-			DropItem(CreateObject("XEyeOfRaa"))
+			DropItem(CreateObject("eye_of_raa"))
 		end
 	end
 end

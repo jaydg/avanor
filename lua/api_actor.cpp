@@ -366,6 +366,19 @@ void SetItemBrand(void* item, int br)
     ((XItem*)item)->aet = (AttackEffectType)br;
 }
 
+// The caster's own form of an effect: unlike MakeEffect() below, this is
+// the one that asks the player where to aim when the effect needs a
+// direction or a target, and answers ABORT if they change their mind. What
+// an item that casts something wants.
+int CastEffect(void* caster, int effect, int power)
+{
+    if (!caster) {
+        return ABORT;
+    }
+
+    return XEffect::Make((XCreature*)caster, (XEffect::Id)effect, power);
+}
+
 int MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power)
 {
     EFFECT_DATA ed;
@@ -582,6 +595,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("GiveObjectToCreature", &lua_api::GiveObjectToCreature);
         lua.set_function("GiveAward", &lua_api::GiveAward);
         lua.set_function("MakeEffect", &lua_api::MakeEffect);
+        lua.set_function("CastEffect", &lua_api::CastEffect);
         lua.set_function("DestroyObject", &lua_api::DestroyObject);
         lua.set_function("SetCompanion", &lua_api::SetCompanion);
         lua.set_function("Quest", &lua_api::Quest);

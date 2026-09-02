@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/anycr.h"
 #include "item/item_misc.h"
+#include "item/xtool.h"
 #include "creature/bodypart.h"
 #include "creature/cr_defs.h"
 #include "creature/deity.h"
@@ -148,6 +149,23 @@ void XLua::Init()
     XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
 
+    // What stage a use is at, and what a handler answers with. Both are
+    // for content-defined tools (XLuaTool::onUse): the use command calls a
+    // handler with START, then PROGRESS for as long as it answers CONTINUE,
+    // and FINISH when it stops.
+    lua.new_enum("ItemUse",
+        "START", XTool::START,
+        "PROGRESS", XTool::PROGRESS,
+        "FINISH", XTool::FINISH
+    );
+
+    lua.new_enum("Result",
+        "FAIL", FAIL,
+        "SUCCESS", SUCCESS,
+        "CONTINUE", CONTINUE,
+        "ABORT", ABORT
+    );
+
     // How well a food sits once eaten (XAnyFood::onEat).
     lua.new_enum("FoodType",
         "BEST", FT_BESTFOOD,
@@ -164,11 +182,12 @@ void XLua::Init()
     // world/tiles.lua runs, and read by name everywhere after that.
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
-            "CreatureSize", "CreatureTemplate", "FoodType", "Gender", "ItemKind", "ItemType", "LuaEvent",
-            "Movability", "PersonType", "PotionName", "ScriptCommand", "ShopDoor", "Spell",
-            "Visibility", "xColor", "XDeity", "XEffect", "XLocation", "XQuest",
-            "XResistance", "XSkill", "XStairWay", "XStandardAI", "XStats",
-            "XTileType", "XWarSkills"
+            "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
+            "ItemKind", "ItemType", "ItemUse", "LuaEvent", "Movability",
+            "PersonType", "PotionName", "Result", "ScriptCommand", "ShopDoor",
+            "Spell", "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
+            "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
+            "XStats", "XTileType", "XWarSkills"
         }) {
         MakeStrict(lua, enum_table);
     }
@@ -215,6 +234,7 @@ void XLua::Init()
             "Cap", &ItemBuilder::Cap,
             "Shield", &ItemBuilder::Shield,
             "Cloak", &ItemBuilder::Cloak,
+            "Tool", &ItemBuilder::Tool,
             "View", &ItemBuilder::View,
             "Type", &ItemBuilder::Type,
             "Basic", &ItemBuilder::Basic,
@@ -225,6 +245,8 @@ void XLua::Init()
             "Brand", &ItemBuilder::Brand,
             "Called", &ItemBuilder::Called,
             "Unique", &ItemBuilder::Unique,
+            "Artifact", &ItemBuilder::Artifact,
+            "Use", &ItemBuilder::Use,
             "Random", &ItemBuilder::Random,
             "Register", &ItemBuilder::Register
         );

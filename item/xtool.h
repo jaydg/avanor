@@ -153,54 +153,6 @@ class XPickAxe : public XTool
         }
 };
 
-class XEyeOfRaa : public XTool
-{
-    public:
-        DECLARE_CREATOR(XEyeOfRaa, XTool);
-        XEyeOfRaa()
-        {
-            color = xCYAN;
-            view = '*';
-            it = ItemType::EYEOFRAA;
-            name = "Eye of Raa";
-            value = 150;
-            weight = 100;
-            kind = ItemKind::TOOL;
-            bp = BP_TOOL;
-            stats = std::make_unique<XStats>("Ma:0d0+10 Wi:0d0+10");
-            resistances = std::make_unique<XResistance>("air:0d0+100");
-            dice.Setup(1, 10, 0);
-        }
-
-        // The Eye is the point of Roderick's quest and sits at the bottom
-        // of the Forlorn Mine waiting to be found. An undead wandering that
-        // level would otherwise pocket it - every undead template has
-        // ALLOW_PICK_UP - and the player would have to guess which one.
-        [[nodiscard]] bool isArtifact() const override
-        {
-            return true;
-        }
-
-        XEyeOfRaa(XEyeOfRaa* copy) : XTool(copy) {}
-
-        XItem* MakeCopy() override
-        {
-            return new XEyeOfRaa(this);
-        }
-
-        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
-        std::string toString() override
-        {
-            return name;
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XTool>(this));
-        }
-};
-
 class XAlchemySet : public XTool
 {
     public:

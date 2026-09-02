@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xcap.h"
 #include "item/xcloak.h"
 #include "item/xshield.h"
+#include "item/xtool.h"
 #include "item/xweapon.h"
 #include "magic/attack_effect_type.h"
 
@@ -75,7 +76,8 @@ class XPlainItem : public XItem
         DECLARE_CREATOR(XPlainItem, XItem);
         XPlainItem() = default;
         explicit XPlainItem(XPlainItem* copy)
-            : XItem(copy), content_id(copy->content_id), unique(copy->unique) {}
+            : XItem(copy), content_id(copy->content_id), unique(copy->unique),
+              artifact(copy->artifact) {}
 
         int Compare(XObject* o) override
         {
@@ -87,8 +89,14 @@ class XPlainItem : public XItem
             return content_id;
         }
 
+        [[nodiscard]] bool isArtifact() const override
+        {
+            return artifact;
+        }
+
         std::string content_id;
         bool unique{false};
+        bool artifact{false};
 
         XItem* MakeCopy() override
         {
@@ -104,7 +112,7 @@ class XPlainItem : public XItem
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XItem>(this));
-            ar(content_id, unique);
+            ar(content_id, unique, artifact);
         }
 };
 
@@ -171,7 +179,7 @@ class XItemStorage
 struct ContentItemTemplate {
     // Which carrier it becomes, and so which base constructor runs first.
     // PLAIN is the one with no base of its own - an XItem with a name.
-    enum Base { PLAIN, WEAPON, CAP, SHIELD, CLOAK };
+    enum Base { PLAIN, WEAPON, CAP, SHIELD, CLOAK, TOOL };
 
     Base base;
 
@@ -209,6 +217,13 @@ struct ContentItemTemplate {
 
     // Never merges with anything, not even another of itself.
     bool unique;
+
+    // Nothing picks it up but the hero. Something depends on it lying
+    // where it was put (see XStandardAI::PickUpItems).
+    bool artifact;
+
+    // For a tool: the Lua function the use command hands over to.
+    std::string use_handler;
 };
 
 // The one builder for items that are not food:
@@ -246,6 +261,7 @@ class ItemBuilder
         ItemBuilder& Cap(ItemType base_type);
         ItemBuilder& Shield(ItemType base_type);
         ItemBuilder& Cloak(ItemType base_type);
+        ItemBuilder& Tool(ItemType it);
 
         // view and color are optional; without them it keeps its base's.
         ItemBuilder& View(const std::string& name, sol::optional<std::string> view,
@@ -263,6 +279,8 @@ class ItemBuilder
         ItemBuilder& Brand(AttackEffectType aet);
         ItemBuilder& Called(const std::string& display_name);
         ItemBuilder& Unique();
+        ItemBuilder& Artifact();
+        ItemBuilder& Use(const std::string& handler);
         ItemBuilder& Random(int probability);
 
         void Register();
@@ -313,7 +331,8 @@ class FoodBuilder
                 : BaseName(base_type) {}                                      \
             explicit CarrierName(CarrierName* copy)                           \
                 : BaseName(copy), content_id(copy->content_id),               \
-                  display_name(copy->display_name), unique(copy->unique) {}   \
+                  display_name(copy->display_name), unique(copy->unique),     \
+                  artifact(copy->artifact) {}                                 \
                                                                               \
             XItem* MakeCopy() override                                        \
             {                                                                 \
@@ -342,15 +361,21 @@ class FoodBuilder
                 return content_id;                                            \
             }                                                                 \
                                                                               \
+            [[nodiscard]] bool isArtifact() const override                    \
+            {                                                                 \
+                return artifact;                                              \
+            }                                                                 \
+                                                                              \
             std::string content_id;                                           \
             std::string display_name;                                         \
             bool unique{false};                                               \
+            bool artifact{false};                                             \
                                                                               \
             template<class Archive>                                           \
             void serialize(Archive& ar)                                       \
             {                                                                 \
                 ar(cereal::base_class<BaseName>(this));                       \
-                ar(content_id, display_name, unique);                         \
+                ar(content_id, display_name, unique, artifact);               \
             }                                                                 \
     };
 
@@ -360,6 +385,72 @@ DECLARE_CONTENT_CARRIER(XContentShield, XShield)
 DECLARE_CONTENT_CARRIER(XContentCloak, XCloak)
 
 #undef DECLARE_CONTENT_CARRIER
+
+// The carrier for a content-defined tool - the first content item with
+// behaviour rather than only figures.
+//
+// A tool is the one item the use command can be pointed at, and what it
+// then does is content, not engine: the Eye of Raa throws lightning, a
+// pickaxe digs. XLuaTool holds the name of a Lua function and hands the
+// use over to it, the way a creature hands its turn to its event handler.
+//
+// Written out rather than macro-made, because unlike the others it is not
+// just its base with a name: XTool is where onUse lives, and this is the
+// only carrier that overrides it.
+class XLuaTool : public XTool
+{
+    public:
+        DECLARE_CREATOR(XLuaTool, XTool);
+        XLuaTool() = default;
+        explicit XLuaTool(XLuaTool* copy)
+            : XTool(copy), content_id(copy->content_id), unique(copy->unique),
+              artifact(copy->artifact), use_handler(copy->use_handler) {}
+
+        XItem* MakeCopy() override
+        {
+            return new XLuaTool(this);
+        }
+
+        // Every tool in the game reads as its bare name - no material, no
+        // enhancement prefix, no "heap of".
+        std::string toString() override
+        {
+            return name;
+        }
+
+        int Compare(XObject* o) override
+        {
+            return unique ? -1 : XTool::Compare(o);
+        }
+
+        [[nodiscard]] std::string GetContentId() const override
+        {
+            return content_id;
+        }
+
+        [[nodiscard]] bool isArtifact() const override
+        {
+            return artifact;
+        }
+
+        // Calls the Lua function named by use_handler as
+        //   handler(state, item, user) -> Result
+        // A tool that named no handler cannot be used, which is XTool's own
+        // default answer.
+        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
+
+        std::string content_id;
+        bool unique{false};
+        bool artifact{false};
+        std::string use_handler;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XTool>(this));
+            ar(content_id, unique, artifact, use_handler);
+        }
+};
 
 class XChest : public XItem
 {

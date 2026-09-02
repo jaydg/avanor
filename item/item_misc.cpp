@@ -21,6 +21,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream>
 #include <utility>
 
+#include <sol/sol.hpp>
+
+#include "engine/xlua.h"
 #include "item/item_cereal.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
@@ -28,6 +31,46 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 REGISTER_CLASS(XPlainItem);
 CEREAL_REGISTER_TYPE(XPlainItem);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPlainItem);
+
+REGISTER_CLASS(XLuaTool);
+CEREAL_REGISTER_TYPE(XLuaTool);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XLuaTool);
+
+RESULT XLuaTool::onUse(const ItemUsageState uis, XCreature* cr)
+{
+    if (use_handler.empty()) {
+        return FAIL;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function handler = lua[use_handler];
+
+    if (!handler.valid()) {
+        std::cerr << "world: " << name << " wants to be used through '"
+                  << use_handler << "', which is not defined" << std::endl;
+
+        return FAIL;
+    }
+
+    // this/cr stay void*, like every other handler argument - see
+    // XCreature::RegisterLua for why the dispatch never went typed.
+    const auto result = handler(static_cast<int>(uis), (void*)this, (void*)cr);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << use_handler << ": " << err.what() << std::endl;
+
+        return FAIL;
+    }
+
+    // A handler that says nothing did its work and is finished; the three
+    // other answers have to be spelt out.
+    if (result.get_type() == sol::type::none || result.get_type() == sol::type::lua_nil) {
+        return SUCCESS;
+    }
+
+    return static_cast<RESULT>(result.get<int>());
+}
 
 REGISTER_CLASS(XContentWeapon);
 CEREAL_REGISTER_TYPE(XContentWeapon);
@@ -98,6 +141,7 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
     std::string* content_id = nullptr;
     std::string* display_name = nullptr;
     bool* unique = nullptr;
+    bool* artifact = nullptr;
 
     switch (t.base) {
         case ContentItemTemplate::PLAIN: {
@@ -106,6 +150,7 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
             made->bp = t.bp;
             content_id = &made->content_id;
             unique = &made->unique;
+            artifact = &made->artifact;
             item = made;
             break;
         }
@@ -115,6 +160,7 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
             content_id = &made->content_id;
             display_name = &made->display_name;
             unique = &made->unique;
+            artifact = &made->artifact;
             item = made;
             break;
         }
@@ -124,6 +170,7 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
             content_id = &made->content_id;
             display_name = &made->display_name;
             unique = &made->unique;
+            artifact = &made->artifact;
             item = made;
             break;
         }
@@ -133,6 +180,7 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
             content_id = &made->content_id;
             display_name = &made->display_name;
             unique = &made->unique;
+            artifact = &made->artifact;
             item = made;
             break;
         }
@@ -142,6 +190,19 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
             content_id = &made->content_id;
             display_name = &made->display_name;
             unique = &made->unique;
+            artifact = &made->artifact;
+            item = made;
+            break;
+        }
+
+        case ContentItemTemplate::TOOL: {
+            auto* made = new XLuaTool();
+            made->kind = t.kind;
+            made->bp = t.bp;
+            made->use_handler = t.use_handler;
+            content_id = &made->content_id;
+            unique = &made->unique;
+            artifact = &made->artifact;
             item = made;
             break;
         }
@@ -149,6 +210,7 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
 
     *content_id = id;
     *unique = t.unique;
+    *artifact = t.artifact;
 
     // A plain item has no base whose name it could fall back to, so it is
     // simply called what it is called - there is nothing for display_name
@@ -201,6 +263,7 @@ ItemBuilder::ItemBuilder(std::string id) : id(std::move(id)), probability(0)
     t.color = -1;
     t.aet = AttackEffectType::NONE;
     t.unique = false;
+    t.artifact = false;
 }
 
 ItemBuilder& ItemBuilder::Plain(const ItemType it, const ItemKind kind)
@@ -244,6 +307,15 @@ ItemBuilder& ItemBuilder::Cloak(const ItemType base_type)
     t.base_type = base_type;
     t.it = base_type;
     t.kind = ItemKind::CLOAK;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Tool(const ItemType it)
+{
+    t.base = ContentItemTemplate::TOOL;
+    t.it = it;
+    t.kind = ItemKind::TOOL;
+    t.bp = BP_TOOL;
     return *this;
 }
 
@@ -312,6 +384,18 @@ ItemBuilder& ItemBuilder::Called(const std::string& display_name)
 ItemBuilder& ItemBuilder::Unique()
 {
     t.unique = true;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Artifact()
+{
+    t.artifact = true;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Use(const std::string& handler)
+{
+    t.use_handler = handler;
     return *this;
 }
 

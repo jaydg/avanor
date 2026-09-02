@@ -210,19 +210,6 @@ RESULT XPickAxe::onUse(ItemUsageState uis, XCreature * cr)
 // Artifact
 //////////////////////////////////////////////////////////////////////
 
-REGISTER_CLASS(XEyeOfRaa);
-CEREAL_REGISTER_TYPE(XEyeOfRaa);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XEyeOfRaa);
-
-RESULT XEyeOfRaa::onUse(ItemUsageState /*uis*/, XCreature* cr)
-{
-    if (cr->isHero()) {
-        XEffect::Make(cr, XEffect::LIGHTNING_BOLT, 30);
-    }
-
-    return SUCCESS;
-}
-
 //////////////////////////////////////////////////////////////////////
 // AlchemySet
 // Allow to get potions from roots.
