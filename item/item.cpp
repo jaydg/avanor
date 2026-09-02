@@ -98,6 +98,12 @@ XItem::XItem()
     dv = pv = to_hit = RNG = 0;
     dice.Setup("0d0");
     special_number = -1;
+
+    // Never set here before, so every item that did not name one of its own
+    // - all the food, for one - carried whatever was on the heap, and wrote
+    // it into the save file. Nothing branches on it today, which is why it
+    // went unnoticed.
+    special_property = SPP_NONE;
     aet = AttackEffectType::NONE;
     owner.reset();
 }

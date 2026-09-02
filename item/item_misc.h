@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEM_MISC_H
 #define ITEM_MISC_H
 
+#include <sol/sol.hpp>
+
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -29,6 +31,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/itemkind.h"
 #include "item/xanyfood.h"
+#include "item/xcap.h"
+#include "item/xcloak.h"
+#include "item/xshield.h"
+#include "item/xweapon.h"
+#include "magic/attack_effect_type.h"
 
 // A food defined by content rather than by a C++ class.
 struct FoodTemplate {
@@ -67,7 +74,21 @@ class XPlainItem : public XItem
     public:
         DECLARE_CREATOR(XPlainItem, XItem);
         XPlainItem() = default;
-        explicit XPlainItem(XPlainItem* copy) : XItem(copy) {}
+        explicit XPlainItem(XPlainItem* copy)
+            : XItem(copy), content_id(copy->content_id), unique(copy->unique) {}
+
+        int Compare(XObject* o) override
+        {
+            return unique ? -1 : XItem::Compare(o);
+        }
+
+        [[nodiscard]] std::string GetContentId() const override
+        {
+            return content_id;
+        }
+
+        std::string content_id;
+        bool unique{false};
 
         XItem* MakeCopy() override
         {
@@ -83,8 +104,11 @@ class XPlainItem : public XItem
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XItem>(this));
+            ar(content_id, unique);
         }
 };
+
+struct ContentItemTemplate;
 
 // Everything world/ has defined for itself, by the id it named it.
 // Consulted by CreateObjectByName() before the C++ class factory, so
@@ -118,6 +142,10 @@ class XItemStorage
         // defined nothing drawable of that kind.
         static XItem* CreateRandom(ItemKind kind);
 
+        // Builds a configured item of whichever base its template names,
+        // running that base's real constructor first.
+        static XItem* MakeItem(const std::string& id, const ContentItemTemplate& t);
+
         // Builds a configured XAnyFood. A named function rather than
         // something inside the builder's lambda, so that XAnyFood can
         // befriend it - consume_nutrio is protected, and this is what used
@@ -135,32 +163,106 @@ class XItemStorage
 //
 // :Taste() and :Random() are optional - a food that says neither is
 // ordinary fare that the game will never hand out on its own.
-// A plain item: no behaviour, just what it is called, how it looks and
-// what it is worth.
-struct PlainItemTemplate {
+// Everything a content-defined item states about itself. One struct for
+// every base, because they differ only in which of the fields matter: a
+// crown says nothing about its dice, a machine part says nothing about
+// either. Each field maps onto one line of the constructor such an item
+// used to have, so a definition reads against the class it replaced.
+struct ContentItemTemplate {
+    // Which carrier it becomes, and so which base constructor runs first.
+    // PLAIN is the one with no base of its own - an XItem with a name.
+    enum Base { PLAIN, WEAPON, CAP, SHIELD, CLOAK };
+
+    Base base;
+
+    // Which row of its kind's table the base constructor fills from. It
+    // decides the war skill a weapon trains and the material it is made of,
+    // the two things a definition does not restate. Unused by PLAIN.
+    ItemType base_type;
+
     std::string name;
-    char view;
-    int color;
     ItemType it;
     ItemKind kind;
     BODY_PART bp;
+
+    // Zero and -1 mean "keep what the base chose": an item that names no
+    // look of its own wears its material's.
+    char view;
+    int color;
+
     int value;
     int weight;
+    int dv;
+    int pv;
+    int to_hit;
+    int dice_count;
+    int dice_sides;
+    int dice_bonus;
+
+    std::string stats;
+    std::string resists;
+    AttackEffectType aet;
+
+    // What it is called once known. Empty means it reads as an ordinary
+    // item of its kind - see the carrier's toString().
+    std::string display_name;
+
+    // Never merges with anything, not even another of itself.
+    bool unique;
 };
 
-// Fluent builder for those:
+// The one builder for items that are not food:
 //
 //   Item.new("ancient_machine_part")
+//       :Plain(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL)
 //       :View("ancient machine part", ']', xColor.xDARKGRAY)
-//       :Basic(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL, 1000, 15)
+//       :Basic(1000, 15)
 //       :Register()
+//
+//   Item.new("torin_axe")
+//       :Weapon(ItemType.GREATAXE)
+//       :View("ancient axe", '\\')
+//       :Basic(12000, 1200)
+//       :Combat(8, 2, 8, 5)
+//       :Resist("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20")
+//       :Stats("To:1d1+10")
+//       :Brand(AttackEffectType.COLD)
+//       :Called("Axe of Torin")
+//       :Unique()
+//       :Register()
+//
+// An artifact is not a kind of its own: it is an item of its base type that
+// says what it is Called, declares itself Unique, and never asks to be in
+// the random draw. An ordinary weapon is the same definition with :Random()
+// instead of those last two.
 class ItemBuilder
 {
     public:
         explicit ItemBuilder(std::string id);
 
-        ItemBuilder& View(const std::string& name, char view, int color);
-        ItemBuilder& Basic(ItemType it, ItemKind kind, int value, int weight);
+        // Exactly one of these, first: it says what the thing is.
+        ItemBuilder& Plain(ItemType it, ItemKind kind);
+        ItemBuilder& Weapon(ItemType base_type);
+        ItemBuilder& Cap(ItemType base_type);
+        ItemBuilder& Shield(ItemType base_type);
+        ItemBuilder& Cloak(ItemType base_type);
+
+        // view and color are optional; without them it keeps its base's.
+        ItemBuilder& View(const std::string& name, sol::optional<std::string> view,
+            sol::optional<int> color);
+
+        // Only where it differs from the base row's type - a forest
+        // brother's cloak is built as a cloak but is its own kind of thing.
+        ItemBuilder& Type(ItemType it);
+
+        ItemBuilder& Basic(int value, int weight);
+        ItemBuilder& Armour(int dv, int pv);
+        ItemBuilder& Combat(int to_hit, int count, int sides, int bonus);
+        ItemBuilder& Stats(const std::string& stats);
+        ItemBuilder& Resist(const std::string& resists);
+        ItemBuilder& Brand(AttackEffectType aet);
+        ItemBuilder& Called(const std::string& display_name);
+        ItemBuilder& Unique();
         ItemBuilder& Random(int probability);
 
         void Register();
@@ -168,7 +270,7 @@ class ItemBuilder
     private:
         std::string id;
         int probability;
-        PlainItemTemplate t{};
+        ContentItemTemplate t{};
 };
 
 class FoodBuilder
@@ -188,6 +290,76 @@ class FoodBuilder
         std::string id;
         FoodTemplate t{};
 };
+
+// The carriers content-defined items are instances of, one per base class
+// that matters.
+//
+// They exist for two reasons. Construction has to run the real base
+// constructor - XWeapon(it) fills in the war-skill binding and the material
+// that a definition does not restate - and toString() has to be able to
+// answer with a name of the item's own where it has one, rather than the
+// material-and-template name its base composes ("steel broad sword" instead
+// of 'broadsword named "Glamdring"').
+//
+// Nothing else needed a subclass: nothing in the game dynamic_casts to
+// XWeapon, XCap, XShield or XCloak, so one carrier per base covers every
+// content item of that base - an artifact and an ordinary sword alike.
+#define DECLARE_CONTENT_CARRIER(CarrierName, BaseName)                        \
+    class CarrierName : public BaseName                                       \
+    {                                                                         \
+        public:                                                               \
+            DECLARE_CREATOR(CarrierName, BaseName);                           \
+            explicit CarrierName(ItemType base_type = ItemType::RANDOM)       \
+                : BaseName(base_type) {}                                      \
+            explicit CarrierName(CarrierName* copy)                           \
+                : BaseName(copy), content_id(copy->content_id),               \
+                  display_name(copy->display_name), unique(copy->unique) {}   \
+                                                                              \
+            XItem* MakeCopy() override                                        \
+            {                                                                 \
+                return new CarrierName(this);                                 \
+            }                                                                 \
+                                                                              \
+            /* One of a kind never merges with anything, not even another */  \
+            /* of itself. Ordinary items fall through to the base rule. */     \
+            int Compare(XObject* o) override                                  \
+            {                                                                 \
+                return unique ? -1 : BaseName::Compare(o);                    \
+            }                                                                 \
+                                                                              \
+            /* An item with no name of its own reads as an ordinary one of */ \
+            /* its kind - which is what the forest brother's cloak wants, */  \
+            /* being a disguise, and what every plain weapon wants. */         \
+            std::string toString() override                                   \
+            {                                                                 \
+                return display_name.empty()                                   \
+                    ? BaseName::toString()                                    \
+                    : GetArtifactName(display_name);                          \
+            }                                                                 \
+                                                                              \
+            [[nodiscard]] std::string GetContentId() const override           \
+            {                                                                 \
+                return content_id;                                            \
+            }                                                                 \
+                                                                              \
+            std::string content_id;                                           \
+            std::string display_name;                                         \
+            bool unique{false};                                               \
+                                                                              \
+            template<class Archive>                                           \
+            void serialize(Archive& ar)                                       \
+            {                                                                 \
+                ar(cereal::base_class<BaseName>(this));                       \
+                ar(content_id, display_name, unique);                         \
+            }                                                                 \
+    };
+
+DECLARE_CONTENT_CARRIER(XContentWeapon, XWeapon)
+DECLARE_CONTENT_CARRIER(XContentCap, XCap)
+DECLARE_CONTENT_CARRIER(XContentShield, XShield)
+DECLARE_CONTENT_CARRIER(XContentCloak, XCloak)
+
+#undef DECLARE_CONTENT_CARRIER
 
 class XChest : public XItem
 {

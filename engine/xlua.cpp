@@ -205,12 +205,26 @@ void XLua::Init()
         );
     }
 
-    // Sol2-bound Item builder, for items that are nothing but data.
+    // Sol2-bound Item builder: everything that is not food, from a
+    // machine part to an artifact.
     {
         lua.new_usertype<ItemBuilder>("Item",
             sol::constructors<ItemBuilder(std::string)>(),
+            "Plain", &ItemBuilder::Plain,
+            "Weapon", &ItemBuilder::Weapon,
+            "Cap", &ItemBuilder::Cap,
+            "Shield", &ItemBuilder::Shield,
+            "Cloak", &ItemBuilder::Cloak,
             "View", &ItemBuilder::View,
+            "Type", &ItemBuilder::Type,
             "Basic", &ItemBuilder::Basic,
+            "Armour", &ItemBuilder::Armour,
+            "Combat", &ItemBuilder::Combat,
+            "Stats", &ItemBuilder::Stats,
+            "Resist", &ItemBuilder::Resist,
+            "Brand", &ItemBuilder::Brand,
+            "Called", &ItemBuilder::Called,
+            "Unique", &ItemBuilder::Unique,
             "Random", &ItemBuilder::Random,
             "Register", &ItemBuilder::Register
         );

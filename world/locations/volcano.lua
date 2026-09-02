@@ -16,6 +16,22 @@ Monster.new("xshee_voo")
 	:Unique()
 	:Register()
 
+
+-- What Xshee-Voo swings.
+
+Item.new("black_club")
+	:Weapon(ItemType.CLUB)
+	:View("black club", '/', xColor.xDARKGRAY)
+	:Basic(10000, 8000)
+	:Armour(-10, 0)
+	:Combat(-15, 2, 20, 0)
+	:Resist("fire:0d0+50")
+	:Stats("")
+	:Brand(AttackEffectType.FIRE)
+	:Called("club of black obsidian")
+	:Unique()
+	:Register()
+
 function MakeVulcano()
 	CreateLocation("EXTINCT_VOLCANO", "Volcano", "Crater of an Extinct Volcano", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
@@ -42,5 +58,5 @@ function MakeVulcano()
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "MAIN", x, y) end)
 		AddTranslation("=", XTileType.LAVA)
 		DrawPattern(0, 0)
-		GiveObjectToCreature(CreateObject('XBlackClub'), Creature("xshee_voo"))
+		GiveObjectToCreature(CreateObject('black_club'), Creature("xshee_voo"))
 end

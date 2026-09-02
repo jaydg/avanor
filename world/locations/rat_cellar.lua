@@ -30,13 +30,13 @@ function MakeRatCellar()
 		AddTranslation("B", function(x, y) for i = 1, 2 do Creature('zombie', x, y, 4, 4) end end)
 		local trnd = Rand(4)
 		if (trnd == 0) then
-			AddTranslation("C", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
+			AddTranslation("C", function(x, y) DropItem(CreateObject('forest_brother_cloak'), x, y) end)
 		elseif (trnd == 1) then
-			AddTranslation("D", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
+			AddTranslation("D", function(x, y) DropItem(CreateObject('forest_brother_cloak'), x, y) end)
 		elseif (trnd == 2) then
-			AddTranslation("E", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
+			AddTranslation("E", function(x, y) DropItem(CreateObject('forest_brother_cloak'), x, y) end)
 		elseif (trnd == 3) then
-			AddTranslation("F", function(x, y) DropItem(CreateObject('XForestBrotherCloak'), x, y) end)
+			AddTranslation("F", function(x, y) DropItem(CreateObject('forest_brother_cloak'), x, y) end)
 		end
 		DrawPattern(0, 0)
 		Settle(CreatureClass.RAT, CreatureTemplate.VERY_LOW)

@@ -122,6 +122,17 @@ class XItem : public XBaseObject
             return false;
         }
 
+        // The id world/ defined this item under, or empty for an item that
+        // is a C++ class. Content needs some way to say "this exact thing"
+        // - Roderick recognising his ancestors' sword, a quest checking
+        // what was handed over - and the class name it used to ask for is
+        // no longer distinguishing once many different items share one
+        // carrier class.
+        [[nodiscard]] virtual std::string GetContentId() const
+        {
+            return {};
+        }
+
         virtual int GetValue(); // Get Value of Object (for shop, monster AI etc.)
 
         SPECIAL_PROPERTY special_property; // slow digestion and other propertyes

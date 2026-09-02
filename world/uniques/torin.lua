@@ -15,6 +15,46 @@ Monster.new("torin")
 	:Register()
 
 
+-- The dwarven king's own gear.
+
+Item.new("torin_axe")
+	:Weapon(ItemType.GREATAXE)
+	:View("ancient axe", '\\')
+	:Basic(12000, 1200)
+	:Armour(0, 0)
+	:Combat(8, 2, 8, 5)
+	:Resist("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20")
+	:Stats("To:1d1+10")
+	:Brand(AttackEffectType.COLD)
+	:Called("Axe of Torin")
+	:Unique()
+	:Register()
+
+Item.new("torin_shield")
+	:Shield(ItemType.MEDIUMSHIELD)
+	:View("ancient shield", ')')
+	:Basic(8000, 100)
+	:Armour(12, 2)
+	:Combat(0, 0, 0, 0)
+	:Resist("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20")
+	:Stats("To:0d0+5")
+	:Called("Shield of Torin")
+	:Unique()
+	:Register()
+
+Item.new("dwarf_crown")
+	:Cap(ItemType.CAP)
+	:View("mithril crown", '[', xColor.xLIGHTCYAN)
+	:Basic(8000, 100)
+	:Armour(2, 2)
+	:Combat(0, 0, 0, 0)
+	:Resist("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20")
+	:Stats("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5")
+	:Called("dwarven crown")
+	:Unique()
+	:Register()
+
+
 torin_award = 0;
 
 function CreateTorin(x, y)
@@ -23,9 +63,9 @@ function CreateTorin(x, y)
 	local pickaxe = CreateObject('XPickAxe')
 	torin_award = GetObjectGUID(pickaxe)
 	GiveObjectToCreature(pickaxe, torin)
-	GiveObjectToCreature(CreateObject('XDwarfCrown'), torin)
-	GiveObjectToCreature(CreateObject('XTorinShield'), torin)
-	GiveObjectToCreature(CreateObject('XTorinAxe'), torin)
+	GiveObjectToCreature(CreateObject('dwarf_crown'), torin)
+	GiveObjectToCreature(CreateObject('torin_shield'), torin)
+	GiveObjectToCreature(CreateObject('torin_axe'), torin)
 end
 
 function TorinHandler(e, t, p, v)

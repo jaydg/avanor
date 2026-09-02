@@ -17,6 +17,21 @@ Monster.new("highpriest")
 	:Register()
 
 
+-- The high priest's mitre.
+
+Item.new("avanor_mitre")
+	:Cap(ItemType.CAP)
+	:View("holy mitre", '[', xColor.xWHITE)
+	:Basic(8000, 100)
+	:Armour(3, 2)
+	:Combat(0, 0, 0, 0)
+	:Resist("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20")
+	:Stats("Wi:0d0+10")
+	:Called("holy mitre of Avanor")
+	:Unique()
+	:Register()
+
+
 function CreateHighPriest(x, y)
 	local hp = Guardian("highpriest", "roderick_guardian", x, y, 3, 4)
 	SetEventHandler(hp, 'HighPriestHandler')
@@ -24,7 +39,7 @@ function CreateHighPriest(x, y)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), hp)
-	GiveObjectToCreature(CreateObject('XAvanorMitre'), hp)
+	GiveObjectToCreature(CreateObject('avanor_mitre'), hp)
 end
 
 function HighPriestHandler(e, t, p, v)

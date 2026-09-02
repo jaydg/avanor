@@ -96,6 +96,7 @@ namespace lua_api
     bool BinaryAND(int v1, int v2);
 
     sol::optional<void*> GetWornItem(void* cr, int bodypart, int slot);
+    std::string GetItemId(void* item);
     std::string GetObjectClass(void* obj);
 
     // Registers every function above under its Lua name.

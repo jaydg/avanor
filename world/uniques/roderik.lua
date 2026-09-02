@@ -15,6 +15,34 @@ Monster.new("roderik")
 	:Register()
 
 
+-- The regalia of Avanor: Roderick wears the one and holds the other.
+
+Item.new("avanor_crown")
+	:Cap(ItemType.CAP)
+	:View("golden crown", '[', xColor.xYELLOW)
+	:Basic(8000, 100)
+	:Armour(2, 2)
+	:Combat(0, 0, 0, 0)
+	:Resist("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 acid:1d1+99 see_invisible:0d0+20")
+	:Stats("St:0d0+5 Dx:0d0+5 To:0d0+5 Wi:0d0+5 Ma:0d0+5")
+	:Called("crown of Avanor")
+	:Unique()
+	:Register()
+
+Item.new("avanor_scepter")
+	:Weapon(ItemType.CLUB)
+	:View("ancient scepter", '|', xColor.xYELLOW)
+	:Basic(12000, 400)
+	:Armour(0, 0)
+	:Combat(8, 1, 12, 10)
+	:Resist("stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99 see_invisible:0d0+20")
+	:Stats("St:1d1+15")
+	:Brand(AttackEffectType.FIRE + AttackEffectType.COLD + AttackEffectType.DEMONSLAYER)
+	:Called("scepter of Avanor")
+	:Unique()
+	:Register()
+
+
 function CreateRoderik(x, y)
 	local roderik = Guardian("roderik", "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP)
 	SetEventHandler(roderik, 'RoderikHandler')
@@ -22,15 +50,18 @@ function CreateRoderik(x, y)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
 	GiveObjectToCreature(CreateObject(PotionName.HEALING), roderik)
-	GiveObjectToCreature(CreateObject('XAvanorCrown'), roderik)
-	GiveObjectToCreature(CreateObject('XAvanorScepter'), roderik)
+	GiveObjectToCreature(CreateObject('avanor_crown'), roderik)
+	GiveObjectToCreature(CreateObject('avanor_scepter'), roderik)
 end
 
-local function isWieldingClass(cr, class_name)
+-- Content items all share one carrier class, so a class name no longer
+-- says which item this is. GetItemId() answers with the id world/items.lua
+-- defined it under.
+local function isWieldingItem(cr, item_id)
 	for slot = 0, 1 do
 		local item = GetWornItem(cr, BodyPart.HAND, slot)
 
-		if (item and GetObjectClass(item) == class_name) then
+		if (item and GetItemId(item) == item_id) then
 			return true
 		end
 	end
@@ -46,7 +77,7 @@ function RoderikHandler(e, t, p, v)
 
 		if (roderik.xai:isEnemy(chatter)) then
 			AddMessage("No mercy!")
-		elseif (isWieldingClass(p, "XAvanorDefender")) then
+		elseif (isWieldingItem(p, "avanor_defender")) then
 			AddMessage("I recognize that sword in your hand. You have looted the tomb of my ancestors! Guards! Seize the traitor!")
 			roderik.xai:AddPersonalEnemy(chatter)
 			roderik.xai:SetGroupEnemy(chatter)

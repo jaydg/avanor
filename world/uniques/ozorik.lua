@@ -15,6 +15,35 @@ Monster.new("ozorik")
 	:Register()
 
 
+-- Ozorick's unique weapons.
+
+Item.new("glamdring")
+	:Weapon(ItemType.BROADSWORD)
+	:View("rune-covered broadsword", '|')
+	:Basic(2000, 700)
+	:Armour(0, 0)
+	:Combat(12, 4, 5, 10)
+	:Resist("poison:1d1+99 stun:1d1+99 confuse:1d1+99 fire:1d1+99 cold:1d1+99")
+	:Stats("St:1d1+9 Dx:1d1+9 To:1d1+9")
+	:Brand(AttackEffectType.FIRE + AttackEffectType.COLD + AttackEffectType.DEMONSLAYER)
+	:Called('broadsword named "Glamdring"')
+	:Unique()
+	:Register()
+
+Item.new("death_hack")
+	:Weapon(ItemType.LONGDAGGER)
+	:View("rune-covered long dagger")
+	:Basic(500, 70)
+	:Armour(0, 0)
+	:Combat(6, 2, 3, 12)
+	:Resist("")
+	:Stats("")
+	:Brand(AttackEffectType.COLD + AttackEffectType.DEMONSLAYER)
+	:Called('long dagger named "Death Hack"')
+	:Unique()
+	:Register()
+
+
 ozorik_award = 0
 orcs_live = 50
 
@@ -23,8 +52,8 @@ function CreateOzorik(x, y)
 	local ozorik = Guardian("ozorik", "guardian", x, y, 3, 2)
 	SetEnemy(ozorik, CreatureClass.ORC)
 	SetEventHandler(ozorik, 'OzorikHandler')
-	GiveObjectToCreature(CreateObject('XGlamdring'), ozorik)
-	local death_hack = CreateObject('XDeathHack')
+	GiveObjectToCreature(CreateObject('glamdring'), ozorik)
+	local death_hack = CreateObject('death_hack')
 	ozorik_award = GetObjectGUID(death_hack)
 	GiveObjectToCreature(death_hack, ozorik)
 end

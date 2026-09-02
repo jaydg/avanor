@@ -19,7 +19,7 @@ Monster.new("jorgus")
 function CreateJorgus(x, y)
 	local jorgus = Guardian("jorgus", "forest_brother", x, y, 3, 2)
 	SetEventHandler(jorgus, 'JorgusHandler')
-	GiveObjectToCreature(CreateObject('XForestBrotherCloak'), jorgus)
+	GiveObjectToCreature(CreateObject('forest_brother_cloak'), jorgus)
 end
 
 function JorgusHandler(e, t, p, v)

@@ -29,6 +29,22 @@ REGISTER_CLASS(XPlainItem);
 CEREAL_REGISTER_TYPE(XPlainItem);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPlainItem);
 
+REGISTER_CLASS(XContentWeapon);
+CEREAL_REGISTER_TYPE(XContentWeapon);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XContentWeapon);
+
+REGISTER_CLASS(XContentCap);
+CEREAL_REGISTER_TYPE(XContentCap);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XContentCap);
+
+REGISTER_CLASS(XContentShield);
+CEREAL_REGISTER_TYPE(XContentShield);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XContentShield);
+
+REGISTER_CLASS(XContentCloak);
+CEREAL_REGISTER_TYPE(XContentCloak);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XContentCloak);
+
 std::unordered_map<std::string, XItemStorage::Entry> XItemStorage::items;
 
 XItem* XItemStorage::Create(const std::string& id)
@@ -73,49 +89,229 @@ XItem* XItemStorage::CreateRandom(const ItemKind kind)
     return nullptr;
 }
 
-XItem* XItemStorage::MakeFood(const FoodTemplate& t)
+XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& t)
 {
-    // A plain XAnyFood, configured. It needs no subclass and no cereal
-    // registration of its own: XAnyFood is already a registered concrete
-    // type, and every field set here is serialized instance state.
-    auto* food = new XAnyFood();
+    // The base constructor first, exactly as the hand-written classes did:
+    // it is what binds a weapon to its war skill and picks the material,
+    // neither of which a definition restates.
+    XItem* item = nullptr;
+    std::string* content_id = nullptr;
+    std::string* display_name = nullptr;
+    bool* unique = nullptr;
 
-    food->name = t.name;
-    food->view = t.view;
-    food->color = t.color;
-    food->it = t.it;
-    food->value = t.value;
-    food->weight = t.weight;
-    food->food_nutrio = t.food_nutrio;
-    food->consume_nutrio = t.consume_nutrio;
-    food->food_type = t.food_type;
+    switch (t.base) {
+        case ContentItemTemplate::PLAIN: {
+            auto* made = new XPlainItem();
+            made->kind = t.kind;
+            made->bp = t.bp;
+            content_id = &made->content_id;
+            unique = &made->unique;
+            item = made;
+            break;
+        }
 
-    return food;
+        case ContentItemTemplate::WEAPON: {
+            auto* made = new XContentWeapon(t.base_type);
+            content_id = &made->content_id;
+            display_name = &made->display_name;
+            unique = &made->unique;
+            item = made;
+            break;
+        }
+
+        case ContentItemTemplate::CAP: {
+            auto* made = new XContentCap(t.base_type);
+            content_id = &made->content_id;
+            display_name = &made->display_name;
+            unique = &made->unique;
+            item = made;
+            break;
+        }
+
+        case ContentItemTemplate::SHIELD: {
+            auto* made = new XContentShield(t.base_type);
+            content_id = &made->content_id;
+            display_name = &made->display_name;
+            unique = &made->unique;
+            item = made;
+            break;
+        }
+
+        case ContentItemTemplate::CLOAK: {
+            auto* made = new XContentCloak(t.base_type);
+            content_id = &made->content_id;
+            display_name = &made->display_name;
+            unique = &made->unique;
+            item = made;
+            break;
+        }
+    }
+
+    *content_id = id;
+    *unique = t.unique;
+
+    // A plain item has no base whose name it could fall back to, so it is
+    // simply called what it is called - there is nothing for display_name
+    // to add.
+    if (display_name) {
+        *display_name = t.display_name;
+    }
+
+    item->name = t.name;
+    item->it = t.it;
+
+    if (t.view != 0) {
+        item->view = t.view;
+    }
+
+    if (t.color >= 0) {
+        item->color = t.color;
+    }
+
+    item->value = t.value;
+    item->weight = t.weight;
+    item->dv = t.dv;
+    item->pv = t.pv;
+    item->to_hit = t.to_hit;
+    item->dice.Setup(t.dice_count, t.dice_sides, t.dice_bonus);
+    item->RNG = 0;
+
+    // Every hand-written item class allocates these in its own constructor,
+    // and code outside Compare() dereferences them without checking - the
+    // value calculation and the description among them.
+    item->resistances = std::make_unique<XResistance>(t.resists.c_str());
+    item->stats = std::make_unique<XStats>(t.stats.c_str());
+    item->aet = t.aet;
+
+    // BasicFill() gives one item in twenty a random "of Strength" style
+    // enhancement. A definition is already what it says it is.
+    item->special_property = SPP_NONE;
+
+    return item;
 }
 
 ItemBuilder::ItemBuilder(std::string id) : id(std::move(id)), probability(0)
 {
-    t.view = ']';
-    t.color = xLIGHTGRAY;
+    t.base = ContentItemTemplate::PLAIN;
+    t.base_type = ItemType::UNKNOWN;
     t.it = ItemType::UNKNOWN;
     t.kind = ItemKind::TOOL;
     t.bp = BP_OTHER;
+    t.view = 0;
+    t.color = -1;
+    t.aet = AttackEffectType::NONE;
+    t.unique = false;
 }
 
-ItemBuilder& ItemBuilder::View(const std::string& name, const char view, const int color)
+ItemBuilder& ItemBuilder::Plain(const ItemType it, const ItemKind kind)
 {
-    t.name = name;
-    t.view = view;
-    t.color = color;
+    t.base = ContentItemTemplate::PLAIN;
+    t.it = it;
+    t.kind = kind;
     return *this;
 }
 
-ItemBuilder& ItemBuilder::Basic(const ItemType it, const ItemKind kind, const int value, const int weight)
+ItemBuilder& ItemBuilder::Weapon(const ItemType base_type)
+{
+    t.base = ContentItemTemplate::WEAPON;
+    t.base_type = base_type;
+    t.it = base_type;
+    t.kind = ItemKind::WEAPON;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Cap(const ItemType base_type)
+{
+    t.base = ContentItemTemplate::CAP;
+    t.base_type = base_type;
+    t.it = base_type;
+    t.kind = ItemKind::HAT;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Shield(const ItemType base_type)
+{
+    t.base = ContentItemTemplate::SHIELD;
+    t.base_type = base_type;
+    t.it = base_type;
+    t.kind = ItemKind::SHIELD;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Cloak(const ItemType base_type)
+{
+    t.base = ContentItemTemplate::CLOAK;
+    t.base_type = base_type;
+    t.it = base_type;
+    t.kind = ItemKind::CLOAK;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::View(const std::string& name, sol::optional<std::string> view,
+    sol::optional<int> color)
+{
+    t.name = name;
+    t.view = (view && !view->empty()) ? (*view)[0] : 0;
+    t.color = color.value_or(-1);
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Type(const ItemType it)
 {
     t.it = it;
-    t.kind = kind;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Basic(const int value, const int weight)
+{
     t.value = value;
     t.weight = weight;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Armour(const int dv, const int pv)
+{
+    t.dv = dv;
+    t.pv = pv;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Combat(const int to_hit, const int count, const int sides, const int bonus)
+{
+    t.to_hit = to_hit;
+    t.dice_count = count;
+    t.dice_sides = sides;
+    t.dice_bonus = bonus;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Stats(const std::string& stats)
+{
+    t.stats = stats;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Resist(const std::string& resists)
+{
+    t.resists = resists;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Brand(const AttackEffectType aet)
+{
+    t.aet = aet;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Called(const std::string& display_name)
+{
+    t.display_name = display_name;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Unique()
+{
+    t.unique = true;
     return *this;
 }
 
@@ -137,44 +333,46 @@ void ItemBuilder::Register()
 
     // Same reasoning as MonsterBuilder::Register(): a Lua constant the
     // engine never registered arrives here as 0 rather than as an error.
+    // A weapon whose base type is not in the weapon table trips an assert
+    // deep inside BindWeapon() rather than saying so here.
     if (t.it == ItemType::UNKNOWN) {
-        std::cerr << "world: item '" << id << "' has no ItemType" << std::endl;
+        std::cerr << "world: item '" << id << "' never said what it is" << std::endl;
     }
 
-    const PlainItemTemplate captured = t;
+    const ContentItemTemplate captured = t;
+    const std::string captured_id = id;
 
     XItemStorage::items[id] = {
-        [captured] {
-            auto* item = new XPlainItem();
-
-            item->name = captured.name;
-            item->view = captured.view;
-            item->color = captured.color;
-            item->it = captured.it;
-            item->kind = captured.kind;
-            item->bp = captured.bp;
-            item->value = captured.value;
-            item->weight = captured.weight;
-
-            // Every hand-written item class allocates these in its own
-            // constructor (XPickAxe, XEyeOfRaa, ...), and code outside
-            // Compare() dereferences them without checking - the value
-            // calculation and the description among them. A content item
-            // is an item like any other, so it gets them too.
-            item->stats = std::make_unique<XStats>();
-            item->resistances = std::make_unique<XResistance>();
-
-            return static_cast<XItem*>(item);
-        },
+        [captured_id, captured] { return XItemStorage::MakeItem(captured_id, captured); },
         t.kind,
         probability
     };
 }
 
+XItem* XItemStorage::MakeFood(const FoodTemplate& t)
+{
+    // A plain XAnyFood, configured. It needs no subclass and no cereal
+    // registration of its own: XAnyFood is already a registered concrete
+    // type, and every field set here is serialized instance state.
+    auto* food = new XAnyFood();
+
+    food->name = t.name;
+    food->view = t.view;
+    food->color = t.color;
+    food->it = t.it;
+    food->value = t.value;
+    food->weight = t.weight;
+    food->food_nutrio = t.food_nutrio;
+    food->consume_nutrio = t.consume_nutrio;
+    food->food_type = t.food_type;
+
+    return food;
+}
+
 FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
 {
     // XAnyFood's own constructor defaults (a brown '%', ItemKind::FOOD)
-    // still apply to what Create() news up; these are only the fields a
+    // still apply to what MakeFood() news up; these are only the fields a
     // definition is expected to state for itself.
     t.view = '%';
     t.color = xBROWN;

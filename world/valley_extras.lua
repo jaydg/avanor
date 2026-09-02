@@ -1,3 +1,35 @@
+-- The sword under the Avanor Defender's headstone, and the cloak that
+-- marks a forest brother. Both belong to what happens in this file - the
+-- grave that gives up the one, and the brotherhood that wears the other.
+
+Item.new("avanor_defender")
+	:Weapon(ItemType.LONGSWORD)
+	:View("rune-covered long sword")
+	:Basic(3000, 110)
+	:Armour(0, 0)
+	:Combat(18, 4, 4, 15)
+	:Resist("poison:0d0+100 stun:0d0+100 confuse:0d0+100 fire:0d0+100 cold:0d0+100")
+	:Stats("St:0d0+10 To:0d0+10")
+	:Brand(AttackEffectType.COLD + AttackEffectType.FIRE + AttackEffectType.DEMONSLAYER)
+	:Called('long sword named "Avanor\'s Defender"')
+	:Unique()
+	:Register()
+
+-- No :Called - it is meant to pass for an ordinary cloak, which is the
+-- whole point of wearing one past the bridge.
+Item.new("forest_brother_cloak")
+	:Cloak(ItemType.CLOAK)
+	:View("forest brother's cloak", nil, xColor.xGREEN)
+	:Type(ItemType.FORESTBROTHERCLOAK)
+	:Basic(100, 20)
+	:Armour(3, 1)
+	:Combat(0, 1, 2, 0)
+	:Resist("poison:0d0+20 stun:0d0+20")
+	:Stats("")
+	:Unique()
+	:Register()
+
+
 function SendFarmersToCollectMushrooms()
 	local cave_x, cave_y = GetWayXY("MUSHROOMS_CAVE5")
 	local script = {
@@ -93,7 +125,7 @@ BANDIT_GROUP = "forest_brother"
 -- rules.
 function CreateBandit(x, y)
 	local bandit = Guardian('bandit', BANDIT_GROUP, x, y, 12, 8, XStandardAI.GUARD_AREA + XStandardAI.PROTECT_AREA + XStandardAI.RANDOM_MOVE)
-	AsCreature(bandit):PutOnBody(BodyPart.CLOAK, 0, CreateObject('XForestBrotherCloak'))
+	AsCreature(bandit):PutOnBody(BodyPart.CLOAK, 0, CreateObject('forest_brother_cloak'))
 	SetCreatureAI(bandit, 'BanditAI')
 
 end
@@ -206,7 +238,7 @@ end
 
 function AvanorDefenderGraveEvent(e, cr, o)
 	if (e == LuaEvent.OUTER_USE and GetView(o) == "+") then
-		DropItem(CreateObject('XAvanorDefender'), o)
+		DropItem(CreateObject('avanor_defender'), o)
 	end
 	return StandardGraveEvent(e, cr, o)
 end
