@@ -38,19 +38,6 @@ XMissile::XMissile(ItemType _it)
     bp = BP_MISSILE;
     BasicFill(_it, &gi_missile);
 
-    if (it == ItemType::ROCK) {
-        name = "rock";
-        view = '*';
-        color = xDARKGRAY;
-        XDice d(1, 3);
-        to_hit = d.GetResult();
-        d.Setup(1, 2);
-        dice.Setup(1, 5, d.GetResult());
-        value = 1;
-        weight = 5;
-        RNG = 0;
-    }
-
     resistances->Sub(resistances.get());
     stats->Sub(stats.get());
 
