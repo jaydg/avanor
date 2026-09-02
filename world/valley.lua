@@ -35,7 +35,14 @@ VILLAGE_GUARD_AREA = {x = 7, y = 2, w = 20, h = 16}
 
 -- The orc war party musters in the southern hills and, after a long
 -- while, marches on the small town (the pattern drawn at 10,40 below).
-local ORC_WAR_PARTY = "orcs_war_party"
+--
+-- The group id and the size are global rather than local: the world-level
+-- death tally (world/tally.lua) has to recognise a war-party orc when one
+-- dies, and has to know how many came in order to say so once they are all
+-- dead. Change the size here and the achievements line follows.
+ORC_WAR_PARTY = "orcs_war_party"
+ORC_WAR_PARTY_SIZE = 20
+
 local ORC_MUSTER_AREA = {x = 10, y = 70, w = 20, h = 10}
 local ORC_TARGET_AREA = {x = 20, y = 42, w = 8, h = 6}
 local ORC_ATTACK_DELAY = 10000 * 1000
@@ -66,7 +73,7 @@ function MakeAvanorValley()
 	-- Orcish war party.
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).
-	for i = 1, 20 do
+	for i = 1, ORC_WAR_PARTY_SIZE do
 		GuardianClass(CreatureClass.ORC, ORC_WAR_PARTY, ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y,
 			ORC_MUSTER_AREA.w, ORC_MUSTER_AREA.h, XStandardAI.GUARD_AREA)
 	end

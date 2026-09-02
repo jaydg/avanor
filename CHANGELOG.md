@@ -340,6 +340,9 @@ Things that simply did not happen:
 - Creatures sacrificed the clothes off their own backs as useless junk
 - Reading the high score table, writing recipes, the backspace key, and the
   status line
+- Beating off the orc war party was never acknowledged at the end of the
+  game: the achievements screen asked for thirty orc deaths, and only twenty
+  orcs have ever existed
 
 Things that went quietly wrong the longer you played:
 

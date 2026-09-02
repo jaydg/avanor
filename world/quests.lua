@@ -11,6 +11,11 @@ QUEST_GEFEON		= 10
 QUEST_RODERICK_CRYPT	= 11
 QUEST_RODERICK_EYE	= 12
 
+-- Not created by CreateAllQuests() below: this one is added to the world at
+-- the moment it is earned, by the death tally in world/tally.lua, and only
+-- if it is earned. See Quest() there.
+QUEST_ORC_WAR_PARTY	= 13
+
 
 function CreateAllQuests()
 

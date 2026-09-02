@@ -274,12 +274,6 @@ void XHero::EndGame(const char* end_msg)
         score += quest->score;
     }
 
-    if (const int orcs_killed = XQuest::quest.GetFlag("orcs_killed"); orcs_killed > 0 && XQuest::quest.GetFlag("total_orcs_killed") == 30) {
-        list.AddItem(new XGuiItem_Text("You helped to repulse an attack of orcs."));
-    } else if (orcs_killed > 0) {
-        list.AddItem(new XGuiItem_Text("You tried to help to repulse an attack of orcs."));
-    }
-
     list.AddItem(new XGuiItem_Text(fmt::format("You scored %{}.", score)));
     list.SetCaption("<DECORATION>###<TEXT> Achievements <DECORATION>###");
     list.Run();
