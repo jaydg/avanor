@@ -514,7 +514,7 @@ class XCreature : public XBaseObject
         int CauseEffect(int dmg, AttackEffectType brt, bool* applied);
         void CausePostEffect(int dmg, AttackEffectType brt, XCreature* attacker);
 
-        virtual const char* GetMeleeAttackMsg(XItem* weapon);
+        virtual std::string GetMeleeAttackMsg(XItem* weapon);
 
         // Movement intent for the turn being resolved: where this creature
         // wants to step, decided by the AI and then acted on by Move().

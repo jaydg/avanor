@@ -422,23 +422,23 @@ bool XCreature::isVisible()
     }
 }
 
-const char* XCreature::GetMeleeAttackMsg(XItem * weapon)
+// What the attacker is said to do with what it is holding. The word
+// belongs to the weapon and is stated with the rest of its row
+// (world/items/weapons.lua); a weapon that names none simply hits, and
+// bare hands attack.
+std::string XCreature::GetMeleeAttackMsg(XItem * weapon)
 {
-    if (weapon) {
-        //very temporary solution
-        //if we accept this feature we should add verb to the weapon table
-        if (weapon->it == ItemType::SMALLAXE ||
-            weapon->it == ItemType::WARAXE	||
-            weapon->it == ItemType::BATTLEAXE ||
-            weapon->it == ItemType::GREATAXE ||
-            weapon->it == ItemType::ORCISHAXE) {
-            return "hack";
-        } else {
-            return "hit";
-        }
-    } else {
+    if (!weapon) {
         return "attack";
     }
+
+    const ItemTemplate* row = gi_weapon.Find(weapon->it);
+
+    if (row && !row->verb.empty()) {
+        return row->verb;
+    }
+
+    return "hit";
 }
 
 int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)

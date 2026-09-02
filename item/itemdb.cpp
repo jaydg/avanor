@@ -373,6 +373,12 @@ TemplateBuilder& TemplateBuilder::Skill(const XWarSkills::Type wt)
     return *this;
 }
 
+TemplateBuilder& TemplateBuilder::Verb(const std::string& verb)
+{
+    t.verb = verb;
+    return *this;
+}
+
 TemplateBuilder& TemplateBuilder::Launcher(const XWarSkills::Type wt)
 {
     t.launcher = wt;

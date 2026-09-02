@@ -30,6 +30,8 @@
 --   :Combat(hit, dice, extra) dice strings; omitted when it strikes nothing
 --   :Range(dice)              for bows and what they throw
 --   :Skill(XWarSkills)        which war skill wielding one exercises
+--   :Verb(word)               what one does to somebody - an axe hacks, a
+--                             mace smashes. Unsaid, it hits
 --   :Launcher(XWarSkills)     for a missile: the skill of the weapon that
 --                             fires it, so an arrow asks for a bow. Unsaid
 --                             means nothing launches it and it can only be
