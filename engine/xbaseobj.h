@@ -58,6 +58,20 @@ class XBaseObject : public XMapObject
             ar(cereal::base_class<XMapObject>(this));
             ar(dv, pv, to_hit, RNG, weight, dice, resistances, stats);
         }
+
+    private:
+        // Both members are optional - XBaseObject leaves them null and each
+        // class that wants them allocates its own - so Compare() has to say
+        // what "the same" means when one or both are absent.
+        template<typename T>
+        static bool isEqualOrBothAbsent(const std::unique_ptr<T>& a, const std::unique_ptr<T>& b)
+        {
+            if (!a || !b) {
+                return !a && !b;
+            }
+
+            return a->isEqual(b.get());
+        }
 };
 
 #endif

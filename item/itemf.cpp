@@ -95,7 +95,7 @@ XItem* XItemFactory::CreateItem(ItemKind kind, ItemType it)
         case ItemKind::TOOL:
         case ItemKind::GEM:
         case ItemKind::FOOD:
-            if (XItem* food = XFoodStorage::CreateRandom()) {
+            if (XItem* food = XItemStorage::CreateRandom(ItemKind::FOOD)) {
                 return food;
             }
             break;

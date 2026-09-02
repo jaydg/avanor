@@ -205,6 +205,17 @@ void XLua::Init()
         );
     }
 
+    // Sol2-bound Item builder, for items that are nothing but data.
+    {
+        lua.new_usertype<ItemBuilder>("Item",
+            sol::constructors<ItemBuilder(std::string)>(),
+            "View", &ItemBuilder::View,
+            "Basic", &ItemBuilder::Basic,
+            "Random", &ItemBuilder::Random,
+            "Register", &ItemBuilder::Register
+        );
+    }
+
     // Sol2-bound Food builder, registered here for the same reason as the
     // Monster builder above: world/items.lua calls it while loading.
     {

@@ -25,18 +25,56 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_misc.h"
 #include "item/itemf.h"
 
-std::unordered_map<std::string, FoodTemplate> XFoodStorage::food_storage;
+REGISTER_CLASS(XPlainItem);
+CEREAL_REGISTER_TYPE(XPlainItem);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPlainItem);
 
-XItem* XFoodStorage::Create(const std::string& id)
+std::unordered_map<std::string, XItemStorage::Entry> XItemStorage::items;
+
+XItem* XItemStorage::Create(const std::string& id)
 {
-    const auto rec = food_storage.find(id);
+    const auto rec = items.find(id);
 
-    if (rec == food_storage.end()) {
+    if (rec == items.end()) {
         return nullptr;
     }
 
-    const FoodTemplate& t = rec->second;
+    return rec->second.make();
+}
 
+XItem* XItemStorage::CreateRandom(const ItemKind kind)
+{
+    int total = 0;
+
+    for (const auto& [id, e] : items) {
+        if (e.kind == kind) {
+            total += e.probability;
+        }
+    }
+
+    if (total == 0) {
+        return nullptr;
+    }
+
+    long roll = vRand(total);
+
+    for (const auto& [id, e] : items) {
+        if (e.kind != kind) {
+            continue;
+        }
+
+        roll -= e.probability;
+
+        if (roll < 0) {
+            return e.make();
+        }
+    }
+
+    return nullptr;
+}
+
+XItem* XItemStorage::MakeFood(const FoodTemplate& t)
+{
     // A plain XAnyFood, configured. It needs no subclass and no cereal
     // registration of its own: XAnyFood is already a registered concrete
     // type, and every field set here is serialized instance state.
@@ -55,29 +93,82 @@ XItem* XFoodStorage::Create(const std::string& id)
     return food;
 }
 
-XItem* XFoodStorage::CreateRandom()
+ItemBuilder::ItemBuilder(std::string id) : id(std::move(id)), probability(0)
 {
-    int total = 0;
+    t.view = ']';
+    t.color = xLIGHTGRAY;
+    t.it = ItemType::UNKNOWN;
+    t.kind = ItemKind::TOOL;
+    t.bp = BP_OTHER;
+}
 
-    for (const auto& [id, t] : food_storage) {
-        total += t.probability;
+ItemBuilder& ItemBuilder::View(const std::string& name, const char view, const int color)
+{
+    t.name = name;
+    t.view = view;
+    t.color = color;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Basic(const ItemType it, const ItemKind kind, const int value, const int weight)
+{
+    t.it = it;
+    t.kind = kind;
+    t.value = value;
+    t.weight = weight;
+    return *this;
+}
+
+ItemBuilder& ItemBuilder::Random(const int probability)
+{
+    this->probability = probability;
+    return *this;
+}
+
+void ItemBuilder::Register()
+{
+    if (XItemStorage::items.count(id)) {
+        std::cerr << "world: item '" << id << "' is defined twice" << std::endl;
     }
 
-    if (total == 0) {
-        return nullptr;
+    if (t.name.empty()) {
+        std::cerr << "world: item '" << id << "' has no name" << std::endl;
     }
 
-    long roll = vRand(total);
-
-    for (const auto& [id, t] : food_storage) {
-        roll -= t.probability;
-
-        if (roll < 0) {
-            return Create(id);
-        }
+    // Same reasoning as MonsterBuilder::Register(): a Lua constant the
+    // engine never registered arrives here as 0 rather than as an error.
+    if (t.it == ItemType::UNKNOWN) {
+        std::cerr << "world: item '" << id << "' has no ItemType" << std::endl;
     }
 
-    return nullptr;
+    const PlainItemTemplate captured = t;
+
+    XItemStorage::items[id] = {
+        [captured] {
+            auto* item = new XPlainItem();
+
+            item->name = captured.name;
+            item->view = captured.view;
+            item->color = captured.color;
+            item->it = captured.it;
+            item->kind = captured.kind;
+            item->bp = captured.bp;
+            item->value = captured.value;
+            item->weight = captured.weight;
+
+            // Every hand-written item class allocates these in its own
+            // constructor (XPickAxe, XEyeOfRaa, ...), and code outside
+            // Compare() dereferences them without checking - the value
+            // calculation and the description among them. A content item
+            // is an item like any other, so it gets them too.
+            item->stats = std::make_unique<XStats>();
+            item->resistances = std::make_unique<XResistance>();
+
+            return static_cast<XItem*>(item);
+        },
+        t.kind,
+        probability
+    };
 }
 
 FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
@@ -134,7 +225,7 @@ void FoodBuilder::Register()
     // and the food looks fine until something asks it what it is. An
     // unnamed food, or one that never said what ItemType it is, is a
     // definition that says nothing.
-    if (XFoodStorage::food_storage.count(id)) {
+    if (XItemStorage::items.count(id)) {
         std::cerr << "world: food '" << id << "' is defined twice" << std::endl;
     }
 
@@ -146,21 +237,16 @@ void FoodBuilder::Register()
     // one would merge in the pack however differently they are described.
     if (t.it == ItemType::UNKNOWN) {
         std::cerr << "world: food '" << id << "' has no ItemType" << std::endl;
-    } else {
-        for (const auto& [other_id, other] : XFoodStorage::food_storage) {
-            if (other.it == t.it) {
-                std::cerr << "world: food '" << id << "' shares its ItemType with '"
-                          << other_id << "' - the two will stack together" << std::endl;
-            }
-        }
     }
 
-    XFoodStorage::food_storage[id] = t;
-}
+    const FoodTemplate captured = t;
 
-REGISTER_CLASS(XAncientMachinePart);
-CEREAL_REGISTER_TYPE(XAncientMachinePart);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAncientMachinePart);
+    XItemStorage::items[id] = {
+        [captured] { return XItemStorage::MakeFood(captured); },
+        ItemKind::FOOD,
+        t.probability
+    };
+}
 
 REGISTER_CLASS(XChest);
 CEREAL_REGISTER_TYPE(XChest);

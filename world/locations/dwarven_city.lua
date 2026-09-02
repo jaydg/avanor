@@ -120,7 +120,7 @@ function MakeDwarvenCity()
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "DWARFCITY", x, y) end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 500) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
-		AddTranslation("A", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
+		AddTranslation("A", function(x, y) DropItem(CreateObject('ancient_machine_part'), x, y) end)
 		DrawPattern(0, 0)
 
 

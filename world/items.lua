@@ -1,7 +1,16 @@
 -- Item definitions
 --
--- Food.new(id) registers under that id; CreateObject(id) then makes one,
--- the same call that takes a C++ class name.
+-- Food.new(id) and Item.new(id) register under that id; CreateObject(id)
+-- then makes one, the same call that takes a C++ class name.
+--
+-- Item.new is for things that are nothing but a name, a look and some
+-- numbers:
+--
+--   :View(name, view, color)
+--   :Basic(ItemType, ItemKind, value, weight)
+--   :Random(probability)          as below - unsaid means never drawn
+--
+-- Food.new adds eating to that:
 --
 --   :View(name, view, color)      what it is called and how it looks
 --   :Basic(ItemType, value, wt)   its type, its price, its weight
@@ -65,4 +74,15 @@ Food.new("elvish_waybread")
 	:Nutrition(700, 933)
 	:Taste(FoodType.GOOD)
 	:Random(100)
+	:Register()
+
+
+-- The three parts Ahk-Ulan wants brought to him, and the only reason any
+-- of them exists. Scattered by hand where they lie (world/valley.lua and
+-- world/locations/dwarven_city.lua) and never generated at random - a shop
+-- selling one would break the errand.
+
+Item.new("ancient_machine_part")
+	:View("ancient machine part", ']', xColor.xDARKGRAY)
+	:Basic(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL, 1000, 15)
 	:Register()

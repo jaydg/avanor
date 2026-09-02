@@ -74,7 +74,8 @@ int XBaseObject::Compare(XObject * o)
         && dv == tit->dv && pv == tit->pv && RNG == tit->RNG
         && to_hit == tit->to_hit && dice.GetCount() == tit->dice.GetCount()
         && dice.GetSides() == tit->dice.GetSides() && dice.GetBonus() == tit->dice.GetBonus()
-        && resistances->isEqual(tit->resistances.get()) && stats->isEqual(tit->stats.get())) {
+        && isEqualOrBothAbsent(resistances, tit->resistances)
+        && isEqualOrBothAbsent(stats, tit->stats)) {
         return 0;
     } else {
         return 1;

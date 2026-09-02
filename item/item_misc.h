@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEM_MISC_H
 #define ITEM_MISC_H
 
+#include <functional>
 #include <string>
 #include <unordered_map>
 
@@ -56,22 +57,72 @@ struct FoodTemplate {
     int probability;
 };
 
-// The foods world/ has defined, by the id it named them. Consulted by
-// CreateObjectByName() before the C++ class factory, so CreateObject()
-// takes a Lua food id exactly as it takes a class name.
-class XFoodStorage
+// An item with no behaviour of its own: a name, a look and some numbers.
+// The carrier that content-defined plain items are instances of, the way
+// XAnyFood is the carrier for content-defined foods. It exists because
+// XItem::toString() asserts - every leaf is expected to say how it reads -
+// and because cereal needs one concrete registered type to restore into.
+class XPlainItem : public XItem
 {
     public:
-        static std::unordered_map<std::string, FoodTemplate> food_storage;
+        DECLARE_CREATOR(XPlainItem, XItem);
+        XPlainItem() = default;
+        explicit XPlainItem(XPlainItem* copy) : XItem(copy) {}
+
+        XItem* MakeCopy() override
+        {
+            return new XPlainItem(this);
+        }
+
+        std::string toString() override
+        {
+            return GetFullName();
+        }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XItem>(this));
+        }
+};
+
+// Everything world/ has defined for itself, by the id it named it.
+// Consulted by CreateObjectByName() before the C++ class factory, so
+// CreateObject() takes a content id exactly as it takes a class name.
+//
+// Entries hold a maker rather than one struct of every field any kind of
+// item might need: a food and a plain item have almost nothing in common
+// beyond a name, and the builders each know how to make their own.
+class XItemStorage
+{
+    public:
+        struct Entry {
+            std::function<XItem*()> make;
+
+            // What kind of thing it is, and its weight in the draw when
+            // the game asks for one of that kind without saying which.
+            // Zero probability - the default - keeps it out of that draw,
+            // which is what a quest item wants: no shop should stock a
+            // part of an ancient machine.
+            ItemKind kind;
+            int probability;
+        };
+
+        static std::unordered_map<std::string, Entry> items;
 
         // nullptr when no content defined this id - the caller falls back
         // to XClassFactory.
         static XItem* Create(const std::string& id);
 
-        // A food picked by probability from what content defined, for the
-        // paths that ask for "some food" rather than a particular one.
-        // nullptr if nothing was defined with a probability at all.
-        static XItem* CreateRandom();
+        // One item of that kind, drawn by probability. nullptr if content
+        // defined nothing drawable of that kind.
+        static XItem* CreateRandom(ItemKind kind);
+
+        // Builds a configured XAnyFood. A named function rather than
+        // something inside the builder's lambda, so that XAnyFood can
+        // befriend it - consume_nutrio is protected, and this is what used
+        // to be a subclass constructor.
+        static XItem* MakeFood(const FoodTemplate& t);
 };
 
 // Fluent builder, the item-side twin of MonsterBuilder:
@@ -84,6 +135,42 @@ class XFoodStorage
 //
 // :Taste() and :Random() are optional - a food that says neither is
 // ordinary fare that the game will never hand out on its own.
+// A plain item: no behaviour, just what it is called, how it looks and
+// what it is worth.
+struct PlainItemTemplate {
+    std::string name;
+    char view;
+    int color;
+    ItemType it;
+    ItemKind kind;
+    BODY_PART bp;
+    int value;
+    int weight;
+};
+
+// Fluent builder for those:
+//
+//   Item.new("ancient_machine_part")
+//       :View("ancient machine part", ']', xColor.xDARKGRAY)
+//       :Basic(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL, 1000, 15)
+//       :Register()
+class ItemBuilder
+{
+    public:
+        explicit ItemBuilder(std::string id);
+
+        ItemBuilder& View(const std::string& name, char view, int color);
+        ItemBuilder& Basic(ItemType it, ItemKind kind, int value, int weight);
+        ItemBuilder& Random(int probability);
+
+        void Register();
+
+    private:
+        std::string id;
+        int probability;
+        PlainItemTemplate t{};
+};
+
 class FoodBuilder
 {
     public:
@@ -132,41 +219,6 @@ class XChest : public XItem
         {
             ar(cereal::base_class<XItem>(this));
             ar(contain);
-        }
-};
-
-class XAncientMachinePart : public XItem
-{
-    public:
-        DECLARE_CREATOR(XAncientMachinePart, XItem);
-        XAncientMachinePart()
-        {
-            color = xDARKGRAY;
-            view = ']';
-            name = "ancient machine part";
-            value = 1000;
-            weight = 15;
-            kind = ItemKind::TOOL;
-            bp = BP_OTHER;
-            it = ItemType::ANCIENTMACHINEPART;
-        }
-
-        XAncientMachinePart(XAncientMachinePart * copy) : XItem(copy) {}
-
-        XItem* MakeCopy() override
-        {
-            return new XAncientMachinePart(this);
-        }
-
-        std::string toString() override
-        {
-            return GetFullName();
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XItem>(this));
         }
 };
 

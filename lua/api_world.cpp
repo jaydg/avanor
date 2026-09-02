@@ -177,8 +177,8 @@ void* CreateObjectByName(const std::string& name)
     // Content first: a name world/ defined for itself wins over a C++ class
     // name, so CreateObject() reads the same either way and a food that
     // moves out of C++ needs no new call form.
-    if (XItem* food = XFoodStorage::Create(name)) {
-        return food;
+    if (XItem* defined = XItemStorage::Create(name)) {
+        return defined;
     }
 
     return XClassFactory::CreateNew((char*)name.c_str());

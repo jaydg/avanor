@@ -420,7 +420,7 @@ function MakeAvanorValley()
 		"#########,<,#########" ..
 		"#####################" )
 
-		AddTranslation("[", function(x, y) DropItem(CreateObject('XAncientMachinePart'), x, y) end)
+		AddTranslation("[", function(x, y) DropItem(CreateObject('ancient_machine_part'), x, y) end)
 		AddTranslation("$", function(x, y) Treasure(x, y, 250) end)
 		AddTranslation("~", function(x, y) Chest(x, y) end)
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "MAIN", x, y) end)

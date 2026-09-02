@@ -110,7 +110,7 @@ XHero::XHero(NewCharacter)
     // starting rations are hero creation, which has no Lua hook of its own
     // yet. If world/items.lua stops defining this, the hero simply starts
     // hungry rather than the game falling over.
-    if (XItem* ration = XFoodStorage::Create("ration")) {
+    if (XItem* ration = XItemStorage::Create("ration")) {
         ContainItem(ration);
     } else {
         std::cerr << "world: no food called 'ration' - the hero starts with none"

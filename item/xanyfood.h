@@ -80,7 +80,7 @@ class XAnyFood : public XItem
         // instances configured after construction rather than subclasses
         // configured in a constructor, so the one place that does that
         // configuring needs the same reach a subclass had.
-        friend class XFoodStorage;
+        friend class XItemStorage;
 
         int consume_nutrio; // part of food eated for one turn
 
