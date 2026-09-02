@@ -18,14 +18,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <fmt/format.h>
 #include <sol/sol.hpp>
 
 #include "creature/xhero.h"
 #include "engine/global.h"
 #include "game/quest.h"
 #include "helpers/xgui.h"
-#include "item/itemdef.h"
 
 void XQuest::RegisterLua(sol::state_view& lua)
 {
@@ -101,16 +99,6 @@ void XQuest::ShowQuests()
     if (GetFlag("roderick_quest2") == 1) {
         list.AddItem(new XGuiItem_Text(
             "Roderick, the King of Avanor has asked you to cleanse his family crypt."));
-        flag = 0;
-    }
-
-    if (const auto it_quest = static_cast<ItemType>(GetFlag("yohjishiro_it_quest")); it_quest != ItemType::UNKNOWN) {
-        if (it_quest == ItemType::RATTAIL) {
-            list.AddItem(new XGuiItem_Text("Yohjishiro asked you bring a rat tail."));
-        } else {
-            list.AddItem(new XGuiItem_Text("Yohjishiro asked you bring a bat wing."));
-        }
-
         flag = 0;
     }
 
