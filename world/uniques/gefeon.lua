@@ -26,17 +26,9 @@ function GefeonHandler(e, t, p, v)
 		return false
 	end
 
-	if (QuestState:GetFlag('ahk_ulan_ordered') == 0 and QuestState:GetFlag('ahk_ulan_killed') == 0) then
-		AddMessage("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.")
-		QuestState:SetFlag('ahk_ulan_ordered', 1)
-		return true
-	end
-
-	if (QuestState:GetFlag('ahk_ulan_ordered') == 1 and QuestState:GetFlag('ahk_ulan_killed') == 0) then
-		AddMessage("And how is Ahk-Ulan? Still alive? That is very bad.")
-		return true
-	end
-
+	-- A hero who went down there and finished Ahk-Ulan off before ever
+	-- meeting Gefeon is welcome all the same: the errand is judged by the
+	-- wizard being dead, not by who asked for it.
 	if (QuestState:GetFlag('ahk_ulan_killed') == 1) then
 		if (QuestState:GetFlag('roderick_killed') == 1) then
 			AddMessage("Well, you killed the pretender and the King, I guess that makes you the new ruler!")
@@ -44,8 +36,18 @@ function GefeonHandler(e, t, p, v)
 			AddMessage("You did a great thing! You truly are the best!")
 		end
 
+		QuestModify(QUEST_GEFEON, XQuest.CLOSED)
 		QuestState:WinGame()
+		return true
 	end
+
+	if (QuestStatus(QUEST_GEFEON) == XQuest.UNKNOWN) then
+		AddMessage("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.")
+		QuestModify(QUEST_GEFEON, XQuest.KNOWN)
+		return true
+	end
+
+	AddMessage("And how is Ahk-Ulan? Still alive? That is very bad.")
 
 	return true
 end

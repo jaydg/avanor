@@ -93,6 +93,13 @@ function AhkUlanHandler(e, t, p, v)
 			QuestModify(QUEST_ANCIENT_PART, XQuest.FAIL)
 		end
 
+		-- Gefeon wanted him dead and now he is. The errand is done the
+		-- moment he falls; going back to say so is what closes it
+		-- (GefeonHandler), and until then it stops cluttering the log.
+		if (QuestStatus(QUEST_GEFEON) == XQuest.KNOWN) then
+			QuestModify(QUEST_GEFEON, XQuest.COMPLETE)
+		end
+
 		-- The same goes for the throne he wanted taken for him: killing the
 		-- King buys nothing once there is no usurper left to crown.
 		local us = QuestStatus(QUEST_USURPER)

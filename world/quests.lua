@@ -7,6 +7,7 @@ QUEST_ANCIENT_PART	= 6
 QUEST_GIANA			= 7
 QUEST_BANDITS		= 8
 QUEST_USURPER		= 9
+QUEST_GEFEON		= 10
 
 
 function CreateAllQuests()
@@ -43,6 +44,11 @@ function CreateAllQuests()
 
 	Quest(QUEST_USURPER, XQuest.UNKNOWN,
 		"Ahk-Ulan asked you to kill Roderick, the King of Avanor - the only man left who could stand against him.",
+		"",
+		"")
+
+	Quest(QUEST_GEFEON, XQuest.UNKNOWN,
+		"Gefeon asked you to kill Ahk-Ulan, who works his evil in the dungeon beneath the ruins of his tower, south-east of the town.",
 		"",
 		"")
 
