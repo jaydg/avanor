@@ -82,7 +82,9 @@ void XCreature::RegisterLua(sol::state_view& lua)
         "SHE", XCreature::SHE,
         "NAMED_HE", XCreature::NAMED_HE,
         "NAMED_SHE", XCreature::NAMED_SHE,
-        "NAMED_IT", XCreature::NAMED_IT
+        "NAMED_IT", XCreature::NAMED_IT,
+        "THEY", XCreature::THEY,
+        "NAMED_THEY", XCreature::NAMED_THEY
     );
 
     // Real C++ methods/properties, not one-off void*-taking free functions -
@@ -2196,6 +2198,7 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
             case XCreature::YOU:
             case XCreature::MALE_YOU:
             case XCreature::FEMALE_YOU:
+            case XCreature::THEY_YOU:
                 switch (crn) {
                     case CRN_T1:
                         return "you";
@@ -2259,6 +2262,40 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
 
                     case CRN_T4:
                         return "its";
+                }
+
+                break;
+
+            case XCreature::NAMED_THEY:
+                switch (crn) {
+                    case CRN_T1:
+                        return name;
+
+                    case CRN_T2:
+                        return "they";
+
+                    case CRN_T3:
+                        return "them";
+
+                    case CRN_T4:
+                        return "their";
+                }
+
+                break;
+
+            case XCreature::THEY:
+                switch (crn) {
+                    case CRN_T1:
+                        return fmt::format("the {}", name);
+
+                    case CRN_T2:
+                        return "they";
+
+                    case CRN_T3:
+                        return "them";
+
+                    case CRN_T4:
+                        return "their";
                 }
 
                 break;
@@ -2334,7 +2371,9 @@ const std::string XCreature::GetNameEx(CR_NAME_TYPE crn)
 
 std::string XCreature::GetVerb(std::string verb) const
 {
-    if (creature_person_type & XCreature::YOU) {
+    // Second person and singular they both take the verb uninflected:
+    // "you bite", "they bite" - only he/she/it gets the "s".
+    if (creature_person_type & (XCreature::YOU | XCreature::THEY)) {
         return verb;
     }
 

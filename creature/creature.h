@@ -247,12 +247,23 @@ class XCreature : public XBaseObject
             HE = MALE,    // He
             SHE = FEMALE, // She
 
+            // Singular they. Its own bit rather than a Gender value: the
+            // three above are the Gender enum reused, and this is not a
+            // gender - it is how the creature is spoken about. It also
+            // takes an uninflected verb, like YOU below: "they bite", not
+            // "they bites" (see GetVerb).
+            THEY = 0x04,
+
             // Default you
             YOU = 0x08,
 
-            // Genderized you
+            // Genderized you. Composed by the engine, never named by
+            // content: a gender in world/hero.lua states its pronoun and
+            // the engine adds YOU, because being addressed in the second
+            // person is what makes a creature the player.
             MALE_YOU = (HE | YOU),
             FEMALE_YOU = (SHE | YOU),
+            THEY_YOU = (THEY | YOU),
 
             // Unique creatures
             UNIQUE = 0x10,
@@ -260,7 +271,8 @@ class XCreature : public XBaseObject
             // Backward compatibility
             NAMED_HE = (HE | UNIQUE),   // Munch-Munch the Dread
             NAMED_SHE = (SHE | UNIQUE), // Yohjishiro, the elven wizard
-            NAMED_IT = (IT | UNIQUE)    // Gekta, the sheep dog
+            NAMED_IT = (IT | UNIQUE),   // Gekta, the sheep dog
+            NAMED_THEY = (THEY | UNIQUE)
         };
 
         // Registers Gender and PersonType as the Lua tables Gender.MEMBER

@@ -383,6 +383,11 @@ int XPotion::onDrink(XCreature * cr)
                                 msgwin.Add("her");
                                 break;
 
+                            case XCreature::NAMED_THEY:
+                            case XCreature::THEY:
+                                msgwin.Add("their");
+                                break;
+
                             // Everything else is an it, including the
                             // person types that speak in the second
                             // person - the hero is never the creature
