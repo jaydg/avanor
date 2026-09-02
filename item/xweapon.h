@@ -25,11 +25,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item.h"
 
-struct WeaponSkillBinding {
-    ItemType it;
-    XWarSkills::Type ws;
-};
-
 class XWeapon : public XItem
 {
     public:
@@ -41,8 +36,6 @@ class XWeapon : public XItem
         {
             return new XWeapon(this);
         }
-
-        int BindWeapon();
         std::string toString() override;
 
         template<class Archive>

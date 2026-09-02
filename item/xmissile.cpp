@@ -29,26 +29,12 @@ REGISTER_CLASS(XMissile);
 CEREAL_REGISTER_TYPE(XMissile);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissile);
 
-ItemTemplate MISSILE_STRUCT[] = {
-    {ItemType::ARROW,	"arrow",	'\\',	"",	"",	"1d2", "1d4", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
-    {ItemType::QUARREL,	"quarrel",	'\\',	"",	"",	"1d2", "1d6", "1d3", "1d2+3",	ISET_MISSILE,	1,	1,	100,	IQ_AVG,	""},
-    {ItemType::SLINGBULLET, "sling bullet",	'\\',	"",	"",	"1d2", "1d5", "1d2", "1d2+3",	ISET_MISSILE,	1,	1,	30,	IQ_FAIR, ""},
-    {ItemType::ROCK,	"rock",	'*',	"",	"",	"1d1", "1d3", "1d1", "1d2+2",	ISET_STONE,	1,	1,	300,	IQ_POOR, ""},
-    {ItemType::SHURIKEN,	"shuriken",	'*',	"",	"",	"1d2", "1d6", "1d4", "1d2+2",	ISET_METAL,	1,	1,	50,	IQ_FAIR, ""}
-};
+// Filled from world/items/ as those scripts load.
+XItemBasicStructure gi_missile;
 
-XItemBasicStructure gi_missile(MISSILE_STRUCT, 5);
-
-/*
-// TODO: Bind launchers to missiles.
-// Rock is special b/c it can be used with or without a launcher...
-
- WeaponSkillBinding mbind[] = {
-{ItemType::LONGBOW,        XWarSkills::BOW},
-{ItemType::LIGHTCROSSBOW,  XWarSkills::CROSSBOW},
-{ItemType::SLING,          XWarSkills::SLING},
-{ItemType::SLING,          XWarSkills::THROW}
-};*/
+// TODO: Bind launchers to missiles - an arrow should ask for a bow, a
+// quarrel for a crossbow. Rock is the awkward one: it can be slung or
+// simply thrown, so it belongs to two skills at once.
 
 XMissile::XMissile(ItemType _it)
 {

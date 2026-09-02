@@ -1,0 +1,34 @@
+-- Gloves and gauntlets.
+--
+-- Template.new(kind, type) is documented in world/items/init.lua.
+--
+
+Template.new(ItemKind.GLOVES, ItemType.GLOVES)
+	:View("gloves", ']')
+	:Made(ItemSet.ALLLEATHER, ItemQuality.AVG)
+	:Worth(2, 1)
+	:Armour("1d2", "1d2")
+	:Combat("1d3", "1d1", "1d1")
+	:Range("1d2")
+	:Chance(100)
+	:Register()
+
+Template.new(ItemKind.GLOVES, ItemType.GAUNTLETS)
+	:View("gauntlets", ']')
+	:Made(ItemSet.ALLMETAL, ItemQuality.FAIR)
+	:Worth(3, 1)
+	:Armour("1d3+1", "1d3+1")
+	:Combat("1d3+1", "1d1", "1d2")
+	:Range("1d3")
+	:Chance(10)
+	:Register()
+
+Template.new(ItemKind.GLOVES, ItemType.KNUCKLES)
+	:View("knuckles", ']')
+	:Made(ItemSet.HARDMETAL, ItemQuality.GOOD)
+	:Worth(4, 1)
+	:Armour("1d2+1", "1d2+1")
+	:Combat("1d2", "1d1", "1d3")
+	:Range("1d2+2")
+	:Chance(10)
+	:Register()

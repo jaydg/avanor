@@ -21,14 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_cereal.h"
 #include "item/xcloak.h"
 
-ItemTemplate CLOAK_STRUCT[] = {
-    {ItemType::LIGHTCLOAK,	"light cloak",	'(',	"1d2+1",	"1d2",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	1,	2,	100,	IQ_AVG,	""},
-    {ItemType::CLOAK,	"cloak",	'(',	"1d2",	"1d2+1",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	2,	3,	60,	IQ_AVG,	""},
-    {ItemType::SHADOWCLOAK, "shadow cloak",	'(',	"1d2+2",	"1d5+3",	"",	"1d1",	"",	"",	ISET_ALLLEATHER,	15,	8,	10,	IQ_FAIR,	""},
-    {ItemType::CAPE,	"cape",	'(',	"1d2",	"1d1",	"",	"1d1",	"",	"",	ISET_SOFT,	2,	2,	120,	IQ_AVG,	""}
-};
-
-XItemBasicStructure gi_cloaks(CLOAK_STRUCT, 4);
+// Filled from world/items/ as those scripts load.
+XItemBasicStructure gi_cloaks;
 
 REGISTER_CLASS(XCloak);
 CEREAL_REGISTER_TYPE(XCloak);

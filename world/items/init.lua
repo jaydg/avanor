@@ -1,7 +1,36 @@
--- Item definitions
+-- Item definitions.
+--
+-- This file documents the three builders and loads the rest of the
+-- directory; the definitions themselves live one kind to a file beside it.
+--
+-- There are three ways to define an item, for three different things:
+--
+--   Template.new(kind, type)  one sort of ordinary item - "a long sword",
+--                             "a pair of boots" - and how often the game
+--                             hands one out. What comes back is made of a
+--                             material picked at random from the set the
+--                             template allows, so no two are quite alike.
+--                             These are the nine tables below.
+--
+--   Item.new(id)              one particular item, exactly as described.
+--                             A quest piece, or an artifact.
+--
+--   Food.new(id)              the same, for something that can be eaten.
 --
 -- Food.new(id) and Item.new(id) register under that id; CreateObject(id)
 -- then makes one, the same call that takes a C++ class name.
+--
+-- Template.new takes:
+--
+--   :View(name, view)         what it is called and how it looks
+--   :Made(ItemSet, quality)   which materials it may be made from, and how
+--                             well made it is
+--   :Worth(value, weight)
+--   :Armour(dv, pv)           dice strings; omitted when it protects nothing
+--   :Combat(hit, dice, extra) dice strings; omitted when it strikes nothing
+--   :Range(dice)              for bows and what they throw
+--   :Chance(probability)      its weight in the draw against others of its
+--                             kind
 --
 -- Only the things that belong to nobody in particular live in this file.
 -- An item with a single owner is defined beside that owner instead, so
@@ -67,62 +96,16 @@
 -- :Random() instead of those last two. Artefacts shall be defined next to the
 -- NPC/quests/locations where they are used.
 
--- What a skeleton leaves behind, and what is under a headstone. Dropped by
--- the world tally (world/tally.lua) and by the graves in the valley.
-
-Food.new("bone")
-	:View("bone", '%', xColor.xWHITE)
-	:Basic(ItemType.BONE, 1, 5)
-	:Nutrition(10, 10)
-	:Register()
-
-
--- Ordinary fare, and the only foods the game hands out on its own: when
--- something asks for food without saying which, one of these four is drawn.
--- They were a four-row table in C++ (rations_db) behind a class whose only
--- method forwarded straight to its base - data wearing a class.
---
--- The per-turn figures are what that table computed as (nutrition * 20) /
--- weight, worked out once and written down: heavier food is chewed through
--- more slowly.
-
-Food.new("large_ration")
-	:View("large ration", '%', xColor.xLIGHTGRAY)
-	:Basic(ItemType.LARGERATION, 5, 100)
-	:Nutrition(400, 80)
-	:Random(100)
-	:Register()
-
-Food.new("ration")
-	:View("ration", '%', xColor.xBROWN)
-	:Basic(ItemType.RATION, 3, 70)
-	:Nutrition(250, 71)
-	:Random(100)
-	:Register()
-
-Food.new("small_ration")
-	:View("small ration", '%', xColor.xBROWN)
-	:Basic(ItemType.SMALLRATION, 1, 40)
-	:Nutrition(150, 75)
-	:Random(100)
-	:Register()
-
-Food.new("elvish_waybread")
-	:View("elvish waybread", '%', xColor.xYELLOW)
-	:Basic(ItemType.ELVISHWAYBREAD, 15, 15)
-	:Nutrition(700, 933)
-	:Taste(FoodType.GOOD)
-	:Random(100)
-	:Register()
-
-
--- The three parts Ahk-Ulan wants brought to him, and the only reason any
--- of them exists. Scattered by hand where they lie (world/valley.lua and
--- world/locations/dwarven_city.lua) and never generated at random - a shop
--- selling one would break the errand.
-
-Item.new("ancient_machine_part")
-	:Plain(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL)
-	:View("ancient machine part", ']', xColor.xDARKGRAY)
-	:Basic(1000, 15)
-	:Register()
+function LoadItems()
+	dofile("./world/items/weapons.lua")
+	dofile("./world/items/missile_weapons.lua")
+	dofile("./world/items/missiles.lua")
+	dofile("./world/items/armour.lua")
+	dofile("./world/items/shields.lua")
+	dofile("./world/items/caps.lua")
+	dofile("./world/items/cloaks.lua")
+	dofile("./world/items/boots.lua")
+	dofile("./world/items/gloves.lua")
+	dofile("./world/items/tools.lua")
+	dofile("./world/items/food.lua")
+end

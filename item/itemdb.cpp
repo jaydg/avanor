@@ -19,6 +19,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "item/item.h"
+#include <iostream>
+
 #include "item/itemdb.h"
 #include "magic/attack_effect_type.h"
 
@@ -339,3 +341,100 @@ ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
         ""
     },
 };
+
+
+TemplateBuilder::TemplateBuilder(const ItemKind kind, const ItemType it) : kind(kind)
+{
+    t.it = it;
+    t.view = '?';
+    t.iset = ISET_IRON;
+    t.iq = IQ_AVG;
+    t.wt = XWarSkills::OTHER;
+}
+
+TemplateBuilder& TemplateBuilder::View(const std::string& name, const std::string& view)
+{
+    t.name = name;
+    t.view = view.empty() ? '?' : view[0];
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Made(const ITEM_SET iset, const ITEM_QUALITY iq)
+{
+    t.iset = iset;
+    t.iq = iq;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Skill(const XWarSkills::Type wt)
+{
+    t.wt = wt;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Worth(const int value, const int weight)
+{
+    t.value = value;
+    t.valume = weight;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Armour(const std::string& dv, const std::string& pv)
+{
+    t.dv = dv;
+    t.pv = pv;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Combat(const std::string& hit, const std::string& dice,
+    const std::string& extra)
+{
+    t.hit = hit;
+    t.dice = dice;
+    t.z = extra;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Range(const std::string& range)
+{
+    t.r = range;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Chance(const int probability)
+{
+    t.probability = probability;
+    return *this;
+}
+
+void TemplateBuilder::Register()
+{
+    XItemBasicStructure* pool = nullptr;
+
+    switch (kind) {
+        case ItemKind::WEAPON:   pool = &gi_weapon;   break;
+        case ItemKind::MISSILEW: pool = &gi_missilew; break;
+        case ItemKind::MISSILE:  pool = &gi_missile;  break;
+        case ItemKind::BODY:     pool = &gi_armour;   break;
+        case ItemKind::SHIELD:   pool = &gi_shield;   break;
+        case ItemKind::HAT:      pool = &gi_cap;      break;
+        case ItemKind::CLOAK:    pool = &gi_cloaks;   break;
+        case ItemKind::BOOTS:    pool = &gi_boots;    break;
+        case ItemKind::GLOVES:   pool = &gi_gloves;   break;
+        default: break;
+    }
+
+    if (!pool) {
+        std::cerr << "world: '" << t.name
+                  << "' is of a kind that has no table of its own" << std::endl;
+
+        return;
+    }
+
+    if (t.name.empty()) {
+        std::cerr << "world: a template of kind " << static_cast<int>(kind)
+                  << " has no name" << std::endl;
+    }
+
+    pool->Add(t);
+}

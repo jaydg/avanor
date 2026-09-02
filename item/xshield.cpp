@@ -27,15 +27,8 @@ REGISTER_CLASS(XShield);
 CEREAL_REGISTER_TYPE(XShield);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XShield);
 
-ItemTemplate SHIELD_STRUCT[] = {
-
-    {ItemType::SMALLSHIELD, "small shield",	')',	"0d0+2",	"1d2",	"",	"1d2",	"",	"",	ISET_SHIELD,	3,	3,	200,	IQ_POOR,	""},
-    {ItemType::MEDIUMSHIELD, "medium shield", ')',	"0d0+3",	"1d2",	"",	"1d3",	"",	"",	ISET_SHIELD,	5,	5,	100,	IQ_AVG,	""},
-    {ItemType::LARGESHIELD, "large shield",	')',	"0d0+4",	"1d2",	"",	"1d4",	"",	"",	ISET_SHIELD,	10,	8,	50,	IQ_AVG,	""},
-    {ItemType::TOWERSHIELD, "tower shield",	')',	"0d0+6",	"1d2",	"",	"1d4",	"",	"",	ISET_SHIELD,	15,	15,	10,	IQ_FAIR,	""}
-};
-
-XItemBasicStructure gi_shield(SHIELD_STRUCT, 4);
+// Filled from world/items/ as those scripts load.
+XItemBasicStructure gi_shield;
 
 XShield::XShield(ItemType _it)
 {
@@ -44,7 +37,6 @@ XShield::XShield(ItemType _it)
     pv = 0;
     bp = BP_HAND;
     RNG = 0;
-    wt = XWarSkills::SHIELD;
     dice.SetBonus(0);
     to_hit = 0;
 }

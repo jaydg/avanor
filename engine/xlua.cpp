@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
+#include "item/itemdb.h"
 #include "item/item_misc.h"
 #include "item/xtool.h"
 #include "creature/bodypart.h"
@@ -149,6 +150,56 @@ void XLua::Init()
     XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
 
+    // What an ordinary item can be made of, and how well made it is. Both
+    // are for the templates in world/items/ (TemplateBuilder): the set says
+    // which materials the game may pick from when it builds one.
+    lua.new_enum("ItemSet",
+        "CLOTH", ISET_CLOTH,
+        "LEATHER", ISET_LEATHER,
+        "STUDEDLEATHER", ISET_STUDEDLEATHER,
+        "STONE", ISET_STONE,
+        "WOOD", ISET_WOOD,
+        "IRON", ISET_IRON,
+        "BRONZE", ISET_BRONZE,
+        "BRASS", ISET_BRASS,
+        "SILVER", ISET_SILVER,
+        "GOLD", ISET_GOLD,
+        "CRYSTAL", ISET_CRYSTAL,
+        "STEEL", ISET_STEEL,
+        "OBSIDIAN", ISET_OBSIDIAN,
+        "MITHRIL", ISET_MITHRIL,
+        "ADAMANTIUM", ISET_ADAMANTIUM,
+        "SOFT", ISET_SOFT,
+        "ALLLEATHER", ISET_ALLLEATHER,
+        "METAL", ISET_METAL,
+        "METALSOFT", ISET_METALSOFT,
+        "HARDMETAL", ISET_HARDMETAL,
+        "ALLMETAL", ISET_ALLMETAL,
+        "OBSIMETAL", ISET_OBSIMETAL,
+        "STONEFROM", ISET_STONEFROM,
+        "WOODEN", ISET_WOODEN,
+        "SHIELD", ISET_SHIELD,
+        "BOW", ISET_BOW,
+        "MISSILE", ISET_MISSILE,
+        "WOODSTONE", ISET_WOODSTONE,
+        "WEAPON", ISET_WEAPON,
+        "SIMPLEWEAPON", ISET_SIMPLEWEAPON,
+        "CROWNMETAL", ISET_CROWNMETAL,
+        "BLACKMETAL", ISET_BLACKMETAL
+    );
+
+    lua.new_enum("ItemQuality",
+        "TERRIBLE", IQ_TERRIBLE,
+        "VERY_BAD", IQ_VERY_BAD,
+        "BAD", IQ_BAD,
+        "POOR", IQ_POOR,
+        "AVG", IQ_AVG,
+        "FAIR", IQ_FAIR,
+        "GOOD", IQ_GOOD,
+        "EXCELLENT", IQ_EXCELLENT,
+        "SUPERB", IQ_SUPERB
+    );
+
     // What stage a use is at, and what a handler answers with. Both are
     // for content-defined tools (XLuaTool::onUse): the use command calls a
     // handler with START, then PROGRESS for as long as it answers CONTINUE,
@@ -183,7 +234,7 @@ void XLua::Init()
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
-            "ItemKind", "ItemType", "ItemUse", "LuaEvent", "Movability",
+            "ItemKind", "ItemType", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "PersonType", "PotionName", "Result", "ScriptCommand", "ShopDoor",
             "Spell", "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
@@ -221,6 +272,22 @@ void XLua::Init()
             "CorpseEffect", &MonsterBuilder::CorpseEffect,
             "Unique", &MonsterBuilder::Unique,
             "Register", &MonsterBuilder::Register
+        );
+    }
+
+    // Sol2-bound builder for one row of an ordinary item's table.
+    {
+        lua.new_usertype<TemplateBuilder>("Template",
+            sol::constructors<TemplateBuilder(ItemKind, ItemType)>(),
+            "View", &TemplateBuilder::View,
+            "Made", &TemplateBuilder::Made,
+            "Skill", &TemplateBuilder::Skill,
+            "Worth", &TemplateBuilder::Worth,
+            "Armour", &TemplateBuilder::Armour,
+            "Combat", &TemplateBuilder::Combat,
+            "Range", &TemplateBuilder::Range,
+            "Chance", &TemplateBuilder::Chance,
+            "Register", &TemplateBuilder::Register
         );
     }
 

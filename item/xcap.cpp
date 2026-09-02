@@ -25,13 +25,8 @@ REGISTER_CLASS(XCap);
 CEREAL_REGISTER_TYPE(XCap);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCap);
 
-ItemTemplate CAP_STRUCT[] = {
-    {ItemType::HAT,	"hat",	'[',	"1d1",	"0d0",	"",	"1d1",	"",	"",	ISET_SOFT,	1,	1,	100,	IQ_POOR,	""},
-    {ItemType::CAP,	"cap",	'[',	"1d2+1",	"1d2",	"",	"1d1", "", "",	ISET_ALLLEATHER,	2,	2,	50,	IQ_AVG,	""},
-    {ItemType::HELMET,	"helmet",	'[',	"1d3+2",	"1d3+1",	"",	"1d3", "",	"",	ISET_HARDMETAL,	3,	3,	10,	IQ_FAIR,	""},
-};
-
-XItemBasicStructure gi_cap(CAP_STRUCT, 3);
+// Filled from world/items/ as those scripts load.
+XItemBasicStructure gi_cap;
 
 XCap::XCap(ItemType _it)
 {

@@ -25,14 +25,8 @@ REGISTER_CLASS(XGloves);
 CEREAL_REGISTER_TYPE(XGloves);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XGloves);
 
-ItemTemplate GLOVES_STRUCT[] = {
-
-    {ItemType::GLOVES,	"gloves",	']',	"1d2",	"1d2",	"1d3",	"1d1",	"1d1",	"1d2", ISET_ALLLEATHER,	2,	1,	100,	IQ_AVG,	""},
-    {ItemType::GAUNTLETS,	"gauntlets",	']',	"1d3+1",	"1d3+1",	"1d3+1",	"1d1",	"1d2",	"1d3", ISET_ALLMETAL,	3,	1,	10,	IQ_FAIR, ""},
-    {ItemType::KNUCKLES,	"knuckles",	']',	"1d2+1",	"1d2+1",	"1d2",	"1d1",	"1d3",	"1d2+2", ISET_HARDMETAL,	4,	1,	10,	IQ_GOOD, ""}
-};
-
-XItemBasicStructure gi_gloves(GLOVES_STRUCT, 3);
+// Filled from world/items/ as those scripts load.
+XItemBasicStructure gi_gloves;
 
 XGloves::XGloves(ItemType it)
 {

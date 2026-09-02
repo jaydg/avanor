@@ -254,6 +254,7 @@ void XItem::MainFill(ItemTemplate *is)
     weight = is->valume;
     value = is->value;
     quality = is->iq;
+    wt = is->wt;
 
     XDice d(is->dv);
     dv = d.NThrow();

@@ -21,6 +21,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEMDB_H
 #define ITEMDB_H
 
+#include <string>
+#include <vector>
+
+#include "magic/wskills.h"
 #include "item/itemdef.h"
 #include "item/itemkind.h"
 #include "magic/attack_effect_type.h"
@@ -28,42 +32,82 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DB_PROP_SZ	15 // number of materials!
 #define ENH_DB_SZ	20 // number of special powers ("of Strength")
 
+// One sort of item: what it is called, what it is made of, what it does,
+// and how often the game hands one out. The dice fields are the strings
+// XDice takes ("1d3+2", "" for none).
 struct ItemTemplate {
     ItemType it;
     std::string name;
     char view;
-    const char* dv;
-    const char* pv;
-    const char* hit;
-    const char* dice;
-    const char* z; //random z to dice;
-    const char* r;
+    std::string dv;
+    std::string pv;
+    std::string hit;
+    std::string dice;
+    std::string z; //random z to dice;
+    std::string r;
     ITEM_SET iset;
+
+    // Which war skill wielding one exercises.
+    XWarSkills::Type wt;
+
     int value;
     int valume;
     int probability;
     ITEM_QUALITY iq;
-    const char* breserved;
 };
+
+// One kind's worth of templates - every sort of sword, or every sort of
+// boot - and how likely each is when the game asks for one of that kind
+// without saying which.
+//
+// The rows are filled from world/items/ as those scripts load.
+// The nine pools, one per kind of ordinary item, filled from world/items/
+// as those scripts load. Declared here so the builder can reach them; each
+// is defined beside the class that draws from it.
+class XItemBasicStructure;
+
+extern XItemBasicStructure gi_weapon;
+extern XItemBasicStructure gi_missilew;
+extern XItemBasicStructure gi_missile;
+extern XItemBasicStructure gi_armour;
+extern XItemBasicStructure gi_shield;
+extern XItemBasicStructure gi_cap;
+extern XItemBasicStructure gi_cloaks;
+extern XItemBasicStructure gi_boots;
+extern XItemBasicStructure gi_gloves;
 
 class XItemBasicStructure
 {
     public:
-        XItemBasicStructure(ItemTemplate* pIt, int count)
+        void Add(const ItemTemplate& row)
         {
-            total_prob = 0;
-            pFirstItem = pIt;
-            total_item = count;
+            rows.push_back(row);
 
-            for (int i = 0; i < count; i++) {
-                total_prob += pIt->probability;
-                pIt++;
+            // Re-derived rather than accumulated: push_back may reallocate,
+            // and pFirstItem has to follow the storage.
+            pFirstItem = rows.data();
+            total_item = static_cast<int>(rows.size());
+            total_prob = 0;
+
+            for (const auto& r : rows) {
+                total_prob += r.probability;
             }
         }
 
-        int total_prob;
-        int total_item;
-        ItemTemplate* pFirstItem;
+        void Clear()
+        {
+            rows.clear();
+            pFirstItem = nullptr;
+            total_item = 0;
+            total_prob = 0;
+        }
+
+        int total_prob{0};
+        int total_item{0};
+        ItemTemplate* pFirstItem{nullptr};
+
+    private:
+        std::vector<ItemTemplate> rows;
 };
 
 struct ENHANCE_STRUCT {
@@ -84,10 +128,44 @@ struct ENHANCE_STRUCT {
     const char* r; //resists
 };
 
-typedef ItemTemplate XITEM_STRUCT[];
-typedef XITEM_STRUCT* ITEM_STRUCT;
 
 extern ItemMaterial item_prop[DB_PROP_SZ];
 extern ENHANCE_STRUCT ienh_db[ENH_DB_SZ];
+
+
+// Fluent builder for one row of one of those pools:
+//
+//   Template.new(ItemKind.WEAPON, ItemType.LONGSWORD)
+//       :View("long sword", '|')
+//       :Made(ItemSet.OBSIMETAL, ItemQuality.FAIR)
+//       :Skill(XWarSkills.SWORD)
+//       :Worth(18, 10)
+//       :Combat("", "2d4", "")
+//       :Chance(60)
+//       :Register()
+//
+// Everything not stated is empty or zero, so a row says only what it has:
+// a cap names no damage dice, a sword no protection.
+class TemplateBuilder
+{
+    public:
+        TemplateBuilder(ItemKind kind, ItemType it);
+
+        TemplateBuilder& View(const std::string& name, const std::string& view);
+        TemplateBuilder& Made(ITEM_SET iset, ITEM_QUALITY iq);
+        TemplateBuilder& Skill(XWarSkills::Type wt);
+        TemplateBuilder& Worth(int value, int weight);
+        TemplateBuilder& Armour(const std::string& dv, const std::string& pv);
+        TemplateBuilder& Combat(const std::string& hit, const std::string& dice,
+            const std::string& extra);
+        TemplateBuilder& Range(const std::string& range);
+        TemplateBuilder& Chance(int probability);
+
+        void Register();
+
+    private:
+        ItemKind kind;
+        ItemTemplate t{};
+};
 
 #endif

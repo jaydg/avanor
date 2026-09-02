@@ -1,0 +1,44 @@
+-- Shields.
+--
+-- Template.new(kind, type) is documented in world/items/init.lua.
+--
+
+Template.new(ItemKind.SHIELD, ItemType.SMALLSHIELD)
+	:View("small shield", ')')
+	:Made(ItemSet.SHIELD, ItemQuality.POOR)
+	:Skill(XWarSkills.SHIELD)
+	:Worth(3, 3)
+	:Armour("0d0+2", "1d2")
+	:Combat("", "1d2", "")
+	:Chance(200)
+	:Register()
+
+Template.new(ItemKind.SHIELD, ItemType.MEDIUMSHIELD)
+	:View("medium shield", ')')
+	:Made(ItemSet.SHIELD, ItemQuality.AVG)
+	:Skill(XWarSkills.SHIELD)
+	:Worth(5, 5)
+	:Armour("0d0+3", "1d2")
+	:Combat("", "1d3", "")
+	:Chance(100)
+	:Register()
+
+Template.new(ItemKind.SHIELD, ItemType.LARGESHIELD)
+	:View("large shield", ')')
+	:Made(ItemSet.SHIELD, ItemQuality.AVG)
+	:Skill(XWarSkills.SHIELD)
+	:Worth(10, 8)
+	:Armour("0d0+4", "1d2")
+	:Combat("", "1d4", "")
+	:Chance(50)
+	:Register()
+
+Template.new(ItemKind.SHIELD, ItemType.TOWERSHIELD)
+	:View("tower shield", ')')
+	:Made(ItemSet.SHIELD, ItemQuality.FAIR)
+	:Skill(XWarSkills.SHIELD)
+	:Worth(15, 15)
+	:Armour("0d0+6", "1d2")
+	:Combat("", "1d4", "")
+	:Chance(10)
+	:Register()

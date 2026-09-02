@@ -416,9 +416,8 @@ void ItemBuilder::Register()
     }
 
     // Same reasoning as MonsterBuilder::Register(): a Lua constant the
-    // engine never registered arrives here as 0 rather than as an error.
-    // A weapon whose base type is not in the weapon table trips an assert
-    // deep inside BindWeapon() rather than saying so here.
+    // engine never registered arrives here as 0 rather than as an error,
+    // and the item looks fine until something asks it what it is.
     if (t.it == ItemType::UNKNOWN) {
         std::cerr << "world: item '" << id << "' never said what it is" << std::endl;
     }

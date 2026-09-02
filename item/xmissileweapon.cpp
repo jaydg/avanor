@@ -28,25 +28,8 @@ REGISTER_CLASS(XMissileWeapon);
 CEREAL_REGISTER_TYPE(XMissileWeapon);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissileWeapon);
 
-ItemTemplate MWEAPON_STRUCT[] = {
-    {ItemType::LONGBOW,	"long bow",	'{',	"",	"",	"1d3+2",	"1d6", "1d3+2",	"1d1+2",	ISET_BOW,	20,	10,	30,	IQ_FAIR,	""},
-    {ItemType::SHORTBOW,	"short bow",	'{',	"",	"",	"1d2",	"1d4", "1d2",	"1d2",	ISET_BOW,	10,	5,	150,	IQ_AVG,	""},
-    {ItemType::LIGHTCROSSBOW,	"light crossbow",	'{',	"",	"",	"1d2",	"1d5", "1d3",	"1d2",	ISET_BOW,	10,	5,	120,	IQ_AVG,	""},
-    {ItemType::CROSSBOW,	"crossbow",	'{',	"",	"",	"1d4",	"1d6", "1d3+1",	"1d2",	ISET_BOW,	15,	5,	70,	IQ_AVG,	""},
-    {ItemType::HEAVYCROSSBOW,	"heavy crossbow",	'{',	"",	"",	"1d3",	"1d8", "1d4+2",	"1d2+1",	ISET_BOW,	35,	30,	10,	IQ_GOOD,	""},
-    {ItemType::SLING,	"sling",	'{',	"",	"",	"1d2",	"1d3+1", "1d3",	"1d1+1",	ISET_ALLLEATHER,	5,	2,	200,	IQ_POOR,	""}
-};
-
-XItemBasicStructure gi_missilew(MWEAPON_STRUCT, 6);
-
-WeaponSkillBinding mwbind[] = {
-    {ItemType::LONGBOW,       XWarSkills::BOW},
-    {ItemType::SHORTBOW,      XWarSkills::BOW},
-    {ItemType::LIGHTCROSSBOW, XWarSkills::CROSSBOW},
-    {ItemType::CROSSBOW,      XWarSkills::CROSSBOW},
-    {ItemType::HEAVYCROSSBOW, XWarSkills::CROSSBOW},
-    {ItemType::SLING,         XWarSkills::SLING}
-};
+// Filled from world/items/ as those scripts load.
+XItemBasicStructure gi_missilew;
 
 XMissileWeapon::XMissileWeapon(ItemType _it)
 {
@@ -55,12 +38,6 @@ XMissileWeapon::XMissileWeapon(ItemType _it)
     bp = BP_MISSILE_WEAPON;
     dv = 0;
     pv = 0;
-
-    for (int i = 0; i < 6; i++)
-        if (mwbind[i].it == it) {
-            wt = mwbind[i].ws;
-            break;
-        }
 }
 
 std::string XMissileWeapon::toString()
