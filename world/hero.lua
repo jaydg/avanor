@@ -200,4 +200,440 @@ function InitHero(hero, race_key, gender_key, profession_key)
 	AddStats(hero, gender.stats)
 	AddStats(hero, profession.stats)
 	ClampStats(hero)
+
+	local who = AsCreature(hero)
+	local kit = HERO_KITS[profession_key]
+
+	if (kit) then
+		kit(hero, who, race_key)
+	end
+
+	-- Whatever ended up in the hero's hand, they begin competent with it.
+	-- After the kit, necessarily: it reads what the kit put there.
+	local weapon = GetWornItem(hero, BodyPart.HAND, 0)
+
+	if (weapon and BinaryAND(AsItem(weapon).kind, ItemKind.WEAPON)) then
+		SetWarSkill(hero, GetItemWarSkill(weapon), 2)
+	end
+
+	-- Nobody sets out unable to spot a tripwire, lay one, or climb out of
+	-- a pit.
+	LearnSkill(hero, XSkill.DETECTTRAP, 1)
+	LearnSkill(hero, XSkill.CREATETRAP, 1)
+	LearnSkill(hero, XSkill.CLIMBING, 1)
+
+	-- And nobody sets out naked.
+	if (Rand(2) == 0) then
+		who:PutOnBody(BodyPart.BODY, 0,
+			CreateObject(ItemKind.BODY, ItemType.CLOTHES, 1, 100))
+	else
+		who:PutOnBody(BodyPart.BODY, 0,
+			CreateObject(ItemKind.BODY, ItemType.ROBE, 1, 100))
+	end
+
+	-- A little money and a day's food. The purse is topped up again in
+	-- OnHeroPlaced, which is deliberate for now: that second, larger sum is
+	-- there to make testing comfortable and goes away before release, and
+	-- keeping the two apart means removing it will not disturb this one.
+	MoneyOperation(hero, 15 + Rand(10))
+
+	local ration = CreateObject("ration")
+
+	if (ration) then
+		who:ContainItem(AsItem(ration))
+	end
+end
+
+
+-- What each calling begins with, by race where it differs. Translated from
+-- the switch this used to be in creature/xhero2.cpp; the order of what it
+-- creates is preserved exactly, because the material and the enchantment of
+-- every piece are rolled as it is made.
+HERO_KITS = {}
+
+HERO_KITS["warrior"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	if (race == "human") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.LONGSWORD, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.SHIELD, ItemType.SMALLSHIELD, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 1, item)
+	elseif (race == "half_elf") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "high_elf") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		who:PutOnBody(BodyPart.CLOAK, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "halfling") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.SHORTSWORD, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		who:PutOnBody(BodyPart.CLOAK, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.LIGHTBOOTS, 1, 40)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+		LearnSkill(hero, XSkill.DISARMTRAP, 1)
+	elseif (race == "half_orc") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.ORCISHAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.SHIELD, ItemType.MEDIUMSHIELD, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 1, item)
+	elseif (race == "dwarf") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.BATTLEAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.SHIELD, ItemType.MEDIUMSHIELD, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 1, item)
+	elseif (race == "gnome") then
+		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.SHIELD, ItemType.SMALLSHIELD, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 1, item)
+	end
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	potion = CreateObject(PotionName.HEROISM)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	LearnSkill(hero, XSkill.FINDWEAKNESS, 1)
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.TACTICS, 1)
+	LearnSkill(hero, XSkill.ATHLETICS, 1)
+end
+
+HERO_KITS["wizard"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	item = CreateObject(ItemKind.WEAPON, ItemType.STAFF, 1, 100)
+	who:PutOnBody(BodyPart.HAND, 0, item)
+	potion = CreateObject(PotionName.POWER)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	for t = 1, 2 do
+		if (Rand() % 2 == 1) then
+			scroll = CreateScroll(ScrollName.FIRE_BOLT)
+		else
+			scroll = CreateScroll(ScrollName.ICE_BOLT)
+		end
+		Identify(scroll)
+		who:ContainItem(AsItem(scroll))
+	end
+	if (Rand() % 2 == 1) then
+		book = CreateBook(BookName.FIRE_BOLT)
+	else
+		book = CreateBook(BookName.ICE_BOLT)
+	end
+	Identify(book)
+	who:ContainItem(AsItem(book))
+	book = CreateObject(ItemKind.BOOK, 0, 10000)
+	Identify(book)
+	who:ContainItem(AsItem(book))
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.LITERACY, 1)
+	LearnSkill(hero, XSkill.CONCENTRATION, 1)
+	LearnSkill(hero, XSkill.HERBALISM, 1)
+end
+
+HERO_KITS["archer"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	if (race == "human") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.CROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	elseif (race == "half_elf") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "high_elf") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		who:PutOnBody(BodyPart.CLOAK, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "halfling") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.SLING, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.SLINGBULLET, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		who:PutOnBody(BodyPart.CLOAK, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.LIGHTBOOTS, 1, 40)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "half_orc") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.ORCISHDAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	elseif (race == "dwarf") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	elseif (race == "gnome") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.LIGHTCROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	end
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	LearnSkill(hero, XSkill.FINDWEAKNESS, 1)
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.ARCHERY, 1)
+	LearnSkill(hero, XSkill.ATHLETICS, 1)
+end
+
+HERO_KITS["ranger"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	if (race == "human") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.CROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	elseif (race == "half_elf") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "high_elf") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		who:PutOnBody(BodyPart.CLOAK, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "halfling") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.SLING, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.SLINGBULLET, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.LONGDAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		who:PutOnBody(BodyPart.CLOAK, 0, item)
+		item = CreateObject(ItemKind.BOOTS, ItemType.LIGHTBOOTS, 1, 40)
+		who:PutOnBody(BodyPart.BOOTS, 0, item)
+	elseif (race == "half_orc") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.ORCISHDAGGER, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	elseif (race == "dwarf") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	elseif (race == "gnome") then
+		item = CreateObject(ItemKind.MISSILEW, ItemType.LIGHTCROSSBOW, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
+		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		who:PutOnBody(BodyPart.MISSILE, 0, item)
+		AsItem(item).quantity = Rand() % 10 + 10
+		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		who:PutOnBody(BodyPart.HAND, 0, item)
+	end
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	book = CreateBook(BookName.MAGIC_ARROW)
+	Identify(book)
+	who:ContainItem(AsItem(book))
+	LearnSkill(hero, XSkill.FINDWEAKNESS, 1)
+	LearnSkill(hero, XSkill.ARCHERY, 1)
+	LearnSkill(hero, XSkill.CONCENTRATION, 1)
+	LearnSkill(hero, XSkill.LITERACY, 1)
+	LearnSkill(hero, XSkill.COOKING, 1)
+	LearnSkill(hero, XSkill.ATHLETICS, 1)
+end
+
+HERO_KITS["cleric"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	item = CreateObject(ItemKind.WEAPON, ItemType.MACE, 10, 150)
+	who:PutOnBody(BodyPart.HAND, 0, item)
+	item = CreateObject(ItemKind.SHIELD, ItemType.SMALLSHIELD, 10, 150)
+	who:PutOnBody(BodyPart.HAND, 1, item)
+	scroll = CreateScroll(ScrollName.BLINK)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	scroll = CreateScroll(ScrollName.HEROISM)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.LITERACY, 1)
+	LearnSkill(hero, XSkill.HERBALISM, 1)
+	LearnSkill(hero, XSkill.RELIGION, 1)
+	if (race == "human") then
+	elseif (race == "half_orc") then
+		who.religion.death_act = 200
+	elseif (race == "half_elf") then
+	elseif (race == "high_elf") then
+	elseif (race == "halfling") then
+	elseif (race == "dwarf") then
+	elseif (race == "gnome") then
+		who.religion.life_act = 200
+	end
+end
+
+HERO_KITS["paladin"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	item = CreateObject(ItemKind.WEAPON, ItemType.MACE, 10, 150)
+	who:PutOnBody(BodyPart.HAND, 0, item)
+	item = CreateObject(ItemKind.SHIELD, ItemType.LARGESHIELD, 10, 150)
+	who:PutOnBody(BodyPart.HAND, 1, item)
+	scroll = CreateScroll(ScrollName.BLINK)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	scroll = CreateScroll(ScrollName.HEROISM)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.LITERACY, 1)
+	LearnSkill(hero, XSkill.RELIGION, 1)
+	LearnSkill(hero, XSkill.ATHLETICS, 1)
+	if (race == "human") then
+	elseif (race == "half_orc") then
+		who.religion.death_act = 100
+	elseif (race == "half_elf") then
+	elseif (race == "high_elf") then
+	elseif (race == "halfling") then
+	elseif (race == "dwarf") then
+	elseif (race == "gnome") then
+		who.religion.life_act = 100
+	end
+end
+
+HERO_KITS["alchemist"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 10, 150)
+	who:PutOnBody(BodyPart.HAND, 0, item)
+	scroll = CreateScroll(ScrollName.BLINK)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	scroll = CreateScroll(ScrollName.RECIPE)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	scroll = CreateScroll(ScrollName.RECIPE)
+	Identify(scroll)
+	who:ContainItem(AsItem(scroll))
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	potion = CreateObject(PotionName.ORANGEJUCE)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	potion = CreateObject(PotionName.APPLEJUCE)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	potion = CreateObject(PotionName.WATER)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	tool = CreateObject('XAlchemySet')
+	who:ContainItem(AsItem(tool))
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.LITERACY, 1)
+	LearnSkill(hero, XSkill.HERBALISM, 1)
+	LearnSkill(hero, XSkill.ALCHEMY, 1)
+end
+
+HERO_KITS["bard"] = function(hero, who, race)
+	local item, potion, scroll, book, tool
+	item = CreateObject(ItemKind.WEAPON, ItemType.CLUB, 10, 150)
+	who:PutOnBody(BodyPart.HAND, 0, item)
+	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
+	Identify(potion)
+	who:ContainItem(AsItem(potion))
+	LearnSkill(hero, XSkill.HEALING, 1)
+	LearnSkill(hero, XSkill.LITERACY, 1)
+	LearnSkill(hero, XSkill.HERBALISM, 1)
+	LearnSkill(hero, XSkill.ALCHEMY, 1)
+end
+
+
+-- Called once the hero is standing in the world, which InitHero cannot wait
+-- for: it runs while the character is still being made and there is nowhere
+-- to put anything yet.
+--
+--   hero        the new hero, now on the map
+--   race        the race key they were built with
+--   profession  the profession key
+function OnHeroPlaced(hero, race, profession)
+	-- Everyone sets out with a purse.
+	MoneyOperation(hero, 2000)
+
+	if (profession ~= "bard") then
+		return
+	end
+
+	-- A bard travels with a dog. Only the eight cells around the hero are
+	-- considered, and they can legitimately all be taken - then the bard
+	-- simply starts without it.
+	local dog = CreatureNear(hero, "dog")
+
+	if (not dog) then
+		return
+	end
+
+	AsCreature(dog).xai:SetCompanion(AsCreature(hero))
+	SetAIFlag(dog, XStandardAI.ALLOW_MOVE_OUT + XStandardAI.PEACEFUL)
+	SetEnemy(dog, CreatureClass.KOBOLD + CreatureClass.GOBLIN + CreatureClass.UNDEAD
+		+ CreatureClass.INSECT + CreatureClass.BLOB + CreatureClass.CANINE
+		+ CreatureClass.FELINE + CreatureClass.RAT + CreatureClass.REPTILE
+		+ CreatureClass.ORC)
 end

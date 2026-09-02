@@ -49,6 +49,9 @@ namespace lua_api
     void SetMoveEnergy(void* cr, const std::string& dice);
     void SetFoodFeeling(void* cr, int ff);
     int Rand(int val);
+    double RandRaw();
+    void SetWarSkill(void* cr, int wt, int level);
+    int GetItemWarSkill(void* item);
     void SetEventHandler(void* cr, const std::string& event);
     void EnableMoveHandler(void* cr);
     void DisableMoveHandler(void* cr);
@@ -78,6 +81,8 @@ namespace lua_api
     XItem* AsItem(void* p);
     int CreatureCountInLocation(const std::string& l_id, CreatureClass cc);
     void SetItEnemyFor(void* cr1, void* cr2);
+    sol::optional<void*> CreatureNear(void* who, const std::string& name);
+    void SetAIFlag(void* cr, unsigned int flags);
     void SetEnemy(void* cr, int cr_class);
     sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);

@@ -27,6 +27,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 
 #include "engine/xarchive.h"
+#include <sol/sol.hpp>
+#include "engine/xlua.h"
+#include <iostream>
 #include "game/game.h"
 #include "game/quest.h"
 #include "game/setting.h"
@@ -454,20 +457,20 @@ void XGame::CreateHero() const
 
     const auto hero = new XHero(XHero::NewCharacter{});
     Game.NewCreature(hero, hero_point.x, hero_point.y, start.get());
-    hero->MoneyOp(2000);
 
-    // If hero is a bard, then create a dog for them...
-    if (strstr(hero->GetProfessionStr(), "bard")) {
-        XRect tr(hero->x - 1, hero->y - 1, hero->x + 1, hero->y + 1);
+    // The hero is standing in the world now, which is what this second
+    // hand-over is for: InitHero built the character before there was
+    // anywhere to put them, so anything needing a place - a purse, a
+    // companion at their heel - waits until here.
+    {
+        sol::state_view lua(XLua::State());
 
-        // Only the eight cells around the hero, which can legitimately all
-        // be taken - then the bard simply starts without the dog.
-        if (const auto dog_point = hero->l->GetFreeXY(&tr)) {
-            const XCreature* cr = hero->l->NewCreature(CN_DOG, dog_point->x, dog_point->y);
-            cr->xai->SetCompanion(hero);
-            cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_OUT);
-            cr->xai->SetAIFlag(XStandardAI::PEACEFUL);
-            cr->xai->SetEnemyClass(CreatureClass::KOBOLD | CreatureClass::GOBLIN | CreatureClass::UNDEAD | CreatureClass::INSECT | CreatureClass::BLOB | CreatureClass::CANINE | CreatureClass::FELINE | CreatureClass::RAT | CreatureClass::REPTILE | CreatureClass::ORC);
+        if (sol::protected_function placed = lua["OnHeroPlaced"]; placed.valid()) {
+            if (const auto result = placed((void*)hero, hero->race, hero->profession);
+                !result.valid()) {
+                const sol::error err = result;
+                std::cerr << "world: OnHeroPlaced: " << err.what() << std::endl;
+            }
         }
     }
 

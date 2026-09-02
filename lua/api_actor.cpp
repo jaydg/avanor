@@ -139,6 +139,32 @@ int Rand(int val)
     return vRand(val);
 }
 
+// The no-argument draw. Not the same as Rand(n) and not interchangeable
+// with it: vRand() advances the generator twice and combines both halves,
+// where vRand(n) advances it once. Content that has to reproduce a
+// sequence the engine used to make - the starting kit, which the old C++
+// wrote as vRand() % 10 + 10 - needs this exact form.
+// Returns the draw whole. vRand() combines two 32-bit halves of a 64-bit
+// generator and can answer with far more than an int holds, so narrowing it
+// here would change what "Rand() % 10" means - which is exactly what the
+// starting kit does with it.
+double RandRaw()
+{
+    return static_cast<double>(vRand());
+}
+
+void SetWarSkill(void* cr, int wt, int level)
+{
+    ((XCreature*)cr)->wsk->SetLevel(static_cast<XWarSkills::Type>(wt), level);
+}
+
+// Which war skill an item trains, for "you begin competent with whatever
+// you were handed".
+int GetItemWarSkill(void* item)
+{
+    return item ? static_cast<int>(((XItem*)item)->wt) : XWarSkills::OTHER;
+}
+
 bool isHero(void* cr)
 {
     return ((XCreature*)cr)->isHero();
@@ -269,6 +295,37 @@ void SetItEnemyFor(void* cr1, void* cr2)
         p2->xai->AddPersonalEnemy(p1);
         p2->xai->SetGroupEnemy(p1);
     }
+}
+
+// Puts a new creature on the ground beside an existing one, in that one's
+// own location. Creature() cannot serve here: it builds into whatever
+// location the world was last laying out, which is a world-construction
+// notion and says nothing about where a creature is standing now.
+//
+// nil when all eight neighbouring cells are taken - the caller decides
+// whether that matters.
+sol::optional<void*> CreatureNear(void* who, const std::string& name)
+{
+    auto* beside = (XCreature*)who;
+
+    if (!beside || !beside->l) {
+        return sol::nullopt;
+    }
+
+    XRect around(beside->x - 1, beside->y - 1, beside->x + 1, beside->y + 1);
+
+    if (const auto spot = beside->l->GetFreeXY(&around)) {
+        if (XCreature* made = beside->l->NewCreature(name, spot->x, spot->y)) {
+            return static_cast<void*>(made);
+        }
+    }
+
+    return sol::nullopt;
+}
+
+void SetAIFlag(void* cr, unsigned int flags)
+{
+    ((XCreature*)cr)->xai->SetAIFlag(static_cast<XStandardAI::Flag>(flags));
 }
 
 void SetEnemy(void* cr, int cr_class)
@@ -623,6 +680,8 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("AskQuestion", &lua_api::AskQuestion);
         lua.set_function("SetItEnemyFor", &lua_api::SetItEnemyFor);
         lua.set_function("SetEnemy", &lua_api::SetEnemy);
+        lua.set_function("SetAIFlag", &lua_api::SetAIFlag);
+        lua.set_function("CreatureNear", &lua_api::CreatureNear);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);
         lua.set_function("GetStats", &lua_api::GetStats);
         lua.set_function("SetStats", &lua_api::SetStats);
@@ -632,7 +691,9 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetMoveEnergy", &lua_api::SetMoveEnergy);
         lua.set_function("SetFoodFeeling", &lua_api::SetFoodFeeling);
         lua.set_function("InflictDamage", &lua_api::InflictDamage);
-        lua.set_function("Rand", &lua_api::Rand);
+        lua.set_function("Rand", sol::overload(&lua_api::Rand, &lua_api::RandRaw));
+        lua.set_function("SetWarSkill", &lua_api::SetWarSkill);
+        lua.set_function("GetItemWarSkill", &lua_api::GetItemWarSkill);
         lua.set_function("SetEventHandler", &lua_api::SetEventHandler);
         lua.set_function("EnableMoveHandler", &lua_api::EnableMoveHandler);
         lua.set_function("DisableMoveHandler", &lua_api::DisableMoveHandler);
