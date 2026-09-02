@@ -90,18 +90,6 @@ void XQuest::ShowQuests()
         }
     }
 
-    if (GetFlag("roderick_quest") == 1) {
-        list.AddItem(new XGuiItem_Text(
-            "Roderick, the King of Avanor has asked you to find an artifact called the 'Eye of Raa'"));
-        flag = 0;
-    }
-
-    if (GetFlag("roderick_quest2") == 1) {
-        list.AddItem(new XGuiItem_Text(
-            "Roderick, the King of Avanor has asked you to cleanse his family crypt."));
-        flag = 0;
-    }
-
     if (flag) {
         list.AddItem(new XGuiItem_Text("You have no quests."));
     }

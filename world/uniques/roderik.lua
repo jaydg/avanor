@@ -53,21 +53,27 @@ function RoderikHandler(e, t, p, v)
 		else
 			AddMessage("Hello, brave hero.")
 
-			if (QuestState:GetFlag('roderick_quest2') == 0) then
+			-- The crypt first, the artifact after: he does not hand a
+			--  stranger the errand that matters until the nearer one is done.
+			local crypt = QuestStatus(QUEST_RODERICK_CRYPT)
+			local eye = QuestStatus(QUEST_RODERICK_EYE)
+
+			if (crypt == XQuest.UNKNOWN) then
 				AddMessage("I have heard that my family crypt has been occupied by a group of undead. Clear the crypt and I will reward you. It lies to the south-west of the city.")
-				QuestState:SetFlag('roderick_quest2', 1)
-			elseif (QuestState:GetFlag('roderick_quest2') == 1) then
+				QuestModify(QUEST_RODERICK_CRYPT, XQuest.KNOWN)
+			elseif (crypt == XQuest.KNOWN) then
 				if (GetCreatureCount("UNDEADS_TOMB1", CreatureClass.UNDEAD) == 0) then
 					AddMessage("Thank you for destroying the evil in our crypt. Please accept these coins and my gratitude for a job well done.")
+					QuestModify(QUEST_RODERICK_CRYPT, XQuest.CLOSED)
 					QuestState:SetFlag('roderick_quest2', 2)
 					chatter:MoneyOp(1000)
 				else
 					AddMessage("You still have not cleansed my ancestor's crypt.")
 				end
-			elseif (QuestState:GetFlag('roderick_quest') == 0) then
+			elseif (eye == XQuest.UNKNOWN) then
 				AddMessage("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tried to hide it from me in one of the caves far south from here, but people say that he was killed while hiding it.  Could you return this artifact to me?")
-				QuestState:SetFlag('roderick_quest', 1)
-			elseif (QuestState:GetFlag('roderick_quest') == 1) then
+				QuestModify(QUEST_RODERICK_EYE, XQuest.KNOWN)
+			elseif (eye == XQuest.KNOWN) then
 				AddMessage("Please, return the 'Eye of Raa' to me.")
 			end
 		end
@@ -93,6 +99,7 @@ function RoderikHandler(e, t, p, v)
 
 		if (item.it == ItemType.EYEOFRAA) then
 			AddMessage("Thank you for your great help. The citizens of Avanor never forget your exploits!")
+			QuestModify(QUEST_RODERICK_EYE, XQuest.CLOSED)
 			QuestState:SetFlag('roderick_quest', 2)
 			roderik:ContainItem(item)
 			return true

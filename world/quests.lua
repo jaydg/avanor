@@ -8,6 +8,8 @@ QUEST_GIANA			= 7
 QUEST_BANDITS		= 8
 QUEST_USURPER		= 9
 QUEST_GEFEON		= 10
+QUEST_RODERICK_CRYPT	= 11
+QUEST_RODERICK_EYE	= 12
 
 
 function CreateAllQuests()
@@ -49,6 +51,16 @@ function CreateAllQuests()
 
 	Quest(QUEST_GEFEON, XQuest.UNKNOWN,
 		"Gefeon asked you to kill Ahk-Ulan, who works his evil in the dungeon beneath the ruins of his tower, south-east of the town.",
+		"",
+		"")
+
+	Quest(QUEST_RODERICK_CRYPT, XQuest.UNKNOWN,
+		"Roderick, the King of Avanor has asked you to cleanse his family crypt, which lies to the south-west of the city.",
+		"",
+		"")
+
+	Quest(QUEST_RODERICK_EYE, XQuest.UNKNOWN,
+		"Roderick, the King of Avanor has asked you to find an artifact called the 'Eye of Raa'.",
 		"",
 		"")
 
