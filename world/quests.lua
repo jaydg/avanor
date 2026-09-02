@@ -6,6 +6,7 @@ QUEST_YOHJI_RAT		= 5
 QUEST_ANCIENT_PART	= 6
 QUEST_GIANA			= 7
 QUEST_BANDITS		= 8
+QUEST_USURPER		= 9
 
 
 function CreateAllQuests()
@@ -37,6 +38,11 @@ function CreateAllQuests()
 
 	Quest(QUEST_ANCIENT_PART, XQuest.UNKNOWN,
 		"Ahk-Ulan asked you to bring 3 parts of ancient machine.",
+		"",
+		"")
+
+	Quest(QUEST_USURPER, XQuest.UNKNOWN,
+		"Ahk-Ulan asked you to kill Roderick, the King of Avanor - the only man left who could stand against him.",
 		"",
 		"")
 

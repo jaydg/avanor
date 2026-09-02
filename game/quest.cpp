@@ -98,12 +98,6 @@ void XQuest::ShowQuests()
         flag = 0;
     }
 
-    if (GetFlag("roderick_ordered")) {
-        list.AddItem(new XGuiItem_Text(
-            "Ahk-Ulan asked you to kill Roderick."));
-        flag = 0;
-    }
-
     if (GetFlag("roderick_quest") == 1) {
         list.AddItem(new XGuiItem_Text(
             "Roderick, the King of Avanor has asked you to find an artifact called the 'Eye of Raa'"));

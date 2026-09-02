@@ -77,6 +77,14 @@ function RoderikHandler(e, t, p, v)
 
 	if (e == LuaEvent.DIE) then
 		QuestState:SetFlag('roderick_killed', 1)
+
+		-- Ahk-Ulan wanted the King dead and does not care whose hand did it.
+		-- The errand is done the moment Roderick falls; going back to say so
+		-- is what closes it (AhkUlanHandler).
+		if (QuestStatus(QUEST_USURPER) == XQuest.KNOWN) then
+			QuestModify(QUEST_USURPER, XQuest.COMPLETE)
+		end
+
 		return true
 	end
 

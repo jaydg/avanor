@@ -340,9 +340,11 @@ Things that went quietly wrong the longer you played:
   against an attacker — a monster killing one of them, a quarrel picked in
   the wrong room — unleashed every member of that group, and nothing ever
   leashed them again. The anger wore off; the wandering did not.
-- Ahk-Ulan's errand outlived Ahk-Ulan. Kill him and his request for the
+- Ahk-Ulan's errands outlived Ahk-Ulan. Kill him and his request for the
   three parts of an ancient machine stayed in your quest log for the rest of
-  the game. It now ends when he does, and ends as a failure.
+  the game. It now ends when he does, and ends as a failure. His second
+  errand had the opposite problem: once he asked you to kill Roderick, that
+  line stayed in the log whether or not you had already done it.
 - Collecting Torin's reward cost you the credit for earning it. Starting the
   gas pump at the bottom of the dwarven gold mine is worth 5000 points on
   the achievements screen at the end of the game — but the moment Torin
