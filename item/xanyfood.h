@@ -68,12 +68,12 @@ class XAnyFood : public XItem
         int consumed_food;  // how much is eated
         FOOD_TYPE FoodTypeForCreature(XCreature * creature);
 
-        // What it tastes like. Only XRation sets one of its own, from
-        // the rations table; everything else - bat wings, rat tails,
-        // bones - is plain food until something says otherwise. Needs a
-        // value here rather than in the constructor, because nothing but
-        // this declaration is common to every way a food comes into
-        // existence.
+        // What it tastes like. Content states it with Food.new():Taste()
+        // when it is worth stating - elvish waybread does, bat wings and
+        // rat tails and bones do not - and everything else is plain food.
+        // Needs a value here rather than in the constructor, because
+        // nothing but this declaration is common to every way a food comes
+        // into existence.
         FOOD_TYPE food_type = FT_NORMALFOOD;
     protected:
         // Content-defined foods (world/items.lua) are plain XAnyFood

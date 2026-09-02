@@ -34,7 +34,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xmissileweapon.h"
 #include "item/xmoney.h"
 #include "item/xpotion.h"
-#include "item/xration.h"
 #include "item/xring.h"
 #include "item/xshield.h"
 #include "item/xscroll.h"

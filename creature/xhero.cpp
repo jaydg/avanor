@@ -106,8 +106,16 @@ XHero::XHero(NewCharacter)
     XItem * it = new XMoney(15 + vRand(10));
     ContainItem(it);
 
-    it = new XRation(ItemType::RATION);
-    ContainItem(it);
+    // The one content id the engine still names for itself: the hero's
+    // starting rations are hero creation, which has no Lua hook of its own
+    // yet. If world/items.lua stops defining this, the hero simply starts
+    // hungry rather than the game falling over.
+    if (XItem* ration = XFoodStorage::Create("ration")) {
+        ContainItem(ration);
+    } else {
+        std::cerr << "world: no food called 'ration' - the hero starts with none"
+                  << std::endl;
+    }
 }
 
 void XHero::NewMove()

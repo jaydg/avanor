@@ -195,7 +195,7 @@ function StandardGraveEvent(e, cr, o)
 			SetView(o, '-', xColor.xLIGHTGRAY);
 			SetName(o, 'the desecrated grave');
 			for i = 1, Rand(3) + 2 do
-				DropItem(CreateObject('XBone'), o)
+				DropItem(CreateObject('bone'), o)
 			end
 		else
 			AddMessage('This grave has already been looted.')

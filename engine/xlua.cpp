@@ -148,13 +148,23 @@ void XLua::Init()
     XQuest::RegisterLua(lua);
     XEffect::RegisterLua(lua);
 
+    // How well a food sits once eaten (XAnyFood::onEat).
+    lua.new_enum("FoodType",
+        "BEST", FT_BESTFOOD,
+        "GOOD", FT_GOODFOOD,
+        "NORMAL", FT_NORMALFOOD,
+        "BAD", FT_BADFOOD,
+        "VERY_BAD", FT_VERYBADFOOD,
+        "VOMIT", FT_VOMIT
+    );
+
     // Every table above holds a fixed set of names the world scripts
     // spell out by hand, so a name that is not in one is a typo, not a
     // value. XTileType is here too: it is filled by DefineTile() as
     // world/tiles.lua runs, and read by name everywhere after that.
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
-            "CreatureSize", "CreatureTemplate", "Gender", "ItemKind", "ItemType", "LuaEvent",
+            "CreatureSize", "CreatureTemplate", "FoodType", "Gender", "ItemKind", "ItemType", "LuaEvent",
             "Movability", "PersonType", "PotionName", "ScriptCommand", "ShopDoor", "Spell",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation", "XQuest",
             "XResistance", "XSkill", "XStairWay", "XStandardAI", "XStats",
@@ -203,6 +213,8 @@ void XLua::Init()
             "View", &FoodBuilder::View,
             "Basic", &FoodBuilder::Basic,
             "Nutrition", &FoodBuilder::Nutrition,
+            "Taste", &FoodBuilder::Taste,
+            "Random", &FoodBuilder::Random,
             "Register", &FoodBuilder::Register
         );
     }

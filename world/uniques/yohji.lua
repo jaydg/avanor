@@ -17,11 +17,21 @@ Monster.new("yohjishiro")
 	:Unique()
 	:Register()
 
+-- Yohjishiro's two trophies. Neither has any purpose beyond her errands.
+-- They are dropped by DropYohjiTrophy.
 
--- Rats have tails worth keeping and bats have wings worth keeping for
--- exactly one reason: Yohjishiro asks for them, and nothing else in the
--- world wants either. So the trophies are dropped here, beside the errand
--- that gives them their point.
+Food.new("rat_tail")
+	:View("rat tail", '%', xColor.xBROWN)
+	:Basic(ItemType.RATTAIL, 100, 3)
+	:Nutrition(10, 10)
+	:Register()
+
+Food.new("bat_wing")
+	:View("bat wing", '%', xColor.xBROWN)
+	:Basic(ItemType.BATWING, 100, 2)
+	:Nutrition(10, 10)
+	:Register()
+
 local YOHJI_TROPHIES = {
 	["rat"] = "rat_tail",
 	["large rat"] = "rat_tail",

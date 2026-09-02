@@ -72,7 +72,25 @@ local function TallyOrcs(cr, killer, class)
 end
 
 
+-- A skeleton comes apart when it falls. Nothing depends on the bones - they
+-- are food of a sort, and the graves in the valley hold more of them - but
+-- what a given creature leaves behind is a fact about the bestiary, not
+-- about the engine.
+local SKELETON_BONE_ODDS = 12
+
+local function DropSkeletonBone(cr, class)
+	if (class ~= CreatureClass.UNDEAD or AsCreature(cr).name ~= "skeleton") then
+		return
+	end
+
+	if (Rand(SKELETON_BONE_ODDS) == 0) then
+		DropItem(CreateObject('bone'), cr)
+	end
+end
+
+
 function OnCreatureDie(cr, killer, class)
 	TallyOrcs(cr, killer, class)
 	DropYohjiTrophy(cr, class)
+	DropSkeletonBone(cr, class)
 end

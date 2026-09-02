@@ -249,13 +249,6 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
 
 void XAnyCreature::Die(XCreature * killer)
 {
-    if (creature_class == CreatureClass::UNDEAD) {
-        if (creature_name == CN_SKELETON && vRand() % 12 == 0) {
-            XItem * it = new XBone();
-            it->Drop(l, x, y);
-        }
-    }
-
     if (vRand(5) == 0 && !(creature_class & CreatureClass::UNDEAD)) {
         DropItem(new XCorpse(this));
     }

@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "engine/xapi.h"
 #include "item/itemf.h"
+#include "item/item_misc.h"
 
 XItem* XItemFactory::CreateAnyItem(ItemKind kind, ItemType _it, int low_v, int hi_v)
 {
@@ -85,11 +86,18 @@ XItem* XItemFactory::CreateItem(ItemKind kind, ItemType it)
         case ItemKind::MISSILE:
             return new XMissile(it);
 
+        // FIXME:
+        // Long-standing oddity kept as it was: asking for a random wand,
+        // tool or gem has always produced food. Only the source has moved -
+        // the rations are defined in world/items.lua now, and are picked by
+        // the probabilities stated there.
         case ItemKind::WAND:
         case ItemKind::TOOL:
         case ItemKind::GEM:
         case ItemKind::FOOD:
-            return new XRation(it);
+            if (XItem* food = XFoodStorage::CreateRandom()) {
+                return food;
+            }
             break;
 
         case ItemKind::MONEY:

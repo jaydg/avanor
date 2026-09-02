@@ -50,8 +50,34 @@ XItem* XFoodStorage::Create(const std::string& id)
     food->weight = t.weight;
     food->food_nutrio = t.food_nutrio;
     food->consume_nutrio = t.consume_nutrio;
+    food->food_type = t.food_type;
 
     return food;
+}
+
+XItem* XFoodStorage::CreateRandom()
+{
+    int total = 0;
+
+    for (const auto& [id, t] : food_storage) {
+        total += t.probability;
+    }
+
+    if (total == 0) {
+        return nullptr;
+    }
+
+    long roll = vRand(total);
+
+    for (const auto& [id, t] : food_storage) {
+        roll -= t.probability;
+
+        if (roll < 0) {
+            return Create(id);
+        }
+    }
+
+    return nullptr;
 }
 
 FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
@@ -62,6 +88,8 @@ FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
     t.view = '%';
     t.color = xBROWN;
     t.it = ItemType::UNKNOWN;
+    t.food_type = FT_NORMALFOOD;
+    t.probability = 0;
 }
 
 FoodBuilder& FoodBuilder::View(const std::string& name, const char view, const int color)
@@ -84,6 +112,18 @@ FoodBuilder& FoodBuilder::Nutrition(const int food_nutrio, const int consume_nut
 {
     t.food_nutrio = food_nutrio;
     t.consume_nutrio = consume_nutrio;
+    return *this;
+}
+
+FoodBuilder& FoodBuilder::Taste(const FOOD_TYPE food_type)
+{
+    t.food_type = food_type;
+    return *this;
+}
+
+FoodBuilder& FoodBuilder::Random(const int probability)
+{
+    t.probability = probability;
     return *this;
 }
 
@@ -117,10 +157,6 @@ void FoodBuilder::Register()
 
     XFoodStorage::food_storage[id] = t;
 }
-
-REGISTER_CLASS(XBone);
-CEREAL_REGISTER_TYPE(XBone);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBone);
 
 REGISTER_CLASS(XAncientMachinePart);
 CEREAL_REGISTER_TYPE(XAncientMachinePart);

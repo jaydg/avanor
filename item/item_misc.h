@@ -44,6 +44,16 @@ struct FoodTemplate {
     int weight;
     int food_nutrio;
     int consume_nutrio;
+
+    // How well it sits: FT_BESTFOOD through FT_VOMIT shift how much
+    // satiation eating it actually yields (XAnyFood::onEat).
+    FOOD_TYPE food_type;
+
+    // Weight in the draw when the game asks for a food and does not say
+    // which (XItemFactory::CreateItem). Zero - the default - keeps a food
+    // out of that draw entirely, which is what a quest trophy wants: a
+    // shop should never stock a rat tail.
+    int probability;
 };
 
 // The foods world/ has defined, by the id it named them. Consulted by
@@ -57,6 +67,11 @@ class XFoodStorage
         // nullptr when no content defined this id - the caller falls back
         // to XClassFactory.
         static XItem* Create(const std::string& id);
+
+        // A food picked by probability from what content defined, for the
+        // paths that ask for "some food" rather than a particular one.
+        // nullptr if nothing was defined with a probability at all.
+        static XItem* CreateRandom();
 };
 
 // Fluent builder, the item-side twin of MonsterBuilder:
@@ -66,6 +81,9 @@ class XFoodStorage
 //       :Basic(ItemType.RATTAIL, 100, 3)
 //       :Nutrition(10, 10)
 //       :Register()
+//
+// :Taste() and :Random() are optional - a food that says neither is
+// ordinary fare that the game will never hand out on its own.
 class FoodBuilder
 {
     public:
@@ -74,41 +92,14 @@ class FoodBuilder
         FoodBuilder& View(const std::string& name, char view, int color);
         FoodBuilder& Basic(ItemType it, int value, int weight);
         FoodBuilder& Nutrition(int food_nutrio, int consume_nutrio);
+        FoodBuilder& Taste(FOOD_TYPE food_type);
+        FoodBuilder& Random(int probability);
 
         void Register();
 
     private:
         std::string id;
         FoodTemplate t{};
-};
-
-class XBone : public XAnyFood
-{
-    public:
-        DECLARE_CREATOR(XBone, XAnyFood);
-        XBone()
-        {
-            color = xWHITE;
-            it = ItemType::BONE;
-            food_nutrio = 10;
-            consume_nutrio = 10;
-            name = "bone";
-            value = 1;
-            weight = 5;
-        }
-
-        XBone(XBone * copy) : XAnyFood(copy) {}
-
-        XItem* MakeCopy() override
-        {
-            return new XBone(this);
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyFood>(this));
-        }
 };
 
 class XChest : public XItem
