@@ -350,6 +350,7 @@ TemplateBuilder::TemplateBuilder(const ItemKind kind, const ItemType it) : kind(
     t.iset = ISET_IRON;
     t.iq = IQ_AVG;
     t.wt = XWarSkills::OTHER;
+    t.launcher = XWarSkills::OTHER;
 }
 
 TemplateBuilder& TemplateBuilder::View(const std::string& name, const std::string& view)
@@ -369,6 +370,12 @@ TemplateBuilder& TemplateBuilder::Made(const ITEM_SET iset, const ITEM_QUALITY i
 TemplateBuilder& TemplateBuilder::Skill(const XWarSkills::Type wt)
 {
     t.wt = wt;
+    return *this;
+}
+
+TemplateBuilder& TemplateBuilder::Launcher(const XWarSkills::Type wt)
+{
+    t.launcher = wt;
     return *this;
 }
 

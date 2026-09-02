@@ -50,6 +50,12 @@ struct ItemTemplate {
     // Which war skill wielding one exercises.
     XWarSkills::Type wt;
 
+    // For a missile: the skill of the weapon that fires it, so an arrow
+    // asks for a bow and a quarrel for a crossbow. OTHER means nothing
+    // launches it - a shuriken is thrown and nothing else. Anything at all
+    // can be thrown, which is why this says nothing about throwing.
+    XWarSkills::Type launcher;
+
     int value;
     int valume;
     int probability;
@@ -154,6 +160,7 @@ class TemplateBuilder
         TemplateBuilder& View(const std::string& name, const std::string& view);
         TemplateBuilder& Made(ITEM_SET iset, ITEM_QUALITY iq);
         TemplateBuilder& Skill(XWarSkills::Type wt);
+        TemplateBuilder& Launcher(XWarSkills::Type wt);
         TemplateBuilder& Worth(int value, int weight);
         TemplateBuilder& Armour(const std::string& dv, const std::string& pv);
         TemplateBuilder& Combat(const std::string& hit, const std::string& dice,

@@ -32,10 +32,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XMissile);
 // Filled from world/items/ as those scripts load.
 XItemBasicStructure gi_missile;
 
-// TODO: Bind launchers to missiles - an arrow should ask for a bow, a
-// quarrel for a crossbow. Rock is the awkward one: it can be slung or
-// simply thrown, so it belongs to two skills at once.
-
 XMissile::XMissile(ItemType _it)
 {
     kind = ItemKind::MISSILE;
@@ -154,40 +150,22 @@ std::string XMissile::toString()
 
 bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
 {
-    if (weapon) {
-        switch (weapon->wt) {
-            case XWarSkills::BOW:
-                if (missile->it == ItemType::ARROW) {
-                    return true;
-                } else {
-                    return false;
-                }
-
-                break;
-
-            case XWarSkills::CROSSBOW:
-                if (missile->it == ItemType::QUARREL) {
-                    return true;
-                } else {
-                    return false;
-                }
-
-                break;
-
-            case XWarSkills::SLING:
-                if (missile->it == ItemType::ROCK || missile->it == ItemType::SLINGBULLET) {
-                    return true;
-                } else {
-                    return false;
-                }
-
-                break;
-
-            default:
-                return false;
-        }
-
-    } else {
-        return true; //all can be throwed without weapon
+    // Nothing in hand: anything at all can be thrown.
+    if (!weapon) {
+        return true;
     }
+
+    // Otherwise the missile has to be the kind this launcher fires - no
+    // rocks down a crossbow. Which launcher that is belongs to the missile
+    // and is stated with the rest of its row (world/items/missiles.lua);
+    // a missile that names none, like a shuriken, can only ever be thrown.
+    for (int i = 0; i < gi_missile.total_item; i++) {
+        if (gi_missile.pFirstItem[i].it == missile->it) {
+            const XWarSkills::Type launcher = gi_missile.pFirstItem[i].launcher;
+
+            return launcher != XWarSkills::OTHER && launcher == weapon->wt;
+        }
+    }
+
+    return false;
 }
