@@ -174,6 +174,13 @@ void Way(const XStairWay::Type type, const std::string& loc_id, sol::optional<in
 //CreateObject("XCookingSet")
 void* CreateObjectByName(const std::string& name)
 {
+    // Content first: a name world/ defined for itself wins over a C++ class
+    // name, so CreateObject() reads the same either way and a food that
+    // moves out of C++ needs no new call form.
+    if (XItem* food = XFoodStorage::Create(name)) {
+        return food;
+    }
+
     return XClassFactory::CreateNew((char*)name.c_str());
 }
 

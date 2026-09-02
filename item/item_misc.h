@@ -21,69 +21,65 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEM_MISC_H
 #define ITEM_MISC_H
 
+#include <string>
+#include <unordered_map>
+
 #include <cereal/types/set.hpp>
 
 #include "item/itemkind.h"
 #include "item/xanyfood.h"
 
-class XBatWing : public XAnyFood
-{
-    public:
-        DECLARE_CREATOR(XBatWing, XAnyFood);
-        XBatWing()
-        {
-            color = xBROWN;
-            it = ItemType::BATWING;
-            food_nutrio = 10;
-            consume_nutrio = 10;
-            name = "bat wing";
-            value = 100;
-            weight = 2;
+// A food defined by content rather than by a C++ class.
+struct FoodTemplate {
+    std::string name;
+    char view;
+    int color;
 
-        }
+    // Distinct per food, and load-bearing: XAnyFood::Compare() stacks two
+    // foods when their nutrition and their ItemType match, so two different
+    // trophies sharing a type would merge into one "heap of (2) rat tails".
+    ItemType it;
 
-        XBatWing(XBatWing * copy) : XAnyFood(copy) {}
-
-        XItem* MakeCopy() override
-        {
-            return new XBatWing(this);
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyFood>(this));
-        }
+    int value;
+    int weight;
+    int food_nutrio;
+    int consume_nutrio;
 };
 
-class XRatTail : public XAnyFood
+// The foods world/ has defined, by the id it named them. Consulted by
+// CreateObjectByName() before the C++ class factory, so CreateObject()
+// takes a Lua food id exactly as it takes a class name.
+class XFoodStorage
 {
     public:
-        DECLARE_CREATOR(XRatTail, XAnyFood);
-        XRatTail()
-        {
-            color = xBROWN;
-            it = ItemType::RATTAIL;
-            food_nutrio = 10;
-            consume_nutrio = 10;
-            name = "rat tail";
-            value = 100;
-            weight = 3;
+        static std::unordered_map<std::string, FoodTemplate> food_storage;
 
-        }
+        // nullptr when no content defined this id - the caller falls back
+        // to XClassFactory.
+        static XItem* Create(const std::string& id);
+};
 
-        XRatTail(XRatTail * copy) : XAnyFood(copy) {}
+// Fluent builder, the item-side twin of MonsterBuilder:
+//
+//   Food.new("rat_tail")
+//       :View("rat tail", '%', xColor.xBROWN)
+//       :Basic(ItemType.RATTAIL, 100, 3)
+//       :Nutrition(10, 10)
+//       :Register()
+class FoodBuilder
+{
+    public:
+        explicit FoodBuilder(std::string id);
 
-        XItem* MakeCopy() override
-        {
-            return new XRatTail(this);
-        }
+        FoodBuilder& View(const std::string& name, char view, int color);
+        FoodBuilder& Basic(ItemType it, int value, int weight);
+        FoodBuilder& Nutrition(int food_nutrio, int consume_nutrio);
 
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XAnyFood>(this));
-        }
+        void Register();
+
+    private:
+        std::string id;
+        FoodTemplate t{};
 };
 
 class XBone : public XAnyFood

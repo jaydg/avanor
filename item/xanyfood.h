@@ -76,6 +76,12 @@ class XAnyFood : public XItem
         // existence.
         FOOD_TYPE food_type = FT_NORMALFOOD;
     protected:
+        // Content-defined foods (world/items.lua) are plain XAnyFood
+        // instances configured after construction rather than subclasses
+        // configured in a constructor, so the one place that does that
+        // configuring needs the same reach a subclass had.
+        friend class XFoodStorage;
+
         int consume_nutrio; // part of food eated for one turn
 
 };

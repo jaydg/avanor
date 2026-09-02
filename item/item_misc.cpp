@@ -18,17 +18,105 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+#include <utility>
+
 #include "item/item_cereal.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
 
-REGISTER_CLASS(XBatWing);
-CEREAL_REGISTER_TYPE(XBatWing);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBatWing);
+std::unordered_map<std::string, FoodTemplate> XFoodStorage::food_storage;
 
-REGISTER_CLASS(XRatTail);
-CEREAL_REGISTER_TYPE(XRatTail);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRatTail);
+XItem* XFoodStorage::Create(const std::string& id)
+{
+    const auto rec = food_storage.find(id);
+
+    if (rec == food_storage.end()) {
+        return nullptr;
+    }
+
+    const FoodTemplate& t = rec->second;
+
+    // A plain XAnyFood, configured. It needs no subclass and no cereal
+    // registration of its own: XAnyFood is already a registered concrete
+    // type, and every field set here is serialized instance state.
+    auto* food = new XAnyFood();
+
+    food->name = t.name;
+    food->view = t.view;
+    food->color = t.color;
+    food->it = t.it;
+    food->value = t.value;
+    food->weight = t.weight;
+    food->food_nutrio = t.food_nutrio;
+    food->consume_nutrio = t.consume_nutrio;
+
+    return food;
+}
+
+FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
+{
+    // XAnyFood's own constructor defaults (a brown '%', ItemKind::FOOD)
+    // still apply to what Create() news up; these are only the fields a
+    // definition is expected to state for itself.
+    t.view = '%';
+    t.color = xBROWN;
+    t.it = ItemType::UNKNOWN;
+}
+
+FoodBuilder& FoodBuilder::View(const std::string& name, const char view, const int color)
+{
+    t.name = name;
+    t.view = view;
+    t.color = color;
+    return *this;
+}
+
+FoodBuilder& FoodBuilder::Basic(const ItemType it, const int value, const int weight)
+{
+    t.it = it;
+    t.value = value;
+    t.weight = weight;
+    return *this;
+}
+
+FoodBuilder& FoodBuilder::Nutrition(const int food_nutrio, const int consume_nutrio)
+{
+    t.food_nutrio = food_nutrio;
+    t.consume_nutrio = consume_nutrio;
+    return *this;
+}
+
+void FoodBuilder::Register()
+{
+    // Same reasoning as MonsterBuilder::Register(): a Lua constant the
+    // engine never registered arrives here as 0 rather than as an error,
+    // and the food looks fine until something asks it what it is. An
+    // unnamed food, or one that never said what ItemType it is, is a
+    // definition that says nothing.
+    if (XFoodStorage::food_storage.count(id)) {
+        std::cerr << "world: food '" << id << "' is defined twice" << std::endl;
+    }
+
+    if (t.name.empty()) {
+        std::cerr << "world: food '" << id << "' has no name" << std::endl;
+    }
+
+    // ItemType is what XAnyFood::Compare() stacks on, so two foods sharing
+    // one would merge in the pack however differently they are described.
+    if (t.it == ItemType::UNKNOWN) {
+        std::cerr << "world: food '" << id << "' has no ItemType" << std::endl;
+    } else {
+        for (const auto& [other_id, other] : XFoodStorage::food_storage) {
+            if (other.it == t.it) {
+                std::cerr << "world: food '" << id << "' shares its ItemType with '"
+                          << other_id << "' - the two will stack together" << std::endl;
+            }
+        }
+    }
+
+    XFoodStorage::food_storage[id] = t;
+}
 
 REGISTER_CLASS(XBone);
 CEREAL_REGISTER_TYPE(XBone);

@@ -5,6 +5,7 @@ function LoadScripts()
 	dofile("./world/delve_patterns.lua");
 	dofile("./world/rooms.lua");
 	dofile("./world/creatures/init.lua");
+	dofile("./world/items.lua");
 	dofile("./world/uniques/init.lua");
 	dofile("./world/valley.lua");
 	dofile("./world/valley_extras.lua");

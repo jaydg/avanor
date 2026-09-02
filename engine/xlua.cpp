@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
+#include "item/item_misc.h"
 #include "creature/bodypart.h"
 #include "creature/cr_defs.h"
 #include "creature/deity.h"
@@ -191,6 +192,18 @@ void XLua::Init()
             "CorpseEffect", &MonsterBuilder::CorpseEffect,
             "Unique", &MonsterBuilder::Unique,
             "Register", &MonsterBuilder::Register
+        );
+    }
+
+    // Sol2-bound Food builder, registered here for the same reason as the
+    // Monster builder above: world/items.lua calls it while loading.
+    {
+        lua.new_usertype<FoodBuilder>("Food",
+            sol::constructors<FoodBuilder(std::string)>(),
+            "View", &FoodBuilder::View,
+            "Basic", &FoodBuilder::Basic,
+            "Nutrition", &FoodBuilder::Nutrition,
+            "Register", &FoodBuilder::Register
         );
     }
 

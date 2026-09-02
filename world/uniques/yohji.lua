@@ -23,10 +23,10 @@ Monster.new("yohjishiro")
 -- world wants either. So the trophies are dropped here, beside the errand
 -- that gives them their point.
 local YOHJI_TROPHIES = {
-	["rat"] = "XRatTail",
-	["large rat"] = "XRatTail",
-	["bat"] = "XBatWing",
-	["huge bat"] = "XBatWing",
+	["rat"] = "rat_tail",
+	["large rat"] = "rat_tail",
+	["bat"] = "bat_wing",
+	["huge bat"] = "bat_wing",
 }
 
 -- One roll per rat-kin death, whatever kind it was, exactly as the engine
