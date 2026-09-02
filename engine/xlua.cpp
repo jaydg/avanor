@@ -317,6 +317,7 @@ void XLua::Init()
             "Made", &TemplateBuilder::Made,
             "Skill", &TemplateBuilder::Skill,
             "Launcher", &TemplateBuilder::Launcher,
+            "OnCreate", &TemplateBuilder::OnCreate,
             "Worth", &TemplateBuilder::Worth,
             "Armour", &TemplateBuilder::Armour,
             "Combat", &TemplateBuilder::Combat,

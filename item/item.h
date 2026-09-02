@@ -71,6 +71,14 @@ class XItem : public XBaseObject
     public:
 
         int BasicFill(ItemType it, XItemBasicStructure * pData);
+
+        // Hands the finished item to the Lua function its template named
+        // in :OnCreate(), so content gets the last word on what came out
+        // of the pool. Call it once the item is otherwise complete: the
+        // handler sees it as the player would, and may change anything.
+        // A row that named no handler is left exactly as it is.
+        void OnCreated(const XItemBasicStructure& pData);
+
         // `protective` says whether this item's template gives it any
         // protection to begin with; the material's own contribution is
         // added only for those. See the comment in the definition.

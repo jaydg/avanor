@@ -94,6 +94,11 @@ namespace lua_api
     XGUID GetObjectGUID(void* obj);
     std::tuple<int, int, int, int, int, std::string> GetItemParam(void* item);
     void SetItemBrand(void* item, int br);
+    std::string GetItemName(void* item);
+    void SetItemName(void* item, const std::string& name);
+    void AddItemToHit(void* item, int bonus);
+    void AddItemRange(void* item, int bonus);
+    void AddItemDice(void* item, int count, int sides, int bonus);
     int CastEffect(void* caster, int effect, int power);
     int MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power);
     void DestroyObject(void* item);

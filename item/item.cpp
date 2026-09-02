@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+
 #include <fmt/format.h>
 
 #include <cereal/archives/json.hpp>
@@ -25,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/creature.h"
+#include "engine/xlua.h"
 #include "item/item.h"
 #include "magic/attack_effect_type.h"
 
@@ -243,6 +246,34 @@ int XItem::BasicFill(ItemType it, XItemBasicStructure * pData)
         return 1;
     } else {
         return 0;
+    }
+}
+
+void XItem::OnCreated(const XItemBasicStructure& pData)
+{
+    const ItemTemplate* row = pData.Find(it);
+
+    if (!row || row->on_create.empty()) {
+        return;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function handler = lua[row->on_create];
+
+    if (!handler.valid()) {
+        std::cerr << "world: " << name << " wants finishing by '"
+                  << row->on_create << "', which is not defined" << std::endl;
+
+        return;
+    }
+
+    // this stays void*, like every other handler argument - see
+    // XCreature::RegisterLua for why the dispatch never went typed.
+    const auto result = handler((void*)this);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << row->on_create << ": " << err.what() << std::endl;
     }
 }
 

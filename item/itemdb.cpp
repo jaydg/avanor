@@ -414,6 +414,12 @@ TemplateBuilder& TemplateBuilder::Chance(const int probability)
     return *this;
 }
 
+TemplateBuilder& TemplateBuilder::OnCreate(const std::string& handler)
+{
+    t.on_create = handler;
+    return *this;
+}
+
 void TemplateBuilder::Register()
 {
     XItemBasicStructure* pool = nullptr;

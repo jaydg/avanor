@@ -471,6 +471,35 @@ void SetItemBrand(void* item, int br)
     ((XItem*)item)->aet = (AttackEffectType)br;
 }
 
+// Reading and changing a finished item from an :OnCreate() handler.
+// Naming it is a plain set; the three numbers are always adjustments,
+// because what the template rolled is the starting point, not a draft.
+std::string GetItemName(void* item)
+{
+    return ((XItem*)item)->name;
+}
+
+void SetItemName(void* item, const std::string& name)
+{
+    ((XItem*)item)->name = name;
+}
+
+void AddItemToHit(void* item, int bonus)
+{
+    ((XItem*)item)->to_hit += bonus;
+}
+
+// A missile's own contribution to how far its wielder can shoot.
+void AddItemRange(void* item, int bonus)
+{
+    ((XItem*)item)->RNG += bonus;
+}
+
+void AddItemDice(void* item, int count, int sides, int bonus)
+{
+    ((XItem*)item)->dice.Add(count, sides, bonus);
+}
+
 // The caster's own form of an effect: unlike MakeEffect() below, this is
 // the one that asks the player where to aim when the effect needs a
 // direction or a target, and answers ABORT if they change their mind. What
@@ -707,6 +736,11 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("GetObjectGUID", &lua_api::GetObjectGUID);
         lua.set_function("GetItemParam", &lua_api::GetItemParam);
         lua.set_function("SetItemBrand", &lua_api::SetItemBrand);
+        lua.set_function("GetItemName", &lua_api::GetItemName);
+        lua.set_function("SetItemName", &lua_api::SetItemName);
+        lua.set_function("AddItemToHit", &lua_api::AddItemToHit);
+        lua.set_function("AddItemRange", &lua_api::AddItemRange);
+        lua.set_function("AddItemDice", &lua_api::AddItemDice);
         lua.set_function("GiveObjectToCreature", &lua_api::GiveObjectToCreature);
         lua.set_function("GiveAward", &lua_api::GiveAward);
         lua.set_function("MakeEffect", &lua_api::MakeEffect);

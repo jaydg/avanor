@@ -41,77 +41,12 @@ XMissile::XMissile(ItemType _it)
     resistances->Sub(resistances.get());
     stats->Sub(stats.get());
 
-    int rcount = 20;
-
-    if (vRand(20) == 0 && (it == ItemType::ARROW || it == ItemType::QUARREL || it == ItemType::SLINGBULLET)) { //something special...
-        rcount = 10;
-        int tr = vRand(4);
-
-        switch (tr) {
-            case 0:
-                aet = AttackEffectType::POISON;
-                break; //poisoned
-
-            case 1:
-                aet = AttackEffectType::FIRE;
-                break; //hell arrows
-
-            case 2:
-                aet = AttackEffectType::UNDEADSLAYER;
-                break; //
-
-            case 3:
-                aet = AttackEffectType::ORCSLAYER;
-                break; //
-        }
-
-    }
-
-    if (vRand(20) == 0) {
-        rcount = rcount / 2;
-        int xr = vRand(3);
-
-        if (xr == 0) {
-            if (it == ItemType::ARROW) {
-                dice.Add(2, 2, 0);
-                RNG += 1;
-                name = "seeker arrow";
-            }
-
-            if (it == ItemType::QUARREL) {
-                dice.Add(2, 2, 0);
-                RNG += 1;
-                name = "seeker quarrel";
-            }
-        } else if (xr == 1) {
-            if (it == ItemType::ARROW) {
-                to_hit += 10;
-                RNG += 2;
-                name = "hunter arrow";
-            }
-
-            if (it == ItemType::QUARREL) {
-                to_hit += 10;
-                RNG += 2;
-                name = "hunter quarrel";
-            }
-        } else if (xr == 2) {
-            if (it == ItemType::ARROW) {
-                dice.Add(1, 1, 10);
-                RNG += 2;
-                name = "sharp arrow";
-            }
-
-            if (it == ItemType::QUARREL) {
-                dice.Add(1, 1, 10);
-                RNG += 2;
-                name = "sharp quarrel";
-            }
-        }
-    }
-
-    quantity = vRand() % rcount + 3;
+    // How many come in a heap. A row that finishes its own missiles off
+    // may well cut this down - see world/items/missiles.lua.
+    quantity = vRand() % 20 + 3;
     weight = (weight / 5 + 1);
+
+    OnCreated(gi_missile);
 }
 
 std::string XMissile::toString()
@@ -146,13 +81,11 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
     // rocks down a crossbow. Which launcher that is belongs to the missile
     // and is stated with the rest of its row (world/items/missiles.lua);
     // a missile that names none, like a shuriken, can only ever be thrown.
-    for (int i = 0; i < gi_missile.total_item; i++) {
-        if (gi_missile.pFirstItem[i].it == missile->it) {
-            const XWarSkills::Type launcher = gi_missile.pFirstItem[i].launcher;
+    const ItemTemplate* row = gi_missile.Find(missile->it);
 
-            return launcher != XWarSkills::OTHER && launcher == weapon->wt;
-        }
+    if (!row) {
+        return false;
     }
 
-    return false;
+    return row->launcher != XWarSkills::OTHER && row->launcher == weapon->wt;
 }

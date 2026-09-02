@@ -60,6 +60,12 @@ struct ItemTemplate {
     int valume;
     int probability;
     ITEM_QUALITY iq;
+
+    // The Lua function that is called once the engine has built the item and
+    // before anyone sees it - so content can rename it, sharpen it, poison it.
+    // Empty means the plain item is the finished item, which is what almost
+    // every row wants.
+    std::string on_create;
 };
 
 // One kind's worth of templates - every sort of sword, or every sort of
@@ -98,6 +104,19 @@ class XItemBasicStructure
             for (const auto& r : rows) {
                 total_prob += r.probability;
             }
+        }
+
+        // The row describing that sort of item, or nullptr if this pool
+        // holds no such thing.
+        [[nodiscard]] const ItemTemplate* Find(const ItemType& it) const
+        {
+            for (const auto& r : rows) {
+                if (r.it == it) {
+                    return &r;
+                }
+            }
+
+            return nullptr;
         }
 
         void Clear()
@@ -167,6 +186,7 @@ class TemplateBuilder
             const std::string& extra);
         TemplateBuilder& Range(const std::string& range);
         TemplateBuilder& Chance(int probability);
+        TemplateBuilder& OnCreate(const std::string& handler);
 
         void Register();
 

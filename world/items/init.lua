@@ -29,8 +29,21 @@
 --   :Armour(dv, pv)           dice strings; omitted when it protects nothing
 --   :Combat(hit, dice, extra) dice strings; omitted when it strikes nothing
 --   :Range(dice)              for bows and what they throw
+--   :Skill(XWarSkills)        which war skill wielding one exercises
+--   :Launcher(XWarSkills)     for a missile: the skill of the weapon that
+--                             fires it, so an arrow asks for a bow. Unsaid
+--                             means nothing launches it and it can only be
+--                             thrown - which anything can be anyway
 --   :Chance(probability)      its weight in the draw against others of its
 --                             kind
+--   :OnCreate(function_name)  a Lua function the engine calls with each
+--                             finished item of this sort, so content can
+--                             have the last word on what came out of the
+--                             pool: rename it, sharpen it, poison it, or
+--                             hand out fewer of them. It receives the item
+--                             and may change anything about it - see
+--                             FinishMissile in missiles.lua. Unsaid, the
+--                             plain item is the finished item
 --
 -- Only the things that belong to nobody in particular live in this file.
 -- An item with a single owner is defined beside that owner instead, so
