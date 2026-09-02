@@ -97,24 +97,6 @@ void XQuest::ShowQuests()
     list.Run();
 }
 
-void XQuest::Take(int id)
-{
-    XQuestRec * qr = Find(id);
-    qr->status = XQuest::KNOWN;
-}
-
-void XQuest::Complete(int id)
-{
-    XQuestRec * qr = Find(id);
-    qr->status = XQuest::COMPLETE;
-}
-
-void XQuest::Close(int id)
-{
-    XQuestRec * qr = Find(id);
-    qr->status = XQuest::CLOSED;
-}
-
 XQuest::Id XQuest::Status(int id)
 {
     XQuestRec * qr = Find(id);

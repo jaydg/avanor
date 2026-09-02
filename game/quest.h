@@ -90,9 +90,6 @@ class XQuest
 
         static XQuest quest;
 
-        static void Take(int id);
-        static void Complete(int id);
-        static void Close(int id);
         static Id Status(int id);
         static XQuestRec* Find(int id);
 
