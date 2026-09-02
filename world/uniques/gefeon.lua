@@ -30,14 +30,23 @@ function GefeonHandler(e, t, p, v)
 	-- meeting Gefeon is welcome all the same: the errand is judged by the
 	-- wizard being dead, not by who asked for it.
 	if (QuestState:GetFlag('ahk_ulan_killed') == 1) then
+		local ending
+
 		if (QuestState:GetFlag('roderick_killed') == 1) then
+			-- Both of them dead and the throne of Avanor standing empty.
+			-- Gefeon is the last man in the kingdom whose word carries, and
+			-- he gives it to the hero.
 			AddMessage("Well, you killed the pretender and the King, I guess that makes you the new ruler!")
+			ending = string.format(
+				"You killed Ahk-Ulan and the King of Avanor and became the new %s of Avanor.",
+				AsCreature(p):IsMale() and "King" or "Queen")
 		else
 			AddMessage("You did a great thing! You truly are the best!")
+			ending = "You killed evil Ahk-Ulan and saved the Kingdom of Avanor from Ahk-Ulan's deadly plans."
 		end
 
 		QuestModify(QUEST_GEFEON, XQuest.CLOSED)
-		QuestState:WinGame()
+		QuestState:WinGame(ending)
 		return true
 	end
 

@@ -194,25 +194,8 @@ void XHero::EndGame(const char* end_msg)
 
     list.AddItem(new XGuiItem_Text(fmt::format("You survived {} turns.", hero->turn_count)));
 
-    if (XQuest::quest.hero_win) {
-        if (XQuest::quest.GetFlag("ahk_ulan_killed") && XQuest::quest.GetFlag("roderick_killed")) {
-            if (hero->GetGender() == XCreature::MALE) {
-                list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new King of Avanor."));
-            } else if (hero->GetGender() == XCreature::FEMALE) {
-                list.AddItem(new XGuiItem_Text("You killed Ahk-Ulan and the King of Avanor and became the new Queen of Avanor."));
-            }
-
-            score += 30000;
-        } else if (XQuest::quest.GetFlag("ahk_ulan_killed")) {
-            list.AddItem(new XGuiItem_Text("You killed evil Ahk-Ulan and saved the Kingdom of Avanor from Ahk-Ulan's deadly plans."));
-            score += 10000;
-        } else {
-            list.AddItem(new XGuiItem_Text("You killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor."));
-            score += 20000;
-        }
-    } else {
-        list.AddItem(new XGuiItem_Text(end_msg));
-    }
+    // How the story ended, in one line.
+    list.AddItem(new XGuiItem_Text(end_msg));
 
     int place_count = 0;
 

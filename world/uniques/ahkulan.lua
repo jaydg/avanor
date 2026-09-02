@@ -43,7 +43,7 @@ function AhkUlanHandler(e, t, p, v)
 			AddMessage("'There is no one left in Avanor who can stand between me and the throne, and that is as much your doing as mine.'")
 			AddMessage("'Go. Take what you can carry, and be far from here when I come to claim what is mine.'")
 			QuestModify(QUEST_USURPER, XQuest.CLOSED)
-			QuestState:WinGame()
+			QuestState:WinGame("You killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor.")
 		else
 			AddMessage("Don't disturb me before completing my quest, puny mortal!")
 		end
@@ -100,11 +100,10 @@ function AhkUlanHandler(e, t, p, v)
 			QuestModify(QUEST_GEFEON, XQuest.COMPLETE)
 		end
 
-		-- The same goes for the throne he wanted taken for him: killing the
-		-- King buys nothing once there is no usurper left to crown.
-		local us = QuestStatus(QUEST_USURPER)
-
-		if (us == XQuest.KNOWN or us == XQuest.COMPLETE) then
+		-- The throne he wanted taken for him goes the same way, but only while the
+		-- King still stands. If Roderick is already dead the hero did exactly what
+		-- was asked, so it stays COMPLETE.
+		if (QuestStatus(QUEST_USURPER) == XQuest.KNOWN) then
 			QuestModify(QUEST_USURPER, XQuest.FAIL)
 		end
 	end

@@ -59,10 +59,10 @@ void XQuest::SetFlag(const std::string& name, int value)
     flags[name] = value;
 }
 
-void XQuest::WinGame()
+void XQuest::WinGame(const std::string& msg)
 {
     hero_win = 1;
-    XHero::EndGame("***WINNER***");
+    XHero::EndGame(msg.c_str());
 }
 
 XCreature* XQuest::GetCreatureRef(const std::string& name) const

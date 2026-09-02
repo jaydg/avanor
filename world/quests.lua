@@ -69,17 +69,21 @@ function CreateAllQuests()
 		"You gathered the three parts of the ancient machine and put them in Ahk-Ulan's hands.",
 		0)
 
+	-- The two commissions that end the game. Their scores are as follows:
+	-- ridding Avanor of Ahk-Ulan is worth 10000, taking the throne from
+	-- Roderick 20000, and a hero who is asked for both and delivers both
+	-- collects 30000 without anything having to add the case up.
 	Quest(QUEST_USURPER, XQuest.UNKNOWN,
 		"Ahk-Ulan asked you to kill Roderick, the King of Avanor - the only man left who could stand against him.",
 		"You killed Roderick, the King of Avanor.",
 		"You killed the King of Avanor for Ahk-Ulan, and left him the throne.",
-		0)
+		20000)
 
 	Quest(QUEST_GEFEON, XQuest.UNKNOWN,
 		"Gefeon asked you to kill Ahk-Ulan, who works his evil in the dungeon beneath the ruins of his tower, south-east of the town.",
 		"You killed Ahk-Ulan in the dungeon beneath his ruined tower.",
 		"You killed Ahk-Ulan, and Gefeon named you the best of them.",
-		0)
+		10000)
 
 	Quest(QUEST_RODERICK_CRYPT, XQuest.UNKNOWN,
 		"Roderick, the King of Avanor has asked you to cleanse his family crypt, which lies to the south-west of the city.",

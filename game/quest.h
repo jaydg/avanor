@@ -78,7 +78,12 @@ class XQuest
         // Lua dialogue via WinGame().
         int hero_die;
         int hero_win;
-        void WinGame();
+
+        // Ends the game as a win. The message is how the story finished, in
+        // the words of whoever ended it - it heads the achievements screen
+        // and stands as the epitaph in the high score table, exactly where a
+        // death message would.
+        void WinGame(const std::string& msg);
 
         // Generic named creature references, for quests that need to track
         // a specific live object rather than just a scalar flag (e.g.
