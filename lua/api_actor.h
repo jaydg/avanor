@@ -95,6 +95,7 @@ namespace lua_api
     std::tuple<int, int, int, int, int, std::string> GetItemParam(void* item);
     void SetItemBrand(void* item, int br);
     std::string GetItemName(void* item);
+    sol::optional<int> MissileForLauncher(void* weapon);
     void SetItemName(void* item, const std::string& name);
     void AddItemToHit(void* item, int bonus);
     void AddItemRange(void* item, int bonus);

@@ -420,28 +420,37 @@ TemplateBuilder& TemplateBuilder::Chance(const int probability)
     return *this;
 }
 
+TemplateBuilder& TemplateBuilder::OnOutfit(const std::string& handler)
+{
+    t.on_outfit = handler;
+    return *this;
+}
+
 TemplateBuilder& TemplateBuilder::OnCreate(const std::string& handler)
 {
     t.on_create = handler;
     return *this;
 }
 
+XItemBasicStructure* PoolFor(const ItemKind kind)
+{
+    switch (kind) {
+        case ItemKind::WEAPON:   return &gi_weapon;
+        case ItemKind::MISSILEW: return &gi_missilew;
+        case ItemKind::MISSILE:  return &gi_missile;
+        case ItemKind::BODY:     return &gi_armour;
+        case ItemKind::SHIELD:   return &gi_shield;
+        case ItemKind::HAT:      return &gi_cap;
+        case ItemKind::CLOAK:    return &gi_cloaks;
+        case ItemKind::BOOTS:    return &gi_boots;
+        case ItemKind::GLOVES:   return &gi_gloves;
+        default: return nullptr;
+    }
+}
+
 void TemplateBuilder::Register()
 {
-    XItemBasicStructure* pool = nullptr;
-
-    switch (kind) {
-        case ItemKind::WEAPON:   pool = &gi_weapon;   break;
-        case ItemKind::MISSILEW: pool = &gi_missilew; break;
-        case ItemKind::MISSILE:  pool = &gi_missile;  break;
-        case ItemKind::BODY:     pool = &gi_armour;   break;
-        case ItemKind::SHIELD:   pool = &gi_shield;   break;
-        case ItemKind::HAT:      pool = &gi_cap;      break;
-        case ItemKind::CLOAK:    pool = &gi_cloaks;   break;
-        case ItemKind::BOOTS:    pool = &gi_boots;    break;
-        case ItemKind::GLOVES:   pool = &gi_gloves;   break;
-        default: break;
-    }
+    XItemBasicStructure* pool = PoolFor(kind);
 
     if (!pool) {
         std::cerr << "world: '" << t.name

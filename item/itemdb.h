@@ -71,6 +71,12 @@ struct ItemTemplate {
     // Empty means the plain item is the finished item, which is what almost
     // every row wants.
     std::string on_create;
+
+    // The Lua function that is called when a creature is being outfitted
+    // with one of these, with the item and the creature. For anything that
+    // needs a second thing to make sense at all: a bow is no use without
+    // arrows. Empty for almost everything, which needs only itself.
+    std::string on_outfit;
 };
 
 // One kind's worth of templates - every sort of sword, or every sort of
@@ -163,6 +169,10 @@ extern ItemMaterial item_prop[DB_PROP_SZ];
 extern ENHANCE_STRUCT ienh_db[ENH_DB_SZ];
 
 
+// The pool a kind of item is drawn from, or nullptr for a kind that keeps
+// no table of its own (potions, scrolls and the rest build themselves).
+XItemBasicStructure* PoolFor(ItemKind kind);
+
 // Fluent builder for one row of one of those pools:
 //
 //   Template.new(ItemKind.WEAPON, ItemType.LONGSWORD)
@@ -193,6 +203,7 @@ class TemplateBuilder
         TemplateBuilder& Range(const std::string& range);
         TemplateBuilder& Chance(int probability);
         TemplateBuilder& OnCreate(const std::string& handler);
+        TemplateBuilder& OnOutfit(const std::string& handler);
 
         void Register();
 

@@ -3,6 +3,25 @@
 -- Template.new(kind, type) is documented in world/items/init.lua.
 --
 
+-- A launcher handed to a creature comes with something to shoot. Which
+-- missile that is is not restated here: MissileForLauncher() reads it back
+-- from the missiles' own :Launcher() declarations in missiles.lua, so a new
+-- launcher needs nothing but its :Skill(), and a new kind of ammunition
+-- needs nothing but its :Launcher().
+function ArmLauncher(weapon, who)
+	local kind = MissileForLauncher(weapon)
+
+	if (not kind) then
+		return
+	end
+
+	local ammo = CreateObject(ItemKind.MISSILE, kind, 0, 10000000)
+
+	if (ammo) then
+		AsCreature(who):ContainItem(AsItem(ammo))
+	end
+end
+
 Template.new(ItemKind.MISSILEW, ItemType.LONGBOW)
 	:View("long bow", '{')
 	:Made(ItemSet.BOW, ItemQuality.FAIR)
@@ -11,6 +30,7 @@ Template.new(ItemKind.MISSILEW, ItemType.LONGBOW)
 	:Combat("1d3+2", "1d6", "1d3+2")
 	:Range("1d1+2")
 	:Chance(30)
+	:OnOutfit("ArmLauncher")
 	:Register()
 
 Template.new(ItemKind.MISSILEW, ItemType.SHORTBOW)
@@ -21,6 +41,7 @@ Template.new(ItemKind.MISSILEW, ItemType.SHORTBOW)
 	:Combat("1d2", "1d4", "1d2")
 	:Range("1d2")
 	:Chance(150)
+	:OnOutfit("ArmLauncher")
 	:Register()
 
 Template.new(ItemKind.MISSILEW, ItemType.LIGHTCROSSBOW)
@@ -31,6 +52,7 @@ Template.new(ItemKind.MISSILEW, ItemType.LIGHTCROSSBOW)
 	:Combat("1d2", "1d5", "1d3")
 	:Range("1d2")
 	:Chance(120)
+	:OnOutfit("ArmLauncher")
 	:Register()
 
 Template.new(ItemKind.MISSILEW, ItemType.CROSSBOW)
@@ -41,6 +63,7 @@ Template.new(ItemKind.MISSILEW, ItemType.CROSSBOW)
 	:Combat("1d4", "1d6", "1d3+1")
 	:Range("1d2")
 	:Chance(70)
+	:OnOutfit("ArmLauncher")
 	:Register()
 
 Template.new(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW)
@@ -51,6 +74,7 @@ Template.new(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW)
 	:Combat("1d3", "1d8", "1d4+2")
 	:Range("1d2+1")
 	:Chance(10)
+	:OnOutfit("ArmLauncher")
 	:Register()
 
 Template.new(ItemKind.MISSILEW, ItemType.SLING)
@@ -61,4 +85,5 @@ Template.new(ItemKind.MISSILEW, ItemType.SLING)
 	:Combat("1d2", "1d3+1", "1d3")
 	:Range("1d1+1")
 	:Chance(200)
+	:OnOutfit("ArmLauncher")
 	:Register()

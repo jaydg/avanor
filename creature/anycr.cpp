@@ -122,12 +122,9 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
                 }
 
                 if (CanWear(item)) {
-                    // Create proper ammo for missile weapons
-                    if (item->kind & ItemKind::MISSILEW) {
-                        XItem * missile = ICREATEB(ItemKind::MISSILE, ItemType::ARROW, 0, 10000000);
-                        ContainItem(missile);
-                    }
-
+                    // Anything that needs a second thing to be any use -
+                    // a bow without arrows - asks for it here.
+                    item->OnOutfit(this);
                     Wear(item);
                 } else {
                     ContainItem(item);

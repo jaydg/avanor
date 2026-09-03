@@ -320,6 +320,7 @@ void XLua::Init()
             "Verb", &TemplateBuilder::Verb,
             "Launcher", &TemplateBuilder::Launcher,
             "OnCreate", &TemplateBuilder::OnCreate,
+            "OnOutfit", &TemplateBuilder::OnOutfit,
             "Worth", &TemplateBuilder::Worth,
             "Armour", &TemplateBuilder::Armour,
             "Combat", &TemplateBuilder::Combat,

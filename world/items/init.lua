@@ -46,6 +46,13 @@
 --                             and may change anything about it - see
 --                             FinishMissile in missiles.lua. Unsaid, the
 --                             plain item is the finished item
+--   :OnOutfit(function_name)  a Lua function called with (item, creature)
+--                             when a creature is being kitted out with one
+--                             of these, so content can supply whatever the
+--                             item needs to be worth carrying - the arrows
+--                             that make a bow a weapon. See ArmLauncher in
+--                             missile_weapons.lua. Unsaid, the item stands
+--                             on its own, which is what almost all do
 --
 -- Only the things that belong to nobody in particular live in this file.
 -- An item with a single owner is defined beside that owner instead, so

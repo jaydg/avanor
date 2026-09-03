@@ -79,6 +79,14 @@ class XItem : public XBaseObject
         // A row that named no handler is left exactly as it is.
         void OnCreated(const XItemBasicStructure& pData);
 
+        // Hands this item and the creature being outfitted with it to the
+        // Lua function its template named in :OnOutfit(), so content can
+        // supply whatever the item needs to be worth carrying - the arrows
+        // that make a bow a weapon. Unlike OnCreated() this finds its own
+        // pool from the item's kind, because the creature-outfitting code
+        // handles every kind of item at once.
+        void OnOutfit(XCreature* who);
+
         // `protective` says whether this item's template gives it any
         // protection to begin with; the material's own contribution is
         // added only for those. See the comment in the definition.

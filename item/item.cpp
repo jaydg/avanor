@@ -585,6 +585,38 @@ std::string XItem::StatsToString()
     return flag ? str : "";
 }
 
+void XItem::OnOutfit(XCreature* who)
+{
+    const XItemBasicStructure* pool = PoolFor(kind);
+
+    if (!pool) {
+        return;
+    }
+
+    const ItemTemplate* row = pool->Find(it);
+
+    if (!row || row->on_outfit.empty()) {
+        return;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function handler = lua[row->on_outfit];
+
+    if (!handler.valid()) {
+        std::cerr << "world: " << name << " wants outfitting through '"
+                  << row->on_outfit << "', which is not defined" << std::endl;
+
+        return;
+    }
+
+    const auto result = handler((void*)this, (void*)who);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << row->on_outfit << ": " << err.what() << std::endl;
+    }
+}
+
 std::string XItem::GetNameEx(const Article article)
 {
     if (const std::string proper = GetProperName(); !proper.empty()) {

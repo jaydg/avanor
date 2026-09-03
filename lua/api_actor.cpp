@@ -474,6 +474,29 @@ void SetItemBrand(void* item, int br)
 // Reading and changing a finished item from an :OnCreate() handler.
 // Naming it is a plain set; the three numbers are always adjustments,
 // because what the template rolled is the starting point, not a draft.
+// The sort of missile a launcher fires, for content that has to produce
+// ammunition to go with a weapon. Answers from the missiles' own
+// :Launcher() declarations, so the relationship is stated once, on the
+// missile rows, rather than a second time wherever ammo is handed out.
+sol::optional<int> MissileForLauncher(void* weapon)
+{
+    const XItem* w = (XItem*)weapon;
+
+    if (!w || w->wt == XWarSkills::OTHER) {
+        return sol::nullopt;
+    }
+
+    for (int i = 0; i < gi_missile.total_item; i++) {
+        const ItemTemplate& row = gi_missile.pFirstItem[i];
+
+        if (row.launcher != XWarSkills::OTHER && row.launcher == w->wt) {
+            return static_cast<int>(row.it);
+        }
+    }
+
+    return sol::nullopt;
+}
+
 std::string GetItemName(void* item)
 {
     return ((XItem*)item)->name;
@@ -737,6 +760,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("GetItemParam", &lua_api::GetItemParam);
         lua.set_function("SetItemBrand", &lua_api::SetItemBrand);
         lua.set_function("GetItemName", &lua_api::GetItemName);
+        lua.set_function("MissileForLauncher", &lua_api::MissileForLauncher);
         lua.set_function("SetItemName", &lua_api::SetItemName);
         lua.set_function("AddItemToHit", &lua_api::AddItemToHit);
         lua.set_function("AddItemRange", &lua_api::AddItemRange);
