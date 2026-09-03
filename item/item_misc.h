@@ -361,6 +361,15 @@ class FoodBuilder
                 return content_id;                                            \
             }                                                                 \
                                                                               \
+            /* Its own name, under the same condition toString() shows */     \
+            /* it: an item with no display_name of its own reads as an */     \
+            /* ordinary one of its kind, which is what the forest */          \
+            /* brother's cloak wants, being a disguise. */                    \
+            [[nodiscard]] std::string GetProperName() override                \
+            {                                                                 \
+                return isIdentified() ? display_name : std::string{};         \
+            }                                                                 \
+                                                                              \
             [[nodiscard]] bool isArtifact() const override                    \
             {                                                                 \
                 return artifact;                                              \

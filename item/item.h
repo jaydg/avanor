@@ -107,6 +107,44 @@ class XItem : public XBaseObject
         bool identified; // does the hero know what this item is?
         int is_selected; // it is need to user interface....
 
+        // The name this thing goes by in its own right - "Axe of Torin".
+        // Empty for everything that is just one more of its kind, which is
+        // almost everything.
+        //
+        // Deliberately the same condition toString() renders a content
+        // item's own name under, so the two can never disagree about what
+        // something is called. That condition includes isIdentified(),
+        // which today only scrolls ever answer no to - but it is the rule
+        // toString() follows, and this follows toString().
+        [[nodiscard]] virtual std::string GetProperName()
+        {
+            return {};
+        }
+
+        // How to introduce an item in a sentence.
+        enum class Article {
+            NONE,        // "stone arrow"
+            INDEFINITE,  // "a stone arrow", "an iron dagger"
+            DEFINITE     // "the stone arrow"
+        };
+
+        // Named to match XCreature::GetNameEx(), which does the same job
+        // on the other side of a combat message - and deliberately not
+        // GetName(), which XMapObject already uses for "what a viewer sees
+        // this as".
+        //
+        // The item's name as it reads in a sentence: what it is, plainly,
+        // with the article the sentence needs. This is the singular, bare
+        // name - no count, no enhancement, no dice - which is what a
+        // message about a blow wants; GetFullName() and toString() are for
+        // an inventory line, where all of that belongs.
+        //
+        // A thing with a proper name takes no article at all: there is
+        // only one Axe of Torin, so "the Axe of Torin" reads wrong. That
+        // is the same rule XCreature::GetNameEx() applies to a unique
+        // creature.
+        [[nodiscard]] std::string GetNameEx(Article article = Article::NONE);
+
         // Answer "can these two items stack?"
         virtual int Compare(XObject * o);
         virtual bool isIdentified()

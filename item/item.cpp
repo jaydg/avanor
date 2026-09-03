@@ -585,6 +585,27 @@ std::string XItem::StatsToString()
     return flag ? str : "";
 }
 
+std::string XItem::GetNameEx(const Article article)
+{
+    if (const std::string proper = GetProperName(); !proper.empty()) {
+        return proper;
+    }
+
+    if (article == Article::NONE) {
+        return name;
+    }
+
+    if (article == Article::DEFINITE) {
+        return fmt::format("the {}", name);
+    }
+
+    const char first = name.empty() ? '\0' : name.front();
+    const bool vowel = first == 'a' || first == 'e' || first == 'i'
+        || first == 'o' || first == 'u';
+
+    return fmt::format("{} {}", vowel ? "an" : "a", name);
+}
+
 std::string XItem::GetFullName()
 {
     std::string fullname;

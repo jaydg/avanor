@@ -1638,29 +1638,7 @@ int XCreature::Shoot(int tx, int ty)
         dd.damage	= dmg.Throw();
         dd.attacker	= this;
 
-        // temporary solution, should be replaced in future on general
-        // solution which returns name of item with or without 'a'
-        switch (msl->it) {
-            case ItemType::ARROW:
-                dd.attack_name = "the arrow";
-                break;
-
-            case ItemType::QUARREL:
-                dd.attack_name = "the quarell";
-                break;
-
-            case ItemType::SLINGBULLET:
-                dd.attack_name = "the sling bullet";
-                break;
-
-            case ItemType::ROCK:
-                dd.attack_name = "the rock";
-                break;
-
-            default:
-                dd.attack_name = missile->name.c_str();
-                break;
-        }
+        dd.attack_name = msl->GetNameEx(XItem::Article::DEFINITE);
 
         dd.attack_HIT = hit;
         dd.attack_effect = msl->aet;

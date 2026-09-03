@@ -190,7 +190,12 @@ enum DAMAGE_FLAGS {
 
 struct DAMAGE_DATA_EX {
     XCreature* attacker = nullptr;       // who is inflicting damage (to increase exp). can be nullptr
-    const char* attack_name = nullptr;   // Attacking item (e.g. Arrow, Bolt of Fire)
+    // What struck, when it was a thing rather than the attacker's own
+    // body: a missile, a trap, a spell. Empty means the attacker itself
+    // did it, and every message below branches on that. Owns its text,
+    // because it is usually built for the blow (XItem::GetNameEx()) rather
+    // than a literal that outlives it.
+    std::string attack_name;
     int damage = 0;                      // supposed damage
     int attack_HIT = 0;                  // the target can avoid attack.
     AttackEffectType attack_effect = AttackEffectType::NONE; // such a cold, demon slaying,

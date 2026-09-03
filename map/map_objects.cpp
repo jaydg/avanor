@@ -258,26 +258,7 @@ int XTrap::Activate(XCreature* cr)
                 dd.damage	= drop_item->dice.Throw();
                 dd.attacker	= owner.lock().get();
 
-                // temporary solution, should be replaced in future with a
-                // general solution which returns the name of an item with
-                // or without 'a'
-                switch (drop_item->it) {
-                    case ItemType::ARROW:
-                        dd.attack_name = "the arrow";
-                        break;
-
-                    case ItemType::QUARREL:
-                        dd.attack_name = "the quarrel";
-                        break;
-
-                    case ItemType::SHORTSPEAR:
-                    case ItemType::LONGSPEAR:
-                        dd.attack_name = "the spear";
-                        break;
-
-                    default:
-                        break;
-                }
+                dd.attack_name = drop_item->GetNameEx(XItem::Article::DEFINITE);
 
                 dd.attack_HIT = 30;
                 dd.attack_effect = drop_item->aet;

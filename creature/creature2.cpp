@@ -101,7 +101,6 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     DAMAGE_DATA_EX dd{};
     dd.damage	= tdam;
     dd.attacker	= this;
-    dd.attack_name	= nullptr;
     dd.attack_HIT	= tohit;
     dd.attack_effect	= aet;
     dd.flags	= DF_MAGIC_BOLT;
@@ -522,7 +521,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         bool effect_applied = false;
         const int effect = CauseEffect(dmg, pData->attack_effect, &effect_applied);
 
-        if (pData->attack_name) {
+        if (!pData->attack_name.empty()) {
             // A spell, a missile or a trap. When it is elemental the
             // element is the whole of it, so resistance takes from the
             // whole of it - down to nothing against something immune.
@@ -569,9 +568,9 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
         if (vis1 || vis2) {
             auto str = fmt::format("{}{} {} {}{}.",
-                pData->attack_name ? pData->attack_name : pData->attacker->GetNameEx(CRN_T1),
+                !pData->attack_name.empty() ? pData->attack_name : pData->attacker->GetNameEx(CRN_T1),
                 critical_hit ? " exactly" : "",
-                pData->attack_name
+                !pData->attack_name.empty()
                     ? std::string("hits")
                     : pData->attacker->GetVerb(pData->backstab
                                                    ? "backstab"
@@ -585,7 +584,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
         if (dmg <= 0) {
             if (isHero()) {
-                if (pData->attack_name) {
+                if (!pData->attack_name.empty()) {
                     msgwin.Add(pData->attack_name);
                 } else {
                     msgwin.Add(pData->attacker->GetNameEx(CRN_T1));
@@ -612,8 +611,8 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 if ((vis1 || vis2) && !isHero()) {
                     auto str = fmt::format("and {} {}.",
                         creature_class & CreatureClass::UNDEAD
-                            ? (pData->attack_name ? pData->attacker->GetVerb("destroy") : "destroys")
-                            : (pData->attack_name ? pData->attacker->GetVerb("kill") : "kills"),
+                            ? (!pData->attack_name.empty() ? pData->attacker->GetVerb("destroy") : "destroys")
+                            : (!pData->attack_name.empty() ? pData->attacker->GetVerb("kill") : "kills"),
                         GetNameEx(CRN_T3)
                     );
 
@@ -632,7 +631,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
         if (sb > 0 && vRand(todv) < sb) {
             if (vis1 || vis2) {
-                if (pData->attack_name) {
+                if (!pData->attack_name.empty()) {
                     //Kobold shaman cast firbolt.
                     //You deflect small ball of fire with your shield
                     msgwin.Add(GetNameEx(CRN_T1));
@@ -661,7 +660,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
         } else {
             // It was not shield (miss or avoid)
             if (vis1 || vis2) {
-                if (pData->attack_name) {
+                if (!pData->attack_name.empty()) {
                     msgwin.Add(fmt::format("{} {} {}.",
                         GetNameEx(CRN_T1),
                         GetVerb("avoid"),
