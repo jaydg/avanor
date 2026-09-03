@@ -121,13 +121,6 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
                     item = ICREATEB((ItemKind)(mask), it, 0, 10000000);
                 }
 
-                if (item->kind & ItemKind::BODY && item->it == ItemType::DRESS
-                    && GetGender() == XCreature::MALE) {
-                    // This is a kludge to prevent a "Roderick in a dress" scenario.
-                    item->it = ItemType::CLOTHES;
-                    item->name = "clothes";
-                }
-
                 if (CanWear(item)) {
                     // Create proper ammo for missile weapons
                     if (item->kind & ItemKind::MISSILEW) {

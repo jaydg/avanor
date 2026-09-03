@@ -12,13 +12,16 @@ Template.new(ItemKind.BODY, ItemType.CLOTHES)
 	:Chance(100)
 	:Register()
 
+-- No :Chance, so nothing ever draws one at random. A dress is worn by
+-- whoever content dresses in one - the goodwife and the female citizen ask
+-- for it by name, which works whether or not the row is in the draw - and
+-- by nobody else.
 Template.new(ItemKind.BODY, ItemType.DRESS)
 	:View("dress", '[')
 	:Made(ItemSet.SOFT, ItemQuality.POOR)
 	:Worth(3, 5)
 	:Armour("1d2", "1d1")
 	:Combat("", "1d1", "")
-	:Chance(100)
 	:Register()
 
 Template.new(ItemKind.BODY, ItemType.ROBE)
