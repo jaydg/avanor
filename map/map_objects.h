@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define OTHER_MISC_H
 
 #include <cstring>
+#include <vector>
 
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
@@ -33,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/deity.h"
 #include "item/item.h"
 #include "engine/xmapobj.h"
+#include "magic/magic.h"
 
 class XLocation;
 
@@ -110,6 +112,13 @@ class XTrap final : public XMapObject
         [[nodiscard]] bool isDiscovered() const;
 
         int Disarm(XCreature * cr);
+
+        // Fills an unloaded trap from its recipe - see the definition.
+        void LoadFromRecipe();
+
+        // Registers the Type enum as the Lua table XTrap.MEMBER, so a
+        // recipe in world/traps.lua can say which trap it builds.
+        static void RegisterLua(sol::state_view& lua);
     protected:
         // teardown hook, called by XObject::Invalidate()
         void OnInvalidate() override;
@@ -121,6 +130,85 @@ class XTrap final : public XMapObject
             ar(cereal::base_class<XMapObject>(this));
             ar(trap_type, trap_level, owner, trap_item, isVisibleForHero, last_activator, activation_count);
         }
+};
+
+//////////////////////////////////////////////////////////////////////
+//TrapRecipe
+/////////////////////////////////////////////////////////////////////
+
+// One sort of trap a character can build: what the Create Trap menu calls
+// it, how good you have to be to attempt it, what it costs to make, and
+// what one of that sort comes loaded with when the world puts one in a
+// dungeon.
+struct TrapRecipe {
+    std::string name;
+    XTrap::Type type{XTrap::Type::UNKNOWN};
+
+    // The CREATETRAP level this becomes available at.
+    int level{0};
+
+    // A magic recipe casts this instead of consuming anything, and costs
+    // mana per charge rather than an item. SPELL_EOF means it is built
+    // from things instead.
+    SPELL_NAME spell{SPELL_EOF};
+
+    // What may be loaded into it. Any one of `loads` will do - a spear
+    // trap takes a short spear or a long one - and an empty list means
+    // this trap holds nothing at all, like a plain pit.
+    ItemKind loads_kind{ItemKind::UNKNOWN};
+    std::vector<ItemType> loads;
+
+    // What must be wielded to build it, if anything, and what to call it
+    // when the character is not holding one.
+    bool needs_tool{false};
+    ItemType tool;
+    std::string tool_name;
+
+    // How much building one exercises the skill.
+    int practice{10};
+
+    // What one found in a dungeon arrives loaded with: a count drawn from
+    // [fill_min, fill_max]. Zero means the world never places a loaded one.
+    int fill_min{0};
+    int fill_max{0};
+
+    // Does this recipe accept that item as its charge?
+    [[nodiscard]] bool Accepts(const XItem* item) const;
+};
+
+// Every recipe world/traps.lua declared, in the order it declared them -
+// which is the order the Create Trap menu lists them, so the file reads
+// as the menu does.
+extern std::vector<TrapRecipe> trap_recipes;
+
+// The recipe a trap of this type is built from, or nullptr. Where one
+// type has several recipes - an arrow trap and a spear trap are the same
+// machine loaded differently - this is the first, which is the simplest.
+const TrapRecipe* FindTrapRecipe(XTrap::Type type);
+
+// Fluent builder for one row of that table:
+//
+//   TrapRecipe.new("Spear trap", XTrap.ARROW)
+//       :Level(2)
+//       :Loads(ItemKind.WEAPON, { ItemType.SHORTSPEAR, ItemType.LONGSPEAR })
+//       :Practice(15)
+//       :Register()
+class TrapRecipeBuilder
+{
+    public:
+        TrapRecipeBuilder(const std::string& name, XTrap::Type type);
+
+        TrapRecipeBuilder& Level(int level);
+        TrapRecipeBuilder& Spell(SPELL_NAME spell);
+        TrapRecipeBuilder& Loads(ItemKind kind, const sol::table& types);
+        TrapRecipeBuilder& Tool(ItemType tool, const std::string& tool_name);
+        TrapRecipeBuilder& Practice(int practice);
+        TrapRecipeBuilder& Fills(int min, int max);
+
+        void Register();
+
+    private:
+        TrapRecipe t;
 };
 
 //////////////////////////////////////////////////////////////////////

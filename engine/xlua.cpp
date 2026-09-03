@@ -129,6 +129,7 @@ void XLua::Init()
 
     XLocation::RegisterLua(lua);
     XStairWay::RegisterLua(lua);
+    XTrap::RegisterLua(lua);
     RegisterLuaEventEnum(lua);
     CreatureTemplate::RegisterLua(lua);
     RegisterCrDefsEnums(lua);

@@ -13,6 +13,7 @@ function LoadScripts()
 	dofile("./world/locations/init.lua");
 	dofile("./world/hero.lua");
 	dofile("./world/quests.lua");
+	dofile("./world/traps.lua");
 	dofile("./world/tally.lua");
 end
 

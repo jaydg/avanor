@@ -308,41 +308,14 @@ int XSkill::UseDisarm(XCreature * user)
     return 1;
 }
 
-struct TRAP_CREATE_REC {
-    const char* name;
-    bool isMagic;
-    int level;
-    unsigned int var;   // neccessary item or spell
-    unsigned int var2;  // tools
-} trap_create_rec[] = {
+// Which recipe the filter below is choosing a charge for. XItemFilter is
+// a plain function pointer and cannot capture, so the recipe has to reach
+// it this way; it is set and cleared around the one call that uses it.
+static const TrapRecipe* selecting_for = nullptr;
 
-    {"Arrow trap",	false,	0, static_cast<unsigned int>(ItemType::ARROW),	0},
-    {"Spear trap",	false,	2, static_cast<unsigned int>(ItemType::SHORTSPEAR),	0},
-    {"Magic Arrow trap",	true,	4, SPELL_MAGIC_ARROW,	0},
-    {"Fire Bolt trap",	true,	6, SPELL_FIRE_BOLT,	0},
-    {"Pit",	false,	8, 0,	static_cast<unsigned int>(ItemType::PICKAXE)},
-    {"Acid Bolt trap",	true,	10, SPELL_ACID_BOLT,	0},
-    {"Spear Pit",	false,	12, static_cast<unsigned int>(ItemType::SHORTSPEAR),	static_cast<unsigned int>(ItemType::PICKAXE)},
-    {nullptr, false, 1000, 0, 0}
-};
-
-
-int TrapArrowsFiltr(XItem * item)
+static int TrapChargeFiltr(XItem* item)
 {
-    if (item->kind & ItemKind::MISSILE && (item->it == ItemType::ARROW || item->it == ItemType::QUARREL)) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-int TrapSpearsFiltr(XItem * item)
-{
-    if (item->kind & ItemKind::WEAPON && (item->it == ItemType::SHORTSPEAR || item->it == ItemType::LONGSPEAR)) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return selecting_for && selecting_for->Accepts(item) ? 1 : 0;
 }
 
 int XSkill::UseCreate(XCreature * user)
@@ -352,77 +325,89 @@ int XSkill::UseCreate(XCreature * user)
         return 0;
     }
 
+    // Only what this character is good enough to attempt, in the order
+    // world/traps.lua lists them - which is the order of the menu.
+    std::vector<const TrapRecipe*> offered;
+
+    for (const TrapRecipe& r : trap_recipes) {
+        if (r.level < level) {
+            offered.push_back(&r);
+        }
+    }
+
+    if (offered.empty()) {
+        msgwin.Add("You do not know how to build a trap yet.");
+        return 0;
+    }
+
     XGuiList list;
     list.SetCaption("<DECORATION>###<TEXT> Create Trap <DECORATION>###");
-    int i = 0;
 
-    while (trap_create_rec[i].name && trap_create_rec[i].level < level) {
-        list.AddItem(new XGuiItem_SimpleSelect(trap_create_rec[i].name), 0);
-        i++;
+    for (const TrapRecipe* r : offered) {
+        list.AddItem(new XGuiItem_SimpleSelect(r->name.c_str()), 0);
     }
 
-    int ch = list.Run();
+    const int ch = list.Run();
 
-    if (trap_create_rec[ch].isMagic) {
-        XSpell * sp = user->m->GetSpell((SPELL_NAME)trap_create_rec[ch].var);
+    // Run() answers -1 when the character changes their mind.
+    if (ch < 0 || ch >= static_cast<int>(offered.size())) {
+        return 0;
+    }
 
-        if (sp) {
-            int count = user->PP / (sp->GetManaCost() * 2);
+    const TrapRecipe& recipe = *offered[ch];
 
-            if (count == 0) {
-                msgwin.Add("You don't have enough mana!");
-            } else {
-                switch (trap_create_rec[ch].var) {
-                    case SPELL_MAGIC_ARROW:
-                        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::MAGICARROW, user))->activation_count = count;
-                        break;
+    // A magic trap is paid for in mana, and holds as many charges as the
+    // caster can afford at twice the spell's price apiece.
+    if (recipe.spell != SPELL_EOF) {
+        XSpell* sp = user->m->GetSpell(recipe.spell);
 
-                    case SPELL_FIRE_BOLT:
-                        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::FIREBOLT, user))->activation_count = count;
-                        break;
-
-                    case SPELL_ACID_BOLT:
-                        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::ACIDBOLT, user))->activation_count = count;
-                        break;
-                }
-
-                user->PP -= sp->GetManaCost() * 2 * count;
-                user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
-                msgwin.Add("You have successfuly created a trap!");
-            }
-        } else {
+        if (!sp) {
             msgwin.Add("You have to learn spell first!");
-        }
-    } else {
-        // this trap created from items...
-        std::shared_ptr<XItem> item;
-
-        if (trap_create_rec[ch].var == static_cast<unsigned int>(ItemType::ARROW)) {
-            item = user->SelectItem(&TrapArrowsFiltr, true);
-        } else if (trap_create_rec[ch].var == static_cast<unsigned int>(ItemType::SHORTSPEAR)) {
-            item = user->SelectItem(&TrapSpearsFiltr, true);
+            return 1;
         }
 
-        if (trap_create_rec[ch].var2 == static_cast<unsigned int>(ItemType::PICKAXE)) {
-            if (user->GetBodyPart(BP_TOOL, 0)->Item()->it == ItemType::PICKAXE) {
-                if (item && trap_create_rec[ch].var > 0) {
-                    new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::SPEAR_PIT, user, item.get());
-                    user->sk->UseSkill(XSkill::Skill::CREATETRAP, 20);
-                    msgwin.Add("You have successfuly created a trap!");
-                } else if (trap_create_rec[ch].var == 0) {
-                    new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::PIT, user, nullptr);
-                    user->sk->UseSkill(XSkill::Skill::CREATETRAP, 10);
-                    msgwin.Add("You have successfuly created a trap!");
-                }
-            } else {
-                msgwin.Add("You should wield a pickaxe!");
-            }
-        } else if (item) {
-            new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, XTrap::Type::ARROW, user, item.get());
-            user->sk->UseSkill(XSkill::Skill::CREATETRAP, 15);
-            msgwin.Add("You have successfuly created a trap!");
+        const int count = user->PP / (sp->GetManaCost() * 2);
+
+        if (count == 0) {
+            msgwin.Add("You don't have enough mana!");
+            return 1;
+        }
+
+        (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, recipe.type, user))
+            ->activation_count = count;
+
+        user->PP -= sp->GetManaCost() * 2 * count;
+        user->sk->UseSkill(XSkill::Skill::CREATETRAP, recipe.practice);
+        msgwin.Add("You have successfuly created a trap!");
+        return 1;
+    }
+
+    // Everything else is dug or built, and some of it needs a tool in hand.
+    if (recipe.needs_tool) {
+        const XItem* held = user->GetBodyPart(BP_TOOL, 0)->Item();
+
+        if (!held || held->it != recipe.tool) {
+            msgwin.Add(fmt::format("You should wield a {}!", recipe.tool_name));
+            return 1;
         }
     }
 
+    // A pit holds nothing; every other trap is loaded with something the
+    // character is carrying.
+    std::shared_ptr<XItem> charge;
+
+    if (!recipe.loads.empty()) {
+        selecting_for = &recipe;
+        charge = user->SelectItem(&TrapChargeFiltr, true);
+        selecting_for = nullptr;
+
+        if (!charge) {
+            return 1;
+        }
+    }
+
+    new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, recipe.type, user, charge.get());
+    user->sk->UseSkill(XSkill::Skill::CREATETRAP, recipe.practice);
+    msgwin.Add("You have successfuly created a trap!");
     return 1;
 }

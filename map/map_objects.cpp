@@ -42,6 +42,135 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XTrap);
 // instead of that assert.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XTrap, serialize);
 
+std::vector<TrapRecipe> trap_recipes;
+
+bool TrapRecipe::Accepts(const XItem* item) const
+{
+    if (!item || !(item->kind & loads_kind)) {
+        return false;
+    }
+
+    for (const ItemType& allowed : loads) {
+        if (item->it == allowed) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+const TrapRecipe* FindTrapRecipe(const XTrap::Type type)
+{
+    for (const TrapRecipe& r : trap_recipes) {
+        if (r.type == type) {
+            return &r;
+        }
+    }
+
+    return nullptr;
+}
+
+TrapRecipeBuilder::TrapRecipeBuilder(const std::string& name, const XTrap::Type type)
+{
+    t.name = name;
+    t.type = type;
+}
+
+TrapRecipeBuilder& TrapRecipeBuilder::Level(const int level)
+{
+    t.level = level;
+    return *this;
+}
+
+TrapRecipeBuilder& TrapRecipeBuilder::Spell(const SPELL_NAME spell)
+{
+    t.spell = spell;
+    return *this;
+}
+
+TrapRecipeBuilder& TrapRecipeBuilder::Loads(const ItemKind kind, const sol::table& types)
+{
+    t.loads_kind = kind;
+    t.loads.clear();
+
+    for (size_t i = 1; i <= types.size(); i++) {
+        t.loads.push_back(types[i]);
+    }
+
+    return *this;
+}
+
+TrapRecipeBuilder& TrapRecipeBuilder::Tool(const ItemType tool, const std::string& tool_name)
+{
+    t.needs_tool = true;
+    t.tool = tool;
+    t.tool_name = tool_name;
+    return *this;
+}
+
+TrapRecipeBuilder& TrapRecipeBuilder::Practice(const int practice)
+{
+    t.practice = practice;
+    return *this;
+}
+
+TrapRecipeBuilder& TrapRecipeBuilder::Fills(const int min, const int max)
+{
+    t.fill_min = min;
+    t.fill_max = max;
+    return *this;
+}
+
+void TrapRecipeBuilder::Register()
+{
+    trap_recipes.push_back(t);
+}
+
+// A trap the world placed rather than a character built arrives loaded
+// with whatever its recipe says one of its sort holds - the first of the
+// types that recipe accepts, which is the ordinary one. A trap built by a
+// character was handed its charge and keeps it.
+void XTrap::LoadFromRecipe()
+{
+    if (trap_item != nullptr) {
+        return;
+    }
+
+    const TrapRecipe* recipe = FindTrapRecipe(trap_type);
+
+    if (!recipe || recipe->loads.empty() || recipe->fill_max <= 0) {
+        return;
+    }
+
+    trap_item = XItem::Own(ICREATEB(recipe->loads_kind, recipe->loads.front(), 0, 100000));
+    trap_item->quantity = vRand(recipe->fill_max - recipe->fill_min + 1) + recipe->fill_min;
+
+}
+
+void XTrap::RegisterLua(sol::state_view& lua)
+{
+    lua.new_enum("XTrap",
+        "MAGICARROW", Type::MAGICARROW,
+        "FIREBOLT", Type::FIREBOLT,
+        "ACIDBOLT", Type::ACIDBOLT,
+        "ARROW", Type::ARROW,
+        "TELEPORT", Type::TELEPORT,
+        "PIT", Type::PIT,
+        "SPEAR_PIT", Type::SPEAR_PIT
+    );
+
+    lua.new_usertype<TrapRecipeBuilder>("TrapRecipe",
+        sol::constructors<TrapRecipeBuilder(const std::string&, XTrap::Type)>(),
+        "Level", &TrapRecipeBuilder::Level,
+        "Spell", &TrapRecipeBuilder::Spell,
+        "Loads", &TrapRecipeBuilder::Loads,
+        "Tool", &TrapRecipeBuilder::Tool,
+        "Practice", &TrapRecipeBuilder::Practice,
+        "Fills", &TrapRecipeBuilder::Fills,
+        "Register", &TrapRecipeBuilder::Register
+    );
+}
+
 XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::Type tt, XCreature* _owner, XItem* items)
 {
     SetLocation(_l);
@@ -82,12 +211,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::
 
         case XTrap::Type::ARROW:
             color = xBROWN;
-
-            if (trap_item == nullptr) {
-                trap_item = XItem::Own(ICREATEB(ItemKind::MISSILE, ItemType::ARROW, 0, 100000));
-                trap_item->quantity = vRand(5) + 5;
-            }
-
+            LoadFromRecipe();
             break;
 
         case XTrap::Type::TELEPORT:
@@ -103,12 +227,7 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::
         case XTrap::Type::SPEAR_PIT:
             color = xDARKGRAY;
             isMagic = false;
-
-            if (trap_item == nullptr) {
-                trap_item = XItem::Own(ICREATEB(ItemKind::WEAPON, ItemType::SHORTSPEAR, 0, 100000));
-                trap_item->quantity = vRand(3) + 2;
-            }
-
+            LoadFromRecipe();
             break;
 
         default:
