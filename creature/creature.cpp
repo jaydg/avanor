@@ -159,6 +159,8 @@ XCreature::XCreature()
     ny = -1;
     added_DV = 0;
     added_PV = 0;
+    added_slow_digestion = 0;
+    digestion_phase = 0;
     added_HIT = 0;
     added_DMG = 0;
     added_range = 0;
@@ -396,7 +398,21 @@ int XCreature::Eat(XAnyFood * food)
 
 int XCreature::DecNutrio()
 {
-    nutrio -= nutrio_speed;
+    int rate = nutrio_speed;
+
+    // Something worn is keeping the wearer full for longer. Half the rate,
+    // taken exactly: an odd rate alternates between its two halves rather
+    // than rounding down every turn, which would be rather more than half.
+    if (added_slow_digestion > 0) {
+        rate = (nutrio_speed + digestion_phase) / 2;
+        digestion_phase ^= 1;
+
+        if (rate < 1) {
+            rate = 1;
+        }
+    }
+
+    nutrio -= rate;
 
     if (nutrio < 0) {
         Die(nullptr);

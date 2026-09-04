@@ -358,6 +358,10 @@ Things that simply did not happen:
   you from fire. Both carried a copy of the fire ring's own resistance and
   nobody ever noticed, so the 300 gold bought protection you very likely
   already had, and neither acid nor poison was resisted at all
+- Armour of slow digestion did not slow anything. Its only effect is the
+  property it carries, and nothing in the game had ever read that property —
+  it was not even copied onto the item it was supposed to belong to. Wearing
+  one now leaves you hungry half as fast, which is what it always claimed
 - Helmets, body armour and cloaks were never found enchanted. An enchanted
   piece of armour — of Strength, of the Titans, of fire resistance — could
   only ever turn out to be gloves, a shield or a pair of boots. The other

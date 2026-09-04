@@ -465,6 +465,16 @@ class XCreature : public XBaseObject
         XStats max_stats;
         int added_DV;
         int added_PV;
+
+        // How many worn things slow the wearer's digestion. A count, not a
+        // flag, so taking off one of two slow-digestion pieces leaves the
+        // other still working.
+        int added_slow_digestion;
+
+        // Which half of the pair of turns a slowed digestion is on. Half of
+        // an odd rate cannot be taken every turn, so it alternates between
+        // the two halves and comes out exactly right over any two turns.
+        int digestion_phase;
         int added_HIT;
         int added_DMG;
         int added_range;
@@ -626,6 +636,7 @@ class XCreature : public XBaseObject
 
             ar(HP, PP, MAX_HP, MAX_PP);
             ar(experience, added_DMG, added_DV, added_HIT, added_PV);
+            ar(added_slow_digestion, digestion_phase);
             ar(attack_energy, move_energy, base_speed);
             ar(added_resists, added_range, added_stats);
             ar(base_exp, base_nutrio, carried_weight);

@@ -85,9 +85,9 @@ ArmourEnchantment.new("free_action")
 	:Resist("confuse:5d5+25 stun:5d5+25")
 	:Register()
 
--- Its whole effect is the property below, and nothing has ever read one -
--- so this has never done anything at all. Kept as it was found rather than
--- quietly deleted or quietly invented.
+-- Its whole effect is the property below: the wearer grows hungry at half
+-- the usual rate. The property is declared here and acted on by the engine
+-- (XCreature::DecNutrio).
 ArmourEnchantment.new("slow_digestion")
 	:Called("{} of slow digestion")
 	:Rarity(1)

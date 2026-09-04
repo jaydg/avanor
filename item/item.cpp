@@ -737,6 +737,10 @@ int XItem::onWear(XCreature * cr)
 
     cr->added_range	+= RNG;
 
+    if (special_property & SPP_SLOWDIGESTION) {
+        cr->added_slow_digestion++;
+    }
+
     return 1;
 }
 
@@ -760,6 +764,11 @@ int XItem::onUnWear(XCreature * cr)
     }
 
     cr->added_range	-= RNG;
+
+    if (special_property & SPP_SLOWDIGESTION) {
+        cr->added_slow_digestion--;
+    }
+
     return 1;
 }
 

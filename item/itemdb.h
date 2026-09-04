@@ -176,9 +176,9 @@ struct ENHANCE_STRUCT {
 
     AttackEffectType brt{AttackEffectType::NONE};
 
-    // Stored, but nothing reads it yet - the old table declared these and
-    // SpecialFill() never even copied them onto the item, so an "of slow
-    // digestion" helmet has never once slowed anybody's digestion.
+    // Carried onto the item by SpecialFill(). SPP_SLOWDIGESTION is acted
+    // on (XCreature::DecNutrio halves the wearer's hunger); the others are
+    // declared here and by the materials table but nothing reads them yet.
     SPECIAL_PROPERTY spp{SPP_NONE};
 
     std::string s; //stats
