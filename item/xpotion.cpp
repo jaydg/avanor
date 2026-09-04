@@ -20,9 +20,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fstream>
 #include <fmt/format.h>
+#include <iostream>
+#include <map>
+#include <vector>
+
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+
 #include <sol/sol.hpp>
 
 #include "helpers/msgwin.h"
+#include "engine/xlua.h"
 #include "item/item_cereal.h"
 #include "item/xpotion.h"
 #include "magic/modifier.h"
@@ -33,41 +41,53 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPotion);
 
 void XPotion::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("PotionName",
-        "WATER", PotionName::WATER,
-        "APPLEJUCE", PotionName::APPLEJUCE,
-        "ORANGEJUCE", PotionName::ORANGEJUCE,
-        "HEALING", PotionName::HEALING,
-        "CURE_LIGHT_WOUNDS", PotionName::CURE_LIGHT_WOUNDS,
-        "CURE_SERIOUS_WOUNDS", PotionName::CURE_SERIOUS_WOUNDS,
-        "CURE_CRITICAL_WOUNDS", PotionName::CURE_CRITICAL_WOUNDS,
-        "CURE_MORTAL_WOUNDS", PotionName::CURE_MORTAL_WOUNDS,
-        "POWER", PotionName::POWER,
-        "RESTORATION", PotionName::RESTORATION,
-        "GAIN_STRENGTH", PotionName::GAIN_STRENGTH,
-        "GAIN_WILLPOWER", PotionName::GAIN_WILLPOWER,
-        "GAIN_MANA", PotionName::GAIN_MANA,
-        "GAIN_TOUGHNESS", PotionName::GAIN_TOUGHNESS,
-        "GAIN_DEXTERITY", PotionName::GAIN_DEXTERITY,
-        "CURE_POISON", PotionName::CURE_POISON,
-        "POISON", PotionName::POISON,
-        "BLEEDNESS", PotionName::BLEEDNESS,
-        "DISEASE", PotionName::DISEASE,
-        "CURE_DISEASE", PotionName::CURE_DISEASE,
-        "HEROISM", PotionName::HEROISM,
-        "SEE_INVISIBLE", PotionName::SEE_INVISIBLE,
-        "WEAKNESS", PotionName::WEAKNESS,
-        "CLUMSINESS", PotionName::CLUMSINESS,
-        "DEATH", PotionName::DEATH,
-        "SATIATION", PotionName::SATIATION,
-        "STARVATION", PotionName::STARVATION,
-        "BOOST_SPEED", PotionName::BOOST_SPEED,
-        "SLOWNESS", PotionName::SLOWNESS,
-        "ACID_RESISTANCE", PotionName::ACID_RESISTANCE,
-        "FIRE_RESISTANCE", PotionName::FIRE_RESISTANCE,
-        "COLD_RESISTANCE", PotionName::COLD_RESISTANCE,
-        "POISON_RESISTANCE", PotionName::POISON_RESISTANCE,
-        "RANDOM", PotionName::RANDOM
+    // How a potion looks before anyone knows what it is. Which potions
+    // exist is content (world/items/potions.lua); the vocabulary of
+    // appearances is not, because every colour has to be one no other
+    // potion took this game, and the engine deals them out.
+    lua.new_enum("PotionColor",
+        "CLEAR", PotionColor::CLEAR,
+        "SMOKY", PotionColor::SMOKY,
+        "GREEN", PotionColor::GREEN,
+        "ORANGE", PotionColor::ORANGE,
+        "YELLOW", PotionColor::YELLOW,
+        "BLACK", PotionColor::BLACK,
+        "BLUE", PotionColor::BLUE,
+        "WHITE", PotionColor::WHITE,
+        "CYAN", PotionColor::CYAN,
+        "PURPLE", PotionColor::PURPLE,
+        "HAZE", PotionColor::HAZE,
+        "GOLDEN", PotionColor::GOLDEN,
+        "SILVER", PotionColor::SILVER,
+        "AZURE", PotionColor::AZURE,
+        "MURKY", PotionColor::MURKY,
+        "RED", PotionColor::RED,
+        "GLOWING", PotionColor::GLOWING,
+        "MOTTLED", PotionColor::MOTTLED,
+        "BLOBBY", PotionColor::BLOBBY,
+        "PINK", PotionColor::PINK,
+        "MOULDY", PotionColor::MOULDY,
+        "GRAY", PotionColor::GRAY,
+        "MERCURY", PotionColor::MERCURY,
+        "OILY", PotionColor::OILY,
+        "VISCOUS", PotionColor::VISCOUS,
+        "DARK_RED", PotionColor::DARK_RED,
+        "LIGHT_RED", PotionColor::LIGHT_RED,
+        "DARK_BLUE", PotionColor::DARK_BLUE,
+        "LIGHT_BLUE", PotionColor::LIGHT_BLUE,
+        "BROWN", PotionColor::BROWN,
+        "LIGHT_GRAY", PotionColor::LIGHT_GRAY,
+        "DARK_GRAY", PotionColor::DARK_GRAY,
+        "DARK_GREEN", PotionColor::DARK_GREEN,
+        "LIGHT_GREEN", PotionColor::LIGHT_GREEN,
+        "BEIGE", PotionColor::BEIGE,
+        "AQUAMARINE", PotionColor::AQUAMARINE,
+        "CORAL", PotionColor::CORAL,
+        "IVORY", PotionColor::IVORY,
+        "MAROON", PotionColor::MAROON,
+        "TAN", PotionColor::TAN,
+        "TURQUOISE", PotionColor::TURQUOISE,
+        "VIOLET", PotionColor::VIOLET
     );
 }
 
@@ -147,97 +167,150 @@ PotionColor PotionDescription::SelectColor(PotionColor pnc)
     return pnc;
 }
 
-PotionDescription potion_descr[] = {
-    {PotionName::WATER,	"water",	XEffect::NONE,	100,	1,	1,	PotionDescription::SelectColor(PotionColor::CLEAR),	false},
-    {PotionName::APPLEJUCE,	"apple juice",	XEffect::NONE,	95,	1,	2,	PotionDescription::SelectColor(PotionColor::YELLOW),	false},
-    {PotionName::ORANGEJUCE,	"orange juice",	XEffect::NONE,	95,	1,	3,	PotionDescription::SelectColor(PotionColor::ORANGE),	false},
-    {PotionName::HEALING,	"healing",	XEffect::HEAL,	10,	4,	200, PotionDescription::SelectColor(PotionColor::WHITE),	false},
-    {PotionName::CURE_LIGHT_WOUNDS,	"cure light wounds",	XEffect::CURE_LIGHT_WOUNDS,	80,	2,	15,	PotionDescription::SelectColor(),	false},
-    {PotionName::CURE_SERIOUS_WOUNDS, "cure serious wounds",	XEffect::CURE_SERIOUS_WOUNDS,	70,	2,	40,	PotionDescription::SelectColor(),	false},
-    {PotionName::CURE_CRITICAL_WOUNDS, "cure critical wounds", XEffect::CURE_CRITICAL_WOUNDS,	40,	3,	60,	PotionDescription::SelectColor(),	false},
-    {PotionName::CURE_MORTAL_WOUNDS,	"cure mortal wounds",	XEffect::CURE_MORTAL_WOUNDS,	20,	3,	100, PotionDescription::SelectColor(),	false},
-    {PotionName::POWER,	"power",	XEffect::POWER,	80,	2,	15,	PotionDescription::SelectColor(),	false},
-    {PotionName::RESTORATION,	"restoration",	XEffect::RESTORATION,	5,	5,	400, PotionDescription::SelectColor(),	false},
-    {PotionName::GAIN_STRENGTH,	"strength",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
-    {PotionName::GAIN_WILLPOWER,	"willpower",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
-    {PotionName::GAIN_MANA,	"mana",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
-    {PotionName::GAIN_TOUGHNESS,	"toughness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
-    {PotionName::GAIN_DEXTERITY,	"swiftness",	XEffect::NONE,	10,	4,	1000, PotionDescription::SelectColor(),	false},
-    {PotionName::POISON,	"poison",	XEffect::NONE,	150,	1,	5,	PotionDescription::SelectColor(),	false},
-    {PotionName::CURE_POISON,	"cure poison",	XEffect::CURE_POISON,	80,	3,	25, PotionDescription::SelectColor(),	false},
-    {PotionName::BLEEDNESS,	"bleeding",	XEffect::NONE,	300,	1,	1, PotionDescription::SelectColor(),	false},
-    {PotionName::DISEASE,	"disease",	XEffect::NONE,	200,	1,	1, PotionDescription::SelectColor(),	false},
-    {PotionName::CURE_DISEASE,	"cure disease",	XEffect::CURE_DISEASE,	50,	3,	50, PotionDescription::SelectColor(),	false},
-    {PotionName::HEROISM,	"heroism",	XEffect::HEROISM,	75,	2,	20, PotionDescription::SelectColor(),	false},
-    {PotionName::SEE_INVISIBLE,	"see invisible",	XEffect::SEE_INVISIBLE,	30,	3,	30,	PotionDescription::SelectColor(),	false},
-    {PotionName::WEAKNESS,	"weakness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	false},
-    {PotionName::CLUMSINESS,	"clumsiness",	XEffect::NONE,	70,	1,	5,	PotionDescription::SelectColor(),	false},
-    {PotionName::DEATH,	"death",	XEffect::NONE,	1,	2,	5,	PotionDescription::SelectColor(),	false},
-    {PotionName::SATIATION,	"satiation",	XEffect::NONE,	50,	2,	15,	PotionDescription::SelectColor(),	false},
-    {PotionName::STARVATION,	"starvation",	XEffect::NONE,	40,	3,	15,	PotionDescription::SelectColor(),	false},
-    {PotionName::BOOST_SPEED,	"boost speed",	XEffect::NONE,	30,	3,	100, PotionDescription::SelectColor(),	false},
-    {PotionName::SLOWNESS,	"slowness",	XEffect::NONE,	150,	1,	2,	PotionDescription::SelectColor(),	false},
-    {PotionName::ACID_RESISTANCE,	"acid resistance",	XEffect::ACID_RESISTANCE,	35,	3,	70,	PotionDescription::SelectColor(),	false},
-    {PotionName::FIRE_RESISTANCE,	"fire resistance",	XEffect::FIRE_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	false},
-    {PotionName::COLD_RESISTANCE,	"cold resistance",	XEffect::COLD_RESISTANCE,	45,	2,	50,	PotionDescription::SelectColor(),	false},
-    {PotionName::POISON_RESISTANCE,	"poison resistance",	XEffect::POISON_RESISTANCE,	40,	3,	50,	PotionDescription::SelectColor(),	false},
-};
+// Filled from world/items/potions.lua as that script loads.
+std::vector<PotionDescription> potion_descr;
 
 int PotionDescription::potion_total_value = 0;
+
 void PotionDescription::RunOnce()
 {
-    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++) {
-        potion_total_value += potion_descr[i].rarity;
+    potion_total_value = 0;
+
+    for (const auto& row : potion_descr) {
+        potion_total_value += row.rarity;
     }
 }
 
-struct PotionRunOnce {
-    PotionRunOnce()
-    {
-        PotionDescription::RunOnce();
+PotionBuilder::PotionBuilder(std::string id)
+{
+    t.pn = std::move(id);
+}
+
+PotionBuilder& PotionBuilder::Called(const std::string& n)
+{
+    t.name = n;
+    return *this;
+}
+
+PotionBuilder& PotionBuilder::Effect(const XEffect::Id eff)
+{
+    t.effect = eff;
+    return *this;
+}
+
+PotionBuilder& PotionBuilder::Chance(const int rarity)
+{
+    t.rarity = rarity;
+    return *this;
+}
+
+PotionBuilder& PotionBuilder::Worth(const int value)
+{
+    t.value = value;
+    return *this;
+}
+
+PotionBuilder& PotionBuilder::Alchemy(const int power)
+{
+    t.alchemy_power = power;
+    return *this;
+}
+
+PotionBuilder& PotionBuilder::Looks(const PotionColor colour)
+{
+    t.force_color = colour;
+    return *this;
+}
+
+PotionBuilder& PotionBuilder::OnDrink(const std::string& handler)
+{
+    t.on_drink = handler;
+    return *this;
+}
+
+void PotionBuilder::Register()
+{
+    if (t.pn.empty()) {
+        std::cerr << "world: a potion with no id" << std::endl;
+        return;
     }
-} potion_run_once;
+
+    if (PotionDescription::GetRec(t.pn)) {
+        std::cerr << "world: two potions both called '" << t.pn << "'" << std::endl;
+        return;
+    }
+
+    // Its look for this game: the one content asked for, or one drawn from
+    // whatever no other potion has taken.
+    t.force_color = PotionDescription::SelectColor(t.force_color);
+
+    potion_descr.push_back(t);
+    PotionDescription::potion_total_value += t.rarity;
+}
 
 PotionName PotionDescription::GetRandomPotion()
 {
+    if (potion_descr.empty()) {
+        return PN_NONE;
+    }
+
     int val = vRand(potion_total_value);
-    int pos = -1;
 
-    do {
-        pos++;
-        val -= potion_descr[pos].rarity;
-    } while (val >= 0);
+    for (const auto& row : potion_descr) {
+        val -= row.rarity;
 
-    return static_cast<PotionName>(pos);
+        if (val < 0) {
+            return row.pn;
+        }
+    }
+
+    return potion_descr.front().pn;
 }
 
-PotionDescription* PotionDescription::GetRec(const PotionName pn)
+PotionName PotionDescription::GetAnyPotion()
 {
-    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
-        if (potion_descr[i].pn == pn) {
-            return &potion_descr[i];
+    if (potion_descr.empty()) {
+        return PN_NONE;
+    }
+
+    return potion_descr[vRand(static_cast<int>(potion_descr.size()))].pn;
+}
+
+PotionDescription* PotionDescription::GetRec(const PotionName& pn)
+{
+    for (auto& row : potion_descr) {
+        if (row.pn == pn) {
+            return &row;
         }
+    }
 
     return nullptr;
 }
 
-XPotion::XPotion(const PotionName _pn)
+XPotion::XPotion(const PotionName& _pn)
 {
-    if (_pn == PotionName::RANDOM) {
+    if (_pn == PN_NONE) {
         pn = PotionDescription::GetRandomPotion();
     } else {
         pn = _pn;
     }
 
-    pdescr = nullptr;
+    pdescr = PotionDescription::GetRec(pn);
 
-    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
-        if (potion_descr[i].pn == pn) {
-            pdescr = &potion_descr[i];
-            break;
-        }
+    // A name nothing defines - a typo in world/, where potion ids are
+    // written by hand. Say so and pour something else, rather than
+    // dereferencing a row that is not there.
+    if (!pdescr) {
+        std::cerr << "world: nothing defines a potion '" << pn
+                  << "' - substituting another" << std::endl;
 
-    assert(pdescr);
+        pn = PotionDescription::GetRandomPotion();
+        pdescr = PotionDescription::GetRec(pn);
+    }
+
+    if (!pdescr) {
+        return;
+    }
 
     kind = ItemKind::POTION;
     bp = BP_OTHER;
@@ -301,6 +374,44 @@ void XPotion::Identify()
     pdescr->identified = true;
 }
 
+// Hands a potion that names no effect to the Lua function its row named
+// in :OnDrink(). Mirrors XLuaTool::onUse and XItem::OnCreated - the
+// handler is looked up by name in the live state, and a row that named
+// none simply does nothing.
+static int RunDrinkHandler(const std::string& handler,
+    const PotionName& pn, XCreature* cr)
+{
+    if (handler.empty()) {
+        return 0;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function fn = lua[handler];
+
+    if (!fn.valid()) {
+        std::cerr << "world: potion '" << pn << "' wants drinking through '"
+                  << handler << "', which is not defined" << std::endl;
+
+        return 0;
+    }
+
+    const auto result = fn(pn, (void*)cr);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << handler << ": " << err.what() << std::endl;
+
+        return 0;
+    }
+
+    if (result.get_type() == sol::type::none
+        || result.get_type() == sol::type::lua_nil) {
+        return 1;
+    }
+
+    return result.get<int>() ? 1 : 0;
+}
+
 int XPotion::onDrink(XCreature * cr)
 {
     if (cr->isHero()) {
@@ -314,196 +425,11 @@ int XPotion::onDrink(XCreature * cr)
     if (pdescr->effect > XEffect::NONE) {
         flag = XEffect::Make(cr, pdescr->effect, 30);
     } else {
-        switch (pn) {
-            case PotionName::WATER:
-            case PotionName::APPLEJUCE:
-            case PotionName::ORANGEJUCE:
-                if (cr->isHero()) {
-                    msgwin.Add("You feel less thirsty.");
-                } else if (cr->isVisible()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("looks less thirsty.");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::GAIN_STRENGTH:
-                flag = cr->GainAttr(XStats::STR, 1);
-                break;
-
-            case PotionName::GAIN_TOUGHNESS:
-                flag = cr->GainAttr(XStats::TOU, 1);
-                break;
-
-            case PotionName::GAIN_WILLPOWER:
-                flag = cr->GainAttr(XStats::WIL, 1);
-                break;
-
-            case PotionName::GAIN_DEXTERITY:
-                flag = cr->GainAttr(XStats::DEX, 1);
-                break;
-
-            case PotionName::GAIN_MANA:
-                flag = cr->GainAttr(XStats::MAN, 1);
-                break;
-
-            case PotionName::WEAKNESS:
-                flag = cr->GainAttr(XStats::STR, -1);
-                break;
-
-            case PotionName::CLUMSINESS:
-                flag = cr->GainAttr(XStats::DEX, -1);
-                break;
-
-            case PotionName::DEATH:
-                // A potion of death should hurt really badly!
-                // As potion of lifelessness, it was just another
-                // clumsiness potion, but now it is a potion of death.
-                // Moral: Watch what you drink...  This will kill *anyone*.
-
-                // Note, this potion is going to be extremely rare as well.
-                if (cr->isHero()) {
-                    // Inform the hero of their fate.
-                    msgwin.Add("You feel your life draining away very rapidly!");
-                } else if (cr->isVisible()) {
-                    if (cr->unique) {
-                        // Uniques are too smart to be fooled by such petty implements...
-                        msgwin.Add(cr->name);
-                        msgwin.Add("seems to change");
-
-                        switch (cr->creature_person_type) {
-                            case XCreature::NAMED_HE:
-                            case XCreature::HE:
-                                msgwin.Add("his");
-                                break;
-
-                            case XCreature::NAMED_SHE:
-                            case XCreature::SHE:
-                                msgwin.Add("her");
-                                break;
-
-                            case XCreature::NAMED_THEY:
-                            case XCreature::THEY:
-                                msgwin.Add("their");
-                                break;
-
-                            // Everything else is an it, including the
-                            // person types that speak in the second
-                            // person - the hero is never the creature
-                            // being looked at here.
-                            default:
-                                msgwin.Add("its");
-                                break;
-                        }
-
-                        msgwin.Add("mind and throws the potion away!");
-                        flag = 1;
-                        break;
-                    } else {
-                        // Ha ha! A stupid monster drank the potion of death!
-                        msgwin.Add(cr->name);
-                        msgwin.Add("seems to be dying!");
-                    }
-                }
-
-                flag = 1;
-                cr->GainAttr(XStats::STR, -1); // Weakness
-                cr->GainAttr(XStats::DEX, -1); // Damage
-                cr->GainAttr(XStats::TOU, -1); // Fatigue
-                cr->GainAttr(XStats::LEN, -1); // Can't learn if you're dead
-                cr->GainAttr(XStats::WIL, -1); // Lost the will to live
-                cr->GainAttr(XStats::MAN, -1); // Out of touch with nature
-                cr->GainAttr(XStats::PER, -1); // Senses are useless when dead
-                cr->GainAttr(XStats::CHR, -1); // Rotting is ugly
-                cr->md->Add(MOD_WOUND, 100, cr); // Ensure death
-                break;
-
-            case PotionName::SATIATION:
-                cr->nutrio += cr->base_nutrio * 7;
-
-                if (cr->isHero()) {
-                    msgwin.Add("You feel much fuller!");
-                } else if (cr->isVisible()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("looks full!");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::STARVATION:
-                cr->nutrio = cr->base_nutrio * 3;
-
-                if (cr->isHero()) {
-                    msgwin.Add("You feel hungrier!");
-                } else if (cr->isVisible()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("looks very hungry!");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::BOOST_SPEED:
-                cr->md->Add(MOD_BOOST_SPEED, 100, cr);
-
-                if (cr->isVisible() && !cr->isHero()) {
-                    msgwin.Add("moves more quickly!");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::SLOWNESS:
-                cr->md->Add(MOD_SLOWNESS, 100, cr);
-
-                if (cr->isVisible() && !cr->isHero()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("moves slowly!");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::BLEEDNESS:
-                cr->md->Add(MOD_WOUND, 30, cr);
-
-                if (cr->isHero()) {
-                    msgwin.Add("You begin to bleed.");
-                } else if (cr->isVisible()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("starts to bleed.");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::DISEASE:
-                cr->md->Add(MOD_DISEASE, 25, cr);
-
-                if (cr->isVisible() && !cr->isHero()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("looks ill.");
-                }
-
-                flag = 1;
-                break;
-
-            case PotionName::POISON:
-                cr->md->Add(MOD_POISON, 10, cr);
-
-                if (cr->isVisible() && !cr->isHero()) {
-                    msgwin.Add(cr->name);
-                    msgwin.Add("is poisoned.");
-                }
-
-                flag = 1;
-                break;
-
-            default:
-                assert(0);
-        }
+        // No effect of its own: content finishes the job. The handler
+        // gets the potion's id and the drinker, and answers whether
+        // anything actually happened - a stat already at its ceiling, or a
+        // sip of water, are not the same as a potion doing nothing.
+        flag = RunDrinkHandler(pdescr->on_drink, pn, cr);
     }
 
     if (flag == 0 && cr->isVisible()) {
@@ -522,28 +448,61 @@ int XPotion::onDrink(XCreature * cr)
 
 void XPotion::FixupDescr()
 {
-    pdescr = nullptr;
+    pdescr = PotionDescription::GetRec(pn);
 
-    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
-        if (potion_descr[i].pn == pn) {
-            pdescr = &potion_descr[i];
-            break;
-        }
+    // A name nothing defines - a typo in world/, where potion ids are
+    // written by hand. Say so and pour something else, rather than
+    // dereferencing a row that is not there.
+    if (!pdescr) {
+        std::cerr << "world: nothing defines a potion '" << pn
+                  << "' - substituting another" << std::endl;
 
-    assert(pdescr);
+        pn = PotionDescription::GetRandomPotion();
+        pdescr = PotionDescription::GetRec(pn);
+    }
+
+    if (!pdescr) {
+        return;
+    }
 }
 
+// What one game came to know about one sort of potion - whether it has
+// been recognised, and what colour it turned out to be. Everything else in
+// a row is content and comes back from world/items/potions.lua next load.
+struct PotionMemory {
+    bool identified{false};
+    PotionColor colour{PotionColor::RANDOM};
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(identified, colour);
+    }
+};
+
+// Keyed by id rather than written in table order, so content may add rows
+// or reorder them without spoiling a save.
 void XPotion::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++) {
-        ar(potion_descr[i]);
+    std::map<std::string, PotionMemory> learned;
+
+    for (const auto& row : potion_descr) {
+        learned[row.pn] = PotionMemory{row.identified, row.force_color};
     }
+
+    ar(learned);
 }
 
 void XPotion::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (int i = 0; i < static_cast<int>(PotionName::RANDOM); i++) {
-        ar(potion_descr[i]);
+    std::map<std::string, PotionMemory> learned;
+    ar(learned);
+
+    for (auto& row : potion_descr) {
+        if (const auto it = learned.find(row.pn); it != learned.end()) {
+            row.identified = it->second.identified;
+            row.force_color = it->second.colour;
+        }
     }
 }
 
@@ -567,19 +526,24 @@ void XAlchemy::Init()
 
     for (const auto& it: alchemy.recipes) {
         file <<  fmt::format("{} + {} = {}\n",
-            potion_descr[static_cast<int>(it->pn1)].name,
-            potion_descr[static_cast<int>(it->pn2)].name,
-            potion_descr[static_cast<int>(it->result)].name
+            PotionDescription::GetRec(it->pn1)->name,
+            PotionDescription::GetRec(it->pn2)->name,
+            PotionDescription::GetRec(it->result)->name
         );
     }
 }
 
-std::string XAlchemy::GetRecipeName(const PotionName pn1, const PotionName pn2, const PotionName pn3)
+std::string XAlchemy::GetRecipeName(const PotionName& pn1, const PotionName& pn2,
+    const PotionName& pn3)
 {
-    const char* c1 = potion_descr[static_cast<int>(pn1)].name;
-    const char* c2 = potion_descr[static_cast<int>(pn2)].name;
-    const char* c3 = potion_descr[static_cast<int>(pn3)].name;
-    return fmt::format("potion of {} + potion of {} = potion of {}", c1, c2, c3);
+    static const std::string nothing;
+    const auto named = [](const PotionName& pn) -> const std::string& {
+        const PotionDescription* row = PotionDescription::GetRec(pn);
+        return row ? row->name : nothing;
+    };
+
+    return fmt::format("potion of {} + potion of {} = potion of {}",
+        named(pn1), named(pn2), named(pn3));
 }
 
 void XAlchemy::BuildRecipes(int al_lvl)
@@ -614,10 +578,9 @@ void XAlchemy::BuildRecipes(int al_lvl)
 int XAlchemy::GetPotionCount(const int al_lvl, PotionName** pTable)
 {
     int res = 0;
-    int i;
 
-    for (i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
-        if (potion_descr[i].alchemy_power == al_lvl) {
+    for (const auto& row : potion_descr)
+        if (row.alchemy_power == al_lvl) {
             res++;
         }
 
@@ -625,9 +588,9 @@ int XAlchemy::GetPotionCount(const int al_lvl, PotionName** pTable)
 
     int tres = 0;
 
-    for (i = 0; i < static_cast<int>(PotionName::RANDOM); i++)
-        if (potion_descr[i].alchemy_power == al_lvl) {
-            (*pTable)[tres] = potion_descr[i].pn;
+    for (const auto& row : potion_descr)
+        if (row.alchemy_power == al_lvl) {
+            (*pTable)[tres] = row.pn;
             tres++;
         }
 
@@ -650,7 +613,7 @@ XAlchemyRecipe* XAlchemy::GetRecipe(int num)
     return alchemy.recipes[num].get();
 }
 
-int XAlchemy::isValidRecipe(PotionName pn1, PotionName pn2, PotionName pn3)
+int XAlchemy::isValidRecipe(const PotionName& pn1, const PotionName& pn2, const PotionName& pn3)
 {
     for (auto& rec: alchemy.recipes) {
         if (rec->pn1 == pn1 && rec->pn2 == pn2 && rec->result == pn3)
@@ -660,13 +623,13 @@ int XAlchemy::isValidRecipe(PotionName pn1, PotionName pn2, PotionName pn3)
     return 0;
 }
 
-PotionName XAlchemy::GetPotionName(PotionName pn1, PotionName pn2)
+PotionName XAlchemy::GetPotionName(const PotionName& pn1, const PotionName& pn2)
 {
     for (auto& rec: alchemy.recipes) {
         if ((rec->pn1 == pn1 && rec->pn2 == pn2) || (rec->pn2 == pn1 && rec->pn1 == pn2))
             return rec->result;
     }
 
-    return PotionName::UNKNOWN;
+    return PN_NONE;
 }
 

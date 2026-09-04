@@ -383,7 +383,7 @@ void XHero::MixPotions()
             const PotionDescription* pr = PotionDescription::GetRec(pot1->pn);
             int val = sk->GetLevel(XSkill::Skill::ALCHEMY) * 8 + 30 - pr->alchemy_power * 10;
 
-            if (pn != PotionName::UNKNOWN && vRand(100) < val) {
+            if (pn != PN_NONE && vRand(100) < val) {
                 const auto pot = new XPotion(pn);
                 sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
                 msgwin.Add(fmt::format("You have mixed {}.", pot->toString()));

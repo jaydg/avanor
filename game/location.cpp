@@ -663,9 +663,17 @@ int XLocation::ValidateWays()
     return bad;
 }
 
-void XLocation::CreateNewGame()
+// Loading the world scripts and building the world out of them are two
+// steps, not one: the tables those scripts fill - potions above all - have
+// to exist before XAlchemy::Init() and PlantDefinition::Create() read them,
+// and both of those must run before any location is populated with herbs.
+void XLocation::LoadScripts()
 {
     XLua::Init();
+}
+
+void XLocation::CreateNewGame()
+{
     sol::state_view lua(XLua::State());
     if (const sol::protected_function_result result = lua["InitWorld"]();
         !result.valid()) {

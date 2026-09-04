@@ -77,59 +77,43 @@ enum class PotionColor {
     RANDOM
 };
 
-enum class PotionName {
-    UNKNOWN = -1,
-    WATER,
-    APPLEJUCE,
-    ORANGEJUCE,
-    HEALING,
-    CURE_LIGHT_WOUNDS,
-    CURE_SERIOUS_WOUNDS,
-    CURE_CRITICAL_WOUNDS,
-    CURE_MORTAL_WOUNDS,
-    POWER,
-    RESTORATION,
-    GAIN_STRENGTH,
-    GAIN_WILLPOWER,
-    GAIN_MANA,
-    GAIN_TOUGHNESS,
-    GAIN_DEXTERITY,
-    CURE_POISON,
-    POISON,
-    BLEEDNESS,
-    DISEASE,
-    CURE_DISEASE,
-    HEROISM,
-    SEE_INVISIBLE,
-    WEAKNESS,
-    CLUMSINESS,
-    DEATH,
-    SATIATION,
-    STARVATION,
-    BOOST_SPEED,
-    SLOWNESS,
-    ACID_RESISTANCE,
-    FIRE_RESISTANCE,
-    COLD_RESISTANCE,
-    POISON_RESISTANCE,
-    RANDOM
-};
+// Which potion this is - the id world/items/potions.lua registered it
+// under. A string like every other content id: which potions exist is
+// content, and the engine names none of them.
+using PotionName = std::string;
+
+// "No potion": a request that names none, and the answer when two potions
+// mix into nothing. Was PN_NONE and ::UNKNOWN, which as strings
+// are one value.
+inline constexpr const char* PN_NONE = "";
 
 struct PotionDescription {
     PotionName pn;
-    const char* name;
-    XEffect::Id effect;
-    int rarity;
-    int alchemy_power;
-    int value; // how much it cost for one potion_power //value * potion_power * [spell_cost]
-    PotionColor force_color;
-    bool identified;
+    std::string name;
+    XEffect::Id effect{XEffect::NONE};
+    int rarity{0};
+    int alchemy_power{0};
+    int value{0}; // how much it cost for one potion_power //value * potion_power * [spell_cost]
+
+    // The Lua function that runs when this potion is drunk and it names no
+    // effect - the drinks, the stat gains, the ones that lay a modifier.
+    // Empty for a potion that is its effect and nothing more.
+    std::string on_drink;
+
+    PotionColor force_color{PotionColor::RANDOM};
+    bool identified{false};
 
     static PotionColor SelectColor(PotionColor pnc = PotionColor::RANDOM);
     static PotionName GetRandomPotion();
+
+    // A potion drawn with every sort equally likely, ignoring rarity -
+    // what the herb table wants when it decides which potion a species
+    // distils into, where a common herb yielding a rare potion is the
+    // point rather than a mistake.
+    static PotionName GetAnyPotion();
     static void RunOnce();
     static int potion_total_value;
-    static PotionDescription* GetRec(PotionName pn);
+    static PotionDescription* GetRec(const PotionName& pn);
 
     // name/effect/rarity/alchemy_power/value are compile-time constants
     // (see potion_descr[]'s static initializer) - only identified/
@@ -142,20 +126,47 @@ struct PotionDescription {
     }
 };
 
+// Fluent builder for one sort of potion:
+//
+//   Potion.new("healing")
+//       :Called("healing")
+//       :Effect(XEffect.HEAL)
+//       :Chance(10)
+//       :Worth(200)
+//       :Alchemy(4)
+//       :Looks(PotionColor.WHITE)
+//       :Register()
+//
+// PotionDescription is visible here (XPotion holds one by pointer), but
+// the table itself stays private to xpotion.cpp.
+class PotionBuilder
+{
+    public:
+        explicit PotionBuilder(std::string id);
+
+        PotionBuilder& Called(const std::string& n);
+        PotionBuilder& Effect(XEffect::Id eff);
+        PotionBuilder& Chance(int rarity);
+        PotionBuilder& Worth(int value);
+        PotionBuilder& Alchemy(int power);
+        PotionBuilder& Looks(PotionColor colour);
+        PotionBuilder& OnDrink(const std::string& handler);
+
+        void Register();
+
+    private:
+        PotionDescription t;
+};
+
 class XPotion : public XItem
 {
     public:
-        // Registers PotionName as the Lua table PotionName.MEMBER (prefix
-        // dropped, same convention as every other Lua-facing enum table) -
-        // lets world scripts create a specific potion (e.g. for a unique
-        // NPC's starting gear) via CreateObject(PotionName.HEALING), the
-        // only axis ItemKind/ItemType-based creation (ICREATEA/ICREATEB,
-        // see item/itemf.cpp) can't reach: every ItemKind::POTION item is
-        // created as `new XPotion()` (PotionName::RANDOM) regardless of ItemType.
+        // Only PotionColor now: which potions exist is content, so there
+        // is no table of potion names to register any more.
         static void RegisterLua(sol::state_view& lua);
 
         DECLARE_CREATOR(XPotion, XItem);
-        XPotion(PotionName _pn = PotionName::RANDOM);
+        explicit XPotion(const PotionName& _pn = PN_NONE);
         XPotion(XPotion * copy);
         XItem* MakeCopy() override
         {
@@ -238,7 +249,7 @@ class XAlchemyRecipe
 // (a header template) - a specialization declared only in xpotion.cpp
 // wouldn't be visible wherever that gets instantiated (see the same
 // reasoning, first hit for XStandardAI, in std_ai.h).
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRecipe, serialize, PotionName::WATER, PotionName::WATER, PotionName::WATER);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XAlchemyRecipe, serialize, "water", "water", "water");
 
 class XAlchemy
 {
@@ -252,9 +263,9 @@ class XAlchemy
         static int GetRecipeCount();
         static XAlchemyRecipe* GetRecipe(int num);
         static void Init();
-        static int isValidRecipe(PotionName pn1, PotionName pn2, PotionName pn3);
-        static std::string GetRecipeName(PotionName pn1, PotionName pn2, PotionName pn3);
-        static PotionName GetPotionName(PotionName pn1, PotionName pn2);
+        static int isValidRecipe(const PotionName& pn1, const PotionName& pn2, const PotionName& pn3);
+        static std::string GetRecipeName(const PotionName& pn1, const PotionName& pn2, const PotionName& pn3);
+        static PotionName GetPotionName(const PotionName& pn1, const PotionName& pn2);
 };
 
 #endif

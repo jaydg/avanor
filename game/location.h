@@ -282,6 +282,7 @@ class XLocation : public XObject
         // of complaints, each already reported.
         static int ValidateWays();
 
+        static void LoadScripts();
         static void CreateNewGame();
         static void Restoration();
         // options carries what the chosen generator needs - which tiles

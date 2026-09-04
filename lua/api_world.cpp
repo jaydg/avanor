@@ -192,10 +192,14 @@ void* CreateObjectByMask(int flag, int min_val, int max_val)
     return ICREATE((ItemKind)(flag), min_val, max_val);
 }
 
-//CreateObject(PotionName.HEALING)
-void* CreateObjectByPotion(int pn)
+//CreatePotion("healing")
+//
+// Its own call rather than a CreateObject overload: a potion id is a
+// string now, and so is the content id CreateObject already takes, so one
+// single-argument CreateObject could not tell which it had been handed.
+void* CreatePotion(const std::string& pn)
 {
-    return new XPotion(static_cast<PotionName>(pn));
+    return new XPotion(pn);
 }
 
 //CreateObject(ItemKind.WEAPON, ItemType.LONGSWORD, 1, 100)
@@ -635,7 +639,8 @@ void RegisterWorldApi(sol::state_view& lua)
         lua.set_function("SetWanderingAllowed", &lua_api::SetWanderingAllowed);
         lua.set_function("Teleport", &lua_api::Teleport);
         lua.set_function("Way", &lua_api::Way);
-        lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectByPotion, &lua_api::CreateObjectOfType));
+        lua.set_function("CreateObject", sol::overload(&lua_api::CreateObjectByName, &lua_api::CreateObjectByMask, &lua_api::CreateObjectOfType));
+        lua.set_function("CreatePotion", &lua_api::CreatePotion);
         lua.set_function("CreateScroll", &lua_api::CreateScroll);
         lua.set_function("CreateBook", &lua_api::CreateBook);
         lua.set_function("Identify", &lua_api::IdentifyItem);

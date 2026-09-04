@@ -50,7 +50,7 @@ namespace lua_api
     void Way(XStairWay::Type type, const std::string& loc_id, sol::optional<int> x, sol::optional<int> y);
     void* CreateObjectByName(const std::string& name);
     void* CreateObjectByMask(int flag, int min_val, int max_val);
-    void* CreateObjectByPotion(int pn);
+    void* CreatePotion(const std::string& pn);
     void* CreateObjectOfType(ItemKind kind, ItemType it, int min_val, int max_val);
     void* CreateScroll(const std::string& scrn);
     void* CreateBook(int bn);

@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/magic.h"
+#include "magic/modifiers.h"
 
 // The school table below names one of these on almost every line.
 using School = XMagic::School;
@@ -38,6 +39,29 @@ void RegisterSpellNameEnum(sol::state_view& lua)
 {
     // Which spells exist is content (world/spells.lua). What a spell can
     // belong to, and what a caster reaches for one FOR, stay engine.
+    // What can be laid on a creature for a while - a wound that bleeds, a
+    // quickening, a disease. Content names these when a potion or a spell
+    // has no effect of its own to point at.
+    lua.new_enum("Modifier",
+        "WOUND", MOD_WOUND,
+        "POISON", MOD_POISON,
+        "CONFUSE", MOD_CONFUSE,
+        "STUN", MOD_STUN,
+        "HEROISM", MOD_HEROISM,
+        "DISEASE", MOD_DISEASE,
+        "SEE_INVISIBLE", MOD_SEE_INVISIBLE,
+        "ACID_RESISTANCE", MOD_ACID_RESISTANCE,
+        "FIRE_RESISTANCE", MOD_FIRE_RESISTANCE,
+        "COLD_RESISTANCE", MOD_COLD_RESISTANCE,
+        "POISON_RESISTANCE", MOD_POISON_RESISTANCE,
+        "PARALYSE", MOD_PARALYSE,
+        "WEAK", MOD_WEAK,
+        "RESISTANCE", MOD_RESISTANCE,
+        "BOOST_STATS", MOD_BOOST_STATS,
+        "BOOST_SPEED", MOD_BOOST_SPEED,
+        "SLOWNESS", MOD_SLOWNESS
+    );
+
     lua.new_enum("MagicSchool",
         "ELEMENTAL", XMagic::School::ELEMENTAL,
         "BODY", XMagic::School::BODY,

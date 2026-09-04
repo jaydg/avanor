@@ -140,6 +140,7 @@ bool XGame::Create(const char type_of_start) const
             [[fallthrough]];
 
         case 'N' :
+            XLocation::LoadScripts();
             XAlchemy::Init();
             PlantDefinition::Create();
             vClrScr();
@@ -151,6 +152,7 @@ bool XGame::Create(const char type_of_start) const
             break;
 
         case 'T' :
+            XLocation::LoadScripts();
             XAlchemy::Init();
             PlantDefinition::Create();
             vClrScr();
@@ -162,6 +164,7 @@ bool XGame::Create(const char type_of_start) const
             break;
 
         case 'D' :
+            XLocation::LoadScripts();
             XAlchemy::Init();
             PlantDefinition::Create();
             vClrScr();

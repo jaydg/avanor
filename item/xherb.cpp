@@ -29,32 +29,32 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define HERBS_COUNT 18
 
 PlantDefinition herbs[] = {
-    {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"trifolium flower",	"trifolium",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"urtica leave",	"urtica",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"convallaria flower",	"convallaria",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"tussilago farfara leave",	"tussilago farfara",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"melissa leave",	"melissa",	"delicate",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"mentha leave",	"mentha",	"mint",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"taraxacum flower",	"taraxacum",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"paeonia root",	"paeonia",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"plantago leave",	"plantago",	"bitter",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
-    {"chamomilla flower",	"chamomilla",	"sweet",	xGREEN,	HT_HERB,	PotionName::UNKNOWN,	0, false},
+    {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"trifolium flower",	"trifolium",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"urtica leave",	"urtica",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"convallaria flower",	"convallaria",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"tussilago farfara leave",	"tussilago farfara",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"melissa leave",	"melissa",	"delicate",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"mentha leave",	"mentha",	"mint",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"taraxacum flower",	"taraxacum",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"paeonia root",	"paeonia",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"plantago leave",	"plantago",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+    {"chamomilla flower",	"chamomilla",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
 
-    {"red mushroom",	"red mushroom",	"bitter",	xRED,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
-    {"green mushroom",	"green mushroom",	"bitter",	xGREEN,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
-    {"blue mushroom",	"blue mushroom",	"bitter",	xBLUE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
-    {"yellow mushroom",	"yellow mushroom",	"bitter",	xYELLOW,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
-    {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PotionName::UNKNOWN,	0, false},
+    {"red mushroom",	"red mushroom",	"bitter",	xRED,	HT_MUSHROOM,	PN_NONE,	0, false},
+    {"green mushroom",	"green mushroom",	"bitter",	xGREEN,	HT_MUSHROOM,	PN_NONE,	0, false},
+    {"blue mushroom",	"blue mushroom",	"bitter",	xBLUE,	HT_MUSHROOM,	PN_NONE,	0, false},
+    {"yellow mushroom",	"yellow mushroom",	"bitter",	xYELLOW,	HT_MUSHROOM,	PN_NONE,	0, false},
+    {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PN_NONE,	0, false},
 };
 
 void PlantDefinition::Create()
 {
     for (int i = 0; i < HERBS_COUNT; i++) {
         while (1) {
-            PotionDescription * pr = PotionDescription::GetRec(static_cast<PotionName>(vRand(static_cast<int>(PotionName::RANDOM))));
+            PotionDescription * pr = PotionDescription::GetRec(PotionDescription::GetAnyPotion());
 
             // check if there was such potion already
             bool continue_flag = false;

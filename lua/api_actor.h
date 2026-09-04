@@ -40,7 +40,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 namespace lua_api
 {
     void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg);
-    void ChangeStats(void* cr, int st, int val);
+    int ChangeStats(void* cr, int st, int val);
+    bool isCreatureVisible(void* cr);
+    bool isUniqueCreature(void* cr);
+    std::string CreatureName(void* cr, int form);
+    std::string CreatureVerb(void* cr, const std::string& verb);
+    void AddModifier(void* cr, int modifier, int power);
+    void ChangeNutrition(void* cr, double stomachs);
+    void SetNutrition(void* cr, double stomachs);
     int GetStats(void* cr, int st);
     void SetStats(void* cr, const std::string& dice);
     void AddStats(void* cr, const std::string& dice);

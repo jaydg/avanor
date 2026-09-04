@@ -30,6 +30,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "lua/api_actor.h"
+#include "magic/modifier.h"
+#include "magic/modifiers.h"
 #include "magic/effect.h"
 #include "map/map_objects.h"
 
@@ -76,9 +78,63 @@ void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string>
     }
 }
 
-void ChangeStats(void* cr, int st, int val)
+// Whether the hero can see this creature right now - the question every
+// message about somebody else has to ask first.
+// Whether this is somebody with a name of its own - Roderick, Torin -
+// rather than one more goblin. Content asks when a message needs to treat
+// the two differently.
+bool isUniqueCreature(void* cr)
 {
-    ((XCreature*)cr)->GainAttr((XStats::Id)st, val);
+    return ((XCreature*)cr)->unique;
+}
+
+bool isCreatureVisible(void* cr)
+{
+    return ((XCreature*)cr)->isVisible();
+}
+
+// A creature's name in one of the grammatical forms GetNameEx() renders:
+// CRN_T1 is the subject ("you", "the goblin"), CRN_T4 the possessive.
+std::string CreatureName(void* cr, int form)
+{
+    return ((XCreature*)cr)->GetNameEx((CR_NAME_TYPE)form);
+}
+
+// A verb inflected for who is doing it: "you drink", "the goblin drinks".
+std::string CreatureVerb(void* cr, const std::string& verb)
+{
+    return ((XCreature*)cr)->GetVerb(verb);
+}
+
+// Lay a modifier on a creature - a wound that bleeds, a quickening, a
+// disease. `power` is how strong and how long, as each modifier reads it.
+void AddModifier(void* cr, int modifier, int power)
+{
+    XCreature* p = (XCreature*)cr;
+    p->md->Add((MODIFIER_TYPE)modifier, power, p);
+}
+
+// How full a creature is. Positive adds, negative takes away; the scale is
+// its own stomach, so content says "seven stomachs' worth" rather than a
+// number that means nothing on its own.
+void ChangeNutrition(void* cr, double stomachs)
+{
+    XCreature* p = (XCreature*)cr;
+    p->nutrio += static_cast<int>(p->base_nutrio * stomachs);
+}
+
+void SetNutrition(void* cr, double stomachs)
+{
+    XCreature* p = (XCreature*)cr;
+    p->nutrio = static_cast<int>(p->base_nutrio * stomachs);
+}
+
+// Answers whether the change actually took - a stat already at its floor
+// or ceiling does not move, and a potion that moved nothing is a potion
+// that did nothing.
+int ChangeStats(void* cr, int st, int val)
+{
+    return ((XCreature*)cr)->GainAttr((XStats::Id)st, val);
 }
 
 // Character building, for InitHero (world/hero.lua). Free functions rather
@@ -735,6 +791,13 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetAIFlag", &lua_api::SetAIFlag);
         lua.set_function("CreatureNear", &lua_api::CreatureNear);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);
+        lua.set_function("isCreatureVisible", &lua_api::isCreatureVisible);
+        lua.set_function("isUniqueCreature", &lua_api::isUniqueCreature);
+        lua.set_function("CreatureName", &lua_api::CreatureName);
+        lua.set_function("CreatureVerb", &lua_api::CreatureVerb);
+        lua.set_function("AddModifier", &lua_api::AddModifier);
+        lua.set_function("ChangeNutrition", &lua_api::ChangeNutrition);
+        lua.set_function("SetNutrition", &lua_api::SetNutrition);
         lua.set_function("GetStats", &lua_api::GetStats);
         lua.set_function("SetStats", &lua_api::SetStats);
         lua.set_function("AddStats", &lua_api::AddStats);

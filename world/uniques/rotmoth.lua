@@ -69,7 +69,7 @@ function BridaHandler(e, t, p, v)
 			AddMessage("'Thank you, thank you! I have little to offer, but... here, take these. I brewed them myself, from what I still remember of my own mother's craft.'")
 
 			for i = 1, 3 do
-				GiveObjectToCreature(CreateObject(PotionName.CURE_LIGHT_WOUNDS), p)
+				GiveObjectToCreature(CreatePotion("cure_light_wounds"), p)
 			end
 
 			QuestState:SetFlag('brida_reward_given', 1)

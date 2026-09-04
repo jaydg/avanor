@@ -256,7 +256,7 @@ void XLua::Init()
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "BookName", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
-            "MagicSchool", "PersonType", "PotionName", "Result", "SpellUse", "ScriptCommand", "ShopDoor",
+            "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
             "XStats", "XTileType", "XWarSkills"
@@ -298,6 +298,18 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<PotionBuilder>("Potion",
+            sol::constructors<PotionBuilder(std::string)>(),
+            "Called", &PotionBuilder::Called,
+            "Effect", &PotionBuilder::Effect,
+            "Chance", &PotionBuilder::Chance,
+            "Worth", &PotionBuilder::Worth,
+            "Alchemy", &PotionBuilder::Alchemy,
+            "Looks", &PotionBuilder::Looks,
+            "OnDrink", &PotionBuilder::OnDrink,
+            "Register", &PotionBuilder::Register
+        );
+
         lua.new_usertype<SpellBuilder>("Spell",
             sol::constructors<SpellBuilder(std::string)>(),
             "Called", &SpellBuilder::Called,
