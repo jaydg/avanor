@@ -159,6 +159,53 @@ std::tuple<sol::optional<int>, sol::optional<int>> AskDirection(void* cr)
 // What a tool remembers between turns - see XLuaTool::memory. Recall
 // answers 0 for anything never set, so a handler starting fresh and one
 // resuming read the same way.
+// Which predicate SelectItem() is filtering by. XItemFilter is a plain
+// function pointer and cannot capture, so the Lua function has to reach the
+// filter this way; it is set and cleared around the one call that uses it.
+static sol::protected_function* selecting_with = nullptr;
+
+static int LuaItemFiltr(XItem* item)
+{
+    if (!selecting_with) {
+        return 0;
+    }
+
+    const auto result = (*selecting_with)((void*)item);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: item filter: " << err.what() << std::endl;
+
+        return 0;
+    }
+
+    return result.get<bool>() ? 1 : 0;
+}
+
+// Put the pack in front of somebody and let them pick, showing only what
+// the predicate accepts. Answers nothing if they change their mind - which
+// is not a failure, just an answer.
+sol::optional<void*> SelectItem(void* cr, sol::protected_function predicate)
+{
+    selecting_with = &predicate;
+    const std::shared_ptr<XItem> chosen = ((XCreature*)cr)->SelectItem(&LuaItemFiltr);
+    selecting_with = nullptr;
+
+    if (!chosen) {
+        return sol::nullopt;
+    }
+
+    return (void*)chosen.get();
+}
+
+// How an item reads to whoever is holding it, unidentified names and all -
+// what a message about it should say. GetItemName() gives the plain name
+// underneath, which for a potion would give the secret away.
+std::string DescribeItem(void* item)
+{
+    return ((XItem*)item)->toString();
+}
+
 void ToolRemember(void* item, const std::string& key, int value)
 {
     if (auto* tool = dynamic_cast<XLuaTool*>((XItem*)item)) {
@@ -844,6 +891,8 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("UseSkill", &lua_api::UseSkill);
         lua.set_function("AskDirection", &lua_api::AskDirection);
         lua.set_function("ThrowItemDice", &lua_api::ThrowItemDice);
+        lua.set_function("SelectItem", &lua_api::SelectItem);
+        lua.set_function("DescribeItem", &lua_api::DescribeItem);
         lua.set_function("ToolRemember", &lua_api::ToolRemember);
         lua.set_function("ToolRecall", &lua_api::ToolRecall);
         lua.set_function("isCreatureVisible", &lua_api::isCreatureVisible);

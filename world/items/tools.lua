@@ -91,3 +91,58 @@ function DigWithPickaxe(state, item, digger)
 
 	return Result.SUCCESS
 end
+
+
+-- The alchemy set: distils a herb into the potion that species yields.
+--
+-- Which potion that is, and how hard it is to get, are not declared
+-- anywhere in world/ - they are dealt out afresh each game (see
+-- world/items/herbs.lua), so this asks rather than looks them up.
+Item.new("alchemy_set")
+	:Tool("alchemy_set")
+	:View("alchemy set", '[', xColor.xLIGHTGRAY)
+	:Basic(150, 100)
+	:Use("DistilHerb")
+	:Register()
+
+function DistilHerb(state, item, alchemist)
+	-- One turn's work: the set answers SUCCESS at once, so START is the
+	-- only state it is ever asked about.
+	if (state ~= ItemUse.START) then
+		return Result.SUCCESS
+	end
+
+	local herb = SelectItem(alchemist, function(candidate)
+		local c = AsItem(candidate)
+		return BinaryAND(c.kind, ItemKind.FOOD) ~= 0 and c.it == "herb"
+	end)
+
+	if (not herb) then
+		return Result.FAIL
+	end
+
+	local pn = HerbPotion(herb)
+
+	if (not pn) then
+		return Result.FAIL
+	end
+
+	-- The better the alchemist and the plainer the potion, the likelier.
+	local chance = GetSkill(alchemist, XSkill.ALCHEMY) * 8 + 30
+		- PotionAlchemyPower(pn) * 10
+
+	if (Rand(100) < chance) then
+		local potion = CreatePotion(pn)
+
+		AddMessage(AsCreature(alchemist).name .. " managed to create a "
+			.. DescribeItem(potion) .. ".")
+		GiveObjectToCreature(potion, alchemist)
+		UseSkill(alchemist, XSkill.ALCHEMY)
+	else
+		AddMessage(AsCreature(alchemist).name .. " failed to create a potion.")
+	end
+
+	DestroyObject(herb)
+
+	return Result.SUCCESS
+end

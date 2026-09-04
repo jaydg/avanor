@@ -113,42 +113,5 @@ class XCookingSet : public XTool
 //also str gives +1 for each to points of str
 
 
-class XAlchemySet : public XTool
-{
-    public:
-        DECLARE_CREATOR(XAlchemySet, XTool);
-        XAlchemySet()
-        {
-            color = xLIGHTGRAY;
-            view = '[';
-            it = IT_ALCHEMY_SET;
-            name = "alchemy set";
-            value = 150;
-            weight = 100;
-            kind = ItemKind::TOOL;
-            bp = BP_TOOL;
-            stats = std::make_unique<XStats>();
-            resistances = std::make_unique<XResistance>();
-        }
-
-        XAlchemySet(XAlchemySet* copy) : XTool(copy) {}
-
-        XItem* MakeCopy() override
-        {
-            return new XAlchemySet(this);
-        }
-
-        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
-        std::string toString() override
-        {
-            return name;
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XTool>(this));
-        }
-};
 
 #endif

@@ -453,6 +453,32 @@ void* OuterObjectAt(int x, int y, int color, const std::string& view, const std:
 // Gold on the floor beside somebody, in the location they are standing in.
 // Treasure() below cannot serve here: it drops into current_location, which
 // only tracks world-building and is stale once play has started.
+// Which potion a herb distils into, and how hard that is. Both are dealt
+// out per game rather than declared, so content cannot read them from its
+// own tables - it has to ask.
+sol::optional<std::string> HerbPotion(void* item)
+{
+    auto* herb = dynamic_cast<XHerb*>((XItem*)item);
+
+    if (!herb) {
+        return sol::nullopt;
+    }
+
+    const PotionName pn = herb->GetTargetPotion();
+
+    if (pn.empty()) {
+        return sol::nullopt;
+    }
+
+    return pn;
+}
+
+int PotionAlchemyPower(const std::string& pn)
+{
+    const PotionDescription* row = PotionDescription::GetRec(pn);
+    return row ? row->alchemy_power : 0;
+}
+
 void DropMoney(void* who, const int amount, const int x, const int y)
 {
     XCreature* cr = (XCreature*)who;
@@ -652,6 +678,8 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("GetTile", &lua_api::GetTile);
     lua.set_function("TileDiggableInto", &lua_api::TileDiggableInto);
     lua.set_function("DropMoney", &lua_api::DropMoney);
+    lua.set_function("HerbPotion", &lua_api::HerbPotion);
+    lua.set_function("PotionAlchemyPower", &lua_api::PotionAlchemyPower);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
     lua.set_function("SetTile", &lua_api::SetTile);
     lua.set_function("WindingRoad", &lua_api::WindingRoad);

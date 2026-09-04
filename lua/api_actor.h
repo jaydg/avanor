@@ -43,6 +43,8 @@ namespace lua_api
     int ChangeStats(void* cr, int st, int val);
     void UseSkill(void* cr, int skill, sol::optional<int> amount);
     std::tuple<sol::optional<int>, sol::optional<int>> AskDirection(void* cr);
+    sol::optional<void*> SelectItem(void* cr, sol::protected_function predicate);
+    std::string DescribeItem(void* item);
     void ToolRemember(void* item, const std::string& key, int value);
     int ToolRecall(void* item, const std::string& key);
     int ThrowItemDice(void* item);

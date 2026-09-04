@@ -85,6 +85,8 @@ namespace lua_api
     std::tuple<int, int> GetMapSize(sol::optional<void*> location);
     sol::optional<int> TileDiggableInto(int tile);
     void DropMoney(void* who, int amount, int x, int y);
+    sol::optional<std::string> HerbPotion(void* item);
+    int PotionAlchemyPower(const std::string& pn);
     int GetTile(int x, int y, sol::optional<void*> location);
     bool HasSpecial(int x, int y, sol::optional<void*> location);
     bool SetTile(int x, int y, int tile, sol::optional<void*> location);
