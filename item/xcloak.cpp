@@ -30,9 +30,10 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCloak);
 
 XCloak::XCloak(const ItemType it)
 {
-    BasicFill(it, &gi_cloaks);
+    // kind before BasicFill - see the note in XCap's constructor.
     bp = BP_CLOAK;
     kind = ItemKind::CLOAK;
+    BasicFill(it, &gi_cloaks);
     dice.SetBonus(0);
     RNG = 0;
     to_hit = 0;

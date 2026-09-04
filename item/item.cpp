@@ -100,7 +100,7 @@ XItem::XItem()
     identified = true;
     dv = pv = to_hit = RNG = 0;
     dice.Setup("0d0");
-    special_number = -1;
+    special_number.clear();
 
     // Never set here before, so every item that did not name one of its own
     // - all the food, for one - carried whatever was on the heap, and wrote
@@ -391,44 +391,44 @@ void XItem::PropFill(ITEM_SET is, bool protective)
     stats = std::make_unique<XStats>();
 }
 
+// The format string a row names itself with, or a bare "{}" for an item
+// whose enchantment content no longer defines.
+static const std::string& EnchantmentName(const std::string& id)
+{
+    static const std::string plain = "{}";
+    const ENHANCE_STRUCT* row = FindArmourEnchantment(id);
+    return row ? row->name : plain;
+}
+
 void XItem::SpecialFill()
 {
-    int r_val = vRand() % ENH_DB_SZ;
+    const std::string id = RandomArmourEnchantment();
+    const ENHANCE_STRUCT* row = FindArmourEnchantment(id);
 
-    if (!(ienh_db[r_val].val < vRand() % 101 && (kind & ienh_db[r_val].kind))) {
+    // Rarity is a threshold, not a weight: the higher it is, the fewer
+    // rolls beat it. And an enchantment only lands on the sorts of item it
+    // was written for.
+    if (!row || !(row->rarity < vRand() % 101 && (kind & row->kind))) {
         return;
     }
 
-    special_number = r_val;
+    special_number = id;
 
-    if (ienh_db[r_val].color) {
-        color = ienh_db[r_val].color;
+    if (row->color) {
+        color = row->color;
     }
 
-    XDice * d;
-
-    d = new XDice(ienh_db[r_val].dv);
-    dv += d->Throw();
-
-    d->Setup(ienh_db[r_val].pv);
-    pv += d->Throw();
-
-    d->Setup(ienh_db[r_val].hit);
-    to_hit += d->Throw();
-
-    d->Setup(ienh_db[r_val].dice);
-    int tx = dice.GetCount() + d->GetCount();
-    int ty = dice.GetSides() + d->GetSides();
-    d->Setup(ienh_db[r_val].z);
-    dice.Setup(tx, ty, dice.GetBonus() + d->Throw());
-    delete d;
-
-    XResistance xres(ienh_db[r_val].r);
-    XStats xst(ienh_db[r_val].s);
+    XResistance xres(row->r.c_str());
+    XStats xst(row->s.c_str());
     resistances->Add(&xres);
     stats->Add(&xst);
 
-    aet = ienh_db[r_val].brt;
+    aet = row->brt;
+
+    // Carried onto the item at last. Nothing reads it yet, so this changes
+    // nothing today - but the row no longer declares something that is
+    // dropped on the floor between the table and the item.
+    special_property = row->spp;
 }
 
 XItem::XItem(XItem * copy) : XBaseObject((XBaseObject*)copy)
@@ -654,16 +654,19 @@ std::string XItem::GetFullName()
 {
     std::string fullname;
 
-    if (special_number >= 0) {
+    if (!special_number.empty()) {
         if (quantity == 1) {
-            fullname = fmt::format(ienh_db[special_number].name, name);
+            fullname = fmt::format(
+                fmt::runtime(EnchantmentName(special_number)), name);
         } else {
             fullname = fmt::format("heap of ({})", quantity);
 
             if (kind & (ItemKind::BOOTS | ItemKind::GLOVES)) {
-                fullname.append(fmt::format(ienh_db[special_number].name, name));
+                fullname.append(fmt::format(
+                    fmt::runtime(EnchantmentName(special_number)), name));
             } else {
-                fullname.append(fmt::format(ienh_db[special_number].name,
+                fullname.append(fmt::format(
+                    fmt::runtime(EnchantmentName(special_number)),
                     name.append("s")));
             }
         }
@@ -773,7 +776,9 @@ int XItem::onPutOn(XCreature * /*cr*/)
 
 int XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
 {
-    if ((ienh_db[special_number].brt & AttackEffectType::FIRE) != AttackEffectType::NONE) {
+    const ENHANCE_STRUCT* enh = FindArmourEnchantment(special_number);
+
+    if (enh && (enh->brt & AttackEffectType::FIRE) != AttackEffectType::NONE) {
         //	user->MagicAttack(target, dice.Throw(), XResistance::FIRE);
     }
 

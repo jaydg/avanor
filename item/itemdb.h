@@ -30,7 +30,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/attack_effect_type.h"
 
 #define DB_PROP_SZ	15 // number of materials!
-#define ENH_DB_SZ	20 // number of special powers ("of Strength")
 
 // One sort of item: what it is called, what it is made of, what it does,
 // and how often the game hands one out. The dice fields are the strings
@@ -146,27 +145,84 @@ class XItemBasicStructure
         std::vector<ItemTemplate> rows;
 };
 
+// One way a piece of armour can turn out better than plain - "a mithril
+// helmet of Strength". Filled from world/items/armour_enchantments.lua as
+// that script loads.
+//
+// Six dice fields (dv/pv/hit/dice/z/rng) and a res_flag went with the old
+// table: every row left all seven empty or unread, so they described
+// nothing. They can come back the day a row wants them.
 struct ENHANCE_STRUCT {
-    const char* name;
-    int color; //if 0 don't change a color
-    const char* dv;
-    const char* pv;
-    const char* hit;
-    const char* dice;
-    const char* z; //random z to dice;
-    const char* rng;
-    int val; // value
-    ItemKind kind;
-    AttackEffectType brt;
-    CAN_FLAG res_flag;
-    SPECIAL_PROPERTY spp;
-    const char* s; //stats
-    const char* r; //resists
+    std::string id;
+
+    // How the enchanted item reads. A format string, because the words go
+    // on either side depending: "{} of Strength", but "clean {}".
+    std::string name;
+
+    // Its colour, or 0 to keep the colour its material gave it.
+    int color{0};
+
+    // How rare: the higher this is, the fewer come out enchanted this way.
+    // Not the weight in a draw - the threshold a roll has to beat.
+    int rarity{0};
+
+    // How many places it takes in the draw. Two rows of the old table were
+    // byte-identical, which doubled that outcome's chance; saying so once
+    // is the same thing, said honestly.
+    int weight{1};
+
+    // Which sorts of item it can appear on.
+    ItemKind kind{ItemKind::UNKNOWN};
+
+    AttackEffectType brt{AttackEffectType::NONE};
+
+    // Stored, but nothing reads it yet - the old table declared these and
+    // SpecialFill() never even copied them onto the item, so an "of slow
+    // digestion" helmet has never once slowed anybody's digestion.
+    SPECIAL_PROPERTY spp{SPP_NONE};
+
+    std::string s; //stats
+    std::string r; //resists
 };
+
+// Fluent builder for one of those:
+//
+//   ArmourEnchantment.new("strength")
+//       :Called("{} of Strength")
+//       :Rarity(1)
+//       :Fits(ItemKind.ARMOUR)
+//       :Stats("St:1d4")
+//       :Register()
+class ArmourEnchantmentBuilder
+{
+    public:
+        explicit ArmourEnchantmentBuilder(std::string id);
+
+        ArmourEnchantmentBuilder& Called(const std::string& name);
+        ArmourEnchantmentBuilder& Looks(int color);
+        ArmourEnchantmentBuilder& Rarity(int rarity);
+        ArmourEnchantmentBuilder& Weight(int weight);
+        ArmourEnchantmentBuilder& Fits(ItemKind kind);
+        ArmourEnchantmentBuilder& Brand(AttackEffectType brt);
+        ArmourEnchantmentBuilder& Property(SPECIAL_PROPERTY spp);
+        ArmourEnchantmentBuilder& Stats(const std::string& s);
+        ArmourEnchantmentBuilder& Resist(const std::string& r);
+
+        void Register();
+
+    private:
+        ENHANCE_STRUCT t;
+};
+
+// The row with this id, or nullptr for one nothing defines.
+const ENHANCE_STRUCT* FindArmourEnchantment(const std::string& id);
+
+// One drawn at random, weighted, or empty if nothing is defined.
+std::string RandomArmourEnchantment();
 
 
 extern ItemMaterial item_prop[DB_PROP_SZ];
-extern ENHANCE_STRUCT ienh_db[ENH_DB_SZ];
+extern std::vector<ENHANCE_STRUCT> ienh_db;
 
 
 // The pool a kind of item is drawn from, or nullptr for a kind that keeps

@@ -30,9 +30,13 @@ XItemBasicStructure gi_cap;
 
 XCap::XCap(ItemType _it)
 {
-    BasicFill(_it, &gi_cap);
+    // kind before BasicFill, not after: BasicFill() may enchant the item,
+    // and an enchantment only lands on the sorts of item it was written
+    // for. Set afterwards, the test was "does UNKNOWN count as armour",
+    // which is no - so a cap could never be found enchanted at all.
     bp = BP_HEAD;
     kind = ItemKind::HAT;
+    BasicFill(_it, &gi_cap);
     to_hit = 0;
     dice.SetBonus(0);
     RNG = 0;

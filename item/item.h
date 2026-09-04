@@ -190,7 +190,10 @@ class XItem : public XBaseObject
         virtual int GetValue(); // Get Value of Object (for shop, monster AI etc.)
 
         SPECIAL_PROPERTY special_property; // slow digestion and other propertyes
-        int special_number; // number of a struct with extension name such a "of Strength"
+        // Which armour enchantment this item came out with - the id
+        // world/items/armour_enchantments.lua registered it under. Empty
+        // for a plain item. Was an index into a fixed table.
+        std::string special_number;
         AttackEffectType aet;
         int material_index; // reference to material;
         ItemMaterial* GetMaterial(int index);

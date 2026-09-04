@@ -30,9 +30,10 @@ XItemBasicStructure gi_armour;
 
 XArmor::XArmor(const ItemType it)
 {
-    BasicFill(it, &gi_armour);
+    // kind before BasicFill - see the note in XCap's constructor.
     bp = BP_BODY;
     kind = ItemKind::BODY;
+    BasicFill(it, &gi_armour);
     dice.SetBonus(0);
     RNG = 0;
     to_hit = -(weight / 500);

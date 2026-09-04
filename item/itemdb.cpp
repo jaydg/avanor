@@ -138,209 +138,116 @@ ItemMaterial item_prop[DB_PROP_SZ] = {
     }
 };
 
-// ENH_DB_SZ - very important var, it used with ring, amulets too
-ENHANCE_STRUCT ienh_db[ENH_DB_SZ] = {
-    {
-        "{} of fire resistance",	xRED,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_FIRERESIST,
-        SPP_NONE,
-        "",
-        "fire:5d5+25"
-    },
-    {
-        "{} of cold resistance",	xWHITE,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_COLDRESIST,
-        SPP_NONE,
-        "",
-        "cold:5d5+25"
-    },
-    {
-        "{} of air resistance",	xLIGHTBLUE,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_COLDRESIST,
-        SPP_NONE,
-        "",
-        "air:5d5+25"
-    },
-    {
-        "{} of acid resistance",	xDARKGRAY,
-        "",	"",	"",	"",	"",	"",	5,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_ACIDRESIST,
-        SPP_NONE,
-        "",
-        "acid:5d5+25"
-    },
-    {
-        "{} of poison resistance",	0,
-        "",	"",	"",	"",	"",	"",	2,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_NONE,
-        "",
-        "poison:5d5+25"
-    },
-    {
-        "{} of Resistance",	xDARKGRAY,
-        "",	"",	"",	"",	"",	"",	80,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_NICEMETALLIKE,
-        SPP_FASTDIGESTION,
-        "",
-        "poison:5d5+25 fire:5d5+25 cold:5d5+25 water:5d5+25 acid:5d5+25 earth:5d5+25"
-    },
-    {
-        "{} of the Magi",	0,
-        "",	"",	"",	"",	"",	"",	50,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        (CAN_FLAG)(CAN_FIRERESIST | CAN_COLDRESIST),
-        SPP_NONE,
-        "Le:1d5 Wi:1d5 Ma:1d5",
-        "fire:5d5+25 cold:5d5+25"
-    },
-    {
-        "{} of free action",	0,
-        "",	"",	"",	"",	"",	"",	50,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        (CAN_FLAG)(CAN_FIRERESIST | CAN_COLDRESIST),
-        SPP_NONE,
-        "",
-        "confuse:5d5+25 stun:5d5+25"
-    },
-    {
-        "{} of slow digestion",	0,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_SLOWDIGESTION,
-        "",
-        ""
-    },
-    {
-        "{} of Strength",	0,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_NONE,
-        "St:1d4",
-        ""
-    },
-    {
-        "{} of Swiftness",	0,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_NONE,
-        "Dx:1d4",
-        ""
-    },
-    {
-        "{} of Toughness",	0,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_NONE,
-        "To:1d4",
-        ""
-    },
-    {
-        "{} of the Giants",	0,
-        "",	"",	"",	"",	"",	"",	30,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_NONE,
-        "St:1d5+5",
-        ""
-    },
-    {
-        "{} of the Titans",	xCYAN,
-        "",	"",	"",	"",	"",	"",	60,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTALL,
-        SPP_NONE,
-        "St:1d10+10",
-        ""
-    },
-    {
-        "{} of the High Kings",	xWHITE,
-        "",	"",	"",	"",	"",	"",	90,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTALL,
-        SPP_NONE,
-        "St:1d1+24",
-        ""
-    },
-    {
-        "{} of the High Kings",	xWHITE,
-        "",	"",	"",	"",	"",	"",	90,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTALL,
-        SPP_NONE,
-        "St:1d1+24",
-        ""
-    },
-    {
-        "{} of the High Kings",	xWHITE,
-        "",	"",	"",	"",	"",	"",	90,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTALL,
-        SPP_NONE,
-        "To:1d1+24",
-        ""
-    },
-    {
-        "{} of the High Kings",	xWHITE,
-        "",	"",	"",	"",	"",	"",	90,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTALL,
-        SPP_NONE,
-        "Dx:1d1+24",
-        ""
-    },
-    {
-        "{} of the Elven Kings",	xWHITE,
-        "",	"",	"",	"",	"",	"",	90,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTALL,
-        SPP_NONE,
-        "Le:1d1+24",
-        ""
-    },
-    {
-        "clean {}",	0,
-        "",	"",	"",	"",	"",	"",	1,
-        ItemKind::ARMOUR,
-        AttackEffectType::NONE,
-        CAN_RESISTNONE,
-        SPP_NONE,
-        "ch:1d6+0",
-        ""
-    },
-};
+std::vector<ENHANCE_STRUCT> ienh_db;
+
+// The summed weights, so a draw is one roll rather than a walk.
+static int ienh_total_weight = 0;
+
+const ENHANCE_STRUCT* FindArmourEnchantment(const std::string& id)
+{
+    for (const auto& row : ienh_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+std::string RandomArmourEnchantment()
+{
+    if (ienh_db.empty()) {
+        return {};
+    }
+
+    int val = vRand(ienh_total_weight);
+
+    for (const auto& row : ienh_db) {
+        val -= row.weight;
+
+        if (val < 0) {
+            return row.id;
+        }
+    }
+
+    return ienh_db.front().id;
+}
+
+ArmourEnchantmentBuilder::ArmourEnchantmentBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Called(const std::string& name)
+{
+    t.name = name;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Looks(const int color)
+{
+    t.color = color;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Rarity(const int rarity)
+{
+    t.rarity = rarity;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Weight(const int weight)
+{
+    t.weight = weight;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Fits(const ItemKind kind)
+{
+    t.kind = kind;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Brand(const AttackEffectType brt)
+{
+    t.brt = brt;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Property(const SPECIAL_PROPERTY spp)
+{
+    t.spp = spp;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Stats(const std::string& s)
+{
+    t.s = s;
+    return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Resist(const std::string& r)
+{
+    t.r = r;
+    return *this;
+}
+
+void ArmourEnchantmentBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: an armour enchantment with no id" << std::endl;
+        return;
+    }
+
+    if (FindArmourEnchantment(t.id)) {
+        std::cerr << "world: two armour enchantments both called '" << t.id
+                  << "'" << std::endl;
+        return;
+    }
+
+    ienh_total_weight += t.weight;
+    ienh_db.push_back(t);
+}
 
 
 TemplateBuilder::TemplateBuilder(const ItemKind kind, const ItemType it) : kind(kind)

@@ -201,6 +201,16 @@ void XLua::Init()
         "BLACKMETAL", ISET_BLACKMETAL
     );
 
+    // Item properties the tables declare. Nothing consumes these yet - the
+    // engine has never acted on one - but the rows that name them would
+    // otherwise say nothing at all.
+    lua.new_enum("SpecialProperty",
+        "NONE", SPP_NONE,
+        "FAST_DIGESTION", SPP_FASTDIGESTION,
+        "SLOW_DIGESTION", SPP_SLOWDIGESTION,
+        "REGENERATION", SPP_REGENERATION
+    );
+
     lua.new_enum("ItemQuality",
         "TERRIBLE", IQ_TERRIBLE,
         "VERY_BAD", IQ_VERY_BAD,
@@ -248,7 +258,7 @@ void XLua::Init()
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
-            "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpellUse", "ScriptCommand", "ShopDoor",
+            "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
             "XStats", "XTileType", "XWarSkills"
@@ -290,6 +300,20 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<ArmourEnchantmentBuilder>("ArmourEnchantment",
+            sol::constructors<ArmourEnchantmentBuilder(std::string)>(),
+            "Called", &ArmourEnchantmentBuilder::Called,
+            "Looks", &ArmourEnchantmentBuilder::Looks,
+            "Rarity", &ArmourEnchantmentBuilder::Rarity,
+            "Weight", &ArmourEnchantmentBuilder::Weight,
+            "Fits", &ArmourEnchantmentBuilder::Fits,
+            "Brand", &ArmourEnchantmentBuilder::Brand,
+            "Property", &ArmourEnchantmentBuilder::Property,
+            "Stats", &ArmourEnchantmentBuilder::Stats,
+            "Resist", &ArmourEnchantmentBuilder::Resist,
+            "Register", &ArmourEnchantmentBuilder::Register
+        );
+
         lua.new_usertype<EnchantmentBuilder>("Enchantment",
             sol::constructors<EnchantmentBuilder(std::string)>(),
             "Called", &EnchantmentBuilder::Called,

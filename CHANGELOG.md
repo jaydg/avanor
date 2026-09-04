@@ -358,6 +358,13 @@ Things that simply did not happen:
   you from fire. Both carried a copy of the fire ring's own resistance and
   nobody ever noticed, so the 300 gold bought protection you very likely
   already had, and neither acid nor poison was resisted at all
+- Helmets, body armour and cloaks were never found enchanted. An enchanted
+  piece of armour — of Strength, of the Titans, of fire resistance — could
+  only ever turn out to be gloves, a shield or a pair of boots. The other
+  three kinds were built in an order that asked whether the item counted as
+  armour before deciding it was armour, so the answer was always no, and
+  half the slots you wear things in have never in any version produced
+  anything but plain gear
 - Unknown rings and amulets were never actually unknown. One was meant to
   read by its look until you worked out what it was — a ruby ring, an
   obsidian amulet — with the looks shuffled for each new game. Neither
