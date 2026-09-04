@@ -115,7 +115,7 @@ XBook::XBook(BOOK_NAME bn)
 
     kind = ItemKind::BOOK;
     bp = BP_OTHER;
-    it = ItemType::BOOK;
+    it = IT_BOOK;
 
     view = '"';
     color =	xBROWN;

@@ -3,7 +3,7 @@
 -- Template.new(kind, type) is documented in world/items/init.lua.
 --
 
-Template.new(ItemKind.BOOTS, ItemType.SANDALS)
+Template.new(ItemKind.BOOTS, "sandals")
 	:View("sandals", ']')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.POOR)
 	:Worth(1, 1)
@@ -12,7 +12,7 @@ Template.new(ItemKind.BOOTS, ItemType.SANDALS)
 	:Chance(150)
 	:Register()
 
-Template.new(ItemKind.BOOTS, ItemType.LIGHTBOOTS)
+Template.new(ItemKind.BOOTS, "light_boots")
 	:View("light boots", ']')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.AVG)
 	:Worth(2, 2)
@@ -21,7 +21,7 @@ Template.new(ItemKind.BOOTS, ItemType.LIGHTBOOTS)
 	:Chance(80)
 	:Register()
 
-Template.new(ItemKind.BOOTS, ItemType.SOFTBOOTS)
+Template.new(ItemKind.BOOTS, "soft_boots")
 	:View("soft boots", ']')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.FAIR)
 	:Worth(3, 3)
@@ -30,7 +30,7 @@ Template.new(ItemKind.BOOTS, ItemType.SOFTBOOTS)
 	:Chance(40)
 	:Register()
 
-Template.new(ItemKind.BOOTS, ItemType.HARDBOOTS)
+Template.new(ItemKind.BOOTS, "hard_boots")
 	:View("hard boots", ']')
 	:Made(ItemSet.OBSIMETAL, ItemQuality.GOOD)
 	:Worth(5, 5)

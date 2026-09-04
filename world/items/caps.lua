@@ -3,7 +3,7 @@
 -- Template.new(kind, type) is documented in world/items/init.lua.
 --
 
-Template.new(ItemKind.HAT, ItemType.HAT)
+Template.new(ItemKind.HAT, "hat")
 	:View("hat", '[')
 	:Made(ItemSet.SOFT, ItemQuality.POOR)
 	:Worth(1, 1)
@@ -12,7 +12,7 @@ Template.new(ItemKind.HAT, ItemType.HAT)
 	:Chance(100)
 	:Register()
 
-Template.new(ItemKind.HAT, ItemType.CAP)
+Template.new(ItemKind.HAT, "cap")
 	:View("cap", '[')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.AVG)
 	:Worth(2, 2)
@@ -21,7 +21,7 @@ Template.new(ItemKind.HAT, ItemType.CAP)
 	:Chance(50)
 	:Register()
 
-Template.new(ItemKind.HAT, ItemType.HELMET)
+Template.new(ItemKind.HAT, "helmet")
 	:View("helmet", '[')
 	:Made(ItemSet.HARDMETAL, ItemQuality.FAIR)
 	:Worth(3, 3)

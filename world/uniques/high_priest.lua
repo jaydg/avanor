@@ -12,7 +12,7 @@ Monster.new("highpriest")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.RELIGION, XSkill.MAX_LEVEL)
 	:LearnSpell(Spell.HEAL)
-	:Equip(ItemKind.BODY, ItemType.ROBE, 100)
+	:Equip(ItemKind.BODY, "robe", 100)
 	:Unique()
 	:Register()
 
@@ -20,7 +20,7 @@ Monster.new("highpriest")
 -- The high priest's mitre.
 
 Item.new("avanor_mitre")
-	:Cap(ItemType.CAP)
+	:Cap("cap")
 	:View("holy mitre", '[', xColor.xWHITE)
 	:Basic(8000, 100)
 	:Armour(3, 2)

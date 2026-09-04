@@ -118,7 +118,7 @@ XHerb::XHerb(int _herb_index) : XAnyFood(), herb_index(_herb_index)
     weight = 3;
     food_nutrio = 15;
     name = herbs[herb_index].herb_name;
-    it = ItemType::HERB;
+    it = IT_HERB;
 }
 
 RESULT XHerb::onEat(XCreature * eater)

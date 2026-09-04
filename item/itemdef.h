@@ -130,40 +130,43 @@ enum ITEM_SET {
 // Free-standing rather than nested in XItem, same reason as ItemKind
 // (see item/itemkind.h): item/itemdb.h's ItemTemplate::it needs it
 // before class XItem is declared.
-enum class ItemType {
-    UNKNOWN = 0,
-    HAT, CAP, HELMET,
-    AMULET, NECKLACE,
-    RING,
-    CLUB, WARHAMMER,
-    DAGGER, KNIFE, ORCISHDAGGER, LONGDAGGER,
-    SHORTSWORD, LONGSWORD, BROADSWORD, RAPIER, SCIMITAR, KATANA, WAKIZASHI,
-    SMALLAXE, WARAXE, BATTLEAXE, GREATAXE, ORCISHAXE,
-    MACE, FLAIL,
-    SHORTSPEAR, LONGSPEAR, PITCHFORK, PIKE, HALBERD,
-    STAFF,
-    SHORTBOW, LONGBOW, LIGHTCROSSBOW, CROSSBOW, HEAVYCROSSBOW, SLING,
-    GLOVES, GAUNTLETS, KNUCKLES,
-    SMALLSHIELD, MEDIUMSHIELD, LARGESHIELD, TOWERSHIELD,
-    SANDALS, LIGHTBOOTS, SOFTBOOTS, HARDBOOTS,
-    CLOTHES, DRESS, ROBE, LIGHTMAIL, SCALEMAIL, PLATEMAIL, CHAINMAIL, RINGMAIL,
-    CLOAK, SHADOWCLOAK, CAPE, LIGHTCLOAK, FORESTBROTHERCLOAK,
-    TORCH,
-    SCROLL,
-    BOOK,
-    POTION,
-    HERB,
-    LARGERATION, RATION, SMALLRATION, ELVISHWAYBREAD, CORPSE, BONE, RATTAIL, BATWING,
-    ARROW, QUARREL, SLINGBULLET, ROCK, SHURIKEN,
-    COOKINGSET, PICKAXE, ANCIENTMACHINEPART, EYEOFRAA, ALCHEMYSET,
-    CHEST,
-    MONEY,
-    GEM,
-    RANDOM,
-    ALL // was IT_EOF - "EOF" collides with the <cstdio> macro of the same name
-};
+// What sort of thing an item is - "long_sword", "potion", "rat_tail".
+//
+// A string, not an enum, for the same reason CREATURE_NAME is one: an item
+// is content, and content must be able to add a kind of item without
+// touching C++. The names live in world/, and reach Lua as the ItemType
+// table (item/itemdef.cpp), which is guarded so a typo is an error rather
+// than a silent nil.
+using ItemType = std::string;
+
+// Named the way CREATURE_NAME's constants are (CN_*, creature/cr_defs.h),
+// and constexpr const char* rather than ItemType for the same documented
+// reason: a std::string constant at namespace scope risks the
+// static-initialization-order fiasco when it seeds another namespace-scope
+// static, where a const char* cannot.
+//
+// "Unspecified": an item that has no type yet, and the request "make me
+// one of these, whichever sort you like". These were two enum values,
+// UNKNOWN and RANDOM; as a string they are one, because every path that
+// met UNKNOWN went on to ask for a random one anyway.
+inline constexpr const char* IT_NONE = "";
+
+// The handful C++ still names itself, because it implements each as a
+// class of its own or asks about it directly. Every other sort of item is
+// content and is named only in world/.
+inline constexpr const char* IT_ALCHEMY_SET = "alchemy_set";
+inline constexpr const char* IT_AMULET = "amulet";
+inline constexpr const char* IT_BOOK = "book";
+inline constexpr const char* IT_CHEST = "chest";
+inline constexpr const char* IT_COOKING_SET = "cooking_set";
+inline constexpr const char* IT_CORPSE = "corpse";
+inline constexpr const char* IT_HERB = "herb";
+inline constexpr const char* IT_MONEY = "money";
+inline constexpr const char* IT_PICKAXE = "pickaxe";
+inline constexpr const char* IT_POTION = "potion";
+inline constexpr const char* IT_RING = "ring";
+inline constexpr const char* IT_SCROLL = "scroll";
 
 // Registers ItemType as Lua table
-void RegisterItemDefEnums(sol::state_view& lua);
 
 #endif

@@ -55,7 +55,7 @@ class XItem : public XBaseObject
         DECLARE_CREATOR(XItem, XBaseObject);
 
         std::string StatsToString();
-        void MainFill(ItemTemplate* is);
+        void MainFill(const ItemTemplate* is);
         XItem();
         XItem(XItem * copy);
 
@@ -104,7 +104,7 @@ class XItem : public XBaseObject
         void Concat(XItem *it);
 
         BODY_PART bp;    // fit to what bp???
-        ItemType it;   // main type of item such ItemType::POTION
+        ItemType it;   // main type of item such IT_POTION
         XWarSkills::Type wt;  // weapon skill of item
         ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
         ItemKind kind;

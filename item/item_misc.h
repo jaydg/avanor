@@ -327,7 +327,7 @@ class FoodBuilder
     {                                                                         \
         public:                                                               \
             DECLARE_CREATOR(CarrierName, BaseName);                           \
-            explicit CarrierName(ItemType base_type = ItemType::RANDOM)       \
+            explicit CarrierName(ItemType base_type = IT_NONE)       \
                 : BaseName(base_type) {}                                      \
             explicit CarrierName(CarrierName* copy)                           \
                 : BaseName(copy), content_id(copy->content_id),               \

@@ -255,8 +255,8 @@ XItem* XItemStorage::MakeItem(const std::string& id, const ContentItemTemplate& 
 ItemBuilder::ItemBuilder(std::string id) : id(std::move(id)), probability(0)
 {
     t.base = ContentItemTemplate::PLAIN;
-    t.base_type = ItemType::UNKNOWN;
-    t.it = ItemType::UNKNOWN;
+    t.base_type = IT_NONE;
+    t.it = IT_NONE;
     t.kind = ItemKind::TOOL;
     t.bp = BP_OTHER;
     t.view = 0;
@@ -418,7 +418,7 @@ void ItemBuilder::Register()
     // Same reasoning as MonsterBuilder::Register(): a Lua constant the
     // engine never registered arrives here as 0 rather than as an error,
     // and the item looks fine until something asks it what it is.
-    if (t.it == ItemType::UNKNOWN) {
+    if (t.it == IT_NONE) {
         std::cerr << "world: item '" << id << "' never said what it is" << std::endl;
     }
 
@@ -459,7 +459,7 @@ FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
     // definition is expected to state for itself.
     t.view = '%';
     t.color = xBROWN;
-    t.it = ItemType::UNKNOWN;
+    t.it = IT_NONE;
     t.food_type = FT_NORMALFOOD;
     t.probability = 0;
 }
@@ -516,7 +516,7 @@ void FoodBuilder::Register()
 
     // ItemType is what XAnyFood::Compare() stacks on, so two foods sharing
     // one would merge in the pack however differently they are described.
-    if (t.it == ItemType::UNKNOWN) {
+    if (t.it == IT_NONE) {
         std::cerr << "world: food '" << id << "' has no ItemType" << std::endl;
     }
 
@@ -542,7 +542,7 @@ XChest::XChest(int item_count, ItemKind kind_mask, int low_v, int high_v)
 {
     color = xLIGHTGRAY;
     view = '~';
-    it = ItemType::CHEST;
+    it = IT_CHEST;
     name = "chest";
     value = 50;
     weight = 100;

@@ -19,11 +19,11 @@
 --                          one, which is what every built-only trap wants
 --
 
-local SPEARS = { ItemType.SHORTSPEAR, ItemType.LONGSPEAR }
+local SPEARS = { "short_spear", "long_spear" }
 
 TrapRecipe.new("Arrow trap", XTrap.ARROW)
 	:Level(0)
-	:Loads(ItemKind.MISSILE, { ItemType.ARROW, ItemType.QUARREL })
+	:Loads(ItemKind.MISSILE, { "arrow", "quarrel" })
 	:Practice(15)
 	:Fills(5, 9)
 	:Register()
@@ -49,7 +49,7 @@ TrapRecipe.new("Fire Bolt trap", XTrap.FIREBOLT)
 
 TrapRecipe.new("Pit", XTrap.PIT)
 	:Level(8)
-	:Tool(ItemType.PICKAXE, "pickaxe")
+	:Tool("pickaxe", "pickaxe")
 	:Practice(10)
 	:Register()
 
@@ -62,7 +62,7 @@ TrapRecipe.new("Acid Bolt trap", XTrap.ACIDBOLT)
 TrapRecipe.new("Spear Pit", XTrap.SPEAR_PIT)
 	:Level(12)
 	:Loads(ItemKind.WEAPON, SPEARS)
-	:Tool(ItemType.PICKAXE, "pickaxe")
+	:Tool("pickaxe", "pickaxe")
 	:Practice(20)
 	:Fills(2, 4)
 	:Register()

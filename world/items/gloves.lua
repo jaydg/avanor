@@ -3,7 +3,7 @@
 -- Template.new(kind, type) is documented in world/items/init.lua.
 --
 
-Template.new(ItemKind.GLOVES, ItemType.GLOVES)
+Template.new(ItemKind.GLOVES, "gloves")
 	:View("gloves", ']')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.AVG)
 	:Worth(2, 1)
@@ -13,7 +13,7 @@ Template.new(ItemKind.GLOVES, ItemType.GLOVES)
 	:Chance(100)
 	:Register()
 
-Template.new(ItemKind.GLOVES, ItemType.GAUNTLETS)
+Template.new(ItemKind.GLOVES, "gauntlets")
 	:View("gauntlets", ']')
 	:Made(ItemSet.ALLMETAL, ItemQuality.FAIR)
 	:Worth(3, 1)
@@ -23,7 +23,7 @@ Template.new(ItemKind.GLOVES, ItemType.GAUNTLETS)
 	:Chance(10)
 	:Register()
 
-Template.new(ItemKind.GLOVES, ItemType.KNUCKLES)
+Template.new(ItemKind.GLOVES, "knuckles")
 	:View("knuckles", ']')
 	:Made(ItemSet.HARDMETAL, ItemQuality.GOOD)
 	:Worth(4, 1)

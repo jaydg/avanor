@@ -18,7 +18,7 @@ Monster.new("roderik")
 -- The regalia of Avanor: Roderick wears the one and holds the other.
 
 Item.new("avanor_crown")
-	:Cap(ItemType.CAP)
+	:Cap("cap")
 	:View("golden crown", '[', xColor.xYELLOW)
 	:Basic(8000, 100)
 	:Armour(2, 2)
@@ -30,7 +30,7 @@ Item.new("avanor_crown")
 	:Register()
 
 Item.new("avanor_scepter")
-	:Weapon(ItemType.CLUB)
+	:Weapon("club")
 	:View("ancient scepter", '|', xColor.xYELLOW)
 	:Basic(12000, 400)
 	:Armour(0, 0)
@@ -127,7 +127,7 @@ function RoderikHandler(e, t, p, v)
 	if (e == LuaEvent.GIVE_ITEM) then
 		local item = AsItem(v)
 
-		if (item.it == ItemType.EYEOFRAA) then
+		if (item.it == "eye_of_raa") then
 			AddMessage("Thank you for your great help. The citizens of Avanor never forget your exploits!")
 			QuestModify(QUEST_RODERICK_EYE, XQuest.CLOSED)
 			roderik:ContainItem(item)

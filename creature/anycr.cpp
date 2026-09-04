@@ -115,7 +115,7 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
             if (vRand(100) < probability) {
                 XItem * item = nullptr;
 
-                if (it == ItemType::UNKNOWN) {
+                if (it == IT_NONE) {
                     item = ICREATEA((ItemKind)(mask));
                 } else {
                     item = ICREATEB((ItemKind)(mask), it, 0, 10000000);
@@ -437,7 +437,7 @@ MonsterBuilder& MonsterBuilder::EquipCount(unsigned int mask, int count, int pro
     er.mask = mask;
     er.count = count;
     er.probability = prob;
-    er.it = ItemType::UNKNOWN;
+    er.it = IT_NONE;
     cr.equipment.push_back(er);
     return *this;
 }

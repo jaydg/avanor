@@ -92,7 +92,7 @@ XItem::XItem()
 
     view = '*';
     color = xBLUE;
-    it = ItemType::UNKNOWN;
+    it = IT_NONE;
     kind = ItemKind::UNKNOWN;
     quantity = 1;
     wt = XWarSkills::OTHER;
@@ -209,44 +209,56 @@ void XItem::OnInvalidate()
 
 int XItem::BasicFill(ItemType it, XItemBasicStructure * pData)
 {
-    ItemTemplate* x_struct = pData->pFirstItem;
+    const ItemTemplate* x_struct = nullptr;
 
-    if (it == ItemType::RANDOM) {
+    if (!it.empty()) {
+        x_struct = pData->Find(it);
+
+        // A name nothing defines - a typo in world/, now that item ids are
+        // written there by hand. Say so, then carry on with any item of
+        // the kind: a half-filled item has no stats and no resistances,
+        // and the first thing to wear one dereferences them.
+        //
+        // It used to walk off the end of the table instead and fill the
+        // item from whatever followed it in memory.
+        if (!x_struct) {
+            std::cerr << "world: nothing defines an item type '" << it
+                      << "' - substituting another of its kind" << std::endl;
+        }
+    }
+
+    if (!x_struct) {
+        // Either nothing was asked for, or what was asked for is not
+        // there: pick one, each row weighted by its :Chance().
         int r_val = vRand(pData->total_prob);
 
-        while (1) {
-            r_val -= x_struct->probability;
+        for (int i = 0; i < pData->total_item; i++) {
+            r_val -= pData->pFirstItem[i].probability;
 
             if (r_val < 0) {
+                x_struct = &pData->pFirstItem[i];
                 break;
             }
-
-            x_struct++;
         }
-    } else {
-        for (int i = 0; i < pData->total_item; i++, x_struct++)
-            if (x_struct->it == it) {
-                break;
-            }
     }
 
-    if (x_struct) {
-        // Whether this kind of item is meant to protect at all, read from
-        // the template rather than from the roll - see PropFill().
-        const XDice template_pv(x_struct->pv);
-        const bool protective = template_pv.GetSides() > 0 || template_pv.GetBonus() > 0;
-
-        MainFill(x_struct);
-        PropFill(x_struct->iset, protective);
-
-        if (vRand() % 20 > 18) {
-            SpecialFill();
-        }
-
-        return 1;
-    } else {
+    if (!x_struct) {
         return 0;
     }
+
+    // Whether this kind of item is meant to protect at all, read from
+    // the template rather than from the roll - see PropFill().
+    const XDice template_pv(x_struct->pv);
+    const bool protective = template_pv.GetSides() > 0 || template_pv.GetBonus() > 0;
+
+    MainFill(x_struct);
+    PropFill(x_struct->iset, protective);
+
+    if (vRand() % 20 > 18) {
+        SpecialFill();
+    }
+
+    return 1;
 }
 
 void XItem::OnCreated(const XItemBasicStructure& pData)
@@ -277,7 +289,7 @@ void XItem::OnCreated(const XItemBasicStructure& pData)
     }
 }
 
-void XItem::MainFill(ItemTemplate *is)
+void XItem::MainFill(const ItemTemplate *is)
 {
     name = is->name;
     it = is->it;

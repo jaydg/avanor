@@ -12,8 +12,8 @@ Monster.new("yohjishiro")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSpell(Spell.LIGHTNING_BOLT)
 	:LearnSpell(Spell.HEAL)
-	:Equip(ItemKind.HAT, ItemType.HAT, 100)
-	:Equip(ItemKind.WEAPON, ItemType.STAFF, 100)
+	:Equip(ItemKind.HAT, "hat", 100)
+	:Equip(ItemKind.WEAPON, "staff", 100)
 	:Unique()
 	:Register()
 
@@ -22,13 +22,13 @@ Monster.new("yohjishiro")
 
 Food.new("rat_tail")
 	:View("rat tail", '%', xColor.xBROWN)
-	:Basic(ItemType.RATTAIL, 100, 3)
+	:Basic("rat_tail", 100, 3)
 	:Nutrition(10, 10)
 	:Register()
 
 Food.new("bat_wing")
 	:View("bat wing", '%', xColor.xBROWN)
-	:Basic(ItemType.BATWING, 100, 2)
+	:Basic("bat_wing", 100, 2)
 	:Nutrition(10, 10)
 	:Register()
 
@@ -106,13 +106,13 @@ function YohjiHandler(e, t, p, v)
 		end
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (it == ItemType.RATTAIL or it == ItemType.BATWING) then
+		if (it == "rat_tail" or it == "bat_wing") then
 			local success_msg = "'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory."
-			if (it == ItemType.RATTAIL and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
+			if (it == "rat_tail" and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
 				AddMessage(success_msg)
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify(QUEST_YOHJI_RAT, XQuest.UNKNOWN)
-			elseif (it == ItemType.BATWING and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
+			elseif (it == "bat_wing" and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
 				AddMessage(success_msg)
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify(QUEST_YOHJI_BAT, XQuest.UNKNOWN)

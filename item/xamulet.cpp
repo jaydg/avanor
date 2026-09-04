@@ -46,7 +46,7 @@ XAmulet::XAmulet(Type enh) : XEnhance(enh)
     kind = ItemKind::NECK;
     bp = BP_NECK;
     name = "amulet";
-    it = ItemType::AMULET;
+    it = IT_AMULET;
     view = '\'';
 }
 

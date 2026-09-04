@@ -28,7 +28,7 @@ class XCap : public XClothes
     public:
         DECLARE_CREATOR(XCap, XClothes);
 
-        explicit XCap(ItemType it = ItemType::RANDOM);
+        explicit XCap(ItemType it = IT_NONE);
 
         explicit XCap(XCap * cap) : XClothes(static_cast<XClothes *>(cap)) {}
 

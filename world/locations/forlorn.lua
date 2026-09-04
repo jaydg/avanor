@@ -61,7 +61,7 @@ DUNGEON_FORLORN_LADDER = {
 -- pick things up, and one that pocketed this would leave the player
 -- guessing which of them to hunt (XStandardAI::PickUpItems).
 Item.new("eye_of_raa")
-	:Tool(ItemType.EYEOFRAA)
+	:Tool("eye_of_raa")
 	:View("Eye of Raa", '*', xColor.xCYAN)
 	:Basic(150, 100)
 	:Combat(0, 1, 10, 0)

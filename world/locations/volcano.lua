@@ -20,7 +20,7 @@ Monster.new("xshee_voo")
 -- What Xshee-Voo swings.
 
 Item.new("black_club")
-	:Weapon(ItemType.CLUB)
+	:Weapon("club")
 	:View("black club", '/', xColor.xDARKGRAY)
 	:Basic(10000, 8000)
 	:Armour(-10, 0)

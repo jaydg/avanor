@@ -18,7 +18,7 @@ Monster.new("ozorik")
 -- Ozorick's unique weapons.
 
 Item.new("glamdring")
-	:Weapon(ItemType.BROADSWORD)
+	:Weapon("broad_sword")
 	:View("rune-covered broadsword", '|')
 	:Basic(2000, 700)
 	:Armour(0, 0)
@@ -31,7 +31,7 @@ Item.new("glamdring")
 	:Register()
 
 Item.new("death_hack")
-	:Weapon(ItemType.LONGDAGGER)
+	:Weapon("long_dagger")
 	:View("rune-covered long dagger")
 	:Basic(500, 70)
 	:Armour(0, 0)

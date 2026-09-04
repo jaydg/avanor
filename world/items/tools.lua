@@ -4,7 +4,7 @@
 -- world/locations/forlorn.lua).
 
 Item.new("ancient_machine_part")
-	:Plain(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL)
+	:Plain("ancient_machine_part", ItemKind.TOOL)
 	:View("ancient machine part", ']', xColor.xDARKGRAY)
 	:Basic(1000, 15)
 	:Register()

@@ -57,7 +57,7 @@ class XCookingSet : public XTool
         {
             color = xLIGHTGRAY;
             view = '[';
-            it = ItemType::COOKINGSET;
+            it = IT_COOKING_SET;
             name = "cooking set";
             value = 150;
             weight = 100;
@@ -122,7 +122,7 @@ class XPickAxe : public XTool
         {
             color = xLIGHTGRAY;
             view = '\\';
-            it = ItemType::PICKAXE;
+            it = IT_PICKAXE;
             name = "pickaxe";
             value = 150;
             weight = 100;
@@ -161,7 +161,7 @@ class XAlchemySet : public XTool
         {
             color = xLIGHTGRAY;
             view = '[';
-            it = ItemType::ALCHEMYSET;
+            it = IT_ALCHEMY_SET;
             name = "alchemy set";
             value = 150;
             weight = 100;

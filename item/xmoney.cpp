@@ -35,7 +35,7 @@ XMoney::XMoney(int _quantity)
     kind = ItemKind::MONEY;
     view = '$';
     color = xYELLOW;
-    it = ItemType::MONEY;
+    it = IT_MONEY;
     value = 1;
 }
 

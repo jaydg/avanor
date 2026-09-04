@@ -29,7 +29,7 @@ class XWeapon : public XItem
 {
     public:
         DECLARE_CREATOR(XWeapon, XItem);
-        XWeapon(ItemType it = ItemType::RANDOM);
+        XWeapon(ItemType it = IT_NONE);
         XWeapon(XWeapon * copy) : XItem((XItem*)copy) {}
 
         XItem* MakeCopy() override

@@ -29,7 +29,7 @@ class XMissile : public XItem
 {
     public:
         DECLARE_CREATOR(XMissile, XItem);
-        XMissile(ItemType it = ItemType::RANDOM);
+        XMissile(ItemType it = IT_NONE);
         std::string toString() override;
         XMissile(XMissile * copy) : XItem((XItem*)copy) {}
 

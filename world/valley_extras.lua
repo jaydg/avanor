@@ -3,7 +3,7 @@
 -- grave that gives up the one, and the brotherhood that wears the other.
 
 Item.new("avanor_defender")
-	:Weapon(ItemType.LONGSWORD)
+	:Weapon("long_sword")
 	:View("rune-covered long sword")
 	:Basic(3000, 110)
 	:Armour(0, 0)
@@ -18,9 +18,9 @@ Item.new("avanor_defender")
 -- No :Called - it is meant to pass for an ordinary cloak, which is the
 -- whole point of wearing one past the bridge.
 Item.new("forest_brother_cloak")
-	:Cloak(ItemType.CLOAK)
+	:Cloak("cloak")
 	:View("forest brother's cloak", nil, xColor.xGREEN)
-	:Type(ItemType.FORESTBROTHERCLOAK)
+	:Type("forest_brother_cloak")
 	:Basic(100, 20)
 	:Armour(3, 1)
 	:Combat(0, 1, 2, 0)
@@ -139,7 +139,7 @@ end
 -- accepted rather than adding new binding surface for it.
 BanditAI = {}
 function BanditAI.isEnemy(self, cr)
-	if cr:IsWearingItemType(BodyPart.CLOAK, 0, ItemType.FORESTBROTHERCLOAK) then
+	if cr:IsWearingItemType(BodyPart.CLOAK, 0, "forest_brother_cloak") then
 		return false
 	end
 
@@ -150,7 +150,7 @@ function BanditAI.isEnemy(self, cr)
 	-- by PROTECT_AREA alone (XStandardAI::isEnemy).
 	local escort = cr.xai:GetCompanion()
 
-	if (escort and escort:IsWearingItemType(BodyPart.CLOAK, 0, ItemType.FORESTBROTHERCLOAK)) then
+	if (escort and escort:IsWearingItemType(BodyPart.CLOAK, 0, "forest_brother_cloak")) then
 		return false
 	end
 

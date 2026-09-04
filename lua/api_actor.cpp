@@ -460,10 +460,10 @@ XGUID GetObjectGUID(void* obj)
     return ((XObject*)obj)->guid();
 }
 
-std::tuple<int, int, int, int, int, std::string> GetItemParam(void* item)
+std::tuple<int, int, int, ItemType, int, std::string> GetItemParam(void* item)
 {
     XItem * p = (XItem*)item;
-    return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, static_cast<int>(p->it), p->quantity, p->name};
+    return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, p->it, p->quantity, p->name};
 }
 
 void SetItemBrand(void* item, int br)
@@ -478,7 +478,7 @@ void SetItemBrand(void* item, int br)
 // ammunition to go with a weapon. Answers from the missiles' own
 // :Launcher() declarations, so the relationship is stated once, on the
 // missile rows, rather than a second time wherever ammo is handed out.
-sol::optional<int> MissileForLauncher(void* weapon)
+sol::optional<ItemType> MissileForLauncher(void* weapon)
 {
     const XItem* w = (XItem*)weapon;
 
@@ -490,7 +490,7 @@ sol::optional<int> MissileForLauncher(void* weapon)
         const ItemTemplate& row = gi_missile.pFirstItem[i];
 
         if (row.launcher != XWarSkills::OTHER && row.launcher == w->wt) {
-            return static_cast<int>(row.it);
+            return row.it;
         }
     }
 

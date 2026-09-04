@@ -3,7 +3,7 @@
 -- Template.new(kind, type) is documented in world/items/init.lua.
 --
 
-Template.new(ItemKind.SHIELD, ItemType.SMALLSHIELD)
+Template.new(ItemKind.SHIELD, "small_shield")
 	:View("small shield", ')')
 	:Made(ItemSet.SHIELD, ItemQuality.POOR)
 	:Skill(XWarSkills.SHIELD)
@@ -13,7 +13,7 @@ Template.new(ItemKind.SHIELD, ItemType.SMALLSHIELD)
 	:Chance(200)
 	:Register()
 
-Template.new(ItemKind.SHIELD, ItemType.MEDIUMSHIELD)
+Template.new(ItemKind.SHIELD, "medium_shield")
 	:View("medium shield", ')')
 	:Made(ItemSet.SHIELD, ItemQuality.AVG)
 	:Skill(XWarSkills.SHIELD)
@@ -23,7 +23,7 @@ Template.new(ItemKind.SHIELD, ItemType.MEDIUMSHIELD)
 	:Chance(100)
 	:Register()
 
-Template.new(ItemKind.SHIELD, ItemType.LARGESHIELD)
+Template.new(ItemKind.SHIELD, "large_shield")
 	:View("large shield", ')')
 	:Made(ItemSet.SHIELD, ItemQuality.AVG)
 	:Skill(XWarSkills.SHIELD)
@@ -33,7 +33,7 @@ Template.new(ItemKind.SHIELD, ItemType.LARGESHIELD)
 	:Chance(50)
 	:Register()
 
-Template.new(ItemKind.SHIELD, ItemType.TOWERSHIELD)
+Template.new(ItemKind.SHIELD, "tower_shield")
 	:View("tower shield", ')')
 	:Made(ItemSet.SHIELD, ItemQuality.FAIR)
 	:Skill(XWarSkills.SHIELD)

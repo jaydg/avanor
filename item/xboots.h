@@ -28,7 +28,7 @@ class XBoots: public XClothes
     public:
         DECLARE_CREATOR(XBoots, XClothes);
 
-        explicit XBoots(ItemType it = ItemType::RANDOM);
+        explicit XBoots(ItemType it = IT_NONE);
 
         explicit XBoots(XBoots* boots) : XClothes(static_cast<XClothes *>(boots))
         {

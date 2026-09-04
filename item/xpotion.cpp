@@ -241,7 +241,7 @@ XPotion::XPotion(const PotionName _pn)
 
     kind = ItemKind::POTION;
     bp = BP_OTHER;
-    it = ItemType::POTION;
+    it = IT_POTION;
     view = '!';
     color =	pnc_table[static_cast<int>(pdescr->force_color)].color;
 

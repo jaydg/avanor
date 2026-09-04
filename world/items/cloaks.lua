@@ -3,7 +3,7 @@
 -- Template.new(kind, type) is documented in world/items/init.lua.
 --
 
-Template.new(ItemKind.CLOAK, ItemType.LIGHTCLOAK)
+Template.new(ItemKind.CLOAK, "light_cloak")
 	:View("light cloak", '(')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.AVG)
 	:Worth(1, 2)
@@ -12,7 +12,7 @@ Template.new(ItemKind.CLOAK, ItemType.LIGHTCLOAK)
 	:Chance(100)
 	:Register()
 
-Template.new(ItemKind.CLOAK, ItemType.CLOAK)
+Template.new(ItemKind.CLOAK, "cloak")
 	:View("cloak", '(')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.AVG)
 	:Worth(2, 3)
@@ -21,7 +21,7 @@ Template.new(ItemKind.CLOAK, ItemType.CLOAK)
 	:Chance(60)
 	:Register()
 
-Template.new(ItemKind.CLOAK, ItemType.SHADOWCLOAK)
+Template.new(ItemKind.CLOAK, "shadow_cloak")
 	:View("shadow cloak", '(')
 	:Made(ItemSet.ALLLEATHER, ItemQuality.FAIR)
 	:Worth(15, 8)
@@ -30,7 +30,7 @@ Template.new(ItemKind.CLOAK, ItemType.SHADOWCLOAK)
 	:Chance(10)
 	:Register()
 
-Template.new(ItemKind.CLOAK, ItemType.CAPE)
+Template.new(ItemKind.CLOAK, "cape")
 	:View("cape", '(')
 	:Made(ItemSet.SOFT, ItemQuality.AVG)
 	:Worth(2, 2)

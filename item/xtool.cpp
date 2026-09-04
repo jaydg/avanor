@@ -41,7 +41,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XCookingSet);
 
 int CorpseFiltr(XItem * item)
 {
-    if (item->kind & ItemKind::FOOD && item->it == ItemType::CORPSE) {
+    if (item->kind & ItemKind::FOOD && item->it == IT_CORPSE) {
         if (((XCorpse*)item)->corpse_flag & CF_COOKED) {
             return 0;
         } else {
@@ -221,7 +221,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAlchemySet);
 
 int RootsFiltr(XItem * item)
 {
-    if (item->kind & ItemKind::FOOD && item->it == ItemType::HERB) {
+    if (item->kind & ItemKind::FOOD && item->it == IT_HERB) {
         return 1;
     } else {
         return 0;

@@ -92,10 +92,10 @@ namespace lua_api
     std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
     int Gender(void* cr);
     XGUID GetObjectGUID(void* obj);
-    std::tuple<int, int, int, int, int, std::string> GetItemParam(void* item);
+    std::tuple<int, int, int, ItemType, int, std::string> GetItemParam(void* item);
     void SetItemBrand(void* item, int br);
     std::string GetItemName(void* item);
-    sol::optional<int> MissileForLauncher(void* weapon);
+    sol::optional<ItemType> MissileForLauncher(void* weapon);
     void SetItemName(void* item, const std::string& name);
     void AddItemToHit(void* item, int bonus);
     void AddItemRange(void* item, int bonus);

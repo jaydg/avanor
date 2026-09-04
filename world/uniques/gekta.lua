@@ -27,7 +27,7 @@ function GektaHandler(e, t, p, v)
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (kind == ItemKind.FOOD) then
-			if (it == ItemType.BONE) then
+			if (it == "bone") then
 				for i = 1, count do
 					if (Rand(7) == 0) then
 						 AddMessage("Gekta suddenly start to dig in the ground. She digs a pit. Gekta digs something up from the ground. After this, she puts a bone in the pit and buries it.")

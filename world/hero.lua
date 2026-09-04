@@ -231,10 +231,10 @@ function InitHero(hero, race_key, gender_key, profession_key)
 	-- And nobody sets out naked.
 	if (Rand(2) == 0) then
 		who:PutOnBody(BodyPart.BODY, 0,
-			CreateObject(ItemKind.BODY, ItemType.CLOTHES, 1, 100))
+			CreateObject(ItemKind.BODY, "clothes", 1, 100))
 	else
 		who:PutOnBody(BodyPart.BODY, 0,
-			CreateObject(ItemKind.BODY, ItemType.ROBE, 1, 100))
+			CreateObject(ItemKind.BODY, "robe", 1, 100))
 	end
 
 	-- A little money and a day's food. The purse is topped up again in
@@ -260,44 +260,44 @@ HERO_KITS = {}
 HERO_KITS["warrior"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
 	if (race == "human") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.LONGSWORD, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "long_sword", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.SHIELD, ItemType.SMALLSHIELD, 1, 100)
+		item = CreateObject(ItemKind.SHIELD, "small_shield", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 1, item)
 	elseif (race == "half_elf") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "rapier", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		item = CreateObject(ItemKind.BOOTS, "sandals", 1, 20)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "high_elf") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "rapier", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		item = CreateObject(ItemKind.CLOAK, "light_cloak", 1, 50)
 		who:PutOnBody(BodyPart.CLOAK, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		item = CreateObject(ItemKind.BOOTS, "sandals", 1, 20)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "halfling") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.SHORTSWORD, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "short_sword", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		item = CreateObject(ItemKind.CLOAK, "light_cloak", 1, 50)
 		who:PutOnBody(BodyPart.CLOAK, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.LIGHTBOOTS, 1, 40)
+		item = CreateObject(ItemKind.BOOTS, "light_boots", 1, 40)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 		LearnSkill(hero, XSkill.DISARMTRAP, 1)
 	elseif (race == "half_orc") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.ORCISHAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "orcish_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.SHIELD, ItemType.MEDIUMSHIELD, 1, 100)
+		item = CreateObject(ItemKind.SHIELD, "medium_shield", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 1, item)
 	elseif (race == "dwarf") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.BATTLEAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "battle_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.SHIELD, ItemType.MEDIUMSHIELD, 1, 100)
+		item = CreateObject(ItemKind.SHIELD, "medium_shield", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 1, item)
 	elseif (race == "gnome") then
-		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "war_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.SHIELD, ItemType.SMALLSHIELD, 1, 100)
+		item = CreateObject(ItemKind.SHIELD, "small_shield", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 1, item)
 	end
 	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
@@ -314,7 +314,7 @@ end
 
 HERO_KITS["wizard"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
-	item = CreateObject(ItemKind.WEAPON, ItemType.STAFF, 1, 100)
+	item = CreateObject(ItemKind.WEAPON, "staff", 1, 100)
 	who:PutOnBody(BodyPart.HAND, 0, item)
 	potion = CreateObject(PotionName.POWER)
 	Identify(potion)
@@ -347,68 +347,68 @@ end
 HERO_KITS["archer"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
 	if (race == "human") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.CROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	elseif (race == "half_elf") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "long_bow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "arrow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		item = CreateObject(ItemKind.BOOTS, "sandals", 1, 20)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "high_elf") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "long_bow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "arrow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "rapier", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		item = CreateObject(ItemKind.CLOAK, "light_cloak", 1, 50)
 		who:PutOnBody(BodyPart.CLOAK, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		item = CreateObject(ItemKind.BOOTS, "sandals", 1, 20)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "halfling") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.SLING, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "sling", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.SLINGBULLET, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "sling_bullet", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		item = CreateObject(ItemKind.CLOAK, "light_cloak", 1, 50)
 		who:PutOnBody(BodyPart.CLOAK, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.LIGHTBOOTS, 1, 40)
+		item = CreateObject(ItemKind.BOOTS, "light_boots", 1, 40)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "half_orc") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "heavy_crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.ORCISHDAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "orcish_dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	elseif (race == "dwarf") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "heavy_crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "war_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	elseif (race == "gnome") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.LIGHTCROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "light_crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "war_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	end
 	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
@@ -423,70 +423,70 @@ end
 HERO_KITS["ranger"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
 	if (race == "human") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.CROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	elseif (race == "half_elf") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "long_bow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "arrow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		item = CreateObject(ItemKind.BOOTS, "sandals", 1, 20)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "high_elf") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.LONGBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "long_bow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.ARROW, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "arrow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.RAPIER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "rapier", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		item = CreateObject(ItemKind.CLOAK, "light_cloak", 1, 50)
 		who:PutOnBody(BodyPart.CLOAK, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.SANDALS, 1, 20)
+		item = CreateObject(ItemKind.BOOTS, "sandals", 1, 20)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "halfling") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.SLING, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "sling", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.SLINGBULLET, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "sling_bullet", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.LONGDAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "long_dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
-		item = CreateObject(ItemKind.CLOAK, ItemType.LIGHTCLOAK, 1, 50)
+		item = CreateObject(ItemKind.CLOAK, "light_cloak", 1, 50)
 		who:PutOnBody(BodyPart.CLOAK, 0, item)
-		item = CreateObject(ItemKind.BOOTS, ItemType.LIGHTBOOTS, 1, 40)
+		item = CreateObject(ItemKind.BOOTS, "light_boots", 1, 40)
 		who:PutOnBody(BodyPart.BOOTS, 0, item)
 	elseif (race == "half_orc") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "heavy_crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.ORCISHDAGGER, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "orcish_dagger", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	elseif (race == "dwarf") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.HEAVYCROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "heavy_crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "war_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	elseif (race == "gnome") then
-		item = CreateObject(ItemKind.MISSILEW, ItemType.LIGHTCROSSBOW, 1, 100)
+		item = CreateObject(ItemKind.MISSILEW, "light_crossbow", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE_WEAPON, 0, item)
-		item = CreateObject(ItemKind.MISSILE, ItemType.QUARREL, 1, 100)
+		item = CreateObject(ItemKind.MISSILE, "quarrel", 1, 100)
 		who:PutOnBody(BodyPart.MISSILE, 0, item)
 		AsItem(item).quantity = Rand() % 10 + 10
-		item = CreateObject(ItemKind.WEAPON, ItemType.WARAXE, 1, 100)
+		item = CreateObject(ItemKind.WEAPON, "war_axe", 1, 100)
 		who:PutOnBody(BodyPart.HAND, 0, item)
 	end
 	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
@@ -505,9 +505,9 @@ end
 
 HERO_KITS["cleric"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
-	item = CreateObject(ItemKind.WEAPON, ItemType.MACE, 10, 150)
+	item = CreateObject(ItemKind.WEAPON, "mace", 10, 150)
 	who:PutOnBody(BodyPart.HAND, 0, item)
-	item = CreateObject(ItemKind.SHIELD, ItemType.SMALLSHIELD, 10, 150)
+	item = CreateObject(ItemKind.SHIELD, "small_shield", 10, 150)
 	who:PutOnBody(BodyPart.HAND, 1, item)
 	scroll = CreateScroll(ScrollName.BLINK)
 	Identify(scroll)
@@ -536,9 +536,9 @@ end
 
 HERO_KITS["paladin"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
-	item = CreateObject(ItemKind.WEAPON, ItemType.MACE, 10, 150)
+	item = CreateObject(ItemKind.WEAPON, "mace", 10, 150)
 	who:PutOnBody(BodyPart.HAND, 0, item)
-	item = CreateObject(ItemKind.SHIELD, ItemType.LARGESHIELD, 10, 150)
+	item = CreateObject(ItemKind.SHIELD, "large_shield", 10, 150)
 	who:PutOnBody(BodyPart.HAND, 1, item)
 	scroll = CreateScroll(ScrollName.BLINK)
 	Identify(scroll)
@@ -567,7 +567,7 @@ end
 
 HERO_KITS["alchemist"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
-	item = CreateObject(ItemKind.WEAPON, ItemType.DAGGER, 10, 150)
+	item = CreateObject(ItemKind.WEAPON, "dagger", 10, 150)
 	who:PutOnBody(BodyPart.HAND, 0, item)
 	scroll = CreateScroll(ScrollName.BLINK)
 	Identify(scroll)
@@ -600,7 +600,7 @@ end
 
 HERO_KITS["bard"] = function(hero, who, race)
 	local item, potion, scroll, book, tool
-	item = CreateObject(ItemKind.WEAPON, ItemType.CLUB, 10, 150)
+	item = CreateObject(ItemKind.WEAPON, "club", 10, 150)
 	who:PutOnBody(BodyPart.HAND, 0, item)
 	potion = CreateObject(PotionName.CURE_LIGHT_WOUNDS)
 	Identify(potion)
