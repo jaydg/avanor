@@ -2385,35 +2385,6 @@ void XHero::LookAt()
         if (!xcr->isHero()) {
             list.AddItem(new XGuiItem_Text(xcr->creature_description, 0), 0);
         }
-
-#ifdef __XDEBUG_01
-        list.AddItem(new XGuiItem_Text("", 0), 0);
-
-        str = fmt::format("St:{} Dx:{} To:{} Le:{} Wi:{} Ma:{} Pe:{} Ch:{} Sp:{}    ",
-            xcr->GetStats(XStats::STR),
-            xcr->GetStats(XStats::DEX),
-            xcr->GetStats(XStats::TOU),
-            xcr->GetStats(XStats::LEN),
-            xcr->GetStats(XStats::WIL),
-            xcr->GetStats(XStats::MAN),
-            xcr->GetStats(XStats::PER),
-            xcr->GetStats(XStats::CHR),
-            100000 / xcr->GetSpeed());
-        list.AddItem(new XGuiItem_Text(str, 0), 0);
-
-        str = fmt::format("HP:{}({})  PP:{}({})",
-            xcr->HP, xcr->GetMaxHP(),
-            xcr->PP, xcr->GetMaxPP());
-        list.AddItem(new XGuiItem_Text(str, 0), 0);
-
-        str = fmt::format("Exp({}){}", xcr->level, xcr->experience);
-        list.AddItem(new XGuiItem_Text(str, 0), 0);
-
-        fmt::format("dv - {}, pv - {}, hit, xdy+z[{}, {}d{} + {}] experience(EXP_ADD) {}({})",
-            xcr->GetDV(), xcr->GetPV(), xcr->GetHIT(), xcr->dice.X,
-            xcr->dice.Y, xcr->dice.Z,xcr->experience, xcr->GetExp());
-        list.AddItem(new XGuiItem_Text(str, 0), 0);
-#endif
     } else {
         list.AddItem(new XGuiItem_Text(l->map->GetDescription(pt.x, pt.y), 0), 0);
     }
