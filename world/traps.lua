@@ -6,7 +6,7 @@
 --
 --   TrapRecipe.new(name, XTrap.TYPE)
 --       :Level(n)          the CREATETRAP level it becomes available at
---       :Spell(Spell.X)   a magic trap: cast instead of loaded, and paid
+--       :Spell(id)         a magic trap: cast instead of loaded, and paid
 --                          for in mana rather than in things
 --       :Loads(kind, {types})
 --                          what may go into it - any one of the types will
@@ -37,13 +37,13 @@ TrapRecipe.new("Spear trap", XTrap.ARROW)
 
 TrapRecipe.new("Magic Arrow trap", XTrap.MAGICARROW)
 	:Level(4)
-	:Spell(Spell.MAGIC_ARROW)
+	:Spell("magic_arrow")
 	:Practice(10)
 	:Register()
 
 TrapRecipe.new("Fire Bolt trap", XTrap.FIREBOLT)
 	:Level(6)
-	:Spell(Spell.FIRE_BOLT)
+	:Spell("fire_bolt")
 	:Practice(10)
 	:Register()
 
@@ -55,7 +55,7 @@ TrapRecipe.new("Pit", XTrap.PIT)
 
 TrapRecipe.new("Acid Bolt trap", XTrap.ACIDBOLT)
 	:Level(10)
-	:Spell(Spell.ACID_BOLT)
+	:Spell("acid_bolt")
 	:Practice(10)
 	:Register()
 

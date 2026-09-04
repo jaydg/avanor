@@ -358,7 +358,7 @@ int XSkill::UseCreate(XCreature * user)
 
     // A magic trap is paid for in mana, and holds as many charges as the
     // caster can afford at twice the spell's price apiece.
-    if (recipe.spell != SPELL_EOF) {
+    if (recipe.spell != SP_NONE) {
         XSpell* sp = user->m->GetSpell(recipe.spell);
 
         if (!sp) {

@@ -33,35 +33,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 /* Forward declaration */
 class XCreature;
 
-enum SPELL_NAME {
-    SPELL_CURE_LIGHT_WOUNDS,
-    SPELL_CURE_SERIOUS_WOUNDS,
-    SPELL_CURE_CRITICAL_WOUNDS,
-    SPELL_CURE_MORTAL_WOUNDS,
-    SPELL_HEAL,
-    SPELL_BURNING_HANDS,
-    SPELL_ICE_TOUCH,
-    SPELL_HEROISM,
-    SPELL_DRAIN_LIFE,
-    SPELL_IDENTIFY,
-    SPELL_MAGIC_ARROW,
-    SPELL_FIRE_BOLT,
-    SPELL_ICE_BOLT,
-    SPELL_LIGHTNING_BOLT,
-    SPELL_ACID_BOLT,
-    SPELL_SUMMON_MONSTER,
-    SPELL_CREATE_ITEM,
-    SPELL_CURE_POISON,
-    SPELL_CURE_DISEASE,
-    SPELL_BLINK,
-    SPELL_SELF_KNOWLEDGE,
-    SPELL_SEE_INVISIBLE,
-    SPELL_ACID_RESISTANCE,
-    SPELL_FIRE_RESISTANCE,
-    SPELL_COLD_RESISTANCE,
-    SPELL_POISON_RESISTANCE,
-    SPELL_EOF
-};
+// Which spell this is - the id world/spells.lua registered it under. A
+// string like every other content id: which spells exist is content.
+using SPELL_NAME = std::string;
+
+// "No spell": a trap built from things rather than cast, a request that
+// names none. Was SPELL_EOF, which also doubled as the table's size.
+inline constexpr const char* SP_NONE = "";
 
 class XSpell;
 
@@ -236,6 +214,39 @@ class XSpell
         }
 };
 
+// Fluent builder for one spell:
+//
+//   Spell.new("fire_bolt")
+//       :Called("fire bolt")
+//       :Effect(XEffect.FIRE_BOLT)
+//       :School(MagicSchool.ELEMENTAL)
+//       :Cost(10)
+//       :Use(SpellUse.ATTACK)
+//       :Register()
+//
+// SPELL_REC stays private to magic.cpp, so the builder holds the fields.
+class SpellBuilder
+{
+    public:
+        explicit SpellBuilder(std::string id);
+
+        SpellBuilder& Called(const std::string& n);
+        SpellBuilder& Effect(XEffect::Id eff);
+        SpellBuilder& School(XMagic::School sch);
+        SpellBuilder& Cost(int c);
+        SpellBuilder& Use(XSpell::Use u);
+
+        void Register();
+
+    private:
+        std::string id;
+        std::string name;
+        XEffect::Id effect{XEffect::NONE};
+        XMagic::School school{XMagic::School::UNKNOWN};
+        int cost{0};
+        XSpell::Use use{XSpell::Use::OTHER};
+};
+
 // XSpell() is deleted (real construction always takes a SPELL_NAME) -
 // route Cereal's load-time construction through the real constructor
 // with a placeholder, same idea as CEREAL_LOAD_VIA_DUMMY_CONSTRUCT but
@@ -246,6 +257,6 @@ class XSpell
 // that reaches XCreature::m (e.g. any item's owner weak_ptr<XCreature>
 // chain) - a specialization declared only in magic.cpp wouldn't be
 // visible to those other TUs.
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XSpell, serialize, SPELL_CURE_LIGHT_WOUNDS);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XSpell, serialize, SP_NONE);
 
 #endif

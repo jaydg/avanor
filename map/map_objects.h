@@ -148,9 +148,9 @@ struct TrapRecipe {
     int level{0};
 
     // A magic recipe casts this instead of consuming anything, and costs
-    // mana per charge rather than an item. SPELL_EOF means it is built
+    // mana per charge rather than an item. SP_NONE means it is built
     // from things instead.
-    SPELL_NAME spell{SPELL_EOF};
+    SPELL_NAME spell{SP_NONE};
 
     // What may be loaded into it. Any one of `loads` will do - a spear
     // trap takes a short spear or a long one - and an empty list means

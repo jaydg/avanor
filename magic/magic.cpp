@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+
 #include <algorithm>
 #include <iterator>
 
@@ -34,203 +36,132 @@ using School = XMagic::School;
 
 void RegisterSpellNameEnum(sol::state_view& lua)
 {
-    // The names a creature definition uses for the spells it knows.
-    // SPELL_EOF is the end marker of the enum, not a spell, so it is
-    // deliberately absent - a script asking for Spell.EOF should fail.
-    lua.new_enum("Spell",
-        "CURE_LIGHT_WOUNDS", SPELL_CURE_LIGHT_WOUNDS,
-        "CURE_SERIOUS_WOUNDS", SPELL_CURE_SERIOUS_WOUNDS,
-        "CURE_CRITICAL_WOUNDS", SPELL_CURE_CRITICAL_WOUNDS,
-        "CURE_MORTAL_WOUNDS", SPELL_CURE_MORTAL_WOUNDS,
-        "HEAL", SPELL_HEAL,
-        "BURNING_HANDS", SPELL_BURNING_HANDS,
-        "ICE_TOUCH", SPELL_ICE_TOUCH,
-        "HEROISM", SPELL_HEROISM,
-        "DRAIN_LIFE", SPELL_DRAIN_LIFE,
-        "IDENTIFY", SPELL_IDENTIFY,
-        "MAGIC_ARROW", SPELL_MAGIC_ARROW,
-        "FIRE_BOLT", SPELL_FIRE_BOLT,
-        "ICE_BOLT", SPELL_ICE_BOLT,
-        "LIGHTNING_BOLT", SPELL_LIGHTNING_BOLT,
-        "ACID_BOLT", SPELL_ACID_BOLT,
-        "SUMMON_MONSTER", SPELL_SUMMON_MONSTER,
-        "CREATE_ITEM", SPELL_CREATE_ITEM,
-        "CURE_POISON", SPELL_CURE_POISON,
-        "CURE_DISEASE", SPELL_CURE_DISEASE,
-        "BLINK", SPELL_BLINK,
-        "SELF_KNOWLEDGE", SPELL_SELF_KNOWLEDGE,
-        "SEE_INVISIBLE", SPELL_SEE_INVISIBLE,
-        "ACID_RESISTANCE", SPELL_ACID_RESISTANCE,
-        "FIRE_RESISTANCE", SPELL_FIRE_RESISTANCE,
-        "COLD_RESISTANCE", SPELL_COLD_RESISTANCE,
-        "POISON_RESISTANCE", SPELL_POISON_RESISTANCE
+    // Which spells exist is content (world/spells.lua). What a spell can
+    // belong to, and what a caster reaches for one FOR, stay engine.
+    lua.new_enum("MagicSchool",
+        "ELEMENTAL", XMagic::School::ELEMENTAL,
+        "BODY", XMagic::School::BODY,
+        "PROTECTION", XMagic::School::PROTECTION,
+        "DEATH", XMagic::School::DEATH,
+        "SURVIVING", XMagic::School::SURVIVING
+    );
+
+    lua.new_enum("SpellUse",
+        "OTHER", XSpell::Use::OTHER,
+        "ATTACK", XSpell::Use::ATTACK,
+        "HEALING", XSpell::Use::HEALING
     );
 }
 
+// One spell: what it is called, what casting it does, which school it
+// belongs to, what it costs, and what a caster reaches for it FOR.
+// Filled from world/spells.lua as that script loads.
 struct SPELL_REC {
-    XEffect::Id effect;
-    School school;
-    int cost;
+    SPELL_NAME id;
     std::string name;
+    XEffect::Id effect{XEffect::NONE};
+    School school{School::UNKNOWN};
+    int cost{0};
 
-    // What this spell is good for - see XSpell::Use. Defaults to OTHER,
-    // so a spell added below is inert to the AI until it is said to be
-    // an attack or a heal, rather than silently miscategorised.
-    XSpell::Use use = XSpell::Use::OTHER;
-
-    SPELL_REC();
+    // Defaults to OTHER, so a spell content adds is inert to the AI until
+    // it is said to be an attack or a heal, rather than silently
+    // miscategorised.
+    XSpell::Use use{XSpell::Use::OTHER};
 };
 
-SPELL_REC spell_db[SPELL_EOF];
+std::vector<SPELL_REC> spell_db;
 
-SPELL_REC::SPELL_REC()
+// The row for an id, or nullptr if content never registered one.
+static const SPELL_REC* FindSpell(const SPELL_NAME& id)
 {
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].effect	= XEffect::CURE_LIGHT_WOUNDS;
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].school	= School::BODY;
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].cost	= 5;
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].name	= "cure light wounds";
-    spell_db[SPELL_CURE_LIGHT_WOUNDS].use	= XSpell::Use::HEALING;
+    for (const auto& row : spell_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
 
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].effect	= XEffect::CURE_SERIOUS_WOUNDS;
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].school	= School::BODY;
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].cost	= 10;
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].name	= "cure serious wounds";
-    spell_db[SPELL_CURE_SERIOUS_WOUNDS].use	= XSpell::Use::HEALING;
+    return nullptr;
+}
 
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].effect = XEffect::CURE_CRITICAL_WOUNDS;
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].school = School::BODY;
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].cost	= 15;
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].name	= "cure critical wounds";
-    spell_db[SPELL_CURE_CRITICAL_WOUNDS].use	= XSpell::Use::HEALING;
+// A row that is always there, so every accessor below has something to
+// answer with when asked about a spell nothing defines.
+static const SPELL_REC& SpellRow(const SPELL_NAME& id)
+{
+    static const SPELL_REC nothing;
 
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].effect	= XEffect::CURE_MORTAL_WOUNDS;
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].school	= School::BODY;
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].cost	= 20;
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].name	= "cure mortal wounds";
-    spell_db[SPELL_CURE_MORTAL_WOUNDS].use	= XSpell::Use::HEALING;
+    if (const SPELL_REC* row = FindSpell(id)) {
+        return *row;
+    }
 
-    spell_db[SPELL_HEAL].effect	= XEffect::HEAL;
-    spell_db[SPELL_HEAL].school	= School::BODY;
-    spell_db[SPELL_HEAL].cost	= 30;
-    spell_db[SPELL_HEAL].name	= "heal";
-    spell_db[SPELL_HEAL].use	= XSpell::Use::HEALING;
+    return nothing;
+}
 
-    spell_db[SPELL_HEROISM].effect	= XEffect::HEROISM;
-    spell_db[SPELL_HEROISM].school	= School::BODY;
-    spell_db[SPELL_HEROISM].cost	= 5;
-    spell_db[SPELL_HEROISM].name	= "heroism";
+SpellBuilder::SpellBuilder(std::string id) : id(std::move(id)) {}
 
-    spell_db[SPELL_CURE_POISON].effect	= XEffect::CURE_POISON;
-    spell_db[SPELL_CURE_POISON].school	= School::BODY;
-    spell_db[SPELL_CURE_POISON].cost	= 15;
-    spell_db[SPELL_CURE_POISON].name	= "cure poison";
+SpellBuilder& SpellBuilder::Called(const std::string& n)
+{
+    name = n;
+    return *this;
+}
 
-    spell_db[SPELL_CURE_DISEASE].effect	= XEffect::CURE_DISEASE;
-    spell_db[SPELL_CURE_DISEASE].school	= School::BODY;
-    spell_db[SPELL_CURE_DISEASE].cost	= 20;
-    spell_db[SPELL_CURE_DISEASE].name	= "cure disease";
+SpellBuilder& SpellBuilder::Effect(const XEffect::Id eff)
+{
+    effect = eff;
+    return *this;
+}
 
-    spell_db[SPELL_BURNING_HANDS].effect	= XEffect::BURNING_HANDS;
-    spell_db[SPELL_BURNING_HANDS].school	= School::ELEMENTAL;
-    spell_db[SPELL_BURNING_HANDS].cost	= 7;
-    spell_db[SPELL_BURNING_HANDS].name	= "burning hands";
-    spell_db[SPELL_BURNING_HANDS].use	= XSpell::Use::ATTACK;
+SpellBuilder& SpellBuilder::School(const XMagic::School sch)
+{
+    school = sch;
+    return *this;
+}
 
-    spell_db[SPELL_ICE_TOUCH].effect	= XEffect::ICE_TOUCH;
-    spell_db[SPELL_ICE_TOUCH].school	= School::ELEMENTAL;
-    spell_db[SPELL_ICE_TOUCH].cost	= 7;
-    spell_db[SPELL_ICE_TOUCH].name	= "ice touch";
-    spell_db[SPELL_ICE_TOUCH].use	= XSpell::Use::ATTACK;
+SpellBuilder& SpellBuilder::Cost(const int c)
+{
+    cost = c;
+    return *this;
+}
 
-    spell_db[SPELL_MAGIC_ARROW].effect	= XEffect::MAGIC_ARROW;
-    spell_db[SPELL_MAGIC_ARROW].school	= School::ELEMENTAL;
-    spell_db[SPELL_MAGIC_ARROW].cost	= 5;
-    spell_db[SPELL_MAGIC_ARROW].name	= "magic arrow";
-    spell_db[SPELL_MAGIC_ARROW].use	= XSpell::Use::ATTACK;
+SpellBuilder& SpellBuilder::Use(const XSpell::Use u)
+{
+    use = u;
+    return *this;
+}
 
-    spell_db[SPELL_FIRE_BOLT].effect	= XEffect::FIRE_BOLT;
-    spell_db[SPELL_FIRE_BOLT].school	= School::ELEMENTAL;
-    spell_db[SPELL_FIRE_BOLT].cost	= 12;
-    spell_db[SPELL_FIRE_BOLT].name	= "fire bolt";
-    spell_db[SPELL_FIRE_BOLT].use	= XSpell::Use::ATTACK;
+void SpellBuilder::Register()
+{
+    if (id.empty()) {
+        std::cerr << "world: a spell with no id" << std::endl;
+        return;
+    }
 
-    spell_db[SPELL_ICE_BOLT].effect	= XEffect::ICE_BOLT;
-    spell_db[SPELL_ICE_BOLT].school	= School::ELEMENTAL;
-    spell_db[SPELL_ICE_BOLT].cost	= 12;
-    spell_db[SPELL_ICE_BOLT].name	= "ice bolt";
-    spell_db[SPELL_ICE_BOLT].use	= XSpell::Use::ATTACK;
+    if (FindSpell(id)) {
+        std::cerr << "world: two spells both called '" << id << "'" << std::endl;
+        return;
+    }
 
-    spell_db[SPELL_LIGHTNING_BOLT].effect	= XEffect::LIGHTNING_BOLT;
-    spell_db[SPELL_LIGHTNING_BOLT].school	= School::ELEMENTAL;
-    spell_db[SPELL_LIGHTNING_BOLT].cost	= 18;
-    spell_db[SPELL_LIGHTNING_BOLT].name	= "lightning bolt";
-    spell_db[SPELL_LIGHTNING_BOLT].use	= XSpell::Use::ATTACK;
+    SPELL_REC row;
+    row.id = id;
+    row.name = name.empty() ? id : name;
+    row.effect = effect;
+    row.school = school;
+    row.cost = cost;
+    row.use = use;
 
-    spell_db[SPELL_DRAIN_LIFE].effect	= XEffect::DRAIN_LIFE;
-    spell_db[SPELL_DRAIN_LIFE].school	= School::DEATH;
-    spell_db[SPELL_DRAIN_LIFE].cost	= 7;
-    spell_db[SPELL_DRAIN_LIFE].name	= "drain life";
-    spell_db[SPELL_DRAIN_LIFE].use	= XSpell::Use::ATTACK;
-
-    spell_db[SPELL_ACID_BOLT].effect	= XEffect::ACID_BOLT;
-    spell_db[SPELL_ACID_BOLT].school	= School::DEATH;
-    spell_db[SPELL_ACID_BOLT].cost	= 25;
-    spell_db[SPELL_ACID_BOLT].name	= "acid bolt";
-    spell_db[SPELL_ACID_BOLT].use	= XSpell::Use::ATTACK;
-
-    spell_db[SPELL_IDENTIFY].effect	= XEffect::IDENTIFY;
-    spell_db[SPELL_IDENTIFY].school	= School::SURVIVING;
-    spell_db[SPELL_IDENTIFY].cost	= 25;
-    spell_db[SPELL_IDENTIFY].name	= "identify";
-
-    spell_db[SPELL_SUMMON_MONSTER].effect	= XEffect::SUMMON_MONSTER;
-    spell_db[SPELL_SUMMON_MONSTER].school	= School::SURVIVING;
-    spell_db[SPELL_SUMMON_MONSTER].cost	= 15;
-    spell_db[SPELL_SUMMON_MONSTER].name	= "summon monster";
-
-    spell_db[SPELL_CREATE_ITEM].effect	= XEffect::CREATE_ITEM;
-    spell_db[SPELL_CREATE_ITEM].school	= School::SURVIVING;
-    spell_db[SPELL_CREATE_ITEM].cost	= 100;
-    spell_db[SPELL_CREATE_ITEM].name	= "create item";
-
-    spell_db[SPELL_BLINK].effect	= XEffect::BLINK;
-    spell_db[SPELL_BLINK].school	= School::SURVIVING;
-    spell_db[SPELL_BLINK].cost	= 15;
-    spell_db[SPELL_BLINK].name	= "blink";
-
-    spell_db[SPELL_SELF_KNOWLEDGE].effect	= XEffect::SELF_KNOWLEDGE;
-    spell_db[SPELL_SELF_KNOWLEDGE].school	= School::SURVIVING;
-    spell_db[SPELL_SELF_KNOWLEDGE].cost	= 25;
-    spell_db[SPELL_SELF_KNOWLEDGE].name	= "self knowledge";
-
-    spell_db[SPELL_SEE_INVISIBLE].effect	= XEffect::SEE_INVISIBLE;
-    spell_db[SPELL_SEE_INVISIBLE].school	= School::PROTECTION;
-    spell_db[SPELL_SEE_INVISIBLE].cost	= 15;
-    spell_db[SPELL_SEE_INVISIBLE].name	= "see invisible";
-
-    spell_db[SPELL_ACID_RESISTANCE].effect	= XEffect::ACID_RESISTANCE;
-    spell_db[SPELL_ACID_RESISTANCE].school	= School::PROTECTION;
-    spell_db[SPELL_ACID_RESISTANCE].cost	= 20;
-    spell_db[SPELL_ACID_RESISTANCE].name	= "acid resistance";
-
-    spell_db[SPELL_FIRE_RESISTANCE].effect	= XEffect::FIRE_RESISTANCE;
-    spell_db[SPELL_FIRE_RESISTANCE].school	= School::PROTECTION;
-    spell_db[SPELL_FIRE_RESISTANCE].cost	= 15;
-    spell_db[SPELL_FIRE_RESISTANCE].name	= "fire resistance";
-
-    spell_db[SPELL_COLD_RESISTANCE].effect	= XEffect::COLD_RESISTANCE;
-    spell_db[SPELL_COLD_RESISTANCE].school	= School::PROTECTION;
-    spell_db[SPELL_COLD_RESISTANCE].cost	= 15;
-    spell_db[SPELL_COLD_RESISTANCE].name	= "cold resistance";
-
-    spell_db[SPELL_POISON_RESISTANCE].effect	= XEffect::POISON_RESISTANCE;
-    spell_db[SPELL_POISON_RESISTANCE].school	= School::PROTECTION;
-    spell_db[SPELL_POISON_RESISTANCE].cost	= 15;
-    spell_db[SPELL_POISON_RESISTANCE].name	= "poison resistance";
+    spell_db.push_back(std::move(row));
 }
 
 XSpell::XSpell(const SPELL_NAME spn)
 {
+    // A name nothing defines - a typo in world/, where spells are written
+    // by hand. Say so; the accessors answer from an empty row, so the
+    // spell simply does nothing rather than crashing a caster.
+    // The empty id is not a typo: it is SP_NONE, which cereal
+    // placeholder-constructs an XSpell with before reading a real one in.
+    if (!spn.empty() && !FindSpell(spn)) {
+        std::cerr << "world: nothing defines a spell '" << spn << "'" << std::endl;
+    }
+
     spell_name = spn;
     eff_level = 1;
     cast_count = 0;
@@ -238,7 +169,7 @@ XSpell::XSpell(const SPELL_NAME spn)
 
 const char* XSpell::GetName(const SPELL_NAME spn)
 {
-    return spell_db[spn].name.c_str();
+    return SpellRow(spn).name.c_str();
 }
 
 void XSpell::Cast()
@@ -251,22 +182,22 @@ void XSpell::Cast()
 
 XEffect::Id XSpell::GetEffect() const
 {
-    return spell_db[spell_name].effect;
+    return SpellRow(spell_name).effect;
 }
 
 int XSpell::GetManaCost() const
 {
-    return (spell_db[spell_name].cost * 15) / (14 + eff_level);
+    return (SpellRow(spell_name).cost * 15) / (14 + eff_level);
 }
 
 XMagic::School XSpell::GetSchool() const
 {
-    return spell_db[spell_name].school;
+    return SpellRow(spell_name).school;
 }
 
 XSpell::Use XSpell::GetUse() const
 {
-    return spell_db[spell_name].use;
+    return SpellRow(spell_name).use;
 }
 
 bool XSpell::CanReach(const int distance, const int power) const
@@ -296,7 +227,7 @@ bool XSpell::CanReach(const int distance, const int power) const
 std::string XSpell::toString() const
 {
     return fmt::format("<VALUE>{:<21s} <TEXT>: <VALUE>{}<TEXT>pp  (Eff - {}) (to next level: {})",
-        spell_db[spell_name].name,
+        SpellRow(spell_name).name,
         GetManaCost(),
         GetEffectivity(),
         eff_level - cast_count);
@@ -398,7 +329,7 @@ int XMagic::GainLevel(const School school, const int n)
 void XMagic::Learn(const SPELL_NAME spell)
 {
     // Knowing any spell of a school makes the caster a Beginner in it.
-    if (const School school = spell_db[spell].school;
+    if (const School school = SpellRow(spell).school;
         school != School::UNKNOWN && GetLevel(school) == 0) {
         magic_level[Index(school)] = 1;
     }
