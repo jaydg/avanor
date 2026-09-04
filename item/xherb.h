@@ -31,29 +31,82 @@ enum HERB_TYPE {
     HT_MUSHROOM,
 };
 
+// One species of plant: what the picked part is called, what the plant it
+// grows on is called, how it tastes, how it looks, and whether it is a herb
+// or a mushroom. Filled from world/items/herbs.lua as that script loads.
+//
+// Which potion a species distils into, and how hard that is, are NOT
+// content: they are dealt out afresh each game by Create(), so learning
+// that valeriana made healing last game tells you nothing this game.
 struct PlantDefinition {
-    const char* herb_name;
-    const char* bush_name;
-    const char* post_eat;
-    int color;
-    HERB_TYPE herb_type;
+    std::string id;
+    std::string herb_name;
+    std::string bush_name;
+    std::string post_eat;
+    int color{0};
+    HERB_TYPE herb_type{HT_HERB};
+
+    // Per-game, not content, and saved with the game.
     PotionName pn;
-    int difficulty;
-    bool identified;
+    int difficulty{0};
+    bool identified{false};
+
     static void Create();
+
+    // The species with this id, or nullptr for one nothing defines.
+    static PlantDefinition* Find(const std::string& id);
+
+    // A species of that kind, drawn at random - what a bush or a mushroom
+    // patch asks for when it decides what it is growing.
+    static std::string RandomOfType(HERB_TYPE type);
 
     // herbs[] is private to xherb.cpp.
     static void SaveTable(cereal::JSONOutputArchive& ar);
     static void LoadTable(cereal::JSONInputArchive& ar);
 };
 
+// Fluent builder for one species of plant:
+//
+//   Herb.new("valeriana_root")
+//       :Called("valeriana root")
+//       :Growing("valeriana")
+//       :Taste("sedative")
+//       :Looks(xColor.xGREEN)
+//       :Register()
+//
+// A mushroom says :Mushroom() and no :Growing() - it is its own plant and
+// stands under its own name.
+class HerbBuilder
+{
+    public:
+        explicit HerbBuilder(std::string id);
+
+        HerbBuilder& Called(const std::string& n);
+        HerbBuilder& Growing(const std::string& n);
+        HerbBuilder& Mushroom();
+        HerbBuilder& Taste(const std::string& t);
+        HerbBuilder& Looks(int colour);
+
+        void Register();
+
+    private:
+        std::string id;
+        std::string herb_name;
+        std::string bush_name;
+        std::string post_eat;
+        int color{0};
+        HERB_TYPE herb_type{HT_HERB};
+};
+
 class XHerb : public XAnyFood
 {
-        int herb_index;
+        // The species this was picked from - the id world/items/herbs.lua
+        // registered it under.
+        std::string species;
     public:
         DECLARE_CREATOR(XHerb, XAnyFood);
-        XHerb(int _herb_index);
-        XHerb(XHerb * copy) : XAnyFood((XAnyFood*)copy), herb_index(copy->herb_index) { }
+        explicit XHerb(std::string _species);
+        XHerb(XHerb * copy) : XAnyFood((XAnyFood*)copy), species(copy->species) { }
 
         XHerb()
         {
@@ -71,9 +124,9 @@ class XHerb : public XAnyFood
 
         int Compare(XObject* o) override
         {
-            if (herb_index == ((XHerb*)o)->herb_index) {
+            if (species == ((XHerb*)o)->species) {
                 return 0;
-            } else if (herb_index < ((XHerb*)o)->herb_index) {
+            } else if (species < ((XHerb*)o)->species) {
                 return -1;
             } else {
                 return 1;
@@ -90,7 +143,7 @@ class XHerb : public XAnyFood
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XAnyFood>(this));
-            ar(herb_index);
+            ar(species);
         }
 };
 
@@ -112,8 +165,8 @@ class XLocation;
 class XPlant : public XMapObject
 {
     protected:
-        // Index into herbs[]; the species is drawn at placement time.
-        int herb_index{};
+        // Which species this plant is growing; drawn at placement time.
+        std::string species;
 
         virtual HERB_TYPE SpeciesType() const = 0;
         virtual char SpeciesView() const = 0;
@@ -137,7 +190,7 @@ class XPlant : public XMapObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-            ar(herb_index);
+            ar(species);
         }
 };
 

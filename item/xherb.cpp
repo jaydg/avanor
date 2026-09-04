@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+#include <map>
+#include <vector>
+
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+
 #include "creature/creature.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
@@ -26,82 +33,191 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xpotion.h"
 #include "magic/modifier.h"
 
-#define HERBS_COUNT 18
+// Filled from world/items/herbs.lua as that script loads.
+std::vector<PlantDefinition> herbs;
 
-PlantDefinition herbs[] = {
-    {"valeriana root",	"valeriana",	"sedative",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"stellaria leave",	"stellaria",	"strange",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"trifolium leave",	"trifolium",	"grassy",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"trifolium flower",	"trifolium",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"urtica leave",	"urtica",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"convallaria flower",	"convallaria",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"tussilago farfara leave",	"tussilago farfara",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"melissa leave",	"melissa",	"delicate",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"mentha leave",	"mentha",	"mint",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"taraxacum flower",	"taraxacum",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"paeonia root",	"paeonia",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"plantago leave",	"plantago",	"bitter",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
-    {"chamomilla flower",	"chamomilla",	"sweet",	xGREEN,	HT_HERB,	PN_NONE,	0, false},
+PlantDefinition* PlantDefinition::Find(const std::string& id)
+{
+    for (auto& row : herbs) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
 
-    {"red mushroom",	"red mushroom",	"bitter",	xRED,	HT_MUSHROOM,	PN_NONE,	0, false},
-    {"green mushroom",	"green mushroom",	"bitter",	xGREEN,	HT_MUSHROOM,	PN_NONE,	0, false},
-    {"blue mushroom",	"blue mushroom",	"bitter",	xBLUE,	HT_MUSHROOM,	PN_NONE,	0, false},
-    {"yellow mushroom",	"yellow mushroom",	"bitter",	xYELLOW,	HT_MUSHROOM,	PN_NONE,	0, false},
-    {"white mushroom",	"white mushroom",	"bitter",	xWHITE,	HT_MUSHROOM,	PN_NONE,	0, false},
-};
+    return nullptr;
+}
 
+std::string PlantDefinition::RandomOfType(const HERB_TYPE type)
+{
+    std::vector<const PlantDefinition*> of_type;
+
+    for (const auto& row : herbs) {
+        if (row.herb_type == type) {
+            of_type.push_back(&row);
+        }
+    }
+
+    if (of_type.empty()) {
+        std::cerr << "world: no plant of that kind is defined" << std::endl;
+
+        return {};
+    }
+
+    return of_type[vRand(static_cast<int>(of_type.size()))]->id;
+}
+
+HerbBuilder::HerbBuilder(std::string id) : id(std::move(id)) {}
+
+HerbBuilder& HerbBuilder::Called(const std::string& n)
+{
+    herb_name = n;
+    return *this;
+}
+
+HerbBuilder& HerbBuilder::Growing(const std::string& n)
+{
+    bush_name = n;
+    return *this;
+}
+
+HerbBuilder& HerbBuilder::Mushroom()
+{
+    herb_type = HT_MUSHROOM;
+    return *this;
+}
+
+HerbBuilder& HerbBuilder::Taste(const std::string& t)
+{
+    post_eat = t;
+    return *this;
+}
+
+HerbBuilder& HerbBuilder::Looks(const int colour)
+{
+    color = colour;
+    return *this;
+}
+
+void HerbBuilder::Register()
+{
+    if (id.empty()) {
+        std::cerr << "world: a plant with no id" << std::endl;
+        return;
+    }
+
+    if (PlantDefinition::Find(id)) {
+        std::cerr << "world: two plants both called '" << id << "'" << std::endl;
+        return;
+    }
+
+    PlantDefinition row;
+    row.id = id;
+    row.herb_name = herb_name.empty() ? id : herb_name;
+
+    // A mushroom is its own plant: there is no bush it grows on, so it
+    // stands under its own name.
+    row.bush_name = bush_name.empty() ? row.herb_name : bush_name;
+    row.post_eat = post_eat;
+    row.color = color;
+    row.herb_type = herb_type;
+
+    herbs.push_back(std::move(row));
+}
+
+// Deals each species the potion it distils into, and how hard that is -
+// fresh every game. A herb yields one of the two easiest grades of potion,
+// a mushroom one of the hardest, and no two species yield the same potion.
 void PlantDefinition::Create()
 {
-    for (int i = 0; i < HERBS_COUNT; i++) {
-        while (1) {
-            PotionDescription * pr = PotionDescription::GetRec(PotionDescription::GetAnyPotion());
+    for (auto& row : herbs) {
+        row.pn.clear();
+        row.difficulty = 0;
+    }
 
-            // check if there was such potion already
-            bool continue_flag = false;
+    for (auto& row : herbs) {
+        // Bounded rather than a bare loop: if content defines more species
+        // than there are potions of the grades they want, the old code
+        // spun here forever.
+        for (int attempt = 0; attempt < 1000 && row.pn.empty(); attempt++) {
+            const PotionDescription* pr =
+                PotionDescription::GetRec(PotionDescription::GetAnyPotion());
 
-            for (int j = 0; j < i; j++) {
-                if (herbs[j].pn == pr->pn) {
-                    continue_flag = true;
+            if (!pr) {
+                break;
+            }
+
+            bool taken = false;
+
+            for (const auto& other : herbs) {
+                if (&other != &row && other.pn == pr->pn) {
+                    taken = true;
                     break;
                 }
             }
 
-            if (continue_flag) {
+            if (taken) {
                 continue;
             }
 
-            if (herbs[i].herb_type == HT_HERB) {
+            if (row.herb_type == HT_HERB) {
                 if (pr->alchemy_power == 1) {
-                    herbs[i].pn = pr->pn;
-                    herbs[i].difficulty = vRand(4) + 1;
-                    break;
+                    row.pn = pr->pn;
+                    row.difficulty = vRand(4) + 1;
                 } else if (pr->alchemy_power == 2) {
-                    herbs[i].pn = pr->pn;
-                    herbs[i].difficulty = vRand(4) + 4;
-                    break;
+                    row.pn = pr->pn;
+                    row.difficulty = vRand(4) + 4;
                 }
-            } else {
-                if (pr->alchemy_power == 3) {
-                    herbs[i].pn = pr->pn;
-                    herbs[i].difficulty = vRand(4) + 7;
-                    break;
-                }
+            } else if (pr->alchemy_power == 3) {
+                row.pn = pr->pn;
+                row.difficulty = vRand(4) + 7;
             }
+        }
+
+        if (row.pn.empty()) {
+            std::cerr << "world: no potion left for '" << row.id
+                      << "' to distil into" << std::endl;
         }
     }
 }
 
+// What this game dealt each species and what the player has worked out,
+// keyed by id so content may add or reorder species without spoiling a
+// save. Everything else about a plant is content and comes back from
+// world/items/herbs.lua on the next load.
+struct PlantMemory {
+    PotionName pn;
+    int difficulty{0};
+    bool identified{false};
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(pn, difficulty, identified);
+    }
+};
+
 void PlantDefinition::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (int i = 0; i < HERBS_COUNT; i++) {
-        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identified);
+    std::map<std::string, PlantMemory> learned;
+
+    for (const auto& row : herbs) {
+        learned[row.id] = PlantMemory{row.pn, row.difficulty, row.identified};
     }
+
+    ar(learned);
 }
 
 void PlantDefinition::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (int i = 0; i < HERBS_COUNT; i++) {
-        ar(herbs[i].pn, herbs[i].difficulty, herbs[i].identified);
+    std::map<std::string, PlantMemory> learned;
+    ar(learned);
+
+    for (auto& row : herbs) {
+        if (const auto it = learned.find(row.id); it != learned.end()) {
+            row.pn = it->second.pn;
+            row.difficulty = it->second.difficulty;
+            row.identified = it->second.identified;
+        }
     }
 }
 
@@ -113,11 +229,18 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XHerb);
 // construction through the DUMMY_STRUCT idiom instead of that assert.
 CEREAL_LOAD_VIA_DUMMY_CONSTRUCT(XHerb, serialize);
 
-XHerb::XHerb(int _herb_index) : XAnyFood(), herb_index(_herb_index)
+XHerb::XHerb(std::string _species) : XAnyFood(), species(std::move(_species))
 {
     weight = 3;
     food_nutrio = 15;
-    name = herbs[herb_index].herb_name;
+
+    if (const PlantDefinition* row = PlantDefinition::Find(species)) {
+        name = row->herb_name;
+    } else {
+        std::cerr << "world: nothing defines a plant '" << species << "'"
+                  << std::endl;
+    }
+
     it = IT_HERB;
 }
 
@@ -132,24 +255,26 @@ RESULT XHerb::onEat(XCreature * eater)
 
 PotionName XHerb::GetTargetPotion()
 {
-    return herbs[herb_index].pn;
+    const PlantDefinition* row = PlantDefinition::Find(species);
+    return row ? row->pn : PN_NONE;
 }
 
 std::string XHerb::postEat(XCreature * /*eater*/)
 {
-    return herbs[herb_index].post_eat;
+    const PlantDefinition* row = PlantDefinition::Find(species);
+    return row ? row->post_eat : std::string();
 }
 
 std::string XHerb::toString()
 {
-    if (herbs[herb_index].identified) {
-        name = herbs[herb_index].herb_name;
+    const PlantDefinition* row = PlantDefinition::Find(species);
+
+    if (row && row->identified) {
+        name = row->herb_name;
+    } else if (!row || row->herb_type == HT_HERB) {
+        name = "unknown herb";
     } else {
-        if (herbs[herb_index].herb_type == HT_HERB) {
-            name = "unknown herb";
-        } else {
-            name = "unknown mushroom";
-        }
+        name = "unknown mushroom";
     }
 
     return XAnyFood::toString();
@@ -157,12 +282,15 @@ std::string XHerb::toString()
 
 void XHerb::Identify()
 {
-    herbs[herb_index].identified = true;
+    if (PlantDefinition* row = PlantDefinition::Find(species)) {
+        row->identified = true;
+    }
 }
 
 bool XHerb::isIdentified()
 {
-    return herbs[herb_index].identified;
+    const PlantDefinition* row = PlantDefinition::Find(species);
+    return row && row->identified;
 }
 
 ////////////////////////////////////////////////////////////
@@ -180,14 +308,21 @@ XHerbBush::XHerbBush(int _x, int _y, XLocation * _l)
     assert(placed);
 }
 
+// A species that is always there, so a plant whose id content removed
+// still has something to describe itself with rather than dereferencing
+// nothing.
+static PlantDefinition unknown_species;
+
 const PlantDefinition& XPlant::Species() const
 {
-    return herbs[herb_index];
+    const PlantDefinition* row = PlantDefinition::Find(species);
+    return row ? *row : unknown_species;
 }
 
 PlantDefinition& XPlant::Species()
 {
-    return herbs[herb_index];
+    PlantDefinition* row = PlantDefinition::Find(species);
+    return row ? *row : unknown_species;
 }
 
 bool XPlant::PlaceAt(XLocation* location, const int _x, const int _y)
@@ -196,9 +331,7 @@ bool XPlant::PlaceAt(XLocation* location, const int _x, const int _y)
         return false;
     }
 
-    do {
-        herb_index = vRand(HERBS_COUNT);
-    } while (herbs[herb_index].herb_type != SpeciesType());
+    species = PlantDefinition::RandomOfType(SpeciesType());
 
     ttm = FirstRunDelay();
     view = SpeciesView();
@@ -328,11 +461,11 @@ XObject* XHerbBush::Pick(XCreature * picker)
     if (--herb_strength <= 0) {
         // Invalidate() evicts this bush from its map cell itself; the
         // deferred-release graveyard keeps the object alive through the
-        // herb_index read below even when the cell was its last owner.
+        // species read below even when the cell was its last owner.
         Invalidate();
     }
 
-    return new XHerb(herb_index);
+    return new XHerb(species);
 }
 
 ////////////////////////////////////////////////////////////
@@ -379,9 +512,9 @@ XObject* XMushSpawn::Pick(XCreature * picker)
 
     // Invalidate() evicts this spawn from its map cell itself; the
     // deferred-release graveyard keeps the object alive through the
-    // herb_index read below even when the cell was its last owner.
+    // species read below even when the cell was its last owner.
     Invalidate();
-    XHerb * it = new XHerb(herb_index);
+    XHerb * it = new XHerb(species);
     it->Identify();
     return it;
 }
