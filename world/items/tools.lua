@@ -146,3 +146,95 @@ function DistilHerb(state, item, alchemist)
 
 	return Result.SUCCESS
 end
+
+
+-- The cooking set: puts a raw corpse over the fire for a while, and if the
+-- cook knows their trade, turns it into something worth eating.
+--
+-- The corpse comes out of the pack while it cooks - the set holds it, and
+-- holds the only reference to it, which is why an abandoned cooking hands
+-- it back rather than dropping it on the floor.
+Item.new("cooking_set")
+	:Tool("cooking_set")
+	:View("cooking set", '[', xColor.xLIGHTGRAY)
+	:Basic(150, 100)
+	:Use("CookCorpseOverFire")
+	:Register()
+
+function CookCorpseOverFire(state, item, cook)
+	if (state == ItemUse.START) then
+		if (not isHero(cook)) then
+			return Result.FAIL
+		end
+
+		local corpse = SelectItem(cook, function(candidate)
+			return isRawCorpse(candidate)
+		end)
+
+		if (not corpse) then
+			return Result.FAIL
+		end
+
+		-- Out of the pack and onto the fire: it stops rotting while it
+		-- cooks, and the set is now the only thing holding it.
+		ToolHold(item, corpse)
+		StopCorpseRotting(corpse, true)
+		ToolRemember(item, "left", 50 - GetSkill(cook, XSkill.COOKING) * 2)
+
+		if (isCreatureVisible(cook)) then
+			AddMessage(CreatureName(cook, 0) .. " " .. CreatureVerb(cook, "start")
+				.. " to cook " .. GetItemName(corpse) .. ".")
+		end
+
+		return Result.CONTINUE
+	end
+
+	local corpse = ToolHeld(item)
+
+	if (not corpse) then
+		return Result.FAIL
+	end
+
+	-- Given up on, or interrupted: hand it back raw and let it rot again.
+	if (state == ItemUse.FINISH) then
+		StopCorpseRotting(corpse, false)
+		GiveObjectToCreature(corpse, cook)
+		ToolRelease(item)
+
+		return Result.SUCCESS
+	end
+
+	if (state ~= ItemUse.PROGRESS) then
+		return Result.FAIL
+	end
+
+	local left = ToolRecall(item, "left") - 1
+
+	if (left > 0) then
+		ToolRemember(item, "left", left)
+		return Result.CONTINUE
+	end
+
+	UnCarryItem(corpse)
+
+	if (Rand(100) < GetSkill(cook, XSkill.COOKING) * 4 + 30) then
+		-- Cooked meat goes twice as far and weighs a tenth of the carcass.
+		CookCorpse(corpse)
+		SetItemNutrition(corpse, GetItemNutrition(corpse) * 2)
+		SetItemWeight(corpse, GetItemWeight(corpse) / 10)
+		GiveObjectToCreature(corpse, cook)
+		UseSkill(cook, XSkill.COOKING, 3)
+
+		if (isCreatureVisible(cook)) then
+			AddMessage(CreatureName(cook, 0) .. " " .. CreatureVerb(cook, "cook")
+				.. " " .. GetItemName(corpse) .. ".")
+		end
+	elseif (isCreatureVisible(cook)) then
+		AddMessage(CreatureName(cook, 0) .. " " .. CreatureVerb(cook, "fail")
+			.. " to cook " .. GetItemName(corpse) .. ".")
+	end
+
+	ToolRelease(item)
+
+	return Result.SUCCESS
+end

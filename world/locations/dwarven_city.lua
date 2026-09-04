@@ -51,7 +51,7 @@ function MakeDwarvenCity()
 		Way(XStairWay.UP, "DWARFCITYCAVE5")
 		Way(XStairWay.DOWN, "DWARFCITY")
 		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE + CreatureClass.GOBLIN + CreatureClass.KOBOLD, CreatureTemplate.LOW)
-		DropItem(CreateObject("XCookingSet"))
+		DropItem(CreateObject("cooking_set"))
 
 
 	CreateLocation("DWARFCITY", "DvCty", "Dwarven City", XLocation.PATTERN, Drawn())

@@ -36,6 +36,19 @@ REGISTER_CLASS(XLuaTool);
 CEREAL_REGISTER_TYPE(XLuaTool);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XLuaTool);
 
+void XLuaTool::OnInvalidate()
+{
+    // Mirrors what XCookingSet used to do with its corpse: the tool holds
+    // the only reference while it works, so letting it go silently would
+    // destroy whatever was being worked on.
+    if (held) {
+        held->Invalidate();
+        held = nullptr;
+    }
+
+    XItem::OnInvalidate();
+}
+
 RESULT XLuaTool::onUse(const ItemUsageState uis, XCreature* cr)
 {
     if (use_handler.empty()) {

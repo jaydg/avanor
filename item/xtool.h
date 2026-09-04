@@ -49,68 +49,7 @@ class XTool : public XItem {
         }
 };
 
-class XCookingSet : public XTool
-{
-    public:
-        DECLARE_CREATOR(XCookingSet, XTool);
-        XCookingSet()
-        {
-            color = xLIGHTGRAY;
-            view = '[';
-            it = IT_COOKING_SET;
-            name = "cooking set";
-            value = 150;
-            weight = 100;
-            kind = ItemKind::TOOL;
-            cooked_item = nullptr;
-            bp = BP_TOOL;
-            stats = std::make_unique<XStats>();
-            resistances = std::make_unique<XResistance>();
-        }
 
-        XCookingSet(XCookingSet * copy) : XTool(copy)
-        {
-            assert(cooked_item == nullptr);
-        }
-
-        XItem* MakeCopy() override
-        {
-            return new XCookingSet(this);
-        }
-
-        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
-        std::string toString() override
-        {
-            return name;
-        }
-
-    protected:
-        // teardown hook, called by XObject::Invalidate()
-        void OnInvalidate() override;
-    public:
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XTool>(this));
-            ar(use_time, cooked_item);
-        }
-    protected:
-        // Owning, not weak: the corpse being cooked is already erased from
-        // contain (SelectItem()/Inventory() picked it destructively) by the
-        // time it lands here, so this can be its only reference. See
-        // XItem::Own().
-        std::shared_ptr<XItem> cooked_item;
-        int use_time;
-};
-
-//using of pick axe and mining skill
-//all object on map have some digiting resistance
-//lets value of it be 1000
-//dig has dice, for example 1d10
-//also there is mining skill which gives +5 bonus
-//then we remove rock_resist till, untill complete diging the rock
-//also str gives +1 for each to points of str
 
 
 

@@ -45,6 +45,14 @@ namespace lua_api
     std::tuple<sol::optional<int>, sol::optional<int>> AskDirection(void* cr);
     sol::optional<void*> SelectItem(void* cr, sol::protected_function predicate);
     std::string DescribeItem(void* item);
+    int GetItemWeight(void* item);
+    void SetItemWeight(void* item, int weight);
+    int GetItemNutrition(void* item);
+    void SetItemNutrition(void* item, int nutrio);
+    void ToolHold(void* tool, void* item);
+    sol::optional<void*> ToolHeld(void* tool);
+    void ToolRelease(void* tool);
+    void UnCarryItem(void* item);
     void ToolRemember(void* item, const std::string& key, int value);
     int ToolRecall(void* item, const std::string& key);
     int ThrowItemDice(void* item);

@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "item/item_misc.h"
+#include "item/xanyfood.h"
 #include "lua/api_actor.h"
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
@@ -201,9 +202,69 @@ sol::optional<void*> SelectItem(void* cr, sol::protected_function predicate)
 // How an item reads to whoever is holding it, unidentified names and all -
 // what a message about it should say. GetItemName() gives the plain name
 // underneath, which for a potion would give the secret away.
+// An item's weight and, for food, how much of a meal it is. Content sets
+// both when what an item is has changed - a cooked corpse is lighter and
+// goes further than a raw one.
+int GetItemWeight(void* item)
+{
+    return ((XItem*)item)->weight;
+}
+
+void SetItemWeight(void* item, int weight)
+{
+    ((XItem*)item)->weight = weight < 1 ? 1 : weight;
+}
+
+int GetItemNutrition(void* item)
+{
+    const auto* food = dynamic_cast<const XAnyFood*>((const XItem*)item);
+    return food ? food->food_nutrio : 0;
+}
+
+void SetItemNutrition(void* item, int nutrio)
+{
+    if (auto* food = dynamic_cast<XAnyFood*>((XItem*)item)) {
+        food->food_nutrio = nutrio;
+    }
+}
+
 std::string DescribeItem(void* item)
 {
     return ((XItem*)item)->toString();
+}
+
+// A tool takes something out of its owner's pack to work on it, and hands
+// it back when the work ends one way or the other. While held, the tool is
+// the item's only reference - see XLuaTool::held.
+void ToolHold(void* tool, void* item)
+{
+    if (auto* t = dynamic_cast<XLuaTool*>((XItem*)tool)) {
+        t->held = XItem::Own((XItem*)item);
+    }
+}
+
+sol::optional<void*> ToolHeld(void* tool)
+{
+    if (auto* t = dynamic_cast<XLuaTool*>((XItem*)tool); t && t->held) {
+        return (void*)t->held.get();
+    }
+
+    return sol::nullopt;
+}
+
+// Lets go without destroying: the caller has put it somewhere else.
+void ToolRelease(void* tool)
+{
+    if (auto* t = dynamic_cast<XLuaTool*>((XItem*)tool)) {
+        t->held = nullptr;
+    }
+}
+
+// Stop counting an item's weight against whoever was carrying it - what a
+// tool does before handing back something whose weight has changed.
+void UnCarryItem(void* item)
+{
+    ((XItem*)item)->UnCarry();
 }
 
 void ToolRemember(void* item, const std::string& key, int value)
@@ -893,6 +954,14 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("ThrowItemDice", &lua_api::ThrowItemDice);
         lua.set_function("SelectItem", &lua_api::SelectItem);
         lua.set_function("DescribeItem", &lua_api::DescribeItem);
+        lua.set_function("GetItemWeight", &lua_api::GetItemWeight);
+        lua.set_function("SetItemWeight", &lua_api::SetItemWeight);
+        lua.set_function("GetItemNutrition", &lua_api::GetItemNutrition);
+        lua.set_function("SetItemNutrition", &lua_api::SetItemNutrition);
+        lua.set_function("ToolHold", &lua_api::ToolHold);
+        lua.set_function("ToolHeld", &lua_api::ToolHeld);
+        lua.set_function("ToolRelease", &lua_api::ToolRelease);
+        lua.set_function("UnCarryItem", &lua_api::UnCarryItem);
         lua.set_function("ToolRemember", &lua_api::ToolRemember);
         lua.set_function("ToolRecall", &lua_api::ToolRecall);
         lua.set_function("isCreatureVisible", &lua_api::isCreatureVisible);

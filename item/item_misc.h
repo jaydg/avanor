@@ -466,11 +466,22 @@ class XLuaTool : public XTool
         // must find its own place.
         std::map<std::string, int> memory;
 
+        // Something the tool has taken out of its owner's pack and is
+        // working on - a corpse over the fire. It is out of the pack while
+        // held, so this is its only reference: dropping it would destroy
+        // it, which is why OnInvalidate() below hands it back rather than
+        // letting the tool take it to the grave.
+        std::shared_ptr<XItem> held;
+
+        // Releases anything still held, so a tool destroyed mid-use does
+        // not take the work with it.
+        void OnInvalidate() override;
+
         template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XTool>(this));
-            ar(content_id, unique, artifact, use_handler, memory);
+            ar(content_id, unique, artifact, use_handler, memory, held);
         }
 };
 

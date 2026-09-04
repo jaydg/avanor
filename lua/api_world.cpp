@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemf.h"
 #include "item/item_misc.h"
 #include "item/uniquei.h"
+#include "item/xcorpse.h"
 #include "item/xherb.h"
 #include "item/xmoney.h"
 #include "item/xscroll.h"
@@ -456,6 +457,33 @@ void* OuterObjectAt(int x, int y, int color, const std::string& view, const std:
 // Which potion a herb distils into, and how hard that is. Both are dealt
 // out per game rather than declared, so content cannot read them from its
 // own tables - it has to ask.
+// Corpses are still C++, so these three ask about one rather than content
+// reading its own tables. They go when corpses become content.
+
+// An uncooked corpse - the only thing worth putting over a fire.
+bool isRawCorpse(void* item)
+{
+    const auto* corpse = dynamic_cast<const XCorpse*>((const XItem*)item);
+    return corpse && corpse->corpse_flag != CF_COOKED;
+}
+
+// Marks it cooked and renames it. What that is worth - the nutrition and
+// the weight - is content's to say, through the item accessors.
+void CookCorpse(void* item)
+{
+    if (auto* corpse = dynamic_cast<XCorpse*>((XItem*)item)) {
+        corpse->Cook();
+    }
+}
+
+// Whether a corpse rots while this is set - a pot on the fire holds it.
+void StopCorpseRotting(void* item, const bool stopped)
+{
+    if (auto* corpse = dynamic_cast<XCorpse*>((XItem*)item)) {
+        corpse->roating_stopped = stopped ? 1 : 0;
+    }
+}
+
 sol::optional<std::string> HerbPotion(void* item)
 {
     auto* herb = dynamic_cast<XHerb*>((XItem*)item);
@@ -678,6 +706,9 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("GetTile", &lua_api::GetTile);
     lua.set_function("TileDiggableInto", &lua_api::TileDiggableInto);
     lua.set_function("DropMoney", &lua_api::DropMoney);
+    lua.set_function("isRawCorpse", &lua_api::isRawCorpse);
+    lua.set_function("CookCorpse", &lua_api::CookCorpse);
+    lua.set_function("StopCorpseRotting", &lua_api::StopCorpseRotting);
     lua.set_function("HerbPotion", &lua_api::HerbPotion);
     lua.set_function("PotionAlchemyPower", &lua_api::PotionAlchemyPower);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
