@@ -25,58 +25,65 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/base_class.hpp>
 
 #include "item/item.h"
+#include <sol/forward.hpp>
+
 #include "magic/magic.h"
 
-enum BOOK_NAME {
-    BOOK_BURNING_HANDS,
-    BOOK_ICE_TOUCH,
-    BOOK_CURE_LIGHT_WOUNDS,
-    BOOK_DRAIN_LIFE,
-    BOOK_IDENTIFY,
-    BOOK_MAGIC_ARROW,
-    BOOK_FIRE_BOLT,
-    BOOK_ICE_BOLT,
-    BOOK_LIGHTNING_BOLT,
-    BOOK_ACID_BOLT,
-    BOOK_CURE_DISEASE,
-    BOOK_CURE_POISON,
-    BOOK_BLINK,
-    BOOK_SELF_KNOWLEDGE,
-    BOOK_RANDOM
-};
-
+// One sort of book. There is no book name of its own: a book teaches
+// exactly one spell, so the spell's id names the book too - what used to
+// be a BOOK_NAME enum mirroring SPELL_NAME member for member.
+//
+// Filled from world/items/books.lua as that script loads.
 struct BOOK_REC {
-    BOOK_REC(int rarity, BOOK_NAME bn, SPELL_NAME sn);
-    int name_index;
-    BOOK_NAME book_name;
     SPELL_NAME spell_name;
-    bool identified;
-    int rarity;
+    int rarity{0};
 
-    static int GetBook(BOOK_NAME); //number in array of books
+    // What this game calls it before anyone has read it, and whether
+    // anyone has. The only two fields that are not content.
+    std::string look;
+    bool identified{false};
 
-    static int current_descr;
     static int total_value;
 
-    // rarity is a compile-time constant; identified/name_index/
-    // spell_name/book_name are per-game-session mutable state (the
-    // book<->spell scrambling and identification progress), same fields
-    // the legacy Store/Restore already persisted.
-    template<class Archive>
-    void serialize(Archive& ar)
-    {
-        ar(identified, name_index, spell_name, book_name);
-    }
+    // The row teaching a spell, or nullptr for one nothing defines.
+    static BOOK_REC* Find(const SPELL_NAME& spell);
+
+    // A book drawn by rarity - what the world hands out when it does not
+    // say which book.
+    static SPELL_NAME GetRandomBook();
 };
+
+// Fluent builder for one sort of book:
+//
+//   Book.new("fire_bolt"):Chance(50):Register()
+//
+// The id is the spell it teaches; nothing else about a book varies.
+class BookBuilder
+{
+    public:
+        explicit BookBuilder(std::string spell);
+
+        BookBuilder& Chance(int rarity);
+
+        void Register();
+
+    private:
+        std::string spell;
+        int rarity{0};
+};
+
+// The looks an unread book can have, given to the engine by
+// world/items/books.lua and dealt out at random, one per book, each game.
+void SetBookAppearances(const sol::table& looks);
 
 class XBook: public XItem
 {
     public:
         DECLARE_CREATOR(XBook, XItem)
-        XBook(BOOK_NAME bn = BOOK_RANDOM);
+        explicit XBook(const SPELL_NAME& spell = SP_NONE);
         XBook(XBook * copy) : XItem((XItem*)copy)
         {
-            descr = copy->descr;
+            spell_name = copy->spell_name;
             reader_guid = copy->reader_guid;
             left_to_read = copy->left_to_read;
         }
@@ -101,12 +108,14 @@ class XBook: public XItem
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XItem>(this));
-            ar(descr, left_to_read, reader_guid);
+            ar(spell_name, left_to_read, reader_guid);
         }
 
         int left_to_read;
+
+        // The spell this book teaches, which is also its identity.
+        SPELL_NAME spell_name;
     protected:
-        int descr;
         XGUID reader_guid;
 };
 

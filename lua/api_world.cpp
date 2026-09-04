@@ -222,10 +222,10 @@ void* CreateScroll(const std::string& scrn)
     return new XScroll(scrn);
 }
 
-//CreateBook(BookName.FIRE_BOLT)
-void* CreateBook(int bn)
+//CreateBook("fire_bolt") - a book is named by the spell it teaches
+void* CreateBook(const std::string& spell)
 {
-    return new XBook(static_cast<BOOK_NAME>(bn));
+    return new XBook(spell);
 }
 
 // Makes an item known, as the hero's own starting gear is: nothing they

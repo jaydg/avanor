@@ -347,6 +347,13 @@ Things that simply did not happen:
   name on a scroll you have not read is meant to be rolled afresh each game,
   so that learning one teaches you nothing about the next; it was rolled
   once as the program started, before the game had a seed
+- Unread spell books always looked the same. A book you have not read is
+  meant to be a mystery — an old tome, a thin book, something with a silver
+  binding — and which look belongs to which spell is meant to be shuffled
+  for each new game, so that finding out costs you the reading. The looks
+  were handed out in the order the books were listed instead, and that order
+  never changed, so burning hands was the old tome in every game anyone ever
+  played. They are dealt afresh each game now
 
 Things that went quietly wrong the longer you played:
 

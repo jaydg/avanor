@@ -160,16 +160,6 @@ void XLua::Init()
 
     // What a scroll or a book can be.
 
-    lua.new_enum("BookName",
-        "BURNING_HANDS", BOOK_BURNING_HANDS, "ICE_TOUCH", BOOK_ICE_TOUCH,
-        "CURE_LIGHT_WOUNDS", BOOK_CURE_LIGHT_WOUNDS, "DRAIN_LIFE", BOOK_DRAIN_LIFE,
-        "IDENTIFY", BOOK_IDENTIFY, "MAGIC_ARROW", BOOK_MAGIC_ARROW,
-        "FIRE_BOLT", BOOK_FIRE_BOLT, "ICE_BOLT", BOOK_ICE_BOLT,
-        "LIGHTNING_BOLT", BOOK_LIGHTNING_BOLT, "ACID_BOLT", BOOK_ACID_BOLT,
-        "CURE_DISEASE", BOOK_CURE_DISEASE, "CURE_POISON", BOOK_CURE_POISON,
-        "BLINK", BOOK_BLINK, "SELF_KNOWLEDGE", BOOK_SELF_KNOWLEDGE,
-        "RANDOM", BOOK_RANDOM
-    );
 
     // What an ordinary item can be made of, and how well made it is. Both
     // are for the templates in world/items/ (TemplateBuilder): the set says
@@ -255,7 +245,7 @@ void XLua::Init()
     for (const char* enum_table : {
             "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
-            "ItemKind", "BookName", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
+            "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
@@ -298,6 +288,14 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<BookBuilder>("Book",
+            sol::constructors<BookBuilder(std::string)>(),
+            "Chance", &BookBuilder::Chance,
+            "Register", &BookBuilder::Register
+        );
+
+        lua.set_function("BookAppearances", &SetBookAppearances);
+
         lua.new_usertype<PotionBuilder>("Potion",
             sol::constructors<PotionBuilder(std::string)>(),
             "Called", &PotionBuilder::Called,

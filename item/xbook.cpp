@@ -18,6 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+#include <map>
+#include <vector>
+
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+#include <sol/sol.hpp>
+
 #include <fmt/format.h>
 
 #include "item/item_cereal.h"
@@ -30,88 +38,171 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XBook);
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-const char* books_descr[] = {
-    "old tome", "small tome", "ancient tome", "dirty tome", "heavy tome",
-    "old book", "small book", "ancient book", "dirty book", "heavy book",
-    "wrapped tome", "pocket book", "leather-bound tome", "parchment book",
-    "thin book", "gold decorated", "silver decorated"
-};
+// The looks an unread book can have. Content's list, not the engine's -
+// filled by SetBookAppearances() from world/items/books.lua.
+static std::vector<std::string> books_descr;
 
-#define BOOKS_DESCR_SZ	ARRAY_SIZE(books_descr)
-
-int BOOK_REC::current_descr = 0;
+std::vector<BOOK_REC> book_descr;
 int BOOK_REC::total_value = 0;
 
-BOOK_REC::BOOK_REC(int _rarity, BOOK_NAME bn, SPELL_NAME sn)
-    : name_index(current_descr), book_name(bn), spell_name(sn), identified(false), rarity(_rarity)
+void SetBookAppearances(const sol::table& looks)
 {
-    current_descr++;
-    assert(static_cast<size_t>(current_descr) <= BOOKS_DESCR_SZ);
-    total_value += rarity;
+    books_descr.clear();
+
+    for (size_t i = 1; i <= looks.size(); i++) {
+        books_descr.push_back(looks[i]);
+    }
 }
 
-BOOK_REC book_descr[] = {
-    BOOK_REC(100,	BOOK_BURNING_HANDS, "burning_hands"),
-    BOOK_REC(100,	BOOK_ICE_TOUCH, "ice_touch"),
-    BOOK_REC(150,	BOOK_CURE_LIGHT_WOUNDS, "cure_light_wounds"),
-    BOOK_REC(70,	BOOK_DRAIN_LIFE, "drain_life"),
-    BOOK_REC(20,	BOOK_IDENTIFY, "identify"),
-    BOOK_REC(200,	BOOK_MAGIC_ARROW, "magic_arrow"),
-    BOOK_REC(50,	BOOK_FIRE_BOLT, "fire_bolt"),
-    BOOK_REC(50,	BOOK_ICE_BOLT, "ice_bolt"),
-    BOOK_REC(20,	BOOK_LIGHTNING_BOLT, "lightning_bolt"),
-    BOOK_REC(10,	BOOK_ACID_BOLT, "acid_bolt"),
-    BOOK_REC(60,	BOOK_CURE_DISEASE, "cure_disease"),
-    BOOK_REC(80,	BOOK_CURE_POISON, "cure_poison"),
-    BOOK_REC(15,	BOOK_BLINK, "blink"),
-    BOOK_REC(5,	BOOK_SELF_KNOWLEDGE, "self_knowledge"),
-};
-
-int BOOK_REC::GetBook(BOOK_NAME bn)
+BOOK_REC* BOOK_REC::Find(const SPELL_NAME& spell)
 {
-    if (bn != BOOK_RANDOM) {
-        for (int i = 0; i < BOOK_RANDOM; i++)
-            if (book_descr[i].book_name == bn) {
-                return i;
-            }
-    } else {
-        int val = vRand(total_value);
-        int pos = -1;
-
-        do {
-            pos++;
-            val -= book_descr[pos].rarity;
-        } while (val >= 0);
-
-        assert(pos < BOOK_RANDOM);
-        return pos;
+    for (auto& row : book_descr) {
+        if (row.spell_name == spell) {
+            return &row;
+        }
     }
 
-    assert(0);
-    return -1;
+    return nullptr;
 }
+
+SPELL_NAME BOOK_REC::GetRandomBook()
+{
+    if (book_descr.empty()) {
+        return SP_NONE;
+    }
+
+    int val = vRand(total_value);
+
+    for (const auto& row : book_descr) {
+        val -= row.rarity;
+
+        if (val < 0) {
+            return row.spell_name;
+        }
+    }
+
+    return book_descr.front().spell_name;
+}
+
+// A look no other book has taken this game. Was an index handed out in
+// declaration order, so the "old tome" was the same book in every game a
+// player ever started - which is no disguise at all.
+static std::string TakeBookLook()
+{
+    std::vector<const std::string*> free_looks;
+
+    for (const auto& look : books_descr) {
+        bool taken = false;
+
+        for (const auto& row : book_descr) {
+            if (row.look == look) {
+                taken = true;
+                break;
+            }
+        }
+
+        if (!taken) {
+            free_looks.push_back(&look);
+        }
+    }
+
+    if (free_looks.empty()) {
+        std::cerr << "world: more books than looks to disguise them as"
+                  << std::endl;
+
+        return books_descr.empty() ? std::string("book") : books_descr.front();
+    }
+
+    return *free_looks[vRand(static_cast<int>(free_looks.size()))];
+}
+
+BookBuilder::BookBuilder(std::string spell) : spell(std::move(spell)) {}
+
+BookBuilder& BookBuilder::Chance(const int rar)
+{
+    rarity = rar;
+    return *this;
+}
+
+void BookBuilder::Register()
+{
+    if (spell.empty()) {
+        std::cerr << "world: a book teaching no spell" << std::endl;
+        return;
+    }
+
+    if (BOOK_REC::Find(spell)) {
+        std::cerr << "world: two books both teaching '" << spell << "'"
+                  << std::endl;
+        return;
+    }
+
+    BOOK_REC row;
+    row.spell_name = spell;
+    row.rarity = rarity;
+    book_descr.push_back(row);
+    BOOK_REC::total_value += rarity;
+
+    // Taken after the row is in the table, so it counts itself out.
+    book_descr.back().look = TakeBookLook();
+}
+
+// What one game came to know about one sort of book - what it looks like
+// and whether anyone has read it. Keyed by the spell it teaches, so
+// content may add or reorder books without spoiling a save.
+struct BookMemory {
+    bool identified{false};
+    std::string look;
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(identified, look);
+    }
+};
 
 void XBook::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (size_t i = 0; i < ARRAY_SIZE(book_descr); i++) {
-        ar(book_descr[i]);
+    std::map<std::string, BookMemory> learned;
+
+    for (const auto& row : book_descr) {
+        learned[row.spell_name] = BookMemory{row.identified, row.look};
     }
+
+    ar(learned);
 }
 
 void XBook::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (size_t i = 0; i < ARRAY_SIZE(book_descr); i++) {
-        ar(book_descr[i]);
+    std::map<std::string, BookMemory> learned;
+    ar(learned);
+
+    for (auto& row : book_descr) {
+        if (const auto it = learned.find(row.spell_name); it != learned.end()) {
+            row.identified = it->second.identified;
+            row.look = it->second.look;
+        }
     }
 }
 
-XBook::XBook(BOOK_NAME bn)
+XBook::XBook(const SPELL_NAME& spell)
 {
-    descr = BOOK_REC::GetBook(bn);
-    assert(descr > -1 && descr < BOOK_RANDOM);
+    spell_name = spell.empty() ? BOOK_REC::GetRandomBook() : spell;
 
-    value = 20000 / book_descr[descr].rarity;
-    name = XSpell::GetName(book_descr[descr].spell_name);
+    const BOOK_REC* row = BOOK_REC::Find(spell_name);
+
+    if (!row) {
+        std::cerr << "world: no book teaches '" << spell_name
+                  << "' - substituting another" << std::endl;
+
+        spell_name = BOOK_REC::GetRandomBook();
+        row = BOOK_REC::Find(spell_name);
+    }
+
+    if (row) {
+        value = row->rarity > 0 ? 20000 / row->rarity : 20000;
+        name = XSpell::GetName(row->spell_name);
+    }
 
     kind = ItemKind::BOOK;
     bp = BP_OTHER;
@@ -127,12 +218,15 @@ XBook::XBook(BOOK_NAME bn)
 
 bool XBook::isIdentified()
 {
-    return book_descr[descr].identified;
+    const BOOK_REC* row = BOOK_REC::Find(spell_name);
+    return row && row->identified;
 }
 
 void XBook::Identify()
 {
-    book_descr[descr].identified = true;
+    if (BOOK_REC* row = BOOK_REC::Find(spell_name)) {
+        row->identified = true;
+    }
 }
 
 int XBook::Compare(XObject * o)
@@ -140,7 +234,7 @@ int XBook::Compare(XObject * o)
     assert(dynamic_cast<XBook*>(o));
     XBook * tit = (XBook*)o;
 
-    if (descr == tit->descr && x == tit->x && y == tit->y) {
+    if (spell_name == tit->spell_name && x == tit->x && y == tit->y) {
         return 0;
     } else {
         if (quantity > tit->quantity) {
@@ -155,12 +249,14 @@ std::string XBook::toString()
 {
     std::string str;
 
+    const BOOK_REC* row = BOOK_REC::Find(spell_name);
+    const std::string look = row ? row->look : spell_name;
+
     if (!isIdentified()) {
         if (quantity == 1) {
-            str = books_descr[book_descr[descr].name_index];
+            str = look;
         } else {
-            str = fmt::format("heap of ({}) {}s",
-                quantity, books_descr[book_descr[descr].name_index]);
+            str = fmt::format("heap of ({}) {}s", quantity, look);
         }
     } else {
         if (quantity == 1) {
@@ -185,7 +281,7 @@ int XBook::onRead(XCreature * reader)
     left_to_read -= (skill->GetLevel() + reader->GetStats(XStats::LEN));
 
     if (left_to_read <= 0) {
-        reader->m->Learn(book_descr[descr].spell_name);
+        reader->m->Learn(spell_name);
         skill->UseSkill(10);
 
         if (reader->isHero()) {

@@ -329,9 +329,9 @@ HERO_KITS["wizard"] = function(hero, who, race)
 		who:ContainItem(AsItem(scroll))
 	end
 	if (Rand() % 2 == 1) then
-		book = CreateBook(BookName.FIRE_BOLT)
+		book = CreateBook("fire_bolt")
 	else
-		book = CreateBook(BookName.ICE_BOLT)
+		book = CreateBook("ice_bolt")
 	end
 	Identify(book)
 	who:ContainItem(AsItem(book))
@@ -492,7 +492,7 @@ HERO_KITS["ranger"] = function(hero, who, race)
 	potion = CreatePotion("cure_light_wounds")
 	Identify(potion)
 	who:ContainItem(AsItem(potion))
-	book = CreateBook(BookName.MAGIC_ARROW)
+	book = CreateBook("magic_arrow")
 	Identify(book)
 	who:ContainItem(AsItem(book))
 	LearnSkill(hero, XSkill.FINDWEAKNESS, 1)
