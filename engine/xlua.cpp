@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/anycr.h"
 #include "item/xscroll.h"
 #include "item/xbook.h"
+#include "item/xenhance.h"
 #include "item/xherb.h"
 #include "item/itemdb.h"
 #include "item/item_misc.h"
@@ -289,6 +290,20 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<EnchantmentBuilder>("Enchantment",
+            sol::constructors<EnchantmentBuilder(std::string)>(),
+            "Called", &EnchantmentBuilder::Called,
+            "Armour", &EnchantmentBuilder::Armour,
+            "Combat", &EnchantmentBuilder::Combat,
+            "Range", &EnchantmentBuilder::Range,
+            "Resist", &EnchantmentBuilder::Resist,
+            "Stats", &EnchantmentBuilder::Stats,
+            "Worth", &EnchantmentBuilder::Worth,
+            "Register", &EnchantmentBuilder::Register
+        );
+
+        lua.set_function("EnchantmentLooks", &SetEnchantmentLooks);
+
         lua.new_usertype<HerbBuilder>("Herb",
             sol::constructors<HerbBuilder(std::string)>(),
             "Called", &HerbBuilder::Called,

@@ -30,7 +30,7 @@ class XAmulet : public XEnhance
     public:
         DECLARE_CREATOR(XAmulet, XEnhance);
 
-        explicit XAmulet(Type enh = RANDOM);
+        explicit XAmulet(const std::string& enh = "");
 
         explicit XAmulet(XAmulet* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
 
@@ -39,12 +39,7 @@ class XAmulet : public XEnhance
             return new XAmulet(this);
         }
 
-        bool isIdentified() override;
-        void Identify() override;
-
         // aidentified_db is private to xamulet.cpp.
-        static void SaveTable(cereal::JSONOutputArchive& ar);
-        static void LoadTable(cereal::JSONInputArchive& ar);
 
         template<class Archive>
         void serialize(Archive& ar)

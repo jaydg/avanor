@@ -354,6 +354,18 @@ Things that simply did not happen:
   were handed out in the order the books were listed instead, and that order
   never changed, so burning hands was the old tome in every game anyone ever
   played. They are dealt afresh each game now
+- Rings and amulets of acid resistance and of poison resistance protected
+  you from fire. Both carried a copy of the fire ring's own resistance and
+  nobody ever noticed, so the 300 gold bought protection you very likely
+  already had, and neither acid nor poison was resisted at all
+- Unknown rings and amulets were never actually unknown. One was meant to
+  read by its look until you worked out what it was — a ruby ring, an
+  obsidian amulet — with the looks shuffled for each new game. Neither
+  happened: a ring was named after the enchantment inside it rather than
+  after its own appearance, so the ring of protection was the white ring in
+  every game anyone ever played, and the name did not even match the colour
+  it was drawn in. The looks are dealt afresh each game now, and a ring
+  reads as the thing it looks like
 
 Things that went quietly wrong the longer you played:
 

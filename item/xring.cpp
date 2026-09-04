@@ -25,23 +25,7 @@ REGISTER_CLASS(XRing);
 CEREAL_REGISTER_TYPE(XRing);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XRing);
 
-bool ridentified_db[20] = {};
-
-void XRing::SaveTable(cereal::JSONOutputArchive& ar)
-{
-    for (int i = 0; i < 20; i++) {
-        ar(ridentified_db[i]);
-    }
-}
-
-void XRing::LoadTable(cereal::JSONInputArchive& ar)
-{
-    for (int i = 0; i < 20; i++) {
-        ar(ridentified_db[i]);
-    }
-}
-
-XRing::XRing(Type enh) : XEnhance(enh)
+XRing::XRing(const std::string& enh) : XEnhance(enh)
 {
     kind = ItemKind::RING;
     bp = BP_RING;
@@ -50,12 +34,3 @@ XRing::XRing(Type enh) : XEnhance(enh)
     view = '=';
 }
 
-bool XRing::isIdentified()
-{
-    return ridentified_db[descr];
-}
-
-void XRing::Identify()
-{
-    ridentified_db[descr] = true;
-}

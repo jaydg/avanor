@@ -18,6 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+#include <map>
+#include <vector>
+
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+#include <sol/sol.hpp>
+
 #include <fmt/format.h>
 
 #include "item/item_cereal.h"
@@ -27,198 +35,195 @@ REGISTER_CLASS(XEnhance);
 CEREAL_REGISTER_TYPE(XEnhance);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XEnhance);
 
-enum ENH_COLOR {
-    EC_WHITE,
-    EC_BLUE,
-    EC_BLACK,
-    EC_GOLDEN,
-    EC_COPPER,
-    EC_WOODEN,
-    EC_RED,
-    EC_MARBLE,
-    EC_PEARL,
-    EC_SAPPHIRE,
-    EC_DIAMOND,
-    EC_RUBY,
-    EC_STEEL,
-    EC_GLASS,
-    EC_OBSIDIAN,
-    EC_RANDOM,
-};
-
-struct ENH_COLOR_TABLE {
-    int color;
-    const char* color_name;
-    int is_used = 0;
-} ect[] = {
-    {/* EC_WHITE */     xWHITE,      "white"},
-    {/* EC_BLUE */      xBLUE,       "blue"},
-    {/* EC_BLACK */     xDARKGRAY,   "black"},
-    {/* EC_GOLDEN */    xYELLOW,     "golden"},
-    {/* EC_COPPER */    xRED,        "copper"},
-    {/* EC_WOODEN */    xBROWN,      "wooden"},
-    {/* EC_RED */       xRED,        "red"},
-    {/* EC_MARBLE */    xWHITE,      "marble"},
-    {/* EC_PEARL */     xYELLOW,     "pearl"},
-    {/* EC_SAPPHIRE */  xLIGHTGREEN, "sapphire"},
-    {/* EC_DIAMOND */   xCYAN,       "diamond"},
-    {/* EC_RUBY */      xRED,        "ruby"},
-    {/* EC_STEEL */     xBLUE,       "steel"},
-    {/* EC_GLASS */     xLIGHTGRAY,  "glass"},
-    {/* EC_OBSIDIAN */  xDARKGRAY,   "obsidian"},
-};
-
+// One sort of ring or amulet. Filled from world/items/enchantments.lua
+// as that script loads.
 struct ENH_REC {
-    XEnhance::Type enh;
-    const char* name;
-    const char* dv;     // modifiers
-    const char* pv;
-    const char* hit;
-    const char* dice;
-    const char* z;      // random z to dice;
-    const char* rng;    // rng
-    const char* r;      // resists
-    const char* s;      // stats
-    int value;
-    ENH_COLOR color;
-    static ENH_COLOR SelectColor(ENH_COLOR ec);
-} enh_db[] = {
-    {
-        XEnhance::PROTECTION, "of protection",
-        "", "1d6-2",
-        "", "", "", "",
-        "",
-        "",
-        150, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::DAMAGE, "of damage",
-        "", "",
-        "", "", "1d6-2", "",
-        "",
-        "",
-        150, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::SLAYING, "of slaying",
-        "", "",
-        "1d6-2", "", "1d6-2", "",
-        "",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::FREEACTION, "of free action",
-        "", "",
-        "", "", "", "",
-        "stun:8d5+50 confuse:8d5+50",
-        "",
-        200, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::INVISIBILITY, "of invisibility",
-        "", "",
-        "", "", "", "",
-        "invisible:0d0+10",
-        "",
-        500, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::SEEINVISIBLE, "of see invisible",
-        "", "",
-        "", "", "", "",
-        "see_invisible:0d0+10",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::FIRERESIST, "of fire resistance",
-        "", "",
-        "", "", "", "",
-        "fire:8d5+30",
-        "",
-        250, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::ACIDRESIST, "of acid resistance",
-        "", "",
-        "", "", "", "",
-        "fire:8d5+25",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::POISONRESIST, "of poison resistance",
-        "", "",
-        "", "", "", "",
-        "fire:8d5+25",
-        "",
-        300, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::STRENGTH, "of Strength",
-        "", "",
-        "", "", "", "",
-        "",
-        "St:1d4",
-        400, ENH_REC::SelectColor(EC_RANDOM)
-    },
-    {
-        XEnhance::POWER, "of Power",
-        "", "",
-        "", "", "", "",
-        "",
-        "Wi:1d4",
-        400, ENH_REC::SelectColor(EC_RANDOM)
-    }
+    std::string id;
+    std::string name;
+    std::string dv, pv, hit, dice, z, rng, r, s;
+    int value{0};
+
+    // What this game calls one nobody has identified, and its colour on
+    // screen. Dealt out here rather than declared, and dealt afresh each
+    // game - see TakeLook().
+    std::string look;
+    int color{0};
+    bool identified{false};
 };
 
-ENH_COLOR ENH_REC::SelectColor(const ENH_COLOR ec)
+// The looks content offered, and which have been dealt.
+struct EnchantmentLook {
+    std::string name;
+    int color{0};
+};
+
+static std::vector<EnchantmentLook> enh_looks;
+static std::vector<ENH_REC> enh_db;
+
+const std::string XEnhance::RANDOM;
+
+void SetEnchantmentLooks(const sol::table& looks)
 {
-    if (ec == EC_RANDOM) {
-        int count = 1000;
+    enh_looks.clear();
 
-        while (count-- > 0) {
-            int rp = vRand() % EC_RANDOM;
+    for (size_t i = 1; i <= looks.size(); i++) {
+        sol::table row = looks[i];
+        EnchantmentLook look;
+        look.name = row[1];
+        look.color = row[2];
+        enh_looks.push_back(std::move(look));
+    }
+}
 
-            if (ect[rp].is_used == 0) {
-                ect[rp].is_used = 1;
-                return static_cast<ENH_COLOR>(rp);
+static ENH_REC* FindEnchantment(const std::string& id)
+{
+    for (auto& row : enh_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+// A look no other sort has taken this game. The old table dealt these in a
+// static initialiser, before main() and before any seed, and then named
+// the item by its *enhancement* index rather than by the look it drew - so
+// "of protection" read as "white ring" in every game ever played, which is
+// no disguise at all, and the name did not even match the colour drawn.
+static const EnchantmentLook* TakeLook()
+{
+    std::vector<const EnchantmentLook*> free_looks;
+
+    for (const auto& look : enh_looks) {
+        bool taken = false;
+
+        for (const auto& row : enh_db) {
+            if (row.look == look.name) {
+                taken = true;
+                break;
             }
         }
 
-        assert(0);
-        return EC_WHITE;
+        if (!taken) {
+            free_looks.push_back(&look);
+        }
     }
 
-    assert(ect[ec].is_used == 0);
-    ect[ec].is_used = 1;
+    if (free_looks.empty()) {
+        std::cerr << "world: more sorts of ring than looks to disguise them as"
+                  << std::endl;
 
-    return ec;
+        return enh_looks.empty() ? nullptr : &enh_looks.front();
+    }
+
+    return free_looks[vRand(static_cast<int>(free_looks.size()))];
 }
 
-constexpr int enh_db_sz = 11;
+EnchantmentBuilder::EnchantmentBuilder(std::string id) : id(std::move(id)) {}
 
-XEnhance::XEnhance(const Type enh)
+EnchantmentBuilder& EnchantmentBuilder::Called(const std::string& n)
 {
-    descr = -1;
+    name = n;
+    return *this;
+}
 
-    if (enh == RANDOM) {
-        descr =	vRand(enh_db_sz);
-    } else {
-        for (int i = 0; i < enh_db_sz; i++)
-            if (enh_db[i].enh == enh) {
-                descr = i;
-                break;
-            }
+EnchantmentBuilder& EnchantmentBuilder::Armour(const std::string& _dv,
+    const std::string& _pv)
+{
+    dv = _dv;
+    pv = _pv;
+    return *this;
+}
+
+EnchantmentBuilder& EnchantmentBuilder::Combat(const std::string& _hit,
+    const std::string& _dice, const std::string& extra)
+{
+    hit = _hit;
+    dice = _dice;
+    z = extra;
+    return *this;
+}
+
+EnchantmentBuilder& EnchantmentBuilder::Range(const std::string& _rng)
+{
+    rng = _rng;
+    return *this;
+}
+
+EnchantmentBuilder& EnchantmentBuilder::Resist(const std::string& _r)
+{
+    r = _r;
+    return *this;
+}
+
+EnchantmentBuilder& EnchantmentBuilder::Stats(const std::string& _s)
+{
+    s = _s;
+    return *this;
+}
+
+EnchantmentBuilder& EnchantmentBuilder::Worth(const int v)
+{
+    value = v;
+    return *this;
+}
+
+void EnchantmentBuilder::Register()
+{
+    if (id.empty()) {
+        std::cerr << "world: an enchantment with no id" << std::endl;
+        return;
     }
 
-    assert(descr > - 1);
+    if (FindEnchantment(id)) {
+        std::cerr << "world: two enchantments both called '" << id << "'"
+                  << std::endl;
+        return;
+    }
 
-    ENH_REC * is = &enh_db[descr];
+    ENH_REC row;
+    row.id = id;
+    row.name = name;
+    row.dv = dv;
+    row.pv = pv;
+    row.hit = hit;
+    row.dice = dice;
+    row.z = z;
+    row.rng = rng;
+    row.r = r;
+    row.s = s;
+    row.value = value;
 
-    color =	ect[is->color].color;
-    value =	is->value;
+    enh_db.push_back(std::move(row));
+
+    // Taken after the row is in the table, so it counts itself out.
+    if (const EnchantmentLook* look = TakeLook()) {
+        enh_db.back().look = look->name;
+        enh_db.back().color = look->color;
+    }
+}
+
+XEnhance::XEnhance(const std::string& enh)
+{
+    descr = enh;
+
+    if (descr.empty() && !enh_db.empty()) {
+        descr = enh_db[vRand(static_cast<int>(enh_db.size()))].id;
+    }
+
+    const ENH_REC* is = FindEnchantment(descr);
+
+    if (!is) {
+        std::cerr << "world: nothing defines an enchantment '" << descr << "'"
+                  << std::endl;
+
+        weight = 3;
+        return;
+    }
+
+    color = is->color;
+    value = is->value;
     weight = 1;
     auto d = new XDice(is->dv);
     dv = d->Throw();
@@ -239,10 +244,70 @@ XEnhance::XEnhance(const Type enh)
     d->Setup(is->rng);
     RNG = d->Throw();
     delete d;
-    stats = std::make_unique<XStats>(is->s);
-    resistances = std::make_unique<XResistance>(is->r);
+    stats = std::make_unique<XStats>(is->s.c_str());
+    resistances = std::make_unique<XResistance>(is->r.c_str());
 
     weight = 3;
+}
+
+const std::string& XEnhance::AppearanceName() const
+{
+    static const std::string unknown = "plain";
+    const ENH_REC* row = FindEnchantment(descr);
+    return row ? row->look : unknown;
+}
+
+bool XEnhance::isIdentified()
+{
+    const ENH_REC* row = FindEnchantment(descr);
+    return row && row->identified;
+}
+
+void XEnhance::Identify()
+{
+    if (ENH_REC* row = FindEnchantment(descr)) {
+        row->identified = true;
+    }
+}
+
+// What this game came to know about each sort, keyed by id: the look it
+// drew and whether anyone has worked it out. Was two parallel bool arrays,
+// one in XRing and one in XAmulet, indexed by position.
+struct EnchantmentMemory {
+    bool identified{false};
+    std::string look;
+    int color{0};
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(identified, look, color);
+    }
+};
+
+void XEnhance::SaveTable(cereal::JSONOutputArchive& ar)
+{
+    std::map<std::string, EnchantmentMemory> learned;
+
+    for (const auto& row : enh_db) {
+        learned[row.id] = EnchantmentMemory{row.identified, row.look, row.color};
+    }
+
+    ar(learned);
+}
+
+void XEnhance::LoadTable(cereal::JSONInputArchive& ar)
+{
+    std::map<std::string, EnchantmentMemory> learned;
+    ar(learned);
+
+    for (auto& row : enh_db) {
+        if (const auto it = learned.find(row.id); it != learned.end()) {
+            row.identified = it->second.identified;
+            row.look = it->second.look;
+            row.color = it->second.color;
+        }
+    }
 }
 
 int XEnhance::Compare(XObject* o)
@@ -260,20 +325,22 @@ std::string XEnhance::toString()
 {
     if (!isIdentified()) {
         if (quantity == 1) {
-            return fmt::format("{} {}", ect[descr].color_name, name);
+            return fmt::format("{} {}", AppearanceName(), name);
         }
 
         return fmt::format("heap of ({}) {} {}s",
-            quantity, ect[descr].color_name, name);
+            quantity, AppearanceName(), name);
     }
 
     std::string fullname;
 
     if (quantity == 1) {
-        fullname = fmt::format("{} {}", name, enh_db[descr].name);
+        const ENH_REC* row = FindEnchantment(descr);
+        fullname = fmt::format("{} {}", name, row ? row->name : std::string());
     } else {
+        const ENH_REC* row = FindEnchantment(descr);
         fullname = fmt::format("heap of ({}) {}s {}",
-            quantity, name, enh_db[descr].name);
+            quantity, name, row ? row->name : std::string());
     }
 
     if (RNG != 0) {

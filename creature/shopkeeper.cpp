@@ -33,15 +33,15 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XShopkeeper);
 
 XShopkeeper::XShopkeeper(CreatureTemplate * cr) : XAnyCreature(cr)
 {
-    auto am = new XAmulet(XEnhance::SEEINVISIBLE);
+    auto am = new XAmulet("see_invisible");
     XBodyPart * bp = GetBodyPart(BP_NECK);
     bp->Wear(am);
 
-    auto rn = new XRing(XEnhance::ACIDRESIST);
+    auto rn = new XRing("acid_resistance");
     bp = GetBodyPart(BP_RING, 0);
     bp->Wear(rn);
 
-    rn = new XRing(XEnhance::SLAYING);
+    rn = new XRing("slaying");
     bp = GetBodyPart(BP_RING, 1);
     bp->Wear(rn);
 }

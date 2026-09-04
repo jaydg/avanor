@@ -25,23 +25,7 @@ REGISTER_CLASS(XAmulet);
 CEREAL_REGISTER_TYPE(XAmulet);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XAmulet);
 
-bool aidentified_db[20] = {};
-
-void XAmulet::SaveTable(cereal::JSONOutputArchive& ar)
-{
-    for (int i = 0; i < 20; i++) {
-        ar(aidentified_db[i]);
-    }
-}
-
-void XAmulet::LoadTable(cereal::JSONInputArchive& ar)
-{
-    for (int i = 0; i < 20; i++) {
-        ar(aidentified_db[i]);
-    }
-}
-
-XAmulet::XAmulet(Type enh) : XEnhance(enh)
+XAmulet::XAmulet(const std::string& enh) : XEnhance(enh)
 {
     kind = ItemKind::NECK;
     bp = BP_NECK;
@@ -50,12 +34,3 @@ XAmulet::XAmulet(Type enh) : XEnhance(enh)
     view = '\'';
 }
 
-bool XAmulet::isIdentified()
-{
-    return aidentified_db[descr];
-}
-
-void XAmulet::Identify()
-{
-    aidentified_db[descr] = true;
-}

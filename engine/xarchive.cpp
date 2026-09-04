@@ -39,10 +39,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xbook.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
+#include "item/xenhance.h"
 #include "item/xring.h"
 #include "item/xscroll.h"
 
-constexpr unsigned int SAVE_GAME_VERSION = 0x000006D;
+constexpr unsigned int SAVE_GAME_VERSION = 0x000006E;
 constexpr unsigned int SAVE_GAME_CONTROL = 0x9ABCDEF;
 
 // ZSTD compression level: 1 provides excellent speed/size tradeoff
@@ -145,8 +146,7 @@ int XArchive::StoreGame(const char* slot)
         XBook::SaveTable(ar);
         XPotion::SaveTable(ar);
         XScroll::SaveTable(ar);
-        XAmulet::SaveTable(ar);
-        XRing::SaveTable(ar);
+        XEnhance::SaveTable(ar);
         PlantDefinition::SaveTable(ar);
 
         XTime::serialize(ar);
@@ -257,8 +257,7 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
         XBook::LoadTable(ar);
         XPotion::LoadTable(ar);
         XScroll::LoadTable(ar);
-        XAmulet::LoadTable(ar);
-        XRing::LoadTable(ar);
+        XEnhance::LoadTable(ar);
         PlantDefinition::LoadTable(ar);
 
         XTime::serialize(ar);

@@ -30,20 +30,15 @@ class XRing : public XEnhance
     public:
         DECLARE_CREATOR(XRing, XEnhance);
 
-        explicit XRing(Type enh = RANDOM);
+        explicit XRing(const std::string& enh = "");
 
         explicit XRing(XRing* copy) : XEnhance(static_cast<XEnhance *>(copy)) {}
-
-        bool isIdentified() override;
-        void Identify() override;
         XItem* MakeCopy() override
         {
             return new XRing(this);
         }
 
         // ridentified_db is private to xring.cpp.
-        static void SaveTable(cereal::JSONOutputArchive& ar);
-        static void LoadTable(cereal::JSONInputArchive& ar);
 
         template<class Archive>
         void serialize(Archive& ar)

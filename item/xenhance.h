@@ -23,38 +23,85 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/types/base_class.hpp>
 
+#include <string>
+
+#include <sol/forward.hpp>
+
+#include <cereal/archives/json.hpp>
+
 #include "item/item.h"
+
+// Fluent builder for one sort of ring or amulet:
+//
+//   Enchantment.new("protection")
+//       :Called("of protection")
+//       :Armour("", "1d6-2")
+//       :Worth(150)
+//       :Register()
+//
+// ENH_REC stays private to xenhance.cpp, so the builder holds the fields.
+class EnchantmentBuilder
+{
+    public:
+        explicit EnchantmentBuilder(std::string id);
+
+        EnchantmentBuilder& Called(const std::string& n);
+        EnchantmentBuilder& Armour(const std::string& dv, const std::string& pv);
+        EnchantmentBuilder& Combat(const std::string& hit, const std::string& dice,
+            const std::string& extra);
+        EnchantmentBuilder& Range(const std::string& rng);
+        EnchantmentBuilder& Resist(const std::string& r);
+        EnchantmentBuilder& Stats(const std::string& s);
+        EnchantmentBuilder& Worth(int value);
+
+        void Register();
+
+    private:
+        std::string id;
+        std::string name;
+        std::string dv, pv, hit, dice, z, rng, r, s;
+        int value{0};
+};
+
+// The looks an unknown ring or amulet can have - "a ruby ring", "an
+// obsidian amulet" - given to the engine by world/items/enchantments.lua
+// and dealt out at random, one per sort, each game.
+void SetEnchantmentLooks(const sol::table& looks);
 
 class XEnhance : public XItem
 {
     protected:
-        int descr = 0;
+        // Which sort this is - the id world/items/enchantments.lua
+        // registered it under. Was an index into a fixed table.
+        std::string descr;
     public:
-        enum Type {
-            PROTECTION,
-            DAMAGE,
-            SLAYING,
-            FREEACTION,
-            SEEINVISIBLE,
-            INVISIBILITY,
-            ACIDRESIST,
-            POISONRESIST,
-            FIRERESIST,
-            POWER,
-            STRENGTH,
-            RANDOM
-        };
+        // "Any": the request to pick a sort at random.
+        static const std::string RANDOM;
 
         DECLARE_CREATOR(XEnhance, XItem);
 
-        explicit XEnhance(Type enh = RANDOM);
+        explicit XEnhance(const std::string& enh = "");
 
         explicit XEnhance(XEnhance* copy) : XItem(static_cast<XItem *>(copy))
         {
             descr = copy->descr;
         }
 
+        // What this game calls it before anyone knows it, and whether they
+        // do. Kept here rather than in two parallel arrays in XRing and
+        // XAmulet, which is what they used to be.
+        [[nodiscard]] const std::string& AppearanceName() const;
+
+        bool isIdentified() override;
+        void Identify() override;
         std::string toString() override;
+
+        // Non-template, concrete-archive-typed: the table is private to
+        // xenhance.cpp. Was two arrays, one per XRing and XAmulet - one
+        // table serves both, because a ring and an amulet of the same sort
+        // are the same discovery.
+        static void SaveTable(cereal::JSONOutputArchive& ar);
+        static void LoadTable(cereal::JSONInputArchive& ar);
         int Compare(XObject* o) override;
 
         template<class Archive>
