@@ -343,6 +343,10 @@ Things that simply did not happen:
 - Beating off the orc war party was never acknowledged at the end of the
   game: the achievements screen asked for thirty orc deaths, and only twenty
   orcs have ever existed
+- Unidentified scrolls carried the same labels in every game. The nonsense
+  name on a scroll you have not read is meant to be rolled afresh each game,
+  so that learning one teaches you nothing about the next; it was rolled
+  once as the program started, before the game had a seed
 
 Things that went quietly wrong the longer you played:
 

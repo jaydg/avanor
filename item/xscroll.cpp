@@ -18,6 +18,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
+#include <map>
+#include <vector>
+
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+
 #include "creature/xhero.h"
 #include "helpers/msgwin.h"
 #include "item/item_cereal.h"
@@ -27,140 +34,192 @@ REGISTER_CLASS(XScroll);
 CEREAL_REGISTER_TYPE(XScroll);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XScroll);
 
+// One sort of scroll: what it is called once known, what reading it does,
+// what it is worth, and how often one turns up. Filled from
+// world/items/scrolls.lua as that script loads.
 struct ScrollDescription {
-	// generate scroll name
-    ScrollDescription(const char* rn, XEffect::Id eff, ScrollName scrn, int val, int rar)
-    {
-        real_name = rn;
-        effect = eff;
-        scroll_name = scrn;
-        identified = false;
-        value = val;
-        total_value += rar;
-        rarity = rar;
+    ScrollName id;
+    std::string real_name;
+    XEffect::Id effect{XEffect::NONE};
+    int value{0};
+    int rarity{0};
+    bool read_in_combat{false};
 
+    // What this game calls it before anyone works out what it is, and
+    // whether they have. The only two fields that are not content: they
+    // belong to the game in progress and are saved with it.
+    std::string label;
+    bool identified{false};
+
+    // A pronounceable nonsense name, alternating vowels and consonants.
+    // Rolled here rather than in a static initialiser, which is where it
+    // used to happen - before main(), before any seed, so every game got
+    // the same labels and a player who learned one knew it forever.
+    static std::string RollLabel()
+    {
+        std::string out;
         const int words = vRand() % 2 + 1;
 
         for (int i = 0; i < words; i++) {
             const int word_len = vRand() % (5 - words) + 3;
 
             for (int j = 0; j < word_len; j++) {
-                // default letter
-                char letter = 'X';
-
                 if (j % 2 == 0) {
                     constexpr char vowels[] = "euioa";
-                    letter = vowels[vRand() % (sizeof(vowels) - 1)];
+                    out.push_back(vowels[vRand() % (sizeof(vowels) - 1)]);
                 } else {
-                    letter = static_cast<char>(vRand() % 26 + 'a');
+                    out.push_back(static_cast<char>(vRand() % 26 + 'a'));
                 }
-
-                name.push_back(letter);
             }
 
             if (i < words - 1) {
-                if (vRand() % 4 == 1) {
-                    name.append("-");
-                } else {
-                    name.append(" ");
-                }
+                out.append(vRand() % 4 == 1 ? "-" : " ");
             }
         }
-    };
 
-    XEffect::Id effect;
-    ScrollName scroll_name;
-    bool identified;
-    std::string name;
-    std::string_view real_name;
-    int value;
-    int rarity;
-
-    static int total_value;
-    static int GetRandomDescription(ScrollName scrn);
-
-    // real_name/value/rarity are compile-time constants; effect/
-    // scroll_name/identified/name are per-game-session mutable state (the
-    // scroll<->effect scrambling, its randomly-generated flavor name,
-    // and identification progress), same fields the legacy Store/
-    // Restore already persisted.
-    template<class Archive>
-    void serialize(Archive& ar)
-    {
-        ar(effect, scroll_name, identified, name);
+        return out;
     }
 };
 
-int ScrollDescription::total_value = 0;
+std::vector<ScrollDescription> scroll_descr;
+static int scroll_total_rarity = 0;
 
-ScrollDescription scroll_descr[] = {
-    ScrollDescription("healing",         XEffect::HEAL,           ScrollName::HEALING,        200,  10),
-    ScrollDescription("burning hands",   XEffect::BURNING_HANDS,  ScrollName::BURNING_HANDS,   20, 100),
-    ScrollDescription("ice touch",       XEffect::ICE_TOUCH,      ScrollName::ICE_TOUCH,       20, 100),
-    ScrollDescription("heroism",         XEffect::HEROISM,        ScrollName::HEROISM,         25, 100),
-    ScrollDescription("power",           XEffect::POWER,          ScrollName::POWER,           15, 100),
-    ScrollDescription("identify",        XEffect::IDENTIFY,       ScrollName::IDENTIFY,       100,  30),
-    ScrollDescription("magic arrow",     XEffect::MAGIC_ARROW,    ScrollName::MAGIC_ARROW,     15, 200),
-    ScrollDescription("fire bolt",       XEffect::FIRE_BOLT,      ScrollName::FIRE_BOLT,       50,  60),
-    ScrollDescription("ice bolt",        XEffect::ICE_BOLT,       ScrollName::ICE_BOLT,        50,  60),
-    ScrollDescription("lightning bolt",  XEffect::LIGHTNING_BOLT, ScrollName::LIGHTNING_BOLT, 100,  20),
-    ScrollDescription("acid bolt",       XEffect::ACID_BOLT,      ScrollName::ACID_BOLT,      150,  15),
-    ScrollDescription("summon monsters", XEffect::SUMMON_MONSTER, ScrollName::SUMMON_MONSTER,  10, 100),
-    ScrollDescription("create item",     XEffect::CREATE_ITEM,    ScrollName::CREATE_ITEM,    200,  25),
-    ScrollDescription("cure disease",    XEffect::CURE_DISEASE,   ScrollName::CURE_DISEASE,    40, 100),
-    ScrollDescription("cure poison",     XEffect::CURE_POISON,    ScrollName::CURE_POISON,     40, 100),
-    ScrollDescription("blink",           XEffect::BLINK,          ScrollName::BLINK,           70,  30),
-    ScrollDescription("self knowledge",  XEffect::SELF_KNOWLEDGE, ScrollName::SELF_KNOWLEDGE, 150,  10),
-    ScrollDescription("see invisible",   XEffect::SEE_INVISIBLE,  ScrollName::SEE_INVISIBLE,   40,  50),
-    ScrollDescription("recipe",          XEffect::NONE,           ScrollName::RECIPE,          30,  25),
-};
-
-int ScrollDescription::GetRandomDescription(ScrollName scrn)
+// The row for an id, or nullptr if content never registered one.
+static ScrollDescription* FindScroll(const ScrollName& id)
 {
-    if (scrn == ScrollName::RANDOM) {
-        int val = vRand(total_value);
-        int pos = -1;
-
-        do {
-            pos++;
-            val -= scroll_descr[pos].rarity;
-        } while (val >= 0);
-
-        return pos;
-    } else {
-        for (int i = 0; i < static_cast<int>(ScrollName::RANDOM); i++)
-            if (scroll_descr[i].scroll_name == scrn) {
-                return i;
-            }
+    for (auto& row : scroll_descr) {
+        if (row.id == id) {
+            return &row;
+        }
     }
 
-    return -1;
+    return nullptr;
 }
 
-XScroll::XScroll(ScrollName scrn)
+ScrollBuilder::ScrollBuilder(std::string id) : id(std::move(id)) {}
+
+ScrollBuilder& ScrollBuilder::Called(const std::string& name)
 {
-    descr = ScrollDescription::GetRandomDescription(scrn);
-    assert(descr > -1 && descr < static_cast<int>(ScrollName::RANDOM));
-    sc_name = scroll_descr[descr].scroll_name;
-    name = scroll_descr[descr].real_name;
-    value = scroll_descr[descr].value;
+    real_name = name;
+    return *this;
+}
+
+ScrollBuilder& ScrollBuilder::Effect(const XEffect::Id eff)
+{
+    effect = eff;
+    return *this;
+}
+
+ScrollBuilder& ScrollBuilder::Worth(const int val)
+{
+    value = val;
+    return *this;
+}
+
+ScrollBuilder& ScrollBuilder::Chance(const int rar)
+{
+    rarity = rar;
+    return *this;
+}
+
+ScrollBuilder& ScrollBuilder::ReadInCombat()
+{
+    read_in_combat = true;
+    return *this;
+}
+
+void ScrollBuilder::Register()
+{
+    if (id.empty()) {
+        std::cerr << "world: a scroll with no id" << std::endl;
+        return;
+    }
+
+    if (FindScroll(id)) {
+        std::cerr << "world: two scrolls both called '" << id << "'" << std::endl;
+        return;
+    }
+
+    ScrollDescription row;
+    row.id = id;
+    row.real_name = real_name.empty() ? id : real_name;
+    row.effect = effect;
+    row.value = value;
+    row.rarity = rarity;
+    row.read_in_combat = read_in_combat;
+    row.label = ScrollDescription::RollLabel();
+
+    scroll_total_rarity += rarity;
+    scroll_descr.push_back(std::move(row));
+}
+
+// The row a request names, or one drawn by rarity when it names none.
+static ScrollDescription* PickScroll(const ScrollName& scrn)
+{
+    if (scroll_descr.empty()) {
+        return nullptr;
+    }
+
+    if (!scrn.empty()) {
+        ScrollDescription* row = FindScroll(scrn);
+
+        if (!row) {
+            std::cerr << "world: nothing defines a scroll '" << scrn
+                      << "' - substituting another" << std::endl;
+        } else {
+            return row;
+        }
+    }
+
+    int val = vRand(scroll_total_rarity);
+
+    for (auto& row : scroll_descr) {
+        val -= row.rarity;
+
+        if (val < 0) {
+            return &row;
+        }
+    }
+
+    return &scroll_descr.front();
+}
+
+XScroll::XScroll(const ScrollName& scrn)
+{
+    const ScrollDescription* row = PickScroll(scrn);
+
+    if (row) {
+        sc_name = row->id;
+        name = row->real_name;
+        value = row->value;
+    }
+
     kind = ItemKind::SCROLL;
     bp = BP_OTHER;
     it = IT_SCROLL;
     view = '?';
-    color =	xLIGHTGRAY;
+    color = xLIGHTGRAY;
     weight = 2;
     dice.Setup("1d1");
 }
 
+bool XScroll::isReadInCombat() const
+{
+    const ScrollDescription* row = FindScroll(sc_name);
+    return row && row->read_in_combat;
+}
+
 bool XScroll::isIdentified()
 {
-    return scroll_descr[descr].identified;
+    const ScrollDescription* row = FindScroll(sc_name);
+    return row && row->identified;
 }
 
 void XScroll::Identify()
 {
-    scroll_descr[descr].identified = true;
+    if (ScrollDescription* row = FindScroll(sc_name)) {
+        row->identified = true;
+    }
 }
 
 int XScroll::Compare(XObject * o)
@@ -168,7 +227,7 @@ int XScroll::Compare(XObject * o)
     assert(dynamic_cast<XScroll*>(o));
     XScroll * tit = (XScroll*)o;
 
-    if (descr == tit->descr && x == tit->x && y == tit->y) {
+    if (sc_name == tit->sc_name && x == tit->x && y == tit->y) {
         return 0;
     } else {
         if (quantity > tit->quantity) {
@@ -181,30 +240,38 @@ int XScroll::Compare(XObject * o)
 
 std::string XScroll::toString()
 {
+    const ScrollDescription* row = FindScroll(sc_name);
+    const std::string label = row ? row->label : sc_name;
+
     if (!isIdentified()) {
         if (quantity == 1) {
-            return fmt::format("scroll labeled \"{}\"", scroll_descr[descr].name);
+            return fmt::format("scroll labeled \"{}\"", label);
         }
 
         return fmt::format("heap of ({}) scrolls labeled \"{}\"",
-            quantity, scroll_descr[descr].name);
+            quantity, label);
     }
 
     if (quantity == 1) {
         return fmt::format("scroll of {}", name);
     }
 
-    return fmt::format("heap of ({}) scrolls of {}",
-        quantity, name);
+    return fmt::format("heap of ({}) scrolls of {}", quantity, name);
 }
 
 int XScroll::onRead(XCreature * cr)
 {
     assert(cr->isValid());
 
+    const ScrollDescription* row = FindScroll(sc_name);
+
+    if (!row) {
+        return 0;
+    }
+
     int flag = 0;
 
-    if (scroll_descr[descr].effect != XEffect::NONE) {
+    if (row->effect != XEffect::NONE) {
         if (cr->isHero()) {
             msgwin.Add(fmt::format("You read the {}.", toString()));
         } else if (cr->isVisible()) {
@@ -214,17 +281,17 @@ int XScroll::onRead(XCreature * cr)
         EFFECT_DATA ed;
         ed.caller	= cr;
         ed.l	= cr->l;
-        ed.effect	= scroll_descr[descr].effect;
+        ed.effect	= row->effect;
         ed.power	= 25;
         ed.call_x	= cr->x;
         ed.call_y	= cr->y;
 
-        if (XEffect::GetReq(scroll_descr[descr].effect) == ER_DIRECTION) {
+        if (XEffect::GetReq(row->effect) == ER_DIRECTION) {
             XPoint pt;
             cr->GetTarget(TR_ATTACK_DIRECTION, &pt);
             ed.target_x = pt.x + cr->x;
             ed.target_y = pt.y + cr->y;
-        } else if (XEffect::GetReq(scroll_descr[descr].effect) == ER_TARGET) {
+        } else if (XEffect::GetReq(row->effect) == ER_TARGET) {
             XPoint pt;
             cr->GetTarget(TR_ATTACK_TARGET, &pt, XEffect::GetRange(ed.effect, ed.power));
             ed.target_x = pt.x;
@@ -232,27 +299,14 @@ int XScroll::onRead(XCreature * cr)
         }
 
         flag = XEffect::Make(&ed);
-    } else {
-        flag = 0;
+    } else if (sc_name == SC_RECIPE && cr->isHero()) {
+        // The one scroll that is not an effect: it teaches a recipe, and
+        // recipes are still C++ (XAlchemy). When they become content this
+        // goes with them and C++ stops naming any scroll at all.
+        const int val = vRand(XAlchemy::GetRecipeCount());
 
-        switch (scroll_descr[descr].scroll_name) {
-            case ScrollName::RECIPE:
-                if (cr->isHero()) {
-                    int val = vRand(XAlchemy::GetRecipeCount());
-                    XAlchemyRecipe * pRec = XAlchemy::GetRecipe(val);
-
-                    if (pRec) {
-                        flag = ((XHero*)cr)->LearnRecipe(pRec->pn1, pRec->pn2, pRec->result);
-                    }
-                }
-
-                break;
-
-            // A scroll that names a spell was already read as that
-            // spell's effect in the branch above; this one is only for
-            // the scrolls that do something else.
-            default:
-                break;
+        if (XAlchemyRecipe * pRec = XAlchemy::GetRecipe(val)) {
+            flag = ((XHero*)cr)->LearnRecipe(pRec->pn1, pRec->pn2, pRec->result);
         }
     }
 
@@ -277,16 +331,41 @@ int XScroll::onRead(XCreature * cr)
     return flag;
 }
 
+// What one game came to know about one sort of scroll. Everything else in
+// a row is content and comes back from world/items/scrolls.lua next load.
+struct ScrollMemory {
+    bool identified{false};
+    std::string label;
+
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(identified, label);
+    }
+};
+
+// Keyed by id rather than written in table order, so content may add rows
+// or reorder them without spoiling a save.
 void XScroll::SaveTable(cereal::JSONOutputArchive& ar)
 {
-    for (int i = 0; i < static_cast<int>(ScrollName::RANDOM); i++) {
-        ar(scroll_descr[i]);
+    std::map<std::string, ScrollMemory> learned;
+
+    for (const auto& row : scroll_descr) {
+        learned[row.id] = ScrollMemory{row.identified, row.label};
     }
+
+    ar(learned);
 }
 
 void XScroll::LoadTable(cereal::JSONInputArchive& ar)
 {
-    for (int i = 0; i < static_cast<int>(ScrollName::RANDOM); i++) {
-        ar(scroll_descr[i]);
+    std::map<std::string, ScrollMemory> learned;
+    ar(learned);
+
+    for (auto& row : scroll_descr) {
+        if (const auto it = learned.find(row.id); it != learned.end()) {
+            row.identified = it->second.identified;
+            row.label = it->second.label;
+        }
     }
 }

@@ -208,15 +208,14 @@ void* CreateObjectOfType(ItemKind kind, ItemType it, int min_val, int max_val)
     return XItemFactory::CreateAnyItem(kind, it, min_val, max_val);
 }
 
-//CreateScroll(ScrollName.FIRE_BOLT)
+//CreateScroll("fire_bolt")
 //
-// Scrolls and books are their own kinds rather than another form of
-// CreateObject: all three of PotionName, ScrollName and BookName reach Lua
-// as plain numbers, so a single-argument CreateObject could not tell which
-// of them it had been handed.
-void* CreateScroll(int scrn)
+// Scrolls and books stay their own calls rather than another CreateObject
+// overload: a book is still named by a number, so one single-argument
+// CreateObject could not tell a book id from a scroll id.
+void* CreateScroll(const std::string& scrn)
 {
-    return new XScroll(static_cast<ScrollName>(scrn));
+    return new XScroll(scrn);
 }
 
 //CreateBook(BookName.FIRE_BOLT)

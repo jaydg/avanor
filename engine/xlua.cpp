@@ -159,19 +159,6 @@ void XLua::Init()
     );
 
     // What a scroll or a book can be.
-    lua.new_enum("ScrollName",
-        "BURNING_HANDS", ScrollName::BURNING_HANDS, "ICE_TOUCH", ScrollName::ICE_TOUCH,
-        "HEROISM", ScrollName::HEROISM, "HEALING", ScrollName::HEALING,
-        "POWER", ScrollName::POWER, "IDENTIFY", ScrollName::IDENTIFY,
-        "MAGIC_ARROW", ScrollName::MAGIC_ARROW, "FIRE_BOLT", ScrollName::FIRE_BOLT,
-        "ICE_BOLT", ScrollName::ICE_BOLT, "LIGHTNING_BOLT", ScrollName::LIGHTNING_BOLT,
-        "ACID_BOLT", ScrollName::ACID_BOLT, "SUMMON_MONSTER", ScrollName::SUMMON_MONSTER,
-        "CREATE_ITEM", ScrollName::CREATE_ITEM, "CURE_DISEASE", ScrollName::CURE_DISEASE,
-        "CURE_POISON", ScrollName::CURE_POISON, "BLINK", ScrollName::BLINK,
-        "SELF_KNOWLEDGE", ScrollName::SELF_KNOWLEDGE,
-        "SEE_INVISIBLE", ScrollName::SEE_INVISIBLE, "RECIPE", ScrollName::RECIPE,
-        "RANDOM", ScrollName::RANDOM
-    );
 
     lua.new_enum("BookName",
         "BURNING_HANDS", BOOK_BURNING_HANDS, "ICE_TOUCH", BOOK_ICE_TOUCH,
@@ -311,6 +298,16 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<ScrollBuilder>("Scroll",
+            sol::constructors<ScrollBuilder(std::string)>(),
+            "Called", &ScrollBuilder::Called,
+            "Effect", &ScrollBuilder::Effect,
+            "Worth", &ScrollBuilder::Worth,
+            "Chance", &ScrollBuilder::Chance,
+            "ReadInCombat", &ScrollBuilder::ReadInCombat,
+            "Register", &ScrollBuilder::Register
+        );
+
         lua.new_usertype<TemplateBuilder>("Template",
             sol::constructors<TemplateBuilder(ItemKind, ItemType)>(),
             "View", &TemplateBuilder::View,

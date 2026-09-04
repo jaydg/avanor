@@ -52,7 +52,7 @@ namespace lua_api
     void* CreateObjectByMask(int flag, int min_val, int max_val);
     void* CreateObjectByPotion(int pn);
     void* CreateObjectOfType(ItemKind kind, ItemType it, int min_val, int max_val);
-    void* CreateScroll(int scrn);
+    void* CreateScroll(const std::string& scrn);
     void* CreateBook(int bn);
     void IdentifyItem(void* item);
     void DropItem(void* item, sol::optional<int> x, sol::optional<int> y);

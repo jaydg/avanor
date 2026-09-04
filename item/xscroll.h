@@ -27,37 +27,59 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "magic/effect.h"
 
-enum class ScrollName {
-    BURNING_HANDS,
-    ICE_TOUCH,
-    HEROISM,
-    HEALING,
-    POWER,
-    IDENTIFY,
-    MAGIC_ARROW,
-    FIRE_BOLT,
-    ICE_BOLT,
-    LIGHTNING_BOLT,
-    ACID_BOLT,
-    SUMMON_MONSTER,
-    CREATE_ITEM,
-    CURE_DISEASE,
-    CURE_POISON,
-    BLINK,
-    SELF_KNOWLEDGE,
-    SEE_INVISIBLE,
-    RECIPE,
-    RANDOM
+// Which scroll this is - the id world/items/scrolls.lua registered it
+// under. A string, like every other content id: the list of scrolls is
+// content, and the engine has no business knowing it.
+using ScrollName = std::string;
+
+// The one scroll C++ still names, because what it does - teaching an
+// alchemy recipe - has no XEffect to point at. Every other scroll is its
+// effect and needs nothing here.
+inline constexpr const char* SC_RECIPE = "recipe";
+
+// "Any scroll": the request to pick one, weighted by rarity.
+inline constexpr const char* SC_ANY = "";
+
+// Fluent builder for one sort of scroll:
+//
+//   Scroll.new("fire_bolt")
+//       :Called("fire bolt")
+//       :Effect(XEffect.FIRE_BOLT)
+//       :Worth(50)
+//       :Chance(60)
+//       :Register()
+//
+// The builder holds the row's fields rather than a ScrollDescription,
+// which stays private to xscroll.cpp along with the table itself.
+class ScrollBuilder
+{
+    public:
+        explicit ScrollBuilder(std::string id);
+
+        ScrollBuilder& Called(const std::string& name);
+        ScrollBuilder& Effect(XEffect::Id effect);
+        ScrollBuilder& Worth(int value);
+        ScrollBuilder& Chance(int rarity);
+        ScrollBuilder& ReadInCombat();
+
+        void Register();
+
+    private:
+        std::string id;
+        std::string real_name;
+        XEffect::Id effect{XEffect::NONE};
+        int value{0};
+        int rarity{0};
+        bool read_in_combat{false};
 };
 
 class XScroll : public XItem
 {
     public:
         DECLARE_CREATOR(XScroll, XItem);
-        XScroll(ScrollName _scrn = ScrollName::RANDOM);
+        explicit XScroll(const ScrollName& _scrn = SC_ANY);
         XScroll(XScroll * copy): XItem((XItem*)copy)
         {
-            descr = copy->descr;
             sc_name = copy->sc_name;
         }
 
@@ -66,6 +88,11 @@ class XScroll : public XItem
             return new XScroll(this);
         }
 
+        // Whether a monster holding one will read it at an enemy. Said by
+        // the scroll's own row (:ReadInCombat()), not decided here: which
+        // scrolls are worth spending on a fight is content.
+        [[nodiscard]] bool isReadInCombat() const;
+
         bool isIdentified() override;
         void Identify() override;
         std::string toString() override;
@@ -73,8 +100,10 @@ class XScroll : public XItem
         virtual int onRead(XCreature * cr);
 
         // Non-template, concrete-archive-typed (like XPotion::Save/
-        // LoadTable): ScrollDescription/scroll_descr[] are private to
-        // xscroll.cpp.
+        // LoadTable): ScrollDescription/scroll_descr are private to
+        // xscroll.cpp. What is saved is only what this game learned - which
+        // scrolls have been identified, and the label each was given - keyed
+        // by id, so content may reorder or add rows without spoiling a save.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);
 
@@ -82,12 +111,12 @@ class XScroll : public XItem
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XItem>(this));
-            ar(descr, sc_name);
+            ar(sc_name);
         }
 
+        // The id of the row this scroll was made from. Was an index into
+        // the table plus a duplicate enum; one id says both.
         ScrollName sc_name;
-    protected:
-        int descr;
 };
 
 #endif

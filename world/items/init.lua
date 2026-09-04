@@ -129,5 +129,6 @@ function LoadItems()
 	dofile("./world/items/boots.lua")
 	dofile("./world/items/gloves.lua")
 	dofile("./world/items/tools.lua")
+	dofile("./world/items/scrolls.lua")
 	dofile("./world/items/food.lua")
 end
