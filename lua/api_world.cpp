@@ -450,6 +450,21 @@ void* OuterObjectAt(int x, int y, int color, const std::string& view, const std:
     return new XOuterObject(x, y, color, view[0], (char*)descr.c_str(), XLocation::current_location, event ? event->c_str() : nullptr);
 }
 
+// Gold on the floor beside somebody, in the location they are standing in.
+// Treasure() below cannot serve here: it drops into current_location, which
+// only tracks world-building and is stale once play has started.
+void DropMoney(void* who, const int amount, const int x, const int y)
+{
+    XCreature* cr = (XCreature*)who;
+
+    if (!cr || !cr->l) {
+        return;
+    }
+
+    XMoney* money = new XMoney(amount);
+    money->Drop(cr->l, x, y);
+}
+
 void Treasure(int x, int y, int val)
 {
     XMoney * money = new XMoney(vRand(val) + val);
@@ -515,6 +530,20 @@ std::tuple<int, int> GetMapSize(sol::optional<void*> location)
     const XMap* map = ResolveLocation(location)->map;
 
     return {map->len, map->hgt};
+}
+
+// What a wall becomes when somebody digs through it, or nothing if it is
+// not the digging sort. Declared per tile in world/tiles.lua
+// ({ diggable_into = "STONE_FLOOR" }); this only reads it back.
+sol::optional<int> TileDiggableInto(const int tile)
+{
+    const XTileType::Id into = XTileType::DiggableInto((XTileType::Id)tile);
+
+    if (into == XTileType::NONE) {
+        return sol::nullopt;
+    }
+
+    return static_cast<int>(into);
 }
 
 int GetTile(const int x, const int y, sol::optional<void*> location)
@@ -621,6 +650,8 @@ void RegisterWorldApi(sol::state_view& lua)
 {
     lua.set_function("GetMapSize", &lua_api::GetMapSize);
     lua.set_function("GetTile", &lua_api::GetTile);
+    lua.set_function("TileDiggableInto", &lua_api::TileDiggableInto);
+    lua.set_function("DropMoney", &lua_api::DropMoney);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
     lua.set_function("SetTile", &lua_api::SetTile);
     lua.set_function("WindingRoad", &lua_api::WindingRoad);

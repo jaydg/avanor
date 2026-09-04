@@ -29,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/quest.h"
 #include "game/setting.h"
 #include "helpers/msgwin.h"
+#include "item/item_misc.h"
 #include "lua/api_actor.h"
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
@@ -132,6 +133,55 @@ void SetNutrition(void* cr, double stomachs)
 // Answers whether the change actually took - a stat already at its floor
 // or ceiling does not move, and a potion that moved nothing is a potion
 // that did nothing.
+// Credit practice towards a skill, the way using it in earnest does.
+void UseSkill(void* cr, int skill, sol::optional<int> amount)
+{
+    if (XSkill* sk = ((XCreature*)cr)->sk->GetSkill((XSkill::Skill)skill)) {
+        sk->UseSkill(amount.value_or(1));
+    }
+}
+
+// Ask which way - the prompt a spell or a pickaxe puts up. Answers the
+// step as two numbers, each -1, 0 or 1, or nothing if the asker changed
+// their mind.
+std::tuple<sol::optional<int>, sol::optional<int>> AskDirection(void* cr)
+{
+    XPoint pt;
+
+    if (!((XCreature*)cr)->GetTarget(TR_ATTACK_DIRECTION, &pt)) {
+        return {sol::nullopt, sol::nullopt};
+    }
+
+    return {pt.x, pt.y};
+}
+
+// One roll of an item's own damage dice.
+// What a tool remembers between turns - see XLuaTool::memory. Recall
+// answers 0 for anything never set, so a handler starting fresh and one
+// resuming read the same way.
+void ToolRemember(void* item, const std::string& key, int value)
+{
+    if (auto* tool = dynamic_cast<XLuaTool*>((XItem*)item)) {
+        tool->memory[key] = value;
+    }
+}
+
+int ToolRecall(void* item, const std::string& key)
+{
+    if (const auto* tool = dynamic_cast<const XLuaTool*>((const XItem*)item)) {
+        if (const auto it = tool->memory.find(key); it != tool->memory.end()) {
+            return it->second;
+        }
+    }
+
+    return 0;
+}
+
+int ThrowItemDice(void* item)
+{
+    return ((XItem*)item)->dice.Throw();
+}
+
 int ChangeStats(void* cr, int st, int val)
 {
     return ((XCreature*)cr)->GainAttr((XStats::Id)st, val);
@@ -791,6 +841,11 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetAIFlag", &lua_api::SetAIFlag);
         lua.set_function("CreatureNear", &lua_api::CreatureNear);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);
+        lua.set_function("UseSkill", &lua_api::UseSkill);
+        lua.set_function("AskDirection", &lua_api::AskDirection);
+        lua.set_function("ThrowItemDice", &lua_api::ThrowItemDice);
+        lua.set_function("ToolRemember", &lua_api::ToolRemember);
+        lua.set_function("ToolRecall", &lua_api::ToolRecall);
         lua.set_function("isCreatureVisible", &lua_api::isCreatureVisible);
         lua.set_function("isUniqueCreature", &lua_api::isUniqueCreature);
         lua.set_function("CreatureName", &lua_api::CreatureName);

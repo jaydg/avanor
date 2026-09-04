@@ -60,7 +60,7 @@ torin_award = 0;
 function CreateTorin(x, y)
 	local torin = Guardian("torin", "dwarven_guardian", x, y)
 	SetEventHandler(torin, 'TorinHandler')
-	local pickaxe = CreateObject('XPickAxe')
+	local pickaxe = CreateObject("pickaxe")
 	torin_award = GetObjectGUID(pickaxe)
 	GiveObjectToCreature(pickaxe, torin)
 	GiveObjectToCreature(CreateObject('dwarf_crown'), torin)

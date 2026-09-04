@@ -83,6 +83,8 @@ namespace lua_api
     void EventPlaceArea(int x, int y, int w, int h, const std::string& event);
 
     std::tuple<int, int> GetMapSize(sol::optional<void*> location);
+    sol::optional<int> TileDiggableInto(int tile);
+    void DropMoney(void* who, int amount, int x, int y);
     int GetTile(int x, int y, sol::optional<void*> location);
     bool HasSpecial(int x, int y, sol::optional<void*> location);
     bool SetTile(int x, int y, int tile, sol::optional<void*> location);

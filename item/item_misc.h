@@ -27,7 +27,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <unordered_map>
 
+#include <cereal/types/map.hpp>
 #include <cereal/types/set.hpp>
+#include <cereal/types/string.hpp>
 
 #include "item/itemkind.h"
 #include "item/xanyfood.h"
@@ -413,7 +415,8 @@ class XLuaTool : public XTool
         XLuaTool() = default;
         explicit XLuaTool(XLuaTool* copy)
             : XTool(copy), content_id(copy->content_id), unique(copy->unique),
-              artifact(copy->artifact), use_handler(copy->use_handler) {}
+              artifact(copy->artifact), use_handler(copy->use_handler),
+              memory(copy->memory) {}
 
         XItem* MakeCopy() override
         {
@@ -453,11 +456,21 @@ class XLuaTool : public XTool
         bool artifact{false};
         std::string use_handler;
 
+        // Whatever the handler needs to remember between turns, under
+        // names of content's own choosing. Digging keeps how much rock is
+        // left and where; cooking keeps how long the pot has been on.
+        //
+        // A use that spans turns has to survive a save in the middle of
+        // it, which is why this is archived rather than kept as a plain
+        // member: the handler runs again on the far side of the load and
+        // must find its own place.
+        std::map<std::string, int> memory;
+
         template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XTool>(this));
-            ar(content_id, unique, artifact, use_handler);
+            ar(content_id, unique, artifact, use_handler, memory);
         }
 };
 

@@ -41,6 +41,11 @@ namespace lua_api
 {
     void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg);
     int ChangeStats(void* cr, int st, int val);
+    void UseSkill(void* cr, int skill, sol::optional<int> amount);
+    std::tuple<sol::optional<int>, sol::optional<int>> AskDirection(void* cr);
+    void ToolRemember(void* item, const std::string& key, int value);
+    int ToolRecall(void* item, const std::string& key);
+    int ThrowItemDice(void* item);
     bool isCreatureVisible(void* cr);
     bool isUniqueCreature(void* cr);
     std::string CreatureName(void* cr, int form);

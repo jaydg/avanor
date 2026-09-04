@@ -112,46 +112,6 @@ class XCookingSet : public XTool
 //then we remove rock_resist till, untill complete diging the rock
 //also str gives +1 for each to points of str
 
-class XPickAxe : public XTool
-{
-        int tgt_x, tgt_y;
-        int rock_resist;
-    public:
-        DECLARE_CREATOR(XPickAxe, XTool);
-        XPickAxe()
-        {
-            color = xLIGHTGRAY;
-            view = '\\';
-            it = IT_PICKAXE;
-            name = "pickaxe";
-            value = 150;
-            weight = 100;
-            kind = ItemKind::TOOL;
-            bp = BP_TOOL;
-            stats = std::make_unique<XStats>();
-            resistances = std::make_unique<XResistance>();
-            dice.Setup(1, 10, 0);
-        }
-
-        XPickAxe(XPickAxe* copy) : XTool(copy) {}
-
-        XItem* MakeCopy() override
-        {
-            return new XPickAxe(this);
-        }
-
-        RESULT onUse(ItemUsageState uis, XCreature* cr) override;
-        std::string toString() override
-        {
-            return name;
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XTool>(this));
-        }
-};
 
 class XAlchemySet : public XTool
 {
