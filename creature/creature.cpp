@@ -1774,8 +1774,12 @@ void XCreature::FirstStep(int _x, int _y, XLocation * _l)
 
     if (first_placement) {
         for (auto& bp: components) {
+            // Every component, not only the ones holding something. A body
+            // part whose owner is never bound silently drops onWear() for
+            // everything put on it afterwards.
+            bp->SetOwner(this);
+
             if (XItem* worn = bp->Item()) {
-                bp->SetOwner(this);
                 worn->onWear(this);
             }
         }
