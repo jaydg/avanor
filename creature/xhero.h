@@ -32,11 +32,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
 
+#include "item/xpotion.h"
 #include "creature/creature.h"
 #include "engine/global.h"
 #include "helpers/xgui.h"
 #include "helpers/xstring.h"
-#include "item/incl_i.h"
 
 extern int _exit_flag;
 

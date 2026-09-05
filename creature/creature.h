@@ -40,7 +40,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "game/location.h"
 #include "helpers/point.h"
-#include "item/incl_i.h"
 #include "item/xanyfood.h"
 #include "item/xtool.h"
 #include "magic/attack_effect_type.h"

@@ -21,7 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef UNIQUEI_H
 #define UNIQUEI_H
 
-#include "item/incl_i.h"
+#include "item/xring.h"
 
 class XGreatElementalRing : public XRing
 {

@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/base_class.hpp>
 #include <sol/forward.hpp>
 
+#include "item/xcorpse.h"
 #include "creature/cr_defs.h"
 #include "creature/creature.h"
 #include "magic/attack_effect_type.h"

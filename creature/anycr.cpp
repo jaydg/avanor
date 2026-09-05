@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/anycr.h"
 #include "creature/shopkeeper.h"
 #include "engine/xapi.h"
+#include "item/xring.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
 #include "magic/attack_effect_type.h"

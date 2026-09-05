@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 #include <sol/sol.hpp>
 
+#include "item/xscroll.h"
 #include "creature/std_ai.h"
 #include "engine/xapi.h"
 #include "game/game.h"

@@ -21,6 +21,21 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xapi.h"
 #include "item/itemf.h"
 #include "item/item_misc.h"
+#include "item/xamulet.h"
+#include "item/xarmor.h"
+#include "item/xbook.h"
+#include "item/xboots.h"
+#include "item/xcap.h"
+#include "item/xcloak.h"
+#include "item/xgloves.h"
+#include "item/xmissile.h"
+#include "item/xmissileweapon.h"
+#include "item/xmoney.h"
+#include "item/xpotion.h"
+#include "item/xring.h"
+#include "item/xscroll.h"
+#include "item/xshield.h"
+#include "item/xweapon.h"
 
 XItem* XItemFactory::CreateAnyItem(ItemKind kind, ItemType _it, int low_v, int hi_v)
 {

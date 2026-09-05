@@ -26,6 +26,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/item_cereal.h"
 #include "item/xcorpse.h"
+
+#include "creature/anycr.h"
+#include "item/xcorpse.h"
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
