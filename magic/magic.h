@@ -91,7 +91,7 @@ class XMagic
         static int GetSpellRange(const XSpell* spell, XCreature* caster);
 
         // Credits `count` towards the school's next rank, the way
-        // XWarSkills::UseSkill() credits a weapon class. Returns 1 if
+        // XCombatSkills::UseSkill() credits a weapon class. Returns 1 if
         // that was enough to gain a rank.
         int Train(School school, int count);
         int GainLevel(School school, int n = 1);

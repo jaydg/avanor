@@ -367,16 +367,16 @@ double RandRaw()
     return static_cast<double>(vRand());
 }
 
-void SetWarSkill(void* cr, int wt, int level)
+void SetWarSkill(void* cr, const COMBAT_SKILL& cs, int level)
 {
-    ((XCreature*)cr)->wsk->SetLevel(static_cast<XWarSkills::Type>(wt), level);
+    ((XCreature*)cr)->wsk->SetLevel(cs, level);
 }
 
-// Which war skill an item trains, for "you begin competent with whatever
-// you were handed".
-int GetItemWarSkill(void* item)
+// Which combat skill an item trains, for "you begin competent with
+// whatever you were handed".
+COMBAT_SKILL GetItemWarSkill(void* item)
 {
-    return item ? static_cast<int>(((XItem*)item)->wt) : XWarSkills::OTHER;
+    return item ? ((XItem*)item)->wt : CS_NONE;
 }
 
 bool isHero(void* cr)
@@ -674,7 +674,7 @@ XGUID GetObjectGUID(void* obj)
     return ((XObject*)obj)->guid();
 }
 
-std::tuple<int, int, int, ItemType, int, std::string> GetItemParam(void* item)
+std::tuple<int, int, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item)
 {
     XItem * p = (XItem*)item;
     return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, p->it, p->quantity, p->name};
@@ -696,14 +696,14 @@ sol::optional<ItemType> MissileForLauncher(void* weapon)
 {
     const XItem* w = (XItem*)weapon;
 
-    if (!w || w->wt == XWarSkills::OTHER) {
+    if (!w || w->wt == CS_NONE) {
         return sol::nullopt;
     }
 
     for (int i = 0; i < gi_missile.total_item; i++) {
         const ItemTemplate& row = gi_missile.pFirstItem[i];
 
-        if (row.launcher != XWarSkills::OTHER && row.launcher == w->wt) {
+        if (row.launcher != CS_NONE && row.launcher == w->wt) {
             return row.it;
         }
     }

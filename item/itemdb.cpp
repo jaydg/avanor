@@ -250,8 +250,8 @@ TemplateBuilder::TemplateBuilder(const ItemKind kind, const ItemType it) : kind(
     t.view = '?';
     t.iset = ISET_IRON;
     t.iq = IQ_AVG;
-    t.wt = XWarSkills::OTHER;
-    t.launcher = XWarSkills::OTHER;
+    t.wt = CS_NONE;
+    t.launcher = CS_NONE;
 }
 
 TemplateBuilder& TemplateBuilder::View(const std::string& name, const std::string& view)
@@ -268,7 +268,7 @@ TemplateBuilder& TemplateBuilder::Made(const ITEM_SET iset, const ITEM_QUALITY i
     return *this;
 }
 
-TemplateBuilder& TemplateBuilder::Skill(const XWarSkills::Type wt)
+TemplateBuilder& TemplateBuilder::Skill(const COMBAT_SKILL wt)
 {
     t.wt = wt;
     return *this;
@@ -280,7 +280,7 @@ TemplateBuilder& TemplateBuilder::Verb(const std::string& verb)
     return *this;
 }
 
-TemplateBuilder& TemplateBuilder::Launcher(const XWarSkills::Type wt)
+TemplateBuilder& TemplateBuilder::Launcher(const COMBAT_SKILL wt)
 {
     t.launcher = wt;
     return *this;

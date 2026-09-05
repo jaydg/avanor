@@ -74,9 +74,9 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         tdam = weapon->dice.Throw() + wsk->GetDMG(weapon->wt) + GetUnwieldyDMGPenalty(weapon) + GetDMG();
         aet = weapon->aet;
     } else {
-        res += (wsk->GetUseTime(XWarSkills::UNARMED) * GetSpeed()) / 1000;
-        tohit = GetHIT() + wsk->GetHIT(XWarSkills::UNARMED);
-        tdam = dice.Throw() + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED);
+        res += (wsk->GetUseTime(wsk->Best(CombatRole::UNARMED)) * GetSpeed()) / 1000;
+        tohit = GetHIT() + wsk->GetHIT(wsk->Best(CombatRole::UNARMED));
+        tdam = dice.Throw() + GetDMG() + wsk->GetDMG(wsk->Best(CombatRole::UNARMED));
         aet = AttackEffectType::NONE;
 
         for (const auto tit: *melee_attack) {
@@ -111,7 +111,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         if (weapon) {
             wsk->UseSkill(weapon->wt);
         } else {
-            wsk->UseSkill(XWarSkills::UNARMED);
+            wsk->UseSkill(wsk->Best(CombatRole::UNARMED));
         }
     }
 
@@ -656,7 +656,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                 }
             }
 
-            wsk->UseSkill(XWarSkills::SHIELD);
+            wsk->UseSkill(wsk->Best(CombatRole::SHIELD));
         } else {
             // It was not shield (miss or avoid)
             if (vis1 || vis2) {

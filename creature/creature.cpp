@@ -188,7 +188,7 @@ XCreature::XCreature()
     md = new XModifier();
     m = new XMagic();
     sk = new XSkills();
-    wsk = new XWarSkills();
+    wsk = new XCombatSkills();
 
     weight = 1000;
 
@@ -822,7 +822,7 @@ int XCreature::GetShieldDVBonus()
         XItem* i = xbp->Item();
 
         if (i && i->kind == ItemKind::SHIELD) {
-            int shld_skl = wsk->GetDV(XWarSkills::SHIELD);
+            int shld_skl = wsk->GetDV(wsk->Best(CombatRole::SHIELD));
             int shield_dv = i->dv;
 
             if (i->dv < shld_skl) {
@@ -1398,7 +1398,7 @@ XBodyPart* XCreature::GetRNDBodyPart(ItemKind kind, RBP_FLAG rbpf)
             [](const std::unique_ptr<XBodyPart>& xbp) { return xbp->Item() && xbp->Item()->kind & ItemKind::SHIELD; }
         );
 
-        if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(XWarSkills::SHIELD) + 5)) {
+        if (bpi != components.end() && (vRand() % 100 < 5 * wsk->GetLevel(wsk->Best(CombatRole::SHIELD)) + 5)) {
             return bpi->get();
         }
     }
@@ -1584,9 +1584,9 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     } else {
         *range += RNG + str / 25;
         dmg->ModifyBonus(str / 10);
-        *range += wsk->GetDV(XWarSkills::THROW);
-        dmg->ModifyBonus(wsk->GetDMG(XWarSkills::THROW));
-        *hit += wsk->GetHIT(XWarSkills::THROW);
+        *range += wsk->GetDV(wsk->Best(CombatRole::THROW));
+        dmg->ModifyBonus(wsk->GetDMG(wsk->Best(CombatRole::THROW)));
+        *hit += wsk->GetHIT(wsk->Best(CombatRole::THROW));
     }
 }
 
@@ -1674,7 +1674,7 @@ int XCreature::Shoot(int tx, int ty)
         if (launcher) {
             wsk->UseSkill(launcher->wt);
         } else {
-            wsk->UseSkill(XWarSkills::THROW);
+            wsk->UseSkill(wsk->Best(CombatRole::THROW));
         }
 
     } else {

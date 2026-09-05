@@ -96,7 +96,7 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        xhero3.cpp xhero2.cpp xhero.cpp xherb.cpp xguihtml.cpp xgui.cpp        \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothes.cpp xcloak.cpp  \
        xcap.cpp xboots.cpp xbook.cpp xbaseobj.cpp xarmor.cpp xarchive.cpp     \
-       xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp wskills.cpp            \
+       xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp cskills.cpp            \
        uniquei.cpp shopkeeper.cpp keyword_dice.cpp std_ai.cpp lua_ai.cpp      \
        xshield.cpp stats.cpp skills.cpp skill.cpp attack_effect_type.cpp      \
        skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp windroad.cpp     \

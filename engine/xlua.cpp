@@ -49,7 +49,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/resist.h"
 #include "magic/skill.h"
 #include "magic/stats.h"
-#include "magic/wskills.h"
+#include "magic/cskills.h"
 #include <iostream>
 
 #include "map/map.h"
@@ -142,7 +142,7 @@ void XLua::Init()
     XCreature::RegisterLua(lua);
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
-    XWarSkills::RegisterLua(lua);
+    XCombatSkills::RegisterLua(lua);
     RegisterAttackEffectTypeLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
@@ -261,7 +261,7 @@ void XLua::Init()
             "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
-            "XStats", "XTileType", "XWarSkills"
+            "CombatGroup", "CombatRole", "XStats", "XTileType",
         }) {
         MakeStrict(lua, enum_table);
     }

@@ -24,7 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
-#include "magic/wskills.h"
+#include "magic/cskills.h"
 #include "item/itemdef.h"
 #include "item/itemkind.h"
 #include "magic/attack_effect_type.h"
@@ -45,7 +45,7 @@ struct ItemTemplate {
     ITEM_SET iset;
 
     // Which war skill wielding one exercises.
-    XWarSkills::Type wt;
+    COMBAT_SKILL wt;
 
     // What one does to somebody: an axe hacks, a mace smashes, and most
     // things simply hit. Left unsaid it is "hit", which is why only the
@@ -56,7 +56,7 @@ struct ItemTemplate {
     // asks for a bow and a quarrel for a crossbow. OTHER means nothing
     // launches it - a shuriken is thrown and nothing else. Anything at all
     // can be thrown, which is why this says nothing about throwing.
-    XWarSkills::Type launcher;
+    COMBAT_SKILL launcher;
 
     int value;
     int valume;
@@ -271,7 +271,7 @@ XItemBasicStructure* PoolFor(ItemKind kind);
 //   Template.new(ItemKind.WEAPON, ItemType.LONGSWORD)
 //       :View("long sword", '|')
 //       :Made(ItemSet.OBSIMETAL, ItemQuality.FAIR)
-//       :Skill(XWarSkills.SWORD)
+//       :Skill(XCombatSkills.SWORD)
 //       :Worth(18, 10)
 //       :Combat("", "2d4", "")
 //       :Chance(60)
@@ -286,9 +286,9 @@ class TemplateBuilder
 
         TemplateBuilder& View(const std::string& name, const std::string& view);
         TemplateBuilder& Made(ITEM_SET iset, ITEM_QUALITY iq);
-        TemplateBuilder& Skill(XWarSkills::Type wt);
+        TemplateBuilder& Skill(COMBAT_SKILL wt);
         TemplateBuilder& Verb(const std::string& verb);
-        TemplateBuilder& Launcher(XWarSkills::Type wt);
+        TemplateBuilder& Launcher(COMBAT_SKILL wt);
         TemplateBuilder& Worth(int value, int weight);
         TemplateBuilder& Armour(const std::string& dv, const std::string& pv);
         TemplateBuilder& Combat(const std::string& hit, const std::string& dice,

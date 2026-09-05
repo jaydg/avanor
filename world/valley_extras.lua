@@ -94,7 +94,7 @@ function RoyalGuardHandler(e, t, p, v)
 		end
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == XWarSkills.SWORD) then
+		if (BinaryAND(kind, ItemKind.WEAPON) and BinaryAND(brt, AttackEffectType.ORCSLAYER) and wt == "sword") then
 			-- A dead captain cannot judge the blade or pay for it. The guard still
 			-- takes it - it is exactly what he wants against the orcs.
 			if (QuestStatus(QUEST_OZORIK) == XQuest.FAIL) then

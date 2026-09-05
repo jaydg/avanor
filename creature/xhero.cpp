@@ -764,8 +764,8 @@ void XHero::InfoList()
     vGotoXY(0, 16);
     vPutS(fmt::format("<LABEL>Unarmed:    (<VALUE>{:+}<DECORATION>, "
         "<VALUE>{}<DECORATION>d<VALUE>{} {:+}<DECORATION>)",
-        GetHIT() + wsk->GetHIT(XWarSkills::UNARMED),
-        dice.GetCount(), dice.GetSides(), dice.GetBonus() + GetDMG() + wsk->GetDMG(XWarSkills::UNARMED)));
+        GetHIT() + wsk->GetHIT(wsk->Best(CombatRole::UNARMED)),
+        dice.GetCount(), dice.GetSides(), dice.GetBonus() + GetDMG() + wsk->GetDMG(wsk->Best(CombatRole::UNARMED))));
 
     const XBodyPart* hand_1 = GetBodyPart(BP_HAND, 0);
     const XBodyPart* hand_2 = GetBodyPart(BP_HAND, 1);
@@ -2274,33 +2274,60 @@ void XHero::WarSkillsList(std::optional<std::reference_wrapper<std::ofstream>> f
     XGuiList list;
     list.SetCaption("<DECORATION>###<TEXT> Weapon Skills <DECORATION>###");
 
-    list.AddItem(new XGuiItem_Text("<LABEL>Melee Weapon         DV  HIT  DMG      Level          required marks", 0), 0);
+    // Walked group by group, in the order the headings read, rather than
+    // by position in a fixed list: which skills exist and which group each
+    // belongs to are both content's word now (world/combat_skills.lua).
+    const struct {
+        CombatSkillStats::Group group;
+        const char* heading;
+    } sections[] = {
+        {CombatSkillStats::Group::MELEE,
+         "<LABEL>Melee Weapon         DV  HIT  DMG      Level          required marks"},
+        {CombatSkillStats::Group::MISSILE,
+         "<LABEL>Missile Weapon       RNG HIT  DMG      Level          required marks"},
+        {CombatSkillStats::Group::SHIELD,
+         "<LABEL>Shields              DV                Level          required marks"},
+    };
 
-    for (int i = 0; i < XWarSkills::ALL; i++) {
-        const auto w_skill = static_cast<XWarSkills::Type>(i);
+    bool first_section = true;
 
-        if (w_skill == XWarSkills::BOW) {
-            list.AddItem(new XGuiItem_Text("", 0), 0);
-            list.AddItem(new XGuiItem_Text("<LABEL>Missile Weapon       RNG HIT  DMG      Level          required marks", 0), 0);
+    for (const auto& section : sections) {
+        bool printed_heading = false;
+
+        for (const auto& row : combat_skills) {
+            if (row.group != section.group) {
+                continue;
+            }
+
+            // The heading waits until something is actually under it, so a
+            // world with no shields grows no empty "Shields" section.
+            if (!printed_heading) {
+                if (!first_section) {
+                    list.AddItem(new XGuiItem_Text("", 0), 0);
+                }
+
+                list.AddItem(new XGuiItem_Text(section.heading, 0), 0);
+                printed_heading = true;
+                first_section = false;
+            }
+
+            const COMBAT_SKILL& w_skill = row.id;
+            const int level = wsk->GetLevel(w_skill);
+
+            auto str = fmt::format(
+                "<VALUE>{:<18} <TEXT>{:+4} {:+4} {:+4}      "
+                "<DECORATION>[<TEXT>{}<DECORATION>]"
+                "<TEXT> {:<10} <TEXT>{:8}",
+                wsk->GetName(w_skill),
+                wsk->GetDV(w_skill), wsk->GetHIT(w_skill), wsk->GetDMG(w_skill),
+                level,
+                wsk_levels_name[level],
+                (level < XCombatSkills::MAX_LEVEL)
+                    ? fmt::format("{}", wsk->GetMarks(w_skill)) : "NaN"
+            );
+
+            list.AddItem(new XGuiItem_Text(str, 0), 0);
         }
-
-        if (i == XWarSkills::SHIELD) {
-            list.AddItem(new XGuiItem_Text("", 0), 0);
-            list.AddItem(new XGuiItem_Text("<LABEL>Shields              DV                Level          required marks", 0), 0);
-        }
-
-        auto str = fmt::format(
-            "<VALUE>{:<18} <TEXT>{:+4} {:+4} {:+4}      "
-            "<DECORATION>[<TEXT>{}<DECORATION>]"
-            "<TEXT> {:<10} <TEXT>{:8}",
-            wsk->GetName(w_skill),
-            wsk->GetDV(w_skill), wsk->GetHIT(w_skill), wsk->GetDMG(w_skill),
-            wsk->GetLevel(w_skill),
-            wsk_levels_name[wsk->GetLevel(w_skill)],
-            (wsk->GetLevel(w_skill) < 15) ? fmt::format("{}", wsk->GetMarks(w_skill)) : "NaN"
-        );
-
-        list.AddItem(new XGuiItem_Text(str, 0), 0);
     }
 
     if (file) {

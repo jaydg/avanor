@@ -72,8 +72,8 @@ namespace lua_api
     void SetFoodFeeling(void* cr, int ff);
     int Rand(int val);
     double RandRaw();
-    void SetWarSkill(void* cr, int wt, int level);
-    int GetItemWarSkill(void* item);
+    void SetWarSkill(void* cr, const COMBAT_SKILL& cs, int level);
+    COMBAT_SKILL GetItemWarSkill(void* item);
     void SetEventHandler(void* cr, const std::string& event);
     void EnableMoveHandler(void* cr);
     void DisableMoveHandler(void* cr);
@@ -114,7 +114,7 @@ namespace lua_api
     std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
     int Gender(void* cr);
     XGUID GetObjectGUID(void* obj);
-    std::tuple<int, int, int, ItemType, int, std::string> GetItemParam(void* item);
+    std::tuple<int, int, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
     void SetItemBrand(void* item, int br);
     std::string GetItemName(void* item);
     sol::optional<ItemType> MissileForLauncher(void* weapon);

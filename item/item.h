@@ -34,7 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemkind.h"
 #include "item/itemlist.h"
 #include "magic/attack_effect_type.h"
-#include "magic/wskills.h"
+#include "magic/cskills.h"
 
 #define DUR_INFINITE 65535
 
@@ -105,7 +105,7 @@ class XItem : public XBaseObject
 
         BODY_PART bp;    // fit to what bp???
         ItemType it;   // main type of item such IT_POTION
-        XWarSkills::Type wt;  // weapon skill of item
+        COMBAT_SKILL wt;  // weapon skill of item
         ITEM_QUALITY quality; // quality of item. Need for generation and may be basic identification...
         ItemKind kind;
 

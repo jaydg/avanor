@@ -45,7 +45,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/attack_effect_type.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
-#include "magic/wskills.h"
+#include "magic/cskills.h"
 
 enum RBP_FLAG {
     RBP_UNKNOWN,
@@ -457,7 +457,7 @@ class XCreature : public XBaseObject
         XModifier* md;
         XMagic* m;
         XSkills* sk;
-        XWarSkills* wsk;
+        XCombatSkills* wsk;
 
         XResistance added_resists;
         XStats added_stats;
@@ -585,7 +585,7 @@ class XCreature : public XBaseObject
         // here rather than changed to unique_ptr just for Cereal's
         // sake. On load each is heap-allocated first (mirroring the
         // existing Restore()), then its own serialize()/load()
-        // populates it - same choice made for XSkills/XWarSkills.
+        // populates it - same choice made for XSkills/XCombatSkills.
         //
         // creature_description/super_info are non-owning pointers into
         // the static per-species table (XCreatureStorage) - re-derived
@@ -695,7 +695,7 @@ class XCreature : public XBaseObject
             ar(tactics);
 
             if constexpr (Archive::is_loading::value) {
-                wsk = new XWarSkills();
+                wsk = new XCombatSkills();
             }
 
             ar(*wsk);

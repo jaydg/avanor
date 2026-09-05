@@ -95,7 +95,7 @@ XItem::XItem()
     it = IT_NONE;
     kind = ItemKind::UNKNOWN;
     quantity = 1;
-    wt = XWarSkills::OTHER;
+    wt = CS_NONE;
     bp = BP_OTHER;
     identified = true;
     dv = pv = to_hit = RNG = 0;

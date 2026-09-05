@@ -87,5 +87,5 @@ bool XMissile::isProperWeapon(XItem * missile, XItem * weapon)
         return false;
     }
 
-    return row->launcher != XWarSkills::OTHER && row->launcher == weapon->wt;
+    return row->launcher != CS_NONE && row->launcher == weapon->wt;
 }
