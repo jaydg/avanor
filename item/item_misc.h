@@ -167,7 +167,7 @@ class XItemStorage
 //
 //   Food.new("rat_tail")
 //       :View("rat tail", '%', xColor.xBROWN)
-//       :Basic(ItemType.RATTAIL, 100, 3)
+//       :Basic("rat_tail", 100, 3)
 //       :Nutrition(10, 10)
 //       :Register()
 //
@@ -230,14 +230,22 @@ struct ContentItemTemplate {
 
 // The one builder for items that are not food:
 //
+//   Item.new("great_elemental_ring")
+//       :Plain("ring", ItemKind.RING)
+//       :Wear(BodyPart.RING)
+//       :View("Great Elemental Ring", '=', xColor.xLIGHTCYAN)
+//       :Resist("fire:1d1+79")
+//       :Unique()
+//       :Register()
+//
 //   Item.new("ancient_machine_part")
-//       :Plain(ItemType.ANCIENTMACHINEPART, ItemKind.TOOL)
+//       :Plain("ancient_machine_part", ItemKind.TOOL)
 //       :View("ancient machine part", ']', xColor.xDARKGRAY)
 //       :Basic(1000, 15)
 //       :Register()
 //
 //   Item.new("torin_axe")
-//       :Weapon(ItemType.GREATAXE)
+//       :Weapon("great_axe")
 //       :View("ancient axe", '\\')
 //       :Basic(12000, 1200)
 //       :Combat(8, 2, 8, 5)
@@ -268,6 +276,11 @@ class ItemBuilder
         // view and color are optional; without them it keeps its base's.
         ItemBuilder& View(const std::string& name, sol::optional<std::string> view,
             sol::optional<int> color);
+
+        // Where on the body it is worn. Only a plain item needs this:
+        // every other base sets it in its own constructor, because a cap
+        // goes on the head whatever content says.
+        ItemBuilder& Wear(int bodypart);
 
         // Only where it differs from the base row's type - a forest
         // brother's cloak is built as a cloak but is its own kind of thing.

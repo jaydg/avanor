@@ -435,6 +435,7 @@ void XLua::Init()
             "Tool", &ItemBuilder::Tool,
             "View", &ItemBuilder::View,
             "Type", &ItemBuilder::Type,
+            "Wear", &ItemBuilder::Wear,
             "Basic", &ItemBuilder::Basic,
             "Armour", &ItemBuilder::Armour,
             "Combat", &ItemBuilder::Combat,

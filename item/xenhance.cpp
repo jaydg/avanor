@@ -312,7 +312,16 @@ void XEnhance::LoadTable(cereal::JSONInputArchive& ar)
 
 int XEnhance::Compare(XObject* o)
 {
-    auto tit = dynamic_cast<XEnhance *>(o);
+    const auto tit = dynamic_cast<XEnhance *>(o);
+
+    // Not a ring or an amulet of the ordinary sort at all. Items are
+    // offered to each other for merging on matching kind alone (see
+    // XItemList::TryMerge), and an artifact ring is a plain item of kind
+    // RING rather than an XEnhance - so this cast can fail, and used to
+    // be dereferenced without asking.
+    if (!tit) {
+        return 1;
+    }
 
     if (descr == tit->descr && XItem::Compare(o) == 0) {
         return 0;

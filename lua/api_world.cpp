@@ -33,7 +33,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/shop.h"
 #include "item/itemf.h"
 #include "item/item_misc.h"
-#include "item/uniquei.h"
 #include "item/xcorpse.h"
 #include "item/xherb.h"
 #include "item/xmoney.h"

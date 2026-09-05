@@ -341,6 +341,12 @@ ItemBuilder& ItemBuilder::View(const std::string& name, sol::optional<std::strin
     return *this;
 }
 
+ItemBuilder& ItemBuilder::Wear(const int bodypart)
+{
+    t.bp = static_cast<BODY_PART>(bodypart);
+    return *this;
+}
+
 ItemBuilder& ItemBuilder::Type(const ItemType it)
 {
     t.it = it;

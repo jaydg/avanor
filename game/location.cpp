@@ -44,7 +44,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
 #include "item/item_misc.h"
-#include "item/uniquei.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
 #include "magic/brand.h"

@@ -1,3 +1,17 @@
+-- The ring Beelzevile wears, and the only one of its kind.
+--
+-- It is a plain item rather than one of the ordinary sorts of ring: those
+-- are their enchantment, drawn at random and discovered by wearing, and
+-- this is neither. It says what it does and what it is called outright.
+Item.new("great_elemental_ring")
+	:Plain("ring", ItemKind.RING)
+	:Wear(BodyPart.RING)
+	:View("Great Elemental Ring", '=', xColor.xLIGHTCYAN)
+	:Basic(500, 3)
+	:Resist("fire:1d1+79 cold:1d1+79 acid:1d1+79 see_invisible:0d0+20")
+	:Stats("Wi:1d1+4")
+	:Unique()
+	:Register()
 
 Monster.new("beelzevile")
 	:View("Beelzevile, the horned demon", '&', xColor.xLIGHTCYAN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.DEMON)
@@ -19,7 +33,7 @@ Monster.new("beelzevile")
 function CreateBeelzevile()
 	local demon = Creature("beelzevile")
 	SetEventHandler(demon, 'BeelzevileHandler')
-	GiveObjectToCreature(CreateObject('XGreatElementalRing'), demon)
+	GiveObjectToCreature(CreateObject('great_elemental_ring'), demon)
 	-- no-op outside "-demo" mode - see XLocation::SetMainCreature
 	SetMainCreature(demon)
 end
