@@ -28,7 +28,7 @@ function TodinHandler(e, t, p, v)
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (BinaryAND(kind, ItemKind.WEAPON)) then
-			if (BinaryAND(brt, AttackEffectType.COLD + AttackEffectType.FIRE + AttackEffectType.ORCSLAYER)) then
+			if (HasBrand(brt, "cold fire orc_slayer")) then
 				AddMessage("'This weapon's good enough!'")
 			else
 				if (AskQuestion("'I need 450 gp to improve this weapon. Do you agree?'", "esc y n", "yes", "no") == 'y') then
@@ -36,11 +36,11 @@ function TodinHandler(e, t, p, v)
 						MoneyOperation(t, 450)
 						local res = Rand(3)
 						if ( res == 0) then
-							SetItemBrand(v, AttackEffectType.COLD)
+							SetItemBrand(v, "cold")
 						elseif (res == 1) then
-							SetItemBrand(v, AttackEffectType.FIRE)
+							SetItemBrand(v, "fire")
 						else
-							SetItemBrand(v, AttackEffectType.ORCSLAYER)
+							SetItemBrand(v, "orc_slayer")
 						end
 						AddMessage("'Thank you!'")
 					else

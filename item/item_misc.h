@@ -38,7 +38,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xshield.h"
 #include "item/xtool.h"
 #include "item/xweapon.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 // A food defined by content rather than by a C++ class.
 struct FoodTemplate {
@@ -211,7 +211,7 @@ struct ContentItemTemplate {
 
     std::string stats;
     std::string resists;
-    AttackEffectType aet;
+    BrandSet aet;
 
     // What it is called once known. Empty means it reads as an ordinary
     // item of its kind - see the carrier's toString().
@@ -243,7 +243,7 @@ struct ContentItemTemplate {
 //       :Combat(8, 2, 8, 5)
 //       :Resist("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20")
 //       :Stats("To:1d1+10")
-//       :Brand(AttackEffectType.COLD)
+//       :Brand("cold")
 //       :Called("Axe of Torin")
 //       :Unique()
 //       :Register()
@@ -278,7 +278,7 @@ class ItemBuilder
         ItemBuilder& Combat(int to_hit, int count, int sides, int bonus);
         ItemBuilder& Stats(const std::string& stats);
         ItemBuilder& Resist(const std::string& resists);
-        ItemBuilder& Brand(AttackEffectType aet);
+        ItemBuilder& Brand(const std::string& aet);
         ItemBuilder& Called(const std::string& display_name);
         ItemBuilder& Unique();
         ItemBuilder& Artifact();

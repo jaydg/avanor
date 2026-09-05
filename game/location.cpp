@@ -48,7 +48,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/uniquei.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 #include "map/map_objects.h"
 
 #include <sol/sol.hpp>

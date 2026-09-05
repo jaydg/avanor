@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 #include "magic/modifier.h"
 
 void XCreature::Attack()
@@ -66,7 +66,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     int res = 0;
     int tohit;
     int tdam;
-    AttackEffectType aet;
+    BrandSet aet;
 
     if (weapon) {
         res += (wsk->GetUseTime(weapon->wt) * GetSpeed()) / 1000;
@@ -77,11 +77,10 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         res += (wsk->GetUseTime(wsk->Best(CombatRole::UNARMED)) * GetSpeed()) / 1000;
         tohit = GetHIT() + wsk->GetHIT(wsk->Best(CombatRole::UNARMED));
         tdam = dice.Throw() + GetDMG() + wsk->GetDMG(wsk->Best(CombatRole::UNARMED));
-        aet = AttackEffectType::NONE;
 
         for (const auto tit: *melee_attack) {
             if (vRand(100) < tit.prob) {
-                aet = aet | tit.br_attack;
+                aet.Add(tit.br_attack);
             }
         }
     }
@@ -136,42 +135,38 @@ int XCreature::onMagicDamage(const int dmg, const RESISTANCE tr)
 // game (the caller added the result to the damage it had just passed in), and
 // made a creature immune to fire take full damage from a bolt of fire while a
 // half-resistant one took half.
-int XCreature::CauseEffect(int dmg, AttackEffectType aet, bool* applied)
+int XCreature::CauseEffect(int dmg, const BrandSet& brands, bool* applied)
 {
     int damage = 0;
     bool matched = false;
 
-    // An element the attack carries always counts as applied, even when
-    // resistance leaves nothing of it - that zero is the whole point.
-    const auto element = [&](const AttackEffectType bit, const RESISTANCE resist) {
-        if ((aet & bit) != AttackEffectType::NONE) {
-            matched = true;
-            damage += onMagicDamage(dmg, resist);
+    for (const BRAND& id : brands) {
+        const BrandStats* row = FindBrand(id);
+
+        if (!row) {
+            continue;
         }
-    };
 
-    element(AttackEffectType::FIRE, "fire");
-    element(AttackEffectType::COLD, "cold");
-    element(AttackEffectType::ACID, "acid");
-    element(AttackEffectType::EARTH, "earth");
-    element(AttackEffectType::LIGHTNING, "air");
+        // An element the attack carries always counts as applied, even
+        // when resistance leaves nothing of it - that zero is the whole
+        // point.
+        if (!row->element.empty()) {
+            matched = true;
+            damage += onMagicDamage(dmg, row->element);
+        }
 
-    // A slayer brand against something it does not slay has not applied at
-    // all - unlike a resisted element, there is nothing here to reduce.
-    const auto slayer = [&](const AttackEffectType bit, const CreatureClass prey) {
-        if ((aet & bit) != AttackEffectType::NONE && creature_class & prey) {
+        // A slayer brand against something it does not slay has not
+        // applied at all - unlike a resisted element, there is nothing
+        // here to reduce.
+        if (row->slays != CreatureClass::NONE && creature_class & row->slays) {
             matched = true;
             damage += dmg * 3;
         }
-    };
+    }
 
-    slayer(AttackEffectType::DEMONSLAYER, CreatureClass::DEMON);
-    slayer(AttackEffectType::ORCSLAYER, CreatureClass::ORC);
-
-    // HELLFIRE, ULTIMATECOLD, DEATH and six of the eight slayer brands are
-    // named by the weapon tables but implemented nowhere, so they match
-    // nothing here and a weapon carrying one behaves as a plain weapon -
-    // which is what it has always been.
+    // A brand that declares neither - hellfire, death, six of the eight
+    // slayers - matches nothing here and leaves the weapon behaving as a
+    // plain one.
     if (applied) {
         *applied = matched;
     }
@@ -179,48 +174,39 @@ int XCreature::CauseEffect(int dmg, AttackEffectType aet, bool* applied)
     return damage;
 }
 
-void XCreature::CausePostEffect(int dmg, AttackEffectType aet, XCreature * attacker)
+void XCreature::CausePostEffect(int dmg, const BrandSet& brands, XCreature * attacker)
 {
-    if (aet > AttackEffectType::NONE) {
-        if ((aet & AttackEffectType::POISON) != AttackEffectType::NONE) {
-            md->Add(MOD_POISON, dmg, this, attacker);
+    for (const BRAND& id : brands) {
+        const BrandStats* row = FindBrand(id);
+
+        if (!row) {
+            continue;
         }
 
-        if ((aet & AttackEffectType::DISEASE) != AttackEffectType::NONE) {
-            md->Add(MOD_DISEASE, dmg, this, attacker);
+        if (row->inflicts != MOD_UNKNOWN) {
+            md->Add(static_cast<MODIFIER_TYPE>(row->inflicts), dmg, this, attacker);
         }
+    }
 
-        if ((aet & AttackEffectType::PARALYSE) != AttackEffectType::NONE) {
-            md->Add(MOD_PARALYSE, dmg, this, attacker);
-        }
-
-        if ((aet & AttackEffectType::STUN) != AttackEffectType::NONE) {
-            md->Add(MOD_STUN, dmg, this, attacker);
-        }
-
-        if ((aet & AttackEffectType::CONFUSE) != AttackEffectType::NONE) {
-            md->Add(MOD_CONFUSE, dmg, this, attacker);
-        }
-
-        // What makes draining life different from simply hurting
-        // somebody: half of what the victim loses, rounded up, the
-        // attacker gains. onHeal() will not take them past their own
-        // maximum, so this tops a wounded spectre up rather than
-        // inflating it.
-        //
-        // Only what the blow actually took counts - dmg here is what
-        // came off the victim's HP, after resistances and PV - so
-        // draining someone well armoured returns little. And like every
-        // other effect in this function it needs the victim to have
-        // survived: XCreature::InflictDamage() only gets this far when
-        // HP is still above zero, so a killing blow drains nothing.
-        if ((aet & AttackEffectType::DRAIN_LIFE) != AttackEffectType::NONE
-            && attacker && attacker->isValid() && dmg > 0) {
-            if (attacker->onHeal((dmg + 1) / 2) && attacker->isVisible()) {
-                msgwin.Add(fmt::format("{} {} stronger.",
-                    attacker->GetNameEx(CRN_T1),
-                    attacker->GetVerb("look")));
-            }
+    // What makes draining life different from simply hurting somebody:
+    // half of what the victim loses, rounded up, the attacker gains.
+    // onHeal() will not take them past their own maximum, so this tops a
+    // wounded spectre up rather than inflating it.
+    //
+    // Only what the blow actually took counts - dmg here is what came off
+    // the victim's HP, after resistances and PV - so draining someone
+    // well armoured returns little. And like every other effect in this
+    // function it needs the victim to have survived: InflictDamage() only
+    // gets this far when HP is still above zero, so a killing blow drains
+    // nothing.
+    //
+    // This one stays in the engine rather than going out to a brand row:
+    // it is the only effect here that reaches back to the attacker.
+    if (brands.Has(BR_DRAIN_LIFE) && attacker && attacker->isValid() && dmg > 0) {
+        if (attacker->onHeal((dmg + 1) / 2) && attacker->isVisible()) {
+            msgwin.Add(fmt::format("{} {} stronger.",
+                attacker->GetNameEx(CRN_T1),
+                attacker->GetVerb("look")));
         }
     }
 

@@ -33,7 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemdef.h"
 #include "item/itemkind.h"
 #include "item/itemlist.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 #include "magic/cskills.h"
 
 #define DUR_INFINITE 65535
@@ -194,7 +194,7 @@ class XItem : public XBaseObject
         // world/items/armour_enchantments.lua registered it under. Empty
         // for a plain item. Was an index into a fixed table.
         std::string special_number;
-        AttackEffectType aet;
+        BrandSet aet;
 
         // What this is made of - the id world/items/materials.lua
         // registered it under.

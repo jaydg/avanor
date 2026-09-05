@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream>
 
 #include "item/itemdb.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 // name				color			dv  		pv			hit		dice	z			r			iflag
 // dv, pv, dice, r - armor
@@ -202,9 +202,13 @@ ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Fits(const ItemKind kind)
     return *this;
 }
 
-ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Brand(const AttackEffectType brt)
+// One brand per call, as on an item definition.
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Brand(const std::string& brt)
 {
-    t.brt = brt;
+    if (CheckBrandExists(brt, "an armour enchantment")) {
+        t.brt.Add(brt);
+    }
+
     return *this;
 }
 

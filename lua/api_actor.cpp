@@ -675,15 +675,31 @@ XGUID GetObjectGUID(void* obj)
     return ((XObject*)obj)->guid();
 }
 
-std::tuple<int, int, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item)
+std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item)
 {
     XItem * p = (XItem*)item;
-    return {static_cast<int>(p->kind), static_cast<int>(p->aet), p->wt, p->it, p->quantity, p->name};
+    return {static_cast<int>(p->kind), p->aet.toString(), p->wt, p->it, p->quantity, p->name};
 }
 
-void SetItemBrand(void* item, int br)
+// Whether an attack carries any of these brands. Takes the brand string
+// GetItemParam() hands back and a space-separated list of ids to look
+// for, so a handler can ask about one brand or about several at once.
+bool HasBrand(const std::string& carried, const std::string& ids)
 {
-    ((XItem*)item)->aet = (AttackEffectType)br;
+    const BrandSet have(carried);
+
+    for (const BRAND& id : BrandSet(ids)) {
+        if (have.Has(id)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void SetItemBrand(void* item, const std::string& br)
+{
+    ((XItem*)item)->aet = BrandSet(br);
 }
 
 // Reading and changing a finished item from an :OnCreate() handler.
@@ -996,6 +1012,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("GetObjectGUID", &lua_api::GetObjectGUID);
         lua.set_function("GetItemParam", &lua_api::GetItemParam);
         lua.set_function("SetItemBrand", &lua_api::SetItemBrand);
+        lua.set_function("HasBrand", &lua_api::HasBrand);
         lua.set_function("GetItemName", &lua_api::GetItemName);
         lua.set_function("MissileForLauncher", &lua_api::MissileForLauncher);
         lua.set_function("SetItemName", &lua_api::SetItemName);

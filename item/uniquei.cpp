@@ -20,7 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item_cereal.h"
 #include "item/uniquei.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 REGISTER_CLASS(XGreatElementalRing);
 CEREAL_REGISTER_TYPE(XGreatElementalRing);

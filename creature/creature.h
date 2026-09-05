@@ -42,7 +42,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/point.h"
 #include "item/xanyfood.h"
 #include "item/xtool.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 #include "magic/magic.h"
 #include "magic/skills.h"
 #include "magic/cskills.h"
@@ -99,7 +99,7 @@ enum EXTENDED_ATTACK {
 
 struct MELEE_ATTACK {
     EXTENDED_ATTACK e_attack;
-    AttackEffectType br_attack;
+    BrandSet br_attack;
     int prob; // 0..100
 };
 
@@ -197,7 +197,7 @@ struct DAMAGE_DATA_EX {
     std::string attack_name;
     int damage = 0;                      // supposed damage
     int attack_HIT = 0;                  // the target can avoid attack.
-    AttackEffectType attack_effect = AttackEffectType::NONE; // such a cold, demon slaying,
+    BrandSet attack_effect;              // such a cold, demon slaying,
     unsigned int flags = 0;              // see DAMAGE_FLAGS
     XItem* weapon = nullptr;             // used only in melee combat (can be undefined if attack_name is defined)
 
@@ -525,8 +525,8 @@ class XCreature : public XBaseObject
         // fired, which is the one thing its two callers need to answer
         // differently: a weapon's brand adds to the weapon, while a bolt
         // of fire IS its element and has nothing left when it is resisted.
-        int CauseEffect(int dmg, AttackEffectType brt, bool* applied);
-        void CausePostEffect(int dmg, AttackEffectType brt, XCreature* attacker);
+        int CauseEffect(int dmg, const BrandSet& brands, bool* applied);
+        void CausePostEffect(int dmg, const BrandSet& brands, XCreature* attacker);
 
         virtual std::string GetMeleeAttackMsg(XItem* weapon);
 

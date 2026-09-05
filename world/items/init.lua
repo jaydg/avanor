@@ -106,7 +106,7 @@
 --   :Armour(dv, pv)
 --   :Combat(to_hit, count, sides, bonus)
 --   :Stats / :Resist     the same dice strings Monster.new takes
---   :Brand(AttackEffectType)
+--   :Brand("fire")       one brand; call it again for each further one
 --   :Called(name)        what it is once known. Left unsaid, it reads as an
 --                        ordinary item of its kind - which is what a
 --                        disguise wants.

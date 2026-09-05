@@ -114,8 +114,9 @@ namespace lua_api
     std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
     int Gender(void* cr);
     XGUID GetObjectGUID(void* obj);
-    std::tuple<int, int, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
-    void SetItemBrand(void* item, int br);
+    std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
+    bool HasBrand(const std::string& carried, const std::string& ids);
+    void SetItemBrand(void* item, const std::string& br);
     std::string GetItemName(void* item);
     sol::optional<ItemType> MissileForLauncher(void* weapon);
     void SetItemName(void* item, const std::string& name);

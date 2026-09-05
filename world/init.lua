@@ -5,6 +5,7 @@ function LoadScripts()
 	dofile("./world/delve_patterns.lua");
 	dofile("./world/rooms.lua");
 	dofile("./world/resistances.lua");
+	dofile("./world/brands.lua");
 	dofile("./world/combat_skills.lua");
 	dofile("./world/spells.lua");
 	dofile("./world/creatures/init.lua");

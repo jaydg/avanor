@@ -5,10 +5,10 @@
 
 -- Something on the head. One missile in twenty carries one.
 local MISSILE_BRANDS = {
-	AttackEffectType.POISON,
-	AttackEffectType.FIRE,
-	AttackEffectType.UNDEADSLAYER,
-	AttackEffectType.ORCSLAYER,
+	"poison",
+	"fire",
+	"undead_slayer",
+	"orc_slayer",
 }
 
 -- Better made than the rest. Another one in twenty is, and the two can

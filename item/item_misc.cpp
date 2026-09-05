@@ -274,7 +274,7 @@ ItemBuilder::ItemBuilder(std::string id) : id(std::move(id)), probability(0)
     t.bp = BP_OTHER;
     t.view = 0;
     t.color = -1;
-    t.aet = AttackEffectType::NONE;
+    t.aet = BrandSet();
     t.unique = false;
     t.artifact = false;
 }
@@ -382,9 +382,14 @@ ItemBuilder& ItemBuilder::Resist(const std::string& resists)
     return *this;
 }
 
-ItemBuilder& ItemBuilder::Brand(const AttackEffectType aet)
+// Called once per brand: :Brand("fire"):Brand("cold"). Adding rather than
+// replacing, so each brand a weapon carries is stated on its own.
+ItemBuilder& ItemBuilder::Brand(const std::string& aet)
 {
-    t.aet = aet;
+    if (CheckBrandExists(aet, "an item definition")) {
+        t.aet.Add(aet);
+    }
+
     return *this;
 }
 

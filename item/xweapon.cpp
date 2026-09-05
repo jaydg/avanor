@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/xapi.h"
 #include "item/item_cereal.h"
 #include "item/xweapon.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 REGISTER_CLASS(XWeapon);
 CEREAL_REGISTER_TYPE(XWeapon);
@@ -32,34 +32,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XWeapon);
 // Filled from world/items/ as those scripts load.
 XItemBasicStructure gi_weapon;
 
-struct WEAPON_BRAND_TYPE_NAME {
-    AttackEffectType brt;
-    std::string templ;
-};
-
-const int weapon_brand_name_db_size = 17;
-
-WEAPON_BRAND_TYPE_NAME weapon_brand_name_db[weapon_brand_name_db_size] = {
-    {AttackEffectType::FIRE,	"{} of Fire",	},
-    {AttackEffectType::HELLFIRE,	"{} of Hell Fire",	},
-    {AttackEffectType::COLD,	"{} of Cold"	},
-    {AttackEffectType::ULTIMATECOLD,	"{} of Ultimate Cold"	},
-    {AttackEffectType::LIGHTNING,	"{} of Lightning"	},
-
-    {AttackEffectType::ACID,	"{} of Acid"	},
-    {AttackEffectType::POISON,	"{} of Poison"	},
-    {AttackEffectType::DEATH,	"{} of Death"	},
-
-    {AttackEffectType::UNDEADSLAYER,	"{} of Slay Undead"	},
-    {AttackEffectType::HUMANOIDSLAYER,	"{} of Slay Humanoids"	},
-    {AttackEffectType::ANIMALSLAYER,	"{} of Slay Animals"	},
-    {AttackEffectType::DRAGONSLAYER,	"{} of Dragon Slaying"	},
-    {AttackEffectType::GIANTSLAYER,	"{} of Giant Slaying"	},
-    {AttackEffectType::ORCSLAYER,	"{} of Slay Orcs"	},
-    {AttackEffectType::TROLLSLAYER,	"{} of Slay Trolls"	},
-    {AttackEffectType::TROLLSLAYER,	"{} of Slay Trolls"	},
-    {AttackEffectType::DEMONSLAYER,	"{} of Slay Demons"	},
-};
 
 XWeapon::XWeapon(ItemType _it)
 {
@@ -82,26 +54,43 @@ std::string XWeapon::toString()
         }
     }
 
+    // How many brands of each kind this weapon carries. Content says
+    // which kind a brand belongs to; the way the kinds combine into a
+    // name is the engine's.
+    int ec = 0;
+    int bc = 0;
+    int sc = 0;
+
+    for (const BRAND& id : aet) {
+        const BrandStats* row = FindBrand(id);
+
+        if (!row) {
+            continue;
+        }
+
+        switch (row->group) {
+            case BrandGroup::ELEMENTAL: ec++; break;
+            case BrandGroup::BLACK:     bc++; break;
+            case BrandGroup::SLAYER:    sc++; break;
+        }
+    }
+
+    // A black brand suppresses the name altogether - every branch below
+    // asks for bc == 0 - so a poisoned sword is named as a plain sword.
     std::string brand_templ;
 
-    if (aet != AttackEffectType::NONE) {
-        int ec = vBitsCount(static_cast<unsigned int>(aet & AttackEffectType::ELEMENTAL_MASK));
-        int bc = vBitsCount(static_cast<unsigned int>(aet & AttackEffectType::BLACK_MASK));
-        int sc = vBitsCount(static_cast<unsigned int>(aet & AttackEffectType::SLAYER_MASK));
-
-        if (ec == 1 && bc == 0 && sc == 0) {
-            brand_templ = GetTemplate(aet & AttackEffectType::ELEMENTAL_MASK);
-        } else if (ec == 0 && bc == 0 && sc == 1) {
-            brand_templ = GetTemplate(aet & AttackEffectType::SLAYER_MASK);
-        } else if (ec >= 1 && bc == 0 && sc == 1) {
-            brand_templ = fmt::format("Elemental {}", GetTemplate(aet & AttackEffectType::SLAYER_MASK));
-        } else if (ec >= 1 && bc == 0 && sc > 1) {
-            brand_templ = "Elemental {} of Slaying";
-        } else if (ec == 0 && bc == 0 && sc > 1) {
-            brand_templ = "{} of Slaying";
-        } else if (ec > 1 && bc == 0 && sc == 0) {
-            brand_templ = "Elemental {}";
-        }
+    if (ec == 1 && bc == 0 && sc == 0) {
+        brand_templ = GetTemplate(BrandGroup::ELEMENTAL);
+    } else if (ec == 0 && bc == 0 && sc == 1) {
+        brand_templ = GetTemplate(BrandGroup::SLAYER);
+    } else if (ec >= 1 && bc == 0 && sc == 1) {
+        brand_templ = fmt::format("Elemental {}", GetTemplate(BrandGroup::SLAYER));
+    } else if (ec >= 1 && bc == 0 && sc > 1) {
+        brand_templ = "Elemental {} of Slaying";
+    } else if (ec == 0 && bc == 0 && sc > 1) {
+        brand_templ = "{} of Slaying";
+    } else if (ec > 1 && bc == 0 && sc == 0) {
+        brand_templ = "Elemental {}";
     }
 
     std::string fullname;
@@ -138,16 +127,17 @@ std::string XWeapon::toString()
     return fullname;
 }
 
-std::string XWeapon::GetTemplate(AttackEffectType mask)
+// The name template of the one brand of this kind that the weapon
+// carries. Only called where the count is exactly one.
+std::string XWeapon::GetTemplate(const BrandGroup group)
 {
-    std::string brand_templ;
+    for (const BRAND& id : aet) {
+        const BrandStats* row = FindBrand(id);
 
-    for (int j = 0; j < weapon_brand_name_db_size; j++) {
-        if (weapon_brand_name_db[j].brt == mask) {
-            brand_templ = weapon_brand_name_db[j].templ;
-            break;
+        if (row && row->group == group) {
+            return row->templ;
         }
     }
 
-    return brand_templ;
+    return std::string();
 }

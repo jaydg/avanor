@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_cereal.h"
 #include "item/xmissile.h"
 #include "item/xweapon.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 REGISTER_CLASS(XMissile);
 CEREAL_REGISTER_TYPE(XMissile);
@@ -53,20 +53,20 @@ std::string XMissile::toString()
 {
     if (quantity == 1)
         return fmt::format("{}{}{} <{:+}>({:+}, {}d{}{:+}){}",
-            (aet & AttackEffectType::POISON) != AttackEffectType::NONE ? "poisoned " : "",
-            (aet & AttackEffectType::UNDEADSLAYER) != AttackEffectType::NONE ? "holy " : "",
+            aet.Has("poison") ? "poisoned " : "",
+            aet.Has("undead_slayer") ? "holy " : "",
             name, RNG, to_hit,
             dice.GetCount(), dice.GetSides(), dice.GetBonus(),
-            (aet & AttackEffectType::FIRE) != AttackEffectType::NONE ? " of fire" : ""
+            aet.Has("fire") ? " of fire" : ""
         );
 
     return fmt::format("heap of ({}) {}{}{}s <{:+}>({:+}, {}d{}{:+}){}",
         quantity,
-        (aet & AttackEffectType::POISON) != AttackEffectType::NONE ? "poisoned " : "",
-        (aet & AttackEffectType::UNDEADSLAYER) != AttackEffectType::NONE ? "holy " : "",
+        aet.Has("poison") ? "poisoned " : "",
+        aet.Has("undead_slayer") ? "holy " : "",
         name, RNG, to_hit,
         dice.GetCount(), dice.GetSides(), dice.GetBonus(),
-        (aet & AttackEffectType::FIRE) != AttackEffectType::NONE ? " of fire" : ""
+        aet.Has("fire") ? " of fire" : ""
     );
 }
 

@@ -390,7 +390,7 @@ int XTrap::Activate(XCreature* cr)
                 dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the bottom of the pit";
                 dd.attack_HIT	= 10000;
-                dd.attack_effect	= AttackEffectType::NONE;
+                dd.attack_effect	= BrandSet();
                 dd.flags	= DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
                 break;
@@ -405,7 +405,7 @@ int XTrap::Activate(XCreature* cr)
                 dd.attacker	= owner.lock().get();
                 dd.attack_name	= "the spears in the pit";
                 dd.attack_HIT	= 10000;
-                dd.attack_effect	= AttackEffectType::NONE;
+                dd.attack_effect	= BrandSet();
                 dd.flags	= DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
             }

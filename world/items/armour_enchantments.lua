@@ -16,7 +16,7 @@
 --       :Weight(n)           how many places it takes in the draw. Unsaid,
 --                            one, like everything else
 --       :Fits(ItemKind.X)    which sorts of item it can appear on
---       :Brand(AttackEffectType.X)
+--       :Brand("fire")       one brand; call it again for each further one
 --       :Stats(text) / :Resist(text)
 --                            the same dice strings Monster.new takes
 --       :Property(...)       declared but inert - see "of slow digestion"

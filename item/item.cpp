@@ -29,7 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/creature.h"
 #include "engine/xlua.h"
 #include "item/item.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 void XItem::RegisterLua(sol::state_view& lua)
 {
@@ -107,7 +107,7 @@ XItem::XItem()
     // it into the save file. Nothing branches on it today, which is why it
     // went unnoticed.
     special_property = SPP_NONE;
-    aet = AttackEffectType::NONE;
+    aet = BrandSet();
     owner.reset();
 }
 
@@ -547,22 +547,15 @@ int XItem::GetValue()
             }
         }
 
+    // What the brands add. Content prices them: a row with no :Value()
+    // adds nothing, which is what the six unimplemented slayers and the
+    // effect-less brands did before.
     int brtval = 0;
 
-    if ((aet & AttackEffectType::FIRE) != AttackEffectType::NONE) {
-        brtval += 200;
-    }
-
-    if ((aet & AttackEffectType::COLD) != AttackEffectType::NONE) {
-        brtval += 150;
-    }
-
-    if ((aet & AttackEffectType::ORCSLAYER) != AttackEffectType::NONE) {
-        brtval += 300;
-    }
-
-    if ((aet & AttackEffectType::DEMONSLAYER) != AttackEffectType::NONE) {
-        brtval += 220;
+    for (const BRAND& id : aet) {
+        if (const BrandStats* row = FindBrand(id)) {
+            brtval += row->value;
+        }
     }
 
     int xval = brtval + value + xdice + xdvpv + xhitdmg + xstats * 150 + xresist + xrng;
@@ -794,7 +787,7 @@ int XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
 {
     const ENHANCE_STRUCT* enh = FindArmourEnchantment(special_number);
 
-    if (enh && (enh->brt & AttackEffectType::FIRE) != AttackEffectType::NONE) {
+    if (enh && enh->brt.Has("fire")) {
         //	user->MagicAttack(target, dice.Throw(), "fire");
     }
 

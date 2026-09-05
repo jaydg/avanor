@@ -27,7 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/cskills.h"
 #include "item/itemdef.h"
 #include "item/itemkind.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 
 // One sort of item: what it is called, what it is made of, what it does,
 // and how often the game hands one out. The dice fields are the strings
@@ -172,7 +172,7 @@ struct ENHANCE_STRUCT {
     // Which sorts of item it can appear on.
     ItemKind kind{ItemKind::UNKNOWN};
 
-    AttackEffectType brt{AttackEffectType::NONE};
+    BrandSet brt;
 
     // Carried onto the item by SpecialFill(). SPP_SLOWDIGESTION is acted
     // on (XCreature::DecNutrio halves the wearer's hunger); the others are
@@ -201,7 +201,7 @@ class ArmourEnchantmentBuilder
         ArmourEnchantmentBuilder& Rarity(int rarity);
         ArmourEnchantmentBuilder& Weight(int weight);
         ArmourEnchantmentBuilder& Fits(ItemKind kind);
-        ArmourEnchantmentBuilder& Brand(AttackEffectType brt);
+        ArmourEnchantmentBuilder& Brand(const std::string& brt);
         ArmourEnchantmentBuilder& Property(SPECIAL_PROPERTY spp);
         ArmourEnchantmentBuilder& Stats(const std::string& s);
         ArmourEnchantmentBuilder& Resist(const std::string& r);

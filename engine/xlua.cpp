@@ -44,7 +44,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemdef.h"
 #include "item/xcorpse.h"
 #include "item/xpotion.h"
-#include "magic/attack_effect_type.h"
+#include "magic/brand.h"
 #include "magic/effect.h"
 #include "magic/resist.h"
 #include "magic/skill.h"
@@ -143,7 +143,7 @@ void XLua::Init()
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
     XCombatSkills::RegisterLua(lua);
-    RegisterAttackEffectTypeLua(lua);
+    RegisterBrandLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     RegisterBodyPartEnum(lua);
@@ -255,13 +255,13 @@ void XLua::Init()
     // value. XTileType is here too: it is filled by DefineTile() as
     // world/tiles.lua runs, and read by name everywhere after that.
     for (const char* enum_table : {
-            "AttackEffectType", "BodyPart", "CorpseEffectType", "CreatureClass",
+            "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
             "XQuest", "XSkill", "XStairWay", "XStandardAI",
-            "CombatGroup", "CombatRole", "XStats", "XTileType",
+            "BrandGroup", "CombatGroup", "CombatRole", "XStats", "XTileType",
         }) {
         MakeStrict(lua, enum_table);
     }
