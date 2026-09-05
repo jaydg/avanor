@@ -71,8 +71,8 @@ XWeapon::XWeapon(ItemType _it)
 
 std::string XWeapon::toString()
 {
-    ItemMaterial* prop = GetMaterial(material_index);
-    std::string w_name = prop->propname;
+    const ItemMaterial* prop = FindMaterial(material_index);
+    std::string w_name = prop ? prop->propname : std::string();
 
     for (int i = 0; i < gi_weapon.total_item; i++) {
         if (it == gi_weapon.pFirstItem[i].it) {

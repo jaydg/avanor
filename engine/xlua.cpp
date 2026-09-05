@@ -300,6 +300,21 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<MaterialBuilder>("Material",
+            sol::constructors<MaterialBuilder(std::string)>(),
+            "Called", &MaterialBuilder::Called,
+            "Looks", &MaterialBuilder::Looks,
+            "Sets", &MaterialBuilder::Sets,
+            "Chance", &MaterialBuilder::Chance,
+            "Quality", &MaterialBuilder::Quality,
+            "Body", &MaterialBuilder::Body,
+            "Armour", &MaterialBuilder::Armour,
+            "Combat", &MaterialBuilder::Combat,
+            "Resist", &MaterialBuilder::Resist,
+            "Property", &MaterialBuilder::Property,
+            "Register", &MaterialBuilder::Register
+        );
+
         lua.new_usertype<ArmourEnchantmentBuilder>("ArmourEnchantment",
             sol::constructors<ArmourEnchantmentBuilder(std::string)>(),
             "Called", &ArmourEnchantmentBuilder::Called,

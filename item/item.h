@@ -195,8 +195,10 @@ class XItem : public XBaseObject
         // for a plain item. Was an index into a fixed table.
         std::string special_number;
         AttackEffectType aet;
-        int material_index; // reference to material;
-        ItemMaterial* GetMaterial(int index);
+
+        // What this is made of - the id world/items/materials.lua
+        // registered it under.
+        std::string material_index;
 
         void Drop(XLocation * location, int _x, int _y);
         void Pickup(XCreature * picker);

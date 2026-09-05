@@ -70,23 +70,35 @@ enum ITEM_QUALITY {
     IQ_SUPERB	= 4,
 };
 
+// What a thing is made of - "iron", "mithril", "cloth". Filled from
+// world/items/materials.lua as that script loads.
 struct ItemMaterial {
+    std::string id;
     std::string propname; //wooden, metall,
-    int color;
-    const char* dv; //modifers....
-    const char* pv;
-    const char* hit;
-    const char* dice;
-    const char* z; //random z to dice;
-    const char* r; //range
-    unsigned int iflag; //wich item can consist from this material
-    int probability;
-    ITEM_QUALITY iq;
-    int density;
-    int value;
-    CAN_FLAG mflag;
-    const char* resistance; //to monster
-    SPECIAL_PROPERTY sp;
+    int color{0};
+    std::string dv; //modifers....
+    std::string pv;
+    std::string hit;
+    std::string dice;
+    std::string z; //random z to dice;
+
+    // Which sets this material belongs to, so a template asking for
+    // ItemSet.HARDMETAL can be given steel, mithril or adamantium.
+    unsigned int iflag{0};
+
+    int probability{0};
+    ITEM_QUALITY iq{IQ_AVG};
+
+    // Multiplies the item's weight; and its value, in tenths.
+    int density{1};
+    int value{10};
+
+    std::string resistance; //to monster
+
+    // Declared, but nothing carries it onto the item - PropFill() has
+    // never copied it, in any version. Kept so the intent survives; see
+    // the note in world/items/materials.lua.
+    SPECIAL_PROPERTY sp{SPP_NONE};
 };
 
 enum ITEM_SET {

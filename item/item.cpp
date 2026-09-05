@@ -323,40 +323,47 @@ void XItem::PropFill(ITEM_SET is, bool protective)
 {
     int tval = 0;
 
-    for (int i = 0; i < DB_PROP_SZ; i++) {
-        if (item_prop[i].iflag & is) {
-            tval += item_prop[i].probability;
+    for (const auto& mat : item_prop) {
+        if (mat.iflag & is) {
+            tval += mat.probability;
         }
     }
 
-    assert(tval > 0);
+    if (tval <= 0) {
+        std::cerr << "world: nothing is made of that" << std::endl;
+        return;
+    }
 
     int trnd = vRand() % tval;
-    int r_val = 0;
+    const ItemMaterial* chosen = nullptr;
 
-    while (1) {
-        if (item_prop[r_val].iflag & is) {
-            trnd -= item_prop[r_val].probability;
+    for (const auto& mat : item_prop) {
+        if (mat.iflag & is) {
+            trnd -= mat.probability;
         }
 
         if (trnd < 0) {
+            chosen = &mat;
             break;
         }
-
-        r_val++;
     }
 
-    material_index = r_val;
-    name = fmt::format("{} {}", item_prop[r_val].propname, name);
+    if (!chosen) {
+        return;
+    }
 
-    color = item_prop[r_val].color;
-    weight *= item_prop[r_val].density;
-    value =	item_prop[r_val].value * value / 10;
+    const ItemMaterial& mat = *chosen;
+    material_index = mat.id;
+    name = fmt::format("{} {}", mat.propname, name);
+
+    color = mat.color;
+    weight *= mat.density;
+    value =	mat.value * value / 10;
 
     XDice d;
 
     if (dv) {
-        d.Setup(item_prop[r_val].dv);
+        d.Setup(mat.dv.c_str());
         dv += d.NThrow();
     }
 
@@ -371,22 +378,22 @@ void XItem::PropFill(ITEM_SET is, bool protective)
     // lets the material always have its say, while still keeping armour
     // off a sword - whose pv column is empty, so `protective` is false.
     if (protective) {
-        d.Setup(item_prop[r_val].pv);
+        d.Setup(mat.pv.c_str());
         pv += d.NThrow();
     }
 
-    d.Setup(item_prop[r_val].hit);
+    d.Setup(mat.hit.c_str());
     to_hit += d.NThrow();
 
-    d.Setup(item_prop[r_val].dice);
+    d.Setup(mat.dice.c_str());
     int tx = dice.GetCount() + d.GetCount();
     int ty = dice.GetSides() + d.GetSides();
-    d.Setup(item_prop[r_val].z);
+    d.Setup(mat.z.c_str());
     dice.Setup(tx, ty, dice.GetBonus() + d.NThrow());
 
-    quality = (ITEM_QUALITY)(quality + item_prop[r_val].iq);
+    quality = (ITEM_QUALITY)(quality + mat.iq);
     assert(resistances == nullptr);
-    resistances = std::make_unique<XResistance>(item_prop[r_val].resistance);
+    resistances = std::make_unique<XResistance>(mat.resistance.c_str());
     assert(stats == nullptr);
     stats = std::make_unique<XStats>();
 }
@@ -792,11 +799,6 @@ int XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
     }
 
     return 1;
-}
-
-ItemMaterial* XItem::GetMaterial(int index)
-{
-    return &item_prop[index];
 }
 
 void XItem::Drop(XLocation * location, int _x, int _y)

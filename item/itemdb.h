@@ -29,8 +29,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemkind.h"
 #include "magic/attack_effect_type.h"
 
-#define DB_PROP_SZ	15 // number of materials!
-
 // One sort of item: what it is called, what it is made of, what it does,
 // and how often the game hands one out. The dice fields are the strings
 // XDice takes ("1d3+2", "" for none).
@@ -221,7 +219,46 @@ const ENHANCE_STRUCT* FindArmourEnchantment(const std::string& id);
 std::string RandomArmourEnchantment();
 
 
-extern ItemMaterial item_prop[DB_PROP_SZ];
+extern std::vector<ItemMaterial> item_prop;
+
+// The material with this id, or nullptr for one nothing defines.
+const ItemMaterial* FindMaterial(const std::string& id);
+
+// Fluent builder for one material:
+//
+//   Material.new("mithril")
+//       :Called("mithril")
+//       :Looks(xColor.xLIGHTCYAN)
+//       :Sets(ItemSet.MITHRIL)
+//       :Chance(5)
+//       :Quality(ItemQuality.GOOD)
+//       :Body(11, 100)
+//       :Armour("1d3+6", "2d3+3")
+//       :Combat("2d4+4", "0d1", "2d4+3")
+//       :Resist("poison:0d0+10")
+//       :Register()
+class MaterialBuilder
+{
+    public:
+        explicit MaterialBuilder(std::string id);
+
+        MaterialBuilder& Called(const std::string& name);
+        MaterialBuilder& Looks(int color);
+        MaterialBuilder& Sets(unsigned int iflag);
+        MaterialBuilder& Chance(int probability);
+        MaterialBuilder& Quality(ITEM_QUALITY iq);
+        MaterialBuilder& Body(int density, int value);
+        MaterialBuilder& Armour(const std::string& dv, const std::string& pv);
+        MaterialBuilder& Combat(const std::string& hit, const std::string& dice,
+            const std::string& extra);
+        MaterialBuilder& Resist(const std::string& r);
+        MaterialBuilder& Property(SPECIAL_PROPERTY sp);
+
+        void Register();
+
+    private:
+        ItemMaterial t;
+};
 extern std::vector<ENHANCE_STRUCT> ienh_db;
 
 
