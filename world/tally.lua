@@ -58,11 +58,11 @@ local function TallyOrcs(cr, killer, class)
 	-- line on the achievements screen, so it is born CLOSED with nothing to
 	-- say in any other state. QuestStatus() answers UNKNOWN for a record
 	-- that was never added, which is what keeps this from firing twice.
-	if (QuestStatus(QUEST_ORC_WAR_PARTY) ~= XQuest.UNKNOWN) then
+	if (QuestStatus("orc_war_party") ~= XQuest.UNKNOWN) then
 		return
 	end
 
-	Quest(QUEST_ORC_WAR_PARTY, XQuest.CLOSED,
+	Quest("orc_war_party", XQuest.CLOSED,
 		"",
 		"",
 		string.format(

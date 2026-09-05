@@ -901,7 +901,7 @@ bool GiveAward(void* owner_ptr, XGUID aguid, void* target_ptr)
     return false;
 }
 
-void Quest(int quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed, sol::optional<int> score)
+void Quest(const std::string& quest_id, int status, const std::string& know, const std::string& complete, const std::string& closed, sol::optional<int> score)
 {
     auto qr = std::make_unique<XQuestRec>();
     qr->quest_id = quest_id;
@@ -913,16 +913,24 @@ void Quest(int quest_id, int status, const std::string& know, const std::string&
     XQuest::quest.quests.push_back(std::move(qr));
 }
 
-void QuestModify(int id, int status)
+void QuestModify(const std::string& id, int status)
 {
     XQuestRec * qr = XQuest::quest.Find(id);
 
-    if (qr) {
-        qr->status = (XQuest::Id)status;
+    if (!qr) {
+        // Every quest something moves along is one world/quests.lua
+        // declared, so this is a typo. Asking after an undeclared quest
+        // is fine and stays quiet - world/tally.lua does it deliberately,
+        // to see whether a quest has been awarded yet.
+        std::cerr << "world: nothing declares a quest '" << id
+                  << "' to move to state " << status << std::endl;
+        return;
     }
+
+    qr->status = (XQuest::Id)status;
 }
 
-int QuestStatus(int id)
+int QuestStatus(const std::string& id)
 {
     XQuestRec * qr = XQuest::quest.Find(id);
     return qr ? qr->status : XQuest::UNKNOWN;

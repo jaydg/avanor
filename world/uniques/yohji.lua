@@ -80,13 +80,13 @@ function YohjiHandler(e, t, p, v)
 			result = 'q'
 		end
 		if (result == 'q') then
-			if (QuestStatus(QUEST_YOHJI_BAT) ~= XQuest.KNOWN and QuestStatus(QUEST_YOHJI_RAT) ~= XQuest.KNOWN) then
+			if (QuestStatus("yohji_bat") ~= XQuest.KNOWN and QuestStatus("yohji_rat") ~= XQuest.KNOWN) then
 				if (Rand(2) == 1) then
 					AddMessage("'I can identify all items in your inventory, if you bring me a bat wing.'")
-					QuestModify(QUEST_YOHJI_BAT, XQuest.KNOWN)
+					QuestModify("yohji_bat", XQuest.KNOWN)
 				else
 					AddMessage("'I can identify all items in your inventory, if you bring me a rat tail.'")
-					QuestModify(QUEST_YOHJI_RAT, XQuest.KNOWN)
+					QuestModify("yohji_rat", XQuest.KNOWN)
 				end
 			else
 				AddMessage("'Please, complete my last request first'")
@@ -108,14 +108,14 @@ function YohjiHandler(e, t, p, v)
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == "rat_tail" or it == "bat_wing") then
 			local success_msg = "'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory."
-			if (it == "rat_tail" and QuestStatus(QUEST_YOHJI_RAT) == XQuest.KNOWN) then
+			if (it == "rat_tail" and QuestStatus("yohji_rat") == XQuest.KNOWN) then
 				AddMessage(success_msg)
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
-				QuestModify(QUEST_YOHJI_RAT, XQuest.UNKNOWN)
-			elseif (it == "bat_wing" and QuestStatus(QUEST_YOHJI_BAT) == XQuest.KNOWN) then
+				QuestModify("yohji_rat", XQuest.UNKNOWN)
+			elseif (it == "bat_wing" and QuestStatus("yohji_bat") == XQuest.KNOWN) then
 				AddMessage(success_msg)
 				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
-				QuestModify(QUEST_YOHJI_BAT, XQuest.UNKNOWN)
+				QuestModify("yohji_bat", XQuest.UNKNOWN)
 			else
 				if (MoneyOperation(t, -50 * count) >= 0) then
 					AddMessage(string.format("'I hope %d gp will be enough for this.'", 50 * count))

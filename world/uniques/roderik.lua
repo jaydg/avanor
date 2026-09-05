@@ -88,23 +88,23 @@ function RoderikHandler(e, t, p, v)
 
 			-- The crypt first, the artifact after: he does not hand a
 			--  stranger the errand that matters until the nearer one is done.
-			local crypt = QuestStatus(QUEST_RODERICK_CRYPT)
-			local eye = QuestStatus(QUEST_RODERICK_EYE)
+			local crypt = QuestStatus("roderick_crypt")
+			local eye = QuestStatus("roderick_eye")
 
 			if (crypt == XQuest.UNKNOWN) then
 				AddMessage("I have heard that my family crypt has been occupied by a group of undead. Clear the crypt and I will reward you. It lies to the south-west of the city.")
-				QuestModify(QUEST_RODERICK_CRYPT, XQuest.KNOWN)
+				QuestModify("roderick_crypt", XQuest.KNOWN)
 			elseif (crypt == XQuest.KNOWN) then
 				if (GetCreatureCount("UNDEADS_TOMB1", CreatureClass.UNDEAD) == 0) then
 					AddMessage("Thank you for destroying the evil in our crypt. Please accept these coins and my gratitude for a job well done.")
-					QuestModify(QUEST_RODERICK_CRYPT, XQuest.CLOSED)
+					QuestModify("roderick_crypt", XQuest.CLOSED)
 					chatter:MoneyOp(1000)
 				else
 					AddMessage("You still have not cleansed my ancestor's crypt.")
 				end
 			elseif (eye == XQuest.UNKNOWN) then
 				AddMessage("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tried to hide it from me in one of the caves far south from here, but people say that he was killed while hiding it.  Could you return this artifact to me?")
-				QuestModify(QUEST_RODERICK_EYE, XQuest.KNOWN)
+				QuestModify("roderick_eye", XQuest.KNOWN)
 			elseif (eye == XQuest.KNOWN) then
 				AddMessage("Please, return the 'Eye of Raa' to me.")
 			end
@@ -119,8 +119,8 @@ function RoderikHandler(e, t, p, v)
 		-- Ahk-Ulan wanted the King dead and does not care whose hand did it.
 		-- The errand is done the moment Roderick falls; going back to say so
 		-- is what closes it (AhkUlanHandler).
-		if (QuestStatus(QUEST_USURPER) == XQuest.KNOWN) then
-			QuestModify(QUEST_USURPER, XQuest.COMPLETE)
+		if (QuestStatus("usurper") == XQuest.KNOWN) then
+			QuestModify("usurper", XQuest.COMPLETE)
 		end
 
 		return true
@@ -131,7 +131,7 @@ function RoderikHandler(e, t, p, v)
 
 		if (item.it == "eye_of_raa") then
 			AddMessage("Thank you for your great help. The citizens of Avanor never forget your exploits!")
-			QuestModify(QUEST_RODERICK_EYE, XQuest.CLOSED)
+			QuestModify("roderick_eye", XQuest.CLOSED)
 			roderik:ContainItem(item)
 			return true
 		else

@@ -26,15 +26,15 @@ end
 
 function AhkUlanHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		local qs = QuestStatus(QUEST_ANCIENT_PART)
+		local qs = QuestStatus("ancient_part")
 		if (qs == XQuest.UNKNOWN) then
 			AddMessage("Hello, brave hero.")
 			AddMessage("Some years ago, some evil wizards destroyed my tower.")
 			AddMessage("Now I wait here gaining strength and planning my revenge.")
 			AddMessage("I am searching for 3 parts to an ancient machine.")
 			AddMessage("Bring them to me and I will reward you well.")
-			QuestModify(QUEST_ANCIENT_PART, XQuest.KNOWN)
-		elseif (QuestStatus(QUEST_USURPER) == XQuest.COMPLETE) then
+			QuestModify("ancient_part", XQuest.KNOWN)
+		elseif (QuestStatus("usurper") == XQuest.COMPLETE) then
 			-- The parts are his and the King is dead. He has no further use
 			-- for the hero, and no reason left to pretend otherwise - this
 			-- is the game's second ending (XHero::EndGame scores a win with
@@ -42,7 +42,7 @@ function AhkUlanHandler(e, t, p, v)
 			AddMessage("'The King is dead.' Ahk-Ulan does not smile. The air around him simply grows colder.")
 			AddMessage("'There is no one left in Avanor who can stand between me and the throne, and that is as much your doing as mine.'")
 			AddMessage("'Go. Take what you can carry, and be far from here when I come to claim what is mine.'")
-			QuestModify(QUEST_USURPER, XQuest.CLOSED)
+			QuestModify("usurper", XQuest.CLOSED)
 			QuestState:WinGame("You killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor.")
 		else
 			AddMessage("Don't disturb me before completing my quest, puny mortal!")
@@ -52,7 +52,7 @@ function AhkUlanHandler(e, t, p, v)
 		if (it == "ancient_machine_part") then
 			if (count == 3) then
 				AddMessage("Very nice job, servant!")
-				QuestModify(QUEST_ANCIENT_PART, XQuest.CLOSED)
+				QuestModify("ancient_part", XQuest.CLOSED)
 
 				-- The machine was never the point. With it in his hands the
 				-- only thing still standing between Ahk-Ulan and Avanor is
@@ -62,10 +62,10 @@ function AhkUlanHandler(e, t, p, v)
 				if (QuestState:GetFlag('roderick_killed') == 1) then
 					AddMessage("'And Roderick already lies dead. You have been busier than I asked.'")
 					AddMessage("'Come to me again when you have caught your breath. We have a throne to speak of.'")
-					QuestModify(QUEST_USURPER, XQuest.COMPLETE)
+					QuestModify("usurper", XQuest.COMPLETE)
 				else
 					AddMessage("'And now, my last request: kill Roderick, for he is the only one who can stop me now.'")
-					QuestModify(QUEST_USURPER, XQuest.KNOWN)
+					QuestModify("usurper", XQuest.KNOWN)
 				end
 
 				return true
@@ -83,28 +83,28 @@ function AhkUlanHandler(e, t, p, v)
 		-- He was the only buyer for the parts of the ancient machine, and there is
 		-- no one else in the world to hand them to. The errand ends here, and the
 		-- record should say that it ended badly rather than leave it open.
-		local qs = QuestStatus(QUEST_ANCIENT_PART)
+		local qs = QuestStatus("ancient_part")
 
 		if (qs < XQuest.CLOSED) then
 			if (qs == XQuest.KNOWN) then
 				AddMessage("Whatever Ahk-Ulan wanted with the ancient machine, he will not be asking for its parts now.")
 			end
 
-			QuestModify(QUEST_ANCIENT_PART, XQuest.FAIL)
+			QuestModify("ancient_part", XQuest.FAIL)
 		end
 
 		-- Gefeon wanted him dead and now he is. The errand is done the
 		-- moment he falls; going back to say so is what closes it
 		-- (GefeonHandler), and until then it stops cluttering the log.
-		if (QuestStatus(QUEST_GEFEON) == XQuest.KNOWN) then
-			QuestModify(QUEST_GEFEON, XQuest.COMPLETE)
+		if (QuestStatus("gefeon") == XQuest.KNOWN) then
+			QuestModify("gefeon", XQuest.COMPLETE)
 		end
 
 		-- The throne he wanted taken for him goes the same way, but only while the
 		-- King still stands. If Roderick is already dead the hero did exactly what
 		-- was asked, so it stays COMPLETE.
-		if (QuestStatus(QUEST_USURPER) == XQuest.KNOWN) then
-			QuestModify(QUEST_USURPER, XQuest.FAIL)
+		if (QuestStatus("usurper") == XQuest.KNOWN) then
+			QuestModify("usurper", XQuest.FAIL)
 		end
 	end
 	return true

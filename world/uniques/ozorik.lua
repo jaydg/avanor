@@ -64,8 +64,8 @@ end
 
 function OzorikHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		local qs = QuestStatus(QUEST_OZORIK)
-		local demon_quest = QuestStatus(QUEST_ELDER)
+		local qs = QuestStatus("ozorik")
+		local demon_quest = QuestStatus("elder")
 		if (orcs_live > 0 and qs < XQuest.COMPLETE) then
 			if (qs == XQuest.UNKNOWN) then
 				if (demon_quest == XQuest.KNOWN) then
@@ -73,7 +73,7 @@ function OzorikHandler(e, t, p, v)
 				elseif (demon_quest == XQuest.UNKNOWN) then
 					AddMessage("'Sorry, but I'm really busy now. The orc war-party will be here soon!'")
 				end
-				QuestModify(QUEST_OZORIK, XQuest.KNOWN)
+				QuestModify("ozorik", XQuest.KNOWN)
 			else
 				AddMessage("'Sorry, but I'm really busy right now. The orc war-party will be here soon!'")
 			end
@@ -83,7 +83,7 @@ function OzorikHandler(e, t, p, v)
 				if (GiveAward(t, ozorik_award, p)) then
 					AddMessage('Take this dagger as a reward!')
 				end
-				QuestModify(QUEST_OZORIK, XQuest.CLOSED)
+				QuestModify("ozorik", XQuest.CLOSED)
 			else
 				AddMessage('Good day, hero!')
 			end
@@ -102,8 +102,8 @@ function OzorikHandler(e, t, p, v)
 		-- orders from - his men fight on, but there is nothing left to finish. Fail
 		-- it silently: he may well go down while the hero is far away, and the news
 		-- belongs to whichever of his guards the hero speaks to next.
-		if (QuestStatus(QUEST_OZORIK) < XQuest.CLOSED) then
-			QuestModify(QUEST_OZORIK, XQuest.FAIL)
+		if (QuestStatus("ozorik") < XQuest.CLOSED) then
+			QuestModify("ozorik", XQuest.FAIL)
 		end
 	elseif (e == LuaEvent.SAVE) then
 		StoreInt(ozorik_award)

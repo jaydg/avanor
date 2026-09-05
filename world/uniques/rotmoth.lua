@@ -42,7 +42,7 @@ function BridaHandler(e, t, p, v)
 	-- asked, though: a hero who happens into the cave without ever
 	-- speaking to her has nothing to report yet, so that case falls
 	-- through to the plea below and the news waits for the way back.
-	if (status == 3 and QuestStatus(QUEST_GIANA) ~= XQuest.UNKNOWN) then
+	if (status == 3 and QuestStatus("giana") ~= XQuest.UNKNOWN) then
 		if (QuestState:GetFlag('brida_told_of_death') ~= 1) then
 			AddMessage("Brida reads your face before you have said a word, and her hands go still.")
 			AddMessage("'...She isn't coming home. Is she.'")
@@ -52,7 +52,7 @@ function BridaHandler(e, t, p, v)
 			-- FAIL, not CLOSED: the quest is over either way and neither
 			-- shows in the log (ShowQuests lists only KNOWN), but this one
 			-- did not end well and the record should say so.
-			QuestModify(QUEST_GIANA, XQuest.FAIL)
+			QuestModify("giana", XQuest.FAIL)
 		else
 			AddMessage("Brida sits at the window with her back to the door, and does not answer.")
 		end
@@ -60,7 +60,7 @@ function BridaHandler(e, t, p, v)
 		AddMessage("'My Giana... she never came back from the valley!' Brida sobs.")
 		AddMessage("'A bandit - Rotmoth, he calls himself - is holding her in a cave east of here, past where the bandits lurk near the bridge. He wants 150 gold coins for her, but I have nothing left to give him.'")
 		AddMessage("'Please - if you have the coin, or the courage - bring my daughter home!'")
-		QuestModify(QUEST_GIANA, XQuest.KNOWN)
+		QuestModify("giana", XQuest.KNOWN)
 	elseif (status == 1) then
 		AddMessage("'Is she safe? Please, hurry her home to me!'")
 	elseif (status == 2) then
@@ -73,7 +73,7 @@ function BridaHandler(e, t, p, v)
 			end
 
 			QuestState:SetFlag('brida_reward_given', 1)
-			QuestModify(QUEST_GIANA, XQuest.CLOSED)
+			QuestModify("giana", XQuest.CLOSED)
 		else
 			AddMessage("'Bless you, again and again, for bringing my Giana home.'")
 		end
@@ -247,7 +247,7 @@ end
 -- civilian, or by the hero. Record it: without this rotmoth_status stays
 -- at 1 for the rest of the game, GianaHandler waits forever for a girl who
 -- will never arrive in the village, and Brida asks after her daughter
--- every time she is spoken to, with QUEST_GIANA stuck short of CLOSED.
+-- every time she is spoken to, with "giana" stuck short of CLOSED.
 GianaAI = {}
 function GianaAI.onDie(self)
 	QuestState:SetFlag('rotmoth_status', 3)

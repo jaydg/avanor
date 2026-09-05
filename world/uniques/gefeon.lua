@@ -45,14 +45,14 @@ function GefeonHandler(e, t, p, v)
 			ending = "You killed evil Ahk-Ulan and saved the Kingdom of Avanor from Ahk-Ulan's deadly plans."
 		end
 
-		QuestModify(QUEST_GEFEON, XQuest.CLOSED)
+		QuestModify("gefeon", XQuest.CLOSED)
 		QuestState:WinGame(ending)
 		return true
 	end
 
-	if (QuestStatus(QUEST_GEFEON) == XQuest.UNKNOWN) then
+	if (QuestStatus("gefeon") == XQuest.UNKNOWN) then
 		AddMessage("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.")
-		QuestModify(QUEST_GEFEON, XQuest.KNOWN)
+		QuestModify("gefeon", XQuest.KNOWN)
 		return true
 	end
 

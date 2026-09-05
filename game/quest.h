@@ -95,8 +95,9 @@ class XQuest
 
         static XQuest quest;
 
-        static Id Status(int id);
-        static XQuestRec* Find(int id);
+        // The quest registered under an id, or nullptr for one no world
+        // declares.
+        static XQuestRec* Find(const std::string& id);
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -128,7 +129,12 @@ struct XQuestRec {
     int score;
 
     XQuest::Id status;
-    int quest_id;
+
+    // Which quest this is - the id world/quests.lua registered it under.
+    // A string, like every other content id: it is written into saved
+    // games, and a hand-kept numbering could be renumbered underneath
+    // one, silently re-pointing a hero's progress at another quest.
+    std::string quest_id;
 
     template<class Archive>
     void serialize(Archive& ar)

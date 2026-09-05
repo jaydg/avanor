@@ -181,7 +181,7 @@ end
 
 function GasMineEvent(e, p)
 	if (e == LuaEvent.MOVE) then
-		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE and Rand(3) == 0) then
+		if (QuestStatus("torin") < XQuest.COMPLETE and Rand(3) == 0) then
 			InflictDamage(p, Rand(5) + 2, "poison", "mysterious gas")
 		end
 	end
@@ -190,12 +190,12 @@ end
 
 function GasPumpEvent(e, p)
 	if (e == LuaEvent.OUTER_USE) then
-		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE) then
+		if (QuestStatus("torin") < XQuest.COMPLETE) then
 			AddMessage('You hear hollow rumble as the pump starts.')
 			-- The mine is breathing again whatever happens to the errand
 			-- from here. COMPLETE is already what the achievements screen
 			-- pays for, so the deed counts even if Torin is never told.
-			QuestModify(QUEST_TORIN, XQuest.COMPLETE)
+			QuestModify("torin", XQuest.COMPLETE)
 		else
 			AddMessage('You can\'t seem to stop the pump.')
 		end

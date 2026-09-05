@@ -57,7 +57,7 @@ end
 
 function FarmerHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		local qs = QuestStatus(QUEST_ELDER)
+		local qs = QuestStatus("elder")
 
 		if (qs == XQuest.COMPLETE or qs == XQuest.CLOSED) then
 			AddMessage("'Thank you, great hero!'")
@@ -89,7 +89,7 @@ function RoyalGuardHandler(e, t, p, v)
 		-- The captain died with his errand unfinished (OzorikHandler's DIE case).
 		-- His guards are where the hero learns of it - the quest itself is just
 		-- stops appearing in the log.
-		if (QuestStatus(QUEST_OZORIK) == XQuest.FAIL) then
+		if (QuestStatus("ozorik") == XQuest.FAIL) then
 			AddMessage("'The captain is dead. We hold this ground because it is ours to hold, not because anyone is left to order it.'")
 		else
 			AddMessage("'Don't bother me!'")
@@ -99,14 +99,14 @@ function RoyalGuardHandler(e, t, p, v)
 		if (BinaryAND(kind, ItemKind.WEAPON) and HasBrand(brt, "orc_slayer") and wt == "sword") then
 			-- A dead captain cannot judge the blade or pay for it. The guard still
 			-- takes it - it is exactly what he wants against the orcs.
-			if (QuestStatus(QUEST_OZORIK) == XQuest.FAIL) then
+			if (QuestStatus("ozorik") == XQuest.FAIL) then
 				AddMessage("'A fine blade. It comes a little late.'")
 			else
 				AddMessage("'Thank you!'")
 			end
 
-			if (QuestStatus(QUEST_OZORIK) < XQuest.COMPLETE) then
-				QuestModify(QUEST_OZORIK, XQuest.COMPLETE)
+			if (QuestStatus("ozorik") < XQuest.COMPLETE) then
+				QuestModify("ozorik", XQuest.COMPLETE)
 			end
 		else
 			AddMessage("'I do not need this!'")

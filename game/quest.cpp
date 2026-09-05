@@ -97,13 +97,7 @@ void XQuest::ShowQuests()
     list.Run();
 }
 
-XQuest::Id XQuest::Status(int id)
-{
-    XQuestRec * qr = Find(id);
-    return qr->status;
-}
-
-XQuestRec* XQuest::Find(const int id)
+XQuestRec* XQuest::Find(const std::string& id)
 {
     for (const auto& it: XQuest::quest.quests) {
         if (it->quest_id == id) {
