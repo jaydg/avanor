@@ -47,7 +47,7 @@ class XBaseObject : public XMapObject
         XDice dice;
         // Compare() is an item-stacking predicate rooted at XItem, and this
         // is only ever reached as a qualified call from XItem::Compare().
-        int Compare(XObject * o);
+        bool Compare(XObject* o);
 
         std::unique_ptr<XResistance> resistances;
         std::unique_ptr<XStats> stats;

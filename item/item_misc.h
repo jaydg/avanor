@@ -81,9 +81,9 @@ class XPlainItem : public XItem
             : XItem(copy), content_id(copy->content_id), unique(copy->unique),
               artifact(copy->artifact) {}
 
-        int Compare(XObject* o) override
+        bool Compare(XObject* o) override
         {
-            return unique ? -1 : XItem::Compare(o);
+            return !unique && XItem::Compare(o);
         }
 
         [[nodiscard]] std::string GetContentId() const override
@@ -356,9 +356,9 @@ class FoodBuilder
                                                                               \
             /* One of a kind never merges with anything, not even another */  \
             /* of itself. Ordinary items fall through to the base rule. */     \
-            int Compare(XObject* o) override                                  \
+            bool Compare(XObject* o) override                                 \
             {                                                                 \
-                return unique ? -1 : BaseName::Compare(o);                    \
+                return !unique && BaseName::Compare(o);                       \
             }                                                                 \
                                                                               \
             /* An item with no name of its own reads as an ordinary one of */ \
@@ -443,9 +443,9 @@ class XLuaTool : public XTool
             return name;
         }
 
-        int Compare(XObject* o) override
+        bool Compare(XObject* o) override
         {
-            return unique ? -1 : XTool::Compare(o);
+            return !unique && XTool::Compare(o);
         }
 
         [[nodiscard]] std::string GetContentId() const override
@@ -512,9 +512,9 @@ class XChest : public XItem
         // Chests are not copyable
         XChest(XChest*) = delete;
 
-        int Compare(XObject * /*o*/) override
+        bool Compare(XObject * /*o*/) override
         {
-            return -1;
+            return false;
         }
 
         std::string toString() override;

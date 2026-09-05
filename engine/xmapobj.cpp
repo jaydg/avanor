@@ -106,21 +106,17 @@ void XMapObject::OnInvalidate()
     XObject::OnInvalidate();
 }
 
-int XMapObject::Compare(XObject * o)
+bool XMapObject::Compare(XObject* o)
 {
     assert(dynamic_cast<XMapObject*>(o));
 
     if (!isValid() || !o->isValid()) {
-        return 1;
+        return false;
     }
 
     auto tit = dynamic_cast<XMapObject *>(o);
 
-    if (tit->x == x && tit->y == y && tit->view == view) {
-        return 0;
-    } else {
-        return 1;
-    }
+    return tit->x == x && tit->y == y && tit->view == view;
 }
 
 int XMapObject::Distance(const XMapObject* other) const

@@ -310,7 +310,7 @@ void XEnhance::LoadTable(cereal::JSONInputArchive& ar)
     }
 }
 
-int XEnhance::Compare(XObject* o)
+bool XEnhance::Compare(XObject* o)
 {
     const auto tit = dynamic_cast<XEnhance *>(o);
 
@@ -320,14 +320,10 @@ int XEnhance::Compare(XObject* o)
     // RING rather than an XEnhance - so this cast can fail, and used to
     // be dereferenced without asking.
     if (!tit) {
-        return 1;
+        return false;
     }
 
-    if (descr == tit->descr && XItem::Compare(o) == 0) {
-        return 0;
-    }
-
-    return 1;
+    return descr == tit->descr && XItem::Compare(o);
 }
 
 std::string XEnhance::toString()

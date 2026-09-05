@@ -172,7 +172,7 @@ class XPotion : public XItem
         bool isIdentified() override;
         void Identify() override;
         std::string toString() override;
-        int Compare(XObject * o) override;
+        bool Compare(XObject* o) override;
         int GetValue() override
         {
             return value;

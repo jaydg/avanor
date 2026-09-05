@@ -55,7 +55,7 @@ class XAnyFood : public XItem
         std::string toString() override;
         virtual RESULT onEat(XCreature * eater); // eat a peace from food
         [[nodiscard]] virtual std::string postEat(XCreature *eater);
-        int Compare(XObject * o) override;
+        bool Compare(XObject* o) override;
 
         template<class Archive>
         void serialize(Archive& ar)

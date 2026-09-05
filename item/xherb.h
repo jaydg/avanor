@@ -122,15 +122,9 @@ class XHerb : public XAnyFood
 
         [[nodiscard]] std::string postEat(XCreature *eater) override;
 
-        int Compare(XObject* o) override
+        bool Compare(XObject* o) override
         {
-            if (species == ((XHerb*)o)->species) {
-                return 0;
-            } else if (species < ((XHerb*)o)->species) {
-                return -1;
-            } else {
-                return 1;
-            }
+            return species == ((XHerb*)o)->species;
         }
 
         PotionName GetTargetPotion();

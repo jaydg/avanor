@@ -154,7 +154,7 @@ class XItem : public XBaseObject
         [[nodiscard]] std::string GetNameEx(Article article = Article::NONE);
 
         // Answer "can these two items stack?"
-        virtual int Compare(XObject * o);
+        virtual bool Compare(XObject* o);
         virtual bool isIdentified()
         {
             return identified;
@@ -289,7 +289,7 @@ inline XItemList::iterator XItemList::TryMerge(const std::shared_ptr<XItem>& ite
             return it;
         }
 
-        if ((*it)->kind == item->kind && (*it)->Compare(item.get()) == 0) {
+        if ((*it)->kind == item->kind && (*it)->Compare(item.get())) {
             (*it)->Concat(item.get());
             return it;
         }

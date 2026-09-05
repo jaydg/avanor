@@ -102,10 +102,10 @@ static bool TestItemList()
     original_list.insert(XItem::Own(new XMoney(100)));
     original_list.insert(XItem::Own(new XMoney(250)));
 
-    // XItemList::insert() (item.h) merges same-category, Compare() == 0
-    // items into a single stack rather than adding a second entry - both
-    // XMoney(100) and XMoney(250) share ItemKind::MONEY and always compare equal,
-    // so this confirms they combine into one element with the summed
+    // XItemList::insert() merges same-category items that Compare() calls
+    // equal into a single stack rather than adding a second entry - both
+    // XMoney(100) and XMoney(250) share ItemKind::MONEY and always compare
+    // equal, so this confirms they combine into one element with the summed
     // quantity, not two.
     const size_t original_size = original_list.size();
     const int original_quantity = original_size == 1 ? (*original_list.begin())->quantity : -1;

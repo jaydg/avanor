@@ -38,18 +38,14 @@ XAnyFood::XAnyFood()
     consumed_food = 0;
 }
 
-int XAnyFood::Compare(XObject * o)
+bool XAnyFood::Compare(XObject* o)
 {
     assert(dynamic_cast<XAnyFood*>(o));
 
-    if (((XAnyFood*)o)->consume_nutrio == consume_nutrio
+    return ((XAnyFood*)o)->consume_nutrio == consume_nutrio
         && ((XAnyFood*)o)->consumed_food == consumed_food
         && ((XAnyFood*)o)->food_nutrio == food_nutrio
-        && ((XAnyFood*)o)->it == it) {
-        return 0;
-    } else {
-        return 1;
-    }
+        && ((XAnyFood*)o)->it == it;
 }
 
 std::string XAnyFood::toString()

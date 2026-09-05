@@ -64,21 +64,17 @@ XBaseObject::XBaseObject(XBaseObject * copy) :
     }
 }
 
-int XBaseObject::Compare(XObject * o)
+bool XBaseObject::Compare(XObject* o)
 {
     assert(dynamic_cast<XBaseObject*>(o));
 
     auto* tit = dynamic_cast<XBaseObject *>(o);
 
-    if (XMapObject::Compare(o) == 0
+    return XMapObject::Compare(o)
         && dv == tit->dv && pv == tit->pv && RNG == tit->RNG
         && to_hit == tit->to_hit && dice.GetCount() == tit->dice.GetCount()
         && dice.GetSides() == tit->dice.GetSides() && dice.GetBonus() == tit->dice.GetBonus()
         && isEqualOrBothAbsent(resistances, tit->resistances)
-        && isEqualOrBothAbsent(stats, tit->stats)) {
-        return 0;
-    } else {
-        return 1;
-    }
+        && isEqualOrBothAbsent(stats, tit->stats);
 }
 

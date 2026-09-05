@@ -237,20 +237,12 @@ void XScroll::Identify()
     }
 }
 
-int XScroll::Compare(XObject * o)
+bool XScroll::Compare(XObject* o)
 {
     assert(dynamic_cast<XScroll*>(o));
     XScroll * tit = (XScroll*)o;
 
-    if (sc_name == tit->sc_name && x == tit->x && y == tit->y) {
-        return 0;
-    } else {
-        if (quantity > tit->quantity) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
+    return sc_name == tit->sc_name && x == tit->x && y == tit->y;
 }
 
 std::string XScroll::toString()

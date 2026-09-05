@@ -65,7 +65,7 @@ class XMapObject : public XObject
 
         // Compare() is an item-stacking predicate rooted at XItem, and this
         // is only ever reached as a qualified call from XItem::Compare().
-        int Compare(XObject * o);
+        bool Compare(XObject* o);
 
         template<class Archive>
         void serialize(Archive& ar)

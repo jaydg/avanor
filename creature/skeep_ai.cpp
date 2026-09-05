@@ -204,7 +204,7 @@ bool XShopKeeperAI::SameGoods(const XItem* a, const XItem* b)
 {
     // Compare() is not const in this codebase, hence the cast; it does
     // not modify anything.
-    return a->kind == b->kind && const_cast<XItem*>(a)->Compare(const_cast<XItem*>(b)) == 0;
+    return a->kind == b->kind && const_cast<XItem*>(a)->Compare(const_cast<XItem*>(b));
 }
 
 int XShopKeeperAI::UnpaidQuantity(const XItem* item) const

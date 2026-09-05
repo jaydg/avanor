@@ -102,7 +102,7 @@ class XEnhance : public XItem
         // are the same discovery.
         static void SaveTable(cereal::JSONOutputArchive& ar);
         static void LoadTable(cereal::JSONInputArchive& ar);
-        int Compare(XObject* o) override;
+        bool Compare(XObject* o) override;
 
         template<class Archive>
         void serialize(Archive& ar)

@@ -229,20 +229,12 @@ void XBook::Identify()
     }
 }
 
-int XBook::Compare(XObject * o)
+bool XBook::Compare(XObject* o)
 {
     assert(dynamic_cast<XBook*>(o));
     XBook * tit = (XBook*)o;
 
-    if (spell_name == tit->spell_name && x == tit->x && y == tit->y) {
-        return 0;
-    } else {
-        if (quantity > tit->quantity) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
+    return spell_name == tit->spell_name && x == tit->x && y == tit->y;
 }
 
 std::string XBook::toString()

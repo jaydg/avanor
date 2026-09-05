@@ -464,16 +464,12 @@ void XItem::Concat(XItem* it)
     it->Invalidate();
 }
 
-int XItem::Compare(XObject * o)
+bool XItem::Compare(XObject* o)
 {
     assert(dynamic_cast<XItem*>(o));
     XItem * tit = (XItem*)o;
 
-    if (it == tit->it && tit->aet == aet && XBaseObject::Compare(o) == 0) {
-        return 0;
-    } else {
-        return 1;
-    }
+    return it == tit->it && tit->aet == aet && XBaseObject::Compare(o);
 }
 
 std::string XItem::toString()

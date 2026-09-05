@@ -310,20 +310,12 @@ XPotion::XPotion(XPotion * copy) : XItem(static_cast<XItem *>(copy))
     pdescr = copy->pdescr;
 }
 
-int XPotion::Compare(XObject * o)
+bool XPotion::Compare(XObject* o)
 {
     assert(dynamic_cast<XPotion*>(o));
     auto pot = static_cast<XPotion *>(o);
 
-    if (pot->x == x && pot->y == y && pot->pn == pn) {
-        return 0;
-    } else {
-        if (pn > pot->pn) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
+    return pot->x == x && pot->y == y && pot->pn == pn;
 }
 
 std::string XPotion::toString()

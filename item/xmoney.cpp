@@ -49,14 +49,14 @@ std::string XMoney::toString()
     return fmt::format("{} golden coins", quantity);
 }
 
-int XMoney::Compare(XObject * o)
+bool XMoney::Compare(XObject* o)
 {
     XMoney * tit;
 
     if (!(tit = dynamic_cast<XMoney*>(o))) {
         return XItem::Compare(o);
-    } else {
-        return 0;
     }
 
+    // Coins are coins: any two heaps merge, whatever else differs.
+    return true;
 }

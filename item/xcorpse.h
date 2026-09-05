@@ -141,9 +141,11 @@ class XCorpse : public XAnyFood
     public:
 
         [[nodiscard]] std::string postEat(XCreature *eater) override;
-        int Compare(XObject * /*o*/) override
+        // A corpse never stacks with anything, not even another of the
+        // same species: each rots on its own clock.
+        bool Compare(XObject * /*o*/) override
         {
-            return -1;
+            return false;
         }
 
         int GetValue() override;

@@ -1193,7 +1193,7 @@ bool XCreature::PickUpItem(XItem* i)
             // it to quiver instead of backpack
             XBodyPart * xbp = GetBodyPart(BP_MISSILE);
 
-            if (xbp && xbp->Item() && xbp->Item()->Compare(i) == 0) {
+            if (xbp && xbp->Item() && xbp->Item()->Compare(i)) {
                 xbp->Item()->Concat(i);
             } else {
                 contain.insert(XItem::Own(i));

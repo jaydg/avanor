@@ -97,7 +97,7 @@ class XScroll : public XItem
         bool isIdentified() override;
         void Identify() override;
         std::string toString() override;
-        int Compare(XObject * o) override;
+        bool Compare(XObject* o) override;
         virtual int onRead(XCreature * cr);
 
         // Non-template, concrete-archive-typed (like XPotion::Save/
