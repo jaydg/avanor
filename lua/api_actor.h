@@ -39,7 +39,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // currently under construction (XLocation::current_location).
 namespace lua_api
 {
-    void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg);
+    void InflictDamage(void* target, int dmg, const RESISTANCE& resist, sol::optional<std::string> msg);
     int ChangeStats(void* cr, int st, int val);
     void UseSkill(void* cr, int skill, sol::optional<int> amount);
     std::tuple<sol::optional<int>, sol::optional<int>> AskDirection(void* cr);

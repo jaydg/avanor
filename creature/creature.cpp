@@ -1042,64 +1042,18 @@ int XCreature::GainAttr(XStats::Id st, int val)
     return 0;
 }
 
-int XCreature::GainResist(XResistance::Id rs, int val)
+int XCreature::GainResist(const RESISTANCE& rs, int val)
 {
     resistances->ChangeResistance(rs, val);
 
-    if (val > 0) {
-        switch (rs) {
-            case XResistance::FIRE:
-                msgwin.Add("Your blood cools down!");
-                break;
+    // What the body notices, if world/resistances.lua wrote anything for
+    // this one. Thirteen of the eighteen had no text at all before, and
+    // said nothing; a row that still says nothing still says nothing.
+    if (const ResistanceStats* row = FindResistance(rs)) {
+        const std::string& text = val > 0 ? row->gained : row->lost;
 
-            case XResistance::COLD:
-                msgwin.Add("Your skin grows warm!");
-                break;
-
-            case XResistance::ACID:
-                msgwin.Add("Your stomach settles!");
-                break;
-
-            case XResistance::POISON:
-                msgwin.Add("Your flesh tingles!");
-                break;
-
-            case XResistance::PARALYSE:
-                msgwin.Add("Your movements grow stronger!");
-                break;
-
-            // The five above are the ones the body notices. Gaining
-            // resistance to disease, blindness, the elements or the
-            // schools of magic is real but goes unremarked - there is no
-            // message written for it yet.
-            default:
-                break;
-        }
-    } else {
-        switch (rs) {
-            case XResistance::FIRE:
-                msgwin.Add("Your blood warms up!");
-                break;
-
-            case XResistance::COLD:
-                msgwin.Add("Your skin grows cold!");
-                break;
-
-            case XResistance::ACID:
-                msgwin.Add("You feel a pain in your stomach!");
-                break;
-
-            case XResistance::POISON:
-                msgwin.Add("You feel vulnerable!");
-                break;
-
-            case XResistance::PARALYSE:
-                msgwin.Add("Your movements are unsure!");
-                break;
-
-            // As above, for losing one.
-            default:
-                break;
+        if (!text.empty()) {
+            msgwin.Add(text);
         }
     }
 
@@ -1114,7 +1068,7 @@ int XCreature::GetStats(XStats::Id st)
     return res > 0 ? res : 1;
 }
 
-int XCreature::GetResistance(XResistance::Id tr)
+int XCreature::GetResistance(RESISTANCE tr)
 {
     assert(resistances);
     return resistances->GetResistance(tr) + added_resists.GetResistance(tr);

@@ -66,11 +66,12 @@ int MoneyOperation(void* cr, int val)
     return ((XCreature*)cr)->MoneyOp(val);
 }
 
-//InflictDamage (target, dmg, RESISTANCE_TYPE, creature ["msg"])
-void InflictDamage(void* target, int dmg, int resist, sol::optional<std::string> msg)
+//InflictDamage (target, dmg, "resistance", creature ["msg"])
+void InflictDamage(void* target, int dmg, const RESISTANCE& resist,
+    sol::optional<std::string> msg)
 {
     XCreature * p = (XCreature*)target;
-    dmg = p->onMagicDamage(dmg, (XResistance::Id)resist);
+    dmg = p->onMagicDamage(dmg, resist);
     p->HP -= dmg;
 
     if (p->HP < 0 && msg) {

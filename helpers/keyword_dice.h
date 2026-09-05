@@ -22,23 +22,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define KEYWORD_DICE_H
 
 #include <string>
+#include <string>
 #include <vector>
 
 #include "helpers/dice.h"
 
 // One "keyword dice" entry parsed out of a data-table string.
 struct KeywordDice {
-    int keyword_index{};
+    // The word as it was written - "St", "fire". Each caller resolves it
+    // in its own vocabulary: stats have a fixed set, resistances are
+    // whatever world/resistances.lua declared, and neither has to know
+    // about the other.
+    std::string keyword;
     XDice dice;
 };
 
 // Parses "keyword dice keyword dice ...", separated by spaces or colons -
 // "St 2d2 Dx 2d4 To 1d1" and "fire:5d5-80 cold:3d10" are both accepted.
-// Each keyword is a stat or resistance name and resolves to its
-// XStats::Id / XResistance::Id value.
+// A keyword this parser does not recognise is skipped, with a complaint -
+// the caller sees only words that named something.
 //
 // Repeated keywords come back as separate entries for the caller to
 // accumulate, so "St 1d1+2 St 1d1" is equivalent to "St 2d1+2".
 std::vector<KeywordDice> ParseKeywordDice(const std::string& str);
+
+// The stat a keyword names, or -1 for a word that is not a stat.
+int StatKeyword(const std::string& keyword);
 
 #endif

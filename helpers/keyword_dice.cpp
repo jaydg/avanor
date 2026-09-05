@@ -42,28 +42,9 @@ const Keyword keywords[] = {
     {"Ma", XStats::MAN},
     {"Pe", XStats::PER},
     {"Ch", XStats::CHR},
-
-    {"white",	XResistance::WHITE},
-    {"black",	XResistance::BLACK},
-    {"fire",	XResistance::FIRE},
-    {"water",	XResistance::WATER},
-    {"air",	XResistance::AIR},
-    {"earth",	XResistance::EARTH},
-    {"acid",	XResistance::ACID},
-    {"cold",	XResistance::COLD},
-    {"poison",	XResistance::POISON},
-    {"disease",	XResistance::DISEASE},
-    {"paralyse",	XResistance::PARALYSE},
-    {"stun",	XResistance::STUN},
-    {"confuse",	XResistance::CONFUSE},
-    {"blind",	XResistance::BLIND},
-    {"light",	XResistance::LIGHT},
-    {"darkness",	XResistance::DARKNESS},
-    {"invisible",	XResistance::INVISIBLE},
-    {"see_invisible", XResistance::SEE_INVISIBLE},
 };
 
-// Exact (case-insensitive).
+// Exact (case-insensitive). Stats only - see the header.
 int KeywordValue(const std::string& keyword)
 {
     for (const auto& entry : keywords) {
@@ -72,12 +53,17 @@ int KeywordValue(const std::string& keyword)
         }
     }
 
-    assert(!"unknown keyword in a keyword/dice string");
-
-    return 0;
+    // Not a stat. Resistances go through their own vocabulary, so this is
+    // an ordinary answer here rather than a mistake.
+    return -1;
 }
 
 } // namespace
+
+int StatKeyword(const std::string& keyword)
+{
+    return KeywordValue(keyword);
+}
 
 std::vector<KeywordDice> ParseKeywordDice(const std::string& str)
 {
@@ -101,7 +87,7 @@ std::vector<KeywordDice> ParseKeywordDice(const std::string& str)
 
     for (std::size_t i = 0; i + 1 < tokens.size(); i += 2) {
         KeywordDice pair;
-        pair.keyword_index = KeywordValue(tokens[i]);
+        pair.keyword = tokens[i];
         pair.dice.Setup(tokens[i + 1]);
         pairs.push_back(pair);
     }

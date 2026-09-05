@@ -125,23 +125,23 @@ RESULT XCorpse::onEat(XCreature * eater)
                     break;
 
                 case EffectType::MODIFY_R_FIRE:
-                    eater->GainResist(XResistance::FIRE, it.value);
+                    eater->GainResist("fire", it.value);
                     break;
 
                 case EffectType::MODIFY_R_COLD:
-                    eater->GainResist(XResistance::COLD, it.value);
+                    eater->GainResist("cold", it.value);
                     break;
 
                 case EffectType::MODIFY_R_ACID:
-                    eater->GainResist(XResistance::ACID, it.value);
+                    eater->GainResist("acid", it.value);
                     break;
 
                 case EffectType::MODIFY_R_POISON:
-                    eater->GainResist(XResistance::POISON, it.value);
+                    eater->GainResist("poison", it.value);
                     break;
 
                 case EffectType::MODIFY_R_PARALYSE:
-                    eater->GainResist(XResistance::PARALYSE, it.value);
+                    eater->GainResist("paralyse", it.value);
                     break;
 
                 case EffectType::POISON: {

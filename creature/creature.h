@@ -425,7 +425,7 @@ class XCreature : public XBaseObject
         int GetDV(XCreature* attacker = nullptr);
         int GetDMG();
         int GetPV();
-        int GetResistance(XResistance::Id tr);
+        int GetResistance(RESISTANCE tr);
         int GetVisibleRadius();
 
         // How far this creature can actually see where it stands: its own
@@ -509,14 +509,14 @@ class XCreature : public XBaseObject
 
         int GetStats(XStats::Id st);
         int GainAttr(XStats::Id st, int val);
-        int GainResist(XResistance::Id rs, int val);
+        int GainResist(const RESISTANCE& rs, int val);
         int GetMaxHP();
         int GetMaxPP();
         int GetExp() const;
         int GetCreatureStrength();
 
         int InflictDamage(DAMAGE_DATA_EX* pData);
-        int onMagicDamage(int dmg, XResistance::Id tr);
+        int onMagicDamage(int dmg, RESISTANCE tr);
         // Immediate damage only - what the attack's elemental brands and
         // slayer bonuses do against this creature's resistances and class.
         // The elemental/slayer damage `brt` produces against this

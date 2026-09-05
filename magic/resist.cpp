@@ -20,32 +20,78 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include <iostream>
+#include <utility>
+
 #include "engine/global.h"
 #include "helpers/keyword_dice.h"
 #include "magic/resist.h"
 
 void XResistance::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("XResistance",
-        "WHITE", XResistance::WHITE,
-        "BLACK", XResistance::BLACK,
-        "FIRE", XResistance::FIRE,
-        "WATER", XResistance::WATER,
-        "AIR", XResistance::AIR,
-        "EARTH", XResistance::EARTH,
-        "ACID", XResistance::ACID,
-        "COLD", XResistance::COLD,
-        "POISON", XResistance::POISON,
-        "DISEASE", XResistance::DISEASE,
-        "PARALYSE", XResistance::PARALYSE,
-        "STUN", XResistance::STUN,
-        "CONFUSE", XResistance::CONFUSE,
-        "BLIND", XResistance::BLIND,
-        "LIGHT", XResistance::LIGHT,
-        "DARKNESS", XResistance::DARKNESS,
-        "INVISIBLE", XResistance::INVISIBLE,
-        "SEE_INVISIBLE", XResistance::SEE_INVISIBLE
+    lua.new_usertype<ResistanceBuilder>("Resistance",
+        sol::constructors<ResistanceBuilder(std::string)>(),
+        "Called", &ResistanceBuilder::Called,
+        "Gained", &ResistanceBuilder::Gained,
+        "Lost", &ResistanceBuilder::Lost,
+        "Register", &ResistanceBuilder::Register
     );
+}
+
+std::vector<ResistanceStats> resistances_db;
+
+const ResistanceStats* FindResistance(const RESISTANCE& r)
+{
+    for (const auto& row : resistances_db) {
+        if (row.id == r) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+ResistanceBuilder::ResistanceBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+ResistanceBuilder& ResistanceBuilder::Called(const std::string& name)
+{
+    t.name = name;
+    return *this;
+}
+
+ResistanceBuilder& ResistanceBuilder::Gained(const std::string& text)
+{
+    t.gained = text;
+    return *this;
+}
+
+ResistanceBuilder& ResistanceBuilder::Lost(const std::string& text)
+{
+    t.lost = text;
+    return *this;
+}
+
+void ResistanceBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a resistance with no id" << std::endl;
+        return;
+    }
+
+    if (FindResistance(t.id)) {
+        std::cerr << "world: two resistances both called '" << t.id << "'"
+                  << std::endl;
+        return;
+    }
+
+    if (t.name.empty()) {
+        t.name = t.id;
+    }
+
+    resistances_db.push_back(std::move(t));
 }
 
 
@@ -54,53 +100,7 @@ XResistance::XResistance(const XResistance* xr)
     Set(xr);
 }
 
-XResistance::XResistance()
-{
-    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-        SetResistance(static_cast<XResistance::Id>(i), 0);
-    }
-}
-
 namespace {
-
-// Which side of the game a resistance can turn up on. Recorded for every
-// one of them below, though nothing reads it yet.
-enum class Fluence {
-    NONE,
-    CREATURE,
-    ITEM,
-    ALL
-};
-
-// A resistance's name as the world scripts spell it - "fire:5d5-50" - in
-// XResistance::Id order, offset by one so that UNKNOWN sits at 0.
-struct ResistRecord {
-    const char* name;
-    Fluence fluence;
-};
-
-const ResistRecord resists_data[] = {
-    {"unknown",	Fluence::NONE},
-    {"white",	Fluence::CREATURE},
-    {"black",	Fluence::CREATURE},
-    {"fire",	Fluence::ALL},
-    {"water",	Fluence::ALL},
-    {"air",	Fluence::ALL},
-    {"earth",	Fluence::ALL},
-    {"acid",	Fluence::ALL},
-    {"cold",	Fluence::ALL},
-    {"poison",	Fluence::CREATURE},
-    {"disease",	Fluence::CREATURE},
-    {"paralyse",	Fluence::CREATURE},
-    {"stun",	Fluence::CREATURE},
-    {"confuse",	Fluence::CREATURE},
-    {"blind",	Fluence::CREATURE},
-    {"light",	Fluence::CREATURE},
-    {"darkness",	Fluence::CREATURE},
-    {"invisible",	Fluence::CREATURE},
-    {"see_invisible",	Fluence::CREATURE},
-    {"eof", Fluence::NONE}
-};
 
 
 // The value token following `param` in a "name value name value" string:
@@ -144,76 +144,66 @@ XResistance::XResistance(const char* str1)
     const std::string str = str1 ? str1 : "";
     XDice d;
 
-    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-        const std::string value = FindParam(str, resists_data[i + 1].name);
+    for (const auto& row : resistances_db) {
+        const std::string value = FindParam(str, row.id);
 
-        if (value.empty()) {
-            SetResistance(static_cast<XResistance::Id>(i), 0);
-        } else {
+        if (!value.empty()) {
             d.Setup(value);
-            SetResistance(static_cast<XResistance::Id>(i), d.Throw());
+            SetResistance(row.id, d.Throw());
         }
     }
 }
 
 void XResistance::Set(const XResistance* r)
 {
-    if (r)
-        for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-            SetResistance(static_cast<XResistance::Id>(i), r->GetResistance(static_cast<XResistance::Id>(i)));
-        }
+    if (r) {
+        resistances = r->resistances;
+    }
 }
 
 void XResistance::Add(const XResistance* r)
 {
-    if (r)
-        for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-            resistances[i] += r->resistances[i];
+    if (r) {
+        for (const auto& [id, val] : r->resistances) {
+            resistances[id] += val;
         }
+    }
 }
 
 void XResistance::Sub(const XResistance* r)
 {
-    if (r)
-        for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-            resistances[i] -= r->resistances[i];
+    if (r) {
+        for (const auto& [id, val] : r->resistances) {
+            resistances[id] -= val;
         }
-};
+    }
+}
 
 bool XResistance::isEqual(const XResistance* xr) const
 {
-    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++)
-        if (resistances[i] != xr->resistances[i]) {
+    // Compared by what each actually carries, in both directions: a
+    // resistance absent from one map and zero in the other is the same
+    // thing, and neither should count as a difference.
+    for (const auto& [id, val] : resistances) {
+        if (val != xr->GetResistance(id)) {
             return false;
         }
+    }
+
+    for (const auto& [id, val] : xr->resistances) {
+        if (val != GetResistance(id)) {
+            return false;
+        }
+    }
 
     return true;
 }
 
-const char* resist_name[] = {
-    "White magic",
-    "Black magic",
-    "Fire magic",
-    "Water magic",
-    "Air magic",
-    "Earth magic",
-    "Acid",
-    "Cold",
-    "Poison",
-    "Disease",
-    "Paralyzation",
-    "Stun",
-    "Confusion",
-    "Blindness",
-    "Light",
-    "Darkness",
-    "Invisible",
-    "See Invisible"
-};
-
-const char* XResistance::GetResistanceName(const XResistance::Id r)
+const std::string& XResistance::GetResistanceName(const RESISTANCE& r)
 {
-    return resist_name[r];
+    static const std::string nothing;
+    const ResistanceStats* row = FindResistance(r);
+    return row ? row->name : nothing;
 }
 
 const char* resist_level[] = {
@@ -227,38 +217,35 @@ const char* resist_level[] = {
     "<QUALITY_PERFECT>complete"
 };
 
-const char* XResistance::GetResistanceLevel(const XResistance::Id r) const
+const char* XResistance::GetResistanceLevel(const RESISTANCE& r) const
 {
-    if (resistances[r] < -50) {
+    const int val = GetResistance(r);
+
+    if (val < -50) {
         return resist_level[0];
-    } else if (resistances[r] < 0) {
+    } else if (val < 0) {
         return resist_level[1];
-    } else if (resistances[r] == 0) {
+    } else if (val == 0) {
         return resist_level[2];
-    } else if (resistances[r] < 10) {
+    } else if (val < 10) {
         return resist_level[3];
-    } else if (resistances[r] < 40) {
+    } else if (val < 40) {
         return resist_level[4];
-    } else if (resistances[r] < 80) {
+    } else if (val < 80) {
         return resist_level[5];
-    } else if (resistances[r] < 100) {
+    } else if (val < 100) {
         return resist_level[6];
     } else {
         return resist_level[7];
     }
 }
 
-XResistGenerator::XResistGenerator()
-{
-    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-        resist[i].Setup(0, 0, 0);
-    }
-}
+XResistGenerator::XResistGenerator() = default;
 
 void XResistGenerator::Init(const char* str)
 {
-    for (auto [keyword_index, dice]: ParseKeywordDice(str)) {
-        resist[keyword_index].Setup(dice);
+    for (auto [keyword, dice]: ParseKeywordDice(str)) {
+        resist[keyword].Setup(dice);
     }
 }
 
@@ -266,8 +253,8 @@ std::unique_ptr<XResistance> XResistGenerator::Generate()
 {
     auto r = std::make_unique<XResistance>();
 
-    for (int i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-        r->SetResistance(static_cast<XResistance::Id>(i), resist[i].Throw());
+    for (auto& [id, dice] : resist) {
+        r->SetResistance(id, dice.Throw());
     }
 
     return r;

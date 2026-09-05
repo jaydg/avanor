@@ -21,62 +21,110 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef RESIST_H
 #define RESIST_H
 
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
+
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
 
 #include <cereal/cereal.hpp>
 #include <sol/forward.hpp>
 
 #include "helpers/dice.h"
 
+// One of the ways a creature or an item can be hardened against harm -
+// fire, poison, being blinded. Which ones exist is content: a world with
+// radiation in it declares a resistance to radiation, and nothing in the
+// engine has to hear about it.
+using RESISTANCE = std::string;
+
+// "No resistance": the answer when something is asked about one nothing
+// defines. Was XResistance::NONE.
+inline const RESISTANCE RS_NONE;
+
+// The ones the engine still names, because it implements a rule that
+// mentions them: what a modifier's damage is resisted by, and the pair
+// that decides who can see whom. Everything else is named only in world/.
+inline constexpr const char* RS_POISON = "poison";
+inline constexpr const char* RS_CONFUSE = "confuse";
+inline constexpr const char* RS_STUN = "stun";
+inline constexpr const char* RS_INVISIBLE = "invisible";
+inline constexpr const char* RS_SEE_INVISIBLE = "see_invisible";
+
+// One sort of resistance, as world/resistances.lua declares it.
+struct ResistanceStats {
+    RESISTANCE id;
+    std::string name;
+
+    // What the body notices when it gains or loses one. Either may be
+    // empty, and then nothing is said - which is what most of them did
+    // before, there being no text written for thirteen of the eighteen.
+    std::string gained;
+    std::string lost;
+};
+
+// Every resistance content declared, in declaration order - which is the
+// order they are listed in wherever they are shown.
+extern std::vector<ResistanceStats> resistances_db;
+
+const ResistanceStats* FindResistance(const RESISTANCE& r);
+
+// Fluent builder:
+//
+//   Resistance.new("fire")
+//       :Called("fire")
+//       :Gained("Your blood cools down!")
+//       :Lost("Your blood warms up!")
+//       :Register()
+class ResistanceBuilder
+{
+    public:
+        explicit ResistanceBuilder(std::string id);
+
+        ResistanceBuilder& Called(const std::string& name);
+        ResistanceBuilder& Gained(const std::string& text);
+        ResistanceBuilder& Lost(const std::string& text);
+
+        void Register();
+
+    private:
+        ResistanceStats t;
+};
+
 class XResistance
 {
     public:
-        enum Id {
-            NONE = -1,
-            WHITE,
-            BLACK,
-            FIRE,
-            WATER,
-            AIR,
-            EARTH,
-            ACID,
-            COLD,
-            POISON,
-            DISEASE,
-            PARALYSE,
-            STUN,
-            CONFUSE,
-            BLIND,
-            LIGHT,
-            DARKNESS,
-            INVISIBLE,
-            SEE_INVISIBLE,
-            COUNT
-        };
-
-        // Registers this enum as the Lua table XResistance.MEMBER.
+        // Registers the Resistance builder. There is no table of names any
+        // more: content spells them as strings, the way it does item types.
         static void RegisterLua(sol::state_view& lua);
 
         explicit XResistance(const XResistance* xr);
 
-        XResistance();
+        XResistance() = default;
 
         // format fire:3d6+N water:2d2+3
         explicit XResistance(const char* str1);
 
-        [[nodiscard]] int GetResistance(const Id r) const
+        [[nodiscard]] int GetResistance(const RESISTANCE& r) const
         {
-            return resistances[r];
+            const auto it = resistances.find(r);
+            return it == resistances.end() ? 0 : it->second;
         }
 
-        void SetResistance(const Id r, const int val)
+        void SetResistance(const RESISTANCE& r, const int val)
         {
-            resistances[r] = val;
+            if (!r.empty()) {
+                resistances[r] = val;
+            }
         }
 
-        void ChangeResistance(const Id r, const int val)
+        void ChangeResistance(const RESISTANCE& r, const int val)
         {
-            resistances[r] += val;
+            if (!r.empty()) {
+                resistances[r] += val;
+            }
         }
 
         void Add(const XResistance* r);
@@ -85,11 +133,18 @@ class XResistance
 
         void Set(const XResistance* r);
 
-        static const char* GetResistanceName(Id r);
+        static const std::string& GetResistanceName(const RESISTANCE& r);
 
-        [[nodiscard]] const char* GetResistanceLevel(Id r) const;
+        [[nodiscard]] const char* GetResistanceLevel(const RESISTANCE& r) const;
 
         bool isEqual(const XResistance* xr) const;
+
+        // Everything this carries, so callers can walk what is actually
+        // set rather than every resistance that could exist.
+        [[nodiscard]] const std::map<RESISTANCE, int>& All() const
+        {
+            return resistances;
+        }
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -98,12 +153,14 @@ class XResistance
         }
 
     protected:
-        int resistances[COUNT]{};
+        // Keyed by id, not indexed: content may add or reorder without
+        // spoiling a save, and a creature carries only what it has.
+        std::map<RESISTANCE, int> resistances;
 };
 
 class XResistGenerator
 {
-        XDice resist[XResistance::COUNT];
+        std::map<RESISTANCE, XDice> resist;
     public:
         XResistGenerator();
         void Init(const char* str);

@@ -178,7 +178,7 @@ end
 function GasMineEvent(e, p)
 	if (e == LuaEvent.MOVE) then
 		if (QuestStatus(QUEST_TORIN) < XQuest.COMPLETE and Rand(3) == 0) then
-			InflictDamage(p, Rand(5) + 2, XResistance.POISON, "mysterious gas")
+			InflictDamage(p, Rand(5) + 2, "poison", "mysterious gas")
 		end
 	end
 end

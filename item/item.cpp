@@ -531,9 +531,9 @@ int XItem::GetValue()
     int xresist = 0;
 
     if (resistances)
-        for (i = XResistance::WHITE; i < XResistance::COUNT; i++) {
-            int tr = resistances->GetResistance((XResistance::Id)i);
-
+        // Only what this item actually carries, rather than every
+        // resistance that could exist.
+        for (const auto& [id, tr] : resistances->All()) {
             if (tr < 10) {
                 xresist += tr * 2;
             } else if (tr < 30) {
@@ -795,7 +795,7 @@ int XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
     const ENHANCE_STRUCT* enh = FindArmourEnchantment(special_number);
 
     if (enh && (enh->brt & AttackEffectType::FIRE) != AttackEffectType::NONE) {
-        //	user->MagicAttack(target, dice.Throw(), XResistance::FIRE);
+        //	user->MagicAttack(target, dice.Throw(), "fire");
     }
 
     return 1;

@@ -88,7 +88,13 @@ XStats::XStats(const char* str)
 
 void XStats::Set(const char* str)
 {
-    for (auto [keyword_index, dice]: ParseKeywordDice(str)) {
+    for (auto [keyword, dice]: ParseKeywordDice(str)) {
+        const int keyword_index = StatKeyword(keyword);
+
+        if (keyword_index < 0) {
+            continue;
+        }
+
         stats[keyword_index] += dice.Throw() * 100;
     }
 }
@@ -138,7 +144,13 @@ XStatsGenerator::XStatsGenerator()
 
 void XStatsGenerator::Init(const char* str)
 {
-    for (auto [keyword_index, dice]: ParseKeywordDice(str)) {
+    for (auto [keyword, dice]: ParseKeywordDice(str)) {
+        const int keyword_index = StatKeyword(keyword);
+
+        if (keyword_index < 0) {
+            continue;
+        }
+
         stats[keyword_index].Setup(dice);
     }
 }

@@ -314,13 +314,15 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
     int flag = 0;
     XResistance tr;
 
-    for (int i = 0; i < XResistance::COUNT; i++) {
-        const auto res = static_cast<XResistance::Id>(i);
+    // Walked in the order world/resistances.lua declares them, so the list
+    // reads the same way every time rather than in whatever order a map
+    // happens to hold.
+    for (const auto& row : resistances_db) {
+        tr.SetResistance(row.id, GetResistance(row.id));
 
-        tr.SetResistance(res, GetResistance(res));
-
-        if (tr.GetResistance(res) != 0) {
-            auto res_str = fmt::format("<TEXT>{:<15}{}", tr.GetResistanceName(res), tr.GetResistanceLevel(res));
+        if (tr.GetResistance(row.id) != 0) {
+            auto res_str = fmt::format("<TEXT>{:<15}{}",
+                XResistance::GetResistanceName(row.id), tr.GetResistanceLevel(row.id));
             list.AddItem(new XGuiItem_Text(res_str, 0), 0);
             flag = 1;
         }

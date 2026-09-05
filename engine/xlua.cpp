@@ -260,7 +260,7 @@ void XLua::Init()
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XDeity", "XEffect", "XLocation",
-            "XQuest", "XResistance", "XSkill", "XStairWay", "XStandardAI",
+            "XQuest", "XSkill", "XStairWay", "XStandardAI",
             "CombatGroup", "CombatRole", "XStats", "XTileType",
         }) {
         MakeStrict(lua, enum_table);

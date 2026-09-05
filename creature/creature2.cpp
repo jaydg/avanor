@@ -118,7 +118,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
     return res;
 }
 
-int XCreature::onMagicDamage(const int dmg, const XResistance::Id tr)
+int XCreature::onMagicDamage(const int dmg, const RESISTANCE tr)
 {
     assert(isValid());
     const int damage = dmg - (dmg * GetResistance(tr)) / 100;
@@ -143,18 +143,18 @@ int XCreature::CauseEffect(int dmg, AttackEffectType aet, bool* applied)
 
     // An element the attack carries always counts as applied, even when
     // resistance leaves nothing of it - that zero is the whole point.
-    const auto element = [&](const AttackEffectType bit, const XResistance::Id resist) {
+    const auto element = [&](const AttackEffectType bit, const RESISTANCE resist) {
         if ((aet & bit) != AttackEffectType::NONE) {
             matched = true;
             damage += onMagicDamage(dmg, resist);
         }
     };
 
-    element(AttackEffectType::FIRE, XResistance::FIRE);
-    element(AttackEffectType::COLD, XResistance::COLD);
-    element(AttackEffectType::ACID, XResistance::ACID);
-    element(AttackEffectType::EARTH, XResistance::EARTH);
-    element(AttackEffectType::LIGHTNING, XResistance::AIR);
+    element(AttackEffectType::FIRE, "fire");
+    element(AttackEffectType::COLD, "cold");
+    element(AttackEffectType::ACID, "acid");
+    element(AttackEffectType::EARTH, "earth");
+    element(AttackEffectType::LIGHTNING, "air");
 
     // A slayer brand against something it does not slay has not applied at
     // all - unlike a resisted element, there is nothing here to reduce.
@@ -398,7 +398,7 @@ int XCreature::isCreatureVisible(XCreature * cr)
         return 0;
     }
 
-    if ((cr->GetResistance(XResistance::INVISIBLE) <= GetResistance(XResistance::SEE_INVISIBLE)) || cr == this) {
+    if ((cr->GetResistance("invisible") <= GetResistance("see_invisible")) || cr == this) {
         return 1;
     } else {
         return 0;
