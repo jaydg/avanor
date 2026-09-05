@@ -108,7 +108,6 @@ struct PotionDescription {
     // distils into, where a common herb yielding a rare potion is the
     // point rather than a mistake.
     static PotionName GetAnyPotion();
-    static void RunOnce();
     static int potion_total_value;
     static PotionDescription* GetRec(const PotionName& pn);
 

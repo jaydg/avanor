@@ -158,15 +158,6 @@ std::vector<PotionDescription> potion_descr;
 
 int PotionDescription::potion_total_value = 0;
 
-void PotionDescription::RunOnce()
-{
-    potion_total_value = 0;
-
-    for (const auto& row : potion_descr) {
-        potion_total_value += row.rarity;
-    }
-}
-
 PotionBuilder::PotionBuilder(std::string id)
 {
     t.pn = std::move(id);
