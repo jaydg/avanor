@@ -29,6 +29,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "item/item_cereal.h"
 #include "item/xpotion.h"
+#include <sol/sol.hpp>
+
+#include "engine/xlua.h"
 #include "item/xscroll.h"
 
 REGISTER_CLASS(XScroll);
@@ -45,6 +48,10 @@ struct ScrollDescription {
     int value{0};
     int rarity{0};
     bool read_in_combat{false};
+
+    // A scroll whose reading is not an effect says here which Lua
+    // function carries it out. The engine names no scroll of its own.
+    std::string read_handler;
 
     // What this game calls it before anyone works out what it is, and
     // whether they have. The only two fields that are not content: they
@@ -105,6 +112,12 @@ ScrollBuilder& ScrollBuilder::Called(const std::string& name)
     return *this;
 }
 
+ScrollBuilder& ScrollBuilder::OnRead(const std::string& handler)
+{
+    read_handler = handler;
+    return *this;
+}
+
 ScrollBuilder& ScrollBuilder::Effect(const XEffect::Id eff)
 {
     effect = eff;
@@ -148,6 +161,7 @@ void ScrollBuilder::Register()
     row.value = value;
     row.rarity = rarity;
     row.read_in_combat = read_in_combat;
+    row.read_handler = read_handler;
     row.label = ScrollDescription::RollLabel();
 
     scroll_total_rarity += rarity;
@@ -300,14 +314,26 @@ int XScroll::onRead(XCreature * cr)
         }
 
         flag = XEffect::Make(&ed);
-    } else if (sc_name == SC_RECIPE && cr->isHero()) {
-        // The one scroll that is not an effect: it teaches a recipe, and
-        // recipes are still C++ (XAlchemy). When they become content this
-        // goes with them and C++ stops naming any scroll at all.
-        const int val = vRand(XAlchemy::GetRecipeCount());
+    } else if (!row->read_handler.empty()) {
+        // A scroll that is not an effect: content says what reading it
+        // does. This is how the recipe scroll works, and it is the reason
+        // the engine no longer names any scroll at all.
+        sol::state_view lua(XLua::State());
+        sol::protected_function handler = lua[row->read_handler];
 
-        if (XAlchemyRecipe * pRec = XAlchemy::GetRecipe(val)) {
-            flag = ((XHero*)cr)->LearnRecipe(pRec->pn1, pRec->pn2, pRec->result);
+        if (!handler.valid()) {
+            std::cerr << "world: the scroll '" << row->id << "' is read through '"
+                      << row->read_handler << "', which is not defined" << std::endl;
+        } else {
+            const auto result = handler((void*)cr);
+
+            if (!result.valid()) {
+                const sol::error err = result;
+                std::cerr << "world: reading '" << row->id << "' failed: "
+                          << err.what() << std::endl;
+            } else {
+                flag = result.get<int>();
+            }
         }
     }
 

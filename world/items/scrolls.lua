@@ -9,6 +9,10 @@
 --       :Called(name)       what it reads as once somebody knows it
 --       :Effect(XEffect.X)  what reading it does. Unsaid, it does nothing
 --                           by itself - see "recipe" below
+--       :OnRead(handler)    for a scroll whose reading is not an effect:
+--                           the Lua function it hands over to, called with
+--                           the reader. It answers 1 if the reading was
+--                           worth something, 0 if it was not
 --       :Worth(value)
 --       :Chance(rarity)     its weight in the draw against other scrolls
 --       :ReadInCombat()     a monster holding one will read it at an enemy.
@@ -151,11 +155,36 @@ Scroll.new("see_invisible")
 	:Chance(50)
 	:Register()
 
--- The one scroll that is not an effect: it teaches an alchemy recipe, and
--- recipes are still C++ (XAlchemy). The engine names this id - SC_RECIPE in
--- item/xscroll.h - and that is the last scroll it knows about by name.
+-- The one scroll that is not an effect: it teaches an alchemy recipe.
+-- Which recipes exist is not declared anywhere in world/ - they are dealt
+-- out afresh each game from the potions' own :Alchemy() levels - so this
+-- asks for one rather than naming it.
 Scroll.new("recipe")
 	:Called("recipe")
 	:Worth(30)
 	:Chance(25)
+	:OnRead("TeachAlchemyRecipe")
 	:Register()
+
+-- Answers 1 when the reader is better off for having read it, 0 when the
+-- scroll told them nothing they did not know - which is what makes the
+-- engine say "You feel nothing special."
+function TeachAlchemyRecipe(reader)
+	local count = AlchemyRecipeCount()
+
+	if (count < 1) then
+		return 0
+	end
+
+	local first, second, result = AlchemyRecipe(Rand(count))
+
+	if (not first) then
+		return 0
+	end
+
+	if (LearnAlchemyRecipe(reader, first, second, result)) then
+		return 1
+	end
+
+	return 0
+end

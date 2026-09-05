@@ -507,6 +507,40 @@ int PotionAlchemyPower(const std::string& pn)
     return row ? row->alchemy_power : 0;
 }
 
+// The alchemy recipes of this game. Which potions can be mixed and into
+// what is dealt out afresh each game from the potions' own :Alchemy()
+// levels - like the herb mapping, it is per-game state, not content - so
+// content asks for it rather than declaring it.
+int AlchemyRecipeCount()
+{
+    return XAlchemy::GetRecipeCount();
+}
+
+// The two potions of one recipe and what they make, or nothing if there
+// is no recipe with that number.
+sol::optional<std::tuple<std::string, std::string, std::string>> AlchemyRecipe(const int num)
+{
+    if (const XAlchemyRecipe* rec = XAlchemy::GetRecipe(num)) {
+        return std::make_tuple(rec->pn1, rec->pn2, rec->result);
+    }
+
+    return sol::nullopt;
+}
+
+// Teach somebody a recipe. Answers false when they knew it already,
+// which is what tells a scroll it taught nothing.
+bool LearnAlchemyRecipe(void* who, const std::string& pn1, const std::string& pn2,
+    const std::string& result)
+{
+    XCreature* cr = (XCreature*)who;
+
+    if (!cr || !cr->isHero()) {
+        return false;
+    }
+
+    return ((XHero*)cr)->LearnRecipe(pn1, pn2, result) != 0;
+}
+
 void DropMoney(void* who, const int amount, const int x, const int y)
 {
     XCreature* cr = (XCreature*)who;
@@ -711,6 +745,9 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("StopCorpseRotting", &lua_api::StopCorpseRotting);
     lua.set_function("HerbPotion", &lua_api::HerbPotion);
     lua.set_function("PotionAlchemyPower", &lua_api::PotionAlchemyPower);
+    lua.set_function("AlchemyRecipeCount", &lua_api::AlchemyRecipeCount);
+    lua.set_function("AlchemyRecipe", &lua_api::AlchemyRecipe);
+    lua.set_function("LearnAlchemyRecipe", &lua_api::LearnAlchemyRecipe);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
     lua.set_function("SetTile", &lua_api::SetTile);
     lua.set_function("WindingRoad", &lua_api::WindingRoad);

@@ -29,13 +29,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Which scroll this is - the id world/items/scrolls.lua registered it
 // under. A string, like every other content id: the list of scrolls is
-// content, and the engine has no business knowing it.
+// content, and the engine names none of them.
 using ScrollName = std::string;
-
-// The one scroll C++ still names, because what it does - teaching an
-// alchemy recipe - has no XEffect to point at. Every other scroll is its
-// effect and needs nothing here.
-inline constexpr const char* SC_RECIPE = "recipe";
 
 // "Any scroll": the request to pick one, weighted by rarity.
 inline constexpr const char* SC_ANY = "";
@@ -49,6 +44,10 @@ inline constexpr const char* SC_ANY = "";
 //       :Chance(60)
 //       :Register()
 //
+// A scroll whose reading is not an effect names a Lua function with
+// :OnRead() instead, which is called with the reader and answers whether
+// the reading was worth anything.
+//
 // The builder holds the row's fields rather than a ScrollDescription,
 // which stays private to xscroll.cpp along with the table itself.
 class ScrollBuilder
@@ -61,6 +60,7 @@ class ScrollBuilder
         ScrollBuilder& Worth(int value);
         ScrollBuilder& Chance(int rarity);
         ScrollBuilder& ReadInCombat();
+        ScrollBuilder& OnRead(const std::string& handler);
 
         void Register();
 
@@ -71,6 +71,7 @@ class ScrollBuilder
         int value{0};
         int rarity{0};
         bool read_in_combat{false};
+        std::string read_handler;
 };
 
 class XScroll : public XItem

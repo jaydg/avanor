@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fstream>
 #include <fmt/format.h>
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <vector>
@@ -518,7 +519,16 @@ XAlchemy::~XAlchemy()
 
 void XAlchemy::Init()
 {
-    for (int i = 1; i < 5; i++) {
+    // How many tiers there are is content: it is however deep the
+    // potions' own :Alchemy() levels go. Recipes turn each tier into the
+    // one above, so the deepest tier is made but makes nothing.
+    int deepest = 0;
+
+    for (const auto& row : potion_descr) {
+        deepest = std::max(deepest, row.alchemy_power);
+    }
+
+    for (int i = 1; i < deepest; i++) {
         alchemy.BuildRecipes(i);
     }
 
@@ -557,7 +567,21 @@ void XAlchemy::BuildRecipes(int al_lvl)
     int* tbl = new int[tbl_src * tbl_src];
     memset(tbl, -1, sizeof(int) * tbl_src * tbl_src);
 
-    for (int j = 0; j < tbl_dest; j++) {
+    // Every potion of the tier above gets one recipe, made of two
+    // different potions of this one. There are tbl_src * (tbl_src - 1)
+    // ordered pairs to go round; if content declares more potions on the
+    // upper tier than that, the search below would never find a free pair
+    // and would spin for ever, so say so and leave the rest unmakeable.
+    const int pairs = tbl_src * (tbl_src - 1);
+
+    if (tbl_dest > pairs) {
+        std::cerr << "world: alchemy level " << al_lvl + 1 << " has " << tbl_dest
+                  << " potions but level " << al_lvl << " offers only " << pairs
+                  << " pairs to make them from - "
+                  << (tbl_dest - pairs) << " will have no recipe" << std::endl;
+    }
+
+    for (int j = 0; j < tbl_dest && j < pairs; j++) {
         while (true) {
             const int pos1 = vRand(tbl_src);
             int pos2 = vRand(tbl_src);

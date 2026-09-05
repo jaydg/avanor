@@ -11,8 +11,11 @@
 --                              :OnDrink() handler instead
 --       :Chance(rarity)        its weight in the draw against other potions
 --       :Worth(value)
---       :Alchemy(power)        how hard it is to distil - the alchemy set
---                              and the recipe ladder both read this
+--       :Alchemy(power)        which rung of the alchemy ladder it sits on.
+--                              Two potions of one rung mix into one of the
+--                              rung above, and how deep the ladder goes is
+--                              however deep these numbers go. Also how hard
+--                              the alchemy set finds it to distil
 --       :Looks(PotionColor.X)  its appearance, when it must be a particular
 --                              one (water is clear). Unsaid, it takes a
 --                              colour no other potion has this game

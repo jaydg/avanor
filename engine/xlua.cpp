@@ -393,6 +393,7 @@ void XLua::Init()
             "Worth", &ScrollBuilder::Worth,
             "Chance", &ScrollBuilder::Chance,
             "ReadInCombat", &ScrollBuilder::ReadInCombat,
+            "OnRead", &ScrollBuilder::OnRead,
             "Register", &ScrollBuilder::Register
         );
 
