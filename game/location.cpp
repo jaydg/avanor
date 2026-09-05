@@ -40,7 +40,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "game/location.h"
 #include "game/quest.h"
-#include "game/setting.h"
 #include "game/shop.h"
 #include "helpers/msgwin.h"
 #include "item/itemf.h"

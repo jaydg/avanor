@@ -34,6 +34,9 @@ class XGame
 {
         void CreateLocations() const;
         void CreateHero() const;
+
+        bool demo = false;
+
     public:
         XGame();
         ~XGame();
@@ -44,7 +47,17 @@ class XGame
         // Sets the world up for a new, restored, test or demo game.
         // False means the world is not playable and Run() must not be
         // called on it - see the 'R' case.
-        [[nodiscard]] bool Create(char type_of_start) const;
+        [[nodiscard]] bool Create(char type_of_start);
+
+        // Whether this game is running itself for show: there is no hero,
+        // and the view follows whichever creature stands in for one (see
+        // XCreature::main_creature and SetMainCreature()). Set by
+        // Create('D') and asked about wherever the hero's own view would
+        // otherwise be drawn.
+        [[nodiscard]] bool isDemo() const
+        {
+            return demo;
+        }
         XCreature* NewCreature(XCreature * cr, int x, int y, XLocation * loc);
         // Keyed by XLocation::id.
         //

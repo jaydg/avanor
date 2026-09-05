@@ -32,7 +32,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream>
 #include "game/game.h"
 #include "game/quest.h"
-#include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "item/xherb.h"
 #include "map/map_objects.h"
@@ -98,7 +97,7 @@ bool WorldHasHero()
 
 } // namespace
 
-bool XGame::Create(const char type_of_start) const
+bool XGame::Create(const char type_of_start)
 {
     switch (type_of_start) {
         case 'R' :
@@ -171,7 +170,7 @@ bool XGame::Create(const char type_of_start) const
             vGotoXY((size_x - strlen("Preparing for demo, please wait...")) / 2, size_y / 2);
             vPutS("<TEXT>Preparing for demo, please wait...");
             vRefresh();
-            XSettings::isDemo = 1;
+            demo = true;
 
             CreateLocations();
             break;

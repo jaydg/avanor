@@ -27,7 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "game/location.h"
 #include "game/quest.h"
-#include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "item/item_misc.h"
 #include "item/xanyfood.h"
@@ -665,7 +664,7 @@ void DisableMoveHandler(void* cr)
 
 void SetMainCreature(void* cr)
 {
-    if (XSettings::isDemo) {
+    if (Game.isDemo()) {
         XCreature::main_creature = (XCreature*)cr;
     }
 }

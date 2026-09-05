@@ -40,7 +40,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/std_ai.h"
 #include "creature/xhero.h"
 #include "game/game.h"
-#include "game/setting.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
 #include "map/map_objects.h"
@@ -486,7 +485,7 @@ void XCreature::Move()
     // to run here too. Was XBeelzvile-specific (creature/unique.cpp) before
     // being generalized to any main_creature, since it's demo-mode
     // plumbing, not creature-specific behavior.
-    if (XSettings::isDemo && this == main_creature) {
+    if (Game.isDemo() && this == main_creature) {
         HideOldView();
         ShowNewView();
     }
@@ -742,7 +741,7 @@ void XCreature::NewMove()
 {
     // See the matching comment in Move() - same demo-mode main_creature
     // stand-in, same generalized-from-XBeelzvile reasoning.
-    if (XSettings::isDemo && this == main_creature) {
+    if (Game.isDemo() && this == main_creature) {
         l->map->Center(x, y);
         l->map->Put(this);
         PutStatus();

@@ -99,7 +99,7 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp cskills.cpp            \
        uniquei.cpp shopkeeper.cpp keyword_dice.cpp std_ai.cpp lua_ai.cpp      \
        xshield.cpp stats.cpp skills.cpp skill.cpp brand.cpp                   \
-       skeep_ai.cpp shop.cpp setting.cpp resist.cpp rect.cpp windroad.cpp     \
+       skeep_ai.cpp shop.cpp resist.cpp rect.cpp windroad.cpp                 \
        quest.cpp map_objects.cpp msgwin.cpp fov.cpp modifiers.cpp map.cpp     \
        modifier.cpp manual.cpp Main.cpp pattern.cpp magic.cpp location.cpp    \
        itemf.cpp itemdb.cpp item_misc.cpp item.cpp hiscore.cpp                \
