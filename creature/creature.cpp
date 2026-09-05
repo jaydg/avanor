@@ -1554,7 +1554,6 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     }
 
     int str = stats->Get(XStats::STR);
-    int dex = stats->Get(XStats::DEX);
 
     // added_range is the sum of every worn item's RNG, maintained
     // by XItem::onWear()/onUnWear().
@@ -1563,14 +1562,25 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     // ammo and launcher carry an rng, this computes exactly what the two
     // explicit adds did.
     *range = added_range;
-    *hit = dex / 2 + missile->to_hit;
+    // Built from GetHIT(), the same as a melee swing: the shooter's own
+    // to-hit, whatever their gear adds, and the bonus for the stance they
+    // are fighting in. Ranged attacks used to take half of dexterity
+    // instead and see none of the other three, so an enchanted ring or an
+    // aggressive stance helped a sword and did nothing for a bow.
+    //
+    // The missile's own to-hit is added explicitly - and the launcher's
+    // below - because ItemKind::TOHIT, the set onWear() folds into
+    // added_HIT, covers weapons but neither missiles nor launchers. They
+    // cannot simply be added to that set either: melee to-hit is built
+    // from GetHIT() too, so a slung bow would sharpen sword swings.
+    *hit = GetHIT() + missile->to_hit;
     dmg->Setup(missile->dice);
 
     if (launcher) {
         dmg->Add(&(launcher->dice));
         *range += wsk->GetDV(launcher->wt);
         dmg->ModifyBonus(wsk->GetDMG(launcher->wt));
-        *hit += wsk->GetHIT(launcher->wt);
+        *hit += launcher->to_hit + wsk->GetHIT(launcher->wt);
     } else {
         *range += RNG + str / 25;
         dmg->ModifyBonus(str / 10);
