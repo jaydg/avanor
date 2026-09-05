@@ -258,7 +258,7 @@ void XLua::Init()
             "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
-            "MagicSchool", "Modifier", "PersonType", "PotionColor", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
+            "MagicSchool", "Modifier", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "XEffect", "XLocation",
             "XQuest", "XSkill", "XStairWay", "XStandardAI",
             "BrandGroup", "CombatGroup", "CombatRole", "XStats", "XTileType",
@@ -363,6 +363,13 @@ void XLua::Init()
         );
 
         lua.set_function("BookAppearances", &SetBookAppearances);
+
+        lua.new_usertype<PotionColourBuilder>("PotionColour",
+            sol::constructors<PotionColourBuilder(std::string)>(),
+            "Called", &PotionColourBuilder::Called,
+            "Looks", &PotionColourBuilder::Looks,
+            "Register", &PotionColourBuilder::Register
+        );
 
         lua.new_usertype<PotionBuilder>("Potion",
             sol::constructors<PotionBuilder(std::string)>(),

@@ -31,50 +31,47 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "magic/effect.h"
 
-enum class PotionColor {
-    CLEAR,
-    SMOKY,
-    GREEN,
-    ORANGE,
-    YELLOW,
-    BLACK,
-    BLUE,
-    WHITE,
-    CYAN,
-    PURPLE,
-    HAZE,
-    GOLDEN,
-    SILVER,
-    AZURE,
-    MURKY,
-    RED,
-    GLOWING,
-    MOTTLED,
-    BLOBBY,
-    PINK,
-    MOULDY,
-    GRAY,
-    MERCURY,
-    OILY,
-    VISCOUS,
-    DARK_RED,
-    LIGHT_RED,
-    DARK_BLUE,
-    LIGHT_BLUE,
-    BROWN,
-    LIGHT_GRAY,
-    DARK_GRAY,
-    DARK_GREEN,
-    LIGHT_GREEN,
-    BEIGE,
-    AQUAMARINE,
-    CORAL,
-    IVORY,
-    MAROON,
-    TAN,
-    TURQUOISE,
-    VIOLET,
-    RANDOM
+// What a potion looks like before anyone knows what it is - the id
+// world/items/potion_colours.lua registered it under. A string, like
+// every other content id: which appearances a world has is content, and
+// the engine only needs to know that each potion gets a different one.
+using POTION_COLOUR = std::string;
+
+// "Any free appearance": what a potion asks for when content does not
+// insist on a particular one.
+inline constexpr const char* PC_ANY = "";
+
+struct PotionColourStats {
+    POTION_COLOUR id;
+
+    // What it reads as: "dark red" where the id is "dark_red".
+    std::string name;
+
+    // The colour it is drawn in.
+    int colour = 0;
+};
+
+extern std::vector<PotionColourStats> potion_colours_db;
+
+const PotionColourStats* FindPotionColour(const POTION_COLOUR& id);
+
+// Fluent builder:
+//
+//   PotionColour.new("dark_red")
+//       :Called("dark red")
+//       :Looks(xColor.xRED)
+//       :Register()
+class PotionColourBuilder
+{
+    public:
+        explicit PotionColourBuilder(std::string id);
+
+        PotionColourBuilder& Called(const std::string& name);
+        PotionColourBuilder& Looks(int colour);
+        void Register();
+
+    private:
+        PotionColourStats t;
 };
 
 // Which potion this is - the id world/items/potions.lua registered it
@@ -100,10 +97,10 @@ struct PotionDescription {
     // Empty for a potion that is its effect and nothing more.
     std::string on_drink;
 
-    PotionColor force_color{PotionColor::RANDOM};
+    POTION_COLOUR force_color;
     bool identified{false};
 
-    static PotionColor SelectColor(PotionColor pnc = PotionColor::RANDOM);
+    static POTION_COLOUR SelectColor(const POTION_COLOUR& pnc = PC_ANY);
     static PotionName GetRandomPotion();
 
     // A potion drawn with every sort equally likely, ignoring rarity -
@@ -134,7 +131,7 @@ struct PotionDescription {
 //       :Chance(10)
 //       :Worth(200)
 //       :Alchemy(4)
-//       :Looks(PotionColor.WHITE)
+//       :Looks("white")
 //       :Register()
 //
 // PotionDescription is visible here (XPotion holds one by pointer), but
@@ -149,7 +146,7 @@ class PotionBuilder
         PotionBuilder& Chance(int rarity);
         PotionBuilder& Worth(int value);
         PotionBuilder& Alchemy(int power);
-        PotionBuilder& Looks(PotionColor colour);
+        PotionBuilder& Looks(const std::string& colour);
         PotionBuilder& OnDrink(const std::string& handler);
 
         void Register();

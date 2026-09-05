@@ -16,9 +16,10 @@
 --                              rung above, and how deep the ladder goes is
 --                              however deep these numbers go. Also how hard
 --                              the alchemy set finds it to distil
---       :Looks(PotionColor.X)  its appearance, when it must be a particular
---                              one (water is clear). Unsaid, it takes a
---                              colour no other potion has this game
+--       :Looks(id)             its appearance, when it must be a particular
+--                              one (water is clear) - a row from
+--                              potion_colours.lua. Unsaid, it takes an
+--                              appearance no other potion has this game
 --       :OnDrink(function)     called as handler(id, drinker) when the
 --                              potion names no effect. Answer false if
 --                              nothing actually happened
@@ -148,7 +149,7 @@ Potion.new("water")
 	:Chance(100)
 	:Worth(1)
 	:Alchemy(1)
-	:Looks(PotionColor.CLEAR)
+	:Looks("clear")
 	:OnDrink("PotionQuench")
 	:Register()
 
@@ -157,7 +158,7 @@ Potion.new("apple_juice")
 	:Chance(95)
 	:Worth(2)
 	:Alchemy(1)
-	:Looks(PotionColor.YELLOW)
+	:Looks("yellow")
 	:OnDrink("PotionQuench")
 	:Register()
 
@@ -166,7 +167,7 @@ Potion.new("orange_juice")
 	:Chance(95)
 	:Worth(3)
 	:Alchemy(1)
-	:Looks(PotionColor.ORANGE)
+	:Looks("orange")
 	:OnDrink("PotionQuench")
 	:Register()
 
@@ -176,7 +177,7 @@ Potion.new("healing")
 	:Chance(10)
 	:Worth(200)
 	:Alchemy(4)
-	:Looks(PotionColor.WHITE)
+	:Looks("white")
 	:Register()
 
 Potion.new("cure_light_wounds")

@@ -33,6 +33,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "engine/xlua.h"
 #include "item/item_cereal.h"
+#include <set>
 #include "item/xpotion.h"
 #include "magic/modifier.h"
 
@@ -46,126 +47,110 @@ void XPotion::RegisterLua(sol::state_view& lua)
     // exist is content (world/items/potions.lua); the vocabulary of
     // appearances is not, because every colour has to be one no other
     // potion took this game, and the engine deals them out.
-    lua.new_enum("PotionColor",
-        "CLEAR", PotionColor::CLEAR,
-        "SMOKY", PotionColor::SMOKY,
-        "GREEN", PotionColor::GREEN,
-        "ORANGE", PotionColor::ORANGE,
-        "YELLOW", PotionColor::YELLOW,
-        "BLACK", PotionColor::BLACK,
-        "BLUE", PotionColor::BLUE,
-        "WHITE", PotionColor::WHITE,
-        "CYAN", PotionColor::CYAN,
-        "PURPLE", PotionColor::PURPLE,
-        "HAZE", PotionColor::HAZE,
-        "GOLDEN", PotionColor::GOLDEN,
-        "SILVER", PotionColor::SILVER,
-        "AZURE", PotionColor::AZURE,
-        "MURKY", PotionColor::MURKY,
-        "RED", PotionColor::RED,
-        "GLOWING", PotionColor::GLOWING,
-        "MOTTLED", PotionColor::MOTTLED,
-        "BLOBBY", PotionColor::BLOBBY,
-        "PINK", PotionColor::PINK,
-        "MOULDY", PotionColor::MOULDY,
-        "GRAY", PotionColor::GRAY,
-        "MERCURY", PotionColor::MERCURY,
-        "OILY", PotionColor::OILY,
-        "VISCOUS", PotionColor::VISCOUS,
-        "DARK_RED", PotionColor::DARK_RED,
-        "LIGHT_RED", PotionColor::LIGHT_RED,
-        "DARK_BLUE", PotionColor::DARK_BLUE,
-        "LIGHT_BLUE", PotionColor::LIGHT_BLUE,
-        "BROWN", PotionColor::BROWN,
-        "LIGHT_GRAY", PotionColor::LIGHT_GRAY,
-        "DARK_GRAY", PotionColor::DARK_GRAY,
-        "DARK_GREEN", PotionColor::DARK_GREEN,
-        "LIGHT_GREEN", PotionColor::LIGHT_GREEN,
-        "BEIGE", PotionColor::BEIGE,
-        "AQUAMARINE", PotionColor::AQUAMARINE,
-        "CORAL", PotionColor::CORAL,
-        "IVORY", PotionColor::IVORY,
-        "MAROON", PotionColor::MAROON,
-        "TAN", PotionColor::TAN,
-        "TURQUOISE", PotionColor::TURQUOISE,
-        "VIOLET", PotionColor::VIOLET
-    );
 }
 
-struct PotionColorEntry {
-    const char* name;
-    int color;
-    int is_used;
-};
+std::vector<PotionColourStats> potion_colours_db;
 
-PotionColorEntry pnc_table[] = {
-    /* 0 PotionColor::CLEAR*/{	"clear",	xLIGHTGRAY	, 0},
-    /* 1 PotionColor::SMOKY*/{	"smoky",	xLIGHTGRAY	, 0},
-    /* 2 PotionColor::GREEN*/{	"green",	xGREEN	, 0},
-    /* 3 PotionColor::ORANGE*/{	"orange",	xYELLOW	, 0},
-    /* 4 PotionColor::YELLOW*/{	"yellow",	xYELLOW	, 0},
-    /* 5 PotionColor::BLACK*/{	"black",	xDARKGRAY	, 0},
-    /* 6 PotionColor::BLUE*/{	"blue",	xBLUE	, 0},
-    /* 7 PotionColor::WHITE*/{	"white",	xWHITE	, 0},
-    /* 8 PotionColor::CYAN*/{	"cyan",	xCYAN	, 0},
-    /* 9 PotionColor::PURPLE*/{	"purple",	xLIGHTMAGENTA	, 0},
-    /* 10 PotionColor::HAZE*/{	"haze",	xLIGHTGRAY	, 0},
-    /* 11 PotionColor::GOLDEN*/{	"golden",	xYELLOW	, 0},
-    /* 12 PotionColor::SILVER*/{	"silver",	xLIGHTGRAY	, 0},
-    /* 13 PotionColor::AZURE*/{	"azure",	xLIGHTCYAN	, 0},
-    /* 14 PotionColor::MURKY*/{	"murky",	xDARKGRAY	, 0},
-    /* 15 PotionColor::RED*/	{	"red",	xRED	, 0},
-    /* 16 PotionColor::GLOWING*/{	"glowing",	xYELLOW	, 0},
-    /* 17 PotionColor::MOTTLED*/{	"mottled",	xLIGHTRED	, 0},
-    /* 18 PotionColor::BLOBBED*/{	"blobby",	xBROWN	, 0},
-    /* 19 PotionColor::PINK*/{	"pink",	xLIGHTMAGENTA	, 0},
-    /* 20 PotionColor::MOULDED*/{	"mouldy",	xLIGHTCYAN	, 0},
-    /* 21 PotionColor::GRAY*/{	"gray",	xLIGHTGRAY	, 0},
-    /* 22 PotionColor::MERCURY*/{	"mercury",	xLIGHTGRAY	, 0},
-    /* 23 PotionColor::OILY*/{	"oily",	xDARKGRAY	, 0},
-    /* 24 PotionColor::VISCOUS*/{	"viscous",	xLIGHTCYAN	, 0},
-    /* 25 PotionColor::DARK_RED*/{	"dark red",	xRED	, 0},
-    /* 26 PotionColor::LIGHT_RED*/{	"light red",	xLIGHTRED	, 0},
-    /* 27 PotionColor::DARK_BLUE*/{	"dark blue",	xBLUE	, 0},
-    /* 28 PotionColor::LIGHT_BLUE*/{	"light blue",	xLIGHTBLUE	, 0},
-    /* 29 PotionColor::BROWN*/{	"brown",	xBROWN	, 0},
-    /* 30 PotionColor::LIGHT_GRAY*/{	"light gray",	xLIGHTGRAY	, 0},
-    /* 31 PotionColor::DARK_GRAY*/{	"dark gray",	xDARKGRAY	, 0},
-    /* 32 PotionColor::DARK_GREEN*/{	"dark green",	xGREEN	, 0},
-    /* 33 PotionColor::LIGHT_GREEN*/{"light green",	xLIGHTGREEN	, 0},
-    /* 34 PotionColor::BEIGE*/	{"beige",	xLIGHTGRAY	, 0},
-    /* 35 PotionColor::AQUAMARINE*/	{"aquamarine",	xCYAN	, 0},
-    /* 36 PotionColor::CORAL*/	{"coral",	xGREEN	, 0},
-    /* 37 PotionColor::IVORY*/	{"ivory",	xYELLOW	, 0},
-    /* 38 PotionColor::MAROON*/	{"maroon",	xRED	, 0},
-    /* 39 PotionColor::TAN*/	{"tan",	xBROWN	, 0},
-    /* 40 PotionColor::TURQUOISE*/	{"turquoise",	xCYAN	, 0},
-    /* 41 PotionColor::VIOLET*/	{"violet",	xMAGENTA	, 0},
-};
-
-PotionColor PotionDescription::SelectColor(PotionColor pnc)
+const PotionColourStats* FindPotionColour(const POTION_COLOUR& id)
 {
-    if (pnc == PotionColor::RANDOM) {
-        int count = 1000;
-
-        while (count-- > 0) {
-            int rp = vRand() % static_cast<int>(PotionColor::RANDOM);
-
-            if (pnc_table[rp].is_used == 0) {
-                pnc_table[rp].is_used = 1;
-
-                return static_cast<PotionColor>(rp);
-            }
+    for (const auto& row : potion_colours_db) {
+        if (row.id == id) {
+            return &row;
         }
-
-        assert(0);
-        return PotionColor::CLEAR;
     }
 
-    assert(pnc_table[static_cast<int>(pnc)].is_used == 0);
-    pnc_table[static_cast<int>(pnc)].is_used = 1;
+    return nullptr;
+}
 
-    return pnc;
+PotionColourBuilder::PotionColourBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+PotionColourBuilder& PotionColourBuilder::Called(const std::string& name)
+{
+    t.name = name;
+    return *this;
+}
+
+PotionColourBuilder& PotionColourBuilder::Looks(const int colour)
+{
+    t.colour = colour;
+    return *this;
+}
+
+void PotionColourBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a potion colour with no id" << std::endl;
+        return;
+    }
+
+    if (FindPotionColour(t.id)) {
+        std::cerr << "world: two potion colours both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.name.empty()) {
+        t.name = t.id;
+    }
+
+    potion_colours_db.push_back(t);
+}
+
+// What an appearance reads as, or nothing if the row is missing.
+static const std::string& PotionColourName(const POTION_COLOUR& id)
+{
+    static const std::string nothing;
+    const PotionColourStats* row = FindPotionColour(id);
+
+    return row ? row->name : nothing;
+}
+
+// Which appearances this game has already dealt out. Per-game state, so
+// it is kept beside the content rather than in it.
+static std::set<POTION_COLOUR> taken_colours;
+
+POTION_COLOUR PotionDescription::SelectColor(const POTION_COLOUR& pnc)
+{
+    // A potion that insists on a particular appearance gets it, whether or
+    // not anything else has it - content asking for two identical potions
+    // is content's business.
+    if (!pnc.empty()) {
+        if (!FindPotionColour(pnc)) {
+            std::cerr << "world: a potion looks '" << pnc
+                      << "', which world/items/potion_colours.lua does not declare"
+                      << std::endl;
+
+            return POTION_COLOUR();
+        }
+
+        taken_colours.insert(pnc);
+
+        return pnc;
+    }
+
+    // Otherwise any appearance nothing else has yet.
+    std::vector<const PotionColourStats*> free;
+
+    for (const auto& row : potion_colours_db) {
+        if (taken_colours.find(row.id) == taken_colours.end()) {
+            free.push_back(&row);
+        }
+    }
+
+    if (free.empty()) {
+        std::cerr << "world: more sorts of potion than there are appearances"
+                     " to tell them apart by - add rows to"
+                     " world/items/potion_colours.lua" << std::endl;
+
+        return POTION_COLOUR();
+    }
+
+    const POTION_COLOUR picked = free[vRand(static_cast<int>(free.size()))]->id;
+    taken_colours.insert(picked);
+
+    return picked;
 }
 
 // Filled from world/items/potions.lua as that script loads.
@@ -217,7 +202,7 @@ PotionBuilder& PotionBuilder::Alchemy(const int power)
     return *this;
 }
 
-PotionBuilder& PotionBuilder::Looks(const PotionColor colour)
+PotionBuilder& PotionBuilder::Looks(const std::string& colour)
 {
     t.force_color = colour;
     return *this;
@@ -317,7 +302,9 @@ XPotion::XPotion(const PotionName& _pn)
     bp = BP_OTHER;
     it = IT_POTION;
     view = '!';
-    color =	pnc_table[static_cast<int>(pdescr->force_color)].color;
+    if (const PotionColourStats* look = FindPotionColour(pdescr->force_color)) {
+        color = look->colour;
+    }
 
     name = pdescr->name;
 
@@ -359,10 +346,10 @@ std::string XPotion::toString()
     }
 
     if (quantity == 1) {
-        return fmt::format("{} potion", pnc_table[static_cast<int>(pdescr->force_color)].name);
+        return fmt::format("{} potion", PotionColourName(pdescr->force_color));
     }
 
-    return fmt::format("heap of {} {} potions", quantity, pnc_table[static_cast<int>(pdescr->force_color)].name);
+    return fmt::format("heap of {} {} potions", quantity, PotionColourName(pdescr->force_color));
 }
 
 bool XPotion::isIdentified()
@@ -472,7 +459,7 @@ void XPotion::FixupDescr()
 // a row is content and comes back from world/items/potions.lua next load.
 struct PotionMemory {
     bool identified{false};
-    PotionColor colour{PotionColor::RANDOM};
+    POTION_COLOUR colour;
 
     template<class Archive>
     void serialize(Archive& ar)
