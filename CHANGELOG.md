@@ -187,18 +187,17 @@ could never rise above 4, however long you fought, because nothing counted
 your practice. Landing a blow and turning one aside both count now, so a
 warrior who spends a life in combat can become genuinely good at it.
 
-**Archery had the same trouble and is fixed the same way.** Every shot you
-loose is worked out from your archery — its range, its damage and, the
-largest part of a ranged attack, whether it hits at all — and none of it ever
-counted as practice. Firing a bow now teaches you something about firing a
-bow.
-
 **Halflings know how to dodge**, which suits the smallest and nimblest of the
 races rather better than not knowing.
 
 **Create Trap and Climbing are described in the manual.** Both worked; neither
 was written down anywhere, so there was no way to discover Climbing existed or
 what Create Trap could build.
+
+**Removed the duplicate Archery skill.** Ranged weapons used the weapon skill
+system as all other weapons. The archery skill added another layer on to of
+it, and seemingly pre-dates the weapon skills. For consistency, the skill had
+to go.
 
 ---
 

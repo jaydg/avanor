@@ -30,7 +30,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 void XSkill::RegisterLua(sol::state_view& lua)
 {
     lua.new_enum("XSkill",
-        "ARCHERY", XSkill::ARCHERY,
         "FINDWEAKNESS", XSkill::FINDWEAKNESS,
         "HEALING", XSkill::HEALING,
         "CONCENTRATION", XSkill::CONCENTRATION,
@@ -59,7 +58,6 @@ void XSkill::RegisterLua(sol::state_view& lua)
 }
 
 SKILL_DB skill_db[] = {
-    {"Archery", 1},
     {"Find Weakness", 1},
     {"Healing", 2},
     {"Concentration", 3},

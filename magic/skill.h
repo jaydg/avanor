@@ -56,7 +56,6 @@ class XSkill
         int UseCreate(XCreature * user);
     public:
         enum Skill {
-            ARCHERY,
             FINDWEAKNESS,
             HEALING,       // restore hit points
             CONCENTRATION,

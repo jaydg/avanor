@@ -1553,8 +1553,6 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
         return;
     }
 
-    XSkill * skill = sk->GetSkill(XSkill::Skill::ARCHERY);
-
     int str = stats->Get(XStats::STR);
     int dex = stats->Get(XStats::DEX);
 
@@ -1579,13 +1577,6 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
         *range += wsk->GetDV(XWarSkills::THROW);
         dmg->ModifyBonus(wsk->GetDMG(XWarSkills::THROW));
         *hit += wsk->GetHIT(XWarSkills::THROW);
-    }
-
-    if (skill) {
-        int lvl = skill->GetLevel();
-        dmg->ModifyBonus(lvl / 2);
-        *range += lvl / 5;
-        *hit += lvl * 3;
     }
 }
 
@@ -1668,18 +1659,13 @@ int XCreature::Shoot(int tx, int ty)
         dd.flags = DF_MAGIC_BOLT;
         target->InflictDamage(&dd);
 
-        // if successfull increase bow level
+        // A hit practises the class of weapon it was made with - bows,
+        // crossbows, slings, or throwing for anything flung by hand.
         if (launcher) {
             wsk->UseSkill(launcher->wt);
         } else {
             wsk->UseSkill(XWarSkills::THROW);
         }
-
-        // ...and archery itself, which the shot has just practised. The
-        // proficiency above is for the kind of weapon; this is the skill
-        // that GetRangeAttackInfo() reads for range, damage and - the
-        // largest term in a ranged attack - to hit.
-        sk->UseSkill(XSkill::Skill::ARCHERY);
 
     } else {
         XCreature * tgt = l->map->GetMonster(tx, ty);
