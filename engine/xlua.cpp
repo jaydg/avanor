@@ -293,6 +293,9 @@ void XLua::Init()
             "EquipCount", &MonsterBuilder::EquipCount,
             "Corpse", &MonsterBuilder::Corpse,
             "CorpseEffect", &MonsterBuilder::CorpseEffect,
+            "CorpseStat", &MonsterBuilder::CorpseStat,
+            "CorpseResist", &MonsterBuilder::CorpseResist,
+            "CorpseModifier", &MonsterBuilder::CorpseModifier,
             "Unique", &MonsterBuilder::Unique,
             "Register", &MonsterBuilder::Register
         );

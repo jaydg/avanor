@@ -25,30 +25,23 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "item/item_cereal.h"
+#include "helpers/keyword_dice.h"
 #include "item/xcorpse.h"
 
 #include "creature/anycr.h"
+#include "helpers/keyword_dice.h"
 #include "item/xcorpse.h"
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
 void RegisterCorpseEffectEnum(sol::state_view& lua)
 {
-    // The names a creature definition uses for what eating it does.
+    // What is left of this enum: the mechanisms that name nothing. What
+    // a corpse does to a stat or a resistance is said with
+    // :CorpseStat("To", 1) / :CorpseResist("fire", 1) instead, so that a
+    // world may confer any resistance it declares, not five chosen ones.
     lua.new_enum("CorpseEffectType",
-        "MODIFY_ST", XCorpse::EffectType::MODIFY_ST,
-        "MODIFY_TO", XCorpse::EffectType::MODIFY_TO,
-        "MODIFY_MA", XCorpse::EffectType::MODIFY_MA,
-        "MODIFY_R_FIRE", XCorpse::EffectType::MODIFY_R_FIRE,
-        "MODIFY_R_COLD", XCorpse::EffectType::MODIFY_R_COLD,
-        "MODIFY_R_ACID", XCorpse::EffectType::MODIFY_R_ACID,
-        "MODIFY_R_POISON", XCorpse::EffectType::MODIFY_R_POISON,
-        "MODIFY_R_PARALYSE", XCorpse::EffectType::MODIFY_R_PARALYSE,
-        "MODIFY_STOMACH", XCorpse::EffectType::MODIFY_STOMACH,
-        "POISON", XCorpse::EffectType::POISON,
-        "DISEASE", XCorpse::EffectType::DISEASE,
-        "PARALYSE", XCorpse::EffectType::PARALYSE,
-        "CONFUSE", XCorpse::EffectType::CONFUSE,
+        "STOMACH", XCorpse::EffectType::STOMACH,
         "VOMIT", XCorpse::EffectType::VOMIT,
         "SATIATION", XCorpse::EffectType::SATIATION
     );
@@ -112,58 +105,22 @@ RESULT XCorpse::onEat(XCreature * eater)
     if (flag == SUCCESS) {
         for (auto it: pCorpseData->effect) {
             switch (it.type) {
-                case EffectType::MODIFY_ST:
-                    eater->GainAttr(XStats::STR, it.value);
-                    break;
+                case EffectType::STAT: {
+                    const int stat = StatKeyword(it.target);
 
-                case EffectType::MODIFY_TO:
-                    eater->GainAttr(XStats::TOU, it.value);
-                    break;
-
-                case EffectType::MODIFY_MA:
-                    eater->GainAttr(XStats::MAN, it.value);
-                    break;
-
-                case EffectType::MODIFY_R_FIRE:
-                    eater->GainResist("fire", it.value);
-                    break;
-
-                case EffectType::MODIFY_R_COLD:
-                    eater->GainResist("cold", it.value);
-                    break;
-
-                case EffectType::MODIFY_R_ACID:
-                    eater->GainResist("acid", it.value);
-                    break;
-
-                case EffectType::MODIFY_R_POISON:
-                    eater->GainResist("poison", it.value);
-                    break;
-
-                case EffectType::MODIFY_R_PARALYSE:
-                    eater->GainResist("paralyse", it.value);
-                    break;
-
-                case EffectType::POISON: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_POISON, it.value, vRand(100), eater);
-                    eater->md->Add(std::move(mod), eater);
+                    if (stat >= 0) {
+                        eater->GainAttr(static_cast<XStats::Id>(stat), it.value);
+                    }
                 }
                 break;
 
-                case EffectType::DISEASE: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_DISEASE, it.value, vRand(100), eater);
-                    eater->md->Add(std::move(mod), eater);
-                }
-                break;
+                case EffectType::RESIST:
+                    eater->GainResist(it.target, it.value);
+                    break;
 
-                case EffectType::PARALYSE: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_PARALYSE, it.value, vRand(100), eater);
-                    eater->md->Add(std::move(mod), eater);
-                }
-                break;
-
-                case EffectType::CONFUSE: {
-                    auto mod = std::make_unique<XModDelayed>(MOD_CONFUSE, it.value, vRand(100), eater);
+                case EffectType::MODIFIER: {
+                    auto mod = std::make_unique<XModDelayed>(
+                        static_cast<MODIFIER_TYPE>(it.modifier), it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;
@@ -179,7 +136,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 
                     break;
 
-                case EffectType::MODIFY_STOMACH:
+                case EffectType::STOMACH:
                     if (eater->isHero()) {
                         if (it.value < 0) {
                             msgwin.Add("You stomach shrinks from pain!");

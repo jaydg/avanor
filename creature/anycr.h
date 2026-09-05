@@ -163,6 +163,9 @@ class MonsterBuilder
         MonsterBuilder& EquipCount(unsigned int mask, int count, int prob);
         MonsterBuilder& Corpse(int rotting_time, FOOD_TYPE ft);
         MonsterBuilder& CorpseEffect(XCorpse::EffectType cet, int val);
+        MonsterBuilder& CorpseStat(const std::string& stat, int val);
+        MonsterBuilder& CorpseResist(const std::string& resist, int val);
+        MonsterBuilder& CorpseModifier(int modifier, int val);
         MonsterBuilder& Unique();
 
         void Register();

@@ -48,31 +48,35 @@ enum CORPSE_FLAG {
 class XCorpse : public XAnyFood
 {
     public:
-        // What eating a corpse of this species does to the eater. The
-        // members carry no CET_ prefix any more: the class they now live
-        // in says which enum they belong to.
+        // What eating a corpse of this species does to the eater.
+        //
+        // The first three name what they act on rather than being one
+        // member per stat and per resistance: which resistances exist is
+        // world/resistances.lua's business, so an enum here could only
+        // ever privilege a handful of them. STOMACH and VOMIT stay
+        // members because they are mechanisms with nothing to name.
         enum class EffectType {
-            MODIFY_ST,
-            MODIFY_TO,
-            MODIFY_MA,
-            MODIFY_R_FIRE,
-            MODIFY_R_COLD,
-            MODIFY_R_ACID,
-            MODIFY_R_POISON,
-            MODIFY_R_PARALYSE,
-            MODIFY_STOMACH,
-            POISON,
-            DISEASE,
-            PARALYSE,
-            CONFUSE,
+            STAT,       // target names a stat, "St"
+            RESIST,     // target names a resistance row, "fire"
+            MODIFIER,   // modifier is laid on the eater after a delay
+            STOMACH,
             VOMIT,
             SATIATION,
         };
 
         // One of those, and how much of it.
         struct Effect {
-            EffectType type;
-            int value;
+            EffectType type = EffectType::STAT;
+
+            // Which stat or which resistance, for the two types that act
+            // on one. Empty otherwise.
+            std::string target;
+
+            // A MODIFIER_TYPE for MODIFIER, MOD_UNKNOWN (-1) otherwise.
+            // An int because modifiers.h reaches back into creature.h.
+            int modifier = -1;
+
+            int value = 0;
         };
 
         // What the corpses of one species are: how long they keep, what

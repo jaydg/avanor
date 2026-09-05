@@ -30,6 +30,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xring.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
+#include "helpers/keyword_dice.h"
+#include "magic/resist.h"
 #include "magic/brand.h"
 
 void CreatureTemplate::RegisterLua(sol::state_view& lua)
@@ -455,10 +457,59 @@ MonsterBuilder& MonsterBuilder::Corpse(int rotting_time, FOOD_TYPE ft)
     return *this;
 }
 
+// The mechanisms that name nothing: VOMIT, STOMACH, SATIATION.
 MonsterBuilder& MonsterBuilder::CorpseEffect(XCorpse::EffectType cet, int val)
 {
     XCorpse::Effect ce{};
     ce.type = cet;
+    ce.value = val;
+    cr.pCorpseData.effect.push_back(ce);
+    return *this;
+}
+
+// Eating this raises (or lowers) a stat: :CorpseStat("To", 1).
+MonsterBuilder& MonsterBuilder::CorpseStat(const std::string& stat, int val)
+{
+    if (StatKeyword(stat) < 0) {
+        std::cerr << "world: creature '" << id << "' has a corpse effect on '"
+                  << stat << "', which is not a stat - ignored" << std::endl;
+        return *this;
+    }
+
+    XCorpse::Effect ce{};
+    ce.type = XCorpse::EffectType::STAT;
+    ce.target = stat;
+    ce.value = val;
+    cr.pCorpseData.effect.push_back(ce);
+    return *this;
+}
+
+// Eating this confers resistance: :CorpseResist("fire", 1). Any row
+// world/resistances.lua declares, not a fixed few.
+MonsterBuilder& MonsterBuilder::CorpseResist(const std::string& resist, int val)
+{
+    if (!FindResistance(resist)) {
+        std::cerr << "world: creature '" << id << "' has a corpse effect on a resistance '"
+                  << resist << "' that world/resistances.lua does not declare - ignored"
+                  << std::endl;
+        return *this;
+    }
+
+    XCorpse::Effect ce{};
+    ce.type = XCorpse::EffectType::RESIST;
+    ce.target = resist;
+    ce.value = val;
+    cr.pCorpseData.effect.push_back(ce);
+    return *this;
+}
+
+// Eating this lays something on the eater after a delay:
+// :CorpseModifier(Modifier.POISON, 10).
+MonsterBuilder& MonsterBuilder::CorpseModifier(int modifier, int val)
+{
+    XCorpse::Effect ce{};
+    ce.type = XCorpse::EffectType::MODIFIER;
+    ce.modifier = modifier;
     ce.value = val;
     cr.pCorpseData.effect.push_back(ce);
     return *this;
