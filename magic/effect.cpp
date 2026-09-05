@@ -572,17 +572,27 @@ int XEffect::Make(const EFFECT_DATA* pData)
         case XEffect::SEE_INVISIBLE:
             return pData->caller->md->Add(MOD_SEE_INVISIBLE, pData->power, pData->caller);
 
+        // One modifier, told which resistance it grants. The effects still
+        // name a resistance apiece; that goes when the effect catalogue
+        // becomes content.
         case XEffect::ACID_RESISTANCE:
-            return pData->caller->md->Add(MOD_ACID_RESISTANCE, pData->power, pData->caller);
-
         case XEffect::FIRE_RESISTANCE:
-            return pData->caller->md->Add(MOD_FIRE_RESISTANCE, pData->power, pData->caller);
-
         case XEffect::POISON_RESISTANCE:
-            return pData->caller->md->Add(MOD_POISON_RESISTANCE, pData->power, pData->caller);
+        case XEffect::COLD_RESISTANCE: {
+            RESISTANCE which = "acid";
 
-        case XEffect::COLD_RESISTANCE:
-            return pData->caller->md->Add(MOD_COLD_RESISTANCE, pData->power, pData->caller);
+            if (pData->effect == XEffect::FIRE_RESISTANCE) {
+                which = "fire";
+            } else if (pData->effect == XEffect::POISON_RESISTANCE) {
+                which = "poison";
+            } else if (pData->effect == XEffect::COLD_RESISTANCE) {
+                which = "cold";
+            }
+
+            auto mod = std::make_unique<XModResistance>(which, pData->power, pData->caller);
+
+            return pData->caller->md->Add(std::move(mod), pData->caller);
+        }
 
         default:
             assert(0);

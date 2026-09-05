@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "helpers/msgwin.h"
+#include <iostream>
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
@@ -93,21 +94,15 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
                 xbm = std::make_unique<XModSlowness>(val, cr);
                 break;
 
-            case MOD_ACID_RESISTANCE :
-                xbm = std::make_unique<XModAcidResistance>(val, cr);
-                break;
-
-            case MOD_FIRE_RESISTANCE :
-                xbm = std::make_unique<XModFireResistance>(val, cr);
-                break;
-
-            case MOD_COLD_RESISTANCE :
-                xbm = std::make_unique<XModColdResistance>(val, cr);
-                break;
-
-            case MOD_POISON_RESISTANCE :
-                xbm = std::make_unique<XModPoisonResistance>(val, cr);
-                break;
+            // Needs to be told which resistance it grants, and this
+            // signature has no room to say. Reached through
+            // AddResistance() in Lua, or by building one and handing it to
+            // the XBasicModifier overload of Add().
+            case MOD_RESISTANCE :
+                std::cerr << "a resistance modifier was asked for without"
+                             " saying which resistance - use AddResistance()"
+                          << std::endl;
+                return 0;
 
             default :
                 assert(0);

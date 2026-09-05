@@ -85,17 +85,11 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModBoostSpeed);
 CEREAL_REGISTER_TYPE(XModSlowness);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModSlowness);
 
-CEREAL_REGISTER_TYPE(XModAcidResistance);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModAcidResistance);
+CEREAL_REGISTER_TYPE(XModResistance);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModResistance);
 
-CEREAL_REGISTER_TYPE(XModFireResistance);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModFireResistance);
 
-CEREAL_REGISTER_TYPE(XModColdResistance);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModColdResistance);
 
-CEREAL_REGISTER_TYPE(XModPoisonResistance);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModPoisonResistance);
 
 XBasicModifier::XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr)
 {
@@ -302,50 +296,14 @@ int XModSlowness::onRemove(XCreature * owner)
     return 1;
 }
 
-int XModAcidResistance::onSet(XCreature * owner)
+int XModResistance::onSet(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance("acid", 40);
+    owner->added_resists.ChangeResistance(resist, AMOUNT);
     return 1;
 }
 
-int XModAcidResistance::onRemove(XCreature * owner)
+int XModResistance::onRemove(XCreature * owner)
 {
-    owner->added_resists.ChangeResistance("acid", -40);
-    return 1;
-}
-
-int XModFireResistance::onSet(XCreature * owner)
-{
-    owner->added_resists.ChangeResistance("fire", 40);
-    return 1;
-}
-
-int XModFireResistance::onRemove(XCreature * owner)
-{
-    owner->added_resists.ChangeResistance("fire", -40);
-    return 1;
-}
-
-int XModColdResistance::onSet(XCreature * owner)
-{
-    owner->added_resists.ChangeResistance("cold", 40);
-    return 1;
-}
-
-int XModColdResistance::onRemove(XCreature * owner)
-{
-    owner->added_resists.ChangeResistance("cold", -40);
-    return 1;
-}
-
-int XModPoisonResistance::onSet(XCreature * owner)
-{
-    owner->added_resists.ChangeResistance("poison", 40);
-    return 1;
-}
-
-int XModPoisonResistance::onRemove(XCreature * owner)
-{
-    owner->added_resists.ChangeResistance("poison", -40);
+    owner->added_resists.ChangeResistance(resist, -AMOUNT);
     return 1;
 }
