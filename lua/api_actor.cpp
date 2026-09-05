@@ -684,6 +684,58 @@ std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemPa
 // Whether an attack carries any of these brands. Takes the brand string
 // GetItemParam() hands back and a space-separated list of ids to look
 // for, so a handler can ask about one brand or about several at once.
+// What sort of creature this is - a CreatureClass mask, to be tested with
+// BinaryAND. A free function rather than a usertype field, per the hazard
+// documented in XCreature::RegisterLua.
+int GetCreatureClass(void* who)
+{
+    const XCreature* cr = (XCreature*)who;
+    return cr ? static_cast<int>(cr->creature_class) : 0;
+}
+
+// How a god regards somebody, and how to change it. Favour lives on the
+// creature, not on the god, so every one of these names whose favour it
+// means.
+int Favour(void* who, const std::string& deity)
+{
+    const XCreature* cr = (XCreature*)who;
+    return cr ? cr->religion.GetFavour(deity) : 0;
+}
+
+void ChangeFavour(void* who, const std::string& deity, const int delta)
+{
+    if (XCreature* cr = (XCreature*)who) {
+        cr->religion.ChangeFavour(deity, delta);
+    }
+}
+
+void SetFavour(void* who, const std::string& deity, const int value)
+{
+    if (XCreature* cr = (XCreature*)who) {
+        cr->religion.SetFavour(deity, value);
+    }
+}
+
+// What a god is called - for the messages content writes about them.
+std::string GetDeityName(const std::string& deity)
+{
+    return DeityName(deity);
+}
+
+// Give something up to a god. Naming none offers it to whichever the
+// giver already stands best with, and an altar underfoot overrides both.
+int Sacrifice(void* who, void* item, const std::string& deity)
+{
+    XCreature* cr = (XCreature*)who;
+    XItem* it = (XItem*)item;
+
+    if (!cr || !it) {
+        return 0;
+    }
+
+    return cr->religion.SacrificeItem(cr, it, deity);
+}
+
 bool HasBrand(const std::string& carried, const std::string& ids)
 {
     const BrandSet have(carried);
@@ -1013,6 +1065,12 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("GetItemParam", &lua_api::GetItemParam);
         lua.set_function("SetItemBrand", &lua_api::SetItemBrand);
         lua.set_function("HasBrand", &lua_api::HasBrand);
+        lua.set_function("GetCreatureClass", &lua_api::GetCreatureClass);
+        lua.set_function("Favour", &lua_api::Favour);
+        lua.set_function("ChangeFavour", &lua_api::ChangeFavour);
+        lua.set_function("SetFavour", &lua_api::SetFavour);
+        lua.set_function("GetDeityName", &lua_api::GetDeityName);
+        lua.set_function("Sacrifice", &lua_api::Sacrifice);
         lua.set_function("GetItemName", &lua_api::GetItemName);
         lua.set_function("MissileForLauncher", &lua_api::MissileForLauncher);
         lua.set_function("SetItemName", &lua_api::SetItemName);

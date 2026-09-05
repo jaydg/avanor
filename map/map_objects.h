@@ -329,26 +329,21 @@ class XAltar final : public XMapObject
 {
     public:
         DECLARE_CREATOR(XAltar, XMapObject);
-        XAltar(int _x, int _y, XDeity::Id deity, XLocation* _l);
+        XAltar(int _x, int _y, const DEITY& deity, XLocation* _l);
 
-        // Places the altar and gives it its glyph, name and default colour,
-        // so a bare PlaceSpecial("XAltar", x, y) from script yields a usable
-        // altar. The colour is not decoration: it is how an altar's deity is
-        // recorded, so script picks the deity by calling SetView() afterwards.
+        // Places the altar and gives it its glyph, name and colour, so a
+        // bare PlaceSpecial("XAltar", x, y) from script yields a usable
+        // altar. Which god it belongs to is said with SetAltarDeity().
         bool PlaceAt(XLocation* location, int _x, int _y) override;
 
-        // Pre-existing behaviour, not a shared_ptr-migration regression:
-        // `deity` is only ever used to pick a color at construction time
-        // (see the .cpp) and isn't kept as a member anywhere on this
-        // class - the base's `color` field (already covered by
-        // XMapObject::serialize()) is the only trace of it that
-        // survives, same as the existing (also base-only) Store/Restore.
-        // XReligion::SacrificeItem() reads that colour back to decide
-        // which deity an altar belongs to, so colour *is* the deity here.
+        [[nodiscard]] const DEITY& GetDeity() const { return deity; }
+        void SetDeity(const DEITY& id) { deity = id; }
+
         template<class Archive>
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
+            ar(deity);
         }
 
         const std::string GetName(XCreature * /*viewer*/) override
@@ -358,6 +353,10 @@ class XAltar final : public XMapObject
 
     protected:
         XAltar() {}
+
+        // Whose altar this is. Empty for one no script has claimed, which
+        // then serves whichever god the sacrificer stands best with.
+        DEITY deity;
         friend class cereal::access;
 };
 

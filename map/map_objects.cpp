@@ -637,14 +637,12 @@ REGISTER_CLASS(XAltar);
 CEREAL_REGISTER_TYPE(XAltar);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XAltar);
 
-XAltar::XAltar(const int _x, const int _y, const XDeity::Id deity, XLocation* _l)
+XAltar::XAltar(const int _x, const int _y, const DEITY& _deity, XLocation* _l)
 {
     const bool placed = PlaceAt(_l, _x, _y);
     assert(placed);
 
-    if (deity != XDeity::LIFE) {
-        color = xDARKGRAY;
-    }
+    deity = _deity;
 }
 
 bool XAltar::PlaceAt(XLocation* location, const int _x, const int _y)
@@ -655,9 +653,6 @@ bool XAltar::PlaceAt(XLocation* location, const int _x, const int _y)
 
     view = '_';
     name = "altar";
-
-    // White is the LIFE altar; XDeity::DEATH is the dark one. Script
-    // chooses by overriding this with SetView().
     color = xWHITE;
 
     return true;

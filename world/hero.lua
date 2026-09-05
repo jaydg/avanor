@@ -522,13 +522,13 @@ HERO_KITS["cleric"] = function(hero, who, race)
 	LearnSkill(hero, XSkill.RELIGION, 1)
 	if (race == "human") then
 	elseif (race == "half_orc") then
-		who.religion.death_act = 200
+		SetFavour(hero, "death", 200)
 	elseif (race == "half_elf") then
 	elseif (race == "high_elf") then
 	elseif (race == "halfling") then
 	elseif (race == "dwarf") then
 	elseif (race == "gnome") then
-		who.religion.life_act = 200
+		SetFavour(hero, "life", 200)
 	end
 end
 
@@ -553,13 +553,13 @@ HERO_KITS["paladin"] = function(hero, who, race)
 	LearnSkill(hero, XSkill.ATHLETICS, 1)
 	if (race == "human") then
 	elseif (race == "half_orc") then
-		who.religion.death_act = 100
+		SetFavour(hero, "death", 100)
 	elseif (race == "half_elf") then
 	elseif (race == "high_elf") then
 	elseif (race == "halfling") then
 	elseif (race == "dwarf") then
 	elseif (race == "gnome") then
-		who.religion.life_act = 100
+		SetFavour(hero, "life", 100)
 	end
 end
 

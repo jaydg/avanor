@@ -18,108 +18,287 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
 #include <cmath>
+#include <iostream>
+
 #include <fmt/format.h>
 #include <sol/sol.hpp>
 
 #include "creature/creature.h"
+#include "magic/effect.h"
 #include "creature/deity.h"
+#include "engine/xlua.h"
 #include "helpers/msgwin.h"
 #include "item/item.h"
 #include "map/map_objects.h"
 
+std::vector<DeityStats> deities_db;
+std::vector<DeityRank> deity_ranks_db;
+
+const DeityStats* FindDeity(const DEITY& id)
+{
+    for (const auto& row : deities_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+const std::string& DeityName(const DEITY& id)
+{
+    if (const DeityStats* row = FindDeity(id)) {
+        return row->name;
+    }
+
+    return id;
+}
+
+const DeityRank* FindRank(const std::string& id)
+{
+    for (const auto& row : deity_ranks_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+const DeityRank* RankFor(const int favour)
+{
+    const DeityRank* best = nullptr;
+
+    for (const auto& row : deity_ranks_db) {
+        if (favour >= row.from && (!best || row.from > best->from)) {
+            best = &row;
+        }
+    }
+
+    return best;
+}
+
+DeityBuilder::DeityBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+DeityBuilder& DeityBuilder::Called(const std::string& name)
+{
+    t.name = name;
+    return *this;
+}
+
+DeityBuilder& DeityBuilder::OnKill(const std::string& handler)
+{
+    t.on_kill = handler;
+    return *this;
+}
+
+DeityBuilder& DeityBuilder::Grants(const std::string& name, const std::string& needs,
+    const int cost, const int effect, sol::optional<int> alternative)
+{
+    DeityHelp help;
+    help.name = name;
+    help.needs = needs;
+    help.cost = cost;
+    help.effect = effect;
+    help.alternative = alternative.value_or(-1);
+    t.grants.push_back(help);
+    return *this;
+}
+
+void DeityBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a god with no id" << std::endl;
+        return;
+    }
+
+    if (FindDeity(t.id)) {
+        std::cerr << "world: two gods both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.name.empty()) {
+        t.name = t.id;
+    }
+
+    // The ranks are declared before the gods that point at them, so a
+    // grant naming one that does not exist is a typo, and saying so here
+    // beats waiting for somebody to pray before anyone notices.
+    for (const auto& help : t.grants) {
+        if (!FindRank(help.needs)) {
+            std::cerr << "world: '" << t.id << "' grants '" << help.name
+                      << "' at rank '" << help.needs
+                      << "', which world/deities.lua does not declare - never offered"
+                      << std::endl;
+        }
+    }
+
+    deities_db.push_back(t);
+}
+
+DeityRankBuilder::DeityRankBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+DeityRankBuilder& DeityRankBuilder::Called(const std::string& name)
+{
+    t.name = name;
+    return *this;
+}
+
+DeityRankBuilder& DeityRankBuilder::From(const int favour)
+{
+    t.from = favour;
+    return *this;
+}
+
+DeityRankBuilder& DeityRankBuilder::Score(const int points)
+{
+    t.score = points;
+    return *this;
+}
+
+void DeityRankBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a rank with no id" << std::endl;
+        return;
+    }
+
+    if (FindRank(t.id)) {
+        std::cerr << "world: two ranks both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.name.empty()) {
+        t.name = t.id;
+    }
+
+    deity_ranks_db.push_back(t);
+}
+
 void XDeity::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("XDeity",
-        "LIFE", XDeity::LIFE,
-        "DEATH", XDeity::DEATH
+    lua.new_usertype<DeityBuilder>("Deity",
+        sol::constructors<DeityBuilder(std::string)>(),
+        "Called", &DeityBuilder::Called,
+        "OnKill", &DeityBuilder::OnKill,
+        "Grants", &DeityBuilder::Grants,
+        "Register", &DeityBuilder::Register
+    );
+
+    lua.new_usertype<DeityRankBuilder>("DeityRank",
+        sol::constructors<DeityRankBuilder(std::string)>(),
+        "Called", &DeityRankBuilder::Called,
+        "From", &DeityRankBuilder::From,
+        "Score", &DeityRankBuilder::Score,
+        "Register", &DeityRankBuilder::Register
     );
 }
 
 void XReligion::RegisterLua(sol::state_view& lua)
 {
-    lua.new_usertype<XReligion>("XReligion",
-        "life_act", &XReligion::life_act,
-        "death_act", &XReligion::death_act,
-        "SacrificeItem", &XReligion::SacrificeItem,
-        "GetDeityName", &XReligion::GetDeityName
-    );
+    lua.new_usertype<XReligion>("XReligion");
 }
 
-XCreature* XDeity::death = nullptr;
-XCreature* XDeity::life = nullptr;
-
-DEITY_HELP life_help[] = {
-    {"cure light wounds",	3,	PRAY_CURE_LIGHT_WOUNDS},
-    {"minor divine intervention",	5,	PRAY_MINOR_INTERVENTION},
-    {"cure poison",	10, PRAY_CURE_POISON},
-    {"heroism",	10, PRAY_HEROISM},
-    {"cure critical wounds",	20, PRAY_CURE_CRITICAL_WOUNDS},
-    {"great knowledge",	30, PRAY_IDENTIFY},
-    {"divine restoration",	50, PRAY_RESTORATION}
-};
-
-DEITY_HELP death_help[] = {
-    {"cure light wounds",	5,	PRAY_CURE_LIGHT_WOUNDS},
-    {"minor divine intervention",	5,	PRAY_MINOR_INTERVENTION},
-    {"divine intervention",	5,	PRAY_INTERVENTION},
-    {"divine escape",	50, PRAY_TELEPORT},
-    {"cure critical wounds",	30, PRAY_CURE_CRITICAL_WOUNDS},
-    {"knowledge of insight",	50, PRAY_SELF_KNOWLEDGE},
-    {"major divine intervention",	5,	PRAY_MAJOR_INTERVENTION},
-};
-
-struct DEITY_ACT {
-    int good;
-    int bad;
-};
-
-DEITY_ACT life_deity_act[] = {
-    {5, -15}, {5, -14}, {5, -12}, {5, -10}, {10, -10},
-    {10, -9}, {10, -8}, {10, -7}, {10, -6}, {10, -5},
-    {10, -4}, {10, -3}, {10, -2}, {10, -1}, {10, 0}, {10, 0}
-};
-
-void XReligion::KillCreature(XCreature * killer, XCreature * victim)
+int XReligion::GetFavour(const DEITY& deity) const
 {
-    int val = killer->sk->GetLevel(XSkill::Skill::RELIGION);
-    int bad = life_deity_act[val].bad;
-    int good = life_deity_act[val].good;
-
-    if (victim->creature_class == CreatureClass::UNDEAD) {
-        death_act += bad;
-        life_act += good;
-    } else {
-        death_act += good;
-        life_act += bad;
-    }
+    const auto it = favour.find(deity);
+    return it == favour.end() ? 0 : it->second;
 }
 
-int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
+void XReligion::SetFavour(const DEITY& deity, const int value)
 {
-    int val = cr->sk->GetLevel(XSkill::Skill::RELIGION);
+    favour[deity] = value;
+}
 
-    if (deity == XDeity::UNKNOWN) {
-        if (life_act > death_act) {
-            deity = XDeity::LIFE;
-        } else {
-            deity = XDeity::DEATH;
+void XReligion::ChangeFavour(const DEITY& deity, const int delta)
+{
+    favour[deity] += delta;
+}
+
+DEITY XReligion::BestRegarded() const
+{
+    DEITY best;
+    int best_favour = 0;
+    bool any = false;
+
+    for (const auto& row : deities_db) {
+        const int val = GetFavour(row.id);
+
+        if (!any || val > best_favour) {
+            best = row.id;
+            best_favour = val;
+            any = true;
         }
     }
 
-    XMapObject * tmo = cr->l->map->GetSpecial(cr->x, cr->y);
-    bool at_altar = dynamic_cast<XAltar *>(tmo) != nullptr;
+    return best;
+}
 
-    if (at_altar) {
-        if (tmo->color == xWHITE) {
-            deity = XDeity::LIFE;
-        } else {
-            deity = XDeity::DEATH;
+// Every god is told of every kill and decides for itself whether it cares.
+// The engine has no opinion about who deserves killing - that used to be
+// an if/else here saying undead pleased one god and displeased the other.
+void XReligion::KillCreature(XCreature* killer, XCreature* victim)
+{
+    if (!killer || !victim) {
+        return;
+    }
+
+    sol::state_view lua(XLua::State());
+
+    for (const auto& row : deities_db) {
+        if (row.on_kill.empty()) {
+            continue;
         }
+
+        sol::protected_function handler = lua[row.on_kill];
+
+        if (!handler.valid()) {
+            std::cerr << "world: the god '" << row.id << "' watches kills through '"
+                      << row.on_kill << "', which is not defined" << std::endl;
+            continue;
+        }
+
+        const auto result = handler((void*)killer, (void*)victim);
+
+        if (!result.valid()) {
+            const sol::error err = result;
+            std::cerr << "world: '" << row.on_kill << "' failed: " << err.what() << std::endl;
+        }
+    }
+}
+
+int XReligion::SacrificeItem(XCreature* cr, XItem* item, const DEITY& deity_in)
+{
+    const int val = cr->sk->GetLevel(XSkill::Skill::RELIGION);
+    DEITY deity = deity_in;
+
+    if (deity.empty()) {
+        deity = BestRegarded();
+    }
+
+    XMapObject* tmo = cr->l->map->GetSpecial(cr->x, cr->y);
+    const XAltar* altar = dynamic_cast<XAltar*>(tmo);
+
+    // An altar's own god takes precedence over whoever the sacrificer
+    // would otherwise have picked.
+    if (altar && !altar->GetDeity().empty()) {
+        deity = altar->GetDeity();
+    }
+
+    if (deity.empty()) {
+        return 0;
     }
 
     if (cr->isVisible()) {
-        msgwin.Add(fmt::format("{} prays to {}.", cr->name, GetDeityName(deity)));
+        msgwin.Add(fmt::format("{} prays to {}.", cr->name, DeityName(deity)));
         msgwin.Add(fmt::format("{} disappears in a bright light.", item->toString()));
     }
 
@@ -135,7 +314,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
 
     cr->sk->UseSkill(XSkill::Skill::RELIGION);
 
-    if (at_altar) {
+    if (altar) {
         sacrifice_value *= 3;
         cr->sk->UseSkill(XSkill::Skill::RELIGION, 5);
     }
@@ -143,11 +322,7 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
     item->UnCarry();
     item->Invalidate();
 
-    if (deity == XDeity::LIFE) {
-        life_act += sacrifice_value;
-    } else {
-        death_act += sacrifice_value;
-    }
+    ChangeFavour(deity, sacrifice_value);
 
     if (!cr->isHero() && vRand(5) == 0) {
         cr->stats->Modify(XStats::Random(), 1);
@@ -160,152 +335,50 @@ int XReligion::SacrificeItem(XCreature * cr, XItem * item, XDeity::Id deity)
     return 1;
 }
 
-DEITY_RELATION XReligion::GetRelation(const XDeity::Id deity) const
+const DeityRank* XReligion::GetRank(const DEITY& deity) const
 {
-    int val = 0;
-
-    switch (deity) {
-        case XDeity::LIFE:
-            val = life_act;
-            break;
-
-        case XDeity::DEATH:
-            val = death_act;
-            break;
-
-        default:
-            break;
-    }
-
-    if (val < -10000000) {
-        return DR_FALLEN_CHAMPION;
-    } else if (val < -100) {
-        return DR_VERY_BAD;
-    } else if (val < 0) {
-        return DR_BAD;
-    } else if (val < 100) {
-        return DR_NORMAL;
-    } else if (val < 1000) {
-        return DR_ADEPT;
-    } else if (val < 3000) {
-        return DR_FOLLOWER;
-    } else if (val < 10000) {
-        return DR_MESSIAH;
-    } else {
-        return DR_CHAMPION;
-    }
+    return RankFor(GetFavour(deity));
 }
 
-const char* relation_name[] = {
-    "<QUALITY_TERRIBLE>fallen champion", "<QUALITY_TERRIBLE>very bad", "<QUALITY_TERRIBLE>bad",
-    "<QUALITY_NEUTRAL>normal", "<QUALITY_NEUTRAL>adept", "<QUALITY_FAIR>follower",
-    "<QUALITY_GOOD>messiah", "<QUALITY_PERFECT>champion"
-};
-
-const char* XReligion::GetRelationName(DEITY_RELATION dr)
+std::vector<const DeityHelp*> XReligion::AvailableHelp(const DEITY& deity) const
 {
-    return relation_name[dr];
-}
+    std::vector<const DeityHelp*> available;
+    const DeityStats* row = FindDeity(deity);
 
-const char* XReligion::GetDeityName(XDeity::Id deity)
-{
-    if (deity == XDeity::LIFE) {
-        return "Tiamat";
-    } else {
-        return "Marduk";
-    }
-}
-
-int XReligion::GetAvailHelp(const XDeity::Id deity, DEITY_HELP** help) const
-{
-    if (deity == XDeity::LIFE) {
-        *help = &life_help[0];
-
-    } else {
-        *help = &death_help[0];
+    if (!row) {
+        return available;
     }
 
-    const DEITY_RELATION rel = GetRelation(deity);
+    const int have = GetFavour(deity);
 
-    if (rel < DR_ADEPT) {
-        return 0;
-    }
+    for (const auto& help : row->grants) {
+        const DeityRank* needed = FindRank(help.needs);
 
-    if (rel < DR_FOLLOWER) {
-        return 2;
-    }
-
-    if (rel < DR_MESSIAH) {
-        return 4;
-    }
-
-    if (rel < DR_CHAMPION) {
-        return 6;
-    }
-
-    return 7;
-}
-
-int XReligion::Pray(XDeity::Id deity, DEITY_HELP * pray, XCreature * prayer)
-{
-    XEffect::Id effect = XEffect::CURE_LIGHT_WOUNDS;
-
-    switch (pray->pray) {
-        case PRAY_CURE_LIGHT_WOUNDS:
-            effect = XEffect::CURE_LIGHT_WOUNDS;
-            break;
-
-        case PRAY_CURE_CRITICAL_WOUNDS:
-            effect = XEffect::CURE_CRITICAL_WOUNDS;
-            break;
-
-        case PRAY_RESTORATION:
-            effect = XEffect::RESTORATION;
-            break;
-
-        case PRAY_IDENTIFY:
-            effect = XEffect::IDENTIFY;
-            break;
-
-        case PRAY_SELF_KNOWLEDGE:
-            effect = XEffect::SELF_KNOWLEDGE;
-            break;
-
-        case PRAY_CURE_POISON:
-            effect = XEffect::CURE_POISON;
-            break;
-
-        case PRAY_HEROISM:
-            effect = XEffect::HEROISM;
-            break;
-
-        case PRAY_TELEPORT:
-            effect = XEffect::TELEPORT;
-            break;
-
-        case PRAY_MINOR_PUNISHMENT:
-        case PRAY_MINOR_INTERVENTION:
-            effect = XEffect::MAGIC_ARROW;
-            break;
-
-        case PRAY_INTERVENTION:
-            effect = vRand(2) == 0 ? XEffect::FIRE_BOLT : XEffect::ICE_BOLT;
-            break;
-
-        case PRAY_MAJOR_INTERVENTION:
-            effect = vRand(2) == 0 ? XEffect::LIGHTNING_BOLT : XEffect::ACID_BOLT;
-            break;
-    }
-
-    RESULT res = XEffect::Make(prayer, effect, 50);
-
-    if (res == SUCCESS) {
-        if (deity == XDeity::LIFE) {
-            life_act -= pray->help_cost;
-        } else {
-            death_act -= pray->help_cost;
+        // Complained about at registration; never offered.
+        if (!needed) {
+            continue;
         }
 
+        if (have >= needed->from) {
+            available.push_back(&help);
+        }
+    }
+
+    return available;
+}
+
+int XReligion::Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer)
+{
+    int effect = help.effect;
+
+    if (help.alternative >= 0 && vRand(2) == 0) {
+        effect = help.alternative;
+    }
+
+    const RESULT res = XEffect::Make(prayer, static_cast<XEffect::Id>(effect), 50);
+
+    if (res == SUCCESS) {
+        ChangeFavour(deity, -help.cost);
         prayer->sk->UseSkill(XSkill::Skill::RELIGION, 3);
     }
 
@@ -315,4 +388,3 @@ int XReligion::Pray(XDeity::Id deity, DEITY_HELP * pray, XCreature * prayer)
 
     return 1;
 }
-

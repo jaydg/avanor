@@ -734,6 +734,21 @@ sol::object PlaceSpecial(const std::string& class_name, const int x, const int y
     return sol::make_object(s, static_cast<void*>(obj));
 }
 
+// Which god an altar serves. Sacrificing on it goes to that god
+// whatever the sacrificer would otherwise have chosen.
+void SetAltarDeity(void* object, const std::string& deity)
+{
+    if (auto* altar = dynamic_cast<XAltar*>((XMapObject*)object)) {
+        if (!deity.empty() && !FindDeity(deity)) {
+            std::cerr << "world: an altar is dedicated to '" << deity
+                      << "', which world/deities.lua does not declare" << std::endl;
+            return;
+        }
+
+        altar->SetDeity(deity);
+    }
+}
+
 void RegisterWorldApi(sol::state_view& lua)
 {
     lua.set_function("GetMapSize", &lua_api::GetMapSize);
@@ -755,6 +770,7 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("SigsagRoad", &lua_api::SigsagRoad);
     lua.set_function("GetFreeXY", &lua_api::GetFreeXY);
     lua.set_function("PlaceSpecial", &lua_api::PlaceSpecial);
+    lua.set_function("SetAltarDeity", &lua_api::SetAltarDeity);
 
     lua.set_function("CreateLocation", &XLocation::CreateLocation);
     lua.set_function("BuildShop", &XLocation::BuildShop);

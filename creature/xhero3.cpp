@@ -119,50 +119,47 @@ void XHero::CreateScreenShot()
 void XHero::Pray()
 {
     XGuiList list;
-    DEITY_HELP * pLifeHelp;
-    DEITY_HELP * pDeathHelp;
 
-    DEITY_RELATION dr = religion.GetRelation(XDeity::LIFE);
-    std::string item_text = fmt::format("<VALUE>{} <TEXT>({}<TEXT>)",
-                                        XReligion::GetDeityName(XDeity::LIFE), XReligion::GetRelationName(dr));
-    list.AddItem(new XGuiItem_Text(item_text, 0));
-    const int life_count = religion.GetAvailHelp(XDeity::LIFE, &pLifeHelp);
+    // One section per god a world declares, in the order it declared
+    // them. What is on offer, and how much of it a follower of this
+    // standing may ask for, comes from the god's own rows.
+    struct Offer {
+        DEITY deity;
+        const DeityHelp* help;
+    };
 
-    if (life_count == 0) {
-        list.AddItem(new XGuiItem_Text("< No help available >", 0));
-    } else {
-        for (int i = 0; i < life_count; i++) {
-            list.AddItem(new XGuiItem_Text(pLifeHelp[i].help_name, 1));
+    std::vector<Offer> offers;
+
+    for (const auto& row : deities_db) {
+        const DeityRank* rank = religion.GetRank(row.id);
+        const std::string rank_name = rank ? rank->name : std::string("unknown");
+
+        list.AddItem(new XGuiItem_Text(fmt::format("<VALUE>{} <TEXT>({}<TEXT>)",
+            row.name, rank_name), 0));
+
+        const auto available = religion.AvailableHelp(row.id);
+
+        if (available.empty()) {
+            list.AddItem(new XGuiItem_Text("< No help available >", 0));
+        } else {
+            for (const DeityHelp* help : available) {
+                list.AddItem(new XGuiItem_Text(help->name, 1));
+                offers.push_back({row.id, help});
+            }
         }
+
+        list.AddItem(new XGuiItem_Text("", 0));
     }
 
-    list.AddItem(new XGuiItem_Text("", 0));
+    const int res = list.Run();
 
-    dr = religion.GetRelation(XDeity::DEATH);
-    item_text = fmt::format("<VALUE>{} <TEXT>({}<TEXT>)", XReligion::GetDeityName(XDeity::DEATH), XReligion::GetRelationName(dr));
-    list.AddItem(new XGuiItem_Text(item_text, 0));
-    int death_count = religion.GetAvailHelp(XDeity::DEATH, &pDeathHelp);
-
-    if (death_count == 0) {
-        list.AddItem(new XGuiItem_Text("< No help available >", 0));
-    } else {
-        for (int i = 0; i < death_count; i++) {
-            list.AddItem(new XGuiItem_Text(pDeathHelp[i].help_name, 1));
-        }
-    }
-
-    int res = list.Run();
-
-    if (res == -1) {
+    if (res < 0 || static_cast<size_t>(res) >= offers.size()) {
         return;
     }
 
-    if (res < life_count) {
-        religion.Pray(XDeity::LIFE, &pLifeHelp[res], this);
-    } else if (res < life_count + death_count) {
-        religion.Pray(XDeity::DEATH, &pDeathHelp[res - life_count], this);
-    }
+    religion.Pray(offers[res].deity, *offers[res].help, this);
 }
+
 
 
 
@@ -208,27 +205,22 @@ void XHero::EndGame(const char* end_msg)
     score += place_count * 200;
     list.AddItem(new XGuiItem_Text(fmt::format("You visited {} places.", place_count)));
 
-    const DEITY_RELATION dr1 = hero->religion.GetRelation(XDeity::LIFE);
-    const DEITY_RELATION dr2 = hero->religion.GetRelation(XDeity::DEATH);
+    // Standing with each god a world declares, counted only where it
+    // amounts to something - which is to say where the god has become
+    // willing to do anything for them.
     int flag = 1;
 
-    if (dr1 >= DR_ADEPT) {
-        auto rel1 = fmt::format("You were a {} of {}",
-            XReligion::GetRelationName(dr1),
-            XReligion::GetDeityName(XDeity::LIFE));
+    for (const auto& row : deities_db) {
+        const DeityRank* rank = hero->religion.GetRank(row.id);
 
-        list.AddItem(new XGuiItem_Text(rel1));
-        flag = 0;
-        score += dr1 * 300;
-    }
+        if (!rank || hero->religion.AvailableHelp(row.id).empty()) {
+            continue;
+        }
 
-    if (dr2 >= DR_ADEPT) {
-        auto rel2 = fmt::format("You were a {} of {}",
-            XReligion::GetRelationName(dr2),
-            XReligion::GetDeityName(XDeity::DEATH));
+        list.AddItem(new XGuiItem_Text(fmt::format("You were a {} of {}",
+            rank->name, row.name)));
 
-        list.AddItem(new XGuiItem_Text(rel2));
-        score += dr2 * 300;
+        score += rank->score;
         flag = 0;
     }
 

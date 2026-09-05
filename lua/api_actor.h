@@ -116,6 +116,12 @@ namespace lua_api
     XGUID GetObjectGUID(void* obj);
     std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
     bool HasBrand(const std::string& carried, const std::string& ids);
+    int GetCreatureClass(void* who);
+    int Favour(void* who, const std::string& deity);
+    void ChangeFavour(void* who, const std::string& deity, int delta);
+    void SetFavour(void* who, const std::string& deity, int value);
+    std::string GetDeityName(const std::string& deity);
+    int Sacrifice(void* who, void* item, const std::string& deity);
     void SetItemBrand(void* item, const std::string& br);
     std::string GetItemName(void* item);
     sol::optional<ItemType> MissileForLauncher(void* weapon);

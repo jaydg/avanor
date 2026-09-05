@@ -90,6 +90,7 @@ namespace lua_api
     void StopCorpseRotting(void* item, bool stopped);
     sol::optional<std::string> HerbPotion(void* item);
     int PotionAlchemyPower(const std::string& pn);
+    void SetAltarDeity(void* object, const std::string& deity);
     int AlchemyRecipeCount();
     sol::optional<std::tuple<std::string, std::string, std::string>> AlchemyRecipe(int num);
     bool LearnAlchemyRecipe(void* who, const std::string& pn1, const std::string& pn2,

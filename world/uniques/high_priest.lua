@@ -61,12 +61,12 @@ function HighPriestHandler(e, t, p, v)
 		local killer = AsCreature(p)
 
 		if (killer:isHero()) then
-			AddMessage(XReligion.GetDeityName(XDeity.LIFE) .. " will not be pleased about this...")
+			AddMessage(GetDeityName("life") .. " will not be pleased about this...")
 		else
-			AddMessage(killer.name .. " seems to be trying to anger " .. XReligion.GetDeityName(XDeity.LIFE) .. "...")
+			AddMessage(killer.name .. " seems to be trying to anger " .. GetDeityName("life") .. "...")
 		end
 
-		killer.religion.life_act = killer.religion.life_act - 50
+		ChangeFavour(p, "life", -50)
 		return true
 	end
 
@@ -75,7 +75,7 @@ function HighPriestHandler(e, t, p, v)
 		local item = AsItem(v)
 
 		AddMessage("Thank you for your charitable donation!")
-		giver.religion:SacrificeItem(giver, item, XDeity.LIFE)
+		Sacrifice(p, v, "life")
 		return true
 	end
 

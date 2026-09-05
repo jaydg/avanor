@@ -6,6 +6,7 @@ function LoadScripts()
 	dofile("./world/rooms.lua");
 	dofile("./world/resistances.lua");
 	dofile("./world/brands.lua");
+	dofile("./world/deities.lua");
 	dofile("./world/combat_skills.lua");
 	dofile("./world/spells.lua");
 	dofile("./world/creatures/init.lua");

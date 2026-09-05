@@ -373,7 +373,7 @@ int XCreature::UseItem(XTool* tool)
 void XCreature::Sacrifice(XItem * item)
 {
     assert(isValid());
-    religion.SacrificeItem(this, item, XDeity::UNKNOWN);
+    religion.SacrificeItem(this, item, DEITY_NONE);
 }
 
 int XCreature::isCreatureVisible(XCreature * cr)
