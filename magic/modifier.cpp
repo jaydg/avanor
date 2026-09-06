@@ -59,10 +59,10 @@ const ModifierKind modifier_kinds[] = {
 
 bool IsKnownModifier(const MODIFIER& mt)
 {
-    // The two the engine builds for itself rather than through the table:
-    // a resistance needs to be told which resistance, and a delayed
-    // modifier is a wrapper around one of the others.
-    if (mt == MOD_RESISTANCE || mt == MOD_DELAYED) {
+    // Built by the engine rather than through the table: a resistance
+    // needs to be told which resistance, which this signature has no room
+    // for.
+    if (mt == MOD_RESISTANCE) {
         return true;
     }
 
@@ -70,9 +70,22 @@ bool IsKnownModifier(const MODIFIER& mt)
         [&mt](const ModifierKind& k) { return mt == k.id; });
 }
 
-int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr)
+int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
+    const int delay)
 {
     if (val > 0) {
+        // Not on the creature yet, only on its way: parked as a plain
+        // modifier holding the id and the amount, and handed back to this
+        // same function when its time comes. Nothing is resisted, said or
+        // applied until then - the meal is over long before the poison is.
+        if (delay > 0) {
+            auto pending = std::make_unique<XBasicModifier>(mt, val, cr);
+            pending->delay = delay;
+            Add(std::move(pending), owner);
+
+            return 1;
+        }
+
         // Needs to be told which resistance it grants, and this signature
         // has no room to say. Reached through AddResistance() in Lua, or
         // by building one and handing it to the XBasicModifier overload
@@ -152,17 +165,25 @@ int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr)
 
 void XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
 {
+    const bool pending = mod->delay > 0;
+
     for (const auto& existing : ml)
     {
         if (existing->Compare(mod.get()) == 0)
         {
-            if (owner->isHero())
+            if (owner->isHero() && !pending)
                 msgwin.Add(mod->ChangeMsg(mod->val));
 
             existing->Concat(mod.get());
 
             return;
         }
+    }
+
+    if (pending) {
+        ml.push_back(std::move(mod));
+
+        return;
     }
 
     if (owner->isHero())
@@ -180,7 +201,10 @@ void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
         auto& tmod = *it;
 
         if (tmod->mdt == mdt) {
-            if (first) {
+            // A modifier still on its way has nothing to say and nothing
+            // to undo - but it does go, which is why being cured of poison
+            // now also clears the poison that has not bitten yet.
+            if (first && tmod->delay <= 0) {
                 if (owner->isHero())
                     msgwin.Add(tmod->RemoveMsg());
 
@@ -252,6 +276,27 @@ int XModifier::Run(XCreature* cr)
     // are run: one that arrives partway through starts counting down on the
     // next turn instead of the one that set it.
     for (size_t i = 0, count = ml.size(); i < count && i < ml.size(); ) {
+        // Still on its way: count the turn off and let it be. When the
+        // wait is over it goes through Add() as if it were being laid on
+        // this moment, which is where resistance, merging with one already
+        // there, and the announcement all live.
+        if (ml[i]->delay > 0) {
+            if (--ml[i]->delay > 0) {
+                i++;
+                continue;
+            }
+
+            const MODIFIER mt = ml[i]->mdt;
+            const int val = ml[i]->val;
+            XCreature* setter = ml[i]->setter.lock().get();
+
+            ml.erase(ml.begin() + static_cast<std::ptrdiff_t>(i));
+            count--;
+            Add(mt, val, cr, setter);
+
+            continue;
+        }
+
         const MODIFIER_RESULT mr = ml[i]->Run(cr);
 
         if (mr == MR_REMOVE) {
@@ -275,7 +320,10 @@ int XModifier::Get(const MODIFIER& mt) const
 
     for (const auto& mfr : ml)
     {
-        if (mfr->mdt == mt)
+        // One still on its way is not on the creature: a poison that has
+        // not bitten yet neither shows on the status line nor stops the
+        // hero from running.
+        if (mfr->mdt == mt && mfr->delay <= 0)
             val += mfr->val;
     }
 

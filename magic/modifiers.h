@@ -58,9 +58,6 @@ inline constexpr const char* MOD_RESISTANCE = "resistance";
 inline constexpr const char* MOD_BOOST_SPEED = "boost_speed";
 inline constexpr const char* MOD_SLOWNESS = "slowness";
 
-// Not a modifier of its own: it holds another one and lays it on after a
-// delay, which is why it is engine rather than content.
-inline constexpr const char* MOD_DELAYED = "delayed";
 
 enum MODIFIER_RESULT {
     MR_OK = 0,
@@ -89,9 +86,14 @@ class XBasicModifier
             setter.reset();
         }
 
+        // Two are the same modifier when they are the same kind from the
+        // same hand - and when both are on the creature, or both are still
+        // on their way. A poison already burning and a poison that has not
+        // bitten yet are not the same thing, and must not merge.
         virtual int Compare(XBasicModifier *mod)
         {
-            if (mod->mdt == mdt && mod->setter.lock() == setter.lock()) {
+            if (mod->mdt == mdt && mod->setter.lock() == setter.lock()
+                && (mod->delay > 0) == (delay > 0)) {
                 return 0;
             } else {
                 return -1;
@@ -101,6 +103,12 @@ class XBasicModifier
         virtual void Concat(XBasicModifier* o)
         {
             val += (o)->val;
+
+            // Two helpings of the same slow poison: the sooner one decides
+            // when it bites, and both amounts arrive together.
+            if (delay > 0 && o->delay > 0) {
+                delay = std::min(delay, o->delay);
+            }
         }
 
         // Defined in modifiers.cpp, not inline here: it needs XCreature
@@ -147,11 +155,18 @@ class XBasicModifier
         template<class Archive>
         void serialize(Archive& ar)
         {
-            ar(mdt, val, setter);
+            ar(mdt, val, setter, delay);
         }
 
         MODIFIER mdt;
         int val; // value of modifier;
+
+        // Turns still to pass before this takes hold. While it is above
+        // zero the modifier is on its way rather than on the creature: it
+        // says nothing, does nothing, counts for nothing, and is not what
+        // the status line or Get() reports. Eating something that disagrees
+        // with you is the usual source.
+        int delay = 0;
         std::weak_ptr<XCreature> setter;
     protected:
 };
@@ -532,57 +547,6 @@ class XModParalyse : public XBasicModifier
         }
 };
 
-class XModDelayed : public XBasicModifier
-{
-    public:
-        XModDelayed(const MODIFIER& _mt, int value, int delay,
-            XCreature * _cr = nullptr) : XBasicModifier(MOD_DELAYED, delay, _cr),
-            set_mt(_mt), set_val(value)
-        {}
-
-        XModDelayed()
-        {
-            assert(0);
-        }
-
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        int Compare(XBasicModifier *o) override
-        {
-            if (XBasicModifier::Compare(o) == 0 && set_mt == ((XModDelayed*)o)->set_mt) {
-                return 0;
-            } else {
-                return -1;
-            }
-
-        }
-
-        void Concat(XBasicModifier* o) override
-        {
-            auto* mod = dynamic_cast<XModDelayed*>(o);
-
-            if (!mod) {
-                XBasicModifier::Concat(o);
-                return;
-            }
-
-            val = std::min(val, mod->val);
-            set_val += mod->set_val;
-            XBasicModifier::Concat(mod); //hack
-        }
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-            ar(set_mt, set_val);
-        }
-
-    protected:
-        MODIFIER set_mt;
-        int set_val;
-};
-
 class XModSeeInvisible : public XBasicModifier
 {
     public:
@@ -823,7 +787,6 @@ CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModHeroism, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDisease, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWeak, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModParalyse, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDelayed, serialize, "", 0, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSeeInvisible, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModBoostSpeed, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSlowness, serialize, 0, nullptr);

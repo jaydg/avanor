@@ -118,12 +118,11 @@ RESULT XCorpse::onEat(XCreature * eater)
                     eater->GainResist(it.target, it.value);
                     break;
 
-                case EffectType::MODIFIER: {
-                    auto mod = std::make_unique<XModDelayed>(
-                        it.modifier, it.value, vRand(100), eater);
-                    eater->md->Add(std::move(mod), eater);
-                }
-                break;
+                case EffectType::MODIFIER:
+                    // Whatever was wrong with it catches up with the eater
+                    // somewhere in the next hundred turns.
+                    eater->md->Add(it.modifier, it.value, eater, eater, vRand(100));
+                    break;
 
                 case EffectType::VOMIT:
                     if (eater->isHero()) {

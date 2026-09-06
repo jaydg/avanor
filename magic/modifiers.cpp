@@ -73,8 +73,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModWeak);
 CEREAL_REGISTER_TYPE(XModParalyse);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModParalyse);
 
-CEREAL_REGISTER_TYPE(XModDelayed);
-CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModDelayed);
 
 CEREAL_REGISTER_TYPE(XModSeeInvisible);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModSeeInvisible);
@@ -239,17 +237,6 @@ MODIFIER_RESULT XModParalyse::Run(XCreature * owner)
     owner->nx = owner->x;
     owner->ny = owner->y;
     return XBasicModifier::Run(owner);
-}
-
-MODIFIER_RESULT XModDelayed::Run(XCreature * owner)
-{
-    MODIFIER_RESULT mr = XBasicModifier::Run(owner);
-
-    if (mr == MR_REMOVE) {
-        owner->md->Add(set_mt, set_val, owner);
-    }
-
-    return mr;
 }
 
 void XModSeeInvisible::onSet(XCreature * owner)

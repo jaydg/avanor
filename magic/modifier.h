@@ -44,7 +44,11 @@ class XModifier
 
         void Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner);
 
-        int Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr = nullptr);
+        // A delay of 0 lays the modifier on at once; anything higher lays it
+        // on that many turns from now, which is what eating something bad
+        // does to you.
+        int Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr = nullptr,
+            int delay = 0);
 
         void Remove(const MODIFIER& mdt, XCreature* owner);
 
