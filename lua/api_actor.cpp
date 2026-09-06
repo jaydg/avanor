@@ -110,26 +110,6 @@ std::string CreatureVerb(void* cr, const std::string& verb)
 
 // Lay a modifier on a creature - a wound that bleeds, a quickening, a
 // disease. `power` is how strong and how long, as each modifier reads it.
-// Resistance to one named thing, for a while. Any row
-// world/resistances.lua declares, not the four that used to have a
-// modifier class apiece.
-void AddResistance(void* cr, const std::string& resist, int power)
-{
-    XCreature* c = (XCreature*)cr;
-
-    if (!c) {
-        return;
-    }
-
-    if (!FindResistance(resist)) {
-        std::cerr << "world: asked to grant resistance to '" << resist
-                  << "', which world/resistances.lua does not declare" << std::endl;
-        return;
-    }
-
-    c->md->Add(std::make_unique<XModResistance>(resist, power, c), c);
-}
-
 void AddModifier(void* cr, const std::string& modifier, int power)
 {
     XCreature* p = (XCreature*)cr;
@@ -1065,7 +1045,6 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("CreatureName", &lua_api::CreatureName);
         lua.set_function("CreatureVerb", &lua_api::CreatureVerb);
         lua.set_function("AddModifier", &lua_api::AddModifier);
-        lua.set_function("AddResistance", &lua_api::AddResistance);
         lua.set_function("ChangeNutrition", &lua_api::ChangeNutrition);
         lua.set_function("SetNutrition", &lua_api::SetNutrition);
         lua.set_function("GetStats", &lua_api::GetStats);

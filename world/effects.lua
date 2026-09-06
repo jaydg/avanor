@@ -13,8 +13,9 @@
 --       :Restores(count, divisor, bonus)   power points back
 --       :Inflicts(modifier, c, d, b)       laid on the causer
 --       :Relieves(modifier, c, d, b)       taken off the causer
---       :Sustains(modifier)                laid on for `power` itself
---       :Resists(resistance)               resistance for `power` itself
+--       :Sustains(modifier)                laid on for `power` itself, with
+--                                          no dice - a heroism or a
+--                                          resistance held while it lasts
 --       :Touches(c, d, b, colour, brand, message)   where they face
 --       :Throws(c, d, b, colour, brand, message)    at a place in range
 --       :Engine(name)                      one of the seven the engine
@@ -73,11 +74,11 @@ Effect.new("restoration")
 	:Register()
 
 Effect.new("cure_poison")
-	:Relieves(Modifier.POISON, 1, 1, 5)
+	:Relieves("poison", 1, 1, 5)
 	:Register()
 
 Effect.new("cure_disease")
-	:Relieves(Modifier.DISEASE, 1, 1, 3)
+	:Relieves("disease", 1, 1, 3)
 	:Register()
 
 -- Touch: it lands on the square the caster faces.
@@ -129,27 +130,27 @@ Effect.new("acid_bolt")
 
 -- Blessings that last a while.
 Effect.new("heroism")
-	:Inflicts(Modifier.HEROISM, 2, 1, 5)
+	:Inflicts("heroism", 2, 1, 5)
 	:Register()
 
 Effect.new("see_invisible")
-	:Sustains(Modifier.SEE_INVISIBLE)
+	:Sustains("see_invisible")
 	:Register()
 
 Effect.new("acid_resistance")
-	:Resists("acid")
+	:Sustains("resist_acid")
 	:Register()
 
 Effect.new("fire_resistance")
-	:Resists("fire")
+	:Sustains("resist_fire")
 	:Register()
 
 Effect.new("cold_resistance")
-	:Resists("cold")
+	:Sustains("resist_cold")
 	:Register()
 
 Effect.new("poison_resistance")
-	:Resists("poison")
+	:Sustains("resist_poison")
 	:Register()
 
 -- The seven the engine does itself.

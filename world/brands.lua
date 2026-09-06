@@ -71,27 +71,27 @@ Brand.new("acid")
 Brand.new("poison")
 	:Called("{} of Poison")
 	:Group(BrandGroup.BLACK)
-	:Inflicts(Modifier.POISON)
+	:Inflicts("poison")
 	:Register()
 
 Brand.new("disease")
 	:Group(BrandGroup.BLACK)
-	:Inflicts(Modifier.DISEASE)
+	:Inflicts("disease")
 	:Register()
 
 Brand.new("paralyse")
 	:Group(BrandGroup.BLACK)
-	:Inflicts(Modifier.PARALYSE)
+	:Inflicts("paralyse")
 	:Register()
 
 Brand.new("stun")
 	:Group(BrandGroup.BLACK)
-	:Inflicts(Modifier.STUN)
+	:Inflicts("stun")
 	:Register()
 
 Brand.new("confuse")
 	:Group(BrandGroup.BLACK)
-	:Inflicts(Modifier.CONFUSE)
+	:Inflicts("confuse")
 	:Register()
 
 -- Half of what the victim loses, the attacker gains. The engine does this

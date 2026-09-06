@@ -24,8 +24,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <algorithm>
 #include <string>
 
+#include <utility>
+#include <vector>
+
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/creature.h"
 #include "magic/resist.h"
@@ -65,24 +69,98 @@ enum MODIFIER_RESULT {
     MR_DIE = 2,
 };
 
+// What a modifier is, as content writes it in world/modifiers.lua: what it
+// is called while it is on you, what it says as it comes and goes, and what
+// it shifts for as long as it lasts.
+struct ModifierStats {
+    MODIFIER id;
+
+    // What the status line calls it. The bands are read in order and the
+    // first whose ceiling the value has not reached wins, so a wound reads
+    // from a graze to a mortal wound as it deepens; a ceiling of 0 means
+    // "and anything above". A modifier with no bands at all shows nothing -
+    // safety is felt rather than seen.
+    struct Band {
+        int upto = 0;
+        std::string text;
+    };
+
+    std::vector<Band> names;
+
+    // What the one carrying it is told: as it takes hold, as it lifts, as
+    // it grows or fades, and each turn it actually does something.
+    std::string set_msg;
+    std::string remove_msg;
+    std::string grows_msg;
+    std::string fades_msg;
+    std::string apply_msg;
+
+    // What shifts while it is on, and shifts back when it goes.
+    int dv = 0;
+    int hit = 0;
+    int slower = 0;   // added to the time each move takes
+    std::vector<std::pair<XStats::Id, int>> stats;
+    std::vector<std::pair<RESISTANCE, int>> resistances;
+
+    // The amount it is laid on with is multiplied by this first: poison
+    // measured in doses rather than turns.
+    int scale = 1;
+
+    // What the target gets to shrug part of it off with, if anything.
+    RESISTANCE resisted_by;
+
+    // The few whose behaviour turn by turn the engine has to carry -
+    // bleeding, staggering, rotting a stat away. Content names one of
+    // these rather than describing it, the way an effect names :Engine().
+    std::string engine;
+};
+
+// The row for an id, or nothing if no world file declares one.
+const ModifierStats* FindModifier(const MODIFIER& id);
+
+// Every modifier content has declared, in the order it declared them.
+const std::vector<ModifierStats>& AllModifiers();
+
+void RegisterModifierLua(sol::state_view& lua);
+
+class ModifierBuilder
+{
+    public:
+        explicit ModifierBuilder(MODIFIER id);
+
+        ModifierBuilder& Called(const std::string& text);
+        ModifierBuilder& Severity(int upto, const std::string& text);
+        ModifierBuilder& OnSet(const std::string& text);
+        ModifierBuilder& OnRemove(const std::string& text);
+        ModifierBuilder& OnChange(const std::string& grows, const std::string& fades);
+        ModifierBuilder& Applies(const std::string& text);
+        ModifierBuilder& While(const sol::table& shifts);
+        ModifierBuilder& Scale(int scale);
+        ModifierBuilder& ResistedBy(const std::string& resist);
+        ModifierBuilder& Engine(const std::string& which);
+        void Register();
+
+    private:
+        ModifierStats t;
+};
+
+// One modifier on one creature: which row it is, how much of it there is,
+// who laid it on, and how long until it takes hold. Everything it says and
+// everything it shifts comes from the row.
 class XBasicModifier
 {
     protected:
-        XBasicModifier() {}
-        // Harmless to call directly (unlike the assert(0)-guarded
-        // no-args constructors on every concrete subclass below) -
-        // every field gets overwritten by serialize() immediately
-        // afterward. Grants Cereal access to construct this base type
-        // directly: it's polymorphic and not abstract, so - same as
-        // XStandardAI (see std_ai.h) - Cereal's dispatch has to account
-        // for a unique_ptr<XBasicModifier> holding a plain
-        // XBasicModifier, not just a registered subclass.
+        // Cereal constructs one of these directly when reading a save; every
+        // field is overwritten by serialize() immediately afterwards.
         friend class cereal::access;
 
     public:
+        XBasicModifier() = default;
+
         XBasicModifier(const MODIFIER& mt, int _val, XCreature * _cr = nullptr);
 
-        virtual ~XBasicModifier() {
+        ~XBasicModifier()
+        {
             setter.reset();
         }
 
@@ -90,19 +168,19 @@ class XBasicModifier
         // same hand - and when both are on the creature, or both are still
         // on their way. A poison already burning and a poison that has not
         // bitten yet are not the same thing, and must not merge.
-        virtual int Compare(XBasicModifier *mod)
+        int Compare(const XBasicModifier* mod) const
         {
             if (mod->mdt == mdt && mod->setter.lock() == setter.lock()
                 && (mod->delay > 0) == (delay > 0)) {
                 return 0;
-            } else {
-                return -1;
             }
+
+            return -1;
         }
 
-        virtual void Concat(XBasicModifier* o)
+        void Concat(const XBasicModifier* o)
         {
-            val += (o)->val;
+            val += o->val;
 
             // Two helpings of the same slow poison: the sooner one decides
             // when it bites, and both amounts arrive together.
@@ -117,36 +195,16 @@ class XBasicModifier
         // XCreature::load()/save() to dereference `md` - an inline body
         // here would make the two headers require each other's complete
         // type at the same time, which can't work.
-        virtual MODIFIER_RESULT Run(XCreature * owner);
+        MODIFIER_RESULT Run(XCreature * owner);
 
-        virtual void onSet(XCreature * /*owner*/) {}
+        void onSet(XCreature * owner);
+        void onRemove(XCreature * owner);
 
-        virtual void onRemove(XCreature * /*owner*/) {}
-
-        virtual std::string GetDisplayName(int /*xval*/) const
-        {
-            return "err";
-        }
-
-        virtual const char* SetMsg()
-        {
-            return "";
-        }
-
-        virtual const char* RemoveMsg()
-        {
-            return "";
-        }
-
-        virtual const char* ChangeMsg(int /*val*/)
-        {
-            return "";
-        }
-
-        virtual const char* ApplyMsg()
-        {
-            return "";
-        }
+        [[nodiscard]] std::string GetDisplayName(int xval) const;
+        [[nodiscard]] const std::string& SetMsg() const;
+        [[nodiscard]] const std::string& RemoveMsg() const;
+        [[nodiscard]] const std::string& ChangeMsg(int val) const;
+        [[nodiscard]] const std::string& ApplyMsg() const;
 
         // `setter` was never actually persisted even before the
         // shared_ptr migration (the legacy Store/Restore, since
@@ -159,7 +217,7 @@ class XBasicModifier
         }
 
         MODIFIER mdt;
-        int val; // value of modifier;
+        int val = 0; // value of modifier;
 
         // Turns still to pass before this takes hold. While it is above
         // zero the modifier is on its way rather than on the creature: it
@@ -167,629 +225,14 @@ class XBasicModifier
         // the status line or Get() reports. Eating something that disagrees
         // with you is the usual source.
         int delay = 0;
+
         std::weak_ptr<XCreature> setter;
-    protected:
-};
-
-class XModWound : public XBasicModifier
-{
-    public:
-        XModWound(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_WOUND, _val, _cr) {}
-
-        XModWound()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int xval) const override
-        {
-            if (xval > 0) {
-                if (xval < 3) {
-                    return "<SEVERITY_MILD>graze";
-                } else if (xval >= 3 && xval < 8) {
-                    return "<SEVERITY_MILD>light cut";
-                } else if (xval >= 8 && xval < 20) {
-                    return "<SEVERITY_NOTABLE>severely cut";
-                } else if (xval >= 20 && xval < 50) {
-                    return "<SEVERITY_SEVERE>deep wound";
-                } else if (xval >= 50 && xval < 100) {
-                    return "<SEVERITY_SEVERE>deep gash";
-                } else if (xval >= 100) {
-                    return "<SEVERITY_CRITICAL>mortal wound";
-                }
-
-                return "err";
-            } else {
-                return "";
-            }
-        }
-
-        const char* SetMsg() override
-        {
-            return "You've been wounded.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "Your wounds heal.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You are wounded again." : "Your bleeding slows.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "You lose blood!";
-        }
-
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModPoison : public XBasicModifier
-{
-    public:
-        XModPoison(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_POISON, _val * 10, _cr) {}
-
-        XModPoison()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return MSG_GREEN "poisoned";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You are poisoned!";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You feel relieved.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You are poisoned again!" : "You feel somewhat relieved.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "You feel the poison coursing through your body.";
-        }
-
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModConfuse : public XBasicModifier
-{
-    public:
-        XModConfuse(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_CONFUSE, _val, _cr) {}
-
-        XModConfuse()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return "<TEXT>confused";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You are confused.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "Your thoughts clear.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "Your confusion grows." : "You feel a little clearer.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "You stagger.";
-        }
-
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModStun : public XBasicModifier
-{
-    public:
-        XModStun(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_STUN, _val, _cr) {}
-
-        XModStun()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int xval) const override
-        {
-            return xval < 10 ? "<SEVERITY_MILD>stunned" : "<SEVERITY_NOTABLE>heavily stunned";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You are stunned.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You feel steady again.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You're stunned again." : "You feel a bit clearer.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "You stagger.";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModHeroism : public XBasicModifier
-{
-    public:
-        XModHeroism(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_HEROISM, _val, _cr) {}
-
-        XModHeroism()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return "<TEXT>hero";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel like a hero.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "Your courage fades.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "Your resolve weakens." : "Your courage grows.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModDisease : public XBasicModifier
-{
-    public:
-        XModDisease(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_DISEASE, _val, _cr) {}
-
-        XModDisease()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return MSG_GREEN "disease";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel ill.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "Your health returns.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You become more diseased." : "You start to feel better.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModWeak : public XBasicModifier
-{
-    public:
-        XModWeak(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_WEAK, _val, _cr) {}
-
-        XModWeak()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return MSG_CYAN "weakness";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel very weak.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "Your strength returns.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You feel a little stronger." : "Your weakness grows.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModParalyse : public XBasicModifier
-{
-    public:
-        XModParalyse(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_PARALYSE, _val, _cr) {}
-
-        XModParalyse()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return MSG_WHITE "paralyzed!";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You've been paralyzed!";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You can move again.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "Your muscles start to loosen." : "Your muscles tighten.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        MODIFIER_RESULT Run(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModSeeInvisible : public XBasicModifier
-{
-    public:
-        XModSeeInvisible(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_SEE_INVISIBLE, _val, _cr) {}
-
-        XModSeeInvisible()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return "<TEXT>perceptive";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel more perceptive.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You feel less perceptive.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You feel less perceptive." : "You feel more preceptive.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModBoostSpeed : public XBasicModifier
-{
-    public:
-        XModBoostSpeed(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_BOOST_SPEED, _val, _cr) {}
-
-        XModBoostSpeed()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return "";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel very quick.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You slow down to normal.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You feel quicker." : "You feel slower.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-class XModSlowness : public XBasicModifier
-{
-    public:
-        XModSlowness(int _val, XCreature * _cr = nullptr) : XBasicModifier(MOD_SLOWNESS, _val, _cr) {}
-
-        XModSlowness()
-        {
-            assert(0);
-        }
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return "";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel very slow.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You feel your speed return.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? "You feel slower." : "You feel quicker.";
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-        }
-};
-
-// Resistance to one thing, for a while. Which thing is named rather than
-// baked into the class: world/resistances.lua decides what a world can
-// resist, so a class per resistance could only ever cover a chosen few -
-// this was four near-identical classes granting acid, fire, cold and
-// poison, and nothing else could be granted at all.
-class XModResistance : public XBasicModifier
-{
-    public:
-        // What one of these is worth while it lasts. Was written out four
-        // times, once per class.
-        static constexpr int AMOUNT = 40;
-
-        XModResistance(RESISTANCE r, int _val, XCreature * _cr = nullptr)
-            : XBasicModifier(MOD_RESISTANCE, _val, _cr), resist(std::move(r))
-        {
-            Compose();
-        }
-
-        XModResistance() = default;
-
-        std::string GetDisplayName(int /*xval*/) const override
-        {
-            return "";
-        }
-
-        const char* SetMsg() override
-        {
-            return "You feel safer.";
-        }
-
-        const char* RemoveMsg() override
-        {
-            return "You feel less safe.";
-        }
-
-        const char* ChangeMsg(int val) override
-        {
-            return val > 0 ? grows.c_str() : fades.c_str();
-        }
-
-        const char* ApplyMsg() override
-        {
-            return "";
-        }
-
-        // Two of these are the same modifier only when they resist the
-        // same thing. They all share MOD_RESISTANCE now, so the type no
-        // longer tells them apart on its own - without this, a second one
-        // merges into the first and grants nothing at all.
-        int Compare(XBasicModifier* mod) override
-        {
-            const auto other = dynamic_cast<XModResistance*>(mod);
-
-            if (!other || other->resist != resist) {
-                return -1;
-            }
-
-            return XBasicModifier::Compare(mod);
-        }
-
-        void onSet(XCreature * owner) override;
-        void onRemove(XCreature * owner) override;
-
-        template<class Archive>
-        void serialize(Archive& ar)
-        {
-            ar(cereal::base_class<XBasicModifier>(this));
-            ar(resist);
-
-            if constexpr (Archive::is_loading::value) {
-                Compose();
-            }
-        }
 
     private:
-        // The id reads as the thing resisted - "your resistance to fire" -
-        // which is what the four hand-written classes said. A resistance
-        // whose id is not a word for the thing itself wants a display
-        // form here one day.
-        void Compose()
-        {
-            grows = "Your resistance to " + resist + " grows.";
-            fades = "Your resistance to " + resist + " fades.";
-        }
-
-        RESISTANCE resist;
-        std::string grows;
-        std::string fades;
+        // The row this one was made from, looked up once. Rows live for as
+        // long as the game does, so the pointer stays good; a modifier read
+        // back from a save finds its row again in serialize().
+        [[nodiscard]] const ModifierStats* Row() const;
 };
-
-
-// See the comment in modifiers.cpp (next to the CEREAL_REGISTER_TYPE
-// calls) for why these live here rather than there: each subclass's
-// construction gets instantiated from inside XModifier::ml's own
-// deserialization, which gets reinstantiated in every TU that reaches
-// XCreature::md, so the specialization needs to be visible wherever
-// this header is included, not just in modifiers.cpp.
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWound, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModPoison, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModConfuse, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModStun, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModHeroism, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDisease, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWeak, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModParalyse, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSeeInvisible, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModBoostSpeed, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSlowness, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModResistance, serialize, "", 0, nullptr);
 
 #endif

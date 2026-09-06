@@ -12,7 +12,7 @@ Monster.new("gray_ooze")
 	:Description("This quivering gelatinous mass slowly oozes across the floor towards you.  It appears almost that two separate intelligences control the creature, straining to separate from each other.  It is said that the gray ooze steals life energy from those it attacks in order to reproduce.  It also is rumored to have a deadly poison.")
 	:Melee("poison", 15)
 	:CorpseResist("poison", 1)
-	:CorpseModifier(Modifier.POISON, 10)
+	:CorpseModifier("poison", 10)
 	:Register()
 
 Monster.new("gelatinous_cube")

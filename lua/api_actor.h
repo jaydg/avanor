@@ -61,7 +61,6 @@ namespace lua_api
     std::string CreatureName(void* cr, int form);
     std::string CreatureVerb(void* cr, const std::string& verb);
     void AddModifier(void* cr, const std::string& modifier, int power);
-    void AddResistance(void* cr, const std::string& resist, int power);
     void ChangeNutrition(void* cr, double stomachs);
     void SetNutrition(void* cr, double stomachs);
     int GetStats(void* cr, int st);

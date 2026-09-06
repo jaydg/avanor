@@ -48,7 +48,6 @@ void XEffect::RegisterLua(sol::state_view& lua)
         "Inflicts", &EffectBuilder::Inflicts,
         "Relieves", &EffectBuilder::Relieves,
         "Sustains", &EffectBuilder::Sustains,
-        "Resists", &EffectBuilder::Resists,
         "Touches", &EffectBuilder::Touches,
         "Throws", &EffectBuilder::Throws,
         "Engine", &EffectBuilder::Engine,
@@ -162,16 +161,6 @@ EffectBuilder& EffectBuilder::Sustains(const std::string& modifier)
     return *this;
 }
 
-EffectBuilder& EffectBuilder::Resists(const std::string& resist)
-{
-    EffectPart part;
-    part.kind = EffectPart::Kind::RESISTANCE;
-    part.resist = resist;
-    part.sustained = true;
-    t.parts.push_back(part);
-    return *this;
-}
-
 EffectBuilder& EffectBuilder::Touches(const int count, const int divisor, const int bonus,
     const int colour, const std::string& brand, const std::string& message)
 {
@@ -228,13 +217,6 @@ void EffectBuilder::Register()
         return;
     }
 
-    for (const auto& part : t.parts) {
-        if (part.kind == EffectPart::Kind::RESISTANCE && !FindResistance(part.resist)) {
-            std::cerr << "world: the effect '" << t.id << "' grants resistance to '"
-                      << part.resist << "', which world/resistances.lua does not declare"
-                      << std::endl;
-        }
-    }
 
     effects_db.push_back(t);
 }
@@ -664,19 +646,6 @@ int XEffect::Make(const EFFECT_DATA* pData)
 
                 done = pData->caller->md->Add(part.modifier,
                     part.relieves ? -val : val, pData->caller);
-                break;
-            }
-
-            case EffectPart::Kind::RESISTANCE: {
-                const int val = part.sustained
-                    ? pData->power
-                    : XDice(part.count, sides, part.bonus).GetResult();
-                auto mod = std::make_unique<XModResistance>(part.resist, val, pData->caller);
-
-                // Adding a resistance always takes: it either goes on as a
-                // new modifier or lengthens the one already there.
-                pData->caller->md->Add(std::move(mod), pData->caller);
-                done = 1;
                 break;
             }
 

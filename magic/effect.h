@@ -59,7 +59,6 @@ struct EffectPart {
         CURE,        // bleeding staunched
         MANA,        // power points back
         MODIFIER,    // something laid on the causer for a while
-        RESISTANCE,  // resistance to one named thing, for a while
         TOUCH,       // damage where they are facing
         BOLT,        // damage at a place within range
         ENGINE,      // one of the few the engine does itself
@@ -83,9 +82,6 @@ struct EffectPart {
     // For MODIFIER and RESISTANCE: it lasts for `power` itself, with no
     // dice rolled.
     bool sustained = false;
-
-    // For RESISTANCE: which one.
-    RESISTANCE resist;
 
     // For TOUCH and BOLT.
     BrandSet brands;
@@ -147,7 +143,6 @@ class EffectBuilder
         EffectBuilder& Inflicts(const std::string& modifier, int count, int divisor, int bonus);
         EffectBuilder& Relieves(const std::string& modifier, int count, int divisor, int bonus);
         EffectBuilder& Sustains(const std::string& modifier);
-        EffectBuilder& Resists(const std::string& resist);
         EffectBuilder& Touches(int count, int divisor, int bonus, int colour,
             const std::string& brand, const std::string& message);
         EffectBuilder& Throws(int count, int divisor, int bonus, int colour,

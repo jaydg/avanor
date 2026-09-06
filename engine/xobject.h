@@ -161,8 +161,8 @@ class XObject : public std::enable_shared_from_this<XObject>
         int ttm; // time to move
         int ttmb; // basis of time to move
         friend class XScheduler;
-        friend class XModBoostSpeed;
-        friend class XModSlowness;
+        // A modifier can make its carrier quicker or slower for a while.
+        friend class XBasicModifier;
 
     public:
         XGUID guid()

@@ -24,50 +24,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
-namespace {
-
-// Which class carries each modifier, and which resistance - if any - lets
-// the target shrug part of it off. Everything else about a modifier is
-// already content's business, or about to be.
-template<class T>
-std::unique_ptr<XBasicModifier> MakeModifier(int val, XCreature* cr)
-{
-    return std::make_unique<T>(val, cr);
-}
-
-struct ModifierKind {
-    const char* id;
-    const char* resisted_by;
-    std::unique_ptr<XBasicModifier> (*make)(int val, XCreature* cr);
-};
-
-const ModifierKind modifier_kinds[] = {
-    {MOD_WOUND,         "",          &MakeModifier<XModWound>},
-    {MOD_POISON,        RS_POISON,   &MakeModifier<XModPoison>},
-    {MOD_CONFUSE,       RS_CONFUSE,  &MakeModifier<XModConfuse>},
-    {MOD_STUN,          RS_STUN,     &MakeModifier<XModStun>},
-    {MOD_HEROISM,       "",          &MakeModifier<XModHeroism>},
-    {MOD_DISEASE,       "",          &MakeModifier<XModDisease>},
-    {MOD_PARALYSE,      "",          &MakeModifier<XModParalyse>},
-    {MOD_WEAK,          "",          &MakeModifier<XModWeak>},
-    {MOD_SEE_INVISIBLE, "",          &MakeModifier<XModSeeInvisible>},
-    {MOD_BOOST_SPEED,   "",          &MakeModifier<XModBoostSpeed>},
-    {MOD_SLOWNESS,      "",          &MakeModifier<XModSlowness>},
-};
-
-}
-
 bool IsKnownModifier(const MODIFIER& mt)
 {
-    // Built by the engine rather than through the table: a resistance
-    // needs to be told which resistance, which this signature has no room
-    // for.
-    if (mt == MOD_RESISTANCE) {
-        return true;
-    }
-
-    return std::any_of(std::begin(modifier_kinds), std::end(modifier_kinds),
-        [&mt](const ModifierKind& k) { return mt == k.id; });
+    return FindModifier(mt) != nullptr;
 }
 
 int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
@@ -79,32 +38,19 @@ int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
         // same function when its time comes. Nothing is resisted, said or
         // applied until then - the meal is over long before the poison is.
         if (delay > 0) {
-            auto pending = std::make_unique<XBasicModifier>(mt, val, cr);
-            pending->delay = delay;
-            Add(std::move(pending), owner);
+            XBasicModifier pending(mt, val, cr);
+            pending.delay = delay;
+            Add(pending, owner);
 
             return 1;
         }
 
-        // Needs to be told which resistance it grants, and this signature
-        // has no room to say. Reached through AddResistance() in Lua, or
-        // by building one and handing it to the XBasicModifier overload
-        // of Add().
-        if (mt == MOD_RESISTANCE) {
-            std::cerr << "a resistance modifier was asked for without"
-                         " saying which resistance - use AddResistance()"
-                      << std::endl;
+        const ModifierStats* row = FindModifier(mt);
 
-            return 0;
-        }
-
-        const auto* kind = std::find_if(std::begin(modifier_kinds), std::end(modifier_kinds),
-            [&mt](const ModifierKind& k) { return mt == k.id; });
-
-        // A name nothing knows - a typo in world/, where modifiers are
+        // A name nothing declares - a typo in world/, where modifiers are
         // named by hand. Say so and lay nothing on, rather than asserting
         // in the middle of somebody's game.
-        if (kind == std::end(modifier_kinds)) {
+        if (!row) {
             std::cerr << "world: nothing defines a modifier '" << mt << "'" << std::endl;
 
             return 0;
@@ -112,18 +58,16 @@ int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
 
         // What the body can shrug off, it does: a resisted modifier lands
         // shortened, or not at all.
-        if (*kind->resisted_by) {
-            val = owner->onMagicDamage(val, kind->resisted_by);
+        if (!row->resisted_by.empty()) {
+            val = owner->onMagicDamage(val, row->resisted_by);
 
             if (val <= 0) {
                 return 0;
             }
         }
 
-        std::unique_ptr<XBasicModifier> xbm = kind->make(val, cr);
-
         // A modifier the creature did not have yet always goes on.
-        Add(std::move(xbm), owner);
+        Add(XBasicModifier(mt, val * row->scale, cr), owner);
 
         return 1;
     } else {
@@ -133,22 +77,22 @@ int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
         {
             auto& mfr = *it;
 
-            if (mfr->mdt == mt) {
-                if (mfr->val + val > 0) {
+            if (mfr.mdt == mt) {
+                if (mfr.val + val > 0) {
                     if (owner->isHero())
-                        msgwin.Add(mfr->ChangeMsg(val));
+                        msgwin.Add(mfr.ChangeMsg(val));
 
-                    mfr->val += val;
+                    mfr.val += val;
                     return 1;
                 } else {
-                    int tmp = mfr->val + val;
-                    mfr->val = 0;
+                    int tmp = mfr.val + val;
+                    mfr.val = 0;
                     val = tmp;
 
                     if (owner->isHero())
-                        msgwin.Add(mfr->RemoveMsg());
+                        msgwin.Add(mfr.RemoveMsg());
 
-                    mfr->onRemove(owner);
+                    mfr.onRemove(owner);
                     it = ml.erase(it);
                     flag = 1;
 
@@ -163,18 +107,18 @@ int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
     }
 }
 
-void XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
+void XModifier::Add(XBasicModifier mod, XCreature* owner)
 {
-    const bool pending = mod->delay > 0;
+    const bool pending = mod.delay > 0;
 
-    for (const auto& existing : ml)
+    for (auto& existing : ml)
     {
-        if (existing->Compare(mod.get()) == 0)
+        if (existing.Compare(&mod) == 0)
         {
             if (owner->isHero() && !pending)
-                msgwin.Add(mod->ChangeMsg(mod->val));
+                msgwin.Add(mod.ChangeMsg(mod.val));
 
-            existing->Concat(mod.get());
+            existing.Concat(&mod);
 
             return;
         }
@@ -187,9 +131,9 @@ void XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
     }
 
     if (owner->isHero())
-        msgwin.Add(mod->SetMsg());
+        msgwin.Add(mod.SetMsg());
 
-    mod->onSet(owner);
+    mod.onSet(owner);
     ml.push_back(std::move(mod));
 }
 
@@ -200,15 +144,15 @@ void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
     for (auto it = ml.begin(); it != ml.end();) {
         auto& tmod = *it;
 
-        if (tmod->mdt == mdt) {
+        if (tmod.mdt == mdt) {
             // A modifier still on its way has nothing to say and nothing
             // to undo - but it does go, which is why being cured of poison
             // now also clears the poison that has not bitten yet.
-            if (first && tmod->delay <= 0) {
+            if (first && tmod.delay <= 0) {
                 if (owner->isHero())
-                    msgwin.Add(tmod->RemoveMsg());
+                    msgwin.Add(tmod.RemoveMsg());
 
-                tmod->onRemove(owner);
+                tmod.onRemove(owner);
                 first = false;
             }
 
@@ -220,56 +164,14 @@ void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
     }
 }
 
-std::string XModifier::toString() const
-{
-    // Every active status contributes to the string, in a fixed order.
-    std::string res;
-
-    // The wording lives in each modifier subclass, so a throwaway
-    // instance is what gives access to it.
-    const auto append = [&res](const XBasicModifier& mod, int val) {
-        res += mod.GetDisplayName(val) + " ";
-    };
-
-    if (const int val = Get(MOD_WOUND); val > 0) {
-        append(XModWound(0, nullptr), val);
-    }
-
-    if (const int val = Get(MOD_POISON); val > 0) {
-        append(XModPoison(0, nullptr), val);
-    }
-
-    if (const int val = Get(MOD_STUN); val > 0) {
-        append(XModStun(0, nullptr), val);
-    }
-
-    if (const int val = Get(MOD_CONFUSE); val > 0) {
-        append(XModConfuse(0, nullptr), val);
-    }
-
-    if (const int val = Get(MOD_DISEASE); val > 0) {
-        append(XModDisease(0, nullptr), val);
-    }
-
-    if (const int val = Get(MOD_PARALYSE); val > 0) {
-        append(XModParalyse(0, nullptr), val);
-    }
-
-    if (const int val = Get(MOD_SEE_INVISIBLE); val > 0) {
-        append(XModSeeInvisible(0, nullptr), val);
-    }
-
-    return res;
-}
-
 int XModifier::Run(XCreature* cr)
 {
-    // Running a modifier can add another one to this same list: a delayed
-    // effect applies itself the moment its timer runs out, and Add() pushes
-    // onto ml. That reallocates the vector, and any iterator or reference
-    // held across the call is left pointing into the freed buffer - which is
-    // what an eaten corpse's delayed poison used to crash on, roughly a
-    // hundred turns after the meal.
+    // Running a modifier can add another one to this same list: one laid on
+    // with a delay applies itself the moment its wait runs out, and Add()
+    // pushes onto ml. That reallocates the vector, and any iterator or
+    // reference held across the call is left pointing into the freed buffer
+    // - which is what an eaten corpse's delayed poison used to crash on,
+    // roughly a hundred turns after the meal.
     //
     // So walk by index and read the element back out of the vector each time
     // rather than holding on to it. Only the modifiers that were already here
@@ -280,15 +182,15 @@ int XModifier::Run(XCreature* cr)
         // wait is over it goes through Add() as if it were being laid on
         // this moment, which is where resistance, merging with one already
         // there, and the announcement all live.
-        if (ml[i]->delay > 0) {
-            if (--ml[i]->delay > 0) {
+        if (ml[i].delay > 0) {
+            if (--ml[i].delay > 0) {
                 i++;
                 continue;
             }
 
-            const MODIFIER mt = ml[i]->mdt;
-            const int val = ml[i]->val;
-            XCreature* setter = ml[i]->setter.lock().get();
+            const MODIFIER mt = ml[i].mdt;
+            const int val = ml[i].val;
+            XCreature* setter = ml[i].setter.lock().get();
 
             ml.erase(ml.begin() + static_cast<std::ptrdiff_t>(i));
             count--;
@@ -297,10 +199,10 @@ int XModifier::Run(XCreature* cr)
             continue;
         }
 
-        const MODIFIER_RESULT mr = ml[i]->Run(cr);
+        const MODIFIER_RESULT mr = ml[i].Run(cr);
 
         if (mr == MR_REMOVE) {
-            ml[i]->onRemove(cr);
+            ml[i].onRemove(cr);
             ml.erase(ml.begin() + static_cast<std::ptrdiff_t>(i));
             count--;
         } else if (mr == MR_OK) {
@@ -313,7 +215,32 @@ int XModifier::Run(XCreature* cr)
     return 1;
 }
 
-// warning! this function return val
+std::string XModifier::toString() const
+{
+    // What the creature is carrying, in the order world/modifiers.lua
+    // declares them - so a modifier that says nothing shows nothing, and
+    // a new one content adds needs no line here. The seven this used to
+    // name by hand left heroism, weakness, slowness, quickening and every
+    // resistance off the status line entirely.
+    std::string res;
+
+    for (const auto& row : AllModifiers()) {
+        if (row.names.empty()) {
+            continue;
+        }
+
+        if (const int val = Get(row.id); val > 0) {
+            const std::string name = XBasicModifier(row.id, 0, nullptr).GetDisplayName(val);
+
+            if (!name.empty()) {
+                res += name + " ";
+            }
+        }
+    }
+
+    return res;
+}
+
 int XModifier::Get(const MODIFIER& mt) const
 {
     int val = 0;
@@ -323,8 +250,8 @@ int XModifier::Get(const MODIFIER& mt) const
         // One still on its way is not on the creature: a poison that has
         // not bitten yet neither shows on the status line nor stops the
         // hero from running.
-        if (mfr->mdt == mt && mfr->delay <= 0)
-            val += mfr->val;
+        if (mfr.mdt == mt && mfr.delay <= 0)
+            val += mfr.val;
     }
 
     return val;

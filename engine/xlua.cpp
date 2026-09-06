@@ -46,6 +46,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xpotion.h"
 #include "magic/brand.h"
 #include "magic/effect.h"
+#include "magic/modifiers.h"
 #include "magic/resist.h"
 #include "magic/skill.h"
 #include "magic/stats.h"
@@ -143,6 +144,7 @@ void XLua::Init()
     XTileType::RegisterLua(lua);
     XStandardAI::RegisterLua(lua);
     XCombatSkills::RegisterLua(lua);
+    RegisterModifierLua(lua);
     RegisterBrandLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
@@ -217,7 +219,7 @@ void XLua::Init()
             "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemUse", "LuaEvent", "Movability",
-            "MagicSchool", "Modifier", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
+            "MagicSchool", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "EffectTarget", "XLocation",
             "XQuest", "XSkill", "XStairWay", "XStandardAI",
             "BrandGroup", "CombatGroup", "CombatRole", "XStats", "XTileType",

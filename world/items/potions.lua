@@ -43,11 +43,11 @@ local STAT_CHANGE = {
 
 -- What a curse-in-a-bottle lays on the drinker, and how strongly.
 local MODIFIERS = {
-	boost_speed = { Modifier.BOOST_SPEED, 100, nil,               "moves more quickly!" },
-	slowness    = { Modifier.SLOWNESS,    100, nil,               "moves slowly!" },
-	bleeding    = { Modifier.WOUND,        30, "You begin to bleed.", "starts to bleed." },
-	disease     = { Modifier.DISEASE,      25, nil,               "looks ill." },
-	poison      = { Modifier.POISON,       10, nil,               "is poisoned." },
+	boost_speed = { "boost_speed", 100, nil,               "moves more quickly!" },
+	slowness    = { "slowness",    100, nil,               "moves slowly!" },
+	bleeding    = { "wound",        30, "You begin to bleed.", "starts to bleed." },
+	disease     = { "disease",      25, nil,               "looks ill." },
+	poison      = { "poison",       10, nil,               "is poisoned." },
 }
 
 function PotionQuench(id, drinker)
@@ -139,7 +139,7 @@ function PotionDeath(id, drinker)
 	ChangeStats(drinker, XStats.MAN, -1)  -- Out of touch with nature
 	ChangeStats(drinker, XStats.PER, -1)  -- Senses are useless when dead
 	ChangeStats(drinker, XStats.CHR, -1)  -- Rotting is ugly
-	AddModifier(drinker, Modifier.WOUND, 100)  -- Ensure death
+	AddModifier(drinker, "wound", 100)  -- Ensure death
 
 	return true
 end

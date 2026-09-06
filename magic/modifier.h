@@ -42,7 +42,7 @@ class XModifier
     public:
         XModifier() = default;
 
-        void Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner);
+        void Add(XBasicModifier mod, XCreature* owner);
 
         // A delay of 0 lays the modifier on at once; anything higher lays it
         // on that many turns from now, which is what eating something bad
@@ -70,7 +70,7 @@ class XModifier
         }
 
     protected:
-        std::vector<std::unique_ptr<XBasicModifier>> ml;
+        std::vector<XBasicModifier> ml;
 };
 
 #endif
