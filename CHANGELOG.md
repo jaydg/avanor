@@ -405,6 +405,13 @@ Things that went quietly wrong the longer you played:
   the game. It now ends when he does, and ends as a failure. His second
   errand had the opposite problem: once he asked you to kill Roderick, that
   line stayed in the log whether or not you had already done it.
+- What lay at your feet was announced again every turn you stayed there.
+  Standing on a tile with something on it — reading a book, resting, waiting
+  out a fight — repeated "there is a potion of cure light wounds here" once
+  per turn for as long as you stood still, and a long read buried everything
+  else in the message window. It is meant to be said when you arrive; a 2003
+  fix for the walk command dropped the guard that checked whether you had
+  actually moved.
 - Collecting Torin's reward cost you the credit for earning it. Starting the
   gas pump at the bottom of the dwarven gold mine is worth 5000 points on
   the achievements screen at the end of the game — but the moment Torin

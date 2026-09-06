@@ -628,8 +628,15 @@ void XHero::Move()
 {
     turn_count++;
 
-    if constexpr (true) {
-        if ((l->map->GetItemCount(nx, ny) > 0 || l->map->GetSpecial(nx, ny)) && (nx != x || ny != y)) {
+    // What lies underfoot is worth saying when you arrive on it, not on
+    // every turn you spend standing there - reading a book on a tile with
+    // an amulet on it said so once per turn for as long as the reading
+    // took. This guard is the original one; a 2003 fix for the walk
+    // command (23a9a1c) replaced it with `if (1)` and pushed the
+    // condition down onto the line below, which left the announcements
+    // firing every turn.
+    if (nx != x || ny != y) {
+        if (l->map->GetItemCount(nx, ny) > 0 || l->map->GetSpecial(nx, ny)) {
             isDisturb = 0;
         }
 
