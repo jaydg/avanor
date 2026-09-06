@@ -353,6 +353,12 @@ Things that simply did not happen:
   were handed out in the order the books were listed instead, and that order
   never changed, so burning hands was the old tome in every game anyone ever
   played. They are dealt afresh each game now
+- Two spell books had no name for the thing itself. Of the seventeen looks a
+  book you have not read can have, fifteen say what they are — a thin book, a
+  parchment book, an ancient tome — and two only said how they were
+  decorated, so your pack could list "silver decorated" with nothing
+  decorated in sight. They are a gold decorated tome and a silver decorated
+  book now
 - Rings and amulets of acid resistance and of poison resistance protected
   you from fire. Both carried a copy of the fire ring's own resistance and
   nobody ever noticed, so the 300 gold bought protection you very likely

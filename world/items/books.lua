@@ -19,7 +19,7 @@ BookAppearances({
 	"old tome", "small tome", "ancient tome", "dirty tome", "heavy tome",
 	"old book", "small book", "ancient book", "dirty book", "heavy book",
 	"wrapped tome", "pocket book", "leather-bound tome", "parchment book",
-	"thin book", "gold decorated", "silver decorated",
+	"thin book", "gold decorated tome", "silver decorated book",
 })
 
 Book.new("burning_hands")
