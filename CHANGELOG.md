@@ -327,6 +327,11 @@ Things that used to crash the game:
   summoning, blinking and teleporting, a target dying mid-blow, an eaten
   corpse's delayed poison, and item stacks merging
 - Talking to Roderick while a hand was empty
+- Praying for divine escape. Marduk's teleport moves whoever the effect was
+  aimed at, and a prayer never said who that was — a trap names the creature
+  that stepped on it, but nothing filled it in for a spell or a prayer, so
+  asking your god to take you out of trouble read from nothing at all. It
+  moves the one who cast it now
 - Using an item, learning an alchemy recipe, and targeting past the map edge
 - Quitting the game
 

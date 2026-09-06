@@ -374,6 +374,11 @@ RESULT XEffect::Make(XCreature * caster, const EFFECT& effect, int power)
     ed.call_x	= caster->x;
     ed.call_y	= caster->y;
 
+    // Whoever the effect acts on. Somebody casting one acts on themselves
+    // unless another caller says otherwise - a trap names the creature
+    // that stepped on it, and MakeEffect() lets script name anyone.
+    ed.target	= caster;
+
     if (GetReq(effect) == EffectTarget::DIRECTION) {
         XPoint pt;
 
