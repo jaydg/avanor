@@ -177,6 +177,17 @@ in the caves, the road east, Brida's daughter, the machine parts — went
 unmentioned, however it turned out. Each quest now carries its own line and
 says what became of it, and the same list is what goes into the memorial file.
 
+**Resting ends when you are rested.** `~` rests where you stand, and it used
+to sit out its full five hundred turns whatever happened — you stood up
+healed some four hundred turns ago and hungrier for it. It now stops the
+moment your hit points and your power are both full, alongside the reasons it
+always stopped for: a trap going off beside you, something hostile coming
+into view, someone stepping up next to you.
+
+The manual was no help either: it called `~` a debugging command, which it
+has never been, and described `5` only as "current position". They are a rest
+and a single turn spent waiting where you stand, and they now say so.
+
 ---
 
 ### Skills

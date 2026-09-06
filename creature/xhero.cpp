@@ -127,6 +127,12 @@ void XHero::NewMove()
             }
     }
 
+    // Resting is for mending, so it ends when there is nothing left to mend.
+    if (isDisturb > 0 && last_char == '5' && HP >= GetMaxHP() && PP >= GetMaxPP()) {
+        isDisturb = 0;
+        msgwin.Add("You feel fully rested.");
+    }
+
     while (!moved) {
         const int paralyse = md->Get(MOD_PARALYSE);
         moved = 1;
