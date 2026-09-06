@@ -203,13 +203,13 @@ class XItem : public XBaseObject
         void Drop(XLocation * location, int _x, int _y);
         void Pickup(XCreature * picker);
 
-        virtual int onWear(XCreature * cr);
-        virtual int onUnWear(XCreature * cr);
+        virtual void onWear(XCreature * cr);
+        virtual void onUnWear(XCreature * cr);
 
-        virtual int onPickUp(XCreature * cr);
-        virtual int onPutOn(XCreature * cr);
+        virtual void onPickUp(XCreature * cr);
+        virtual void onPutOn(XCreature * cr);
 
-        virtual int onHit(XCreature * user, XCreature * target);
+        virtual void onHit(XCreature * user, XCreature * target);
 
         template<class Archive>
         void serialize(Archive& ar)

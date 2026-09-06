@@ -100,15 +100,9 @@ class XBasicModifier
         // type at the same time, which can't work.
         virtual MODIFIER_RESULT Run(XCreature * owner);
 
-        virtual int onSet(XCreature * /*owner*/)
-        {
-            return 1;
-        }
+        virtual void onSet(XCreature * /*owner*/) {}
 
-        virtual int onRemove(XCreature * /*owner*/)
-        {
-            return 1;
-        }
+        virtual void onRemove(XCreature * /*owner*/) {}
 
         virtual std::string GetDisplayName(int /*xval*/) const
         {
@@ -336,8 +330,8 @@ class XModStun : public XBasicModifier
             return "You stagger.";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -381,8 +375,8 @@ class XModHeroism : public XBasicModifier
             return "";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -426,8 +420,8 @@ class XModDisease : public XBasicModifier
             return "";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
         MODIFIER_RESULT Run(XCreature * owner) override;
 
         template<class Archive>
@@ -472,8 +466,8 @@ class XModWeak : public XBasicModifier
             return "";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
         MODIFIER_RESULT Run(XCreature * owner) override;
 
         template<class Archive>
@@ -613,8 +607,8 @@ class XModSeeInvisible : public XBasicModifier
             return "";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -658,8 +652,8 @@ class XModBoostSpeed : public XBasicModifier
             return "";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -703,8 +697,8 @@ class XModSlowness : public XBasicModifier
             return "";
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
 
         template<class Archive>
         void serialize(Archive& ar)
@@ -773,8 +767,8 @@ class XModResistance : public XBasicModifier
             return XBasicModifier::Compare(mod);
         }
 
-        int onSet(XCreature * owner) override;
-        int onRemove(XCreature * owner) override;
+        void onSet(XCreature * owner) override;
+        void onRemove(XCreature * owner) override;
 
         template<class Archive>
         void serialize(Archive& ar)

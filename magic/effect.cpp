@@ -646,7 +646,10 @@ int XEffect::Make(const EFFECT_DATA* pData)
                     : XDice(part.count, sides, part.bonus).GetResult();
                 auto mod = std::make_unique<XModResistance>(part.resist, val, pData->caller);
 
-                done = pData->caller->md->Add(std::move(mod), pData->caller);
+                // Adding a resistance always takes: it either goes on as a
+                // new modifier or lengthens the one already there.
+                pData->caller->md->Add(std::move(mod), pData->caller);
+                done = 1;
                 break;
             }
 

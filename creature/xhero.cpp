@@ -1225,9 +1225,9 @@ void XHero::EatFood()
     }
 }
 
-int XHero::stopAction()
+void XHero::stopAction()
 {
-    return XCreature::stopAction();
+    XCreature::stopAction();
 }
 
 void XHero::ReadAll()

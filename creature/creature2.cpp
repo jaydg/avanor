@@ -325,7 +325,7 @@ MF_RESULT XCreature::MissileFlight(MF_DATA * mfd)
     return MF_AVOID;
 }
 
-int XCreature::continueUseItem()
+void XCreature::continueUseItem()
 {
     assert(isValid());
 
@@ -335,7 +335,7 @@ int XCreature::continueUseItem()
         action_data.action = A_MOVE;
         action_data.item = nullptr;
 
-        return 1;
+        return;
     }
 
     assert(tool->kind & ItemKind::TOOL);
@@ -345,8 +345,6 @@ int XCreature::continueUseItem()
         action_data.action = A_MOVE;
         action_data.item = nullptr;
     }
-
-    return 1;
 }
 
 int XCreature::UseItem(XTool* tool)

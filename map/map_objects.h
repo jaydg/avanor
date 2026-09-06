@@ -158,7 +158,7 @@ class XTrap final : public XMapObject
 
         int MoveOut(XCreature * cr);
 
-        int Activate(XCreature * cr);
+        void Activate(XCreature * cr);
 
         int Check(XCreature * cr);
 
@@ -330,7 +330,7 @@ class XTeleport final : public XMapObject
         // at construction, unlike a stairway's, which is paired up later.
         int dest_x, dest_y;
 
-        int MoveIn(XCreature* cr);
+        void MoveIn(XCreature* cr);
 
         template<class Archive>
         void serialize(Archive& ar)

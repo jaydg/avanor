@@ -336,7 +336,7 @@ std::vector<XCreature*> XCreature::getGroupMembers() const
     return result;
 }
 
-int XCreature::stopAction()
+void XCreature::stopAction()
 {
     if (action_data.action == A_USE_TOOL) {
         if (auto* tool = dynamic_cast<XTool*>(action_data.item.get())) {
@@ -360,8 +360,6 @@ int XCreature::stopAction()
 
     // prevents hero to continue automove when attaked by ghosts...
     isDisturb = 0;
-
-    return 1;
 }
 
 int XCreature::continueEat()
@@ -371,7 +369,9 @@ int XCreature::continueEat()
     // Not just "is it food" - is it still there. A corpse can rot away
     // between one bite and the next.
     if (!food || !food->isValid()) {
-        return stopAction();
+        stopAction();
+
+        return 1;
     }
 
     assert(food->kind & ItemKind::FOOD);
@@ -1041,7 +1041,7 @@ int XCreature::GainAttr(XStats::Id st, int val)
     return 0;
 }
 
-int XCreature::GainResist(const RESISTANCE& rs, int val)
+void XCreature::GainResist(const RESISTANCE& rs, int val)
 {
     resistances->ChangeResistance(rs, val);
 
@@ -1055,8 +1055,6 @@ int XCreature::GainResist(const RESISTANCE& rs, int val)
             msgwin.Add(text);
         }
     }
-
-    return 1;
 }
 
 int XCreature::GetStats(XStats::Id st)
@@ -1749,7 +1747,9 @@ int XCreature::continueRead()
     auto* book = dynamic_cast<XBook*>(action_data.item.get());
 
     if (!book || !book->isValid()) {
-        return stopAction();
+        stopAction();
+
+        return 1;
     }
 
     book->onRead(this);

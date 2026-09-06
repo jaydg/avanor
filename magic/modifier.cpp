@@ -108,7 +108,10 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
                 assert(0);
         };
 
-        return Add(std::move(xbm), owner);
+        // A modifier the creature did not have yet always goes on.
+        Add(std::move(xbm), owner);
+
+        return 1;
     } else {
         int flag = 0;
 
@@ -146,7 +149,7 @@ int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
     }
 }
 
-int XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
+void XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
 {
     for (const auto& existing : ml)
     {
@@ -157,7 +160,7 @@ int XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
 
             existing->Concat(mod.get());
 
-            return 1;
+            return;
         }
     }
 
@@ -166,11 +169,9 @@ int XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
 
     mod->onSet(owner);
     ml.push_back(std::move(mod));
-
-    return 1;
 }
 
-int XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
+void XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
 {
     bool first = true;
 
@@ -192,8 +193,6 @@ int XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
             ++it;
         }
     }
-
-    return 1;
 }
 
 std::string XModifier::toString() const

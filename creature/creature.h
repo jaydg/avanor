@@ -378,7 +378,7 @@ class XCreature : public XBaseObject
         std::vector<XCreature*> getGroupMembers() const;
 
         ACTION_DATA action_data;
-        virtual int stopAction();
+        virtual void stopAction();
 
         void Regenerate();
         int onHeal(int _hp);
@@ -393,7 +393,7 @@ class XCreature : public XBaseObject
         int continueEat();
 
         virtual int UseItem(XTool* tool);
-        int continueUseItem();
+        void continueUseItem();
 
         int base_nutrio;  // stomach size for normal satiation
         int nutrio;       // stomach satiation;
@@ -509,7 +509,7 @@ class XCreature : public XBaseObject
 
         int GetStats(XStats::Id st);
         int GainAttr(XStats::Id st, int val);
-        int GainResist(const RESISTANCE& rs, int val);
+        void GainResist(const RESISTANCE& rs, int val);
         int GetMaxHP();
         int GetMaxPP();
         int GetExp() const;

@@ -97,7 +97,7 @@ class XBook: public XItem
         void Identify() override;
         std::string toString() override;
         bool Compare(XObject* o) override;
-        virtual int onRead(XCreature * reader);
+        virtual void onRead(XCreature * reader);
 
         // Non-template, concrete-archive-typed (like XPotion::Save/
         // LoadTable): book_descr[] is private to xbook.cpp.

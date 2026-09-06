@@ -152,52 +152,46 @@ MODIFIER_RESULT XModConfuse::Run(XCreature * owner)
     return XBasicModifier::Run(owner);
 }
 
-int XModStun::onSet(XCreature * owner)
+void XModStun::onSet(XCreature * owner)
 {
     owner->added_DV -= 5;
     owner->added_HIT -= 10;
-    return 1;
 }
 
-int XModStun::onRemove(XCreature * owner)
+void XModStun::onRemove(XCreature * owner)
 {
     owner->added_DV += 5;
     owner->added_HIT += 10;
-    return 1;
 }
 
-int XModHeroism::onSet(XCreature * owner)
+void XModHeroism::onSet(XCreature * owner)
 {
     owner->added_DV += 5;
     owner->added_HIT += 10;
-    return 1;
 }
 
-int XModHeroism::onRemove(XCreature * owner)
+void XModHeroism::onRemove(XCreature * owner)
 {
     owner->added_DV -= 5;
     owner->added_HIT -= 10;
-    return 1;
 }
 
-int XModDisease::onSet(XCreature * owner)
+void XModDisease::onSet(XCreature * owner)
 {
     owner->added_DV -= 5;
     owner->added_HIT -= 5;
     owner->added_stats.Modify(XStats::STR, -3);
     owner->added_stats.Modify(XStats::DEX, -4);
     owner->added_stats.Modify(XStats::TOU, -3);
-    return 1;
 }
 
-int XModDisease::onRemove(XCreature * owner)
+void XModDisease::onRemove(XCreature * owner)
 {
     owner->added_DV += 5;
     owner->added_HIT += 5;
     owner->added_stats.Modify(XStats::STR, +3);
     owner->added_stats.Modify(XStats::DEX, +4);
     owner->added_stats.Modify(XStats::TOU, +3);
-    return 1;
 }
 
 MODIFIER_RESULT XModDisease::Run(XCreature * owner)
@@ -219,16 +213,14 @@ MODIFIER_RESULT XModDisease::Run(XCreature * owner)
     return XBasicModifier::Run(owner);
 }
 
-int XModWeak::onSet(XCreature * owner)
+void XModWeak::onSet(XCreature * owner)
 {
     owner->added_stats.Modify(XStats::STR, -5);
-    return 1;
 }
 
-int XModWeak::onRemove(XCreature * owner)
+void XModWeak::onRemove(XCreature * owner)
 {
     owner->added_stats.Modify(XStats::STR, +5);
-    return 1;
 }
 
 MODIFIER_RESULT XModWeak::Run(XCreature * owner)
@@ -260,50 +252,42 @@ MODIFIER_RESULT XModDelayed::Run(XCreature * owner)
     return mr;
 }
 
-int XModSeeInvisible::onSet(XCreature * owner)
+void XModSeeInvisible::onSet(XCreature * owner)
 {
     owner->added_resists.ChangeResistance("see_invisible", 10);
-    return 1;
 }
 
-int XModSeeInvisible::onRemove(XCreature * owner)
+void XModSeeInvisible::onRemove(XCreature * owner)
 {
     owner->added_resists.ChangeResistance("see_invisible", -10);
-    return 1;
 }
 
-int XModBoostSpeed::onSet(XCreature * owner)
+void XModBoostSpeed::onSet(XCreature * owner)
 {
     owner->ttmb -= 300;
-    return 1;
 }
 
-int XModBoostSpeed::onRemove(XCreature * owner)
+void XModBoostSpeed::onRemove(XCreature * owner)
 {
     owner->ttmb += 300;
-    return 1;
 }
 
-int XModSlowness::onSet(XCreature * owner)
+void XModSlowness::onSet(XCreature * owner)
 {
     owner->ttmb += 300;
-    return 1;
 }
 
-int XModSlowness::onRemove(XCreature * owner)
+void XModSlowness::onRemove(XCreature * owner)
 {
     owner->ttmb -= 300;
-    return 1;
 }
 
-int XModResistance::onSet(XCreature * owner)
+void XModResistance::onSet(XCreature * owner)
 {
     owner->added_resists.ChangeResistance(resist, AMOUNT);
-    return 1;
 }
 
-int XModResistance::onRemove(XCreature * owner)
+void XModResistance::onRemove(XCreature * owner)
 {
     owner->added_resists.ChangeResistance(resist, -AMOUNT);
-    return 1;
 }

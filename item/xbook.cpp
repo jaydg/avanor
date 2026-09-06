@@ -262,7 +262,7 @@ std::string XBook::toString()
     return str;
 }
 
-int XBook::onRead(XCreature * reader)
+void XBook::onRead(XCreature * reader)
 {
     if (reader->guid() != reader_guid) {
         left_to_read = value * 20;
@@ -295,7 +295,5 @@ int XBook::onRead(XCreature * reader)
             }
         }
     }
-
-    return 1;
 }
 

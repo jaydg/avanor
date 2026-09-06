@@ -339,7 +339,9 @@ int XTrap::MoveIn(XCreature* cr)
 
     if (cr->isHero()) {
         if (!isVisibleForHero) {
-            return Activate(cr);
+            Activate(cr);
+
+            return 1;
         }
     } else {
         if (cr->xai->isKnowThisTrap(this)) {
@@ -349,7 +351,9 @@ int XTrap::MoveIn(XCreature* cr)
                 msgwin.Add("a trap.");
             }
         } else {
-            return Activate(cr);
+            Activate(cr);
+
+            return 1;
         }
     }
 
@@ -393,7 +397,7 @@ int XTrap::MoveOut(XCreature* cr)
     return 1;
 }
 
-int XTrap::Activate(XCreature* cr)
+void XTrap::Activate(XCreature* cr)
 {
     const TrapTypeStats* row = FindTrapType(trap_type);
 
@@ -497,8 +501,6 @@ int XTrap::Activate(XCreature* cr)
         // no separate SetSpecial() call, no ordering to get wrong.
         Invalidate();
     }
-
-    return 1;
 }
 
 int XTrap::Check(XCreature* cr)
@@ -657,18 +659,16 @@ XTeleport::XTeleport(const int _x, const int _y, XLocation* loc, const std::stri
     name = "magic circle";
 }
 
-int XTeleport::MoveIn(XCreature* cr)
+void XTeleport::MoveIn(XCreature* cr)
 {
     if (!cr->isHero()) {
-        return 1; // Citizens shouldn't want to go visit the village...
+        return; // Citizens shouldn't want to go visit the village...
     }
 
     if (Game.Location(ln)->map->XGetMovability(dest_x, dest_y) == 0) {
         cr->LastStep();
         cr->FirstStep(dest_x, dest_y, Game.Location(ln).get());
     }
-
-    return 1;
 }
 
 REGISTER_CLASS(XDoor);

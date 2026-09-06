@@ -175,7 +175,7 @@ class XReligion
         // for, in the order content declared it.
         [[nodiscard]] std::vector<const DeityHelp*> AvailableHelp(const DEITY& deity) const;
 
-        int Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer);
+        void Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer);
 
         template<class Archive>
         void serialize(Archive& ar)

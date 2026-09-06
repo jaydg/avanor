@@ -160,7 +160,7 @@ class XHero final : public XCreature
         void FirstStep(int _x, int _y, XLocation* _l) override;
         void LastStep() override;
 
-        int stopAction() override;
+        void stopAction() override;
 
         // last_char/run_way_count/target/last_cast are transient
         // per-turn UI state, and melee_attack is a non-owning pointer

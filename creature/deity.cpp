@@ -374,7 +374,7 @@ std::vector<const DeityHelp*> XReligion::AvailableHelp(const DEITY& deity) const
     return available;
 }
 
-int XReligion::Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer)
+void XReligion::Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer)
 {
     EFFECT effect = help.effect;
 
@@ -391,6 +391,4 @@ int XReligion::Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer
         // Neither answered nor taken back: the god heard and did nothing.
         msgwin.Add("Your prayer was unheard.");
     }
-
-    return 1;
 }

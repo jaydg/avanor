@@ -733,7 +733,7 @@ std::string XItem::GetArtifactName(std::string real_name)
     return str;
 }
 
-int XItem::onWear(XCreature * cr)
+void XItem::onWear(XCreature * cr)
 {
     cr->added_stats.Add(stats.get()); // modify stats
     cr->added_resists.Add(resistances.get()); // modify resist
@@ -757,11 +757,9 @@ int XItem::onWear(XCreature * cr)
     if (special_property & SPP_SLOWDIGESTION) {
         cr->added_slow_digestion++;
     }
-
-    return 1;
 }
 
-int XItem::onUnWear(XCreature * cr)
+void XItem::onUnWear(XCreature * cr)
 {
     cr->added_stats.Sub(stats.get()); //modify stats;
     cr->added_resists.Sub(resistances.get()); //modify resist;
@@ -785,30 +783,24 @@ int XItem::onUnWear(XCreature * cr)
     if (special_property & SPP_SLOWDIGESTION) {
         cr->added_slow_digestion--;
     }
-
-    return 1;
 }
 
-int XItem::onPickUp(XCreature * cr)
+void XItem::onPickUp(XCreature * cr)
 {
     SetOwner(cr);
-    return 1;
 }
 
-int XItem::onPutOn(XCreature * /*cr*/)
+void XItem::onPutOn(XCreature * /*cr*/)
 {
-    return 1;
 }
 
-int XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
+void XItem::onHit(XCreature * /*user*/, XCreature * /*target*/)
 {
     const ENHANCE_STRUCT* enh = FindArmourEnchantment(special_number);
 
     if (enh && enh->brt.Has("fire")) {
         //	user->MagicAttack(target, dice.Throw(), "fire");
     }
-
-    return 1;
 }
 
 void XItem::Drop(XLocation * location, int _x, int _y)
