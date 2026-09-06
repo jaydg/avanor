@@ -487,6 +487,26 @@ void XHero::NewMove()
                 }
             }
         }
+
+        // Walking into a wall is not a move.
+        //
+        // A closed door is deliberately not this case - opening it is the
+        // action, and that does take the turn. Nor is a creature in the way
+        // (movability 2): that is an attack.
+        //
+        // Only when not running: a run into a wall is already dealt with
+        // just above, which either turns the corner or stops the run.
+        if (moved && isDisturb <= 0 && (nx != x || ny != y)
+            && l->map->XGetMovability(nx, ny) == 1) {
+            const auto* door = dynamic_cast<XDoor *>(l->map->GetSpecial(nx, ny));
+
+            if (!door || door->isOpened) {
+                nx = x;
+                ny = y;
+                moved = 0;
+                continue;
+            }
+        }
     }
 
     if (XQuest::quest.hero_die) {
