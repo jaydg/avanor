@@ -677,8 +677,3 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
 
     return 0;
 }
-
-/***** uncompleted ********/
-// 1) Backstab
-// 3) Correct using proper ammo type
-// 4) Drain life
