@@ -39,25 +39,79 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 class XLocation;
 
 //////////////////////////////////////////////////////////////////////
+// Which sort of trap this is - the id world/traps.lua registered it
+// under. What sorts a world has is content; the engine knows only how a
+// trap can go off.
+using TRAP_TYPE = std::string;
+
+// "Any trap": what the dungeon builder asks for when it wants one and
+// does not care which.
+inline constexpr const char* TRAP_ANY = "";
+
+// How a trap hurts whoever set it off.
+enum class TrapHarm {
+    NONE,     // it does no damage of its own - a magic trap casts instead
+    FIRES,    // one charge of what it is loaded with, at them
+    IMPALES,  // everything it is loaded with, at once
+    HURTS,    // plain dice, with nothing loaded
+};
+
+struct TrapTypeStats {
+    TRAP_TYPE id;
+    int colour = 0;
+
+    // A magic trap: the effect it brings about. Empty for one that works
+    // by simpler means.
+    EFFECT casts;
+
+    TrapHarm harm = TrapHarm::NONE;
+
+    // For HURTS: the damage, as XDice(count, sides, bonus).
+    int count = 0;
+    int sides = 0;
+    int bonus = 0;
+
+    // How hard it is to dodge, and what the message calls the thing that
+    // hurt. FIRES names the charge itself instead.
+    int to_hit = 0;
+    std::string message;
+
+    // A hole in the ground: whoever falls in has to climb out, and may
+    // fall in again trying.
+    bool pit = false;
+};
+
+extern std::vector<TrapTypeStats> trap_types_db;
+
+const TrapTypeStats* FindTrapType(const TRAP_TYPE& id);
+
+// A trap type drawn at random, for the dungeon builder.
+TRAP_TYPE AnyTrapType();
+
+// Fluent builder - see world/traps.lua.
+class TrapTypeBuilder
+{
+    public:
+        explicit TrapTypeBuilder(std::string id);
+
+        TrapTypeBuilder& Looks(int colour);
+        TrapTypeBuilder& Casts(const std::string& effect);
+        TrapTypeBuilder& Fires(int to_hit);
+        TrapTypeBuilder& Impales(int to_hit, const std::string& message);
+        TrapTypeBuilder& Hurts(int count, int sides, int bonus, int to_hit,
+            const std::string& message);
+        TrapTypeBuilder& Pit();
+        void Register();
+
+    private:
+        TrapTypeStats t;
+};
+
 //XTrap
 /////////////////////////////////////////////////////////////////////
 class XTrap final : public XMapObject
 {
     public:
-        // What the trap does when it goes off. RANDOM is not a trap but
-        // an instruction to pick one, the way the generators ask for it.
-        enum class Type {
-            UNKNOWN = -1,
-            MAGICARROW = 0,
-            FIREBOLT,
-            ACIDBOLT,
-            ARROW,
-            TELEPORT,
-            PIT,
-            SPEAR_PIT,
-            RANDOM
-        };
-
         // How dangerous, and how well hidden. RANDOM again means "pick".
         enum class Level {
             VERY_LOW = 0,
@@ -70,7 +124,7 @@ class XTrap final : public XMapObject
         };
 
     private:
-        Type trap_type = Type::UNKNOWN;
+        TRAP_TYPE trap_type;
         Level trap_level;
 
         // owner to get exp.
@@ -95,7 +149,7 @@ class XTrap final : public XMapObject
             assert(0);
         }
 
-        XTrap(int _x, int _y, XLocation* _l, XTrap::Level tl = XTrap::Level::RANDOM, XTrap::Type tt = XTrap::Type::RANDOM, XCreature* _owner = nullptr, XItem* items = nullptr);
+        XTrap(int _x, int _y, XLocation* _l, XTrap::Level tl = XTrap::Level::RANDOM, const TRAP_TYPE& tt = TRAP_ANY, XCreature* _owner = nullptr, XItem* items = nullptr);
 
         int MoveIn(XCreature * cr);
 
@@ -116,8 +170,7 @@ class XTrap final : public XMapObject
         // Fills an unloaded trap from its recipe - see the definition.
         void LoadFromRecipe();
 
-        // Registers the Type enum as the Lua table XTrap.MEMBER, so a
-        // recipe in world/traps.lua can say which trap it builds.
+        // Registers the trap-type and recipe builders.
         static void RegisterLua(sol::state_view& lua);
     protected:
         // teardown hook, called by XObject::Invalidate()
@@ -142,7 +195,7 @@ class XTrap final : public XMapObject
 // dungeon.
 struct TrapRecipe {
     std::string name;
-    XTrap::Type type{XTrap::Type::UNKNOWN};
+    TRAP_TYPE type;
 
     // The CREATETRAP level this becomes available at.
     int level{0};
@@ -184,19 +237,19 @@ extern std::vector<TrapRecipe> trap_recipes;
 // The recipe a trap of this type is built from, or nullptr. Where one
 // type has several recipes - an arrow trap and a spear trap are the same
 // machine loaded differently - this is the first, which is the simplest.
-const TrapRecipe* FindTrapRecipe(XTrap::Type type);
+const TrapRecipe* FindTrapRecipe(const TRAP_TYPE& type);
 
 // Fluent builder for one row of that table:
 //
-//   TrapRecipe.new("Spear trap", XTrap.ARROW)
+//   TrapRecipe.new("Spear trap", "arrow")
 //       :Level(2)
-//       :Loads(ItemKind.WEAPON, { ItemType.SHORTSPEAR, ItemType.LONGSPEAR })
+//       :Loads(ItemKind.WEAPON, { "short_spear", "long_spear" })
 //       :Practice(15)
 //       :Register()
 class TrapRecipeBuilder
 {
     public:
-        TrapRecipeBuilder(const std::string& name, XTrap::Type type);
+        TrapRecipeBuilder(const std::string& name, const std::string& type);
 
         TrapRecipeBuilder& Level(int level);
         TrapRecipeBuilder& Spell(SPELL_NAME spell);

@@ -59,7 +59,99 @@ bool TrapRecipe::Accepts(const XItem* item) const
     return false;
 }
 
-const TrapRecipe* FindTrapRecipe(const XTrap::Type type)
+std::vector<TrapTypeStats> trap_types_db;
+
+const TrapTypeStats* FindTrapType(const TRAP_TYPE& id)
+{
+    for (const auto& row : trap_types_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+TRAP_TYPE AnyTrapType()
+{
+    if (trap_types_db.empty()) {
+        return TRAP_ANY;
+    }
+
+    return trap_types_db[vRand(static_cast<int>(trap_types_db.size()))].id;
+}
+
+TrapTypeBuilder::TrapTypeBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+TrapTypeBuilder& TrapTypeBuilder::Looks(const int colour)
+{
+    t.colour = colour;
+    return *this;
+}
+
+TrapTypeBuilder& TrapTypeBuilder::Casts(const std::string& effect)
+{
+    t.casts = effect;
+    return *this;
+}
+
+TrapTypeBuilder& TrapTypeBuilder::Fires(const int to_hit)
+{
+    t.harm = TrapHarm::FIRES;
+    t.to_hit = to_hit;
+    return *this;
+}
+
+TrapTypeBuilder& TrapTypeBuilder::Impales(const int to_hit, const std::string& message)
+{
+    t.harm = TrapHarm::IMPALES;
+    t.to_hit = to_hit;
+    t.message = message;
+    return *this;
+}
+
+TrapTypeBuilder& TrapTypeBuilder::Hurts(const int count, const int sides, const int bonus,
+    const int to_hit, const std::string& message)
+{
+    t.harm = TrapHarm::HURTS;
+    t.count = count;
+    t.sides = sides;
+    t.bonus = bonus;
+    t.to_hit = to_hit;
+    t.message = message;
+    return *this;
+}
+
+TrapTypeBuilder& TrapTypeBuilder::Pit()
+{
+    t.pit = true;
+    return *this;
+}
+
+void TrapTypeBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a trap type with no id" << std::endl;
+        return;
+    }
+
+    if (FindTrapType(t.id)) {
+        std::cerr << "world: two trap types both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (!t.casts.empty() && !FindEffect(t.casts)) {
+        std::cerr << "world: the trap '" << t.id << "' casts '" << t.casts
+                  << "', which world/effects.lua does not declare" << std::endl;
+    }
+
+    trap_types_db.push_back(t);
+}
+
+const TrapRecipe* FindTrapRecipe(const TRAP_TYPE& type)
 {
     for (const TrapRecipe& r : trap_recipes) {
         if (r.type == type) {
@@ -70,7 +162,7 @@ const TrapRecipe* FindTrapRecipe(const XTrap::Type type)
     return nullptr;
 }
 
-TrapRecipeBuilder::TrapRecipeBuilder(const std::string& name, const XTrap::Type type)
+TrapRecipeBuilder::TrapRecipeBuilder(const std::string& name, const std::string& type)
 {
     t.name = name;
     t.type = type;
@@ -123,6 +215,15 @@ TrapRecipeBuilder& TrapRecipeBuilder::Fills(const int min, const int max)
 
 void TrapRecipeBuilder::Register()
 {
+    // The trap types are declared above the recipes that build them, so a
+    // recipe naming one that does not exist is a typo.
+    if (!FindTrapType(t.type)) {
+        std::cerr << "world: the recipe '" << t.name << "' builds a trap of type '"
+                  << t.type << "', which world/traps.lua does not declare"
+                  << std::endl;
+        return;
+    }
+
     trap_recipes.push_back(t);
 }
 
@@ -149,18 +250,19 @@ void XTrap::LoadFromRecipe()
 
 void XTrap::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("XTrap",
-        "MAGICARROW", Type::MAGICARROW,
-        "FIREBOLT", Type::FIREBOLT,
-        "ACIDBOLT", Type::ACIDBOLT,
-        "ARROW", Type::ARROW,
-        "TELEPORT", Type::TELEPORT,
-        "PIT", Type::PIT,
-        "SPEAR_PIT", Type::SPEAR_PIT
+    lua.new_usertype<TrapTypeBuilder>("TrapType",
+        sol::constructors<TrapTypeBuilder(std::string)>(),
+        "Looks", &TrapTypeBuilder::Looks,
+        "Casts", &TrapTypeBuilder::Casts,
+        "Fires", &TrapTypeBuilder::Fires,
+        "Impales", &TrapTypeBuilder::Impales,
+        "Hurts", &TrapTypeBuilder::Hurts,
+        "Pit", &TrapTypeBuilder::Pit,
+        "Register", &TrapTypeBuilder::Register
     );
 
     lua.new_usertype<TrapRecipeBuilder>("TrapRecipe",
-        sol::constructors<TrapRecipeBuilder(const std::string&, XTrap::Type)>(),
+        sol::constructors<TrapRecipeBuilder(const std::string&, std::string)>(),
         "Level", &TrapRecipeBuilder::Level,
         "Spell", &TrapRecipeBuilder::Spell,
         "Loads", &TrapRecipeBuilder::Loads,
@@ -171,7 +273,7 @@ void XTrap::RegisterLua(sol::state_view& lua)
     );
 }
 
-XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::Type tt, XCreature* _owner, XItem* items)
+XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, const TRAP_TYPE& tt, XCreature* _owner, XItem* items)
 {
     SetLocation(_l);
     x = _x;
@@ -179,11 +281,8 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::
     owner = XCreature::ToWeakPtr(_owner);
     trap_item = XItem::Own(items);
 
-    if (tt == XTrap::Type::RANDOM) {
-        tt = static_cast<XTrap::Type>(vRand(static_cast<unsigned long>(XTrap::Type::RANDOM)));
-    }
-
-    trap_type = tt;
+    // A trap asked for by no name is any of them.
+    trap_type = tt.empty() ? AnyTrapType() : tt;
 
     if (tl == XTrap::Level::RANDOM) {
         tl = static_cast<XTrap::Level>(vRand(static_cast<unsigned long>(XTrap::Level::RANDOM)));
@@ -191,49 +290,23 @@ XTrap::XTrap(const int _x, const int _y, XLocation* _l, XTrap::Level tl, XTrap::
 
     trap_level = tl;
     activation_count = vRand(20) + 5;
-    isMagic = false;
 
-    switch (tt) {
-        case XTrap::Type::MAGICARROW:
-            color = xBROWN;
-            isMagic = true;
-            break;
+    // How it looks, whether it works by magic, and whether it holds
+    // anything - all of it from the row world/traps.lua registered.
+    const TrapTypeStats* row = FindTrapType(trap_type);
 
-        case XTrap::Type::FIREBOLT:
-            color = xRED;
-            isMagic = true;
-            break;
+    if (!row) {
+        std::cerr << "world: nothing defines a trap type '" << trap_type << "'"
+                  << std::endl;
+        color = xBROWN;
+        isMagic = true;
+    } else {
+        color = static_cast<xColor>(row->colour);
+        isMagic = !row->casts.empty();
 
-        case XTrap::Type::ACIDBOLT:
-            color = xGREEN;
-            isMagic = true;
-            break;
-
-        case XTrap::Type::ARROW:
-            color = xBROWN;
+        if (row->harm == TrapHarm::FIRES || row->harm == TrapHarm::IMPALES) {
             LoadFromRecipe();
-            break;
-
-        case XTrap::Type::TELEPORT:
-            color = xLIGHTGREEN;
-            isMagic = true;
-            break;
-
-        case XTrap::Type::PIT:
-            color = xDARKGRAY;
-            isMagic = false;
-            break;
-
-        case XTrap::Type::SPEAR_PIT:
-            color = xDARKGRAY;
-            isMagic = false;
-            LoadFromRecipe();
-            break;
-
-        default:
-            color = xBROWN;
-            isMagic = true;
-            break;
+        }
     }
 
     view = '^';
@@ -275,7 +348,9 @@ int XTrap::MoveIn(XCreature* cr)
 
 int XTrap::MoveOut(XCreature* cr)
 {
-    if (last_activator == cr->guid() && (trap_type == XTrap::Type::PIT || trap_type == XTrap::Type::SPEAR_PIT)) {
+    const TrapTypeStats* row = FindTrapType(trap_type);
+
+    if (last_activator == cr->guid() && row && row->pit) {
         // to climb out pits you should be lucky!
         if (vRand(100) < 30 + cr->sk->GetLevel(XSkill::Skill::CLIMBING) * 5 + cr->GetStats(XStats::DEX) * 2) {
             cr->sk->UseSkill(XSkill::Skill::CLIMBING);
@@ -310,10 +385,12 @@ int XTrap::MoveOut(XCreature* cr)
 
 int XTrap::Activate(XCreature* cr)
 {
+    const TrapTypeStats* row = FindTrapType(trap_type);
+
     if (cr->isVisible()) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
 
-        if (trap_type == XTrap::Type::PIT || trap_type == XTrap::Type::SPEAR_PIT) {
+        if (row && row->pit) {
             msgwin.Add(cr->GetVerb("fall"));
             msgwin.Add("down to a pit.");
         } else {
@@ -338,35 +415,15 @@ int XTrap::Activate(XCreature* cr)
         ed.target_y	= y;
         ed.target	= cr;
 
-        switch (trap_type) {
-            case XTrap::Type::MAGICARROW:
-                ed.effect = "magic_arrow";
-                break;
-
-            case XTrap::Type::FIREBOLT:
-                ed.effect = "fire_bolt";
-                break;
-
-            case XTrap::Type::ACIDBOLT:
-                ed.effect = "acid_bolt";
-                break;
-
-            case XTrap::Type::TELEPORT:
-                ed.effect = "teleport";
-                break;
-
-            default:
-                ed.effect = "magic_arrow";
-
-        }
+        ed.effect = row ? row->casts : EFFECT_NONE;
 
         XEffect::Make(&ed);
     } else {
         XItem* drop_item = nullptr;
         DAMAGE_DATA_EX dd{};
 
-        switch (trap_type) {
-            case XTrap::Type::ARROW:
+        switch (row ? row->harm : TrapHarm::NONE) {
+            case TrapHarm::FIRES:
                 drop_item = trap_item->MakeCopy();
                 drop_item->quantity = 1;
 
@@ -379,23 +436,23 @@ int XTrap::Activate(XCreature* cr)
 
                 dd.attack_name = drop_item->GetNameEx(XItem::Article::DEFINITE);
 
-                dd.attack_HIT = 30;
+                dd.attack_HIT = row->to_hit;
                 dd.attack_effect = drop_item->aet;
                 dd.flags = DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
                 break;
 
-            case XTrap::Type::PIT:
-                dd.damage	= vRand(30) + 2;
+            case TrapHarm::HURTS:
+                dd.damage	= XDice(row->count, row->sides, row->bonus).GetResult();
                 dd.attacker	= owner.lock().get();
-                dd.attack_name	= "the bottom of the pit";
-                dd.attack_HIT	= 10000;
+                dd.attack_name	= row->message;
+                dd.attack_HIT	= row->to_hit;
                 dd.attack_effect	= BrandSet();
                 dd.flags	= DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
                 break;
 
-            case XTrap::Type::SPEAR_PIT: {
+            case TrapHarm::IMPALES: {
                 dd.damage	= 0;
 
                 for (int i = 0; i < trap_item->quantity; i++) {
@@ -403,15 +460,15 @@ int XTrap::Activate(XCreature* cr)
                 }
 
                 dd.attacker	= owner.lock().get();
-                dd.attack_name	= "the spears in the pit";
-                dd.attack_HIT	= 10000;
+                dd.attack_name	= row->message;
+                dd.attack_HIT	= row->to_hit;
                 dd.attack_effect	= BrandSet();
                 dd.flags	= DF_MAGIC_BOLT;
                 cr->InflictDamage(&dd);
             }
             break;
 
-            default:
+            case TrapHarm::NONE:
                 break;
         }
 
