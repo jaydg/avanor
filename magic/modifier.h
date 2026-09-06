@@ -38,12 +38,12 @@ class XModifier
 
         void Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner);
 
-        int Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr = nullptr);
+        int Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr = nullptr);
 
-        void Remove(MODIFIER_TYPE mdt, XCreature* owner);
+        void Remove(const MODIFIER& mdt, XCreature* owner);
 
         // return val
-        [[nodiscard]] int Get(MODIFIER_TYPE mt) const;
+        [[nodiscard]] int Get(const MODIFIER& mt) const;
 
         int Run(XCreature* cr);
 

@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MODIFIERS_H
 
 #include <algorithm>
+#include <string>
 
 #include <cereal/types/base_class.hpp>
 #include <cereal/types/memory.hpp>
@@ -30,26 +31,36 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/resist.h"
 #include "engine/xobject.h"
 
-enum MODIFIER_TYPE {
-    MOD_UNKNOWN = -1,
-    MOD_WOUND,
-    MOD_POISON,
-    MOD_CONFUSE,
-    MOD_STUN,
-    MOD_HEROISM,
-    MOD_DISEASE,
-    MOD_SEE_INVISIBLE,
+// What can be laid on a creature for a while: a wound that bleeds, a
+// quickening, a disease. Named by id, the way resistances and effects
+// are, so that a modifier is a thing content can talk about.
+using MODIFIER = std::string;
 
-    MOD_PARALYSE,
-    MOD_WEAK,
-    MOD_RESISTANCE,
-    MOD_BOOST_STATS,
-    MOD_BOOST_SPEED,
-    MOD_SLOWNESS,
+// No modifier at all - a brand that inflicts nothing, a corpse that is
+// only food.
+inline const MODIFIER MOD_NONE;
 
-    MOD_DELAYED, // start modifier (poison, wound, weak) after some time
-    MOD_EOF
-};
+// The ones the engine itself acts on by name: paralysis stops the hero's
+// input loop, poison forbids running, a prayer for healing lifts a fixed
+// list, and a heavy blow inflicts one of the first three. Everything
+// else about them - what they say, what they do to the numbers, what
+// they do each turn - is content.
+inline constexpr const char* MOD_WOUND = "wound";
+inline constexpr const char* MOD_POISON = "poison";
+inline constexpr const char* MOD_CONFUSE = "confuse";
+inline constexpr const char* MOD_STUN = "stun";
+inline constexpr const char* MOD_HEROISM = "heroism";
+inline constexpr const char* MOD_DISEASE = "disease";
+inline constexpr const char* MOD_SEE_INVISIBLE = "see_invisible";
+inline constexpr const char* MOD_PARALYSE = "paralyse";
+inline constexpr const char* MOD_WEAK = "weak";
+inline constexpr const char* MOD_RESISTANCE = "resistance";
+inline constexpr const char* MOD_BOOST_SPEED = "boost_speed";
+inline constexpr const char* MOD_SLOWNESS = "slowness";
+
+// Not a modifier of its own: it holds another one and lays it on after a
+// delay, which is why it is engine rather than content.
+inline constexpr const char* MOD_DELAYED = "delayed";
 
 enum MODIFIER_RESULT {
     MR_OK = 0,
@@ -72,7 +83,7 @@ class XBasicModifier
         friend class cereal::access;
 
     public:
-        XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr = nullptr);
+        XBasicModifier(const MODIFIER& mt, int _val, XCreature * _cr = nullptr);
 
         virtual ~XBasicModifier() {
             setter.reset();
@@ -139,7 +150,7 @@ class XBasicModifier
             ar(mdt, val, setter);
         }
 
-        MODIFIER_TYPE mdt;
+        MODIFIER mdt;
         int val; // value of modifier;
         std::weak_ptr<XCreature> setter;
     protected:
@@ -524,7 +535,7 @@ class XModParalyse : public XBasicModifier
 class XModDelayed : public XBasicModifier
 {
     public:
-        XModDelayed(MODIFIER_TYPE _mt, int value, int delay,
+        XModDelayed(const MODIFIER& _mt, int value, int delay,
             XCreature * _cr = nullptr) : XBasicModifier(MOD_DELAYED, delay, _cr),
             set_mt(_mt), set_val(value)
         {}
@@ -568,7 +579,7 @@ class XModDelayed : public XBasicModifier
         }
 
     protected:
-        MODIFIER_TYPE set_mt;
+        MODIFIER set_mt;
         int set_val;
 };
 
@@ -812,7 +823,7 @@ CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModHeroism, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDisease, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModWeak, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModParalyse, serialize, 0, nullptr);
-CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDelayed, serialize, MOD_UNKNOWN, 0, 0, nullptr);
+CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModDelayed, serialize, "", 0, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSeeInvisible, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModBoostSpeed, serialize, 0, nullptr);
 CEREAL_LOAD_VIA_PLACEHOLDER_CONSTRUCT(XModSlowness, serialize, 0, nullptr);

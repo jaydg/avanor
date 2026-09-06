@@ -72,9 +72,8 @@ class XCorpse : public XAnyFood
             // on one. Empty otherwise.
             std::string target;
 
-            // A MODIFIER_TYPE for MODIFIER, MOD_UNKNOWN (-1) otherwise.
-            // An int because modifiers.h reaches back into creature.h.
-            int modifier = -1;
+            // For MODIFIER: which modifier, by id. Empty otherwise.
+            std::string modifier;
 
             int value = 0;
         };

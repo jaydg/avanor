@@ -165,7 +165,7 @@ class MonsterBuilder
         MonsterBuilder& CorpseEffect(XCorpse::EffectType cet, int val);
         MonsterBuilder& CorpseStat(const std::string& stat, int val);
         MonsterBuilder& CorpseResist(const std::string& resist, int val);
-        MonsterBuilder& CorpseModifier(int modifier, int val);
+        MonsterBuilder& CorpseModifier(const std::string& modifier, int val);
         MonsterBuilder& Unique();
 
         void Register();

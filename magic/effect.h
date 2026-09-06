@@ -73,9 +73,8 @@ struct EffectPart {
     int divisor = 1;
     int bonus = 0;
 
-    // For MODIFIER: a MODIFIER_TYPE (an int, because modifiers.h reaches
-    // back into creature.h and this header sits underneath it).
-    int modifier = -1;
+    // For MODIFIER: which modifier, by id. Empty for the other kinds.
+    std::string modifier;
 
     // For MODIFIER: take the amount away rather than add it - curing
     // poison is poison with the sign turned round.
@@ -145,9 +144,9 @@ class EffectBuilder
         EffectBuilder& Heals(int count, int divisor, int bonus);
         EffectBuilder& Cures(int count, int divisor, int bonus);
         EffectBuilder& Restores(int count, int divisor, int bonus);
-        EffectBuilder& Inflicts(int modifier, int count, int divisor, int bonus);
-        EffectBuilder& Relieves(int modifier, int count, int divisor, int bonus);
-        EffectBuilder& Sustains(int modifier);
+        EffectBuilder& Inflicts(const std::string& modifier, int count, int divisor, int bonus);
+        EffectBuilder& Relieves(const std::string& modifier, int count, int divisor, int bonus);
+        EffectBuilder& Sustains(const std::string& modifier);
         EffectBuilder& Resists(const std::string& resist);
         EffectBuilder& Touches(int count, int divisor, int bonus, int colour,
             const std::string& brand, const std::string& message);

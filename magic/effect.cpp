@@ -106,7 +106,7 @@ EffectBuilder& EffectBuilder::Restores(const int count, const int divisor, const
     return *this;
 }
 
-EffectBuilder& EffectBuilder::Inflicts(const int modifier, const int count,
+EffectBuilder& EffectBuilder::Inflicts(const std::string& modifier, const int count,
     const int divisor, const int bonus)
 {
     EffectPart part = Dice(EffectPart::Kind::MODIFIER, count, divisor, bonus);
@@ -115,7 +115,7 @@ EffectBuilder& EffectBuilder::Inflicts(const int modifier, const int count,
     return *this;
 }
 
-EffectBuilder& EffectBuilder::Relieves(const int modifier, const int count,
+EffectBuilder& EffectBuilder::Relieves(const std::string& modifier, const int count,
     const int divisor, const int bonus)
 {
     EffectPart part = Dice(EffectPart::Kind::MODIFIER, count, divisor, bonus);
@@ -125,7 +125,7 @@ EffectBuilder& EffectBuilder::Relieves(const int modifier, const int count,
     return *this;
 }
 
-EffectBuilder& EffectBuilder::Sustains(const int modifier)
+EffectBuilder& EffectBuilder::Sustains(const std::string& modifier)
 {
     EffectPart part;
     part.kind = EffectPart::Kind::MODIFIER;
@@ -635,7 +635,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
                     ? pData->power
                     : XDice(part.count, sides, part.bonus).GetResult();
 
-                done = pData->caller->md->Add(static_cast<MODIFIER_TYPE>(part.modifier),
+                done = pData->caller->md->Add(part.modifier,
                     part.relieves ? -val : val, pData->caller);
                 break;
             }

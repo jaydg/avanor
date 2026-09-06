@@ -505,7 +505,7 @@ MonsterBuilder& MonsterBuilder::CorpseResist(const std::string& resist, int val)
 
 // Eating this lays something on the eater after a delay:
 // :CorpseModifier(Modifier.POISON, 10).
-MonsterBuilder& MonsterBuilder::CorpseModifier(int modifier, int val)
+MonsterBuilder& MonsterBuilder::CorpseModifier(const std::string& modifier, int val)
 {
     XCorpse::Effect ce{};
     ce.type = XCorpse::EffectType::MODIFIER;

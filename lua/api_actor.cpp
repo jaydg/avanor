@@ -130,10 +130,10 @@ void AddResistance(void* cr, const std::string& resist, int power)
     c->md->Add(std::make_unique<XModResistance>(resist, power, c), c);
 }
 
-void AddModifier(void* cr, int modifier, int power)
+void AddModifier(void* cr, const std::string& modifier, int power)
 {
     XCreature* p = (XCreature*)cr;
-    p->md->Add((MODIFIER_TYPE)modifier, power, p);
+    p->md->Add(modifier, power, p);
 }
 
 // How full a creature is. Positive adds, negative takes away; the scale is

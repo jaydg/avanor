@@ -120,7 +120,7 @@ RESULT XCorpse::onEat(XCreature * eater)
 
                 case EffectType::MODIFIER: {
                     auto mod = std::make_unique<XModDelayed>(
-                        static_cast<MODIFIER_TYPE>(it.modifier), it.value, vRand(100), eater);
+                        it.modifier, it.value, vRand(100), eater);
                     eater->md->Add(std::move(mod), eater);
                 }
                 break;

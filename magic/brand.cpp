@@ -135,7 +135,7 @@ BrandBuilder& BrandBuilder::Slays(const CreatureClass prey)
     return *this;
 }
 
-BrandBuilder& BrandBuilder::Inflicts(const int modifier)
+BrandBuilder& BrandBuilder::Inflicts(const std::string& modifier)
 {
     t.inflicts = modifier;
     return *this;

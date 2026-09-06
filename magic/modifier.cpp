@@ -19,94 +19,82 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "helpers/msgwin.h"
+#include <algorithm>
 #include <iostream>
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
 
-int XModifier::Add(MODIFIER_TYPE mt, int val, XCreature* owner, XCreature* cr)
+namespace {
+
+// Which class carries each modifier, and which resistance - if any - lets
+// the target shrug part of it off. Everything else about a modifier is
+// already content's business, or about to be.
+template<class T>
+std::unique_ptr<XBasicModifier> MakeModifier(int val, XCreature* cr)
+{
+    return std::make_unique<T>(val, cr);
+}
+
+struct ModifierKind {
+    const char* id;
+    const char* resisted_by;
+    std::unique_ptr<XBasicModifier> (*make)(int val, XCreature* cr);
+};
+
+const ModifierKind modifier_kinds[] = {
+    {MOD_WOUND,         "",          &MakeModifier<XModWound>},
+    {MOD_POISON,        RS_POISON,   &MakeModifier<XModPoison>},
+    {MOD_CONFUSE,       RS_CONFUSE,  &MakeModifier<XModConfuse>},
+    {MOD_STUN,          RS_STUN,     &MakeModifier<XModStun>},
+    {MOD_HEROISM,       "",          &MakeModifier<XModHeroism>},
+    {MOD_DISEASE,       "",          &MakeModifier<XModDisease>},
+    {MOD_PARALYSE,      "",          &MakeModifier<XModParalyse>},
+    {MOD_WEAK,          "",          &MakeModifier<XModWeak>},
+    {MOD_SEE_INVISIBLE, "",          &MakeModifier<XModSeeInvisible>},
+    {MOD_BOOST_SPEED,   "",          &MakeModifier<XModBoostSpeed>},
+    {MOD_SLOWNESS,      "",          &MakeModifier<XModSlowness>},
+};
+
+}
+
+int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr)
 {
     if (val > 0) {
-        std::unique_ptr<XBasicModifier> xbm;
+        // Needs to be told which resistance it grants, and this signature
+        // has no room to say. Reached through AddResistance() in Lua, or
+        // by building one and handing it to the XBasicModifier overload
+        // of Add().
+        if (mt == MOD_RESISTANCE) {
+            std::cerr << "a resistance modifier was asked for without"
+                         " saying which resistance - use AddResistance()"
+                      << std::endl;
 
-        switch (mt) {
-            case MOD_WOUND :
-                xbm = std::make_unique<XModWound>(val, cr);
-                break;
+            return 0;
+        }
 
-            case MOD_POISON :
-                val = owner->onMagicDamage(val, "poison");
+        const auto* kind = std::find_if(std::begin(modifier_kinds), std::end(modifier_kinds),
+            [&mt](const ModifierKind& k) { return mt == k.id; });
 
-                if (val > 0) {
-                    xbm = std::make_unique<XModPoison>(val, cr);
-                } else {
-                    return 0;
-                }
+        // A name nothing knows - a typo in world/, where modifiers are
+        // named by hand. Say so and lay nothing on, rather than asserting
+        // in the middle of somebody's game.
+        if (kind == std::end(modifier_kinds)) {
+            std::cerr << "world: nothing defines a modifier '" << mt << "'" << std::endl;
 
-                break;
+            return 0;
+        }
 
-            case MOD_CONFUSE :
-                val = owner->onMagicDamage(val, "confuse");
+        // What the body can shrug off, it does: a resisted modifier lands
+        // shortened, or not at all.
+        if (*kind->resisted_by) {
+            val = owner->onMagicDamage(val, kind->resisted_by);
 
-                if (val > 0) {
-                    xbm = std::make_unique<XModConfuse>(val, cr);
-                } else {
-                    return 0;
-                }
-
-                break;
-
-            case MOD_STUN :
-                val = owner->onMagicDamage(val, "stun");
-
-                if (val > 0) {
-                    xbm = std::make_unique<XModStun>(val, cr);
-                } else {
-                    return 0;
-                }
-
-                break;
-
-            case MOD_HEROISM :
-                xbm = std::make_unique<XModHeroism>(val, cr);
-                break;
-
-            case MOD_DISEASE :
-                xbm = std::make_unique<XModDisease>(val, cr);
-                break;
-
-            case MOD_PARALYSE :
-                xbm = std::make_unique<XModParalyse>(val, cr);
-                break;
-
-            case MOD_WEAK :
-                xbm = std::make_unique<XModWeak>(val, cr);
-                break;
-
-            case MOD_SEE_INVISIBLE :
-                xbm = std::make_unique<XModSeeInvisible>(val, cr);
-                break;
-
-            case MOD_BOOST_SPEED :
-                xbm = std::make_unique<XModBoostSpeed>(val, cr);
-                break;
-
-            case MOD_SLOWNESS :
-                xbm = std::make_unique<XModSlowness>(val, cr);
-                break;
-
-            // Needs to be told which resistance it grants, and this
-            // signature has no room to say. Reached through
-            // AddResistance() in Lua, or by building one and handing it to
-            // the XBasicModifier overload of Add().
-            case MOD_RESISTANCE :
-                std::cerr << "a resistance modifier was asked for without"
-                             " saying which resistance - use AddResistance()"
-                          << std::endl;
+            if (val <= 0) {
                 return 0;
+            }
+        }
 
-            default :
-                assert(0);
-        };
+        std::unique_ptr<XBasicModifier> xbm = kind->make(val, cr);
 
         // A modifier the creature did not have yet always goes on.
         Add(std::move(xbm), owner);
@@ -171,7 +159,7 @@ void XModifier::Add(std::unique_ptr<XBasicModifier> mod, XCreature* owner)
     ml.push_back(std::move(mod));
 }
 
-void XModifier::Remove(const MODIFIER_TYPE mdt, XCreature* owner)
+void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
 {
     bool first = true;
 
@@ -268,7 +256,7 @@ int XModifier::Run(XCreature* cr)
 }
 
 // warning! this function return val
-int XModifier::Get(const MODIFIER_TYPE mt) const
+int XModifier::Get(const MODIFIER& mt) const
 {
     int val = 0;
 

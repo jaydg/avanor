@@ -183,8 +183,8 @@ void XCreature::CausePostEffect(int dmg, const BrandSet& brands, XCreature * att
             continue;
         }
 
-        if (row->inflicts != MOD_UNKNOWN) {
-            md->Add(static_cast<MODIFIER_TYPE>(row->inflicts), dmg, this, attacker);
+        if (!row->inflicts.empty()) {
+            md->Add(row->inflicts, dmg, this, attacker);
         }
     }
 

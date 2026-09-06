@@ -69,10 +69,9 @@ struct BrandStats {
     // Triple damage against creatures of this class.
     CreatureClass slays = CreatureClass::NONE;
 
-    // Laid on the victim after a blow that got through - a MODIFIER_TYPE,
-    // or MOD_UNKNOWN (-1) for none. Kept as an int because modifiers.h
-    // reaches back into creature.h, and this header sits underneath it.
-    int inflicts = -1;
+    // Laid on the victim after a blow that got through, by id. Empty
+    // for a brand that inflicts nothing.
+    std::string inflicts;
 
     // What carrying this adds to an item's price.
     int value = 0;
@@ -133,7 +132,7 @@ class BrandBuilder
         BrandBuilder& Group(BrandGroup group);
         BrandBuilder& Element(const RESISTANCE& resist);
         BrandBuilder& Slays(CreatureClass prey);
-        BrandBuilder& Inflicts(int modifier);
+        BrandBuilder& Inflicts(const std::string& modifier);
         BrandBuilder& Value(int value);
         void Register();
 

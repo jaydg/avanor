@@ -91,7 +91,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XBasicModifier, XModResistance);
 
 
 
-XBasicModifier::XBasicModifier(MODIFIER_TYPE mt, int _val, XCreature * _cr)
+XBasicModifier::XBasicModifier(const MODIFIER& mt, int _val, XCreature * _cr)
 {
     mdt = mt;
     val = _val;

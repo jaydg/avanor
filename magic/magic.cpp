@@ -42,7 +42,10 @@ void RegisterSpellNameEnum(sol::state_view& lua)
     // What can be laid on a creature for a while - a wound that bleeds, a
     // quickening, a disease. Content names these when a potion or a spell
     // has no effect of its own to point at.
-    lua.new_enum("Modifier",
+    // Ids, not numbers: content spells the name and the engine looks it
+    // up. BOOST_STATS used to be here and named nothing at all - no class
+    // ever carried it - so it is gone.
+    lua["Modifier"] = lua.create_table_with(
         "WOUND", MOD_WOUND,
         "POISON", MOD_POISON,
         "CONFUSE", MOD_CONFUSE,
@@ -53,7 +56,6 @@ void RegisterSpellNameEnum(sol::state_view& lua)
         "PARALYSE", MOD_PARALYSE,
         "WEAK", MOD_WEAK,
         "RESISTANCE", MOD_RESISTANCE,
-        "BOOST_STATS", MOD_BOOST_STATS,
         "BOOST_SPEED", MOD_BOOST_SPEED,
         "SLOWNESS", MOD_SLOWNESS
     );
