@@ -740,6 +740,87 @@ sol::object PlaceObject(const std::string& id, const int x, const int y,
     return sol::make_object(s, static_cast<void*>(obj));
 }
 
+// A species of plant drawn at random, of the given kind - what a bush or
+// a patch of mushrooms asks when it decides what it is growing.
+sol::optional<std::string> RandomPlantSpecies(const std::string& kind)
+{
+    // "mushroom" or "herb" - which of the two a species said it was with
+    // :Mushroom() in world/items/herbs.lua.
+    const std::string picked =
+        PlantDefinition::RandomOfType(kind == "mushroom" ? HT_MUSHROOM : HT_HERB);
+
+    if (picked.empty()) {
+        return sol::nullopt;
+    }
+
+    return picked;
+}
+
+// What a species is called: the plant it grows on, or the part that is
+// picked. Nothing for a species nothing defines.
+sol::optional<std::string> PlantName(const std::string& species, const bool growing)
+{
+    const PlantDefinition* row = PlantDefinition::Find(species);
+
+    if (!row) {
+        return sol::nullopt;
+    }
+
+    return growing ? row->bush_name : row->herb_name;
+}
+
+// What it looks like growing.
+int PlantColour(const std::string& species)
+{
+    const PlantDefinition* row = PlantDefinition::Find(species);
+
+    return row ? row->color : 0;
+}
+
+// How hard this species is to recognise, and whether it has been. Both
+// belong to the game in progress rather than to content: they are dealt
+// out afresh each game.
+int PlantDifficulty(const std::string& species)
+{
+    const PlantDefinition* row = PlantDefinition::Find(species);
+
+    return row ? row->difficulty : 0;
+}
+
+bool PlantKnown(const std::string& species)
+{
+    const PlantDefinition* row = PlantDefinition::Find(species);
+
+    return row && row->identified;
+}
+
+void LearnPlant(const std::string& species)
+{
+    if (PlantDefinition* row = PlantDefinition::Find(species)) {
+        row->identified = true;
+    }
+}
+
+// A picked herb of that species. Content decides whether whoever picked
+// it knows what it is - a mushroom is unmistakable, a herb is not.
+sol::optional<void*> CreateHerb(const std::string& species, sol::optional<bool> known)
+{
+    if (!PlantDefinition::Find(species)) {
+        std::cerr << "world: nothing defines a plant species '" << species << "'"
+                  << std::endl;
+
+        return sol::nullopt;
+    }
+
+    auto* herb = new XHerb(species);
+
+    if (known.value_or(false)) {
+        herb->Identify();
+    }
+
+    return static_cast<void*>(static_cast<XItem*>(herb));
+}
+
 // Which map a thing on the map is standing on. A scheduled object runs
 // wherever it happens to be, which is not necessarily the location the
 // player is in - so a handler that asks about its own surroundings must
@@ -753,6 +834,48 @@ sol::optional<void*> GetObjectLocation(void* object)
     }
 
     return static_cast<void*>(obj->l);
+}
+
+// How a thing on the map reads and looks. A plant does not know what it
+// is growing until it is first asked, and says so here.
+void SetObjectView(void* object, const std::string& name,
+    sol::optional<std::string> view, sol::optional<int> colour)
+{
+    auto* obj = static_cast<XMapObject*>(object);
+
+    if (!obj) {
+        return;
+    }
+
+    if (!name.empty()) {
+        obj->name = name;
+    }
+
+    if (view && !view->empty()) {
+        obj->view = (*view)[0];
+    }
+
+    if (colour) {
+        obj->color = static_cast<xColor>(*colour);
+    }
+}
+
+// Takes a thing off the map. Invalidate() evicts it from its cell itself
+// and defers the release, so it stays alive through whatever is still
+// running inside it.
+void DestroyMapObject(void* object)
+{
+    if (auto* obj = static_cast<XMapObject*>(object); obj && obj->isValid()) {
+        obj->Invalidate();
+    }
+}
+
+// Whether anybody can see it happen.
+bool isObjectVisible(void* object)
+{
+    auto* obj = static_cast<XMapObject*>(object);
+
+    return obj && obj->isValid() && obj->isVisible();
 }
 
 // Where a thing on the map is standing. Mirrors GetCreatureXY().
@@ -775,6 +898,22 @@ void Memorise(void* object, const std::string& key, const int value)
 {
     if (auto* obj = static_cast<XLuaObject*>(object)) {
         obj->Remember(key, value);
+    }
+}
+
+// The same, for what is remembered in words rather than numbers - which
+// species a plant is growing, say.
+std::string RecallText(void* object, const std::string& key)
+{
+    const auto* obj = static_cast<XLuaObject*>(object);
+
+    return obj ? obj->Note(key) : std::string();
+}
+
+void MemoriseText(void* object, const std::string& key, const std::string& value)
+{
+    if (auto* obj = static_cast<XLuaObject*>(object)) {
+        obj->Note(key, value);
     }
 }
 
@@ -902,9 +1041,21 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("GetSpecial", &lua_api::GetSpecial);
     lua.set_function("TileFertile", &lua_api::TileFertile);
     lua.set_function("PlaceObject", &lua_api::PlaceObject);
+    lua.set_function("RandomPlantSpecies", &lua_api::RandomPlantSpecies);
+    lua.set_function("PlantName", &lua_api::PlantName);
+    lua.set_function("PlantColour", &lua_api::PlantColour);
+    lua.set_function("PlantDifficulty", &lua_api::PlantDifficulty);
+    lua.set_function("PlantKnown", &lua_api::PlantKnown);
+    lua.set_function("LearnPlant", &lua_api::LearnPlant);
+    lua.set_function("CreateHerb", &lua_api::CreateHerb);
+    lua.set_function("SetObjectView", &lua_api::SetObjectView);
+    lua.set_function("DestroyMapObject", &lua_api::DestroyMapObject);
+    lua.set_function("isObjectVisible", &lua_api::isObjectVisible);
     lua.set_function("GetObjectXY", &lua_api::GetObjectXY);
     lua.set_function("GetObjectLocation", &lua_api::GetObjectLocation);
     lua.set_function("Recall", &lua_api::Recall);
+    lua.set_function("RecallText", &lua_api::RecallText);
+    lua.set_function("MemoriseText", &lua_api::MemoriseText);
     lua.set_function("Memorise", &lua_api::Memorise);
     lua.set_function("SetTile", &lua_api::SetTile);
     lua.set_function("WindingRoad", &lua_api::WindingRoad);

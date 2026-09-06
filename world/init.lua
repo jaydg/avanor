@@ -20,6 +20,7 @@ function LoadScripts()
 	dofile("./world/hero.lua");
 	dofile("./world/quests.lua");
 	dofile("./world/traps.lua");
+	dofile("./world/plants.lua");
 	dofile("./world/tally.lua");
 end
 

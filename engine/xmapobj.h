@@ -84,7 +84,7 @@ class XMapObject : public XObject
         //
         // Subclasses that need more than a map cell - picking their
         // species, registering with the scheduler - override this; see
-        // XHerbBush::PlaceAt().
+        // XLuaObject::PlaceAt().
         virtual bool PlaceAt(XLocation* location, int _x, int _y);
 
         bool SetLocation(XLocation* new_l)

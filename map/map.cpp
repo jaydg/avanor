@@ -377,7 +377,7 @@ void XMap::SetSpecial(const int x, const int y, XMapObject* spec) const
     }
 
     // Same idiom as SetMonster(): first placement (nothing owns it yet, e.g. a
-    // fresh XHerbBush self-registering from its own constructor) establishes
+    // fresh XLuaObject self-registering from its own constructor) establishes
     // the one master shared_ptr, with a deleter that defers to Invalidate(),
     // since the scheduler may still hold its own reference keeping this alive
     // past this call. Any later placement (already shared_ptr-owned, e.g. via

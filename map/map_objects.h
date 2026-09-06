@@ -483,6 +483,15 @@ struct MapObjectStats {
     // taking turns and be removed.
     std::string on_run;
 
+    // Called when somebody picks the thing up, with the object and the
+    // picker. It answers the thing they got, or nothing. Unsaid, the
+    // thing cannot be picked at all.
+    std::string on_pick;
+
+    // Called to name the thing, with the object and whoever is looking.
+    // Unsaid, it reads as whatever :View() called it.
+    std::string on_name;
+
     // How long before the first turn. Content may say a range, and each
     // one placed draws from it, so a field of them does not all stir at
     // the same moment.
@@ -503,6 +512,8 @@ class MapObjectBuilder
         MapObjectBuilder& View(const std::string& name, const std::string& view,
             sol::optional<int> colour);
         MapObjectBuilder& OnRun(const std::string& handler);
+        MapObjectBuilder& OnPick(const std::string& handler);
+        MapObjectBuilder& OnName(const std::string& handler);
         MapObjectBuilder& FirstDelay(int min, sol::optional<int> max);
         void Register();
 
@@ -515,9 +526,11 @@ class XLuaObject final : public XMapObject
         // Which sort this is - the id content registered it under.
         std::string content_id;
 
-        // Whatever the handler wants to remember between turns. Saved
-        // with the object, so a plant keeps its strength across a save.
+        // Whatever the handlers want to remember between turns. Saved
+        // with the object, so a plant keeps its strength and its species
+        // across a save.
         std::map<std::string, int> memory;
+        std::map<std::string, std::string> notes;
 
     public:
         DECLARE_CREATOR(XLuaObject, XMapObject);
@@ -530,6 +543,16 @@ class XLuaObject final : public XMapObject
 
         int Remember(const std::string& key) const;
         void Remember(const std::string& key, int value);
+        const std::string& Note(const std::string& key) const;
+        void Note(const std::string& key, const std::string& value);
+
+        // Hands over to the row's :OnPick() handler, which answers what
+        // was got. Null when the row names no handler.
+        XObject* Pick(XCreature* picker) override;
+
+        // Asks the row's :OnName() handler, or falls back to the plain
+        // name the row was registered with.
+        const std::string GetName(XCreature* viewer) override;
 
         bool PlaceAt(XLocation* location, int _x, int _y) override;
 
@@ -543,7 +566,7 @@ class XLuaObject final : public XMapObject
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XMapObject>(this));
-            ar(content_id, memory);
+            ar(content_id, memory, notes);
         }
 
     protected:

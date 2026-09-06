@@ -117,7 +117,7 @@ std::shared_ptr<XObject> XScheduler::Get()
         // Dead entry? Either the object is gone entirely (weak_ptr expired),
         // or it's still physically alive - kept that way by our own strong
         // entry, for objects the scheduler solely owns - but has already
-        // Invalidate()'d itself directly (e.g. XHerbBush/XCorpse deciding
+        // Invalidate()'d itself directly (e.g. a Lua map object or XCorpse deciding
         // they're done from within Run()/Pick(), outside the normal
         // "Run() returns false" removal path). Either way, erasing the
         // entry here drops whatever ownership it held.

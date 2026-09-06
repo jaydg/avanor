@@ -94,13 +94,11 @@ function MushroomCaveEvent(e, p)
 	end
 end
 
-local MUSHROOM_CLASS = "XMushSpawn"
-
 function SpawnMushroomEvent(l)
 	local x, y = GetFreeXY(l)
 
 	if (x) then
-		PlaceSpecial(MUSHROOM_CLASS, x, y, l)
+		Plant("mushroom", x, y, l)
 	end
 
 	return true

@@ -82,7 +82,7 @@ void XMapObject::OnInvalidate()
     // erases itself from its ground cell's item_list: if this object's
     // cell still points at it, clear the cell. This centralizes the
     // formerly per-call-site "SetSpecial(x, y, nullptr) + Invalidate()"
-    // pair (XTrap::Activate()/Disarm(), XHerbBush/XMushSpawn::Run()/
+    // pair (XTrap::Activate()/Disarm(), XLuaObject::Run()/
     // Pick()) whose ordering was repeatedly gotten wrong - call sites
     // now just call Invalidate() and can't mis-order anything.
     //
@@ -92,7 +92,8 @@ void XMapObject::OnInvalidate()
     // XObject's deferred-release graveyard rather than destroying it
     // synchronously; the object stays allocated until the between-turns
     // drain, so even a caller that keeps reading members after this
-    // returns (e.g. XMushSpawn::Pick() reading mush_index) stays valid.
+    // returns (e.g. a plant reading its species after being picked)
+    // stays valid.
     //
     // Run before SetLocation(nullptr) wipes `l`, and guarded by a
     // bounds check since never-placed objects (XGenerator) sit at -1/-1.

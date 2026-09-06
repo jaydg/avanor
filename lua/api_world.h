@@ -102,9 +102,22 @@ namespace lua_api
     bool TileFertile(int x, int y, sol::optional<void*> location);
     sol::object PlaceObject(const std::string& id, int x, int y, sol::this_state s,
         sol::optional<void*> location);
+    sol::optional<std::string> RandomPlantSpecies(const std::string& kind);
+    sol::optional<std::string> PlantName(const std::string& species, bool growing);
+    int PlantColour(const std::string& species);
+    int PlantDifficulty(const std::string& species);
+    bool PlantKnown(const std::string& species);
+    void LearnPlant(const std::string& species);
+    sol::optional<void*> CreateHerb(const std::string& species, sol::optional<bool> known);
+    void SetObjectView(void* object, const std::string& name,
+        sol::optional<std::string> view, sol::optional<int> colour);
+    void DestroyMapObject(void* object);
+    bool isObjectVisible(void* object);
     std::tuple<int, int> GetObjectXY(void* object);
     sol::optional<void*> GetObjectLocation(void* object);
     int Recall(void* object, const std::string& key);
+    std::string RecallText(void* object, const std::string& key);
+    void MemoriseText(void* object, const std::string& key, const std::string& value);
     void Memorise(void* object, const std::string& key, int value);
     bool SetTile(int x, int y, int tile, sol::optional<void*> location);
 

@@ -3,7 +3,6 @@
 --
 local HERB_BUSH_ODDS = 18
 local HERB_BUSH_TERRAIN = XTileType.GREEN_GRASS
-local HERB_BUSH_CLASS = "XHerbBush"
 
 function ScatterHerbBushes()
 	local w, h = GetMapSize()
@@ -13,7 +12,7 @@ function ScatterHerbBushes()
 			if Rand(HERB_BUSH_ODDS) == 0
 				and GetTile(x, y) == HERB_BUSH_TERRAIN
 				and not HasSpecial(x, y) then
-				PlaceSpecial(HERB_BUSH_CLASS, x, y)
+				Plant("herb", x, y)
 			end
 		end
 	end

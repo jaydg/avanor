@@ -254,6 +254,8 @@ void XTrap::RegisterLua(sol::state_view& lua)
         sol::constructors<MapObjectBuilder(std::string)>(),
         "View", &MapObjectBuilder::View,
         "OnRun", &MapObjectBuilder::OnRun,
+        "OnPick", &MapObjectBuilder::OnPick,
+        "OnName", &MapObjectBuilder::OnName,
         "FirstDelay", &MapObjectBuilder::FirstDelay,
         "Register", &MapObjectBuilder::Register
     );
@@ -765,6 +767,18 @@ MapObjectBuilder& MapObjectBuilder::OnRun(const std::string& handler)
     return *this;
 }
 
+MapObjectBuilder& MapObjectBuilder::OnPick(const std::string& handler)
+{
+    t.on_pick = handler;
+    return *this;
+}
+
+MapObjectBuilder& MapObjectBuilder::OnName(const std::string& handler)
+{
+    t.on_name = handler;
+    return *this;
+}
+
 MapObjectBuilder& MapObjectBuilder::FirstDelay(const int min, sol::optional<int> max)
 {
     t.first_delay_min = min;
@@ -811,6 +825,86 @@ int XLuaObject::Remember(const std::string& key) const
 void XLuaObject::Remember(const std::string& key, const int value)
 {
     memory[key] = value;
+}
+
+const std::string& XLuaObject::Note(const std::string& key) const
+{
+    static const std::string nothing;
+    const auto it = notes.find(key);
+
+    return it == notes.end() ? nothing : it->second;
+}
+
+void XLuaObject::Note(const std::string& key, const std::string& value)
+{
+    notes[key] = value;
+}
+
+XObject* XLuaObject::Pick(XCreature* picker)
+{
+    const MapObjectStats* row = FindMapObject(content_id);
+
+    if (!row || row->on_pick.empty()) {
+        return nullptr;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function handler = lua[row->on_pick];
+
+    if (!handler.valid()) {
+        std::cerr << "world: '" << content_id << "' is picked through '"
+                  << row->on_pick << "', which is not defined" << std::endl;
+
+        return nullptr;
+    }
+
+    const auto result = handler((void*)this, (void*)picker);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: '" << row->on_pick << "' failed: " << err.what() << std::endl;
+
+        return nullptr;
+    }
+
+    // What they got, if anything. The handler may have finished the thing
+    // off on the way - a mushroom is picked whole - and that is its own
+    // business; XMapObject::Invalidate() evicts it from its cell.
+    const sol::optional<void*> got = result;
+
+    return got ? static_cast<XObject*>(*got) : nullptr;
+}
+
+const std::string XLuaObject::GetName(XCreature* viewer)
+{
+    const MapObjectStats* row = FindMapObject(content_id);
+
+    if (!row || row->on_name.empty()) {
+        return name;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function handler = lua[row->on_name];
+
+    if (!handler.valid()) {
+        std::cerr << "world: '" << content_id << "' is named through '"
+                  << row->on_name << "', which is not defined" << std::endl;
+
+        return name;
+    }
+
+    const auto result = handler((void*)this, (void*)viewer);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: '" << row->on_name << "' failed: " << err.what() << std::endl;
+
+        return name;
+    }
+
+    const sol::optional<std::string> said = result;
+
+    return said ? *said : name;
 }
 
 bool XLuaObject::PlaceAt(XLocation* location, const int _x, const int _y)
