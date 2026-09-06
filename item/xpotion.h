@@ -87,7 +87,7 @@ inline constexpr const char* PN_NONE = "";
 struct PotionDescription {
     PotionName pn;
     std::string name;
-    XEffect::Id effect{XEffect::NONE};
+    EFFECT effect{EFFECT_NONE};
     int rarity{0};
     int alchemy_power{0};
     int value{0}; // how much it cost for one potion_power //value * potion_power * [spell_cost]
@@ -141,7 +141,7 @@ class PotionBuilder
         explicit PotionBuilder(std::string id);
 
         PotionBuilder& Called(const std::string& n);
-        PotionBuilder& Effect(XEffect::Id eff);
+        PotionBuilder& Effect(const EFFECT& eff);
         PotionBuilder& Chance(int rarity);
         PotionBuilder& Worth(int value);
         PotionBuilder& Alchemy(int power);

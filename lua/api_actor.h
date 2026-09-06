@@ -130,8 +130,8 @@ namespace lua_api
     void AddItemToHit(void* item, int bonus);
     void AddItemRange(void* item, int bonus);
     void AddItemDice(void* item, int count, int sides, int bonus);
-    int CastEffect(void* caster, int effect, int power);
-    int MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power);
+    int CastEffect(void* caster, const std::string& effect, int power);
+    int MakeEffect(const std::string& effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power);
     void DestroyObject(void* item);
     void SetCompanion(void* owner, void* slave, bool flag);
     void GiveObjectToCreature(void* item, void* cr);

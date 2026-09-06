@@ -55,15 +55,13 @@ struct DeityHelp {
 
     int cost = 0;
 
-    // An XEffect::Id. Kept as an int so this header stays a leaf:
-    // magic/effect.h needs item/item.h to have been included first, and
-    // map_objects.h reaches this one long before that.
-    int effect = 0;
+    // Which effect the prayer brings about - an id from world/effects.lua.
+    std::string effect;
 
     // A second effect, one of the two picked at random per prayer, for
     // content that wants "divine intervention" to be either fire or ice.
-    // Negative for a grant that always does the one above.
-    int alternative = -1;
+    // Empty for a grant that always does the one above.
+    std::string alternative;
 };
 
 // A god.
@@ -126,7 +124,8 @@ class DeityBuilder
         DeityBuilder& Called(const std::string& name);
         DeityBuilder& OnKill(const std::string& handler);
         DeityBuilder& Grants(const std::string& name, const std::string& needs,
-            int cost, int effect, sol::optional<int> alternative);
+            int cost, const std::string& effect,
+            sol::optional<std::string> alternative);
         void Register();
 
     private:

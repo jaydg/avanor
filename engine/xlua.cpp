@@ -259,7 +259,7 @@ void XLua::Init()
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "Modifier", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
-            "Visibility", "xColor", "XEffect", "XLocation",
+            "Visibility", "xColor", "EffectTarget", "XLocation",
             "XQuest", "XSkill", "XStairWay", "XStandardAI",
             "BrandGroup", "CombatGroup", "CombatRole", "XStats", "XTileType",
         }) {

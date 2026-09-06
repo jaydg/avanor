@@ -26,115 +26,210 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/dice.h"
 #include "helpers/msgwin.h"
 #include "item/itemf.h"
+#include <iostream>
 #include "magic/effect.h"
+#include "magic/modifiers.h"
 #include "magic/modifier.h"
 
 void XEffect::RegisterLua(sol::state_view& lua)
 {
-    lua.new_enum("XEffect",
-        "CURE_LIGHT_WOUNDS", XEffect::CURE_LIGHT_WOUNDS,
-        "CURE_SERIOUS_WOUNDS", XEffect::CURE_SERIOUS_WOUNDS,
-        "CURE_CRITICAL_WOUNDS", XEffect::CURE_CRITICAL_WOUNDS,
-        "CURE_MORTAL_WOUNDS", XEffect::CURE_MORTAL_WOUNDS,
-        "HEAL", XEffect::HEAL,
-        "ULTRAHEAL", XEffect::ULTRAHEAL,
-        "POWER", XEffect::POWER,
-        "ULTRAPOWER", XEffect::ULTRAPOWER,
-        "RESTORATION", XEffect::RESTORATION,
-        "CURE_POISON", XEffect::CURE_POISON,
-        "CURE_DISEASE", XEffect::CURE_DISEASE,
-        "BURNING_HANDS", XEffect::BURNING_HANDS,
-        "ICE_TOUCH", XEffect::ICE_TOUCH,
-        "DRAIN_LIFE", XEffect::DRAIN_LIFE,
-        "MAGIC_ARROW", XEffect::MAGIC_ARROW,
-        "FIRE_BOLT", XEffect::FIRE_BOLT,
-        "ICE_BOLT", XEffect::ICE_BOLT,
-        "LIGHTNING_BOLT", XEffect::LIGHTNING_BOLT,
-        "ACID_BOLT", XEffect::ACID_BOLT,
-        "HEROISM", XEffect::HEROISM,
-        "IDENTIFY", XEffect::IDENTIFY,
-        "GREAT_IDENTIFY", XEffect::GREAT_IDENTIFY,
-        "SUMMON_MONSTER", XEffect::SUMMON_MONSTER,
-        "CREATE_ITEM", XEffect::CREATE_ITEM,
-        "BLINK", XEffect::BLINK,
-        "TELEPORT", XEffect::TELEPORT,
-        "SELF_KNOWLEDGE", XEffect::SELF_KNOWLEDGE,
-        "SEE_INVISIBLE", XEffect::SEE_INVISIBLE,
-        "ACID_RESISTANCE", XEffect::ACID_RESISTANCE,
-        "FIRE_RESISTANCE", XEffect::FIRE_RESISTANCE,
-        "COLD_RESISTANCE", XEffect::COLD_RESISTANCE,
-        "POISON_RESISTANCE", XEffect::POISON_RESISTANCE
+    lua.new_enum("EffectTarget",
+        "NONE", EffectTarget::NONE,
+        "DIRECTION", EffectTarget::DIRECTION,
+        "TARGET", EffectTarget::TARGET,
+        "ITEM", EffectTarget::ITEM
+    );
+
+    lua.new_usertype<EffectBuilder>("Effect",
+        sol::constructors<EffectBuilder(std::string)>(),
+        "Heals", &EffectBuilder::Heals,
+        "Cures", &EffectBuilder::Cures,
+        "Restores", &EffectBuilder::Restores,
+        "Inflicts", &EffectBuilder::Inflicts,
+        "Relieves", &EffectBuilder::Relieves,
+        "Sustains", &EffectBuilder::Sustains,
+        "Resists", &EffectBuilder::Resists,
+        "Touches", &EffectBuilder::Touches,
+        "Throws", &EffectBuilder::Throws,
+        "Engine", &EffectBuilder::Engine,
+        "Targets", &EffectBuilder::Targets,
+        "Range", &EffectBuilder::Range,
+        "Register", &EffectBuilder::Register
     );
 }
 
-EFFECT_REQ XEffect::GetReq(XEffect::Id effect)
+std::vector<EffectStats> effects_db;
+
+const EffectStats* FindEffect(const EFFECT& id)
 {
-    switch (effect) {
-        case XEffect::NONE:
-        case XEffect::CURE_LIGHT_WOUNDS:
-        case XEffect::CURE_SERIOUS_WOUNDS:
-        case XEffect::CURE_CRITICAL_WOUNDS:
-        case XEffect::CURE_MORTAL_WOUNDS:
-        case XEffect::HEAL:
-        case XEffect::HEROISM:
-        case XEffect::POWER:
-        case XEffect::RESTORATION:
-        case XEffect::SUMMON_MONSTER:
-        case XEffect::CREATE_ITEM:
-        case XEffect::CURE_POISON:
-        case XEffect::CURE_DISEASE:
-        case XEffect::BLINK:
-        case XEffect::SELF_KNOWLEDGE:
-        case XEffect::SEE_INVISIBLE:
-        case XEffect::ACID_RESISTANCE:
-        case XEffect::FIRE_RESISTANCE:
-        case XEffect::COLD_RESISTANCE:
-        case XEffect::POISON_RESISTANCE:
-            return ER_NONE;
-
-        case XEffect::BURNING_HANDS:
-        case XEffect::ICE_TOUCH:
-        case XEffect::DRAIN_LIFE:
-            return ER_DIRECTION;
-
-        case XEffect::IDENTIFY:
-            return ER_ITEM;
-
-        case XEffect::MAGIC_ARROW:
-        case XEffect::FIRE_BOLT:
-        case XEffect::ICE_BOLT:
-        case XEffect::LIGHTNING_BOLT:
-        case XEffect::ACID_BOLT:
-        case XEffect::TELEPORT:
-            return ER_TARGET;
-
-        default:
-            return ER_NONE;
+    for (const auto& row : effects_db) {
+        if (row.id == id) {
+            return &row;
+        }
     }
+
+    return nullptr;
 }
 
-int XEffect::GetRange(XEffect::Id effect, int power)
+EffectBuilder::EffectBuilder(std::string id)
 {
-    switch (effect) {
-        case XEffect::MAGIC_ARROW:
-            return power / 4 + 2;
+    t.id = std::move(id);
+}
 
-        case XEffect::FIRE_BOLT:
-        case XEffect::ICE_BOLT:
-            return power / 6 + 2;
+static EffectPart Dice(const EffectPart::Kind kind, const int count,
+    const int divisor, const int bonus)
+{
+    EffectPart part;
+    part.kind = kind;
+    part.count = count;
+    part.divisor = divisor < 1 ? 1 : divisor;
+    part.bonus = bonus;
 
-        case XEffect::LIGHTNING_BOLT:
-            return power / 7 + 2;
+    return part;
+}
 
-        case XEffect::ACID_BOLT:
-            return power / 8 + 2;
+EffectBuilder& EffectBuilder::Heals(const int count, const int divisor, const int bonus)
+{
+    t.parts.push_back(Dice(EffectPart::Kind::HEAL, count, divisor, bonus));
+    return *this;
+}
 
-        case XEffect::TELEPORT:
-            return 1;
+EffectBuilder& EffectBuilder::Cures(const int count, const int divisor, const int bonus)
+{
+    t.parts.push_back(Dice(EffectPart::Kind::CURE, count, divisor, bonus));
+    return *this;
+}
 
-        default:
-            return 0;
+EffectBuilder& EffectBuilder::Restores(const int count, const int divisor, const int bonus)
+{
+    t.parts.push_back(Dice(EffectPart::Kind::MANA, count, divisor, bonus));
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Inflicts(const int modifier, const int count,
+    const int divisor, const int bonus)
+{
+    EffectPart part = Dice(EffectPart::Kind::MODIFIER, count, divisor, bonus);
+    part.modifier = modifier;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Relieves(const int modifier, const int count,
+    const int divisor, const int bonus)
+{
+    EffectPart part = Dice(EffectPart::Kind::MODIFIER, count, divisor, bonus);
+    part.modifier = modifier;
+    part.relieves = true;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Sustains(const int modifier)
+{
+    EffectPart part;
+    part.kind = EffectPart::Kind::MODIFIER;
+    part.modifier = modifier;
+    part.sustained = true;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Resists(const std::string& resist)
+{
+    EffectPart part;
+    part.kind = EffectPart::Kind::RESISTANCE;
+    part.resist = resist;
+    part.sustained = true;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Touches(const int count, const int divisor, const int bonus,
+    const int colour, const std::string& brand, const std::string& message)
+{
+    EffectPart part = Dice(EffectPart::Kind::TOUCH, count, divisor, bonus);
+    part.colour = colour;
+    part.brands = BrandSet(brand);
+    part.message = message;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Throws(const int count, const int divisor, const int bonus,
+    const int colour, const std::string& brand, const std::string& message)
+{
+    EffectPart part = Dice(EffectPart::Kind::BOLT, count, divisor, bonus);
+    part.colour = colour;
+    part.brands = BrandSet(brand);
+    part.message = message;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Engine(const std::string& which)
+{
+    EffectPart part;
+    part.kind = EffectPart::Kind::ENGINE;
+    part.engine = which;
+    t.parts.push_back(part);
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Targets(const EffectTarget targets)
+{
+    t.targets = targets;
+    return *this;
+}
+
+EffectBuilder& EffectBuilder::Range(const int divisor, const int bonus)
+{
+    t.range_divisor = divisor;
+    t.range_bonus = bonus;
+    return *this;
+}
+
+void EffectBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: an effect with no id" << std::endl;
+        return;
     }
+
+    if (FindEffect(t.id)) {
+        std::cerr << "world: two effects both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    for (const auto& part : t.parts) {
+        if (part.kind == EffectPart::Kind::RESISTANCE && !FindResistance(part.resist)) {
+            std::cerr << "world: the effect '" << t.id << "' grants resistance to '"
+                      << part.resist << "', which world/resistances.lua does not declare"
+                      << std::endl;
+        }
+    }
+
+    effects_db.push_back(t);
+}
+
+EffectTarget XEffect::GetReq(const EFFECT& effect)
+{
+    const EffectStats* row = FindEffect(effect);
+
+    return row ? row->targets : EffectTarget::NONE;
+}
+
+int XEffect::GetRange(const EFFECT& effect, const int power)
+{
+    const EffectStats* row = FindEffect(effect);
+
+    if (!row) {
+        return 0;
+    }
+
+    return row->range_divisor > 0
+        ? power / row->range_divisor + row->range_bonus
+        : row->range_bonus;
 }
 
 int XEffect::Heal(XCreature * caster, int X, int Y, int Z)
@@ -203,13 +298,13 @@ int XEffect::Mana(XCreature * caster, int X, int Y, int Z)
     return 0;
 }
 
-int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, const BrandSet& brt, const char* msg)
+int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, int col, const BrandSet& brt, const std::string& msg)
 {
     XCreature * target = pData->l->map->GetMonster(pData->target_x, pData->target_y);
 
     if (pData->l->map->GetVisible(pData->target_x, pData->target_y) && __animation_flag) {
         pData->l->map->Put(pData->caller);
-        pData->l->map->PutChar(pData->target_x, pData->target_y, '*', col);
+        pData->l->map->PutChar(pData->target_x, pData->target_y, '*', static_cast<xColor>(col));
         vRefresh();
         vDelay(__animation_flag);
     }
@@ -232,7 +327,7 @@ int XEffect::Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, co
 }
 
 
-int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, const BrandSet& brt, const char* msg)
+int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, int col, const BrandSet& brt, const std::string& msg)
 {
     MF_DATA mfd{};
     mfd.arrow_type = MFT_BALL;
@@ -269,7 +364,7 @@ int XEffect::Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, con
     return 0;
 }
 
-RESULT XEffect::Make(XCreature * caster, XEffect::Id effect, int power)
+RESULT XEffect::Make(XCreature * caster, const EFFECT& effect, int power)
 {
     EFFECT_DATA ed{};
     ed.caller	= caster;
@@ -279,7 +374,7 @@ RESULT XEffect::Make(XCreature * caster, XEffect::Id effect, int power)
     ed.call_x	= caster->x;
     ed.call_y	= caster->y;
 
-    if (GetReq(effect) == ER_DIRECTION) {
+    if (GetReq(effect) == EffectTarget::DIRECTION) {
         XPoint pt;
 
         if (caster->GetTarget(TR_ATTACK_DIRECTION, &pt) == SUCCESS) {
@@ -288,7 +383,7 @@ RESULT XEffect::Make(XCreature * caster, XEffect::Id effect, int power)
         } else {
             return ABORT;
         }
-    } else if (GetReq(effect) == ER_TARGET) {
+    } else if (GetReq(effect) == EffectTarget::TARGET) {
         XPoint pt;
 
         if (caster->GetTarget(TR_ATTACK_TARGET, &pt, GetRange(ed.effect, ed.power)) == SUCCESS) {
@@ -306,296 +401,268 @@ RESULT XEffect::Make(XCreature * caster, XEffect::Id effect, int power)
     }
 }
 
-int XEffect::Make(const EFFECT_DATA* pData)
+// The few an effect cannot be built out of: they make creatures and items,
+// move people about the map, and show screens. Content names one of these
+// with :Engine("teleport") rather than describing it, because there is
+// nothing here to describe in dice and colours.
+int XEffect::Engine(const std::string& which, const EFFECT_DATA* pData)
 {
-    switch (pData->effect) {
-        // healing and restoration
-        case XEffect::CURE_LIGHT_WOUNDS:
-            return Heal(pData->caller, 1, pData->power / 2, 3) ||
-                Cure(pData->caller, 1, pData->power / 10, 1);
-
-        case XEffect::CURE_SERIOUS_WOUNDS:
-            return Heal(pData->caller, 1, pData->power, 5) ||
-                Cure(pData->caller, 1, pData->power / 5, 2);
-
-        case XEffect::CURE_CRITICAL_WOUNDS:
-            return Heal(pData->caller, 2, pData->power, 5) ||
-                Cure(pData->caller, 1, pData->power / 2, 3);
-
-        case XEffect::CURE_MORTAL_WOUNDS:
-            return Heal(pData->caller, 3, pData->power, 10) ||
-                Cure(pData->caller, 3, pData->power, 10);
-
-        case XEffect::HEAL:
-            return Heal(pData->caller, 5, pData->power, 20) ||
-                Cure(pData->caller, 5, pData->power, 20);
-
-        case XEffect::POWER:
-            return Mana(pData->caller, 3, pData->power, 20);
-
-        case XEffect::RESTORATION:
-            return Heal(pData->caller, 5, pData->power, 20) ||
-                Cure(pData->caller, 5, pData->power, 20) ||
-                    Mana(pData->caller, 5, pData->power, 20);
-
-        case XEffect::ULTRAHEAL:
-            return Heal(pData->caller, 7, pData->power, 20) ||
-                Cure(pData->caller, 7, pData->power, 20);
-
-        case XEffect::ULTRAPOWER:
-            return Mana(pData->caller, 5, pData->power, 20);
-
-
-        case XEffect::CURE_POISON: {
-            XDice d(1, pData->power, 5);
-            pData->caller->md->Add(MOD_POISON, -d.GetResult(), pData->caller);
+    if (which == "self_knowledge") {
+        if (pData->caller->isHero()) {
+            dynamic_cast<XHero *>(pData->caller)->ShowResistance();
         }
-        break;
 
-        case XEffect::CURE_DISEASE: {
-            XDice d(1, pData->power, 3);
-            pData->caller->md->Add(MOD_DISEASE, -d.GetResult(), pData->caller);
-        }
-        break;
+        return pData->caller->isHero();
+    }
 
-        // combat - touch
-        case XEffect::BURNING_HANDS:
-            return Touch(pData, 1, pData->power, 5, xRED, "fire", "the ball of fire");
-
-        case XEffect::ICE_TOUCH:
-            return Touch(pData, 1, pData->power, 7, xWHITE, "cold", "the cone of ice");
-
-        case XEffect::DRAIN_LIFE:
-            return Touch(pData, 1, pData->power, 9, xDARKGRAY, "drain_life", "the black sphere");
-
-        // combat - bolts
-        case XEffect::MAGIC_ARROW:
-            return Bolt(pData, 1, pData->power / 2, 0, xBROWN, "earth", "the small arrow");
-
-        case XEffect::FIRE_BOLT:
-            return Bolt(pData, 1, pData->power, 3, xRED, "fire", "the small ball of fire");
-
-        case XEffect::ICE_BOLT:
-            return Bolt(pData, 1, pData->power, 5, xWHITE, "cold", "the small cone of ice");
-
-        case XEffect::LIGHTNING_BOLT:
-            return Bolt(pData, 2, pData->power, 10, xLIGHTBLUE, "lightning", "the bright spark");
-
-        case XEffect::ACID_BOLT:
-            return Bolt(pData, 3, pData->power, 15, xGREEN, "acid", "the small ball of viscous liquid");
-
-        // Misc	modifiers
-        case XEffect::HEROISM: {
-            XDice d(2, pData->power, 5);
-            pData->caller->md->Add(MOD_HEROISM, d.GetResult(), pData->caller);
-        }
-        break;
-
-        case XEffect::SELF_KNOWLEDGE:
-            if (pData->caller->isHero()) {
-                dynamic_cast<XHero *>(pData->caller)->ShowResistance();
-            }
-            break;
-
-        case XEffect::IDENTIFY: {
-            if (auto it = pData->caller->onIdentifyItem()) {
-                if (it->isIdentified()) {
-                    if (pData->caller->isVisible()) {
-                        msgwin.Add(fmt::format(
-                            "{} learns nothing new about their items.",
-                            pData->caller->name));
-                    }
-                } else {
-                    it->Identify();
-
-                    if (pData->caller->isVisible()) {
-                        msgwin.Add(fmt::format(
-                            "{} identifies the item. It was {}.",
-                            pData->caller->name,
-                            it->toString()));
-                    }
+    if (which == "identify") {
+        if (auto it = pData->caller->onIdentifyItem()) {
+            if (it->isIdentified()) {
+                if (pData->caller->isVisible()) {
+                    msgwin.Add(fmt::format(
+                        "{} learns nothing new about their items.",
+                        pData->caller->name));
                 }
+            } else {
+                it->Identify();
 
-                return 1;
+                if (pData->caller->isVisible()) {
+                    msgwin.Add(fmt::format(
+                        "{} identifies the item. It was {}.",
+                        pData->caller->name,
+                        it->toString()));
+                }
             }
 
+            return 1;
+        }
+
+        return 0;
+    }
+
+    if (which == "great_identify") {
+        for (auto i : pData->target->contain) {
+            i->Identify();
+        }
+
+        for (auto& bp: pData->target->components) {
+            if (bp->Item()) {
+                bp->Item()->Identify();
+            }
+        }
+
+        msgwin.Add(pData->caller->GetNameEx(CRN_T1));
+        msgwin.Add(pData->caller->GetVerb("mumble"));
+        msgwin.Add("arcane formula.");
+
+        msgwin.Add(pData->target->GetNameEx(CRN_T1));
+        msgwin.Add(pData->target->GetVerb("know"));
+        msgwin.Add("about all items in the backpack.");
+
+        return 1;
+    }
+
+    if (which == "summon_monster") {
+        int flg = 0;
+        int tx = 0;
+        int ty = 0;
+
+        for (int i = 0; i < 20; i++) {
+            tx = pData->caller->x + static_cast<int>(vRand(3)) - 1;
+            ty = pData->caller->y + static_cast<int>(vRand(3)) - 1;
+
+            if (pData->l->map->XGetMovability(tx, ty) == 0) {
+                flg = 1;
+                break;
+            }
+        }
+
+        if (flg) {
+            XCreature* cr = pData->l->NewCreature(CreatureClass::UNDEAD);
+
+            if (!cr) {
+                return 0;
+            }
+
+            // NewCreature() already placed cr via its own FirstStep(),
+            // whose birth path makes the map cell cr's only strong
+            // owner (the scheduler only keeps a weak_ptr - see
+            // XScheduler::Add()). Without this, cr->LastStep() below
+            // drops that sole strong reference, and the following
+            // FirstStep() re-registers cr under a brand-new, separate
+            // control block - the same use-after-free class fixed for
+            // the hero-swap case in creature/xhero.cpp (see
+            // cr_keepalive there).
+            auto cr_keepalive = std::static_pointer_cast<XCreature>(cr->shared_from_this());
+            cr->LastStep();
+            cr->FirstStep(tx, ty, pData->l);
+
+            if (pData->l->map->GetVisible(pData->caller->x, pData->caller->y)) {
+                msgwin.Add(pData->caller->GetNameEx(CRN_T1));
+                msgwin.Add(pData->caller->GetVerb("summon"));
+                msgwin.Add("a monster.");
+            }
+
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    if (which == "create_item") {
+        XItem * item = ICREATEA(ItemKind::ITEM);
+        pData->caller->DropItem(item);
+
+        if (pData->caller->isVisible()) {
+            msgwin.Add(pData->caller->name);
+            msgwin.Add("creates an item.");
+        }
+
+        return 1;
+    }
+
+    if (which == "blink") {
+        XRect rect(pData->caller->x - 5, pData->caller->y - 5, pData->caller->x + 5, pData->caller->y + 5);
+
+        // Nowhere within five tiles to put it - the summon fizzles
+        const auto pt_opt = pData->l->GetFreeXY(&rect);
+
+        if (!pt_opt) {
             return 0;
         }
 
-        case XEffect::GREAT_IDENTIFY: {
-            for (auto i : pData->target->contain) {
-                i->Identify();
-            }
+        const XPoint pt = *pt_opt;
 
-            for (auto& bp: pData->target->components) {
-                if (bp->Item()) {
-                    bp->Item()->Identify();
-                }
-            }
-
-            msgwin.Add(pData->caller->GetNameEx(CRN_T1));
-            msgwin.Add(pData->caller->GetVerb("mumble"));
-            msgwin.Add("arcane formula.");
-
-            msgwin.Add(pData->target->GetNameEx(CRN_T1));
-            msgwin.Add(pData->target->GetVerb("know"));
-            msgwin.Add("about all items in the backpack.");
-
-            return 1;
+        if (pData->caller->isVisible()) {
+            msgwin.Add(pData->caller->name);
+            msgwin.Add("has suddenly disappered.");
         }
 
-        case XEffect::SUMMON_MONSTER: {
-            int flg = 0;
-            int tx = 0;
-            int ty = 0;
+        // See the SUMMON_MONSTER case above for why this keepalive is
+        // needed - pData->caller isn't necessarily the creature the
+        // scheduler currently holds a strong reference to.
+        auto caller_keepalive = std::static_pointer_cast<XCreature>(pData->caller->shared_from_this());
+        pData->caller->LastStep();
+        pData->caller->FirstStep(pt.x, pt.y, pData->l);
 
-            for (int i = 0; i < 20; i++) {
-                tx = pData->caller->x + static_cast<int>(vRand(3)) - 1;
-                ty = pData->caller->y + static_cast<int>(vRand(3)) - 1;
-
-                if (pData->l->map->XGetMovability(tx, ty) == 0) {
-                    flg = 1;
-                    break;
-                }
-            }
-
-            if (flg) {
-                XCreature* cr = pData->l->NewCreature(CreatureClass::UNDEAD);
-
-                if (!cr) {
-                    return 0;
-                }
-
-                // NewCreature() already placed cr via its own FirstStep(),
-                // whose birth path makes the map cell cr's only strong
-                // owner (the scheduler only keeps a weak_ptr - see
-                // XScheduler::Add()). Without this, cr->LastStep() below
-                // drops that sole strong reference, and the following
-                // FirstStep() re-registers cr under a brand-new, separate
-                // control block - the same use-after-free class fixed for
-                // the hero-swap case in creature/xhero.cpp (see
-                // cr_keepalive there).
-                auto cr_keepalive = std::static_pointer_cast<XCreature>(cr->shared_from_this());
-                cr->LastStep();
-                cr->FirstStep(tx, ty, pData->l);
-
-                if (pData->l->map->GetVisible(pData->caller->x, pData->caller->y)) {
-                    msgwin.Add(pData->caller->GetNameEx(CRN_T1));
-                    msgwin.Add(pData->caller->GetVerb("summon"));
-                    msgwin.Add("a monster.");
-                }
-
-                return 1;
-            } else {
-                return 0;
-            }
+        if (pData->caller->isVisible()) {
+            msgwin.Add(pData->caller->name);
+            msgwin.Add("has suddenly appeared.");
         }
 
-        case XEffect::CREATE_ITEM: {
-            XItem * item = ICREATEA(ItemKind::ITEM);
-            pData->caller->DropItem(item);
+        return 1;
+    }
 
-            if (pData->caller->isVisible()) {
-                msgwin.Add(pData->caller->name);
-                msgwin.Add("creates an item.");
-            }
+    if (which == "teleport") {
+        const auto pt_opt = pData->l->GetFreeXY();
 
-            return 1;
-        };
-
-        case XEffect::BLINK: {
-            XRect rect(pData->caller->x - 5, pData->caller->y - 5, pData->caller->x + 5, pData->caller->y + 5);
-
-            // Nowhere within five tiles to put it - the summon fizzles
-            const auto pt_opt = pData->l->GetFreeXY(&rect);
-
-            if (!pt_opt) {
-                return 0;
-            }
-
-            const XPoint pt = *pt_opt;
-
-            if (pData->caller->isVisible()) {
-                msgwin.Add(pData->caller->name);
-                msgwin.Add("has suddenly disappered.");
-            }
-
-            // See the SUMMON_MONSTER case above for why this keepalive is
-            // needed - pData->caller isn't necessarily the creature the
-            // scheduler currently holds a strong reference to.
-            auto caller_keepalive = std::static_pointer_cast<XCreature>(pData->caller->shared_from_this());
-            pData->caller->LastStep();
-            pData->caller->FirstStep(pt.x, pt.y, pData->l);
-
-            if (pData->caller->isVisible()) {
-                msgwin.Add(pData->caller->name);
-                msgwin.Add("has suddenly appeared.");
-            }
-
-            return 1;
-        };
-
-        case XEffect::TELEPORT: {
-            const auto pt_opt = pData->l->GetFreeXY();
-
-            if (!pt_opt) {
-                return 0;
-            }
-
-            const XPoint pt = *pt_opt;
-
-            if (!pData->target->isHero() && pData->target->isVisible()) {
-                msgwin.Add(pData->target->name);
-                msgwin.Add("has suddenly disappered.");
-            }
-
-            // See the SUMMON_MONSTER case above - pData->target is whoever
-            // the spell/trap is acting on, not necessarily the creature
-            // currently taking its own turn, so it isn't otherwise
-            // guaranteed to have a strong reference keeping it alive here.
-            auto target_keepalive = std::static_pointer_cast<XCreature>(pData->target->shared_from_this());
-            pData->target->LastStep();
-            pData->target->FirstStep(pt.x, pt.y, pData->l);
-
-            if (!pData->target->isHero() && pData->target->isVisible()) {
-                msgwin.Add(pData->target->name);
-                msgwin.Add("has suddenly appeared.");
-            }
-
-            if (pData->target->isHero()) {
-                msgwin.Add("You have teleported away!");
-            }
-
-            return 1;
-        };
-
-        case XEffect::SEE_INVISIBLE:
-            return pData->caller->md->Add(MOD_SEE_INVISIBLE, pData->power, pData->caller);
-
-        // One modifier, told which resistance it grants. The effects still
-        // name a resistance apiece; that goes when the effect catalogue
-        // becomes content.
-        case XEffect::ACID_RESISTANCE:
-        case XEffect::FIRE_RESISTANCE:
-        case XEffect::POISON_RESISTANCE:
-        case XEffect::COLD_RESISTANCE: {
-            RESISTANCE which = "acid";
-
-            if (pData->effect == XEffect::FIRE_RESISTANCE) {
-                which = "fire";
-            } else if (pData->effect == XEffect::POISON_RESISTANCE) {
-                which = "poison";
-            } else if (pData->effect == XEffect::COLD_RESISTANCE) {
-                which = "cold";
-            }
-
-            auto mod = std::make_unique<XModResistance>(which, pData->power, pData->caller);
-
-            return pData->caller->md->Add(std::move(mod), pData->caller);
+        if (!pt_opt) {
+            return 0;
         }
 
-        default:
-            assert(0);
+        const XPoint pt = *pt_opt;
+
+        if (!pData->target->isHero() && pData->target->isVisible()) {
+            msgwin.Add(pData->target->name);
+            msgwin.Add("has suddenly disappered.");
+        }
+
+        // See the SUMMON_MONSTER case above - pData->target is whoever
+        // the spell/trap is acting on, not necessarily the creature
+        // currently taking its own turn, so it isn't otherwise
+        // guaranteed to have a strong reference keeping it alive here.
+        auto target_keepalive = std::static_pointer_cast<XCreature>(pData->target->shared_from_this());
+        pData->target->LastStep();
+        pData->target->FirstStep(pt.x, pt.y, pData->l);
+
+        if (!pData->target->isHero() && pData->target->isVisible()) {
+            msgwin.Add(pData->target->name);
+            msgwin.Add("has suddenly appeared.");
+        }
+
+        if (pData->target->isHero()) {
+            msgwin.Add("You have teleported away!");
+        }
+
+        return 1;
+    }
+
+    std::cerr << "world: an effect asks the engine for '" << which
+          << "', which it does not know how to do" << std::endl;
+
+    return 0;
+}
+
+int XEffect::Make(const EFFECT_DATA* pData)
+{
+    const EffectStats* row = FindEffect(pData->effect);
+
+    if (!row) {
+        std::cerr << "world: nothing defines an effect '" << pData->effect << "'"
+                  << std::endl;
+
+        return 0;
+    }
+
+    // The parts are tried in turn and the first that has something to do
+    // wins: a potion that heals wounds and mends bleeding does whichever
+    // the drinker actually needs, never both. That is what the chain of
+    // Heal() || Cure() || Mana() meant when this was a switch.
+    for (const auto& part : row->parts) {
+        const int sides = part.divisor > 0 ? pData->power / part.divisor : pData->power;
+        int done = 0;
+
+        switch (part.kind) {
+            case EffectPart::Kind::HEAL:
+                done = Heal(pData->caller, part.count, sides, part.bonus);
+                break;
+
+            case EffectPart::Kind::CURE:
+                done = Cure(pData->caller, part.count, sides, part.bonus);
+                break;
+
+            case EffectPart::Kind::MANA:
+                done = Mana(pData->caller, part.count, sides, part.bonus);
+                break;
+
+            case EffectPart::Kind::MODIFIER: {
+                const int val = part.sustained
+                    ? pData->power
+                    : XDice(part.count, sides, part.bonus).GetResult();
+
+                done = pData->caller->md->Add(static_cast<MODIFIER_TYPE>(part.modifier),
+                    part.relieves ? -val : val, pData->caller);
+                break;
+            }
+
+            case EffectPart::Kind::RESISTANCE: {
+                const int val = part.sustained
+                    ? pData->power
+                    : XDice(part.count, sides, part.bonus).GetResult();
+                auto mod = std::make_unique<XModResistance>(part.resist, val, pData->caller);
+
+                done = pData->caller->md->Add(std::move(mod), pData->caller);
+                break;
+            }
+
+            case EffectPart::Kind::TOUCH:
+                done = Touch(pData, part.count, sides, part.bonus,
+                    part.colour, part.brands, part.message);
+                break;
+
+            case EffectPart::Kind::BOLT:
+                done = Bolt(pData, part.count, sides, part.bonus,
+                    part.colour, part.brands, part.message);
+                break;
+
+            case EffectPart::Kind::ENGINE:
+                done = Engine(part.engine, pData);
+                break;
+        }
+
+        if (done) {
+            return 1;
+        }
     }
 
     return 0;

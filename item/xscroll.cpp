@@ -44,7 +44,7 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XScroll);
 struct ScrollDescription {
     ScrollName id;
     std::string real_name;
-    XEffect::Id effect{XEffect::NONE};
+    EFFECT effect{EFFECT_NONE};
     int value{0};
     int rarity{0};
     bool read_in_combat{false};
@@ -118,7 +118,7 @@ ScrollBuilder& ScrollBuilder::OnRead(const std::string& handler)
     return *this;
 }
 
-ScrollBuilder& ScrollBuilder::Effect(const XEffect::Id eff)
+ScrollBuilder& ScrollBuilder::Effect(const EFFECT& eff)
 {
     effect = eff;
     return *this;
@@ -162,6 +162,12 @@ void ScrollBuilder::Register()
     row.rarity = rarity;
     row.read_in_combat = read_in_combat;
     row.read_handler = read_handler;
+
+    if (!effect.empty() && !FindEffect(effect)) {
+        std::cerr << "world: the scroll '" << id << "' does '" << effect
+                  << "', which world/effects.lua does not declare" << std::endl;
+    }
+
     row.label = ScrollDescription::RollLabel();
 
     scroll_total_rarity += rarity;
@@ -278,7 +284,7 @@ int XScroll::onRead(XCreature * cr)
 
     int flag = 0;
 
-    if (row->effect != XEffect::NONE) {
+    if (row->effect != EFFECT_NONE) {
         if (cr->isHero()) {
             msgwin.Add(fmt::format("You read the {}.", toString()));
         } else if (cr->isVisible()) {
@@ -293,12 +299,12 @@ int XScroll::onRead(XCreature * cr)
         ed.call_x	= cr->x;
         ed.call_y	= cr->y;
 
-        if (XEffect::GetReq(row->effect) == ER_DIRECTION) {
+        if (XEffect::GetReq(row->effect) == EffectTarget::DIRECTION) {
             XPoint pt;
             cr->GetTarget(TR_ATTACK_DIRECTION, &pt);
             ed.target_x = pt.x + cr->x;
             ed.target_y = pt.y + cr->y;
-        } else if (XEffect::GetReq(row->effect) == ER_TARGET) {
+        } else if (XEffect::GetReq(row->effect) == EffectTarget::TARGET) {
             XPoint pt;
             cr->GetTarget(TR_ATTACK_TARGET, &pt, XEffect::GetRange(ed.effect, ed.power));
             ed.target_x = pt.x;

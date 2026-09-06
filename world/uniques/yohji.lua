@@ -110,11 +110,11 @@ function YohjiHandler(e, t, p, v)
 			local success_msg = "'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory."
 			if (it == "rat_tail" and QuestStatus("yohji_rat") == XQuest.KNOWN) then
 				AddMessage(success_msg)
-				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
+				MakeEffect("great_identify", t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify("yohji_rat", XQuest.UNKNOWN)
 			elseif (it == "bat_wing" and QuestStatus("yohji_bat") == XQuest.KNOWN) then
 				AddMessage(success_msg)
-				MakeEffect(XEffect.GREAT_IDENTIFY, t, nil, 0, 0, p, 0, 0, 0, nil)
+				MakeEffect("great_identify", t, nil, 0, 0, p, 0, 0, 0, nil)
 				QuestModify("yohji_bat", XQuest.UNKNOWN)
 			else
 				if (MoneyOperation(t, -50 * count) >= 0) then

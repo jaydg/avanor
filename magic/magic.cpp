@@ -79,7 +79,7 @@ void RegisterSpellNameEnum(sol::state_view& lua)
 struct SPELL_REC {
     SPELL_NAME id;
     std::string name;
-    XEffect::Id effect{XEffect::NONE};
+    EFFECT effect{EFFECT_NONE};
     School school{School::UNKNOWN};
     int cost{0};
 
@@ -124,7 +124,7 @@ SpellBuilder& SpellBuilder::Called(const std::string& n)
     return *this;
 }
 
-SpellBuilder& SpellBuilder::Effect(const XEffect::Id eff)
+SpellBuilder& SpellBuilder::Effect(const EFFECT& eff)
 {
     effect = eff;
     return *this;
@@ -200,7 +200,7 @@ void XSpell::Cast()
     }
 }
 
-XEffect::Id XSpell::GetEffect() const
+EFFECT XSpell::GetEffect() const
 {
     return SpellRow(spell_name).effect;
 }
@@ -222,18 +222,18 @@ XSpell::Use XSpell::GetUse() const
 
 bool XSpell::CanReach(const int distance, const int power) const
 {
-    const XEffect::Id effect = GetEffect();
+    const EFFECT effect = GetEffect();
 
     switch (XEffect::GetReq(effect)) {
         // A bolt flies as far as the spell carries it.
-        case ER_TARGET:
+        case EffectTarget::TARGET:
             return distance <= XEffect::GetRange(effect, power);
 
         // Touch spells land on the square the caster faces, and
         // XEffect::Make() builds that square by adding one step to the
         // caster's own position - so the target has to be standing in
         // it. Diagonals count: a step is a step.
-        case ER_DIRECTION:
+        case EffectTarget::DIRECTION:
             return distance <= 1;
 
         // Anything else does not take aim at all, so there is no

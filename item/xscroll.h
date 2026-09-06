@@ -56,7 +56,7 @@ class ScrollBuilder
         explicit ScrollBuilder(std::string id);
 
         ScrollBuilder& Called(const std::string& name);
-        ScrollBuilder& Effect(XEffect::Id effect);
+        ScrollBuilder& Effect(const EFFECT& effect);
         ScrollBuilder& Worth(int value);
         ScrollBuilder& Chance(int rarity);
         ScrollBuilder& ReadInCombat();
@@ -67,7 +67,7 @@ class ScrollBuilder
     private:
         std::string id;
         std::string real_name;
-        XEffect::Id effect{XEffect::NONE};
+        EFFECT effect{EFFECT_NONE};
         int value{0};
         int rarity{0};
         bool read_in_combat{false};

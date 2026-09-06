@@ -181,7 +181,7 @@ class XSpell
         // every turn and standing still while it fizzles.
         [[nodiscard]] bool CanReach(int distance, int power) const;
 
-        [[nodiscard]] XEffect::Id GetEffect() const;
+        [[nodiscard]] EFFECT GetEffect() const;
 
         // called after successful casting of spell
         void Cast();
@@ -231,7 +231,7 @@ class SpellBuilder
         explicit SpellBuilder(std::string id);
 
         SpellBuilder& Called(const std::string& n);
-        SpellBuilder& Effect(XEffect::Id eff);
+        SpellBuilder& Effect(const EFFECT& eff);
         SpellBuilder& School(XMagic::School sch);
         SpellBuilder& Cost(int c);
         SpellBuilder& Use(XSpell::Use u);
@@ -241,7 +241,7 @@ class SpellBuilder
     private:
         std::string id;
         std::string name;
-        XEffect::Id effect{XEffect::NONE};
+        EFFECT effect{EFFECT_NONE};
         XMagic::School school{XMagic::School::UNKNOWN};
         int cost{0};
         XSpell::Use use{XSpell::Use::OTHER};

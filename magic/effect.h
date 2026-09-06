@@ -17,20 +17,32 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
 #ifndef EFFECT_H
 #define EFFECT_H
+
+#include <string>
+#include <vector>
 
 #include <sol/forward.hpp>
 
 #include "engine/global.h"
 #include "magic/brand.h"
+#include "magic/resist.h"
 
-enum EFFECT_REQ {
-    ER_NONE	= 0,
-    ER_TARGET	= 1,
-    ER_DIRECTION = 3,
-    ER_ITEM	= 4,
+// Which effect this is - the id world/effects.lua registered it under.
+// A string, like every other content id: what a world's magic can do is
+// content, and the engine only offers the handful of things an effect can
+// be built out of.
+using EFFECT = std::string;
+
+inline constexpr const char* EFFECT_NONE = "";
+
+// What an effect needs pointed at before it can happen.
+enum class EffectTarget {
+    NONE,       // it happens to whoever caused it
+    DIRECTION,  // a way to face
+    TARGET,     // a place within range
+    ITEM,       // something the causer is carrying
 };
 
 class XCreature;
@@ -38,66 +50,120 @@ class XItem;
 class XLocation;
 struct EFFECT_DATA;
 
+// One thing an effect does. An effect is a list of these, tried in order
+// until one of them has something to do - so a potion that heals wounds
+// and mends bleeding does whichever the drinker actually needs.
+struct EffectPart {
+    enum class Kind {
+        HEAL,        // hit points back
+        CURE,        // bleeding staunched
+        MANA,        // power points back
+        MODIFIER,    // something laid on the causer for a while
+        RESISTANCE,  // resistance to one named thing, for a while
+        TOUCH,       // damage where they are facing
+        BOLT,        // damage at a place within range
+        ENGINE,      // one of the few the engine does itself
+    };
+
+    Kind kind = Kind::HEAL;
+
+    // How much: XDice(count, power / divisor, bonus), where power is what
+    // the spell, scroll or potion was cast with.
+    int count = 1;
+    int divisor = 1;
+    int bonus = 0;
+
+    // For MODIFIER: a MODIFIER_TYPE (an int, because modifiers.h reaches
+    // back into creature.h and this header sits underneath it).
+    int modifier = -1;
+
+    // For MODIFIER: take the amount away rather than add it - curing
+    // poison is poison with the sign turned round.
+    bool relieves = false;
+
+    // For MODIFIER and RESISTANCE: it lasts for `power` itself, with no
+    // dice rolled.
+    bool sustained = false;
+
+    // For RESISTANCE: which one.
+    RESISTANCE resist;
+
+    // For TOUCH and BOLT.
+    BrandSet brands;
+    int colour = 0;
+    std::string message;
+
+    // For ENGINE: which of them.
+    std::string engine;
+};
+
+struct EffectStats {
+    EFFECT id;
+    EffectTarget targets = EffectTarget::NONE;
+
+    // How far it reaches: power / divisor + bonus. A divisor of zero
+    // means the bonus alone, and both zero means it does not reach.
+    int range_divisor = 0;
+    int range_bonus = 0;
+
+    std::vector<EffectPart> parts;
+};
+
+extern std::vector<EffectStats> effects_db;
+
+const EffectStats* FindEffect(const EFFECT& id);
+
 class XEffect
 {
     public:
-        enum Id {
-            NONE	= -1,
-            CURE_LIGHT_WOUNDS	= 0, //0
-            CURE_SERIOUS_WOUNDS,
-            CURE_CRITICAL_WOUNDS,
-            CURE_MORTAL_WOUNDS,
-            HEAL,
-            ULTRAHEAL,
-            POWER,
-            ULTRAPOWER,
-            RESTORATION,
-            CURE_POISON,
-            CURE_DISEASE,
-
-            BURNING_HANDS,
-            ICE_TOUCH,
-            DRAIN_LIFE,
-
-            MAGIC_ARROW,
-            FIRE_BOLT,
-            ICE_BOLT,
-            LIGHTNING_BOLT,
-            ACID_BOLT,
-
-            HEROISM,
-            IDENTIFY,
-            GREAT_IDENTIFY,
-            SUMMON_MONSTER,
-            CREATE_ITEM,
-            BLINK,
-            TELEPORT,
-            SELF_KNOWLEDGE,
-            SEE_INVISIBLE,
-            ACID_RESISTANCE,
-            FIRE_RESISTANCE,
-            COLD_RESISTANCE,
-            POISON_RESISTANCE,
-        };
-
-        // Registers this enum as the Lua table XEffect.MEMBER.
         static void RegisterLua(sol::state_view& lua);
 
     private:
         static int Heal(XCreature * caster, int X, int Y, int Z);
         static int Cure(XCreature * caster, int X, int Y, int Z);
         static int Mana(XCreature * caster, int X, int Y, int Z);
-        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, const BrandSet& brands, const char* msg);
-        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, xColor col, const BrandSet& brands, const char* msg);
+        static int Touch(const EFFECT_DATA* pData, int X, int Y, int Z, int col, const BrandSet& brands, const std::string& msg);
+        static int Bolt(const EFFECT_DATA* pData, int X, int Y, int Z, int col, const BrandSet& brands, const std::string& msg);
+
+        // The seven that are not built out of the parts above: they make
+        // creatures and items, move people about, and show screens.
+        static int Engine(const std::string& which, const EFFECT_DATA* pData);
+
     public:
         static int Make(const EFFECT_DATA* pData);
-        static RESULT Make(XCreature * caster, Id effect, int power);
-        static EFFECT_REQ GetReq(Id effect);
-        static int GetRange(Id effect, int power);
+        static RESULT Make(XCreature * caster, const EFFECT& effect, int power);
+        static EffectTarget GetReq(const EFFECT& effect);
+        static int GetRange(const EFFECT& effect, int power);
+};
+
+// Content-facing builder - see world/effects.lua.
+class EffectBuilder
+{
+    public:
+        explicit EffectBuilder(std::string id);
+
+        EffectBuilder& Heals(int count, int divisor, int bonus);
+        EffectBuilder& Cures(int count, int divisor, int bonus);
+        EffectBuilder& Restores(int count, int divisor, int bonus);
+        EffectBuilder& Inflicts(int modifier, int count, int divisor, int bonus);
+        EffectBuilder& Relieves(int modifier, int count, int divisor, int bonus);
+        EffectBuilder& Sustains(int modifier);
+        EffectBuilder& Resists(const std::string& resist);
+        EffectBuilder& Touches(int count, int divisor, int bonus, int colour,
+            const std::string& brand, const std::string& message);
+        EffectBuilder& Throws(int count, int divisor, int bonus, int colour,
+            const std::string& brand, const std::string& message);
+        EffectBuilder& Engine(const std::string& which);
+        EffectBuilder& Targets(EffectTarget targets);
+        EffectBuilder& Range(int divisor, int bonus);
+        void Register();
+
+    private:
+        EffectStats t;
 };
 
 struct EFFECT_DATA {
-    XEffect::Id effect;
+    EFFECT effect;
 
     // In many case effects fill caller, but not when cause by a trap.
     XCreature* caller;

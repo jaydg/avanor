@@ -829,19 +829,19 @@ void AddItemDice(void* item, int count, int sides, int bonus)
 // the one that asks the player where to aim when the effect needs a
 // direction or a target, and answers ABORT if they change their mind. What
 // an item that casts something wants.
-int CastEffect(void* caster, int effect, int power)
+int CastEffect(void* caster, const std::string& effect, int power)
 {
     if (!caster) {
         return ABORT;
     }
 
-    return XEffect::Make((XCreature*)caster, (XEffect::Id)effect, power);
+    return XEffect::Make((XCreature*)caster, effect, power);
 }
 
-int MakeEffect(int effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power)
+int MakeEffect(const std::string& effect, void* caller, void* location, int call_x, int call_y, void* target, int target_x, int target_y, int power)
 {
     EFFECT_DATA ed;
-    ed.effect = (XEffect::Id)effect;
+    ed.effect = effect;
     ed.caller = (XCreature*)caller;
     ed.l = (XLocation*)location;
     ed.call_x = call_x;

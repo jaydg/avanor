@@ -98,14 +98,15 @@ DeityBuilder& DeityBuilder::OnKill(const std::string& handler)
 }
 
 DeityBuilder& DeityBuilder::Grants(const std::string& name, const std::string& needs,
-    const int cost, const int effect, sol::optional<int> alternative)
+    const int cost, const std::string& effect,
+    sol::optional<std::string> alternative)
 {
     DeityHelp help;
     help.name = name;
     help.needs = needs;
     help.cost = cost;
     help.effect = effect;
-    help.alternative = alternative.value_or(-1);
+    help.alternative = alternative.value_or(std::string());
     t.grants.push_back(help);
     return *this;
 }
@@ -130,6 +131,12 @@ void DeityBuilder::Register()
     // grant naming one that does not exist is a typo, and saying so here
     // beats waiting for somebody to pray before anyone notices.
     for (const auto& help : t.grants) {
+        if (!help.effect.empty() && !FindEffect(help.effect)) {
+            std::cerr << "world: '" << t.id << "' grants '" << help.name
+                      << "', which does '" << help.effect
+                      << "' - an effect world/effects.lua does not declare" << std::endl;
+        }
+
         if (!FindRank(help.needs)) {
             std::cerr << "world: '" << t.id << "' grants '" << help.name
                       << "' at rank '" << help.needs
@@ -369,13 +376,13 @@ std::vector<const DeityHelp*> XReligion::AvailableHelp(const DEITY& deity) const
 
 int XReligion::Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer)
 {
-    int effect = help.effect;
+    EFFECT effect = help.effect;
 
-    if (help.alternative >= 0 && vRand(2) == 0) {
+    if (!help.alternative.empty() && vRand(2) == 0) {
         effect = help.alternative;
     }
 
-    const RESULT res = XEffect::Make(prayer, static_cast<XEffect::Id>(effect), 50);
+    const RESULT res = XEffect::Make(prayer, effect, 50);
 
     if (res == SUCCESS) {
         ChangeFavour(deity, -help.cost);

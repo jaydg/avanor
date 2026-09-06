@@ -169,7 +169,7 @@ PotionBuilder& PotionBuilder::Called(const std::string& n)
     return *this;
 }
 
-PotionBuilder& PotionBuilder::Effect(const XEffect::Id eff)
+PotionBuilder& PotionBuilder::Effect(const EFFECT& eff)
 {
     t.effect = eff;
     return *this;
@@ -220,6 +220,11 @@ void PotionBuilder::Register()
     // Its look for this game: the one content asked for, or one drawn from
     // whatever no other potion has taken.
     t.force_color = PotionDescription::SelectColor(t.force_color);
+
+    if (!t.effect.empty() && !FindEffect(t.effect)) {
+        std::cerr << "world: the potion '" << t.pn << "' does '" << t.effect
+                  << "', which world/effects.lua does not declare" << std::endl;
+    }
 
     potion_descr.push_back(t);
     PotionDescription::potion_total_value += t.rarity;
@@ -393,7 +398,7 @@ int XPotion::onDrink(XCreature * cr)
 
     int flag{};
 
-    if (pdescr->effect > XEffect::NONE) {
+    if (pdescr->effect > EFFECT_NONE) {
         flag = XEffect::Make(cr, pdescr->effect, 30);
     } else {
         // No effect of its own: content finishes the job. The handler

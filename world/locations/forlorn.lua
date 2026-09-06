@@ -79,7 +79,7 @@ function EyeOfRaaUse(state, item, user)
 		return Result.SUCCESS
 	end
 
-	CastEffect(user, XEffect.LIGHTNING_BOLT, 30)
+	CastEffect(user, "lightning_bolt", 30)
 
 	return Result.SUCCESS
 end
