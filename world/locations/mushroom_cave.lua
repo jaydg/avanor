@@ -98,7 +98,7 @@ function SpawnMushroomEvent(l)
 	local x, y = GetFreeXY(l)
 
 	if (x) then
-		Plant("mushroom", x, y, l)
+		Plant.Place("mushroom", x, y, l)
 	end
 
 	return true

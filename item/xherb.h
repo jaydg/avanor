@@ -26,14 +26,59 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xanyfood.h"
 #include "item/xpotion.h"
 
-enum HERB_TYPE {
-    HT_HERB,
-    HT_MUSHROOM,
+// What sort of plant a species is - "herb", "mushroom", or whatever else
+// a world invents. The id world/items/herbs.lua registered it under.
+using PLANT_KIND = std::string;
+
+// One such sort: what an unrecognised one is called, and which grades of
+// potion it distils into.
+struct PlantKindStats {
+    PLANT_KIND id;
+
+    // What one reads as before anybody knows what it is.
+    std::string unknown_name;
+
+    // The grades of potion this sort yields, and how hard each is to
+    // recognise - a dice string, rolled once per species per game.
+    struct Grade {
+        int alchemy_power{0};
+        std::string difficulty;
+    };
+
+    std::vector<Grade> grades;
 };
 
+extern std::vector<PlantKindStats> plant_kinds_db;
+
+const PlantKindStats* FindPlantKind(const PLANT_KIND& id);
+
+// The sort a species belongs to when it does not say - the first one a
+// world declares, which is its ordinary sort of plant.
+const PLANT_KIND& DefaultPlantKind();
+
+// Fluent builder:
+//
+//   PlantKind.new("mushroom")
+//       :Unknown("unknown mushroom")
+//       :Distils(3, "1d4+6")
+//       :Register()
+class PlantKindBuilder
+{
+    public:
+        explicit PlantKindBuilder(std::string id);
+
+        PlantKindBuilder& Unknown(const std::string& name);
+        PlantKindBuilder& Distils(int alchemy_power, const std::string& difficulty);
+        void Register();
+
+    private:
+        PlantKindStats t;
+};
+
+
 // One species of plant: what the picked part is called, what the plant it
-// grows on is called, how it tastes, how it looks, and whether it is a herb
-// or a mushroom. Filled from world/items/herbs.lua as that script loads.
+// grows on is called, how it tastes, how it looks, and which sort of plant
+// it is. Filled from world/items/herbs.lua as that script loads.
 //
 // Which potion a species distils into, and how hard that is, are NOT
 // content: they are dealt out afresh each game by Create(), so learning
@@ -44,7 +89,7 @@ struct PlantDefinition {
     std::string bush_name;
     std::string post_eat;
     int color{0};
-    HERB_TYPE herb_type{HT_HERB};
+    PLANT_KIND kind;
 
     // Per-game, not content, and saved with the game.
     PotionName pn;
@@ -58,7 +103,7 @@ struct PlantDefinition {
 
     // A species of that kind, drawn at random - what a bush or a mushroom
     // patch asks for when it decides what it is growing.
-    static std::string RandomOfType(HERB_TYPE type);
+    static std::string RandomOfType(const PLANT_KIND& kind);
 
     // herbs[] is private to xherb.cpp.
     static void SaveTable(cereal::JSONOutputArchive& ar);
@@ -67,25 +112,25 @@ struct PlantDefinition {
 
 // Fluent builder for one species of plant:
 //
-//   Herb.new("valeriana_root")
+//   Plant.new("valeriana_root")
 //       :Called("valeriana root")
 //       :Growing("valeriana")
 //       :Taste("sedative")
 //       :Looks(xColor.xGREEN)
 //       :Register()
 //
-// A mushroom says :Mushroom() and no :Growing() - it is its own plant and
+// A mushroom says :Kind("mushroom") and no :Growing() - it is its own plant and
 // stands under its own name.
-class HerbBuilder
+class PlantBuilder
 {
     public:
-        explicit HerbBuilder(std::string id);
+        explicit PlantBuilder(std::string id);
 
-        HerbBuilder& Called(const std::string& n);
-        HerbBuilder& Growing(const std::string& n);
-        HerbBuilder& Mushroom();
-        HerbBuilder& Taste(const std::string& t);
-        HerbBuilder& Looks(int colour);
+        PlantBuilder& Called(const std::string& n);
+        PlantBuilder& Growing(const std::string& n);
+        PlantBuilder& Kind(const std::string& kind);
+        PlantBuilder& Taste(const std::string& t);
+        PlantBuilder& Looks(int colour);
 
         void Register();
 
@@ -95,7 +140,7 @@ class HerbBuilder
         std::string bush_name;
         std::string post_eat;
         int color{0};
-        HERB_TYPE herb_type{HT_HERB};
+        PLANT_KIND kind;
 };
 
 class XHerb : public XAnyFood

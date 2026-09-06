@@ -47,12 +47,69 @@ PlantDefinition* PlantDefinition::Find(const std::string& id)
     return nullptr;
 }
 
-std::string PlantDefinition::RandomOfType(const HERB_TYPE type)
+std::vector<PlantKindStats> plant_kinds_db;
+
+const PlantKindStats* FindPlantKind(const PLANT_KIND& id)
+{
+    for (const auto& row : plant_kinds_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+const PLANT_KIND& DefaultPlantKind()
+{
+    static const PLANT_KIND nothing;
+
+    return plant_kinds_db.empty() ? nothing : plant_kinds_db.front().id;
+}
+
+PlantKindBuilder::PlantKindBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+PlantKindBuilder& PlantKindBuilder::Unknown(const std::string& name)
+{
+    t.unknown_name = name;
+    return *this;
+}
+
+PlantKindBuilder& PlantKindBuilder::Distils(const int alchemy_power,
+    const std::string& difficulty)
+{
+    t.grades.push_back({alchemy_power, difficulty});
+    return *this;
+}
+
+void PlantKindBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a plant kind with no id" << std::endl;
+        return;
+    }
+
+    if (FindPlantKind(t.id)) {
+        std::cerr << "world: two plant kinds both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.unknown_name.empty()) {
+        t.unknown_name = "unknown " + t.id;
+    }
+
+    plant_kinds_db.push_back(t);
+}
+
+std::string PlantDefinition::RandomOfType(const PLANT_KIND& kind)
 {
     std::vector<const PlantDefinition*> of_type;
 
     for (const auto& row : herbs) {
-        if (row.herb_type == type) {
+        if (row.kind == kind) {
             of_type.push_back(&row);
         }
     }
@@ -66,39 +123,39 @@ std::string PlantDefinition::RandomOfType(const HERB_TYPE type)
     return of_type[vRand(static_cast<int>(of_type.size()))]->id;
 }
 
-HerbBuilder::HerbBuilder(std::string id) : id(std::move(id)) {}
+PlantBuilder::PlantBuilder(std::string id) : id(std::move(id)) {}
 
-HerbBuilder& HerbBuilder::Called(const std::string& n)
+PlantBuilder& PlantBuilder::Called(const std::string& n)
 {
     herb_name = n;
     return *this;
 }
 
-HerbBuilder& HerbBuilder::Growing(const std::string& n)
+PlantBuilder& PlantBuilder::Growing(const std::string& n)
 {
     bush_name = n;
     return *this;
 }
 
-HerbBuilder& HerbBuilder::Mushroom()
+PlantBuilder& PlantBuilder::Kind(const std::string& k)
 {
-    herb_type = HT_MUSHROOM;
+    kind = k;
     return *this;
 }
 
-HerbBuilder& HerbBuilder::Taste(const std::string& t)
+PlantBuilder& PlantBuilder::Taste(const std::string& t)
 {
     post_eat = t;
     return *this;
 }
 
-HerbBuilder& HerbBuilder::Looks(const int colour)
+PlantBuilder& PlantBuilder::Looks(const int colour)
 {
     color = colour;
     return *this;
 }
 
-void HerbBuilder::Register()
+void PlantBuilder::Register()
 {
     if (id.empty()) {
         std::cerr << "world: a plant with no id" << std::endl;
@@ -107,6 +164,15 @@ void HerbBuilder::Register()
 
     if (PlantDefinition::Find(id)) {
         std::cerr << "world: two plants both called '" << id << "'" << std::endl;
+        return;
+    }
+
+    // The kinds are declared above the species that belong to them, so a
+    // species naming one that does not exist is a typo. It would
+    // otherwise distil into nothing and read as "unknown plant" for ever.
+    if (!kind.empty() && !FindPlantKind(kind)) {
+        std::cerr << "world: the plant '" << id << "' is of kind '" << kind
+                  << "', which world/items/herbs.lua does not declare" << std::endl;
         return;
     }
 
@@ -119,7 +185,7 @@ void HerbBuilder::Register()
     row.bush_name = bush_name.empty() ? row.herb_name : bush_name;
     row.post_eat = post_eat;
     row.color = color;
-    row.herb_type = herb_type;
+    row.kind = kind.empty() ? DefaultPlantKind() : kind;
 
     herbs.push_back(std::move(row));
 }
@@ -159,17 +225,25 @@ void PlantDefinition::Create()
                 continue;
             }
 
-            if (row.herb_type == HT_HERB) {
-                if (pr->alchemy_power == 1) {
-                    row.pn = pr->pn;
-                    row.difficulty = vRand(4) + 1;
-                } else if (pr->alchemy_power == 2) {
-                    row.pn = pr->pn;
-                    row.difficulty = vRand(4) + 4;
+            // Which grades of potion this sort of plant yields, and how
+            // hard each is to recognise, is content - see the plant kinds
+            // at the head of world/items/herbs.lua.
+            const PlantKindStats* kind = FindPlantKind(row.kind);
+
+            if (!kind) {
+                break;
+            }
+
+            for (const auto& grade : kind->grades) {
+                if (grade.alchemy_power != pr->alchemy_power) {
+                    continue;
                 }
-            } else if (pr->alchemy_power == 3) {
+
+                XDice d;
+                d.Setup(grade.difficulty);
                 row.pn = pr->pn;
-                row.difficulty = vRand(4) + 7;
+                row.difficulty = d.Throw();
+                break;
             }
         }
 
@@ -271,10 +345,9 @@ std::string XHerb::toString()
 
     if (row && row->identified) {
         name = row->herb_name;
-    } else if (!row || row->herb_type == HT_HERB) {
-        name = "unknown herb";
     } else {
-        name = "unknown mushroom";
+        const PlantKindStats* kind = row ? FindPlantKind(row->kind) : nullptr;
+        name = kind ? kind->unknown_name : "unknown plant";
     }
 
     return XAnyFood::toString();

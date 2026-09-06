@@ -310,14 +310,21 @@ void XLua::Init()
 
         lua.set_function("EnchantmentLooks", &SetEnchantmentLooks);
 
-        lua.new_usertype<HerbBuilder>("Herb",
-            sol::constructors<HerbBuilder(std::string)>(),
-            "Called", &HerbBuilder::Called,
-            "Growing", &HerbBuilder::Growing,
-            "Mushroom", &HerbBuilder::Mushroom,
-            "Taste", &HerbBuilder::Taste,
-            "Looks", &HerbBuilder::Looks,
-            "Register", &HerbBuilder::Register
+        lua.new_usertype<PlantKindBuilder>("PlantKind",
+            sol::constructors<PlantKindBuilder(std::string)>(),
+            "Unknown", &PlantKindBuilder::Unknown,
+            "Distils", &PlantKindBuilder::Distils,
+            "Register", &PlantKindBuilder::Register
+        );
+
+        lua.new_usertype<PlantBuilder>("Plant",
+            sol::constructors<PlantBuilder(std::string)>(),
+            "Called", &PlantBuilder::Called,
+            "Growing", &PlantBuilder::Growing,
+            "Kind", &PlantBuilder::Kind,
+            "Taste", &PlantBuilder::Taste,
+            "Looks", &PlantBuilder::Looks,
+            "Register", &PlantBuilder::Register
         );
 
         lua.new_usertype<BookBuilder>("Book",

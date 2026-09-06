@@ -12,7 +12,7 @@ function ScatterHerbBushes()
 			if Rand(HERB_BUSH_ODDS) == 0
 				and GetTile(x, y) == HERB_BUSH_TERRAIN
 				and not HasSpecial(x, y) then
-				Plant("herb", x, y)
+				Plant.Place("herb", x, y)
 			end
 		end
 	end

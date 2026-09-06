@@ -59,9 +59,17 @@ local function CountBushes(x, y, here)
 	return n
 end
 
+-- Which map object grows which sort of plant. A world adding a third kind
+-- of plant adds a PlantKind in world/items/herbs.lua, a MapObject here,
+-- and a line to this table.
+local GROWS = {
+	herb     = "herb_bush",
+	mushroom = "mushroom",
+}
+
 -- Puts one down and settles what it is growing.
-function Plant(kind, x, y, here)
-	local plant = PlaceObject(kind == "mushroom" and "mushroom" or "herb_bush", x, y, here)
+function Plant.Place(kind, x, y, here)
+	local plant = PlaceObject(GROWS[kind], x, y, here)
 
 	if (plant) then
 		Species(plant, kind)
@@ -103,7 +111,7 @@ function BushTurn(bush)
 		for j = y - 1, y + 1 do
 			if (not HasSpecial(i, j, here) and TileFertile(i, j, here)
 				and CountBushes(i, j, here) == 3) then
-				Plant("herb", i, j, here)
+				Plant.Place("herb", i, j, here)
 			end
 		end
 	end

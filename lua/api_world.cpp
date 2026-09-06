@@ -744,10 +744,9 @@ sol::object PlaceObject(const std::string& id, const int x, const int y,
 // a patch of mushrooms asks when it decides what it is growing.
 sol::optional<std::string> RandomPlantSpecies(const std::string& kind)
 {
-    // "mushroom" or "herb" - which of the two a species said it was with
-    // :Mushroom() in world/items/herbs.lua.
-    const std::string picked =
-        PlantDefinition::RandomOfType(kind == "mushroom" ? HT_MUSHROOM : HT_HERB);
+    // Any sort world/items/herbs.lua declares, not one of two the engine
+    // knows the names of.
+    const std::string picked = PlantDefinition::RandomOfType(kind);
 
     if (picked.empty()) {
         return sol::nullopt;
