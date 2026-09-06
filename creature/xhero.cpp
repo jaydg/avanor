@@ -2738,9 +2738,17 @@ void XHero::SaveGame()
     vPutS("<TEXT>Storing the game:");
     vRefresh();
     XGame::hero_guid = guid();
-    XArchive::StoreGame();
+
+    const bool saved = XArchive::StoreGame();
     vRestore(&xyzbuf);
     vRefresh();
+
+    // Saving can fail - a full disk, a home directory that cannot be
+    // written to - and until now it failed silently, leaving the player
+    // to find out when there was nothing to restore.
+    if (!saved) {
+        msgwin.Add("The game could not be saved!");
+    }
 };
 
 void XHero::FixupHeroDefaults()

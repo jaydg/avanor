@@ -33,7 +33,7 @@ class XArchive
         static constexpr const char* PLAYER_SLOT = "avanor";
         static constexpr const char* TEST_SLOT = "avanor-test";
 
-        static int StoreGame(const char* slot = PLAYER_SLOT);
+        static bool StoreGame(const char* slot = PLAYER_SLOT);
         static int RestoreGame(const char* slot = PLAYER_SLOT);
 
     private:

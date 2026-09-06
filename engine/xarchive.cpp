@@ -110,7 +110,7 @@ std::string DecompressWithZstd(const std::vector<char>& compressed) {
 // ============================================================================
 // Store game state to compressed file
 // ============================================================================
-int XArchive::StoreGame(const char* slot)
+bool XArchive::StoreGame(const char* slot)
 {
     // Saving happens mid-turn (from the hero's own key handling), so the
     // deferred-release graveyard could still hold objects evicted earlier
@@ -169,17 +169,35 @@ int XArchive::StoreGame(const char* slot)
 
     std::vector<char> compressed = CompressWithZstd(serialized_data, ZSTD_SAVEGAME_LEVEL);
 
-    if (!compressed.empty()) {
-        std::ofstream file(vMakePath(HOME_DIR, std::string(slot) + ".svg.zst"), std::ios::binary);
-        if (file.is_open()) {
-            file.write(compressed.data(), compressed.size());
-            file.close();
+    // Whether the game reached the disk, honestly - this used to answer
+    // "saved" whatever happened, so a save that never got written said so
+    // to nobody: not to the player, and not to --test-save, which prints
+    // PASS on this very answer.
+    if (compressed.empty()) {
+        std::cerr << "save: could not compress the game" << std::endl;
 
-            return 1;
-        }
+        return false;
     }
 
-    return 1;
+    const std::string path = vMakePath(HOME_DIR, std::string(slot) + ".svg.zst");
+    std::ofstream file(path, std::ios::binary);
+
+    if (!file.is_open()) {
+        std::cerr << "save: could not open " << path << std::endl;
+
+        return false;
+    }
+
+    file.write(compressed.data(), compressed.size());
+    file.close();
+
+    if (!file) {
+        std::cerr << "save: could not write " << path << std::endl;
+
+        return false;
+    }
+
+    return true;
 }
 
 // ============================================================================

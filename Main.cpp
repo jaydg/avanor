@@ -649,7 +649,7 @@ int main(int argc, char* argv[])
             o->Run();
         }
 
-        const int ok = XArchive::StoreGame(XArchive::TEST_SLOT);
+        const bool ok = XArchive::StoreGame(XArchive::TEST_SLOT);
         std::cout << "StoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
 
         for (int i = 0; i < 100; i++) {
