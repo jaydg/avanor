@@ -97,6 +97,15 @@ namespace lua_api
         const std::string& result);
     int GetTile(int x, int y, sol::optional<void*> location);
     bool HasSpecial(int x, int y, sol::optional<void*> location);
+    sol::optional<std::string> GetSpecialId(int x, int y, sol::optional<void*> location);
+    sol::optional<void*> GetSpecial(int x, int y, sol::optional<void*> location);
+    bool TileFertile(int x, int y, sol::optional<void*> location);
+    sol::object PlaceObject(const std::string& id, int x, int y, sol::this_state s,
+        sol::optional<void*> location);
+    std::tuple<int, int> GetObjectXY(void* object);
+    sol::optional<void*> GetObjectLocation(void* object);
+    int Recall(void* object, const std::string& key);
+    void Memorise(void* object, const std::string& key, int value);
     bool SetTile(int x, int y, int tile, sol::optional<void*> location);
 
     // Winding paths, from map/windroad.h. Each returns an array of {x=, y=}

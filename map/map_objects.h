@@ -22,9 +22,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define OTHER_MISC_H
 
 #include <cstring>
+#include <map>
+#include <string>
 #include <vector>
 
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/set.hpp>
 #include <cereal/types/string.hpp>
@@ -459,6 +462,92 @@ class XFurniture: public XMapObject
 
     protected:
         XFurniture() {}
+        friend class cereal::access;
+};
+
+//////////////////////////////////////////////////////////////////////
+//XLuaObject - a thing on the map that takes turns and does its own
+//thinking in Lua.
+//////////////////////////////////////////////////////////////////////
+
+// One sort of such thing: what it looks like, and which Lua function it
+// hands its turn to. What sorts exist is content.
+struct MapObjectStats {
+    std::string id;
+    std::string name;
+    char view{'*'};
+    int colour{0};
+
+    // The Lua function its turn goes to, called with the object. It
+    // answers how long until its next turn, or nothing at all to stop
+    // taking turns and be removed.
+    std::string on_run;
+
+    // How long before the first turn. Content may say a range, and each
+    // one placed draws from it, so a field of them does not all stir at
+    // the same moment.
+    int first_delay_min{1};
+    int first_delay_max{1};
+};
+
+extern std::vector<MapObjectStats> map_objects_db;
+
+const MapObjectStats* FindMapObject(const std::string& id);
+
+// Fluent builder - see the doc block in world/ where these are declared.
+class MapObjectBuilder
+{
+    public:
+        explicit MapObjectBuilder(std::string id);
+
+        MapObjectBuilder& View(const std::string& name, const std::string& view,
+            sol::optional<int> colour);
+        MapObjectBuilder& OnRun(const std::string& handler);
+        MapObjectBuilder& FirstDelay(int min, sol::optional<int> max);
+        void Register();
+
+    private:
+        MapObjectStats t;
+};
+
+class XLuaObject final : public XMapObject
+{
+        // Which sort this is - the id content registered it under.
+        std::string content_id;
+
+        // Whatever the handler wants to remember between turns. Saved
+        // with the object, so a plant keeps its strength across a save.
+        std::map<std::string, int> memory;
+
+    public:
+        DECLARE_CREATOR(XLuaObject, XMapObject);
+        XLuaObject(const std::string& id, int _x, int _y, XLocation* _l);
+
+        [[nodiscard]] const std::string& GetContentId() const
+        {
+            return content_id;
+        }
+
+        int Remember(const std::string& key) const;
+        void Remember(const std::string& key, int value);
+
+        bool PlaceAt(XLocation* location, int _x, int _y) override;
+
+        // Hands the turn to the handler its row names. When the handler
+        // says it is finished - or there is no handler to ask - the thing
+        // is invalidated, which takes it off the map, and false comes back
+        // so the scheduler drops it too.
+        bool Run() override;
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(cereal::base_class<XMapObject>(this));
+            ar(content_id, memory);
+        }
+
+    protected:
+        XLuaObject() = default;
         friend class cereal::access;
 };
 

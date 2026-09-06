@@ -240,6 +240,18 @@ class XMap
         // floor above can never write into the level it looks down on.
         [[nodiscard]] XMapTile* StoredCell(int x, int y) const;
 
+        // Whether this level really has a cell here of its own, rather
+        // than a hole showing the level below. Things are placed into
+        // this level's own cell but read back through Cell(), which falls
+        // through - so anything put on a hole is invisible from the
+        // moment it lands.
+        [[nodiscard]] bool OwnsCell(int x, int y) const
+        {
+            const XMapTile* cell = StoredCell(x, y);
+
+            return cell && cell->n != XTileType::NONE;
+        }
+
         // How many cells this map holds, and where the nth of them is.
         // A sweep over a whole map runs over these, not over the
         // coordinate space, which for a floor above is far larger.

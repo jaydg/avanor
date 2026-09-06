@@ -640,7 +640,142 @@ int GetTile(const int x, const int y, sol::optional<void*> location)
 
 bool HasSpecial(const int x, const int y, sol::optional<void*> location)
 {
-    return ResolveLocation(location)->map->GetSpecial(x, y) != nullptr;
+    const XLocation* l = ResolveLocation(location);
+
+    // Nowhere at all holds nothing - see GetSpecialId() for why this is
+    // asked rather than left to assert.
+    if (!l->map->Cell(x, y)) {
+        return false;
+    }
+
+    return l->map->GetSpecial(x, y) != nullptr;
+}
+
+// What sort of thing stands in a cell, by the id content registered it
+// under - so a plant can ask whether its neighbours are its own kind.
+// Nothing there, or something the engine owns rather than content,
+// answers nothing.
+sol::optional<std::string> GetSpecialId(const int x, const int y,
+    sol::optional<void*> location)
+{
+    const XLocation* l = ResolveLocation(location);
+
+    // A handler asking about its neighbours runs off the edge of the map
+    // at the edge of the map. That is an ordinary answer - "nothing
+    // there" - not a reason to stop the game, which is what the
+    // unguarded GetSpecial() below would do.
+    if (!l->map->Cell(x, y)) {
+        return sol::nullopt;
+    }
+
+    XMapObject* obj = l->map->GetSpecial(x, y);
+    const auto* lua_obj = dynamic_cast<XLuaObject*>(obj);
+
+    if (!lua_obj || !lua_obj->isValid()) {
+        return sol::nullopt;
+    }
+
+    return lua_obj->GetContentId();
+}
+
+// The thing itself, to read its memory or act on it. Nothing there
+// answers nothing.
+sol::optional<void*> GetSpecial(const int x, const int y, sol::optional<void*> location)
+{
+    const XLocation* l = ResolveLocation(location);
+
+    if (!l->map->Cell(x, y)) {
+        return sol::nullopt;
+    }
+
+    XMapObject* obj = l->map->GetSpecial(x, y);
+
+    if (!obj || !obj->isValid()) {
+        return sol::nullopt;
+    }
+
+    return static_cast<void*>(obj);
+}
+
+// Whether things grow in a cell - what the ground is, not what stands on
+// it.
+bool TileFertile(const int x, const int y, sol::optional<void*> location)
+{
+    const XLocation* l = ResolveLocation(location);
+
+    if (!l->map->Cell(x, y)) {
+        return false;
+    }
+
+    return XTileType::isFertile(l->map->GetXY(x, y));
+}
+
+// Puts a content-defined thing on the map, and gives it back so script
+// can set it up. Nothing when the id is unknown or the cell will not
+// take it.
+sol::object PlaceObject(const std::string& id, const int x, const int y,
+    sol::this_state s, sol::optional<void*> location)
+{
+    if (!FindMapObject(id)) {
+        std::cerr << "world: nothing defines a map object '" << id << "'" << std::endl;
+
+        return sol::nil;
+    }
+
+    XLocation* l = ResolveLocation(location);
+
+    // A hole showing the level below is not somewhere to put a thing:
+    // it would be written into this level's cell and read back from the
+    // one underneath, so nothing would ever see it again.
+    if (!l->map->OwnsCell(x, y)) {
+        return sol::nil;
+    }
+
+    auto* obj = new XLuaObject(id, x, y, l);
+
+    if (!obj->isValid()) {
+        return sol::nil;
+    }
+
+    return sol::make_object(s, static_cast<void*>(obj));
+}
+
+// Which map a thing on the map is standing on. A scheduled object runs
+// wherever it happens to be, which is not necessarily the location the
+// player is in - so a handler that asks about its own surroundings must
+// say which map it means, and this is how it names it.
+sol::optional<void*> GetObjectLocation(void* object)
+{
+    auto* obj = static_cast<XMapObject*>(object);
+
+    if (!obj || !obj->l) {
+        return sol::nullopt;
+    }
+
+    return static_cast<void*>(obj->l);
+}
+
+// Where a thing on the map is standing. Mirrors GetCreatureXY().
+std::tuple<int, int> GetObjectXY(void* object)
+{
+    const auto* obj = static_cast<XMapObject*>(object);
+
+    return obj ? std::make_tuple(obj->x, obj->y) : std::make_tuple(0, 0);
+}
+
+// What a thing on the map remembers between its turns.
+int Recall(void* object, const std::string& key)
+{
+    const auto* obj = static_cast<XLuaObject*>(object);
+
+    return obj ? obj->Remember(key) : 0;
+}
+
+void Memorise(void* object, const std::string& key, const int value)
+{
+    if (auto* obj = static_cast<XLuaObject*>(object)) {
+        obj->Remember(key, value);
+    }
 }
 
 //SetTile(x, y, XTileType.ROAD)
@@ -763,6 +898,14 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("AlchemyRecipe", &lua_api::AlchemyRecipe);
     lua.set_function("LearnAlchemyRecipe", &lua_api::LearnAlchemyRecipe);
     lua.set_function("HasSpecial", &lua_api::HasSpecial);
+    lua.set_function("GetSpecialId", &lua_api::GetSpecialId);
+    lua.set_function("GetSpecial", &lua_api::GetSpecial);
+    lua.set_function("TileFertile", &lua_api::TileFertile);
+    lua.set_function("PlaceObject", &lua_api::PlaceObject);
+    lua.set_function("GetObjectXY", &lua_api::GetObjectXY);
+    lua.set_function("GetObjectLocation", &lua_api::GetObjectLocation);
+    lua.set_function("Recall", &lua_api::Recall);
+    lua.set_function("Memorise", &lua_api::Memorise);
     lua.set_function("SetTile", &lua_api::SetTile);
     lua.set_function("WindingRoad", &lua_api::WindingRoad);
     lua.set_function("ZigzagRoad", &lua_api::ZigzagRoad);

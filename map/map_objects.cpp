@@ -250,6 +250,14 @@ void XTrap::LoadFromRecipe()
 
 void XTrap::RegisterLua(sol::state_view& lua)
 {
+    lua.new_usertype<MapObjectBuilder>("MapObject",
+        sol::constructors<MapObjectBuilder(std::string)>(),
+        "View", &MapObjectBuilder::View,
+        "OnRun", &MapObjectBuilder::OnRun,
+        "FirstDelay", &MapObjectBuilder::FirstDelay,
+        "Register", &MapObjectBuilder::Register
+    );
+
     lua.new_usertype<TrapTypeBuilder>("TrapType",
         sol::constructors<TrapTypeBuilder(std::string)>(),
         "Looks", &TrapTypeBuilder::Looks,
@@ -711,6 +719,178 @@ bool XAltar::PlaceAt(XLocation* location, const int _x, const int _y)
     view = '_';
     name = "altar";
     color = xWHITE;
+
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////
+// XLuaObject
+//////////////////////////////////////////////////////////////////////
+
+std::vector<MapObjectStats> map_objects_db;
+
+const MapObjectStats* FindMapObject(const std::string& id)
+{
+    for (const auto& row : map_objects_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+MapObjectBuilder::MapObjectBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+MapObjectBuilder& MapObjectBuilder::View(const std::string& name,
+    const std::string& view, sol::optional<int> colour)
+{
+    t.name = name;
+
+    if (!view.empty()) {
+        t.view = view[0];
+    }
+
+    t.colour = colour.value_or(xLIGHTGRAY);
+
+    return *this;
+}
+
+MapObjectBuilder& MapObjectBuilder::OnRun(const std::string& handler)
+{
+    t.on_run = handler;
+    return *this;
+}
+
+MapObjectBuilder& MapObjectBuilder::FirstDelay(const int min, sol::optional<int> max)
+{
+    t.first_delay_min = min;
+    t.first_delay_max = max.value_or(min);
+    return *this;
+}
+
+void MapObjectBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a map object with no id" << std::endl;
+        return;
+    }
+
+    if (FindMapObject(t.id)) {
+        std::cerr << "world: two map objects both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.name.empty()) {
+        t.name = t.id;
+    }
+
+    map_objects_db.push_back(t);
+}
+
+REGISTER_CLASS(XLuaObject);
+CEREAL_REGISTER_TYPE(XLuaObject);
+CEREAL_REGISTER_POLYMORPHIC_RELATION(XMapObject, XLuaObject);
+
+XLuaObject::XLuaObject(const std::string& id, const int _x, const int _y, XLocation* _l)
+{
+    content_id = id;
+    static_cast<void>(PlaceAt(_l, _x, _y));
+}
+
+int XLuaObject::Remember(const std::string& key) const
+{
+    const auto it = memory.find(key);
+
+    return it == memory.end() ? 0 : it->second;
+}
+
+void XLuaObject::Remember(const std::string& key, const int value)
+{
+    memory[key] = value;
+}
+
+bool XLuaObject::PlaceAt(XLocation* location, const int _x, const int _y)
+{
+    if (!XMapObject::PlaceAt(location, _x, _y)) {
+        return false;
+    }
+
+    const MapObjectStats* row = FindMapObject(content_id);
+
+    if (!row) {
+        std::cerr << "world: nothing defines a map object '" << content_id << "'"
+                  << std::endl;
+
+        return false;
+    }
+
+    name = row->name;
+    view = row->view;
+    color = static_cast<xColor>(row->colour);
+
+    // Spread the first turns out, so a field of these does not all stir
+    // at the same moment.
+    const int spread = row->first_delay_max - row->first_delay_min;
+    ttm = row->first_delay_min + (spread > 0 ? vRand(spread + 1) : 0);
+
+    Game.Scheduler.Add(this);
+
+    return true;
+}
+
+bool XLuaObject::Run()
+{
+    assert(isValid());
+
+    const MapObjectStats* row = FindMapObject(content_id);
+
+    if (!row || row->on_run.empty()) {
+        Invalidate();
+
+        return false;
+    }
+
+    sol::state_view lua(XLua::State());
+    sol::protected_function handler = lua[row->on_run];
+
+    if (!handler.valid()) {
+        std::cerr << "world: '" << content_id << "' takes its turn through '"
+                  << row->on_run << "', which is not defined" << std::endl;
+        Invalidate();
+
+        return false;
+    }
+
+    const auto result = handler((void*)this);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: '" << row->on_run << "' failed: " << err.what() << std::endl;
+
+        return false;
+    }
+
+    // Something the handler did during its turn may have finished it off
+    // already - it may have been picked, or burned.
+    if (!isValid()) {
+        return false;
+    }
+
+    // Otherwise the handler says how long until its next turn. Saying
+    // nothing means it is done with, and goes off the map.
+    const sol::optional<int> next = result;
+
+    if (!next || *next <= 0) {
+        Invalidate();
+
+        return false;
+    }
+
+    ttm += *next;
 
     return true;
 }
