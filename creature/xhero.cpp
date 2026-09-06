@@ -2283,8 +2283,7 @@ int XHero::UseSkill()
     skill = SkillsList(SKF_USE_SKILL);
 
     if (skill) {
-        skill->Use(this);
-        return 1;
+        return skill->Use(this);
     } else {
         return 0;
     }

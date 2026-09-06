@@ -194,7 +194,7 @@ int XSkill::Use(XCreature * user)
             break;
     };
 
-    return 1;
+    return 0;
 }
 
 int XSkill::isUseable() const
@@ -235,7 +235,7 @@ int XSkill::UseSteal(XCreature * user)
                     msgwin.Add("You can't steal that - it's currently equipped.");
                 }
 
-                return 1;
+                return 0;
             }
 
             double perception = 1 + cr->stats->Get(XStats::PER);
@@ -284,6 +284,9 @@ int XSkill::UseSteal(XCreature * user)
                 // right where it should stay. Nothing to do.
             }
         }
+    } else {
+        // Changed their mind at the targeting prompt.
+        return 0;
     }
 
     return 1;
@@ -301,6 +304,7 @@ int XSkill::UseDisarm(XCreature * user)
         }
     } else {
         msgwin.Add("There is no trap here.");
+        return 0;
     }
 
     return 1;
@@ -361,14 +365,14 @@ int XSkill::UseCreate(XCreature * user)
 
         if (!sp) {
             msgwin.Add("You have to learn spell first!");
-            return 1;
+            return 0;
         }
 
         const int count = user->PP / (sp->GetManaCost() * 2);
 
         if (count == 0) {
             msgwin.Add("You don't have enough mana!");
-            return 1;
+            return 0;
         }
 
         (new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, recipe.type, user))
@@ -386,7 +390,7 @@ int XSkill::UseCreate(XCreature * user)
 
         if (!held || held->it != recipe.tool) {
             msgwin.Add(fmt::format("You should wield a {}!", recipe.tool_name));
-            return 1;
+            return 0;
         }
     }
 
@@ -400,7 +404,8 @@ int XSkill::UseCreate(XCreature * user)
         selecting_for = nullptr;
 
         if (!charge) {
-            return 1;
+            // No charge chosen: nothing was built.
+            return 0;
         }
     }
 
