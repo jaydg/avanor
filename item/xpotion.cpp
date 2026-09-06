@@ -396,19 +396,25 @@ void XPotion::onDrink(XCreature * cr)
         msgwin.Add(fmt::format("{} drinks a {}.", cr->name, toString()));
     }
 
-    int flag{};
+    // The two ways of drinking answer in different currencies: an effect
+    // answers in RESULT - SUCCESS when it took, CONTINUE when it had
+    // nothing to do, ABORT when the drinker changed their mind - and none
+    // of those is zero. A drink handler answers 0 or 1. Reading the first
+    // as the second made every potion with an effect look like it had
+    // worked.
+    bool did_something;
 
     if (pdescr->effect > EFFECT_NONE) {
-        flag = XEffect::Make(cr, pdescr->effect, 30);
+        did_something = XEffect::Make(cr, pdescr->effect, 30) == SUCCESS;
     } else {
         // No effect of its own: content finishes the job. The handler
         // gets the potion's id and the drinker, and answers whether
         // anything actually happened - a stat already at its ceiling, or a
         // sip of water, are not the same as a potion doing nothing.
-        flag = RunDrinkHandler(pdescr->on_drink, pn, cr);
+        did_something = RunDrinkHandler(pdescr->on_drink, pn, cr) != 0;
     }
 
-    if (flag == 0 && cr->isVisible()) {
+    if (!did_something && cr->isVisible()) {
         if (cr->isHero()) {
             msgwin.Add("You feel nothing special!");
         } else {
