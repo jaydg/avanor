@@ -388,7 +388,7 @@ static int RunDrinkHandler(const std::string& handler,
     return result.get<int>() ? 1 : 0;
 }
 
-int XPotion::onDrink(XCreature * cr)
+void XPotion::onDrink(XCreature * cr)
 {
     if (cr->isHero()) {
         msgwin.Add(fmt::format("You drink a {}.", toString()));
@@ -418,8 +418,6 @@ int XPotion::onDrink(XCreature * cr)
         Identify();
         msgwin.Add(fmt::format("It was {}.", toString()));
     }
-
-    return 0;
 }
 
 void XPotion::FixupDescr()

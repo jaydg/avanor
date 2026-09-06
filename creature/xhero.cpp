@@ -1257,10 +1257,7 @@ void XHero::DrinkPotion()
     auto pot = dynamic_cast<XPotion *>(pot_sp.get());
 
     if (pot) {
-        if (pot->onDrink(this)) {
-            pot->Identify();
-        }
-
+        pot->onDrink(this);
         pot->UnCarry();
         pot->Invalidate();
     }

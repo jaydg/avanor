@@ -179,7 +179,7 @@ class XPotion : public XItem
         }
 
         PotionName pn;
-        int onDrink(XCreature * cr);
+        void onDrink(XCreature * cr);
 
         // Non-template, concrete-archive-typed (like XCreature::Save/
         // LoadModifier): potion_descr[] is private to xpotion.cpp, so
