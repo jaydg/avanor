@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include <iostream>
 
+#include <sol/sol.hpp>
+
 #include "item/itemdb.h"
 #include "magic/brand.h"
 
@@ -47,6 +49,80 @@ MaterialBuilder::MaterialBuilder(std::string id)
     t.id = std::move(id);
 }
 
+std::vector<MaterialSet> material_sets;
+
+const MaterialSet* FindMaterialSet(const std::string& id)
+{
+    for (const auto& row : material_sets) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+std::vector<std::string> MaterialsIn(const std::string& set)
+{
+    if (const MaterialSet* row = FindMaterialSet(set)) {
+        return row->members;
+    }
+
+    // Not a set: a template may name one material outright.
+    if (FindMaterial(set)) {
+        return {set};
+    }
+
+    return {};
+}
+
+MaterialSetBuilder::MaterialSetBuilder(std::string id)
+{
+    t.id = std::move(id);
+}
+
+MaterialSetBuilder& MaterialSetBuilder::Of(const sol::table& members)
+{
+    for (const auto& entry : members) {
+        const std::string name = entry.second.as<std::string>();
+
+        // A set may be built out of other sets: they are declared before
+        // they are used, so their members are known by now and spliced in
+        // here rather than resolved every time one is drawn from.
+        if (const MaterialSet* nested = FindMaterialSet(name)) {
+            for (const auto& m : nested->members) {
+                t.members.push_back(m);
+            }
+        } else {
+            t.members.push_back(name);
+        }
+    }
+
+    return *this;
+}
+
+void MaterialSetBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a material set with no id" << std::endl;
+        return;
+    }
+
+    if (FindMaterialSet(t.id)) {
+        std::cerr << "world: two material sets both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    for (const auto& m : t.members) {
+        if (!FindMaterial(m)) {
+            std::cerr << "world: the material set '" << t.id << "' contains '" << m
+                      << "', which is not a material" << std::endl;
+        }
+    }
+
+    material_sets.push_back(t);
+}
+
 MaterialBuilder& MaterialBuilder::Called(const std::string& name)
 {
     t.propname = name;
@@ -56,12 +132,6 @@ MaterialBuilder& MaterialBuilder::Called(const std::string& name)
 MaterialBuilder& MaterialBuilder::Looks(const int color)
 {
     t.color = color;
-    return *this;
-}
-
-MaterialBuilder& MaterialBuilder::Sets(const unsigned int iflag)
-{
-    t.iflag = iflag;
     return *this;
 }
 
@@ -252,7 +322,7 @@ TemplateBuilder::TemplateBuilder(const ItemKind kind, const ItemType it) : kind(
 {
     t.it = it;
     t.view = '?';
-    t.iset = ISET_IRON;
+    t.iset = "iron";
     t.iq = IQ_AVG;
     t.wt = CS_NONE;
     t.launcher = CS_NONE;
@@ -265,7 +335,7 @@ TemplateBuilder& TemplateBuilder::View(const std::string& name, const std::strin
     return *this;
 }
 
-TemplateBuilder& TemplateBuilder::Made(const ITEM_SET iset, const ITEM_QUALITY iq)
+TemplateBuilder& TemplateBuilder::Made(const ITEM_SET& iset, const ITEM_QUALITY iq)
 {
     t.iset = iset;
     t.iq = iq;

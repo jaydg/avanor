@@ -319,31 +319,52 @@ void XItem::MainFill(const ItemTemplate *is)
     RNG = d.NThrow();
 }
 
-void XItem::PropFill(ITEM_SET is, bool protective)
+void XItem::PropFill(const ITEM_SET& is, bool protective)
 {
+    // What the set allows, each weighted by its own :Chance().
+    std::vector<std::string> allowed = MaterialsIn(is);
     int tval = 0;
 
-    for (const auto& mat : item_prop) {
-        if (mat.iflag & is) {
+    for (const auto& id : allowed) {
+        if (const ItemMaterial* mat = FindMaterial(id)) {
+            tval += mat->probability;
+        }
+    }
+
+    // A name nothing answers to - a typo in world/. Say so, then make the
+    // thing out of anything at all: returning here would leave the item
+    // half-built, with no stats and no resistances, and the first thing to
+    // pick it up dereferences them.
+    if (tval <= 0) {
+        std::cerr << "world: nothing is made of '" << is
+                  << "' - making it of whatever comes to hand" << std::endl;
+
+        allowed.clear();
+
+        for (const auto& mat : item_prop) {
+            allowed.push_back(mat.id);
             tval += mat.probability;
         }
     }
 
     if (tval <= 0) {
-        std::cerr << "world: nothing is made of that" << std::endl;
         return;
     }
 
     int trnd = vRand() % tval;
     const ItemMaterial* chosen = nullptr;
 
-    for (const auto& mat : item_prop) {
-        if (mat.iflag & is) {
-            trnd -= mat.probability;
+    for (const auto& id : allowed) {
+        const ItemMaterial* mat = FindMaterial(id);
+
+        if (!mat) {
+            continue;
         }
 
+        trnd -= mat->probability;
+
         if (trnd < 0) {
-            chosen = &mat;
+            chosen = mat;
             break;
         }
     }

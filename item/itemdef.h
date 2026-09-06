@@ -83,8 +83,7 @@ struct ItemMaterial {
     std::string z; //random z to dice;
 
     // Which sets this material belongs to, so a template asking for
-    // ItemSet.HARDMETAL can be given steel, mithril or adamantium.
-    unsigned int iflag{0};
+    // "hard_metal" can be given steel, mithril or adamantium.
 
     int probability{0};
     ITEM_QUALITY iq{IQ_AVG};
@@ -101,43 +100,13 @@ struct ItemMaterial {
     SPECIAL_PROPERTY sp{SPP_NONE};
 };
 
-enum ITEM_SET {
-    ISET_CLOTH	= 0x00000001,
-    ISET_LEATHER	= 0x00000002,
-    ISET_STUDEDLEATHER	= 0x00000004,
-    ISET_STONE	= 0x00000008,
-    ISET_WOOD	= 0x00000010,
-    ISET_IRON	= 0x00000020,
-    ISET_BRONZE	= 0x00000040,
-    ISET_BRASS	= 0x00000080,
-    ISET_SILVER	= 0x00000100,
-    ISET_GOLD	= 0x00000200,
-    ISET_CRYSTAL	= 0x00000400,
-    ISET_STEEL	= 0x00000800,
-    ISET_OBSIDIAN	= 0x00001000,
-    ISET_MITHRIL	= 0x00002000,
-    ISET_ADAMANTIUM	= 0x00004000,
+// Which materials a template may be made of - the id of a set declared
+// in world/items/materials.lua, or the id of a single material. What
+// sets a world has is content: they are nothing but names for groups of
+// materials, and the engine only ever asks "which materials does this
+// name allow".
+using ITEM_SET = std::string;
 
-    ISET_SOFT	= ISET_LEATHER | ISET_STUDEDLEATHER | ISET_CLOTH,
-    ISET_ALLLEATHER	= ISET_LEATHER | ISET_STUDEDLEATHER,
-    ISET_METAL	= ISET_IRON | ISET_BRONZE | ISET_BRASS | ISET_SILVER | ISET_GOLD,
-    ISET_METALSOFT	= ISET_METAL | ISET_SOFT,
-    ISET_HARDMETAL	= ISET_STEEL | ISET_MITHRIL | ISET_ADAMANTIUM,
-    ISET_ALLMETAL	= ISET_METAL | ISET_HARDMETAL | ISET_OBSIDIAN,
-    ISET_OBSIMETAL	= ISET_OBSIDIAN | ISET_HARDMETAL,
-    ISET_STONEFROM	= ISET_STONE | ISET_CRYSTAL | ISET_OBSIDIAN,
-    ISET_WOODEN	= ISET_WOOD, //wooden
-    ISET_SHIELD	= ISET_ALLLEATHER | ISET_ALLMETAL | ISET_WOODEN, //for shields
-    ISET_BOW	= ISET_WOODEN,
-    ISET_MISSILE	= ISET_ALLMETAL | ISET_WOODEN | ISET_STONE,
-    ISET_WOODSTONE	= ISET_STONEFROM | ISET_WOODEN,
-    ISET_WEAPON	= ISET_STONEFROM | ISET_HARDMETAL,
-    ISET_SIMPLEWEAPON = ISET_IRON | ISET_STEEL,
-    ISET_CROWNMETAL	= ISET_STEEL | ISET_SILVER | ISET_GOLD | ISET_MITHRIL,
-    ISET_BLACKMETAL	= ISET_STEEL | ISET_IRON,
-    ISET_OTHER	= 0x0,
-    ISET_ALL	= 0x00000fff | ISET_MITHRIL | ISET_ADAMANTIUM,
-};
 
 // Free-standing rather than nested in XItem, same reason as ItemKind
 // (see item/itemkind.h): item/itemdb.h's ItemTemplate::it needs it

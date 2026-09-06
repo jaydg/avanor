@@ -1,8 +1,9 @@
 -- What things are made of.
 --
 -- Every ordinary item is made of one of these, drawn from the set its
--- template allows: a long sword says :Made(ItemSet.OBSIMETAL, ...) and gets
--- steel, mithril, adamantium or obsidian. The material decides what the
+-- template allows: a long sword says :Made("obsimetal", ...) and gets
+-- steel, mithril, adamantium or obsidian. The sets are at the foot of
+-- this file. The material decides what the
 -- item is called, what colour it is, what it weighs, what it is worth, and
 -- how much it adds to protection and damage.
 --
@@ -10,8 +11,6 @@
 --       :Called(name)        the word that goes in front - "an iron sword".
 --                            Unsaid, the id itself
 --       :Looks(xColor.X)
---       :Sets(ItemSet.X)     which sets this material belongs to, so a
---                            template asking for a set can be given it
 --       :Chance(n)           its weight in the draw against other materials
 --                            of the same set
 --       :Quality(ItemQuality.X)
@@ -28,7 +27,6 @@
 
 Material.new("cloth")
 	:Looks(xColor.xWHITE)
-	:Sets(ItemSet.CLOTH)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
 	:Body(4, 8)
@@ -38,7 +36,6 @@ Material.new("cloth")
 
 Material.new("leather")
 	:Looks(xColor.xBROWN)
-	:Sets(ItemSet.LEATHER)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
 	:Body(6, 10)
@@ -49,7 +46,6 @@ Material.new("leather")
 Material.new("studded_leather")
 	:Called("studded leather")
 	:Looks(xColor.xBROWN)
-	:Sets(ItemSet.STUDEDLEATHER)
 	:Chance(100)
 	:Quality(ItemQuality.AVG)
 	:Body(8, 12)
@@ -59,7 +55,6 @@ Material.new("studded_leather")
 
 Material.new("wooden")
 	:Looks(xColor.xBROWN)
-	:Sets(ItemSet.WOOD)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
 	:Body(8, 7)
@@ -69,7 +64,6 @@ Material.new("wooden")
 
 Material.new("stone")
 	:Looks(xColor.xLIGHTGRAY)
-	:Sets(ItemSet.STONE)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
 	:Body(20, 5)
@@ -80,7 +74,6 @@ Material.new("stone")
 
 Material.new("iron")
 	:Looks(xColor.xDARKGRAY)
-	:Sets(ItemSet.IRON)
 	:Chance(120)
 	:Quality(ItemQuality.POOR)
 	:Body(30, 15)
@@ -90,7 +83,6 @@ Material.new("iron")
 
 Material.new("bronze")
 	:Looks(xColor.xBROWN)
-	:Sets(ItemSet.BRONZE)
 	:Chance(60)
 	:Quality(ItemQuality.AVG)
 	:Body(26, 17)
@@ -101,7 +93,6 @@ Material.new("bronze")
 
 Material.new("brass")
 	:Looks(xColor.xBROWN)
-	:Sets(ItemSet.BRASS)
 	:Chance(60)
 	:Quality(ItemQuality.AVG)
 	:Body(30, 30)
@@ -113,7 +104,6 @@ Material.new("brass")
 
 Material.new("silver")
 	:Looks(xColor.xLIGHTGRAY)
-	:Sets(ItemSet.SILVER)
 	:Chance(30)
 	:Quality(ItemQuality.FAIR)
 	:Body(20, 30)
@@ -124,7 +114,6 @@ Material.new("silver")
 
 Material.new("golden")
 	:Looks(xColor.xYELLOW)
-	:Sets(ItemSet.GOLD)
 	:Chance(15)
 	:Quality(ItemQuality.GOOD)
 	:Body(22, 50)
@@ -136,7 +125,6 @@ Material.new("golden")
 
 Material.new("crystal")
 	:Looks(xColor.xLIGHTMAGENTA)
-	:Sets(ItemSet.CRYSTAL)
 	:Chance(50)
 	:Quality(ItemQuality.AVG)
 	:Body(25, 14)
@@ -147,7 +135,6 @@ Material.new("crystal")
 
 Material.new("steel")
 	:Looks(xColor.xLIGHTBLUE)
-	:Sets(ItemSet.STEEL)
 	:Chance(50)
 	:Quality(ItemQuality.FAIR)
 	:Body(15, 20)
@@ -158,7 +145,6 @@ Material.new("steel")
 
 Material.new("obsidian")
 	:Looks(xColor.xDARKGRAY)
-	:Sets(ItemSet.OBSIDIAN)
 	:Chance(50)
 	:Quality(ItemQuality.FAIR)
 	:Body(13, 20)
@@ -169,7 +155,6 @@ Material.new("obsidian")
 
 Material.new("mithril")
 	:Looks(xColor.xLIGHTCYAN)
-	:Sets(ItemSet.MITHRIL)
 	:Chance(5)
 	:Quality(ItemQuality.GOOD)
 	:Body(11, 100)
@@ -180,7 +165,6 @@ Material.new("mithril")
 
 Material.new("adamantium")
 	:Looks(xColor.xLIGHTGREEN)
-	:Sets(ItemSet.ADAMANTIUM)
 	:Chance(2)
 	:Quality(ItemQuality.EXCELLENT)
 	:Body(9, 300)
@@ -198,3 +182,85 @@ Material.new("adamantium")
 --
 -- The armour enchantments in world/items/armour_enchantments.lua use the
 -- same field, and their side of it does work now.
+
+-- Names for groups of materials, so a template can say what it may be made
+-- of without listing them every time. A set may be built out of other
+-- sets, which are spliced in as it is read - so they must be declared
+-- before they are used.
+--
+-- A template may also name a single material outright, :Made("steel", ...),
+-- so only the groups need naming here.
+--
+--   MaterialSet.new(id)
+--       :Of{ ... }      the materials it allows, or other sets of them
+--       :Register()
+
+-- The two leathers, for armour that may be either.
+MaterialSet.new("all_leather")
+	:Of{ "leather", "studded_leather" }
+	:Register()
+
+-- Anything that bends.
+MaterialSet.new("soft")
+	:Of{ "leather", "studded_leather", "cloth" }
+	:Register()
+
+-- The soft, ordinary metals.
+MaterialSet.new("metal")
+	:Of{ "iron", "bronze", "brass", "silver", "golden" }
+	:Register()
+
+MaterialSet.new("metal_soft")
+	:Of{ "metal", "soft" }
+	:Register()
+
+-- What a blade worth carrying is made of.
+MaterialSet.new("hard_metal")
+	:Of{ "steel", "mithril", "adamantium" }
+	:Register()
+
+MaterialSet.new("all_metal")
+	:Of{ "metal", "hard_metal", "obsidian" }
+	:Register()
+
+MaterialSet.new("obsimetal")
+	:Of{ "obsidian", "hard_metal" }
+	:Register()
+
+-- Things quarried rather than smelted.
+MaterialSet.new("stone_from")
+	:Of{ "stone", "crystal", "obsidian" }
+	:Register()
+
+-- What each sort of thing is made of.
+MaterialSet.new("shield")
+	:Of{ "all_leather", "all_metal", "wooden" }
+	:Register()
+
+MaterialSet.new("bow")
+	:Of{ "wooden" }
+	:Register()
+
+MaterialSet.new("missile")
+	:Of{ "all_metal", "wooden", "stone" }
+	:Register()
+
+MaterialSet.new("wood_stone")
+	:Of{ "stone_from", "wooden" }
+	:Register()
+
+MaterialSet.new("weapon")
+	:Of{ "stone_from", "hard_metal" }
+	:Register()
+
+MaterialSet.new("simple_weapon")
+	:Of{ "iron", "steel" }
+	:Register()
+
+MaterialSet.new("crown_metal")
+	:Of{ "steel", "silver", "golden", "mithril" }
+	:Register()
+
+MaterialSet.new("black_metal")
+	:Of{ "steel", "iron" }
+	:Register()

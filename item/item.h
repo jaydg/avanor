@@ -90,7 +90,7 @@ class XItem : public XBaseObject
         // `protective` says whether this item's template gives it any
         // protection to begin with; the material's own contribution is
         // added only for those. See the comment in the definition.
-        void PropFill(ITEM_SET is, bool protective);
+        void PropFill(const ITEM_SET& is, bool protective);
         void SpecialFill();
 
         // Render an object as text

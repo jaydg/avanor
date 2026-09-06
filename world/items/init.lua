@@ -23,7 +23,8 @@
 -- Template.new takes:
 --
 --   :View(name, view)         what it is called and how it looks
---   :Made(ItemSet, quality)   which materials it may be made from, and how
+--   :Made(set, quality)       which materials it may be made from - a set
+--                             or a material from world/items/materials.lua - and how
 --                             well made it is
 --   :Worth(value, weight)
 --   :Armour(dv, pv)           dice strings; omitted when it protects nothing

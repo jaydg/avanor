@@ -229,7 +229,6 @@ const ItemMaterial* FindMaterial(const std::string& id);
 //   Material.new("mithril")
 //       :Called("mithril")
 //       :Looks(xColor.xLIGHTCYAN)
-//       :Sets(ItemSet.MITHRIL)
 //       :Chance(5)
 //       :Quality(ItemQuality.GOOD)
 //       :Body(11, 100)
@@ -237,6 +236,34 @@ const ItemMaterial* FindMaterial(const std::string& id);
 //       :Combat("2d4+4", "0d1", "2d4+3")
 //       :Resist("poison:0d0+10")
 //       :Register()
+// A name for a group of materials: "hard_metal" is steel, mithril and
+// adamantium. A set may name other sets, which are spliced in as it is
+// registered, so the groups read as the old unions did.
+struct MaterialSet {
+    std::string id;
+    std::vector<std::string> members;
+};
+
+extern std::vector<MaterialSet> material_sets;
+
+const MaterialSet* FindMaterialSet(const std::string& id);
+
+// Which materials a name allows: the members of a set, or the one
+// material of that name. Empty when it names neither.
+std::vector<std::string> MaterialsIn(const std::string& set);
+
+class MaterialSetBuilder
+{
+    public:
+        explicit MaterialSetBuilder(std::string id);
+
+        MaterialSetBuilder& Of(const sol::table& members);
+        void Register();
+
+    private:
+        MaterialSet t;
+};
+
 class MaterialBuilder
 {
     public:
@@ -244,7 +271,6 @@ class MaterialBuilder
 
         MaterialBuilder& Called(const std::string& name);
         MaterialBuilder& Looks(int color);
-        MaterialBuilder& Sets(unsigned int iflag);
         MaterialBuilder& Chance(int probability);
         MaterialBuilder& Quality(ITEM_QUALITY iq);
         MaterialBuilder& Body(int density, int value);
@@ -270,7 +296,7 @@ XItemBasicStructure* PoolFor(ItemKind kind);
 //
 //   Template.new(ItemKind.WEAPON, ItemType.LONGSWORD)
 //       :View("long sword", '|')
-//       :Made(ItemSet.OBSIMETAL, ItemQuality.FAIR)
+//       :Made("obsimetal", ItemQuality.FAIR)
 //       :Skill(XCombatSkills.SWORD)
 //       :Worth(18, 10)
 //       :Combat("", "2d4", "")
@@ -285,7 +311,7 @@ class TemplateBuilder
         TemplateBuilder(ItemKind kind, ItemType it);
 
         TemplateBuilder& View(const std::string& name, const std::string& view);
-        TemplateBuilder& Made(ITEM_SET iset, ITEM_QUALITY iq);
+        TemplateBuilder& Made(const ITEM_SET& iset, ITEM_QUALITY iq);
         TemplateBuilder& Skill(COMBAT_SKILL wt);
         TemplateBuilder& Verb(const std::string& verb);
         TemplateBuilder& Launcher(COMBAT_SKILL wt);

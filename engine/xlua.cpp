@@ -160,47 +160,6 @@ void XLua::Init()
         "SENSITIVE", FF_SENSITIVE
     );
 
-    // What a scroll or a book can be.
-
-
-    // What an ordinary item can be made of, and how well made it is. Both
-    // are for the templates in world/items/ (TemplateBuilder): the set says
-    // which materials the game may pick from when it builds one.
-    lua.new_enum("ItemSet",
-        "CLOTH", ISET_CLOTH,
-        "LEATHER", ISET_LEATHER,
-        "STUDEDLEATHER", ISET_STUDEDLEATHER,
-        "STONE", ISET_STONE,
-        "WOOD", ISET_WOOD,
-        "IRON", ISET_IRON,
-        "BRONZE", ISET_BRONZE,
-        "BRASS", ISET_BRASS,
-        "SILVER", ISET_SILVER,
-        "GOLD", ISET_GOLD,
-        "CRYSTAL", ISET_CRYSTAL,
-        "STEEL", ISET_STEEL,
-        "OBSIDIAN", ISET_OBSIDIAN,
-        "MITHRIL", ISET_MITHRIL,
-        "ADAMANTIUM", ISET_ADAMANTIUM,
-        "SOFT", ISET_SOFT,
-        "ALLLEATHER", ISET_ALLLEATHER,
-        "METAL", ISET_METAL,
-        "METALSOFT", ISET_METALSOFT,
-        "HARDMETAL", ISET_HARDMETAL,
-        "ALLMETAL", ISET_ALLMETAL,
-        "OBSIMETAL", ISET_OBSIMETAL,
-        "STONEFROM", ISET_STONEFROM,
-        "WOODEN", ISET_WOODEN,
-        "SHIELD", ISET_SHIELD,
-        "BOW", ISET_BOW,
-        "MISSILE", ISET_MISSILE,
-        "WOODSTONE", ISET_WOODSTONE,
-        "WEAPON", ISET_WEAPON,
-        "SIMPLEWEAPON", ISET_SIMPLEWEAPON,
-        "CROWNMETAL", ISET_CROWNMETAL,
-        "BLACKMETAL", ISET_BLACKMETAL
-    );
-
     // Item properties the tables declare. Nothing consumes these yet - the
     // engine has never acted on one - but the rows that name them would
     // otherwise say nothing at all.
@@ -257,7 +216,7 @@ void XLua::Init()
     for (const char* enum_table : {
             "BodyPart", "CorpseEffectType", "CreatureClass",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
-            "ItemKind", "FoodFeeling", "ItemQuality", "ItemSet", "ItemUse", "LuaEvent", "Movability",
+            "ItemKind", "FoodFeeling", "ItemQuality", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "Modifier", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "EffectTarget", "XLocation",
             "XQuest", "XSkill", "XStairWay", "XStandardAI",
@@ -303,11 +262,16 @@ void XLua::Init()
 
     // Sol2-bound builder for one row of an ordinary item's table.
     {
+        lua.new_usertype<MaterialSetBuilder>("MaterialSet",
+            sol::constructors<MaterialSetBuilder(std::string)>(),
+            "Of", &MaterialSetBuilder::Of,
+            "Register", &MaterialSetBuilder::Register
+        );
+
         lua.new_usertype<MaterialBuilder>("Material",
             sol::constructors<MaterialBuilder(std::string)>(),
             "Called", &MaterialBuilder::Called,
             "Looks", &MaterialBuilder::Looks,
-            "Sets", &MaterialBuilder::Sets,
             "Chance", &MaterialBuilder::Chance,
             "Quality", &MaterialBuilder::Quality,
             "Body", &MaterialBuilder::Body,
