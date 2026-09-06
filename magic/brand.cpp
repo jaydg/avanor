@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "magic/brand.h"
+#include "magic/modifier.h"
 
 std::vector<BrandStats> brands_db;
 
@@ -137,6 +138,15 @@ BrandBuilder& BrandBuilder::Slays(const CreatureClass prey)
 
 BrandBuilder& BrandBuilder::Inflicts(const std::string& modifier)
 {
+    // A name nothing knows: say so while the file that wrote it is
+    // loading, and lay nothing on.
+    if (!IsKnownModifier(modifier)) {
+        std::cerr << "world: a brand names a modifier '" << modifier
+                  << "', which nothing defines" << std::endl;
+
+        return *this;
+    }
+
     t.inflicts = modifier;
     return *this;
 }

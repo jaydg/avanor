@@ -31,6 +31,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XCreature;
 
+// Whether anything knows a modifier by this id. The builders ask before
+// writing one into a row, so that a typo in world/ is caught while that
+// file loads, naming itself, rather than silently doing nothing to
+// somebody three hours into a game.
+[[nodiscard]] bool IsKnownModifier(const MODIFIER& mt);
+
 class XModifier
 {
     public:

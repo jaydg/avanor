@@ -109,6 +109,15 @@ EffectBuilder& EffectBuilder::Restores(const int count, const int divisor, const
 EffectBuilder& EffectBuilder::Inflicts(const std::string& modifier, const int count,
     const int divisor, const int bonus)
 {
+    // A name nothing knows: say so while the file that wrote it is
+    // loading, and lay nothing on.
+    if (!IsKnownModifier(modifier)) {
+        std::cerr << "world: :Inflicts() names a modifier '" << modifier
+                  << "', which nothing defines" << std::endl;
+
+        return *this;
+    }
+
     EffectPart part = Dice(EffectPart::Kind::MODIFIER, count, divisor, bonus);
     part.modifier = modifier;
     t.parts.push_back(part);
@@ -118,6 +127,15 @@ EffectBuilder& EffectBuilder::Inflicts(const std::string& modifier, const int co
 EffectBuilder& EffectBuilder::Relieves(const std::string& modifier, const int count,
     const int divisor, const int bonus)
 {
+    // A name nothing knows: say so while the file that wrote it is
+    // loading, and lay nothing on.
+    if (!IsKnownModifier(modifier)) {
+        std::cerr << "world: :Relieves() names a modifier '" << modifier
+                  << "', which nothing defines" << std::endl;
+
+        return *this;
+    }
+
     EffectPart part = Dice(EffectPart::Kind::MODIFIER, count, divisor, bonus);
     part.modifier = modifier;
     part.relieves = true;
@@ -127,6 +145,15 @@ EffectBuilder& EffectBuilder::Relieves(const std::string& modifier, const int co
 
 EffectBuilder& EffectBuilder::Sustains(const std::string& modifier)
 {
+    // A name nothing knows: say so while the file that wrote it is
+    // loading, and lay nothing on.
+    if (!IsKnownModifier(modifier)) {
+        std::cerr << "world: :Sustains() names a modifier '" << modifier
+                  << "', which nothing defines" << std::endl;
+
+        return *this;
+    }
+
     EffectPart part;
     part.kind = EffectPart::Kind::MODIFIER;
     part.modifier = modifier;

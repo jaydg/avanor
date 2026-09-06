@@ -57,6 +57,19 @@ const ModifierKind modifier_kinds[] = {
 
 }
 
+bool IsKnownModifier(const MODIFIER& mt)
+{
+    // The two the engine builds for itself rather than through the table:
+    // a resistance needs to be told which resistance, and a delayed
+    // modifier is a wrapper around one of the others.
+    if (mt == MOD_RESISTANCE || mt == MOD_DELAYED) {
+        return true;
+    }
+
+    return std::any_of(std::begin(modifier_kinds), std::end(modifier_kinds),
+        [&mt](const ModifierKind& k) { return mt == k.id; });
+}
+
 int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr)
 {
     if (val > 0) {

@@ -31,6 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item_misc.h"
 #include "item/itemf.h"
 #include "helpers/keyword_dice.h"
+#include "magic/modifier.h"
 #include "magic/resist.h"
 #include "magic/brand.h"
 
@@ -507,6 +508,15 @@ MonsterBuilder& MonsterBuilder::CorpseResist(const std::string& resist, int val)
 // :CorpseModifier(Modifier.POISON, 10).
 MonsterBuilder& MonsterBuilder::CorpseModifier(const std::string& modifier, int val)
 {
+    // A name nothing knows: say so while the file that wrote it is
+    // loading, and lay nothing on.
+    if (!IsKnownModifier(modifier)) {
+        std::cerr << "world: :CorpseModifier() names a modifier '" << modifier
+                  << "', which nothing defines" << std::endl;
+
+        return *this;
+    }
+
     XCorpse::Effect ce{};
     ce.type = XCorpse::EffectType::MODIFIER;
     ce.modifier = modifier;
