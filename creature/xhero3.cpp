@@ -58,6 +58,14 @@ void XHero::doSacrifice()
         std::shared_ptr<XItem> drop_item = item;
 
         if (item) {
+            // One offering's worth of messages at a time. Cleared here,
+            // after the choosing rather than before it, so the last
+            // offering still reads while this one is picked - the same
+            // place XHero::DropItem() clears. Without it the prompts and
+            // the answers pile up across a whole armful until the two
+            // message lines overflow into "(more)".
+            msgwin.ClrMsg();
+
             if (item->quantity > 1) {
                 XPoint pt(0, item->quantity);
                 msgwin.Add("How much?");
