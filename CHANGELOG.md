@@ -353,6 +353,12 @@ Things that simply did not happen:
   were handed out in the order the books were listed instead, and that order
   never changed, so burning hands was the old tome in every game anyone ever
   played. They are dealt afresh each game now
+- Every prayer a god answered was also called unheard. Ask for cure light
+  wounds with a wound to mend and you were healed, charged the favour, and
+  told in the same breath that your god had not listened. The message was
+  meant for a prayer that fell flat; a fix in 2003 for a different problem —
+  saying it when you cancelled the targeting — dropped the `else` in front
+  of it, and it has followed successful prayers ever since
 - Two spell books had no name for the thing itself. Of the seventeen looks a
   book you have not read can have, fifteen say what they are — a thin book, a
   parchment book, an ancient tome — and two only said how they were

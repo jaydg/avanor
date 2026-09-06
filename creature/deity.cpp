@@ -387,9 +387,8 @@ int XReligion::Pray(const DEITY& deity, const DeityHelp& help, XCreature* prayer
     if (res == SUCCESS) {
         ChangeFavour(deity, -help.cost);
         prayer->sk->UseSkill(XSkill::Skill::RELIGION, 3);
-    }
-
-    if (res != ABORT) {
+    } else if (res != ABORT) {
+        // Neither answered nor taken back: the god heard and did nothing.
         msgwin.Add("Your prayer was unheard.");
     }
 
