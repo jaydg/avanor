@@ -136,42 +136,23 @@ Modifier.new("slowness")
 	:While{ Slower = 300 }
 	:Register()
 
--- One resistance modifier per resistance, so that "resistant to fire while
--- the potion lasts" needs no special case anywhere: it is a modifier like
--- any other, and it is worth the same 40 the four hand-written classes were
--- worth. A world that declares a resistance to radiation gets a modifier
--- for it here without touching the engine.
+-- One resistance modifier per resistance the world declares, so that
+-- "resistant to fire while the potion lasts" needs no special case
+-- anywhere: it is a modifier like any other, worth the same 40 the four
+-- hand-written classes were worth. Walked from world/resistances.lua
+-- itself, so a world that adds a resistance to radiation gets a modifier
+-- for it here without writing a line.
 --
 -- These say nothing on the status line - what they are is already on the
 -- Resistances screen.
-local resisted = {
-	{ "white", "white magic" },
-	{ "black", "black magic" },
-	{ "fire", "fire" },
-	{ "water", "water magic" },
-	{ "air", "air magic" },
-	{ "earth", "earth magic" },
-	{ "acid", "acid" },
-	{ "cold", "cold" },
-	{ "poison", "poison" },
-	{ "disease", "disease" },
-	{ "paralyse", "paralysis" },
-	{ "stun", "stunning" },
-	{ "confuse", "confusion" },
-	{ "blind", "blindness" },
-	{ "light", "light" },
-	{ "darkness", "darkness" },
-	{ "invisible", "invisibility" },
-}
+for _, r in ipairs(Resistance.All()) do
+	local of = r.name:lower()
 
-for _, r in ipairs(resisted) do
-	local id, name = r[1], r[2]
-
-	Modifier.new("resist_" .. id)
+	Modifier.new("resist_" .. r.id)
 		:OnSet("You feel safer.")
 		:OnRemove("You feel less safe.")
-		:OnChange("Your resistance to " .. name .. " grows.",
-		          "Your resistance to " .. name .. " fades.")
-		:While{ Resistance = { [id] = 40 } }
+		:OnChange("Your resistance to " .. of .. " grows.",
+		          "Your resistance to " .. of .. " fades.")
+		:While{ Resistance = { [r.id] = 40 } }
 		:Register()
 end

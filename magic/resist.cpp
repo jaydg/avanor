@@ -36,6 +36,21 @@ void XResistance::RegisterLua(sol::state_view& lua)
         "Lost", &ResistanceBuilder::Lost,
         "Register", &ResistanceBuilder::Register
     );
+
+    // Which resistances this world declares, so that content can walk
+    // them: world/modifiers.lua mints one "resistant to X for a while"
+    // modifier per row, and a world that adds a resistance to radiation
+    // gets its modifier without touching anything here.
+    lua["Resistance"]["All"] = [](sol::this_state state) {
+        sol::state_view lua(state);
+        sol::table all = lua.create_table();
+
+        for (const auto& row : resistances_db) {
+            all.add(lua.create_table_with("id", row.id, "name", row.name));
+        }
+
+        return all;
+    };
 }
 
 std::vector<ResistanceStats> resistances_db;
