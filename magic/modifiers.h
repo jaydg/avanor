@@ -109,9 +109,15 @@ struct ModifierStats {
     // What the target gets to shrug part of it off with, if anything.
     RESISTANCE resisted_by;
 
-    // The few whose behaviour turn by turn the engine has to carry -
-    // bleeding, staggering, rotting a stat away. Content names one of
-    // these rather than describing it, the way an effect names :Engine().
+    // What it does each turn it is on, if it does anything beyond
+    // counting down: the name of a Lua function taking the creature and
+    // how much of the modifier is left, and answering with what is left
+    // of it now. Answering nothing leaves the amount alone.
+    std::string each_turn;
+
+    // The few whose behaviour turn by turn the engine has to carry.
+    // Content names one of these rather than describing it, the way an
+    // effect names :Engine().
     std::string engine;
 };
 
@@ -137,6 +143,7 @@ class ModifierBuilder
         ModifierBuilder& While(const sol::table& shifts);
         ModifierBuilder& Scale(int scale);
         ModifierBuilder& ResistedBy(const std::string& resist);
+        ModifierBuilder& EachTurn(const std::string& handler);
         ModifierBuilder& Engine(const std::string& which);
         void Register();
 

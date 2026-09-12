@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 
+#include "engine/xlua.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
@@ -129,6 +130,12 @@ ModifierBuilder& ModifierBuilder::ResistedBy(const std::string& resist)
     return *this;
 }
 
+ModifierBuilder& ModifierBuilder::EachTurn(const std::string& handler)
+{
+    t.each_turn = handler;
+    return *this;
+}
+
 ModifierBuilder& ModifierBuilder::Engine(const std::string& which)
 {
     t.engine = which;
@@ -176,6 +183,7 @@ void RegisterModifierLua(sol::state_view& lua)
         "While", &ModifierBuilder::While,
         "Scale", &ModifierBuilder::Scale,
         "ResistedBy", &ModifierBuilder::ResistedBy,
+        "EachTurn", &ModifierBuilder::EachTurn,
         "Engine", &ModifierBuilder::Engine,
         "Register", &ModifierBuilder::Register
     );
@@ -287,42 +295,12 @@ void XBasicModifier::onRemove(XCreature * owner)
     }
 }
 
-// The handful whose behaviour turn by turn cannot be written as numbers:
-// a wound that bleeds and that first aid closes, a poison that flares, a
-// confusion that walks you into walls, an illness that rots a stat away.
-// Content names one of these with :Engine(); everything else about the
-// modifier is content's own words.
+// The two the engine has to carry itself, because what they do is decide
+// where the creature goes this turn - which is the turn loop's own
+// business, not something to hand out to content. Everything else a
+// modifier does with its turn is written in world/modifiers.lua.
 static void RunEngine(const std::string& which, XBasicModifier* mod, XCreature* owner)
 {
-    if (which == "bleed") {
-        mod->val -= (owner->GetStats(XStats::TOU) / 10
-            + owner->sk->GetLevel(XSkill::Skill::FIRST_AID));
-        owner->sk->UseSkill(XSkill::Skill::FIRST_AID);
-
-        if (mod->val > 0) {
-            owner->HP -= mod->val;
-
-            if (owner->isHero()) {
-                msgwin.Add(mod->ApplyMsg());
-            }
-        }
-
-        return;
-    }
-
-    if (which == "poison") {
-        if (vRand() % 3 == 0) {
-            owner->HP -= vRand() % 4;
-
-            if (owner->isHero()) {
-                msgwin.Add(mod->ApplyMsg());
-            }
-        }
-
-        mod->val -= owner->sk->GetLevel(XSkill::Skill::FIRST_AID);
-        return;
-    }
-
     if (which == "stagger") {
         owner->nx = owner->x + vRand() % 3 - 1;
         owner->ny = owner->y + vRand() % 3 - 1;
@@ -340,40 +318,52 @@ static void RunEngine(const std::string& which, XBasicModifier* mod, XCreature* 
         return;
     }
 
-    if (which == "rot_body") {
-        switch (vRand(300)) {
-            case 0:
-                owner->GainAttr(XStats::STR, -1);
-                break;
-
-            case 1:
-                owner->GainAttr(XStats::DEX, -1);
-                break;
-
-            case 2:
-                owner->GainAttr(XStats::TOU, -1);
-                break;
-        }
-
-        return;
-    }
-
-    if (which == "rot_strength") {
-        if (vRand(100) == 0) {
-            owner->GainAttr(XStats::STR, -1);
-        }
-
-        return;
-    }
-
     std::cerr << "world: a modifier runs '" << which
               << "', which the engine does not know how to do" << std::endl;
 }
 
+// What content says this modifier does with its turn. The handler is
+// looked up by name in the live state - same as a map object's :OnRun() or
+// a potion's :OnDrink() - and answers with what is left of the modifier,
+// so that a poison the carrier is shaking off shortens itself.
+static void RunHandler(const std::string& handler, XBasicModifier* mod, XCreature* owner)
+{
+    sol::state_view lua(XLua::State());
+    sol::protected_function fn = lua[handler];
+
+    if (!fn.valid()) {
+        std::cerr << "world: a modifier takes its turn through '" << handler
+                  << "', which is not defined" << std::endl;
+
+        return;
+    }
+
+    const auto result = fn((void*)owner, mod->val);
+
+    if (!result.valid()) {
+        const sol::error err = result;
+        std::cerr << "world: " << handler << ": " << err.what() << std::endl;
+
+        return;
+    }
+
+    // Saying nothing leaves the amount as it was: a handler that only
+    // hurts its carrier need not answer at all.
+    if (const sol::optional<int> left = result) {
+        mod->val = *left;
+    }
+}
+
 MODIFIER_RESULT XBasicModifier::Run(XCreature * owner)
 {
-    if (const ModifierStats* row = Row(); row && !row->engine.empty()) {
-        RunEngine(row->engine, this, owner);
+    if (const ModifierStats* row = Row()) {
+        if (!row->each_turn.empty()) {
+            RunHandler(row->each_turn, this, owner);
+        }
+
+        if (!row->engine.empty()) {
+            RunEngine(row->engine, this, owner);
+        }
     }
 
     if (owner->HP <= 0) {

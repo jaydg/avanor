@@ -24,15 +24,82 @@
 --       :Scale(n)              the amount it is laid on with is multiplied
 --                              by this first - poison counted in doses
 --       :ResistedBy(id)        what shortens it, or shrugs it off entirely
---       :Engine(which)         the few whose behaviour turn by turn the
---                              engine has to carry: "bleed", "poison",
---                              "stagger", "hold", "rot_body", "rot_strength"
+--       :EachTurn(name)        what it does with each turn it is on: a
+--                              function taking the creature and how much
+--                              is left, answering with what is left now
+--       :Engine(which)         the two the engine has to carry itself,
+--                              because they decide where the creature
+--                              moves this turn: "stagger", "hold"
 --       :Register()
 --
 -- The engine acts on five of these by name: paralysis stops the hero's
 -- input loop, poison forbids running, a heavy blow inflicts a wound, a stun
 -- or a confusion, and a prayer for healing lifts a fixed list. Renaming
 -- those ids means teaching the engine the new names.
+
+-- What the four with a life of their own do each turn they are on. Each
+-- takes the creature carrying it and how much is left of it, and answers
+-- with what is left now; answering nothing leaves the amount alone. The
+-- engine counts the turn off afterwards either way.
+
+-- An open wound bleeds for what it is worth, and closes at the rate the
+-- body and the bandages manage between them.
+function Bleed(cr, val)
+	-- A point of toughness in ten, and every level of first aid. Written
+	-- the long way round because "/" here is division, not whole points:
+	-- a toughness of 25 would otherwise close half a point of wound a
+	-- turn, and the halves would tell in the end.
+	local tou = GetStats(cr, XStats.TOU)
+	local closes = (tou - tou % 10) / 10 + GetSkill(cr, XSkill.FIRST_AID)
+
+	val = val - closes
+	UseSkill(cr, XSkill.FIRST_AID)
+
+	if val > 0 then
+		InflictDamage(cr, val)
+
+		if isHero(cr) then
+			AddMessage("You lose blood!")
+		end
+	end
+
+	return val
+end
+
+-- Poison comes in waves rather than steadily, and first aid works it out
+-- of the blood.
+function Poison(cr, val)
+	if Rand(3) == 0 then
+		InflictDamage(cr, Rand(4), "poison")
+
+		if isHero(cr) then
+			AddMessage("You feel the poison coursing through your body.")
+		end
+	end
+
+	return val - GetSkill(cr, XSkill.FIRST_AID)
+end
+
+-- An illness that takes something from the body now and then, and does not
+-- give it back.
+function RotBody(cr, val)
+	local which = Rand(300)
+
+	if which == 0 then
+		ChangeStats(cr, XStats.STR, -1)
+	elseif which == 1 then
+		ChangeStats(cr, XStats.DEX, -1)
+	elseif which == 2 then
+		ChangeStats(cr, XStats.TOU, -1)
+	end
+end
+
+-- Weakness wastes the strength itself, more slowly.
+function RotStrength(cr, val)
+	if Rand(100) == 0 then
+		ChangeStats(cr, XStats.STR, -1)
+	end
+end
 
 Modifier.new("wound")
 	:Severity(3, "<SEVERITY_MILD>graze")
@@ -44,8 +111,7 @@ Modifier.new("wound")
 	:OnSet("You've been wounded.")
 	:OnRemove("Your wounds heal.")
 	:OnChange("You are wounded again.", "Your bleeding slows.")
-	:Applies("You lose blood!")
-	:Engine("bleed")
+	:EachTurn("Bleed")
 	:Register()
 
 Modifier.new("poison")
@@ -53,10 +119,9 @@ Modifier.new("poison")
 	:OnSet("You are poisoned!")
 	:OnRemove("You feel relieved.")
 	:OnChange("You are poisoned again!", "You feel somewhat relieved.")
-	:Applies("You feel the poison coursing through your body.")
 	:Scale(10)
 	:ResistedBy("poison")
-	:Engine("poison")
+	:EachTurn("Poison")
 	:Register()
 
 Modifier.new("confuse")
@@ -101,7 +166,7 @@ Modifier.new("disease")
 	:OnChange("Your illness worsens.", "Your illness eases.")
 	:While{ DV = -5, HIT = -5,
 	        Stats = { [XStats.STR] = -3, [XStats.DEX] = -4, [XStats.TOU] = -3 } }
-	:Engine("rot_body")
+	:EachTurn("RotBody")
 	:Register()
 
 Modifier.new("weak")
@@ -110,7 +175,7 @@ Modifier.new("weak")
 	:OnRemove("Your strength returns.")
 	:OnChange("You feel weaker still.", "You feel a little stronger.")
 	:While{ Stats = { [XStats.STR] = -5 } }
-	:Engine("rot_strength")
+	:EachTurn("RotStrength")
 	:Register()
 
 Modifier.new("see_invisible")
