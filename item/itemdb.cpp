@@ -26,11 +26,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemdb.h"
 #include "magic/brand.h"
 
-// name				color			dv  		pv			hit		dice	z			r			iflag
-// dv, pv, dice, r - armor
-// hit, dice, z, r = armor
-//WARNING!!! after adding new 'element' please change
-
 std::vector<ItemMaterial> item_prop;
 
 const ItemMaterial* FindMaterial(const std::string& id)
