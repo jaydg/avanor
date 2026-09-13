@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream>
 #include <sstream>
 
+#include <fmt/format.h>
+
 #include <sol/sol.hpp>
 
 #include "magic/brand.h"
@@ -92,6 +94,74 @@ std::string BrandSet::toString() const
     }
 
     return out;
+}
+
+// The name template of the one brand of this kind in the set. Only asked
+// where the count is known to be exactly one.
+static std::string TemplateOf(const BrandSet& brands, const BrandGroup group)
+{
+    for (const BRAND& id : brands) {
+        const BrandStats* row = FindBrand(id);
+
+        if (row && row->group == group) {
+            return row->templ;
+        }
+    }
+
+    return std::string();
+}
+
+std::string BrandedName(const BrandSet& brands, const std::string& plain, const int quantity)
+{
+    // How many brands of each kind are on it. Content says which kind a
+    // brand belongs to; the way the kinds combine is decided here.
+    int ec = 0;
+    int bc = 0;
+    int sc = 0;
+
+    for (const BRAND& id : brands) {
+        const BrandStats* row = FindBrand(id);
+
+        if (!row) {
+            continue;
+        }
+
+        switch (row->group) {
+            case BrandGroup::ELEMENTAL: ec++; break;
+            case BrandGroup::BLACK:     bc++; break;
+            case BrandGroup::SLAYER:    sc++; break;
+        }
+    }
+
+    // A black brand suppresses the name altogether - every branch below
+    // asks for bc == 0 - so a poisoned sword is named as a plain sword.
+    std::string templ;
+
+    if (ec == 1 && bc == 0 && sc == 0) {
+        templ = TemplateOf(brands, BrandGroup::ELEMENTAL);
+    } else if (ec == 0 && bc == 0 && sc == 1) {
+        templ = TemplateOf(brands, BrandGroup::SLAYER);
+    } else if (ec >= 1 && bc == 0 && sc == 1) {
+        templ = fmt::format("Elemental {}", TemplateOf(brands, BrandGroup::SLAYER));
+    } else if (ec >= 1 && bc == 0 && sc > 1) {
+        templ = "Elemental {} of Slaying";
+    } else if (ec == 0 && bc == 0 && sc > 1) {
+        templ = "{} of Slaying";
+    } else if (ec > 1 && bc == 0 && sc == 0) {
+        templ = "Elemental {}";
+    }
+
+    // The template stands around whatever is being named, so the plural
+    // goes on before it rather than after: "arrows of Slay Orcs", not
+    // "arrow of Slay Orcss".
+    const std::string named = quantity == 1 ? plain : plain + "s";
+    const std::string full = templ.empty() ? named : fmt::format(templ, named);
+
+    if (quantity == 1) {
+        return full;
+    }
+
+    return fmt::format("heap of ({}) {}", quantity, full);
 }
 
 bool CheckBrandExists(const BRAND& id, const char* where)

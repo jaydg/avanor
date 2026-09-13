@@ -140,6 +140,14 @@ class BrandBuilder
         BrandStats t;
 };
 
+// The name a set of brands makes of a plain one: "steel sword of Fire",
+// "heap of (12) arrows of Slay Orcs". Which template each brand carries
+// and which kind it belongs to is content (world/brands.lua); the way the
+// kinds combine into one name is the engine's, and the same for anything
+// that can be branded. A set that names nothing gives the plain name
+// back, so a poisoned sword is named as a plain sword.
+std::string BrandedName(const BrandSet& brands, const std::string& plain, int quantity);
+
 // Complains if no row is registered under this id and returns false.
 // Content calls the builders after world/brands.lua has loaded, so an
 // unknown id there is a typo rather than an ordering accident.

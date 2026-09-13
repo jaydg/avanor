@@ -44,7 +44,6 @@ class XWeapon : public XItem
             ar(cereal::base_class<XItem>(this));
         }
     protected:
-        std::string GetTemplate(BrandGroup group);
 };
 
 #endif

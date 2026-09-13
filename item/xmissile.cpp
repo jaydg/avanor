@@ -51,22 +51,11 @@ XMissile::XMissile(ItemType _it)
 
 std::string XMissile::toString()
 {
-    if (quantity == 1)
-        return fmt::format("{}{}{} <{:+}>({:+}, {}d{}{:+}){}",
-            aet.Has("poison") ? "poisoned " : "",
-            aet.Has("undead_slayer") ? "holy " : "",
-            name, RNG, to_hit,
-            dice.GetCount(), dice.GetSides(), dice.GetBonus(),
-            aet.Has("fire") ? " of fire" : ""
-        );
-
-    return fmt::format("heap of ({}) {}{}{}s <{:+}>({:+}, {}d{}{:+}){}",
-        quantity,
-        aet.Has("poison") ? "poisoned " : "",
-        aet.Has("undead_slayer") ? "holy " : "",
-        name, RNG, to_hit,
-        dice.GetCount(), dice.GetSides(), dice.GetBonus(),
-        aet.Has("fire") ? " of fire" : ""
+    // The name comes from whatever brands the missile carries,
+    // see the brands in world/brands.lua
+    return fmt::format("{} <{:+}>({:+}, {}d{}{:+})",
+        BrandedName(aet, name, quantity), RNG, to_hit,
+        dice.GetCount(), dice.GetSides(), dice.GetBonus()
     );
 }
 

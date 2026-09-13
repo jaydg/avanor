@@ -54,60 +54,7 @@ std::string XWeapon::toString()
         }
     }
 
-    // How many brands of each kind this weapon carries. Content says
-    // which kind a brand belongs to; the way the kinds combine into a
-    // name is the engine's.
-    int ec = 0;
-    int bc = 0;
-    int sc = 0;
-
-    for (const BRAND& id : aet) {
-        const BrandStats* row = FindBrand(id);
-
-        if (!row) {
-            continue;
-        }
-
-        switch (row->group) {
-            case BrandGroup::ELEMENTAL: ec++; break;
-            case BrandGroup::BLACK:     bc++; break;
-            case BrandGroup::SLAYER:    sc++; break;
-        }
-    }
-
-    // A black brand suppresses the name altogether - every branch below
-    // asks for bc == 0 - so a poisoned sword is named as a plain sword.
-    std::string brand_templ;
-
-    if (ec == 1 && bc == 0 && sc == 0) {
-        brand_templ = GetTemplate(BrandGroup::ELEMENTAL);
-    } else if (ec == 0 && bc == 0 && sc == 1) {
-        brand_templ = GetTemplate(BrandGroup::SLAYER);
-    } else if (ec >= 1 && bc == 0 && sc == 1) {
-        brand_templ = fmt::format("Elemental {}", GetTemplate(BrandGroup::SLAYER));
-    } else if (ec >= 1 && bc == 0 && sc > 1) {
-        brand_templ = "Elemental {} of Slaying";
-    } else if (ec == 0 && bc == 0 && sc > 1) {
-        brand_templ = "{} of Slaying";
-    } else if (ec > 1 && bc == 0 && sc == 0) {
-        brand_templ = "Elemental {}";
-    }
-
-    std::string fullname;
-    if (quantity == 1) {
-        if (!brand_templ.empty()) {
-            fullname = fmt::format(brand_templ, w_name);
-        } else {
-            fullname = w_name;
-        }
-    } else {
-        if (!brand_templ.empty()) {
-            fullname = fmt::format("heap of ({})" + brand_templ,
-                quantity, w_name);
-        } else {
-            fullname = fmt::format("heap of ({}) {}s", quantity, w_name);
-        }
-    }
+    std::string fullname = BrandedName(aet, w_name, quantity);
 
     if (isIdentified()) {
         if (RNG != 0) {
@@ -127,17 +74,3 @@ std::string XWeapon::toString()
     return fullname;
 }
 
-// The name template of the one brand of this kind that the weapon
-// carries. Only called where the count is exactly one.
-std::string XWeapon::GetTemplate(const BrandGroup group)
-{
-    for (const BRAND& id : aet) {
-        const BrandStats* row = FindBrand(id);
-
-        if (row && row->group == group) {
-            return row->templ;
-        }
-    }
-
-    return std::string();
-}
