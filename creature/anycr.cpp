@@ -472,13 +472,19 @@ MonsterBuilder& MonsterBuilder::EquipCount(unsigned int mask, int count, int pro
     return *this;
 }
 
-// How long a corpse of this species keeps, and how it sits when eaten.
-// The taste half used to be written into the row and read by nothing at
-// all, so a creature declaring one tasted like any other.
-MonsterBuilder& MonsterBuilder::Corpse(const int rotting_time, const std::string& taste)
+// How long a corpse of this species keeps before it is past eating.
+MonsterBuilder& MonsterBuilder::Corpse(const int rotting_time)
 {
     cr.pCorpseData.roating_time = rotting_time;
+    return *this;
+}
 
+// How one sits when eaten - a row from world/tastes.lua. Unsaid, it is
+// the ordinary sort, which is what every corpse used to be: the taste
+// :Corpse() took as its second argument was written into the row and read
+// by nothing at all, so a rat tasted no worse than an apple.
+MonsterBuilder& MonsterBuilder::CorpseTaste(const std::string& taste)
+{
     if (CheckTasteExists(taste, ("creature '" + id + "'").c_str())) {
         cr.pCorpseData.taste = taste;
     }

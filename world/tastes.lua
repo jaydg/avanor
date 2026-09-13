@@ -27,13 +27,13 @@ Taste.new("normal")
 	:Register()
 
 Taste.new("bad")
-	:Called("tasteless")
+	:Called("unpleasant")
 	:Register()
 
-Taste.new("very_bad")
-	:Called("taste like a slops")
+Taste.new("aversive")
+	:Called("repulsive")
 	:Register()
 
-Taste.new("vomit")
-	:Called("vomit")
+Taste.new("emetic")
+	:Called("nauseating")
 	:Register()
