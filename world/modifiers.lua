@@ -27,15 +27,19 @@
 --       :EachTurn(name)        what it does with each turn it is on: a
 --                              function taking the creature and how much
 --                              is left, answering with what is left now
---       :Engine(which)         the two the engine has to carry itself,
---                              because they decide where the creature
---                              moves this turn: "stagger", "hold"
+--       :Prevents(what, why)   what it stops the carrier doing while it
+--                              is on - "move" or "run" - and what the
+--                              carrier is told when it tries
+--       :Staggers()            each turn it is on sends the carrier a
+--                              step at random rather than where it meant
+--                              to go
+--       :Ill()                 a cure lifts it
 --       :Register()
 --
--- The engine acts on five of these by name: paralysis stops the hero's
--- input loop, poison forbids running, a heavy blow inflicts a wound, a stun
--- or a confusion, and a prayer for healing lifts a fixed list. Renaming
--- those ids means teaching the engine the new names.
+-- The engine names three of these: a heavy blow inflicts a wound, a stun or
+-- a confusion depending on where it lands, and a spell gone wrong wounds
+-- its caster. Renaming those three means teaching the engine the new names;
+-- every other id here is the world's own business.
 
 -- What the four with a life of their own do each turn they are on. Each
 -- takes the creature carrying it and how much is left of it, and answers
@@ -112,6 +116,7 @@ Modifier.new("wound")
 	:OnRemove("Your wounds heal.")
 	:OnChange("You are wounded again.", "Your bleeding slows.")
 	:EachTurn("Bleed")
+	:Ill()
 	:Register()
 
 Modifier.new("poison")
@@ -122,8 +127,12 @@ Modifier.new("poison")
 	:Scale(10)
 	:ResistedBy("poison")
 	:EachTurn("Poison")
+	:Prevents("run", "You can't while poisoned.")
+	:Ill()
 	:Register()
 
+-- Not :Ill() - a cure has never cleared a confusion, and the seven that
+-- are marked are exactly the list the engine used to carry by hand.
 Modifier.new("confuse")
 	:Called("<TEXT>confused")
 	:OnSet("You are confused.")
@@ -131,7 +140,7 @@ Modifier.new("confuse")
 	:OnChange("Your confusion grows.", "You feel a little clearer.")
 	:Applies("You stagger.")
 	:ResistedBy("confuse")
-	:Engine("stagger")
+	:Staggers()
 	:Register()
 
 Modifier.new("stun")
@@ -141,6 +150,7 @@ Modifier.new("stun")
 	:OnChange("You are stunned again.", "You feel a little steadier.")
 	:While{ DV = -5, HIT = -10 }
 	:ResistedBy("stun")
+	:Ill()
 	:Register()
 
 Modifier.new("paralyse")
@@ -148,7 +158,8 @@ Modifier.new("paralyse")
 	:OnSet("You are paralysed!")
 	:OnRemove("You can move again.")
 	:OnChange("You cannot move at all.", "You feel your limbs loosen.")
-	:Engine("hold")
+	:Prevents("move")
+	:Ill()
 	:Register()
 
 Modifier.new("heroism")
@@ -167,6 +178,7 @@ Modifier.new("disease")
 	:While{ DV = -5, HIT = -5,
 	        Stats = { [XStats.STR] = -3, [XStats.DEX] = -4, [XStats.TOU] = -3 } }
 	:EachTurn("RotBody")
+	:Ill()
 	:Register()
 
 Modifier.new("weak")
@@ -176,6 +188,7 @@ Modifier.new("weak")
 	:OnChange("You feel weaker still.", "You feel a little stronger.")
 	:While{ Stats = { [XStats.STR] = -5 } }
 	:EachTurn("RotStrength")
+	:Ill()
 	:Register()
 
 Modifier.new("see_invisible")
@@ -199,6 +212,7 @@ Modifier.new("slowness")
 	:OnRemove("You speed up again.")
 	:OnChange("You slow further.", "You quicken a little.")
 	:While{ Slower = 300 }
+	:Ill()
 	:Register()
 
 -- One resistance modifier per resistance the world declares, so that

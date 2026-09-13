@@ -164,6 +164,38 @@ void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
     }
 }
 
+void XModifier::Cure(XCreature* owner)
+{
+    // Walked in the order world/modifiers.lua declares them rather than
+    // the order they were caught in, so that being cured of four things at
+    // once reads the same way twice - and the same way round as the status
+    // line that was showing them.
+    for (const auto& row : AllModifiers()) {
+        if (row.ill) {
+            // Unconditionally: Remove() says nothing about what is not
+            // there, and it also clears one still on its way - being cured
+            // of poison should take the dose that has not bitten yet with
+            // it, which asking Get() first would have left behind.
+            Remove(row.id, owner);
+        }
+    }
+}
+
+std::optional<std::string> XModifier::Prevents(const std::string& what) const
+{
+    for (const auto& mfr : ml) {
+        if (mfr.delay > 0) {
+            continue;
+        }
+
+        if (const auto why = mfr.Prevents(what)) {
+            return why;
+        }
+    }
+
+    return std::nullopt;
+}
+
 int XModifier::Run(XCreature* cr)
 {
     // Running a modifier can add another one to this same list: one laid on

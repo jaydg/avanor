@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MODIFIERS_H
 
 #include <algorithm>
+#include <optional>
 #include <string>
 
 #include <utility>
@@ -40,27 +41,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // are, so that a modifier is a thing content can talk about.
 using MODIFIER = std::string;
 
-// No modifier at all - a brand that inflicts nothing, a corpse that is
-// only food.
-inline const MODIFIER MOD_NONE;
-
-// The ones the engine itself acts on by name: paralysis stops the hero's
-// input loop, poison forbids running, a prayer for healing lifts a fixed
-// list, and a heavy blow inflicts one of the first three. Everything
-// else about them - what they say, what they do to the numbers, what
-// they do each turn - is content.
+// The only three the engine still names, because laying them on is its
+// own doing: a blow heavy enough wounds, stuns or confuses depending on
+// where it lands, and a spell that goes wrong wounds the caster. What
+// they are called, what they shift, what they do each turn and what they
+// stop you doing is all content - and every other modifier the world
+// declares, the engine knows only as a row.
 inline constexpr const char* MOD_WOUND = "wound";
-inline constexpr const char* MOD_POISON = "poison";
 inline constexpr const char* MOD_CONFUSE = "confuse";
 inline constexpr const char* MOD_STUN = "stun";
-inline constexpr const char* MOD_HEROISM = "heroism";
-inline constexpr const char* MOD_DISEASE = "disease";
-inline constexpr const char* MOD_SEE_INVISIBLE = "see_invisible";
-inline constexpr const char* MOD_PARALYSE = "paralyse";
-inline constexpr const char* MOD_WEAK = "weak";
-inline constexpr const char* MOD_RESISTANCE = "resistance";
-inline constexpr const char* MOD_BOOST_SPEED = "boost_speed";
-inline constexpr const char* MOD_SLOWNESS = "slowness";
 
 
 enum MODIFIER_RESULT {
@@ -115,10 +104,22 @@ struct ModifierStats {
     // of it now. Answering nothing leaves the amount alone.
     std::string each_turn;
 
-    // The few whose behaviour turn by turn the engine has to carry.
-    // Content names one of these rather than describing it, the way an
-    // effect names :Engine().
-    std::string engine;
+    // What it stops the one carrying it from doing while it is on, and
+    // what it is told when it tries: "move" for a paralysis, "run" for a
+    // poison. The engine asks whether anything stops the creature and
+    // never asks which modifier answered, so a world that paralyses by
+    // another name needs no line here.
+    std::vector<std::pair<std::string, std::string>> prevents;
+
+    // Whether each turn it is on sends the creature a step at random
+    // instead of where it meant to go. This one the engine has to carry
+    // itself: where a creature moves this turn is the turn loop's own
+    // business.
+    bool staggers = false;
+
+    // Whether a cure lifts it. Nothing in the engine decides what counts
+    // as an illness - content says so, one modifier at a time.
+    bool ill = false;
 };
 
 // The row for an id, or nothing if no world file declares one.
@@ -144,7 +145,9 @@ class ModifierBuilder
         ModifierBuilder& Scale(int scale);
         ModifierBuilder& ResistedBy(const std::string& resist);
         ModifierBuilder& EachTurn(const std::string& handler);
-        ModifierBuilder& Engine(const std::string& which);
+        ModifierBuilder& Prevents(const std::string& what, sol::optional<std::string> why);
+        ModifierBuilder& Staggers();
+        ModifierBuilder& Ill();
         void Register();
 
     private:
@@ -206,6 +209,12 @@ class XBasicModifier
 
         void onSet(XCreature * owner);
         void onRemove(XCreature * owner);
+
+        // What its row declares about it, asked of the modifier itself so
+        // that a row nothing declares simply answers no. The answer is
+        // what the creature is told when it tries - which may be nothing
+        // at all, said or unsaid being content's choice.
+        [[nodiscard]] std::optional<std::string> Prevents(const std::string& what) const;
 
         [[nodiscard]] std::string GetDisplayName(int xval) const;
         [[nodiscard]] const std::string& SetMsg() const;

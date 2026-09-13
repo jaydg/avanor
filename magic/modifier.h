@@ -22,6 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MODIFIER_H
 
 #include <memory>
+#include <optional>
+#include <string>
 #include <vector>
 
 #include <cereal/types/memory.hpp>
@@ -51,6 +53,16 @@ class XModifier
             int delay = 0);
 
         void Remove(const MODIFIER& mdt, XCreature* owner);
+
+        // Lifts everything content calls an illness - what a prayer for
+        // healing answers. Which modifiers those are is written in
+        // world/modifiers.lua, not here.
+        void Cure(XCreature* owner);
+
+        // Whether anything on the creature stops it doing this, and what
+        // it is told when it tries: "move" while it is paralysed, "run"
+        // while it is poisoned. One still on its way stops nothing.
+        [[nodiscard]] std::optional<std::string> Prevents(const std::string& what) const;
 
         // return val
         [[nodiscard]] int Get(const MODIFIER& mt) const;

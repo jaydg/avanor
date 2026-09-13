@@ -134,7 +134,9 @@ void XHero::NewMove()
     }
 
     while (!moved) {
-        const int paralyse = md->Get(MOD_PARALYSE);
+        // Something may be holding the hero still - a paralysis, or
+        // whatever else world/modifiers.lua says stops a creature moving.
+        const bool held = md->Prevents("move").has_value();
         moved = 1;
 
         l->map->Center(x, y);
@@ -142,7 +144,7 @@ void XHero::NewMove()
         PutStatus();
         vRefresh();
 
-        if (paralyse) {
+        if (held) {
             moved = 1;
             continue;
         }
@@ -177,8 +179,8 @@ void XHero::NewMove()
         } else
             switch (ch) {
                 case 'w' :
-                    if (md->Get(MOD_POISON)) {
-                        msgwin.Add("You can't while poisoned.");
+                    if (const auto why = md->Prevents("run")) {
+                        msgwin.Add(*why);
                         moved = 0;
                         continue;
                     }
@@ -595,13 +597,7 @@ void XHero::Die(XCreature * killer)
         if (GetTarget(TR_NO_YES)) {
             // Don't want to die twice, since we are cheating it!
             HP = GetMaxHP();
-            md->Remove(MOD_WOUND, main_creature);
-            md->Remove(MOD_POISON, main_creature);
-            md->Remove(MOD_STUN, main_creature);
-            md->Remove(MOD_DISEASE, main_creature);
-            md->Remove(MOD_PARALYSE, main_creature);
-            md->Remove(MOD_WEAK, main_creature);
-            md->Remove(MOD_SLOWNESS, main_creature);
+            md->Cure(main_creature);
             return;
         }
     }

@@ -136,9 +136,22 @@ ModifierBuilder& ModifierBuilder::EachTurn(const std::string& handler)
     return *this;
 }
 
-ModifierBuilder& ModifierBuilder::Engine(const std::string& which)
+ModifierBuilder& ModifierBuilder::Prevents(const std::string& what,
+    sol::optional<std::string> why)
 {
-    t.engine = which;
+    t.prevents.emplace_back(what, why.value_or(""));
+    return *this;
+}
+
+ModifierBuilder& ModifierBuilder::Staggers()
+{
+    t.staggers = true;
+    return *this;
+}
+
+ModifierBuilder& ModifierBuilder::Ill()
+{
+    t.ill = true;
     return *this;
 }
 
@@ -167,6 +180,15 @@ void ModifierBuilder::Register()
         }
     }
 
+    // The engine only ever asks about these two, so anything else written
+    // here would quietly stop nothing at all.
+    for (const auto& [what, why] : t.prevents) {
+        if (what != "move" && what != "run") {
+            std::cerr << "world: the modifier '" << t.id << "' prevents '" << what
+                      << "', which is not something the engine asks about" << std::endl;
+        }
+    }
+
     modifiers_db.push_back(t);
 }
 
@@ -184,7 +206,9 @@ void RegisterModifierLua(sol::state_view& lua)
         "Scale", &ModifierBuilder::Scale,
         "ResistedBy", &ModifierBuilder::ResistedBy,
         "EachTurn", &ModifierBuilder::EachTurn,
-        "Engine", &ModifierBuilder::Engine,
+        "Prevents", &ModifierBuilder::Prevents,
+        "Staggers", &ModifierBuilder::Staggers,
+        "Ill", &ModifierBuilder::Ill,
         "Register", &ModifierBuilder::Register
     );
 }
@@ -295,31 +319,21 @@ void XBasicModifier::onRemove(XCreature * owner)
     }
 }
 
-// The two the engine has to carry itself, because what they do is decide
-// where the creature goes this turn - which is the turn loop's own
-// business, not something to hand out to content. Everything else a
-// modifier does with its turn is written in world/modifiers.lua.
-static void RunEngine(const std::string& which, XBasicModifier* mod, XCreature* owner)
+std::optional<std::string> XBasicModifier::Prevents(const std::string& what) const
 {
-    if (which == "stagger") {
-        owner->nx = owner->x + vRand() % 3 - 1;
-        owner->ny = owner->y + vRand() % 3 - 1;
+    const ModifierStats* row = Row();
 
-        if (owner->isHero()) {
-            msgwin.Add(mod->ApplyMsg());
+    if (!row) {
+        return std::nullopt;
+    }
+
+    for (const auto& [stops, why] : row->prevents) {
+        if (stops == what) {
+            return why;
         }
-
-        return;
     }
 
-    if (which == "hold") {
-        owner->nx = owner->x;
-        owner->ny = owner->y;
-        return;
-    }
-
-    std::cerr << "world: a modifier runs '" << which
-              << "', which the engine does not know how to do" << std::endl;
+    return std::nullopt;
 }
 
 // What content says this modifier does with its turn. The handler is
@@ -361,8 +375,22 @@ MODIFIER_RESULT XBasicModifier::Run(XCreature * owner)
             RunHandler(row->each_turn, this, owner);
         }
 
-        if (!row->engine.empty()) {
-            RunEngine(row->engine, this, owner);
+        // Where the creature goes this turn is the turn loop's own
+        // business, so these two the engine carries itself: a confusion
+        // sends it a step at random, and anything that stops it moving
+        // leaves it where it stands.
+        if (row->staggers) {
+            owner->nx = owner->x + vRand() % 3 - 1;
+            owner->ny = owner->y + vRand() % 3 - 1;
+
+            if (owner->isHero()) {
+                msgwin.Add(row->apply_msg);
+            }
+        }
+
+        if (Prevents("move")) {
+            owner->nx = owner->x;
+            owner->ny = owner->y;
         }
     }
 
