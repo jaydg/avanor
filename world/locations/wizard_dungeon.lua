@@ -6,27 +6,27 @@ function MakeWizardDungeon()
 	CreateLocation("WIZARD_DUNGEON1", "AD:1", "Ahk-Ulan's dungeons level 1", XLocation.DUNGEON, Dungeon())
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "WIZARD_DUNGEON2")
-		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
+		Settle({"undead", "blob", "insect", "reptile", "rat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
 
 	CreateLocation("WIZARD_DUNGEON2", "AD:2", "Ahk-Ulan's dungeons level 2", XLocation.DUNGEON, Dungeon(40))
 		Way(XStairWay.UP, "WIZARD_DUNGEON1")
 		Way(XStairWay.DOWN, "WIZARD_DUNGEON3")
-		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
+		Settle({"undead", "blob", "insect", "reptile", "rat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
 
 	CreateLocation("WIZARD_DUNGEON3", "AD:3", "Ahk-Ulan's dungeons level 3", XLocation.DUNGEON, Dungeon(40))
 		Way(XStairWay.UP, "WIZARD_DUNGEON2")
 		Way(XStairWay.DOWN, "WIZARD_DUNGEON4")
-		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
+		Settle({"undead", "blob", "insect", "reptile", "rat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
 
 	CreateLocation("WIZARD_DUNGEON4", "AD:4", "Ahk-Ulan's dungeons level 4", XLocation.DUNGEON, Dungeon(40))
 		Way(XStairWay.UP, "WIZARD_DUNGEON3")
 		Way(XStairWay.DOWN, "WIZARD_DUNGEON5")
-		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
+		Settle({"undead", "blob", "insect", "reptile", "rat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
 
 	CreateLocation("WIZARD_DUNGEON5", "AD:5", "Ahk-Ulan's dungeons level 5", XLocation.DUNGEON, Dungeon(40))
 		Way(XStairWay.UP, "WIZARD_DUNGEON4")
 		Way(XStairWay.DOWN, "AHKULAN_CASTLE")
-		Settle(CreatureClass.UNDEAD + CreatureClass.BLOB + CreatureClass.INSECT + CreatureClass.REPTILE + CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.CANINE, CreatureTemplate.VERY_LOW)
+		Settle({"undead", "blob", "insect", "reptile", "rat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
 
 	CreateLocation("AHKULAN_CASTLE", "AC", "Ahk-Ulan's castle", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,

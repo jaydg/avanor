@@ -1,7 +1,7 @@
 ------------------------------ BATS --------------------------------------
 
 Monster.new("bat")
-	:View("bat", 'b', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.RAT)
+	:View("bat", 'b', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "rat")
 	:Basic("1d30+120", "0d0+1000", "1d200+800", CreatureSize.VERY_SMALL, "3d4")
 	:Body("", 0, 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
@@ -13,7 +13,7 @@ Monster.new("bat")
 	:Register()
 
 Monster.new("huge_bat", "bat")
-	:View("huge bat", 'b', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.RAT)
+	:View("huge bat", 'b', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "rat")
 	:Basic("1d30+150", "0d0+1000", "1d200+700", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 1d4 Dx 1d6 To 1d2 Pe 4d10")
 	:Resist("see_invisible:1d10+20")

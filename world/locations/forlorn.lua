@@ -38,9 +38,7 @@ DUNGEON_FORLORN_PRESETS = {
 -- the named uniques included. The original's ladder was arithmetic rather
 -- than a list and reached UNIQUE on a ten-level dungeon, which would have
 -- settled a second Todin.
-DUNGEON_FORLORN_CLASSES = CreatureClass.RAT + CreatureClass.FELINE
-	+ CreatureClass.CANINE + CreatureClass.REPTILE + CreatureClass.KOBOLD
-	+ CreatureClass.INSECT + CreatureClass.GOBLIN + CreatureClass.UNDEAD
+DUNGEON_FORLORN_CLASSES = {"rat", "feline", "canine", "reptile", "kobold", "insect", "goblin", "undead"}
 
 DUNGEON_FORLORN_LADDER = {
 	CreatureTemplate.VERY_LOW,

@@ -100,7 +100,8 @@ XHero::XHero(NewCharacter)
     run_way_count = 0;
     target.reset();
 
-    creature_class = CreatureClass::HUMAN;
+    // What sort of creature the hero is comes from world/hero.lua, with
+    // the rest of what a race means - see InitHero() there.
 
     base_nutrio = 1000;
     nutrio = 10000;

@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 int sgn(int n);
 
 unsigned int vGetRandomBit(unsigned int mask);
-int vGetBitNumber(unsigned int mask);
 int vGetHighBitNum(unsigned int number);
 int vBitsCount(unsigned int number);
 

@@ -89,17 +89,17 @@ class XGenerator : public XMapObject
 class XUniversalGen final : public XGenerator
 {
     protected:
-        XUniversalGen() : crl(), crc() {
+        XUniversalGen() : crl() {
         }
         friend class cereal::access;
 
     public:
         DECLARE_CREATOR(XUniversalGen, XGenerator);
-        XUniversalGen(XLocation * loc, CreatureClass _crc, CreatureTemplate::Level _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
+        XUniversalGen(XLocation * loc, CreatureClassSet _crc, CreatureTemplate::Level _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
         {
             l = loc;
             crl = _crl;
-            crc = _crc;
+            crc = std::move(_crc);
             max_creature = _max_creature;
         }
 
@@ -113,7 +113,7 @@ class XUniversalGen final : public XGenerator
         }
     protected:
         CreatureTemplate::Level crl;
-        CreatureClass crc;
+        CreatureClassSet crc;
         unsigned int max_creature{};
 };
 

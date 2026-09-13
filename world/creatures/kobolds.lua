@@ -1,7 +1,7 @@
 ------------------------------ KOBOLDS --------------------------------------
 
 Monster.new("kobold")
-	:View("kobold", 'k', xColor.xLIGHTGREEN, PersonType.HE, CreatureTemplate.VERY_LOW, CreatureClass.KOBOLD)
+	:View("kobold", 'k', xColor.xLIGHTGREEN, PersonType.HE, CreatureTemplate.VERY_LOW, "kobold")
 	:Basic("1d10+90", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+600")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 1, 0)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
@@ -19,7 +19,7 @@ Monster.new("kobold")
 	:Register()
 
 Monster.new("large_kobold")
-	:View("large kobold", 'k', xColor.xGREEN, PersonType.HE, CreatureTemplate.LOW, CreatureClass.KOBOLD)
+	:View("large kobold", 'k', xColor.xGREEN, PersonType.HE, CreatureTemplate.LOW, "kobold")
 	:Basic("1d10+90", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 2, 0)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
@@ -38,7 +38,7 @@ Monster.new("large_kobold")
 	:Register()
 
 Monster.new("chieftain_kobold")
-	:View("kobold chieftain", 'k', xColor.xGREEN, PersonType.HE, CreatureTemplate.LOW, CreatureClass.KOBOLD)
+	:View("kobold chieftain", 'k', xColor.xGREEN, PersonType.HE, CreatureTemplate.LOW, "kobold")
 	:Basic("1d10+90", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5, 0)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
@@ -58,7 +58,7 @@ Monster.new("chieftain_kobold")
 
 
 Monster.new("shaman_kobold")
-	:View("kobold shaman", 'k', xColor.xLIGHTCYAN, PersonType.HE, CreatureTemplate.LOW, CreatureClass.KOBOLD)
+	:View("kobold shaman", 'k', xColor.xLIGHTCYAN, PersonType.HE, CreatureTemplate.LOW, "kobold")
 	:Basic("1d10+90", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+600")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5, 0)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
@@ -79,7 +79,7 @@ Monster.new("shaman_kobold")
 
 
 Monster.new("gnoll")
-	:View("gnoll", 'g', xColor.xBROWN, PersonType.HE, CreatureTemplate.ABOVE_LOW, CreatureClass.KOBOLD)
+	:View("gnoll", 'g', xColor.xBROWN, PersonType.HE, CreatureTemplate.ABOVE_LOW, "kobold")
 	:Basic("1d10+100", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5, 0)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
@@ -96,7 +96,7 @@ Monster.new("gnoll")
 	:Register()
 
 Monster.new("gnoll_warmaster")
-	:View("gnoll warmaster", 'g', xColor.xYELLOW, PersonType.HE, CreatureTemplate.AVG, CreatureClass.KOBOLD)
+	:View("gnoll warmaster", 'g', xColor.xYELLOW, PersonType.HE, CreatureTemplate.AVG, "kobold")
 	:Basic("1d10+100", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 7, 0)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)

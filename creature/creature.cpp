@@ -191,7 +191,7 @@ XCreature::XCreature()
 
     weight = 1000;
 
-    creature_class = CreatureClass::NONE;
+    creature_class = CRC_NONE;
 
     tactics = TS_NORMAL;
     group_id = GID_NONE;

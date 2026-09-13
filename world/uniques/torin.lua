@@ -1,6 +1,6 @@
 
 Monster.new("torin")
-	:View("Torin the Great, dwarven king", 'h', xColor.xLIGHTGREEN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.HUMANOID)
+	:View("Torin the Great, dwarven king", 'h', xColor.xLIGHTGREEN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "humanoid")
 	:Basic("1d10+100", "0d0+800", "0d0+800", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)

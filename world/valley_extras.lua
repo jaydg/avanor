@@ -78,7 +78,7 @@ end
 function CreateGuardians(x, y)
 	for i = 1, 7 do
 		local g = Guardian("royal_guard", "guardian", x, y, 14, 5, XStandardAI.GUARD_AREA + XStandardAI.RANDOM_MOVE)
-		SetEnemy(g, CreatureClass.ORC)
+		SetEnemy(g, "orc")
 		SetEventHandler(g, 'RoyalGuardHandler')
 	end
 end

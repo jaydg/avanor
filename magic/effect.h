@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/forward.hpp>
 
 #include "engine/global.h"
+#include "creature/cr_defs.h"
 #include "magic/brand.h"
 #include "magic/resist.h"
 
@@ -90,6 +91,10 @@ struct EffectPart {
 
     // For ENGINE: which of them.
     std::string engine;
+
+    // For the "summon_monster" engine effect: what sort of creature it
+    // raises. The engine used to name the undead itself.
+    CREATURE_CLASS summons;
 };
 
 struct EffectStats {
@@ -122,7 +127,7 @@ class XEffect
 
         // The seven that are not built out of the parts above: they make
         // creatures and items, move people about, and show screens.
-        static int Engine(const std::string& which, const EFFECT_DATA* pData);
+        static int Engine(const EffectPart& part, const EFFECT_DATA* pData);
 
     public:
         static int Make(const EFFECT_DATA* pData);
@@ -148,6 +153,7 @@ class EffectBuilder
         EffectBuilder& Throws(int count, int divisor, int bonus, int colour,
             const std::string& brand, const std::string& message);
         EffectBuilder& Engine(const std::string& which);
+        EffectBuilder& Summons(const std::string& cr_class);
         EffectBuilder& Targets(EffectTarget targets);
         EffectBuilder& Range(int divisor, int bonus);
         void Register();

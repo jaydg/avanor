@@ -30,7 +30,7 @@ local function RoomPalette(always_trapped)
 end
 
 -- Whoever cut the room left something behind to watch it.
-local GUARD_CLASSES = { CreatureClass.UNDEAD, CreatureClass.GOBLIN, CreatureClass.KOBOLD }
+local GUARD_CLASSES = { "undead", "goblin", "kobold" }
 
 function GuardRoom(x, y, w, h)
 	local crc = GUARD_CLASSES[Rand(#GUARD_CLASSES) + 1]

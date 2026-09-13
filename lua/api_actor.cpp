@@ -402,7 +402,7 @@ void SetCreatureAI(void* cr, const std::string& lua_class)
     p->xai = std::move(new_ai);
 }
 
-int CreatureCountInLocation(const std::string& l_id, CreatureClass cc)
+int CreatureCountInLocation(const std::string& l_id, const std::string& cc)
 {
     return Game.Location(l_id)->GetCreatureCount(cc);
 }
@@ -542,9 +542,30 @@ void SetAIFlag(void* cr, unsigned int flags)
     ((XCreature*)cr)->xai->SetAIFlag(static_cast<XStandardAI::Flag>(flags));
 }
 
-void SetEnemy(void* cr, int cr_class)
+// SetEnemy(cr, "orc") or SetEnemy(cr, {"orc", "goblin", "undead"}) - whom
+// this one fights, replacing whatever it was told before.
+void SetEnemy(void* cr, const sol::object& cr_class)
 {
-    ((XCreature*)cr)->xai->SetEnemyClass((CreatureClass)cr_class);
+    CreatureClassSet foes;
+
+    if (cr_class.is<std::string>()) {
+        foes.Add(cr_class.as<std::string>());
+    } else if (cr_class.is<sol::table>()) {
+        for (const auto& [key, value] : cr_class.as<sol::table>()) {
+            foes.Add(value.as<std::string>());
+        }
+    } else {
+        std::cerr << "world: SetEnemy() names its creature classes as neither an id"
+                     " nor a list of them" << std::endl;
+
+        return;
+    }
+
+    for (const CREATURE_CLASS& id : foes) {
+        CheckCreatureClassExists(id, "SetEnemy()");
+    }
+
+    ((XCreature*)cr)->xai->SetEnemyClass(foes);
 }
 
 int Gender(void* cr)
@@ -680,16 +701,25 @@ std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemPa
     return {static_cast<int>(p->kind), p->aet.toString(), p->wt, p->it, p->quantity, p->name};
 }
 
-// Whether an attack carries any of these brands. Takes the brand string
-// GetItemParam() hands back and a space-separated list of ids to look
-// for, so a handler can ask about one brand or about several at once.
-// What sort of creature this is - a CreatureClass mask, to be tested with
-// BinaryAND. A free function rather than a usertype field, per the hazard
-// documented in XCreature::RegisterLua.
-int GetCreatureClass(void* who)
+// What sort of creature this is, by the id world/creature_classes.lua declares
+// it under - so a script compares it with "==". A free function rather than a
+// usertype field, per the hazard documented in XCreature::RegisterLua.
+std::string GetCreatureClass(void* who)
 {
     const XCreature* cr = (XCreature*)who;
-    return cr ? static_cast<int>(cr->creature_class) : 0;
+    return cr ? cr->creature_class : CRC_NONE;
+}
+
+// What sort of creature this one is. A monster gets it from its own
+// definition; the hero gets it here, from whatever world/hero.lua says
+// the chosen race amounts to.
+void SetCreatureClass(void* who, const std::string& cr_class)
+{
+    if (!CheckCreatureClassExists(cr_class, "SetCreatureClass()")) {
+        return;
+    }
+
+    ((XCreature*)who)->creature_class = cr_class;
 }
 
 // How a god regards somebody, and how to change it. Favour lives on the
@@ -1073,6 +1103,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetItemBrand", &lua_api::SetItemBrand);
         lua.set_function("HasBrand", &lua_api::HasBrand);
         lua.set_function("GetCreatureClass", &lua_api::GetCreatureClass);
+        lua.set_function("SetCreatureClass", &lua_api::SetCreatureClass);
         lua.set_function("Favour", &lua_api::Favour);
         lua.set_function("ChangeFavour", &lua_api::ChangeFavour);
         lua.set_function("SetFavour", &lua_api::SetFavour);

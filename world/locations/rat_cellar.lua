@@ -39,6 +39,6 @@ function MakeRatCellar()
 			AddTranslation("F", function(x, y) DropItem(CreateObject('forest_brother_cloak'), x, y) end)
 		end
 		DrawPattern(0, 0)
-		Settle(CreatureClass.RAT, CreatureTemplate.VERY_LOW)
+		Settle("rat", CreatureTemplate.VERY_LOW)
 
 end

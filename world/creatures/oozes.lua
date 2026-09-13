@@ -1,7 +1,7 @@
 ------------------------------ OOZE, JELLY, etc. --------------------------------------
 
 Monster.new("gray_ooze")
-	:View("gray ooze", 'j', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, CreatureClass.BLOB)
+	:View("gray ooze", 'j', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, "blob")
 	:Basic("1d10+40", "0d0+1000", "1d100+600", CreatureSize.VERY_SMALL, "1d10+10")
 	:Body("", 0, 0)
 	:AI(XStandardAI.INSECT)
@@ -16,7 +16,7 @@ Monster.new("gray_ooze")
 	:Register()
 
 Monster.new("gelatinous_cube")
-	:View("gelatinous cube", 'j', xColor.xWHITE, PersonType.IT, CreatureTemplate.AVG, CreatureClass.BLOB)
+	:View("gelatinous cube", 'j', xColor.xWHITE, PersonType.IT, CreatureTemplate.AVG, "blob")
 	:Basic("1d10+50", "0d0+1000", "1d100+200", CreatureSize.LARGE, "20d4")
 	:Body("", 0, 0)
 	:AI(XStandardAI.INSECT)

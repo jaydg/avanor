@@ -200,9 +200,12 @@ BrandBuilder& BrandBuilder::Element(const RESISTANCE& resist)
     return *this;
 }
 
-BrandBuilder& BrandBuilder::Slays(const CreatureClass prey)
+BrandBuilder& BrandBuilder::Slays(const std::string& prey)
 {
-    t.slays = prey;
+    if (CheckCreatureClassExists(prey, "a brand")) {
+        t.slays.Add(prey);
+    }
+
     return *this;
 }
 

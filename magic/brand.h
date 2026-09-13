@@ -66,8 +66,8 @@ struct BrandStats {
     // no damage of its own.
     RESISTANCE element;
 
-    // Triple damage against creatures of this class.
-    CreatureClass slays = CreatureClass::NONE;
+    // Triple damage against creatures of these classes.
+    CreatureClassSet slays;
 
     // Laid on the victim after a blow that got through, by id. Empty
     // for a brand that inflicts nothing.
@@ -131,7 +131,7 @@ class BrandBuilder
         BrandBuilder& Called(const std::string& templ);
         BrandBuilder& Group(BrandGroup group);
         BrandBuilder& Element(const RESISTANCE& resist);
-        BrandBuilder& Slays(CreatureClass prey);
+        BrandBuilder& Slays(const std::string& prey);
         BrandBuilder& Inflicts(const std::string& modifier);
         BrandBuilder& Value(int value);
         void Register();

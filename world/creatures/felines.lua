@@ -1,7 +1,7 @@
 ------------------------------ FELINE --------------------------------------
 
 Monster.new("cat")
-	:View("cat", 'f', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.FELINE)
+	:View("cat", 'f', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "feline")
 	:Basic("1d10+110", "0d0+1000", "1d500+500", CreatureSize.SMALL, "1d40+50")
 	:Body("", 0, 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
@@ -13,7 +13,7 @@ Monster.new("cat")
 	:Register()
 
 Monster.new("wild_cat")
-	:View("wildcat", 'f', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.FELINE)
+	:View("wildcat", 'f', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "feline")
 	:Basic("1d20+110", "0d0+1000", "1d300+300", CreatureSize.SMALL, "1d40+70")
 	:Body("", 0, 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)

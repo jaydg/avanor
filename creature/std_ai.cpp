@@ -100,7 +100,9 @@ XStandardAI::XStandardAI(XCreature* _cr) : guard_area(1, 1, 2, 3),
     ai_owner = _cr;
     ai_flag = XStandardAI::NONE; //(XStandardAI::Flag)(XStandardAI::RANDOM_MOVE | XStandardAI::ALLOW_PICK_UP);
 
-    enemy_class = CreatureClass::ALL;
+    // Whom a creature fights when nobody has told it otherwise -
+    // gathered from the :Enemy() rows in world/creature_classes.lua.
+    enemy_class = DefaultEnemies();
     last_moved_way.reset();
 
     companion_command = CC_NONE;
@@ -585,7 +587,7 @@ bool XStandardAI::isEnemy(XCreature *cr)
         return false;
     }
 
-    if (enemy_class & cr->creature_class && ai_owner->view != cr->view) {
+    if (enemy_class.Has(cr->creature_class) && ai_owner->view != cr->view) {
         return true;
     }
 
@@ -600,7 +602,7 @@ bool XStandardAI::isEnemy(XCreature *cr)
 
     // A PEACEFUL creature still defends itself against anything that is
     // itself not peaceful - PEACEFUL means "won't start a fight with
-    // civilized/harmless beings" (see enemy_class == NONE in
+    // civilized/harmless beings" (see an empty enemy_class in
     // XLocation::NewCreature()), not "will never fight back against real
     // danger". Keying off the intruder's own disposition instead of its
     // class means this works the same whether the intruder is a bandit
@@ -652,7 +654,7 @@ void XStandardAI::ResAIFlag(XStandardAI::Flag aif)
     ai_flag = static_cast<XStandardAI::Flag>((ai_flag | aif) ^ aif);
 }
 
-void XStandardAI::SetEnemyClass(CreatureClass cr_class)
+void XStandardAI::SetEnemyClass(const CreatureClassSet& cr_class)
 {
     enemy_class = cr_class;
 }

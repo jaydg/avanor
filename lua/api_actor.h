@@ -101,11 +101,11 @@ namespace lua_api
     void SetCreatureAI(void* cr, const std::string& lua_class);
     XCreature* AsCreature(void* p);
     XItem* AsItem(void* p);
-    int CreatureCountInLocation(const std::string& l_id, CreatureClass cc);
+    int CreatureCountInLocation(const std::string& l_id, const std::string& cc);
     void SetItEnemyFor(void* cr1, void* cr2);
     sol::optional<void*> CreatureNear(void* who, const std::string& name);
     void SetAIFlag(void* cr, unsigned int flags);
-    void SetEnemy(void* cr, int cr_class);
+    void SetEnemy(void* cr, const sol::object& cr_class);
     sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void ExecuteCreatureScript(void* cr, sol::table script);
@@ -116,7 +116,8 @@ namespace lua_api
     XGUID GetObjectGUID(void* obj);
     std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
     bool HasBrand(const std::string& carried, const std::string& ids);
-    int GetCreatureClass(void* who);
+    std::string GetCreatureClass(void* who);
+    void SetCreatureClass(void* who, const std::string& cr_class);
     int Favour(void* who, const std::string& deity);
     void ChangeFavour(void* who, const std::string& deity, int delta);
     void SetFavour(void* who, const std::string& deity, int value);

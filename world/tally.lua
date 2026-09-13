@@ -11,7 +11,8 @@
 --   cr      the creature that died
 --   killer  whoever killed it, or nil (starvation, poison, a collapsing
 --           dungeon - see XCreature::DecNutrio)
---   class   the dead creature's CreatureClass
+--   class   what sort of creature it was, by the id
+--           world/creature_classes.lua declares
 
 
 -- The orc war-party tally behind the "repulse an attack of orcs" line on the
@@ -29,7 +30,7 @@
 -- having taken part from having watched - the royal guards do most of the
 -- work if the hero is slow about it.
 local function TallyOrcs(cr, killer, class)
-	if (class ~= CreatureClass.ORC or GetGroupID(cr) ~= ORC_WAR_PARTY) then
+	if (class ~= "orc" or GetGroupID(cr) ~= ORC_WAR_PARTY) then
 		return
 	end
 
@@ -44,7 +45,7 @@ local function TallyOrcs(cr, killer, class)
 	-- One, not none: the orc dying right now is still standing on its map
 	-- cell. XCreature::Die drops the cell's reference in LastStep(), which
 	-- runs long after this hook.
-	if (GetCreatureCount("MAIN", CreatureClass.ORC) ~= 1) then
+	if (GetCreatureCount("MAIN", "orc") ~= 1) then
 		return
 	end
 
@@ -79,7 +80,7 @@ end
 local SKELETON_BONE_ODDS = 12
 
 local function DropSkeletonBone(cr, class)
-	if (class ~= CreatureClass.UNDEAD or AsCreature(cr).name ~= "skeleton") then
+	if (class ~= "undead" or AsCreature(cr).name ~= "skeleton") then
 		return
 	end
 

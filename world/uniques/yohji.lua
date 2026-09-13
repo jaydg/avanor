@@ -1,6 +1,6 @@
 
 Monster.new("yohjishiro")
-	:View("Yohjishiro, the elven wizard", 'h', xColor.xWHITE, PersonType.NAMED_SHE, CreatureTemplate.UNIQUE, CreatureClass.HUMANOID)
+	:View("Yohjishiro, the elven wizard", 'h', xColor.xWHITE, PersonType.NAMED_SHE, CreatureTemplate.UNIQUE, "humanoid")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL + XStandardAI.FIND_WAY)
@@ -44,7 +44,7 @@ local YOHJI_TROPHIES = {
 local YOHJI_TROPHY_ODDS = 40
 
 function DropYohjiTrophy(cr, class)
-	if (class ~= CreatureClass.RAT or Rand(YOHJI_TROPHY_ODDS) ~= 0) then
+	if (class ~= "rat" or Rand(YOHJI_TROPHY_ODDS) ~= 0) then
 		return
 	end
 

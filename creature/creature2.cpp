@@ -158,7 +158,7 @@ int XCreature::CauseEffect(int dmg, const BrandSet& brands, bool* applied)
         // A slayer brand against something it does not slay has not
         // applied at all - unlike a resisted element, there is nothing
         // here to reduce.
-        if (row->slays != CreatureClass::NONE && creature_class & row->slays) {
+        if (row->slays.Has(creature_class)) {
             matched = true;
             damage += dmg * 3;
         }
@@ -593,10 +593,16 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             } else {
                 // and kill IT!!!
                 if ((vis1 || vis2) && !isHero()) {
+                    // An undead is destroyed rather than killed, and which
+                    // sorts read that way is content's to say, not the
+                    // engine's - see :Slain() in world/creature_classes.lua.
+                    const CreatureClassStats* crow = FindCreatureClass(creature_class);
+                    const std::string verb = crow ? crow->slain_verb : "kill";
+
                     auto str = fmt::format("and {} {}.",
-                        creature_class & CreatureClass::UNDEAD
-                            ? (!pData->attack_name.empty() ? pData->attacker->GetVerb("destroy") : "destroys")
-                            : (!pData->attack_name.empty() ? pData->attacker->GetVerb("kill") : "kills"),
+                        !pData->attack_name.empty()
+                            ? pData->attacker->GetVerb(verb)
+                            : verb + "s",
                         GetNameEx(CRN_T3)
                     );
 

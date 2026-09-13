@@ -1,6 +1,6 @@
 
 Monster.new("roderik")
-	:View("Roderick, king of Avanor", 'p', xColor.xYELLOW, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.HUMAN)
+	:View("Roderick, king of Avanor", 'p', xColor.xYELLOW, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "human")
 	:Basic("1d30+150", "0d0+700", "0d0+700", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
@@ -95,7 +95,7 @@ function RoderikHandler(e, t, p, v)
 				AddMessage("I have heard that my family crypt has been occupied by a group of undead. Clear the crypt and I will reward you. It lies to the south-west of the city.")
 				QuestModify("roderick_crypt", XQuest.KNOWN)
 			elseif (crypt == XQuest.KNOWN) then
-				if (GetCreatureCount("UNDEADS_TOMB1", CreatureClass.UNDEAD) == 0) then
+				if (GetCreatureCount("UNDEADS_TOMB1", "undead") == 0) then
 					AddMessage("Thank you for destroying the evil in our crypt. Please accept these coins and my gratitude for a job well done.")
 					QuestModify("roderick_crypt", XQuest.CLOSED)
 					chatter:MoneyOp(1000)

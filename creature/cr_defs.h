@@ -21,54 +21,116 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef CR_DEFS_H
 #define CR_DEFS_H
 
+#include <initializer_list>
 #include <string>
+#include <vector>
+
+#include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
 
 #include <sol/forward.hpp>
 
-enum class CreatureClass : unsigned int {
-    NONE     = 0x00000000,
-    RAT      = 0x00000001,
-    FELINE   = 0x00000002,
-    CANINE   = 0x00000004,
-    REPTILE  = 0x00000008,
-    INSECT   = 0x00000010,
-    HUMAN    = 0x00000020,
-    ORC      = 0x00000040,
-    GIANT    = 0x00000080,
-    KOBOLD   = 0x00000100,
-    UNDEAD   = 0x00000200,
-    GOBLIN   = 0x00000400,
-    DEMON    = 0x00000800,
-    HUMANOID = 0x00001000,
-    BLOB     = 0x00002000, // warm mass, ooze
-    OTHER    = 0x00004000,
-    ALL      = HUMAN | INSECT | KOBOLD | UNDEAD | GOBLIN | REPTILE | FELINE | RAT | CANINE | HUMANOID,
-    ALL_IMPL = RAT | FELINE | CANINE | REPTILE | KOBOLD | INSECT | GOBLIN | UNDEAD,
+// What sort of creature this is - "rat", "undead", "orc". Which sorts
+// exist is content (world/creature_classes.lua).
+using CREATURE_CLASS = std::string;
+
+// No class at all.
+inline const CREATURE_CLASS CRC_NONE;
+
+// A set of them: whom a brand slays, whom an AI counts as an enemy, what
+// a generator may spawn. Holds ids rather than a bit apiece, so content
+// may declare as many classes as it likes and a saved game keeps meaning
+// what it meant when it was written.
+class CreatureClassSet
+{
+    public:
+        CreatureClassSet() = default;
+
+        // The ids themselves, one per entry - CreatureClassSet{"rat", "feline"}.
+        CreatureClassSet(std::initializer_list<CREATURE_CLASS> ids);
+        explicit CreatureClassSet(std::vector<CREATURE_CLASS> ids);
+
+        [[nodiscard]] bool Has(const CREATURE_CLASS& id) const;
+        void Add(const CREATURE_CLASS& id);
+        void Add(const CreatureClassSet& other);
+        void Remove(const CREATURE_CLASS& id);
+        [[nodiscard]] bool Empty() const { return classes.empty(); }
+
+        // The ids in the order they were added, for saying in a message
+        // what a set was. A save holds the list itself, not this.
+        [[nodiscard]] std::string toString() const;
+
+        auto begin() const { return classes.begin(); }
+        auto end() const { return classes.end(); }
+
+        bool operator==(const CreatureClassSet& o) const { return classes == o.classes; }
+
+        template<class Archive>
+        void serialize(Archive& ar)
+        {
+            ar(classes);
+        }
+
+    private:
+        std::vector<CREATURE_CLASS> classes;
 };
 
-// Combines flags - e.g. CreatureClass::RAT | CreatureClass::FELINE.
-constexpr CreatureClass operator|(CreatureClass a, CreatureClass b)
-{
-    return static_cast<CreatureClass>(static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
-}
+// What content says about one sort of creature. Nothing here is a rule
+// the engine invented: each field replaced a place where the engine
+// named a class outright.
+struct CreatureClassStats {
+    CREATURE_CLASS id;
 
-// Excludes flags - e.g. CreatureClass::ALL ^ CreatureClass::HUMAN, the
-// only real use case found for this operator (SetEnemyClass() callers
-// building "everything except X").
-constexpr CreatureClass operator^(CreatureClass a, CreatureClass b)
-{
-    return static_cast<CreatureClass>(static_cast<unsigned int>(a) ^ static_cast<unsigned int>(b));
-}
+    // Whether one of these leaves a body behind when it dies. The undead
+    // do not - there is nothing left to leave.
+    bool leaves_corpse = true;
 
-// Every `creature_class & mask` site in this codebase is a truthy
-// intersection test, never a value kept for further bit manipulation -
-// returning bool directly here, instead of the conventional same-type
-// CreatureClass, means every one of those call sites keeps working
-// unchanged, with no separate `!= CreatureClass::NONE` needed anywhere.
-constexpr bool operator&(CreatureClass a, CreatureClass b)
+    // The verb for finishing one off. An undead is destroyed rather than
+    // killed.
+    std::string slain_verb = "kill";
+
+    // Whether a creature that has been told nothing about whom to fight
+    // counts this sort an enemy. Orcs, giants, demons and blobs are not
+    // on that list and never have been: they are somebody else's quarrel.
+    bool enemy_by_default = false;
+
+    // Whether these are the people a guard is set to protect, rather than
+    // something for it to fight.
+    bool folk = false;
+};
+
+// The row for an id, or nothing if no world file declares one.
+const CreatureClassStats* FindCreatureClass(const CREATURE_CLASS& id);
+
+// Every class content has declared, in the order it declared them.
+const std::vector<CreatureClassStats>& AllCreatureClasses();
+
+// Whom a creature fights when it has been told nothing, and whom a guard
+// fights - everything in the first set that is not one of the folk it
+// was posted to protect. Both are gathered from the rows, so a world that
+// adds a class decides for itself which side of these it falls on.
+CreatureClassSet DefaultEnemies();
+CreatureClassSet GuardsEnemies();
+
+class CreatureClassBuilder
 {
-    return (static_cast<unsigned int>(a) & static_cast<unsigned int>(b)) != 0;
-}
+    public:
+        explicit CreatureClassBuilder(CREATURE_CLASS id);
+
+        CreatureClassBuilder& NoCorpse();
+        CreatureClassBuilder& Slain(const std::string& verb);
+        CreatureClassBuilder& Enemy();
+        CreatureClassBuilder& Folk();
+        void Register();
+
+    private:
+        CreatureClassStats t;
+};
+
+void RegisterCreatureClassLua(sol::state_view& lua);
+
+// Complains if no row is registered under this id and returns false.
+bool CheckCreatureClassExists(const CREATURE_CLASS& id, const char* where);
 
 // A monster's identity, everywhere: XCreatureStorage::creature_storage's
 // key, XCreature::creature_name/XCorpse::cn (both persisted via Cereal),
@@ -138,8 +200,6 @@ enum CR_ATTACK_TYPE {
     CRAT_BOTH
 };
 
-// Registers CreatureClass as a Lua table. GROUP_ID no longer gets one -
-// it's a plain string now, see the comment above it.
 void RegisterCrDefsEnums(sol::state_view& lua);
 
 #endif

@@ -14,7 +14,7 @@ Item.new("great_elemental_ring")
 	:Register()
 
 Monster.new("beelzevile")
-	:View("Beelzevile, the horned demon", '&', xColor.xLIGHTCYAN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.DEMON)
+	:View("Beelzevile, the horned demon", '&', xColor.xLIGHTCYAN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "demon")
 	:Basic("1d30+50", "0d0+1500", "0d0+900", CreatureSize.LARGE, "1d400+4000")
 	:Body("head body ring ring", 100, CreatureTemplate.SUPPRESS_INVIS + CreatureTemplate.SEE_INVIS)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)

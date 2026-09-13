@@ -57,16 +57,44 @@ namespace lua_api
 // API. They still register here, and would move once XLocation grows a
 // public seam for them.
 
-//Settle(CreatureClass.RAT + CreatureClass.FELINE + CreatureClass.INSECT, CreatureTemplate.VERY_LOW)
-//Settle(CreatureClass.RAT, CreatureTemplate.LOW)
-//Settle(CreatureClass.RAT, CreatureTemplate.LOW, 4, 50000)
+// Which classes a call names: one id, or a list of them.
 //
-// `max_creature` is a ceiling per creature *class*, not per level: a mask
+//   Settle({"rat", "feline", "insect"}, CreatureTemplate.VERY_LOW)
+//   Settle("rat", CreatureTemplate.LOW)
+static CreatureClassSet ClassesOf(const sol::object& classes, const char* where)
+{
+    CreatureClassSet out;
+
+    if (classes.is<std::string>()) {
+        out.Add(classes.as<std::string>());
+    } else if (classes.is<sol::table>()) {
+        for (const auto& [key, value] : classes.as<sol::table>()) {
+            out.Add(value.as<std::string>());
+        }
+    } else {
+        std::cerr << "world: " << where << " names its creature classes as neither"
+                     " an id nor a list of them" << std::endl;
+
+        return out;
+    }
+
+    for (const CREATURE_CLASS& id : out) {
+        CheckCreatureClassExists(id, where);
+    }
+
+    return out;
+}
+
+//Settle({"rat", "feline", "insect"}, CreatureTemplate.VERY_LOW)
+//Settle("rat", CreatureTemplate.LOW)
+//Settle("rat", CreatureTemplate.LOW, 4, 50000)
+//
+// `max_creature` is a ceiling per creature *class*, not per level: a call
 // naming eight classes settles up to eight times that many. `refresh` is
 // how long between one spawn attempt and the next.
-void Settle(CreatureClass crc, int crl, sol::optional<int> max_creature, sol::optional<int> refresh)
+void Settle(const sol::object& crc, int crl, sol::optional<int> max_creature, sol::optional<int> refresh)
 {
-    Game.Scheduler.Add(new XUniversalGen(XLocation::current_location, crc,
+    Game.Scheduler.Add(new XUniversalGen(XLocation::current_location, ClassesOf(crc, "Settle()"),
                                          static_cast<CreatureTemplate::Level>(crl),
                                          max_creature.value_or(5), refresh.value_or(25000)));
 }
@@ -115,14 +143,17 @@ void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol
     // non-human/humanoid class regardless, silently defeating the whole
     // point of being flagged PEACEFUL.
     if (!(cr->xai->GetAIFlag() & XStandardAI::PEACEFUL)) {
-        cr->xai->SetEnemyClass(CreatureClass::ALL ^ (CreatureClass::HUMAN | CreatureClass::HUMANOID));
+        // Everything a creature fights by default, less the folk a guard
+        // is posted to protect - both marked in world/creature_classes.lua,
+        // so the engine names no class of its own here.
+        cr->xai->SetEnemyClass(GuardsEnemies());
     }
 
     return cr;
 }
 
-//GuardianClass(CreatureClass.ORC, "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
-void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
+//GuardianClass("orc", "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
+void* GuardianClass(const sol::object& crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
 {
     XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
     int flag = XStandardAI::GUARD_AREA;
@@ -131,7 +162,7 @@ void* GuardianClass(CreatureClass crc, const std::string& gid, int x, int y, sol
         flag |= *flags;
     }
 
-    return XLocation::current_location->NewCreature(crc, rect, gid, flag);
+    return XLocation::current_location->NewCreatureOfClass(ClassesOf(crc, "GuardianClass()"), rect, gid, flag);
 }
 
 //SetStartLocation("MAIN", 26, 4, 6, 5)

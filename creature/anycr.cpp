@@ -63,7 +63,7 @@ CEREAL_REGISTER_TYPE(XAnyCreature);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XCreature, XAnyCreature);
 
 std::unordered_map<CREATURE_NAME, CreatureTemplate> XCreatureStorage::creature_storage;
-CREATURE_SET_REC XCreatureStorage::creature_set[32];
+std::unordered_map<CREATURE_CLASS, CREATURE_SET_REC> XCreatureStorage::creature_set;
 
 const std::unordered_map<CREATURE_NAME, XCreature*(*)(CreatureTemplate*)> XCreatureStorage::unique_creators = {
     {CN_SHOPKEEPER, [](CreatureTemplate* cr) -> XCreature* { return new XShopkeeper(cr); }},
@@ -243,7 +243,11 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
 
 void XAnyCreature::Die(XCreature * killer)
 {
-    if (vRand(5) == 0 && !(creature_class & CreatureClass::UNDEAD)) {
+    // Whether there is anything left to leave is the class's own
+    // business - world/creature_classes.lua says so with :NoCorpse().
+    const CreatureClassStats* row = FindCreatureClass(creature_class);
+
+    if (vRand(5) == 0 && (!row || row->leaves_corpse)) {
         DropItem(new XCorpse(this));
     }
 
@@ -258,7 +262,7 @@ CreatureTemplate* XCreatureStorage::GetCreatureData(const CREATURE_NAME cn)
 void XCreatureStorage::CreateQuickBase()
 {
     for (auto& [cn, cr] : creature_storage) {
-        creature_set[vGetBitNumber(static_cast<unsigned int>(cr.cr_class))].cn.push_back(cn);
+        creature_set[cr.cr_class].cn.push_back(cn);
     }
 }
 
@@ -278,21 +282,38 @@ XCreature* XCreatureStorage::Create(const CREATURE_NAME cn)
     return tcr;
 }
 
-XCreature* XCreatureStorage::CreateRnd(const CreatureClass cc, const CreatureTemplate::Level lvl)
+XCreature* XCreatureStorage::CreateRnd(const CreatureClassSet& cc, const CreatureTemplate::Level lvl)
 {
-    const int set = vGetBitNumber(vGetRandomBit(static_cast<unsigned int>(cc)));
+    // One of the classes asked for, drawn at random, then a monster of
+    // that class - the same two steps the old bit-picking did.
+    std::vector<const CREATURE_SET_REC*> sets;
+
+    for (const CREATURE_CLASS& id : cc) {
+        if (auto it = creature_set.find(id); it != creature_set.end() && !it->second.cn.empty()) {
+            sets.push_back(&it->second);
+        }
+    }
+
+    if (sets.empty()) {
+        std::cerr << "world: asked for a creature of '" << cc.toString()
+                  << "', and nothing of that sort is defined" << std::endl;
+
+        return nullptr;
+    }
+
+    const CREATURE_SET_REC* set = sets[vRand(static_cast<int>(sets.size()))];
     int count = 100;
 
     while (count > 0) {
-        if (long r = vRand(static_cast<int>(creature_set[set].cn.size()));
-            creature_storage.at(creature_set[set].cn[r]).crl <= lvl) {
-            return Create(creature_set[set].cn[r]);
+        if (long r = vRand(static_cast<int>(set->cn.size()));
+            creature_storage.at(set->cn[r]).crl <= lvl) {
+            return Create(set->cn[r]);
         }
 
         count--;
     }
 
-    return Create(creature_set[set].cn[0]);
+    return Create(set->cn[0]);
 }
 
 void XCreatureStorage::RestoreCreatureInfo(XCreature* cr)
@@ -320,7 +341,7 @@ MonsterBuilder::MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base) : id(id)
     }
 }
 
-MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, CreatureClass cr_class)
+MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, const CREATURE_CLASS& cr_class)
 {
     cr.name = name;
     cr.view = view;
@@ -533,13 +554,11 @@ MonsterBuilder& MonsterBuilder::Unique()
 
 void MonsterBuilder::Register()
 {
-    // Last chance to catch a definition that says nothing. A Lua
-    // constant the engine never registered - a misspelt or missing
-    // CreatureClass/CreatureTemplate member - arrives here as 0 rather
-    // than as an error, and a creature built from it looks fine until
-    // something downstream asks it what it is, possibly hours into a
-    // game. Neither of these fields has a legitimate zero: every
-    // CreatureClass and every CreatureTemplate::Level is a bit.
+    // Last chance to catch a definition that says nothing. A misspelt
+    // class is a class no world file declares, and a CreatureTemplate
+    // member the engine never registered arrives here as 0 rather than
+    // as an error - either way the creature looks fine until something
+    // downstream asks it what it is, possibly hours into a game.
     if (XCreatureStorage::creature_storage.count(id)) {
         std::cerr << "world: creature '" << id << "' is defined twice" << std::endl;
     }
@@ -548,10 +567,10 @@ void MonsterBuilder::Register()
         std::cerr << "world: creature '" << id << "' has no name" << std::endl;
     }
 
-    if (cr.cr_class == CreatureClass::NONE) {
-        std::cerr << "world: creature '" << id << "' has no class - the CreatureClass"
-                     " member named in its View() is misspelt, or the engine never"
-                     " registered it" << std::endl;
+    if (cr.cr_class.empty()) {
+        std::cerr << "world: creature '" << id << "' has no class" << std::endl;
+    } else {
+        CheckCreatureClassExists(cr.cr_class, ("creature '" + id + "'").c_str());
     }
 
     if (static_cast<unsigned int>(cr.crl) == 0) {

@@ -216,7 +216,7 @@ void XLua::Init()
     // value. XTileType is here too: it is filled by DefineTile() as
     // world/tiles.lua runs, and read by name everywhere after that.
     for (const char* enum_table : {
-            "BodyPart", "CorpseEffectType", "CreatureClass",
+            "BodyPart", "CorpseEffectType",
             "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",

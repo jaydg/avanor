@@ -2,7 +2,7 @@
 -------------------- EXTINCT VULCANO ---------------------------
 
 Monster.new("xshee_voo")
-	:View("Xshee-Voo, the Cyclope", 'H', xColor.xLIGHTMAGENTA, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, CreatureClass.GIANT)
+	:View("Xshee-Voo, the Cyclope", 'H', xColor.xLIGHTMAGENTA, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "giant")
 	:Basic("1d30+120", "0d0+900", "0d0+900", CreatureSize.LARGE, "1d400+3000")
 	:Body("head neck body cloak hand hand boots", 50, 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)

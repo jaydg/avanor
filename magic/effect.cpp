@@ -51,6 +51,7 @@ void XEffect::RegisterLua(sol::state_view& lua)
         "Touches", &EffectBuilder::Touches,
         "Throws", &EffectBuilder::Throws,
         "Engine", &EffectBuilder::Engine,
+        "Summons", &EffectBuilder::Summons,
         "Targets", &EffectBuilder::Targets,
         "Range", &EffectBuilder::Range,
         "Register", &EffectBuilder::Register
@@ -183,6 +184,22 @@ EffectBuilder& EffectBuilder::Throws(const int count, const int divisor, const i
     return *this;
 }
 
+EffectBuilder& EffectBuilder::Summons(const std::string& cr_class)
+{
+    if (t.parts.empty()) {
+        std::cerr << "world: the effect '" << t.id << "' summons '" << cr_class
+                  << "' before saying what it does" << std::endl;
+
+        return *this;
+    }
+
+    if (CheckCreatureClassExists(cr_class, ("effect '" + t.id + "'").c_str())) {
+        t.parts.back().summons = cr_class;
+    }
+
+    return *this;
+}
+
 EffectBuilder& EffectBuilder::Engine(const std::string& which)
 {
     EffectPart part;
@@ -207,6 +224,18 @@ EffectBuilder& EffectBuilder::Range(const int divisor, const int bonus)
 
 void EffectBuilder::Register()
 {
+    // The one engine effect that needs more than its name: without a
+    // class to raise it would call up nothing at all, once per cast,
+    // which is a thing to hear about while the file is loading rather
+    // than the first time somebody reads the scroll.
+    for (const auto& part : t.parts) {
+        if (part.kind == EffectPart::Kind::ENGINE
+            && part.engine == "summon_monster" && part.summons.empty()) {
+            std::cerr << "world: the effect '" << t.id
+                      << "' summons, but says nothing of what" << std::endl;
+        }
+    }
+
     if (t.id.empty()) {
         std::cerr << "world: an effect with no id" << std::endl;
         return;
@@ -419,8 +448,10 @@ RESULT XEffect::Make(XCreature * caster, const EFFECT& effect, int power)
 // move people about the map, and show screens. Content names one of these
 // with :Engine("teleport") rather than describing it, because there is
 // nothing here to describe in dice and colours.
-int XEffect::Engine(const std::string& which, const EFFECT_DATA* pData)
+int XEffect::Engine(const EffectPart& part, const EFFECT_DATA* pData)
 {
+    const std::string& which = part.engine;
+
     if (which == "self_knowledge") {
         if (pData->caller->isHero()) {
             dynamic_cast<XHero *>(pData->caller)->ShowResistance();
@@ -492,7 +523,7 @@ int XEffect::Engine(const std::string& which, const EFFECT_DATA* pData)
         }
 
         if (flg) {
-            XCreature* cr = pData->l->NewCreature(CreatureClass::UNDEAD);
+            XCreature* cr = pData->l->NewCreatureOfClass({part.summons});
 
             if (!cr) {
                 return 0;
@@ -660,7 +691,7 @@ int XEffect::Make(const EFFECT_DATA* pData)
                 break;
 
             case EffectPart::Kind::ENGINE:
-                done = Engine(part.engine, pData);
+                done = Engine(part, pData);
                 break;
         }
 

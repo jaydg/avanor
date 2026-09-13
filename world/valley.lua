@@ -73,7 +73,7 @@ function MakeAvanorValley()
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).
 	for i = 1, ORC_WAR_PARTY_SIZE do
-		GuardianClass(CreatureClass.ORC, ORC_WAR_PARTY, ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y,
+		GuardianClass("orc", ORC_WAR_PARTY, ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y,
 			ORC_MUSTER_AREA.w, ORC_MUSTER_AREA.h, XStandardAI.GUARD_AREA)
 	end
 

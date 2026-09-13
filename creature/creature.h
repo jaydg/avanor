@@ -732,7 +732,7 @@ class XCreature : public XBaseObject
             }
         }
 
-        CreatureClass creature_class;
+        CREATURE_CLASS creature_class;
 
         virtual std::string StdAnswer()
         {

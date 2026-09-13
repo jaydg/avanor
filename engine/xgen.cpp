@@ -18,6 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <unordered_map>
+
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
 
@@ -36,34 +38,35 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XGenerator, XUniversalGen);
 
 bool XUniversalGen::Run()
 {
-    unsigned int cr_count[32] = {0};
+    // How many of each sort are already here. The ceiling is per class,
+    // so a generator naming eight of them settles up to eight times as
+    // many creatures as one naming a single class.
+    std::unordered_map<CREATURE_CLASS, unsigned int> cr_count;
 
     for (const auto& [key, obj] : objects) {
         auto* cr = dynamic_cast<XCreature *>(obj);
 
         if (cr && !cr->isHero() && cr->l == l) {
-            int n = vGetHighBitNum(static_cast<unsigned int>(cr->creature_class));
-            cr_count[n]++;
+            cr_count[cr->creature_class]++;
         }
     }
 
-    int cmask = 0;
+    CreatureClassSet room;
 
-    for (int i = 0; i < 32; i++) {
-        cmask <<= 1;
-
-        if (cr_count[31 - i] < max_creature) {
-            cmask |= 0x01;
+    for (const CREATURE_CLASS& id : crc) {
+        if (cr_count[id] < max_creature) {
+            room.Add(id);
         }
     }
 
-    if (auto n_mask = static_cast<CreatureClass>(cmask & static_cast<int>(crc)); n_mask != CreatureClass::NONE) {
-        // No room right now is not an error - the generator simply
-        // produces nothing this turn and tries again on the next.
+    // No room right now is not an error - the generator simply produces
+    // nothing this turn and tries again on the next.
+    if (!room.Empty()) {
         if (const auto pt = l->GetFreeXY()) {
-            XCreature * cr = XCreatureStorage::CreateRnd(n_mask, crl);
-            Game.NewCreature(cr, pt->x, pt->y, l);
-            cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
+            if (XCreature* cr = XCreatureStorage::CreateRnd(room, crl)) {
+                Game.NewCreature(cr, pt->x, pt->y, l);
+                cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
+            }
         }
     }
 

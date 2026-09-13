@@ -232,7 +232,8 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid)
     cr->setGroupID(gid);
 
     if (cr->xai->GetAIFlag() & XStandardAI::PEACEFUL) {
-        cr->xai->SetEnemyClass(CreatureClass::NONE); //by default all creatures in pease with others.
+        // Per default all creatures are peaceful
+        cr->xai->SetEnemyClass(CreatureClassSet());
     }
 
     Game.NewCreature(cr, x, y, this);
@@ -266,7 +267,7 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, u
     return cr;
 }
 
-XCreature* XLocation::NewCreature(CreatureClass crc)
+XCreature* XLocation::NewCreatureOfClass(const CreatureClassSet& crc)
 {
     const auto pt = GetFreeXY();
 
@@ -276,12 +277,16 @@ XCreature* XLocation::NewCreature(CreatureClass crc)
 
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
 
+    if (!cr) {
+        return nullptr;
+    }
+
     Game.NewCreature(cr, pt->x, pt->y, this);
 
     return cr;
 }
 
-XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
+XCreature* XLocation::NewCreatureOfClass(const CreatureClassSet& crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
 {
     const auto pt = GetFreeXY(&rect);
 
@@ -290,10 +295,16 @@ XCreature* XLocation::NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid, 
     }
 
     XCreature * cr = XCreatureStorage::CreateRnd(crc);
+
+    if (!cr) {
+        return nullptr;
+    }
+
     cr->setGroupID(gid);
 
     if (cr->xai->GetAIFlag() & XStandardAI::PEACEFUL) {
-        cr->xai->SetEnemyClass(CreatureClass::NONE); //by default all creatures in pease with others.
+        // Per default all creatures are peaceful
+        cr->xai->SetEnemyClass(CreatureClassSet());
     }
 
     Game.NewCreature(cr, pt->x, pt->y, this);
@@ -403,14 +414,14 @@ void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk
     ((XShopkeeper*)cr)->SetShop(sk_name, shop);
 }
 
-int XLocation::GetCreatureCount(CreatureClass creature_class)
+int XLocation::GetCreatureCount(const CREATURE_CLASS& creature_class)
 {
     int count = 0;
 
     for (const auto& [key, obj] : objects) {
         auto* cr = dynamic_cast<XCreature*>(obj);
 
-        if (cr && !cr->isHero() && cr->l->guid() == this->guid() && cr->creature_class & creature_class) {
+        if (cr && !cr->isHero() && cr->l->guid() == this->guid() && cr->creature_class == creature_class) {
             count++;
         }
     }

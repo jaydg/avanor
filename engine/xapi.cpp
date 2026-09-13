@@ -58,18 +58,6 @@ unsigned int vGetRandomBit(const unsigned int mask)
     return b_n;
 }
 
-int vGetBitNumber(unsigned int mask)
-{
-    int res = 0;
-
-    while (mask > 1) {
-        mask /= 2;
-        res++;
-    }
-
-    return res;
-}
-
 int vGetHighBitNum(unsigned int number)
 {
     assert(number > 0);

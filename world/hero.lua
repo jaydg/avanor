@@ -31,6 +31,10 @@ ALL_PROFESSIONS = {"warrior", "wizard", "archer", "ranger", "cleric",
 --   stats       starting figures
 --   max_stats   how far they can ever be trained
 --   speed       how long a turn takes; "0d0+1000" is ordinary
+--   class       what sort of creature the hero counts as, to a sword that
+--               slays its kind and to anything deciding whom to fight.
+--               Unsaid, "human" - which is what every race here counted
+--               as when the engine set it itself
 --   food        how kindly the stomach takes to what it is given
 --   skills      what the race simply knows
 --   professions which callings it may take up, in menu order
@@ -191,6 +195,7 @@ function InitHero(hero, race_key, gender_key, profession_key)
 	local gender = Find(HERO_GENDERS, gender_key)
 	local profession = Find(HERO_PROFESSIONS, profession_key)
 
+	SetCreatureClass(hero, race.class or "human")
 	SetMoveEnergy(hero, race.speed)
 	SetStats(hero, race.stats)
 	SetMaxStats(hero, race.max_stats)
@@ -636,8 +641,5 @@ function OnHeroPlaced(hero, race, profession)
 
 	AsCreature(dog).xai:SetCompanion(AsCreature(hero))
 	SetAIFlag(dog, XStandardAI.ALLOW_MOVE_OUT + XStandardAI.PEACEFUL)
-	SetEnemy(dog, CreatureClass.KOBOLD + CreatureClass.GOBLIN + CreatureClass.UNDEAD
-		+ CreatureClass.INSECT + CreatureClass.BLOB + CreatureClass.CANINE
-		+ CreatureClass.FELINE + CreatureClass.RAT + CreatureClass.REPTILE
-		+ CreatureClass.ORC)
+	SetEnemy(dog, {"kobold", "goblin", "undead", "insect", "blob", "canine", "feline", "rat", "reptile", "orc"})
 end

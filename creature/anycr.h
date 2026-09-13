@@ -105,7 +105,7 @@ struct CreatureTemplate {
     std::string creature_description;
     XCorpse::Data pCorpseData;
     unsigned int ai_flags;
-    CreatureClass cr_class;        // class of creature
+    CREATURE_CLASS cr_class;       // class of creature
     std::vector<SKILL_REC> skills;
     std::vector<SPELL_NAME> spells;
     std::vector<EQUIP_REC> equipment;
@@ -131,13 +131,15 @@ class XCreatureStorage
 
     public:
         static std::unordered_map<CREATURE_NAME, CreatureTemplate> creature_storage;
-        static CREATURE_SET_REC creature_set[32];
+        // Which monsters belong to each class, so one can be drawn at
+        // random from a class without walking the whole storage.
+        static std::unordered_map<CREATURE_CLASS, CREATURE_SET_REC> creature_set;
 
         static void CreateQuickBase();
 
         static CreatureTemplate* GetCreatureData(CREATURE_NAME cn);
         static XCreature* Create(CREATURE_NAME cn);
-        static XCreature* CreateRnd(CreatureClass cc, CreatureTemplate::Level lvl = CreatureTemplate::Level::ANY);
+        static XCreature* CreateRnd(const CreatureClassSet& cc, CreatureTemplate::Level lvl = CreatureTemplate::Level::ANY);
         static void RestoreCreatureInfo(XCreature * cr);
 };
 
@@ -146,7 +148,7 @@ class MonsterBuilder
     public:
         explicit MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base = CN_NONE);
 
-        MonsterBuilder& View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, CreatureClass cr_class);
+        MonsterBuilder& View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, const CREATURE_CLASS& cr_class);
         MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, XCreature::Size size, const std::string& weight);
         MonsterBuilder& Body(const std::string& body, int prob, unsigned int gen_flags);
         MonsterBuilder& AI(unsigned int flags);

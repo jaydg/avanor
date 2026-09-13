@@ -23,6 +23,9 @@
 --                                          great_identify, self_knowledge,
 --                                          summon_monster, create_item,
 --                                          blink, teleport
+--       :Summons(class)                    for summon_monster: what sort
+--                                          of creature it calls up, from
+--                                          world/creature_classes.lua
 --       :Targets(EffectTarget.X)           what it needs pointed at
 --       :Range(divisor, bonus)             how far: power/divisor + bonus
 --       :Register()
@@ -169,6 +172,7 @@ Effect.new("self_knowledge")
 
 Effect.new("summon_monster")
 	:Engine("summon_monster")
+	:Summons("undead")
 	:Register()
 
 Effect.new("create_item")

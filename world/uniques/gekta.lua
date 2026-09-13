@@ -1,6 +1,6 @@
 
 Monster.new("gekta")
-	:View("Gekta, the sheep dog", 'C', xColor.xDARKGRAY, PersonType.NAMED_IT, CreatureTemplate.UNIQUE, CreatureClass.CANINE)
+	:View("Gekta, the sheep dog", 'C', xColor.xDARKGRAY, PersonType.NAMED_IT, CreatureTemplate.UNIQUE, "canine")
 	:Basic("1d10+200", "0d0+1000", "1d100+300", CreatureSize.SMALL, "1d200+400")
 	:Body("neck", 100, 0)
 	:AI(XStandardAI.HI_ANIMAL + XStandardAI.PEACEFUL)
@@ -16,7 +16,7 @@ Monster.new("gekta")
 
 function CreateGekta(x, y)
 	local gekta = Guardian("gekta", "guardian", x, y, 14, 5)
-	SetEnemy(gekta, CreatureClass.ORC)
+	SetEnemy(gekta, "orc")
 	SetEventHandler(gekta, 'GektaHandler')
 end
 

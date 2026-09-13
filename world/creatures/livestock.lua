@@ -4,7 +4,7 @@
 -- that someone tends to notice.
 
 Monster.new("sheep")
-	:View("sheep", 'q', xColor.xWHITE, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.OTHER)
+	:View("sheep", 'q', xColor.xWHITE, PersonType.IT, CreatureTemplate.VERY_LOW, "other")
 	:Basic("1d10+115", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+900")
 	:Body("", 0, 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PACK + XStandardAI.COWARD + XStandardAI.PEACEFUL)
@@ -16,7 +16,7 @@ Monster.new("sheep")
 	:Register()
 
 Monster.new("goat")
-	:View("goat", 'q', xColor.xDARKGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, CreatureClass.OTHER)
+	:View("goat", 'q', xColor.xDARKGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "other")
 	:Basic("1d10+110", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+800")
 	:Body("", 0, 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PACK + XStandardAI.PEACEFUL)

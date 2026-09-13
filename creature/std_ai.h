@@ -183,13 +183,13 @@ class XStandardAI
             return ai_flag;
         }
 
-        void SetEnemyClass(CreatureClass cr_class);
+        void SetEnemyClass(const CreatureClassSet& cr_class);
 
         // Carries ai_flag/enemy_class/guard_area(+location) forward onto a
         // replacement AI object - SetCreatureAI() (see game/location.cpp)
         // swaps in a brand-new XLuaAI, whose own constructor (via
         // XStandardAI's) would otherwise silently reset all of this back
-        // to defaults (ai_flag=NONE, enemy_class=ALL, a placeholder
+        // to defaults (ai_flag=NONE, enemy_class=the classes content marks
         // guard_area), discarding whatever a prior Guardian()/NewCreature()
         // call already set up. A member function rather than public
         // getters/setters for each field, since it only needs to exist for
@@ -278,7 +278,7 @@ class XStandardAI
 
         Flag ai_flag;
         XCreature* ai_owner;
-        CreatureClass enemy_class;
+        CreatureClassSet enemy_class;
 
         XRect guard_area;
         // Id of the location the guarded area belongs to.

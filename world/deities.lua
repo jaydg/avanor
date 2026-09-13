@@ -117,7 +117,7 @@ local function JudgeKill(killer, victim, pleased_by_undead)
 	local devotion = GetSkill(killer, XSkill.RELIGION) + 1
 	local good = DEVOTION_GOOD[devotion] or 0
 	local bad = DEVOTION_BAD[devotion] or 0
-	local undead = BinaryAND(GetCreatureClass(victim), CreatureClass.UNDEAD)
+	local undead = GetCreatureClass(victim) == "undead"
 
 	if (undead == pleased_by_undead) then
 		return good

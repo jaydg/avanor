@@ -254,14 +254,18 @@ class XLocation : public XObject
         int visited_by_hero;
         void DumpLocation(std::ofstream &file);
 
-        int GetCreatureCount(CreatureClass creature_class); //count of such creatures on this level (need for quests)
-
+        // count of creatures of that class on this level (need for quests)
+        int GetCreatureCount(const CREATURE_CLASS& creature_class);
 
         XCreature* NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid = GID_NONE);
         XCreature* NewCreature(CREATURE_NAME cn);
         XCreature* NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
-        XCreature* NewCreature(CreatureClass crc);
-        XCreature* NewCreature(CreatureClass crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
+
+        // By class rather than by name: one of whatever sorts are asked
+        // for, drawn at random. Named apart from NewCreature() because a
+        // class and a creature name are both strings.
+        XCreature* NewCreatureOfClass(const CreatureClassSet& crc);
+        XCreature* NewCreatureOfClass(const CreatureClassSet& crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
 
         XStairWay* NewWay(const std::string& target_ln, XStairWay::Type s_type, XRect * area = nullptr); //creates way at random place
         XStairWay* NewWay(int x, int y, const std::string& target_ln, XStairWay::Type s_type);
