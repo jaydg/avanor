@@ -40,14 +40,25 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // doesn't work out on a given Windows terminal - see engine/global.h and
 // the Makefile's `stc` variable.
 #ifdef USE_STC
-    #ifndef WIN32_LEAN_AND_MEAN
-        #define WIN32_LEAN_AND_MEAN
+    #ifdef _WIN32
+        #ifndef WIN32_LEAN_AND_MEAN
+            #define WIN32_LEAN_AND_MEAN
+        #endif
+        #ifndef NOMINMAX
+            #define NOMINMAX
+        #endif
+        #include <windows.h>
+        #include <conio.h>
+    #else
+        // The same backend on anything unixoid.
+        #include <csignal>
+        #include <cerrno>
+
+        #include <poll.h>
+        #include <sys/ioctl.h>
+        #include <termios.h>
+        #include <unistd.h>
     #endif
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif
-    #include <windows.h>
-    #include <conio.h>
 
     #include <iostream>
     #include <vector>
@@ -124,12 +135,14 @@ struct STCCell {
 // against what the terminal last actually showed.
 std::vector<STCCell> stc_screen;
 
-// Re-reads the console's size into size_x/size_y and matches the buffer to
-// it. Falls back to a fixed 80x25 when there is no real console behind
-// stdout - e.g. under mintty, which never gives a native Win32 program one
-// - since GetConsoleScreenBufferInfo() then simply fails.
+// Re-reads the terminal's size into size_x/size_y and matches the buffer to
+// it. Falls back to a fixed 80x25 when the size cannot be had - on Windows
+// because there is no real console behind stdout (mintty never gives a
+// native Win32 program one, so GetConsoleScreenBufferInfo() simply fails),
+// and anywhere else because stdout is not a terminal at all.
 void QueryScreenSize()
 {
+#ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -140,9 +153,81 @@ void QueryScreenSize()
         size_x = 80;
         size_y = 25;
     }
+#else
+    winsize ws{};
+
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == 0 && ws.ws_col > 0 && ws.ws_row > 0) {
+        size_x = ws.ws_col;
+        size_y = ws.ws_row;
+    } else {
+        size_x = 80;
+        size_y = 25;
+    }
+#endif
 
     stc_screen.assign(static_cast<size_t>(size_x) * static_cast<size_t>(size_y), STCCell{});
 }
+
+#ifndef _WIN32
+
+// The terminal as it was before the game started, put back by vFinit().
+termios saved_termios{};
+bool termios_saved = false;
+
+// Set from the SIGWINCH handler and read by vGetch(), which is the one
+// place the game is ever waiting on the terminal. Only a flag is set here:
+// nothing else is safe to do from a signal handler.
+volatile std::sig_atomic_t window_resized = 0;
+
+extern "C" void OnWindowResize(int)
+{
+    window_resized = 1;
+}
+
+void LeaveRawMode();
+
+// Keys have to arrive one at a time, unechoed, for any of this to work: the
+// game reads a key per turn and draws the screen itself. This is what
+// notcurses does for its own backend, and what conio.h's _getch() does on
+// Windows without being asked.
+void EnterRawMode()
+{
+    if (!isatty(STDIN_FILENO) || tcgetattr(STDIN_FILENO, &saved_termios) != 0) {
+        return;
+    }
+
+    termios raw = saved_termios;
+
+    // No line discipline, no echo, no signals or flow control eaten on the
+    // way in - but leave OPOST alone, so that a "\n" the game prints still
+    // does what it means.
+    raw.c_lflag &= ~static_cast<tcflag_t>(ICANON | ECHO | IEXTEN | ISIG);
+    raw.c_iflag &= ~static_cast<tcflag_t>(IXON | ICRNL | INLCR | BRKINT | ISTRIP);
+
+    // Blocking, one byte at a time: vGetch() does its own waiting where it
+    // needs to, and vKbhit() asks poll() rather than the terminal.
+    raw.c_cc[VMIN] = 1;
+    raw.c_cc[VTIME] = 0;
+
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == 0) {
+        termios_saved = true;
+
+        // vFinit() puts it back on the way out, but the game also leaves
+        // through std::exit() in places, and a terminal left raw is a
+        // terminal the player has to fix by hand.
+        std::atexit(LeaveRawMode);
+    }
+}
+
+void LeaveRawMode()
+{
+    if (termios_saved) {
+        tcsetattr(STDIN_FILENO, TCSAFLUSH, &saved_termios);
+        termios_saved = false;
+    }
+}
+
+#endif // !_WIN32
 
 } // namespace
 
@@ -150,6 +235,7 @@ void vInit()
 {
     std::filesystem::create_directory(vMakePath(HOME_DIR, ""));
 
+#ifdef _WIN32
     // The classic Windows console (conhost, behind cmd.exe/Windows Terminal)
     // only interprets the ANSI escapes below once this is turned on; mintty
     // (MSYS2's own terminal) already speaks them natively and simply leaves
@@ -161,6 +247,21 @@ void vInit()
             SetConsoleMode(hstdout, out_mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
         }
     }
+#else
+    // Nothing to turn on: a unixoid terminal speaks ANSI already. What it
+    // does need is to stop cooking the input, and to say when it is
+    // resized - which conio.h had no way of reporting, so this backend
+    // never handled a resize before.
+    EnterRawMode();
+
+    // Deliberately without SA_RESTART: a resize has to interrupt the read
+    // the game is sitting in, or nothing would notice until the next key.
+    struct sigaction sa{};
+    sa.sa_handler = OnWindowResize;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGWINCH, &sa, nullptr);
+#endif
 
     QueryScreenSize();
 
@@ -175,8 +276,9 @@ void vInit()
 
 void vUpdateScreenSize()
 {
-    // Not wired up to anything that can detect a live resize - conio.h has
-    // no such event - so this only matters if something calls it directly.
+    // On Windows nothing detects a live resize - conio.h has no such event
+    // - so this only matters there if something calls it directly. Anywhere
+    // else SIGWINCH brings us here through vGetch().
     QueryScreenSize();
 }
 
@@ -189,6 +291,10 @@ void vFinit()
 {
     std::cout << stc::reset;
     std::cout << "\x1b[?25h\x1b[?1049l" << std::flush;
+
+#ifndef _WIN32
+    LeaveRawMode();
+#endif
 }
 
 void vRefresh()
@@ -449,6 +555,7 @@ void vDelay(const int n)
 }
 
 #ifdef USE_STC
+#ifdef _WIN32
 
 int vKbhit()
 {
@@ -469,6 +576,203 @@ int vGetch()
 
     return ch;
 }
+
+#else // unixoid
+
+namespace {
+
+// How long to wait for the rest of an escape sequence before deciding that
+// an Escape was simply pressed. A terminal sends the whole of a sequence at
+// once, so anything still to come is already on its way; a person reaching
+// for the next key cannot get there in this long.
+constexpr int kEscapeDelayMs = 40;
+
+// One byte read ahead and not yet handed out - see the Alt case in
+// ReadKey() below.
+int pending_byte = -1;
+
+// Whether anything is waiting to be read. A negative wait blocks.
+bool InputWaiting(const int timeout_ms)
+{
+    pollfd fd{};
+    fd.fd = STDIN_FILENO;
+    fd.events = POLLIN;
+
+    while (true) {
+        const int n = poll(&fd, 1, timeout_ms);
+
+        if (n < 0 && errno == EINTR) {
+            // A resize arrived. The caller checks for that itself, and
+            // there may still be a key behind it.
+            return false;
+        }
+
+        return n > 0;
+    }
+}
+
+// One byte, or -1 if the terminal has nothing more to give.
+int ReadByte()
+{
+    if (pending_byte >= 0) {
+        const int b = pending_byte;
+        pending_byte = -1;
+
+        return b;
+    }
+
+    unsigned char c = 0;
+
+    while (true) {
+        const ssize_t n = read(STDIN_FILENO, &c, 1);
+
+        if (n == 1) {
+            return c;
+        }
+
+        if (n < 0 && errno == EINTR) {
+            // Interrupted by SIGWINCH; let the caller see the resize.
+            return -1;
+        }
+
+        // End of input: nothing is ever coming again.
+        return -1;
+    }
+}
+
+// What the tail of an escape sequence means. `final` is the letter it ends
+// on and `param` the number before it, if there was one - together they
+// name the key in every sequence this game cares about.
+int DecodeSequence(const int final, const int param)
+{
+    switch (final) {
+        case 'A': return KEY_UP;
+        case 'B': return KEY_DOWN;
+        case 'C': return KEY_RIGHT;
+        case 'D': return KEY_LEFT;
+        case 'E': return KEY_CENTER;
+        case 'H': return KEY_HOME;
+        case 'F': return KEY_END;
+        default: break;
+    }
+
+    if (final == '~') {
+        switch (param) {
+            case 1: case 7: return KEY_HOME;
+            case 4: case 8: return KEY_END;
+            case 3:         return KEY_DEL;
+            case 5:         return KEY_PGUP;
+            case 6:         return KEY_PGDOWN;
+            default: break;
+        }
+    }
+
+    // Something this game has no use for - a function key, a mouse report.
+    // Swallow it rather than handing back a byte of it as if it had been
+    // typed.
+    return -1;
+}
+
+} // namespace
+
+int vKbhit()
+{
+    return (pending_byte >= 0 || InputWaiting(0)) ? 1 : 0;
+}
+
+int vGetch()
+{
+    while (true) {
+        // Checked here because this is the one place the game ever waits
+        // on the terminal, so it is the only place a resize can be noticed.
+        if (window_resized) {
+            window_resized = 0;
+            vUpdateScreenSize();
+
+            return KEY_RESIZE;
+        }
+
+        const int c = ReadByte();
+
+        if (c < 0) {
+            // Interrupted, or the input is finished. Loop round: either the
+            // resize above is waiting, or there is nothing left and Escape
+            // is the least surprising thing to keep answering with.
+            if (window_resized) {
+                continue;
+            }
+
+            return KEY_ESC;
+        }
+
+        if (c != 27) {
+            // Some terminals send a line feed for Return; the game knows
+            // only the carriage return.
+            return c == 10 ? KEY_ENTER : c;
+        }
+
+        // An Escape, or the start of a sequence that stands for some other
+        // key. Which it is depends on whether anything follows it at once.
+        if (!InputWaiting(kEscapeDelayMs)) {
+            return KEY_ESC;
+        }
+
+        const int lead = ReadByte();
+
+        if (lead < 0) {
+            return KEY_ESC;
+        }
+
+        if (lead != '[' && lead != 'O') {
+            // A terminal writes Alt+key as an Escape and then the key.
+            // Nothing here is bound to Alt, so this is somebody who pressed
+            // Escape and reached for the next key before the terminal had
+            // made up its mind. Hand the Escape back and keep the key for
+            // the next call: losing either of them is how a swallowed
+            // Escape used to leave the key behind it to answer a question
+            // the player had asked to get out of.
+            pending_byte = lead;
+
+            return KEY_ESC;
+        }
+
+        // CSI or SS3: digits and separators, then a letter that says which
+        // key it was.
+        int param = 0;
+        bool have_param = false;
+
+        while (true) {
+            const int b = ReadByte();
+
+            if (b < 0) {
+                return KEY_ESC;
+            }
+
+            if (b >= '0' && b <= '9') {
+                param = param * 10 + (b - '0');
+                have_param = true;
+                continue;
+            }
+
+            if (b == ';') {
+                // A modifier follows, which nothing here reads; keep the
+                // first number and drop the rest.
+                param = have_param ? param : 0;
+                continue;
+            }
+
+            if (const int key = DecodeSequence(b, param); key >= 0) {
+                return key;
+            }
+
+            // Not a key this game knows. Wait for the next one rather than
+            // returning rubbish.
+            break;
+        }
+    }
+}
+
+#endif // _WIN32
 
 #else // notcurses
 
