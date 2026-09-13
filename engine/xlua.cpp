@@ -147,6 +147,7 @@ void XLua::Init()
     RegisterModifierLua(lua);
     RegisterBrandLua(lua);
     RegisterTasteLua(lua);
+    RegisterMagicSchoolLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     RegisterBodyPartEnum(lua);
@@ -210,7 +211,7 @@ void XLua::Init()
             "BodyPart", "CorpseEffectType",
             "CreatureSize", "CreatureTemplate", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemUse", "LuaEvent", "Movability",
-            "MagicSchool", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
+            "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "EffectTarget", "XLocation",
             "XQuest", "XSkill", "XStairWay", "XStandardAI",
             "BrandGroup", "CombatGroup", "CombatRole", "XStats", "XTileType",

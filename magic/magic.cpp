@@ -33,7 +33,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifiers.h"
 
 // The school table below names one of these on almost every line.
-using School = XMagic::School;
 
 void RegisterSpellNameEnum(sol::state_view& lua)
 {
@@ -42,18 +41,85 @@ void RegisterSpellNameEnum(sol::state_view& lua)
     // What can be laid on a creature for a while - a wound that bleeds, a
     // quickening, a disease. Content names these when a potion or a spell
     // has no effect of its own to point at.
-    lua.new_enum("MagicSchool",
-        "ELEMENTAL", XMagic::School::ELEMENTAL,
-        "BODY", XMagic::School::BODY,
-        "PROTECTION", XMagic::School::PROTECTION,
-        "DEATH", XMagic::School::DEATH,
-        "SURVIVING", XMagic::School::SURVIVING
-    );
-
     lua.new_enum("SpellUse",
         "OTHER", XSpell::Use::OTHER,
         "ATTACK", XSpell::Use::ATTACK,
         "HEALING", XSpell::Use::HEALING
+    );
+}
+
+namespace {
+
+std::vector<MagicSchoolStats> schools_db;
+
+}
+
+const MagicSchoolStats* FindMagicSchool(const MAGIC_SCHOOL& id)
+{
+    for (const auto& row : schools_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+const std::vector<MagicSchoolStats>& AllMagicSchools()
+{
+    return schools_db;
+}
+
+bool CheckMagicSchoolExists(const MAGIC_SCHOOL& id, const char* where)
+{
+    if (FindMagicSchool(id)) {
+        return true;
+    }
+
+    std::cerr << "world: " << where << " belongs to a school of magic '" << id
+              << "', which world/spells.lua does not declare" << std::endl;
+
+    return false;
+}
+
+MagicSchoolBuilder::MagicSchoolBuilder(MAGIC_SCHOOL id)
+{
+    t.id = std::move(id);
+}
+
+MagicSchoolBuilder& MagicSchoolBuilder::Called(const std::string& name)
+{
+    t.name = name;
+    return *this;
+}
+
+void MagicSchoolBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a school of magic with no id" << std::endl;
+        return;
+    }
+
+    if (FindMagicSchool(t.id)) {
+        std::cerr << "world: two schools of magic both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.name.empty()) {
+        std::cerr << "world: the school of magic '" << t.id
+                  << "' has no name for the character sheet" << std::endl;
+        return;
+    }
+
+    schools_db.push_back(t);
+}
+
+void RegisterMagicSchoolLua(sol::state_view& lua)
+{
+    lua.new_usertype<MagicSchoolBuilder>("MagicSchool",
+        sol::constructors<MagicSchoolBuilder(MAGIC_SCHOOL)>(),
+        "Called", &MagicSchoolBuilder::Called,
+        "Register", &MagicSchoolBuilder::Register
     );
 }
 
@@ -64,7 +130,7 @@ struct SPELL_REC {
     SPELL_NAME id;
     std::string name;
     EFFECT effect{EFFECT_NONE};
-    School school{School::UNKNOWN};
+    MAGIC_SCHOOL school;
     int cost{0};
 
     // Defaults to OTHER, so a spell content adds is inert to the AI until
@@ -114,9 +180,12 @@ SpellBuilder& SpellBuilder::Effect(const EFFECT& eff)
     return *this;
 }
 
-SpellBuilder& SpellBuilder::School(const XMagic::School sch)
+SpellBuilder& SpellBuilder::School(const std::string& sch)
 {
-    school = sch;
+    if (CheckMagicSchoolExists(sch, ("the spell '" + id + "'").c_str())) {
+        school = sch;
+    }
+
     return *this;
 }
 
@@ -194,7 +263,7 @@ int XSpell::GetManaCost() const
     return (SpellRow(spell_name).cost * 15) / (14 + eff_level);
 }
 
-XMagic::School XSpell::GetSchool() const
+const MAGIC_SCHOOL& XSpell::GetSchool() const
 {
     return SpellRow(spell_name).school;
 }
@@ -300,13 +369,13 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
     return CONTINUE;
 }
 
-int XMagic::Train(const School school, const int count)
+int XMagic::Train(const MAGIC_SCHOOL& school, const int count)
 {
-    if (school == School::UNKNOWN || GetLevel(school) >= MAX_LEVEL) {
+    if (school.empty() || GetLevel(school) >= MAX_LEVEL) {
         return 0;
     }
 
-    int& counter = magic_count[Index(school)];
+    int& counter = magic_count[school];
     counter += count;
 
     if (counter > GetNextLevelAt(school)) {
@@ -318,13 +387,13 @@ int XMagic::Train(const School school, const int count)
     return 0;
 }
 
-int XMagic::GainLevel(const School school, const int n)
+int XMagic::GainLevel(const MAGIC_SCHOOL& school, const int n)
 {
-    if (school == School::UNKNOWN || GetLevel(school) >= MAX_LEVEL) {
+    if (school.empty() || GetLevel(school) >= MAX_LEVEL) {
         return 0;
     }
 
-    int& level = magic_level[Index(school)];
+    int& level = magic_level[school];
     level = std::min(level + n, MAX_LEVEL);
 
     return 1;
@@ -333,9 +402,9 @@ int XMagic::GainLevel(const School school, const int n)
 void XMagic::Learn(const SPELL_NAME spell)
 {
     // Knowing any spell of a school makes the caster a Beginner in it.
-    if (const School school = SpellRow(spell).school;
-        school != School::UNKNOWN && GetLevel(school) == 0) {
-        magic_level[Index(school)] = 1;
+    if (const MAGIC_SCHOOL& school = SpellRow(spell).school;
+        !school.empty() && GetLevel(school) == 0) {
+        magic_level[school] = 1;
     }
 
     for (const auto& tsp : spells) {
@@ -360,14 +429,6 @@ XSpell* XMagic::GetSpell(const SPELL_NAME spell) const
     return nullptr;
 }
 
-const char* mg_name_str[] = {
-    "Elemental",
-    "Body and Spirit",
-    "Protection and Resistance",
-    "Death and Devastation",
-    "Surviving and Enlightenment"
-};
-
 const char* mg_level_str[] = {
     "",
     "<PROGRESS_NONE>Beginner",
@@ -381,15 +442,15 @@ const char* mg_level_str[] = {
     "<PROGRESS_GRANDMASTER>Grand Master"
 };
 
-static_assert(std::size(mg_name_str) == XMagic::SCHOOL_COUNT,
-    "mg_name_str[] must name every school");
 static_assert(std::size(mg_level_str) == XMagic::MAX_LEVEL + 1,
     "mg_level_str[] must name every rank from 0 to MAX_LEVEL");
 
-std::string XMagic::LevelToString(const School school) const
+std::string XMagic::LevelToString(const MAGIC_SCHOOL& school) const
 {
-    if (GetLevel(school) > 0) {
-        return fmt::format("<VALUE>{:<30} {}", mg_name_str[Index(school)], mg_level_str[GetLevel(school)]);
+    const MagicSchoolStats* row = FindMagicSchool(school);
+
+    if (row && GetLevel(school) > 0) {
+        return fmt::format("<VALUE>{:<30} {}", row->name, mg_level_str[GetLevel(school)]);
     }
 
     return "";

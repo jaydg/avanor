@@ -21,10 +21,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef MAGIC_H
 #define MAGIC_H
 
+#include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <sol/forward.hpp>
+#include <cereal/types/map.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
 
@@ -43,40 +46,59 @@ inline constexpr const char* SP_NONE = "";
 
 class XSpell;
 
+// One of the divisions the scholars of old made of the Power. Every spell
+// belongs to exactly one, and a caster is ranked in each separately.
+// Which ones there are is content - world/spells.lua declares them
+// alongside the spells that belong to them.
+using MAGIC_SCHOOL = std::string;
+
+// A spell belonging to no school at all. Was School::UNKNOWN.
+inline const MAGIC_SCHOOL MS_NONE;
+
+struct MagicSchoolStats {
+    MAGIC_SCHOOL id;
+
+    // What the character sheet calls it: "Body and Spirit".
+    std::string name;
+};
+
+// The row for an id, or nothing if no world file declares one.
+const MagicSchoolStats* FindMagicSchool(const MAGIC_SCHOOL& id);
+
+// Every school content has declared, in the order it declared them -
+// which is the order the character sheet lists them in.
+const std::vector<MagicSchoolStats>& AllMagicSchools();
+
+// Complains if no row is registered under this id and returns false.
+bool CheckMagicSchoolExists(const MAGIC_SCHOOL& id, const char* where);
+
+class MagicSchoolBuilder
+{
+    public:
+        explicit MagicSchoolBuilder(MAGIC_SCHOOL id);
+
+        MagicSchoolBuilder& Called(const std::string& name);
+        void Register();
+
+    private:
+        MagicSchoolStats t;
+};
+
+void RegisterMagicSchoolLua(sol::state_view& lua);
+
 // A creature's grasp of magic: the spells it knows, and how deeply it
 // has studied the schools those spells belong to.
 class XMagic
 {
     public:
-        // The schools the scholars of old divided the Power into. Every
-        // spell belongs to exactly one, and a caster is ranked in each
-        // one separately.
-        enum class School {
-            UNKNOWN = -1,
-            ELEMENTAL,
-            BODY,
-            PROTECTION,
-            DEATH,
-            SURVIVING,
-            COUNT       // bounds the per-school tables, never a school
-        };
-
-        static constexpr int SCHOOL_COUNT = static_cast<int>(School::COUNT);
-
         // The highest rank a school can be trained to; mg_level_str[]
         // names every rank from 0 (school unknown) up to this one.
         static constexpr int MAX_LEVEL = 9;
 
-    private:
-        // A scoped enum never indexes a table on its own.
-        static constexpr int Index(const School school)
-        {
-            return static_cast<int>(school);
-        }
-
     protected:
-        int magic_level[SCHOOL_COUNT]{};
-        int magic_count[SCHOOL_COUNT]{};
+        // Only the schools this caster has actually begun are held.
+        std::map<MAGIC_SCHOOL, int> magic_level;
+        std::map<MAGIC_SCHOOL, int> magic_count;
 
     public:
         XMagic();
@@ -93,10 +115,10 @@ class XMagic
         // Credits `count` towards the school's next rank, the way
         // XCombatSkills::UseSkill() credits a weapon class. Returns 1 if
         // that was enough to gain a rank.
-        int Train(School school, int count);
-        int GainLevel(School school, int n = 1);
+        int Train(const MAGIC_SCHOOL& school, int count);
+        int GainLevel(const MAGIC_SCHOOL& school, int n = 1);
 
-        std::string LevelToString(School school) const;
+        std::string LevelToString(const MAGIC_SCHOOL& school) const;
 
         // Visible length of a rank's name alone, skipping the color tag
         // LevelToString() bakes in front of it - lets a caller right-pad
@@ -107,24 +129,26 @@ class XMagic
         void Learn(SPELL_NAME spell);
         [[nodiscard]] XSpell* GetSpell(SPELL_NAME spell) const;
 
-        [[nodiscard]] int GetLevel(const School school) const
+        [[nodiscard]] int GetLevel(const MAGIC_SCHOOL& school) const
         {
-            return magic_level[Index(school)];
+            const auto it = magic_level.find(school);
+            return it == magic_level.end() ? 0 : it->second;
         }
 
         // Successful casts of this school's spells credited so far
         // towards its next rank - the numerator Train() compares
         // against GetNextLevelAt() below, exposed so the UI can show
         // real progress instead of guessing it.
-        [[nodiscard]] int GetCount(const School school) const
+        [[nodiscard]] int GetCount(const MAGIC_SCHOOL& school) const
         {
-            return magic_count[Index(school)];
+            const auto it = magic_count.find(school);
+            return it == magic_count.end() ? 0 : it->second;
         }
 
         // The count GetCount() needs to pass for Train() to grant the
         // next rank - single source of truth for both Train()'s own
         // check and the UI's progress readout.
-        [[nodiscard]] int GetNextLevelAt(const School school) const
+        [[nodiscard]] int GetNextLevelAt(const MAGIC_SCHOOL& school) const
         {
             return (GetLevel(school) + 1) * 10;
         }
@@ -199,7 +223,7 @@ class XSpell
             return eff_level;
         }
 
-        [[nodiscard]] XMagic::School GetSchool() const;
+        [[nodiscard]] const MAGIC_SCHOOL& GetSchool() const;
 
         void GainLevel(const int n = 1)
         {
@@ -219,7 +243,7 @@ class XSpell
 //   Spell.new("fire_bolt")
 //       :Called("fire bolt")
 //       :Effect(XEffect.FIRE_BOLT)
-//       :School(MagicSchool.ELEMENTAL)
+//       :School("elemental")
 //       :Cost(10)
 //       :Use(SpellUse.ATTACK)
 //       :Register()
@@ -232,7 +256,7 @@ class SpellBuilder
 
         SpellBuilder& Called(const std::string& n);
         SpellBuilder& Effect(const EFFECT& eff);
-        SpellBuilder& School(XMagic::School sch);
+        SpellBuilder& School(const std::string& sch);
         SpellBuilder& Cost(int c);
         SpellBuilder& Use(XSpell::Use u);
 
@@ -242,7 +266,7 @@ class SpellBuilder
         std::string id;
         std::string name;
         EFFECT effect{EFFECT_NONE};
-        XMagic::School school{XMagic::School::UNKNOWN};
+        MAGIC_SCHOOL school;
         int cost{0};
         XSpell::Use use{XSpell::Use::OTHER};
 };

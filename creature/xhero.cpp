@@ -2132,8 +2132,10 @@ void XHero::MagicLevelList() const
     list.AddItem(new XGuiItem_Text(
         fmt::format("<LABEL>{:<30} {:<14}  {}", "School", "Rank", "Spells Cast"), 0), 0);
 
-    for (int i = 0; i < XMagic::SCHOOL_COUNT; i++) {
-        const auto school = static_cast<XMagic::School>(i);
+    // In the order world/spells.lua declares them, so a world that adds
+    // a school gets it listed here without a line changing.
+    for (const auto& row : AllMagicSchools()) {
+        const MAGIC_SCHOOL& school = row.id;
         auto s = m->LevelToString(school);
 
         if (s.empty()) {
