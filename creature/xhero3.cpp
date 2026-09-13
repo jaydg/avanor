@@ -49,9 +49,15 @@ void XHero::doSacrifice()
 
         XItemList* tmpquae = l->map->GetItemList(x, y);
 
+        // Inventory() takes the chosen item out of whichever list it came
+        // from, so remember which one: an offering the player thinks
+        // better of has to go back where it was found, not into the pack.
+        XItemList* from = &contain;
+
         if (tmpquae->empty() || l->map->GetPlace(x, y)) {
             item = Inventory(&contain, ItemKind::ALL, IF_HIDE_WORN);
         } else {
+            from = tmpquae;
             item = Inventory(tmpquae, ItemKind::ALL, IF_HIDE_WORN);
         }
 
@@ -69,10 +75,10 @@ void XHero::doSacrifice()
             if (item->quantity > 1) {
                 XPoint pt(0, item->quantity);
                 msgwin.Add("How much?");
-                const int res = GetTarget(TR_HOW_MUCH, &pt, item->quantity);
+                const int res = GetTarget(TR_HOW_MUCH_SAFE, &pt, item->quantity);
 
                 if (res == 0) {
-                    contain.insert(item);
+                    from->insert(item);
                     break;
                 }
 
@@ -80,7 +86,7 @@ void XHero::doSacrifice()
                     drop_item = XItem::Own(item->MakeCopy());
                     drop_item->quantity = res;
                     item->quantity -= res;
-                    contain.insert(item);
+                    from->insert(item);
                 }
             }
 

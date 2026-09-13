@@ -2019,6 +2019,7 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
             break;
 
         case TR_HOW_MUCH:
+        case TR_HOW_MUCH_SAFE:
             if (max_range < pt->x) {
                 max_range = pt->x;
             }
@@ -2040,13 +2041,21 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
                 cy = 0;
             }
 
-            msgwin.Add(fmt::format("(Enter = {})? ", max_range));
+            // What an empty answer means, said plainly - and for the safe
+            // sort it means none, so that a Return arriving where an
+            // Escape was meant stops rather than commits.
+            if (tr == TR_HOW_MUCH_SAFE) {
+                msgwin.Add("(Enter = none)? ");
+            } else {
+                msgwin.Add(fmt::format("(Enter = {})? ", max_range));
+            }
+
             vPutS(" ");
             vRefresh();
             gets_flag = vGetS(in_buf, 9);
 
             if (gets_flag == 1 && strlen(in_buf) == 0) {
-                return max_range;
+                return tr == TR_HOW_MUCH_SAFE ? 0 : max_range;
             }
 
             if (gets_flag == 0) {

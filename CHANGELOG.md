@@ -328,6 +328,10 @@ Things that used to lose your belongings:
 
 - Items no longer vanish when picked up into a stack of the same kind
 - Dropping items, and picking exactly one item off a pile, both work
+- Thinking better of a sacrifice puts the offering back where it came from.
+  Deciding against giving away a pile you were standing on used to pick it
+  up instead, which was not what you asked for and not always what you
+  could carry
 - Corpses you are carrying rot at the proper rate
 - Loot, the royal treasure room and the Eye of Raa all work again
 

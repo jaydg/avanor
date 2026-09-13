@@ -136,7 +136,14 @@ enum TARGET_REASON {
     TR_IMPROVE,
     TR_YES_NO,      // by default - no
     TR_NO_YES,      // by default - yes
-    TR_HOW_MUCH,    // enter a number between two numbers
+    TR_HOW_MUCH,    // enter a number between two numbers; Enter means all
+
+    // The same, but Enter means none. For a question there is no taking
+    // back the answer to: a terminal that swallows an Escape leaves the
+    // key after it to answer instead (see vGetch in engine/global.cpp),
+    // and "all of them" is the wrong thing for that key to say when the
+    // items are being given away for good.
+    TR_HOW_MUCH_SAFE,
     TR_LETTER,      // enter a letter in range
     TR_STEAL_ITEM,
     TR_SELECT_ITEM,
