@@ -24,19 +24,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "magic/cskills.h"
 
-std::vector<CombatSkillStats> combat_skills;
+Registry<CombatSkillStats> combat_skills{"combat skill"};
 
-const CombatSkillStats* FindCombatSkill(const COMBAT_SKILL& cs)
+const CombatSkillStats* FindCombatSkill(const std::string& cs)
 {
-    for (const auto& row : combat_skills) {
-        if (row.id == cs) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return combat_skills.Find(cs);
 }
 
 // Reads a Lua list of numbers into a bonus row, padded to MAX_LEVEL + 1
@@ -103,17 +98,6 @@ CombatSkillBuilder& CombatSkillBuilder::Damage(const sol::table& rows)
 
 void CombatSkillBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a combat skill with no id" << std::endl;
-        return;
-    }
-
-    if (FindCombatSkill(t.id)) {
-        std::cerr << "world: two combat skills both called '" << t.id << "'"
-                  << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         t.name = t.id;
     }
@@ -133,7 +117,7 @@ void CombatSkillBuilder::Register()
         t.base_dmg.assign(XCombatSkills::MAX_LEVEL + 1, 0);
     }
 
-    combat_skills.push_back(std::move(t));
+    combat_skills.Add(std::move(t));
 }
 
 int XCombatSkills::GetN(const int level)

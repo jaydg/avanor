@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream>
 #include <utility>
 
+#include "helpers/registry.h"
 #include "engine/global.h"
 #include "helpers/keyword_dice.h"
 #include "magic/resist.h"
@@ -53,17 +54,11 @@ void XResistance::RegisterLua(sol::state_view& lua)
     };
 }
 
-std::vector<ResistanceStats> resistances_db;
+Registry<ResistanceStats> resistances_db{"resistance"};
 
-const ResistanceStats* FindResistance(const RESISTANCE& r)
+const ResistanceStats* FindResistance(const std::string& r)
 {
-    for (const auto& row : resistances_db) {
-        if (row.id == r) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return resistances_db.Find(r);
 }
 
 ResistanceBuilder::ResistanceBuilder(std::string id)
@@ -91,22 +86,11 @@ ResistanceBuilder& ResistanceBuilder::Lost(const std::string& text)
 
 void ResistanceBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a resistance with no id" << std::endl;
-        return;
-    }
-
-    if (FindResistance(t.id)) {
-        std::cerr << "world: two resistances both called '" << t.id << "'"
-                  << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         t.name = t.id;
     }
 
-    resistances_db.push_back(std::move(t));
+    resistances_db.Add(std::move(t));
 }
 
 

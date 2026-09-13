@@ -25,6 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
+#include "helpers/registry.h"
+
 #include <cereal/types/map.hpp>
 #include <cereal/types/string.hpp>
 
@@ -95,8 +97,8 @@ struct DeityRank {
     int score = 0;
 };
 
-extern std::vector<DeityStats> deities_db;
-extern std::vector<DeityRank> deity_ranks_db;
+extern Registry<DeityStats> deities_db;
+extern Registry<DeityRank> deity_ranks_db;
 
 const DeityStats* FindDeity(const DEITY& id);
 

@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
+#include "helpers/registry.h"
 #include "engine/global.h"
 #include "creature/cr_defs.h"
 #include "magic/brand.h"
@@ -109,7 +110,7 @@ struct EffectStats {
     std::vector<EffectPart> parts;
 };
 
-extern std::vector<EffectStats> effects_db;
+extern Registry<EffectStats> effects_db;
 
 const EffectStats* FindEffect(const EFFECT& id);
 

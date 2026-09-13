@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "helpers/registry.h"
 #include "engine/xlua.h"
 #include "creature/creature.h"
 #include "game/game.h"
@@ -59,17 +60,11 @@ bool TrapRecipe::Accepts(const XItem* item) const
     return false;
 }
 
-std::vector<TrapTypeStats> trap_types_db;
+Registry<TrapTypeStats> trap_types_db{"trap"};
 
-const TrapTypeStats* FindTrapType(const TRAP_TYPE& id)
+const TrapTypeStats* FindTrapType(const std::string& id)
 {
-    for (const auto& row : trap_types_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return trap_types_db.Find(id);
 }
 
 TRAP_TYPE AnyTrapType()
@@ -133,22 +128,12 @@ TrapTypeBuilder& TrapTypeBuilder::Pit()
 
 void TrapTypeBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a trap type with no id" << std::endl;
-        return;
-    }
-
-    if (FindTrapType(t.id)) {
-        std::cerr << "world: two trap types both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (!t.casts.empty() && !FindEffect(t.casts)) {
         std::cerr << "world: the trap '" << t.id << "' casts '" << t.casts
                   << "', which world/effects.lua does not declare" << std::endl;
     }
 
-    trap_types_db.push_back(t);
+    trap_types_db.Add(t);
 }
 
 const TrapRecipe* FindTrapRecipe(const TRAP_TYPE& type)
@@ -729,17 +714,11 @@ bool XAltar::PlaceAt(XLocation* location, const int _x, const int _y)
 // XLuaObject
 //////////////////////////////////////////////////////////////////////
 
-std::vector<MapObjectStats> map_objects_db;
+Registry<MapObjectStats> map_objects_db{"map object"};
 
 const MapObjectStats* FindMapObject(const std::string& id)
 {
-    for (const auto& row : map_objects_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return map_objects_db.Find(id);
 }
 
 MapObjectBuilder::MapObjectBuilder(std::string id)
@@ -788,21 +767,11 @@ MapObjectBuilder& MapObjectBuilder::FirstDelay(const int min, sol::optional<int>
 
 void MapObjectBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a map object with no id" << std::endl;
-        return;
-    }
-
-    if (FindMapObject(t.id)) {
-        std::cerr << "world: two map objects both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         t.name = t.id;
     }
 
-    map_objects_db.push_back(t);
+    map_objects_db.Add(t);
 }
 
 REGISTER_CLASS(XLuaObject);

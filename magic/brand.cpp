@@ -25,20 +25,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "magic/brand.h"
 #include "magic/modifier.h"
 
-std::vector<BrandStats> brands_db;
+Registry<BrandStats> brands_db{"brand"};
 
-const BrandStats* FindBrand(const BRAND& id)
+const BrandStats* FindBrand(const std::string& id)
 {
-    for (const auto& row : brands_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return brands_db.Find(id);
 }
 
 BrandSet::BrandSet(const char* ids)
@@ -164,17 +159,9 @@ std::string BrandedName(const BrandSet& brands, const std::string& plain, const 
     return fmt::format("heap of ({}) {}", quantity, full);
 }
 
-bool CheckBrandExists(const BRAND& id, const char* where)
+bool CheckBrandExists(const std::string& id, const char* where)
 {
-    if (FindBrand(id)) {
-        return true;
-    }
-
-    std::cerr << "world: " << where << " asks for a brand '" << id
-              << "' that world/brands.lua does not declare - ignored"
-              << std::endl;
-
-    return false;
+    return brands_db.Exists(id, where);
 }
 
 BrandBuilder::BrandBuilder(std::string id)
@@ -232,7 +219,7 @@ BrandBuilder& BrandBuilder::Value(const int value)
 
 void BrandBuilder::Register()
 {
-    brands_db.push_back(t);
+    brands_db.Add(t);
 }
 
 void RegisterBrandLua(sol::state_view& lua)

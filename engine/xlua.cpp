@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "creature/anycr.h"
 #include "item/xscroll.h"
 #include "item/xbook.h"
@@ -117,6 +118,45 @@ void MakeStrict(sol::state_view& lua, const char* name)
 
 } // namespace
 
+
+// Where in content we are, as "file:line", or empty when nothing Lua is
+// calling. Asked at the moment a row is declared, so a table can say
+// afterwards where its rows actually came from instead of the engine
+// assuming it knows - which it does not, and must not: which file
+// declares the brands is the world's business, and another world will
+// put them somewhere else entirely.
+//
+// Level 1 is the Lua function that called into us; level 0 is this C++
+// frame. Reads the stack through the C API, which needs no debug library
+// to be open to scripts.
+std::string WhereInContent()
+{
+    lua_State* L = XLua::State();
+
+    if (!L) {
+        return std::string();
+    }
+
+    lua_Debug ar;
+
+    if (!lua_getstack(L, 1, &ar) || !lua_getinfo(L, "Sl", &ar)) {
+        return std::string();
+    }
+
+    std::string src = ar.short_src;
+
+    // The scripts are loaded by relative path ("./world/brands.lua"); the
+    // leading "./" says nothing.
+    if (src.rfind("./", 0) == 0) {
+        src.erase(0, 2);
+    }
+
+    if (ar.currentline <= 0) {
+        return src;
+    }
+
+    return src + ":" + std::to_string(ar.currentline);
+}
 
 void XLua::Init()
 {

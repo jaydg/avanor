@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/map.hpp>
 #include <cereal/types/string.hpp>
 
+#include "helpers/registry.h"
 #include "creature/creature.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
@@ -34,7 +35,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/modifier.h"
 
 // Filled from world/items/herbs.lua as that script loads.
-std::vector<PlantDefinition> herbs;
+Registry<PlantDefinition> herbs{"plant"};
 
 PlantDefinition* PlantDefinition::Find(const std::string& id)
 {
@@ -47,17 +48,11 @@ PlantDefinition* PlantDefinition::Find(const std::string& id)
     return nullptr;
 }
 
-std::vector<PlantKindStats> plant_kinds_db;
+Registry<PlantKindStats> plant_kinds_db{"plant kind"};
 
-const PlantKindStats* FindPlantKind(const PLANT_KIND& id)
+const PlantKindStats* FindPlantKind(const std::string& id)
 {
-    for (const auto& row : plant_kinds_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return plant_kinds_db.Find(id);
 }
 
 const PLANT_KIND& DefaultPlantKind()
@@ -87,21 +82,11 @@ PlantKindBuilder& PlantKindBuilder::Distils(const int alchemy_power,
 
 void PlantKindBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a plant kind with no id" << std::endl;
-        return;
-    }
-
-    if (FindPlantKind(t.id)) {
-        std::cerr << "world: two plant kinds both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.unknown_name.empty()) {
         t.unknown_name = "unknown " + t.id;
     }
 
-    plant_kinds_db.push_back(t);
+    plant_kinds_db.Add(t);
 }
 
 std::string PlantDefinition::RandomOfType(const PLANT_KIND& kind)
@@ -157,16 +142,6 @@ PlantBuilder& PlantBuilder::Looks(const int colour)
 
 void PlantBuilder::Register()
 {
-    if (id.empty()) {
-        std::cerr << "world: a plant with no id" << std::endl;
-        return;
-    }
-
-    if (PlantDefinition::Find(id)) {
-        std::cerr << "world: two plants both called '" << id << "'" << std::endl;
-        return;
-    }
-
     // The kinds are declared above the species that belong to them, so a
     // species naming one that does not exist is a typo. It would
     // otherwise distil into nothing and read as "unknown plant" for ever.
@@ -187,7 +162,7 @@ void PlantBuilder::Register()
     row.color = color;
     row.kind = kind.empty() ? DefaultPlantKind() : kind;
 
-    herbs.push_back(std::move(row));
+    herbs.Add(std::move(row));
 }
 
 // Deals each species the potion it distils into, and how hard that is -

@@ -25,6 +25,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "creature/creature.h"
 #include "magic/effect.h"
 #include "creature/deity.h"
@@ -33,18 +34,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "map/map_objects.h"
 
-std::vector<DeityStats> deities_db;
-std::vector<DeityRank> deity_ranks_db;
+Registry<DeityStats> deities_db{"deity"};
+Registry<DeityRank> deity_ranks_db{"rank of favour"};
 
-const DeityStats* FindDeity(const DEITY& id)
+const DeityStats* FindDeity(const std::string& id)
 {
-    for (const auto& row : deities_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return deities_db.Find(id);
 }
 
 const std::string& DeityName(const DEITY& id)
@@ -58,13 +53,7 @@ const std::string& DeityName(const DEITY& id)
 
 const DeityRank* FindRank(const std::string& id)
 {
-    for (const auto& row : deity_ranks_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return deity_ranks_db.Find(id);
 }
 
 const DeityRank* RankFor(const int favour)
@@ -113,16 +102,6 @@ DeityBuilder& DeityBuilder::Grants(const std::string& name, const std::string& n
 
 void DeityBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a god with no id" << std::endl;
-        return;
-    }
-
-    if (FindDeity(t.id)) {
-        std::cerr << "world: two gods both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         t.name = t.id;
     }
@@ -145,7 +124,7 @@ void DeityBuilder::Register()
         }
     }
 
-    deities_db.push_back(t);
+    deities_db.Add(t);
 }
 
 DeityRankBuilder::DeityRankBuilder(std::string id)
@@ -173,21 +152,11 @@ DeityRankBuilder& DeityRankBuilder::Score(const int points)
 
 void DeityRankBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a rank with no id" << std::endl;
-        return;
-    }
-
-    if (FindRank(t.id)) {
-        std::cerr << "world: two ranks both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         t.name = t.id;
     }
 
-    deity_ranks_db.push_back(t);
+    deity_ranks_db.Add(t);
 }
 
 void XDeity::RegisterLua(sol::state_view& lua)

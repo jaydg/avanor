@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 
+#include "helpers/registry.h"
 #include "engine/xlua.h"
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
@@ -31,24 +32,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 namespace {
 
-std::vector<ModifierStats> modifiers_db;
+Registry<ModifierStats> modifiers_db{"modifier"};
 
 }
 
-const ModifierStats* FindModifier(const MODIFIER& id)
+const ModifierStats* FindModifier(const std::string& id)
 {
-    for (const auto& row : modifiers_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return modifiers_db.Find(id);
 }
 
 const std::vector<ModifierStats>& AllModifiers()
 {
-    return modifiers_db;
+    return modifiers_db.All();
 }
 
 ModifierBuilder::ModifierBuilder(MODIFIER id)
@@ -157,16 +152,6 @@ ModifierBuilder& ModifierBuilder::Ill()
 
 void ModifierBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a modifier with no id" << std::endl;
-        return;
-    }
-
-    if (FindModifier(t.id)) {
-        std::cerr << "world: two modifiers both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (!t.resisted_by.empty() && !FindResistance(t.resisted_by)) {
         std::cerr << "world: the modifier '" << t.id << "' is resisted by '"
                   << t.resisted_by << "', which world/resistances.lua does not declare"
@@ -189,7 +174,7 @@ void ModifierBuilder::Register()
         }
     }
 
-    modifiers_db.push_back(t);
+    modifiers_db.Add(t);
 }
 
 void RegisterModifierLua(sol::state_view& lua)

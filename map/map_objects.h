@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
+#include "helpers/registry.h"
 #include "creature/deity.h"
 #include "item/item.h"
 #include "engine/xmapobj.h"
@@ -84,7 +85,7 @@ struct TrapTypeStats {
     bool pit = false;
 };
 
-extern std::vector<TrapTypeStats> trap_types_db;
+extern Registry<TrapTypeStats> trap_types_db;
 
 const TrapTypeStats* FindTrapType(const TRAP_TYPE& id);
 
@@ -499,7 +500,7 @@ struct MapObjectStats {
     int first_delay_max{1};
 };
 
-extern std::vector<MapObjectStats> map_objects_db;
+extern Registry<MapObjectStats> map_objects_db;
 
 const MapObjectStats* FindMapObject(const std::string& id);
 

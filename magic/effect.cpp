@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "creature/creature.h"
 #include "creature/xhero.h"
 #include "game/game.h"
@@ -58,17 +59,11 @@ void XEffect::RegisterLua(sol::state_view& lua)
     );
 }
 
-std::vector<EffectStats> effects_db;
+Registry<EffectStats> effects_db{"effect"};
 
-const EffectStats* FindEffect(const EFFECT& id)
+const EffectStats* FindEffect(const std::string& id)
 {
-    for (const auto& row : effects_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return effects_db.Find(id);
 }
 
 EffectBuilder::EffectBuilder(std::string id)
@@ -236,18 +231,8 @@ void EffectBuilder::Register()
         }
     }
 
-    if (t.id.empty()) {
-        std::cerr << "world: an effect with no id" << std::endl;
-        return;
-    }
 
-    if (FindEffect(t.id)) {
-        std::cerr << "world: two effects both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
-
-    effects_db.push_back(t);
+    effects_db.Add(t);
 }
 
 EffectTarget XEffect::GetReq(const EFFECT& effect)

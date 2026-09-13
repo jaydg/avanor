@@ -18,6 +18,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "helpers/registry.h"
 #include "item/item.h"
 #include <iostream>
 
@@ -26,17 +27,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/itemdb.h"
 #include "magic/brand.h"
 
-std::vector<ItemMaterial> item_prop;
+Registry<ItemMaterial> item_prop{"material"};
 
 const ItemMaterial* FindMaterial(const std::string& id)
 {
-    for (const auto& row : item_prop) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return item_prop.Find(id);
 }
 
 MaterialBuilder::MaterialBuilder(std::string id)
@@ -44,17 +39,11 @@ MaterialBuilder::MaterialBuilder(std::string id)
     t.id = std::move(id);
 }
 
-std::vector<MaterialSet> material_sets;
+Registry<MaterialSet> material_sets{"material set"};
 
 const MaterialSet* FindMaterialSet(const std::string& id)
 {
-    for (const auto& row : material_sets) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return material_sets.Find(id);
 }
 
 std::vector<std::string> MaterialsIn(const std::string& set)
@@ -115,7 +104,7 @@ void MaterialSetBuilder::Register()
         }
     }
 
-    material_sets.push_back(t);
+    material_sets.Add(t);
 }
 
 MaterialBuilder& MaterialBuilder::Called(const std::string& name)
@@ -194,23 +183,17 @@ void MaterialBuilder::Register()
         t.propname = t.id;
     }
 
-    item_prop.push_back(t);
+    item_prop.Add(t);
 }
 
-std::vector<ENHANCE_STRUCT> ienh_db;
+Registry<ENHANCE_STRUCT> ienh_db{"armour enchantment"};
 
 // The summed weights, so a draw is one roll rather than a walk.
 static int ienh_total_weight = 0;
 
 const ENHANCE_STRUCT* FindArmourEnchantment(const std::string& id)
 {
-    for (const auto& row : ienh_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return ienh_db.Find(id);
 }
 
 std::string RandomArmourEnchantment()
@@ -309,7 +292,7 @@ void ArmourEnchantmentBuilder::Register()
     }
 
     ienh_total_weight += t.weight;
-    ienh_db.push_back(t);
+    ienh_db.Add(t);
 }
 
 

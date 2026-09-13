@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/base_class.hpp>
 #include <sol/forward.hpp>
 
+#include "helpers/registry.h"
 #include "item/item.h"
 #include "magic/effect.h"
 
@@ -51,7 +52,7 @@ struct PotionColourStats {
     int colour = 0;
 };
 
-extern std::vector<PotionColourStats> potion_colours_db;
+extern Registry<PotionColourStats> potion_colours_db;
 
 const PotionColourStats* FindPotionColour(const POTION_COLOUR& id);
 

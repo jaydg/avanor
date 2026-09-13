@@ -31,6 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/forward.hpp>
 
 #include "creature/cr_defs.h"
+#include "helpers/registry.h"
 #include "magic/resist.h"
 
 // A brand is what an attack carries besides the blow itself: a weapon of
@@ -77,7 +78,7 @@ struct BrandStats {
     int value = 0;
 };
 
-extern std::vector<BrandStats> brands_db;
+extern Registry<BrandStats> brands_db;
 
 // The row a brand id names, or nullptr if content never registered one.
 const BrandStats* FindBrand(const BRAND& id);

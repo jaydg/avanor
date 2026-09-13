@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <cereal/archives/json.hpp>
 
+#include "helpers/registry.h"
 #include "item/xanyfood.h"
 #include "item/xpotion.h"
 
@@ -48,7 +49,7 @@ struct PlantKindStats {
     std::vector<Grade> grades;
 };
 
-extern std::vector<PlantKindStats> plant_kinds_db;
+extern Registry<PlantKindStats> plant_kinds_db;
 
 const PlantKindStats* FindPlantKind(const PLANT_KIND& id);
 

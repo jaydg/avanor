@@ -25,6 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
+#include "helpers/registry.h"
+
 #include <cereal/cereal.hpp>
 #include <cereal/types/map.hpp>
 #include <cereal/types/string.hpp>
@@ -123,7 +125,7 @@ class XCombatSkills
 };
 
 // Every skill content declared, in declaration order.
-extern std::vector<CombatSkillStats> combat_skills;
+extern Registry<CombatSkillStats> combat_skills;
 
 // The row for an id, or nullptr for one nothing defines.
 const CombatSkillStats* FindCombatSkill(const COMBAT_SKILL& cs);

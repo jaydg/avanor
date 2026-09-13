@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "helpers/registry.h"
 #include "item/item_cereal.h"
 #include "helpers/msgwin.h"
 #include "item/xanyfood.h"
@@ -124,24 +125,18 @@ RESULT XAnyFood::onEat(XCreature * eater)
 
 namespace {
 
-std::vector<TasteStats> tastes_db;
+Registry<TasteStats> tastes_db{"taste"};
 
 }
 
-const TasteStats* FindTaste(const TASTE& id)
+const TasteStats* FindTaste(const std::string& id)
 {
-    for (const auto& row : tastes_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return tastes_db.Find(id);
 }
 
 const std::vector<TasteStats>& AllTastes()
 {
-    return tastes_db;
+    return tastes_db.All();
 }
 
 std::string TasteWord(const TASTE& id)
@@ -209,16 +204,6 @@ TasteBuilder& TasteBuilder::Ordinary()
 
 void TasteBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a taste with no id" << std::endl;
-        return;
-    }
-
-    if (FindTaste(t.id)) {
-        std::cerr << "world: two tastes both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.text.empty()) {
         std::cerr << "world: the taste '" << t.id << "' says nothing" << std::endl;
         return;
@@ -229,7 +214,7 @@ void TasteBuilder::Register()
                   << tastes_db[OrdinaryTasteIndex()].id << "'" << std::endl;
     }
 
-    tastes_db.push_back(t);
+    tastes_db.Add(t);
 }
 
 void RegisterTasteLua(sol::state_view& lua)
@@ -243,16 +228,9 @@ void RegisterTasteLua(sol::state_view& lua)
 }
 
 // Complains if no row is registered under this id and returns false.
-bool CheckTasteExists(const TASTE& id, const char* where)
+bool CheckTasteExists(const std::string& id, const char* where)
 {
-    if (FindTaste(id)) {
-        return true;
-    }
-
-    std::cerr << "world: " << where << " names a taste '" << id
-              << "', which world/tastes.lua does not declare" << std::endl;
-
-    return false;
+    return tastes_db.Exists(id, where);
 }
 
 std::string XAnyFood::postEat(XCreature *eater)

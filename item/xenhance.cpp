@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "helpers/registry.h"
 #include "item/item_cereal.h"
 #include "item/xenhance.h"
 
@@ -58,7 +59,7 @@ struct EnchantmentLook {
 };
 
 static std::vector<EnchantmentLook> enh_looks;
-static std::vector<ENH_REC> enh_db;
+static Registry<ENH_REC> enh_db{"enchantment"};
 
 const std::string XEnhance::RANDOM;
 
@@ -194,17 +195,6 @@ EnchantmentBuilder& EnchantmentBuilder::Worth(const int v)
 
 void EnchantmentBuilder::Register()
 {
-    if (id.empty()) {
-        std::cerr << "world: an enchantment with no id" << std::endl;
-        return;
-    }
-
-    if (FindEnchantment(id)) {
-        std::cerr << "world: two enchantments both called '" << id << "'"
-                  << std::endl;
-        return;
-    }
-
     ENH_REC row;
     row.id = id;
     row.name = name;
@@ -218,7 +208,9 @@ void EnchantmentBuilder::Register()
     row.s = s;
     row.value = value;
 
-    enh_db.push_back(std::move(row));
+    if (!enh_db.Add(std::move(row))) {
+        return;
+    }
 
     // Taken after the row is in the table, so it counts itself out.
     if (const EnchantmentLook* look = TakeLook()) {

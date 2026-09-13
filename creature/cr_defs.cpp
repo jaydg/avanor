@@ -22,11 +22,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "creature/cr_defs.h"
 
 namespace {
 
-std::vector<CreatureClassStats> classes_db;
+Registry<CreatureClassStats> classes_db{"creature class"};
 
 }
 
@@ -94,20 +95,14 @@ std::string CreatureClassSet::toString() const
     return out;
 }
 
-const CreatureClassStats* FindCreatureClass(const CREATURE_CLASS& id)
+const CreatureClassStats* FindCreatureClass(const std::string& id)
 {
-    for (const auto& row : classes_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return classes_db.Find(id);
 }
 
 const std::vector<CreatureClassStats>& AllCreatureClasses()
 {
-    return classes_db;
+    return classes_db.All();
 }
 
 CreatureClassSet DefaultEnemies()
@@ -167,38 +162,21 @@ CreatureClassBuilder& CreatureClassBuilder::Folk()
 
 void CreatureClassBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a creature class with no id" << std::endl;
-        return;
-    }
-
-    if (FindCreatureClass(t.id)) {
-        std::cerr << "world: two creature classes both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.slain_verb.empty()) {
         std::cerr << "world: the creature class '" << t.id
                   << "' is slain by no verb at all" << std::endl;
         return;
     }
 
-    classes_db.push_back(t);
+    classes_db.Add(t);
 }
 
 // Complains if no row is registered under this id and returns false.
 // Content declares the classes before anything names one, so an unknown
 // id is a typo rather than an ordering accident.
-bool CheckCreatureClassExists(const CREATURE_CLASS& id, const char* where)
+bool CheckCreatureClassExists(const std::string& id, const char* where)
 {
-    if (FindCreatureClass(id)) {
-        return true;
-    }
-
-    std::cerr << "world: " << where << " names a creature class '" << id
-              << "', which world/creature_classes.lua does not declare" << std::endl;
-
-    return false;
+    return classes_db.Exists(id, where);
 }
 
 void RegisterCreatureClassLua(sol::state_view& lua)

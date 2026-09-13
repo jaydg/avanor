@@ -32,6 +32,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/cereal.hpp>
 #include <sol/forward.hpp>
 
+#include "helpers/registry.h"
 #include "helpers/dice.h"
 
 // One of the ways a creature or an item can be hardened against harm -
@@ -67,7 +68,7 @@ struct ResistanceStats {
 
 // Every resistance content declared, in declaration order - which is the
 // order they are listed in wherever they are shown.
-extern std::vector<ResistanceStats> resistances_db;
+extern Registry<ResistanceStats> resistances_db;
 
 const ResistanceStats* FindResistance(const RESISTANCE& r);
 

@@ -28,6 +28,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "helpers/registry.h"
 #include "item/item_cereal.h"
 #include "item/xbook.h"
 #include "helpers/msgwin.h"

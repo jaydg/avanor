@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string>
 #include <vector>
 
+#include "helpers/registry.h"
 #include "magic/cskills.h"
 #include "item/itemdef.h"
 #include "item/itemkind.h"
@@ -219,7 +220,7 @@ const ENHANCE_STRUCT* FindArmourEnchantment(const std::string& id);
 std::string RandomArmourEnchantment();
 
 
-extern std::vector<ItemMaterial> item_prop;
+extern Registry<ItemMaterial> item_prop;
 
 // The material with this id, or nullptr for one nothing defines.
 const ItemMaterial* FindMaterial(const std::string& id);
@@ -244,7 +245,7 @@ struct MaterialSet {
     std::vector<std::string> members;
 };
 
-extern std::vector<MaterialSet> material_sets;
+extern Registry<MaterialSet> material_sets;
 
 const MaterialSet* FindMaterialSet(const std::string& id);
 
@@ -285,7 +286,7 @@ class MaterialBuilder
     private:
         ItemMaterial t;
 };
-extern std::vector<ENHANCE_STRUCT> ienh_db;
+extern Registry<ENHANCE_STRUCT> ienh_db;
 
 
 // The pool a kind of item is drawn from, or nullptr for a kind that keeps

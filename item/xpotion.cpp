@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "helpers/msgwin.h"
 #include "engine/xlua.h"
 #include "item/item_cereal.h"
@@ -49,17 +50,11 @@ void XPotion::RegisterLua(sol::state_view& lua)
     // potion took this game, and the engine deals them out.
 }
 
-std::vector<PotionColourStats> potion_colours_db;
+Registry<PotionColourStats> potion_colours_db{"potion colour"};
 
-const PotionColourStats* FindPotionColour(const POTION_COLOUR& id)
+const PotionColourStats* FindPotionColour(const std::string& id)
 {
-    for (const auto& row : potion_colours_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return potion_colours_db.Find(id);
 }
 
 PotionColourBuilder::PotionColourBuilder(std::string id)
@@ -81,21 +76,11 @@ PotionColourBuilder& PotionColourBuilder::Looks(const int colour)
 
 void PotionColourBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a potion colour with no id" << std::endl;
-        return;
-    }
-
-    if (FindPotionColour(t.id)) {
-        std::cerr << "world: two potion colours both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         t.name = t.id;
     }
 
-    potion_colours_db.push_back(t);
+    potion_colours_db.Add(t);
 }
 
 // What an appearance reads as, or nothing if the row is missing.

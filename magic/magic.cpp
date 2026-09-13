@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/archives/json.hpp>
 #include <sol/sol.hpp>
 
+#include "helpers/registry.h"
 #include "creature/creature.h"
 #include "helpers/msgwin.h"
 #include "magic/magic.h"
@@ -50,36 +51,23 @@ void RegisterSpellNameEnum(sol::state_view& lua)
 
 namespace {
 
-std::vector<MagicSchoolStats> schools_db;
+Registry<MagicSchoolStats> schools_db{"school of magic"};
 
 }
 
-const MagicSchoolStats* FindMagicSchool(const MAGIC_SCHOOL& id)
+const MagicSchoolStats* FindMagicSchool(const std::string& id)
 {
-    for (const auto& row : schools_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return schools_db.Find(id);
 }
 
 const std::vector<MagicSchoolStats>& AllMagicSchools()
 {
-    return schools_db;
+    return schools_db.All();
 }
 
-bool CheckMagicSchoolExists(const MAGIC_SCHOOL& id, const char* where)
+bool CheckMagicSchoolExists(const std::string& id, const char* where)
 {
-    if (FindMagicSchool(id)) {
-        return true;
-    }
-
-    std::cerr << "world: " << where << " belongs to a school of magic '" << id
-              << "', which world/spells.lua does not declare" << std::endl;
-
-    return false;
+    return schools_db.Exists(id, where);
 }
 
 MagicSchoolBuilder::MagicSchoolBuilder(MAGIC_SCHOOL id)
@@ -95,23 +83,13 @@ MagicSchoolBuilder& MagicSchoolBuilder::Called(const std::string& name)
 
 void MagicSchoolBuilder::Register()
 {
-    if (t.id.empty()) {
-        std::cerr << "world: a school of magic with no id" << std::endl;
-        return;
-    }
-
-    if (FindMagicSchool(t.id)) {
-        std::cerr << "world: two schools of magic both called '" << t.id << "'" << std::endl;
-        return;
-    }
-
     if (t.name.empty()) {
         std::cerr << "world: the school of magic '" << t.id
                   << "' has no name for the character sheet" << std::endl;
         return;
     }
 
-    schools_db.push_back(t);
+    schools_db.Add(t);
 }
 
 void RegisterMagicSchoolLua(sol::state_view& lua)
@@ -139,18 +117,12 @@ struct SPELL_REC {
     XSpell::Use use{XSpell::Use::OTHER};
 };
 
-std::vector<SPELL_REC> spell_db;
+Registry<SPELL_REC> spell_db{"spell"};
 
 // The row for an id, or nullptr if content never registered one.
-static const SPELL_REC* FindSpell(const SPELL_NAME& id)
+static const SPELL_REC* FindSpell(const std::string& id)
 {
-    for (const auto& row : spell_db) {
-        if (row.id == id) {
-            return &row;
-        }
-    }
-
-    return nullptr;
+    return spell_db.Find(id);
 }
 
 // A row that is always there, so every accessor below has something to
@@ -203,16 +175,6 @@ SpellBuilder& SpellBuilder::Use(const XSpell::Use u)
 
 void SpellBuilder::Register()
 {
-    if (id.empty()) {
-        std::cerr << "world: a spell with no id" << std::endl;
-        return;
-    }
-
-    if (FindSpell(id)) {
-        std::cerr << "world: two spells both called '" << id << "'" << std::endl;
-        return;
-    }
-
     SPELL_REC row;
     row.id = id;
     row.name = name.empty() ? id : name;
@@ -221,7 +183,7 @@ void SpellBuilder::Register()
     row.cost = cost;
     row.use = use;
 
-    spell_db.push_back(std::move(row));
+    spell_db.Add(std::move(row));
 }
 
 XSpell::XSpell(const SPELL_NAME spn)
