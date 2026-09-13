@@ -298,7 +298,7 @@ void XGame::RunWithoutHero() const
                 std::ofstream f(vMakePath(HOME_DIR, "items.txt"));
 
                 for (const auto&[pI, val] : ia) {
-                    if (pI->kind & (ItemKind::VALUEDICE | ItemKind::ARMOUR)) {
+                    if (KindPricedByDice(pI->kind) || KindIsArmour(pI->kind)) {
                         pI->Identify();
                         f << fmt::format("{:<70}{}\n", pI->toString(), val);
                     }

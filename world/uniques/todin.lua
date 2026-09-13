@@ -29,7 +29,7 @@ function TodinHandler(e, t, p, v)
 		return true
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
-		if (BinaryAND(kind, ItemKind.WEAPON)) then
+		if (IsKind(kind, ItemKind.WEAPON)) then
 			if (HasBrand(brt, "cold fire orc_slayer")) then
 				AddMessage("'This weapon's good enough!'")
 			else

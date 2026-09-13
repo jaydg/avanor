@@ -123,6 +123,7 @@
 -- NPC/quests/locations where they are used.
 
 function LoadItems()
+	dofile("./world/items/kinds.lua")
 	dofile("./world/items/weapons.lua")
 	dofile("./world/items/missile_weapons.lua")
 	dofile("./world/items/missiles.lua")

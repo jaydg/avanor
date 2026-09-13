@@ -223,7 +223,7 @@ function InitHero(hero, race_key, gender_key, profession_key)
 	-- After the kit, necessarily: it reads what the kit put there.
 	local weapon = GetWornItem(hero, BodyPart.HAND, 0)
 
-	if (weapon and BinaryAND(AsItem(weapon).kind, ItemKind.WEAPON)) then
+	if (weapon and IsKind(AsItem(weapon).kind, ItemKind.WEAPON)) then
 		SetWarSkill(hero, GetItemWarSkill(weapon), 2)
 	end
 

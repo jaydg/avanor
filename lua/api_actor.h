@@ -115,6 +115,7 @@ namespace lua_api
     int Gender(void* cr);
     XGUID GetObjectGUID(void* obj);
     std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
+    bool IsKind(int kind, int wanted);
     bool HasBrand(const std::string& carried, const std::string& ids);
     std::string GetCreatureClass(void* who);
     void SetCreatureClass(void* who, const std::string& cr_class);
@@ -141,7 +142,6 @@ namespace lua_api
     int QuestStatus(const std::string& id);
     int StoreInt(lua_State * L);
     int RestoreInt(lua_State * L);
-    bool BinaryAND(int v1, int v2);
 
     sol::optional<void*> GetWornItem(void* cr, int bodypart, int slot);
     std::string GetItemId(void* item);

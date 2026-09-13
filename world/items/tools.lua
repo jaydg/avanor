@@ -114,7 +114,7 @@ function DistilHerb(state, item, alchemist)
 
 	local herb = SelectItem(alchemist, function(candidate)
 		local c = AsItem(candidate)
-		return BinaryAND(c.kind, ItemKind.FOOD) ~= 0 and c.it == "herb"
+		return IsKind(c.kind, ItemKind.FOOD) and c.it == "herb"
 	end)
 
 	if (not herb) then

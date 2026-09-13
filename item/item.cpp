@@ -513,17 +513,116 @@ int XItem::ModifyDur(int val)
     }
 }
 
+namespace {
+
+// The kinds each rule covers, folded together as world/items/kinds.lua
+// declares them. Held as masks so the tests below stay the single "&"
+// they always were.
+ItemKind rule_takes_to_hit = ItemKind::UNKNOWN;
+ItemKind rule_priced_by_dice = ItemKind::UNKNOWN;
+ItemKind rule_priced_by_armour = ItemKind::UNKNOWN;
+ItemKind rule_priced_by_damage = ItemKind::UNKNOWN;
+ItemKind rule_is_armour = ItemKind::UNKNOWN;
+
+}
+
+bool KindTakesToHit(const ItemKind kind)
+{
+    return kind & rule_takes_to_hit;
+}
+
+bool KindPricedByDice(const ItemKind kind)
+{
+    return kind & rule_priced_by_dice;
+}
+
+bool KindPricedByArmour(const ItemKind kind)
+{
+    return kind & rule_priced_by_armour;
+}
+
+bool KindPricedByDamage(const ItemKind kind)
+{
+    return kind & rule_priced_by_damage;
+}
+
+bool KindIsArmour(const ItemKind kind)
+{
+    return kind & rule_is_armour;
+}
+
+ItemKindRulesBuilder::ItemKindRulesBuilder(const int k) : kind(static_cast<ItemKind>(k))
+{
+}
+
+ItemKindRulesBuilder& ItemKindRulesBuilder::TakesToHit()
+{
+    takes_to_hit = kind;
+    return *this;
+}
+
+ItemKindRulesBuilder& ItemKindRulesBuilder::PricedByDice()
+{
+    priced_by_dice = kind;
+    return *this;
+}
+
+ItemKindRulesBuilder& ItemKindRulesBuilder::PricedByArmour()
+{
+    priced_by_armour = kind;
+    return *this;
+}
+
+ItemKindRulesBuilder& ItemKindRulesBuilder::PricedByDamage()
+{
+    priced_by_damage = kind;
+    return *this;
+}
+
+ItemKindRulesBuilder& ItemKindRulesBuilder::IsArmour()
+{
+    is_armour = kind;
+    return *this;
+}
+
+void ItemKindRulesBuilder::Register()
+{
+    if (kind == ItemKind::UNKNOWN) {
+        std::cerr << "world: a rule for no kind of item at all" << std::endl;
+        return;
+    }
+
+    rule_takes_to_hit = rule_takes_to_hit | takes_to_hit;
+    rule_priced_by_dice = rule_priced_by_dice | priced_by_dice;
+    rule_priced_by_armour = rule_priced_by_armour | priced_by_armour;
+    rule_priced_by_damage = rule_priced_by_damage | priced_by_damage;
+    rule_is_armour = rule_is_armour | is_armour;
+}
+
+void RegisterItemKindRulesLua(sol::state_view& lua)
+{
+    lua.new_usertype<ItemKindRulesBuilder>("ItemKindRules",
+        sol::constructors<ItemKindRulesBuilder(int)>(),
+        "TakesToHit", &ItemKindRulesBuilder::TakesToHit,
+        "PricedByDice", &ItemKindRulesBuilder::PricedByDice,
+        "PricedByArmour", &ItemKindRulesBuilder::PricedByArmour,
+        "PricedByDamage", &ItemKindRulesBuilder::PricedByDamage,
+        "IsArmour", &ItemKindRulesBuilder::IsArmour,
+        "Register", &ItemKindRulesBuilder::Register
+    );
+}
+
 int XItem::GetValue()
 {
     int xdice = 0;
     int xdvpv = 0;
     int xhitdmg = 0;
 
-    if (kind & ItemKind::VALUEDICE) {
+    if (KindPricedByDice(kind)) {
         xdice = (dice.GetCount() * dice.GetSides() + dice.GetCount()) * 3;
     }
 
-    if (kind & ItemKind::VALUEDVPV) {
+    if (KindPricedByArmour(kind)) {
         xdvpv = (dv + 6 * pv) * 4;
     }
 
@@ -531,7 +630,7 @@ int XItem::GetValue()
         xdvpv = xdvpv + dv * 5;
     }
 
-    if (kind & ItemKind::VALUEHITDMG) {
+    if (KindPricedByDamage(kind)) {
         xhitdmg = (to_hit + dice.GetBonus() * 3) * 3;
     }
 
@@ -744,7 +843,7 @@ void XItem::onWear(XCreature * cr)
 
     cr->added_PV	+= pv;
 
-    if (kind & ItemKind::TOHIT) {
+    if (KindTakesToHit(kind)) {
         cr->added_HIT	+= to_hit;
     }
 
@@ -770,7 +869,7 @@ void XItem::onUnWear(XCreature * cr)
 
     cr->added_PV	-= pv;
 
-    if (kind & ItemKind::TOHIT) {
+    if (KindTakesToHit(kind)) {
         cr->added_HIT	-= to_hit;
     }
 

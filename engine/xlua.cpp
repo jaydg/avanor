@@ -148,6 +148,7 @@ void XLua::Init()
     RegisterBrandLua(lua);
     RegisterTasteLua(lua);
     RegisterMagicSchoolLua(lua);
+    RegisterItemKindRulesLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     RegisterBodyPartEnum(lua);

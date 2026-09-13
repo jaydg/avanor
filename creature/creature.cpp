@@ -1519,11 +1519,11 @@ void XCreature::GetRangeAttackInfo(int* range, int* hit, XDice * dmg)
     // instead and see none of the other three, so an enchanted ring or an
     // aggressive stance helped a sword and did nothing for a bow.
     //
-    // The missile's own to-hit is added explicitly - and the launcher's
-    // below - because ItemKind::TOHIT, the set onWear() folds into
-    // added_HIT, covers weapons but neither missiles nor launchers. They
-    // cannot simply be added to that set either: melee to-hit is built
-    // from GetHIT() too, so a slung bow would sharpen sword swings.
+    // The missile's own to-hit is added explicitly - and the launcher's below,
+    // because the kinds onWear() folds into added_HIT cover weapons but
+    // neither missiles nor launchers. They cannot simply be marked either:
+    // melee to-hit is built from GetHIT() too, so a slung bow would sharpen
+    // sword swings.
     *hit = GetHIT() + missile->to_hit;
     dmg->Setup(missile->dice);
 

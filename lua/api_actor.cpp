@@ -701,6 +701,20 @@ std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemPa
     return {static_cast<int>(p->kind), p->aet.toString(), p->wt, p->it, p->quantity, p->name};
 }
 
+// Whether an item of this kind is one of the kinds asked for:
+//
+//   local kind, brt, wt = GetItemParam(item)
+//   if (IsKind(kind, ItemKind.WEAPON)) then
+//
+// The same intersection test the engine makes everywhere, and the
+// counterpart of HasBrand() above - both read what GetItemParam() handed
+// back. Content used to reach for BinaryAND() to ask this, because a kind
+// is a bitmask and Lua here has no bit operators of its own.
+bool IsKind(const int kind, const int wanted)
+{
+    return static_cast<ItemKind>(kind) & static_cast<ItemKind>(wanted);
+}
+
 // What sort of creature this is, by the id world/creature_classes.lua declares
 // it under - so a script compares it with "==". A free function rather than a
 // usertype field, per the hazard documented in XCreature::RegisterLua.
@@ -981,11 +995,6 @@ int RestoreInt(lua_State * L)
     return 1;
 }
 
-bool BinaryAND(int v1, int v2)
-{
-    return v1 & v2;
-}
-
 // The item worn in a body part slot, or nil when the slot is empty.
 //
 // sol::optional and not a plain void*, because that is the only way to
@@ -1102,6 +1111,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("GetItemParam", &lua_api::GetItemParam);
         lua.set_function("SetItemBrand", &lua_api::SetItemBrand);
         lua.set_function("HasBrand", &lua_api::HasBrand);
+        lua.set_function("IsKind", &lua_api::IsKind);
         lua.set_function("GetCreatureClass", &lua_api::GetCreatureClass);
         lua.set_function("SetCreatureClass", &lua_api::SetCreatureClass);
         lua.set_function("Favour", &lua_api::Favour);
@@ -1125,7 +1135,6 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("QuestModify", &lua_api::QuestModify);
         lua.set_function("QuestStatus", &lua_api::QuestStatus);
         lua.set_function("Gender", &lua_api::Gender);
-        lua.set_function("BinaryAND", &lua_api::BinaryAND);
 }
 
 } // namespace lua_api

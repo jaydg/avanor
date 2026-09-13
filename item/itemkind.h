@@ -21,6 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef ITEMKIND_H
 #define ITEMKIND_H
 
+#include <sol/forward.hpp>
+
 // Free-standing rather than nested in XItem: XItem's own header pulls in
 // both this enum (via ENHANCE_STRUCT in itemdb.h) and BODY_PART (via
 // bodypart.h, whose XBodyPart::GetProperKind() also returns ItemKind)
@@ -66,11 +68,11 @@ enum class ItemKind : unsigned int {
     CHEST = 0x80000000,
     ITEM = 0x2FFFFF00, // all items!
 
-    TOHIT = HAT | NECK | BODY | CLOAK | GLOVES | SHIELD | BOOTS | RING | WEAPON,
+    // A group content names as one, the only such member left: the four
+    // others (TOHIT, VALUEDICE, VALUEDVPV, VALUEHITDMG) said what a kind
+    // of item DOES rather than what it is, and are declared in
+    // world/items/kinds.lua now - see the Kind* rules below.
     ARMOUR = HAT | BODY | CLOAK | GLOVES | SHIELD | BOOTS,
-    VALUEDICE = WEAPON | MISSILEW | MISSILE,
-    VALUEDVPV = HAT | BODY | CLOAK | GLOVES | SHIELD | BOOTS | WEAPON,
-    VALUEHITDMG = HAT | BODY | CLOAK | GLOVES | BOOTS | WEAPON,
     ALL = 0xFFFFFFFF
 };
 
@@ -90,5 +92,46 @@ constexpr bool operator&(ItemKind a, ItemKind b)
 {
     return (static_cast<unsigned int>(a) & static_cast<unsigned int>(b)) != 0;
 }
+
+// What a kind of item does beyond being that kind. Which kinds each of
+// these covers used to be a composite member of the enum above -
+// ItemKind::TOHIT, ::VALUEDICE and the rest - so a world could not give a
+// new sort of item a to-hit bonus, or have it priced by its damage, from
+// content. The rules themselves are the engine's (the pricing sums and
+// the to-hit stacking are here); which kinds they apply to is content's,
+// declared in world/items/kinds.lua.
+[[nodiscard]] bool KindTakesToHit(ItemKind kind);
+[[nodiscard]] bool KindPricedByDice(ItemKind kind);
+[[nodiscard]] bool KindPricedByArmour(ItemKind kind);
+[[nodiscard]] bool KindPricedByDamage(ItemKind kind);
+
+// Whether it is armour, which nothing but the item dump asks.
+[[nodiscard]] bool KindIsArmour(ItemKind kind);
+
+// One line of world/items/kinds.lua. The kind it names may be a single
+// one or several at once, since ItemKind.ARMOUR and its like are still
+// what content writes.
+class ItemKindRulesBuilder
+{
+    public:
+        explicit ItemKindRulesBuilder(int kind);
+
+        ItemKindRulesBuilder& TakesToHit();
+        ItemKindRulesBuilder& PricedByDice();
+        ItemKindRulesBuilder& PricedByArmour();
+        ItemKindRulesBuilder& PricedByDamage();
+        ItemKindRulesBuilder& IsArmour();
+        void Register();
+
+    private:
+        ItemKind kind;
+        ItemKind takes_to_hit{ItemKind::UNKNOWN};
+        ItemKind priced_by_dice{ItemKind::UNKNOWN};
+        ItemKind priced_by_armour{ItemKind::UNKNOWN};
+        ItemKind priced_by_damage{ItemKind::UNKNOWN};
+        ItemKind is_armour{ItemKind::UNKNOWN};
+};
+
+void RegisterItemKindRulesLua(sol::state_view& lua);
 
 #endif
