@@ -472,10 +472,17 @@ MonsterBuilder& MonsterBuilder::EquipCount(unsigned int mask, int count, int pro
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::Corpse(int rotting_time, FOOD_TYPE ft)
+// How long a corpse of this species keeps, and how it sits when eaten.
+// The taste half used to be written into the row and read by nothing at
+// all, so a creature declaring one tasted like any other.
+MonsterBuilder& MonsterBuilder::Corpse(const int rotting_time, const std::string& taste)
 {
     cr.pCorpseData.roating_time = rotting_time;
-    cr.pCorpseData.ft = ft;
+
+    if (CheckTasteExists(taste, ("creature '" + id + "'").c_str())) {
+        cr.pCorpseData.taste = taste;
+    }
+
     return *this;
 }
 

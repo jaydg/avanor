@@ -77,7 +77,9 @@
 --   :View(name, view, color)      what it is called and how it looks
 --   :Basic(ItemType, value, wt)   its type, its price, its weight
 --   :Nutrition(food, per_turn)    how much food it holds, how fast it goes
---   :Taste(FoodType)              how well it sits; NORMAL if unsaid
+--   :Taste(id)                    how well it sits - a row from
+--                                 world/tastes.lua. The ordinary one if
+--                                 unsaid
 --   :Random(probability)          its weight in the draw when the game
 --                                 wants "some food" and does not say which.
 --                                 Left unsaid it is never drawn, which is

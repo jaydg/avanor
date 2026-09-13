@@ -84,10 +84,13 @@ class XCorpse : public XAnyFood
         // its species' entry rather than carrying a copy (see
         // pCorpseData below).
         struct Data {
-            Data() : roating_time(100), ft(FT_NORMALFOOD) {}
+            Data() : roating_time(100) {}
 
             int roating_time;
-            FOOD_TYPE ft;
+
+            // How a corpse of this species sits, by id. Empty means the
+            // ordinary sort, the same as for any other food.
+            TASTE taste;
             std::vector<Effect> effect;
         };
 

@@ -56,9 +56,9 @@ struct FoodTemplate {
     int food_nutrio;
     int consume_nutrio;
 
-    // How well it sits: FT_BESTFOOD through FT_VOMIT shift how much
+    // How well it sits: an id from world/tastes.lua, which shifts how much
     // satiation eating it actually yields (XAnyFood::onEat).
-    FOOD_TYPE food_type;
+    TASTE food_type;
 
     // Weight in the draw when the game asks for a food and does not say
     // which (XItemFactory::CreateItem). Zero - the default - keeps a food
@@ -314,7 +314,7 @@ class FoodBuilder
         FoodBuilder& View(const std::string& name, char view, int color);
         FoodBuilder& Basic(ItemType it, int value, int weight);
         FoodBuilder& Nutrition(int food_nutrio, int consume_nutrio);
-        FoodBuilder& Taste(FOOD_TYPE food_type);
+        FoodBuilder& Taste(const std::string& food_type);
         FoodBuilder& Random(int probability);
 
         void Register();

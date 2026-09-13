@@ -18,6 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <algorithm>
+#include <iostream>
+#include <sol/sol.hpp>
+
 #include <fmt/format.h>
 
 #include "item/item_cereal.h"
@@ -36,6 +40,10 @@ XAnyFood::XAnyFood()
     color = xBROWN;
     kind = ItemKind::FOOD;
     consumed_food = 0;
+
+    // Until something says otherwise, it is the ordinary sort - which is
+    // what FT_NORMALFOOD used to mean, now that content names it.
+    food_type = OrdinaryTaste();
 }
 
 bool XAnyFood::Compare(XObject* o)
@@ -114,50 +122,176 @@ RESULT XAnyFood::onEat(XCreature * eater)
     }
 }
 
-std::string food_type_feeling[] = {
-    "delicious",
-    "very tasty",
-    "tasty",
-    "tasteless",
-    "taste like a slops",
-    "vomit"
-};
+namespace {
+
+std::vector<TasteStats> tastes_db;
+
+}
+
+const TasteStats* FindTaste(const TASTE& id)
+{
+    for (const auto& row : tastes_db) {
+        if (row.id == id) {
+            return &row;
+        }
+    }
+
+    return nullptr;
+}
+
+const std::vector<TasteStats>& AllTastes()
+{
+    return tastes_db;
+}
+
+std::string TasteWord(const TASTE& id)
+{
+    const TasteStats* row = FindTaste(id);
+    return row ? row->text : "not bad";
+}
+
+int TasteIndex(const TASTE& id)
+{
+    for (size_t i = 0; i < tastes_db.size(); i++) {
+        if (tastes_db[i].id == id) {
+            return static_cast<int>(i);
+        }
+    }
+
+    return -1;
+}
+
+const TASTE& TasteAt(const int index)
+{
+    static const TASTE none;
+
+    if (tastes_db.empty()) {
+        return none;
+    }
+
+    const int last = static_cast<int>(tastes_db.size()) - 1;
+
+    return tastes_db[std::clamp(index, 0, last)].id;
+}
+
+int OrdinaryTasteIndex()
+{
+    for (size_t i = 0; i < tastes_db.size(); i++) {
+        if (tastes_db[i].ordinary) {
+            return static_cast<int>(i);
+        }
+    }
+
+    return -1;
+}
+
+const TASTE& OrdinaryTaste()
+{
+    return TasteAt(OrdinaryTasteIndex());
+}
+
+TasteBuilder::TasteBuilder(TASTE id)
+{
+    t.id = std::move(id);
+}
+
+TasteBuilder& TasteBuilder::Called(const std::string& text)
+{
+    t.text = text;
+    return *this;
+}
+
+TasteBuilder& TasteBuilder::Ordinary()
+{
+    t.ordinary = true;
+    return *this;
+}
+
+void TasteBuilder::Register()
+{
+    if (t.id.empty()) {
+        std::cerr << "world: a taste with no id" << std::endl;
+        return;
+    }
+
+    if (FindTaste(t.id)) {
+        std::cerr << "world: two tastes both called '" << t.id << "'" << std::endl;
+        return;
+    }
+
+    if (t.text.empty()) {
+        std::cerr << "world: the taste '" << t.id << "' says nothing" << std::endl;
+        return;
+    }
+
+    if (t.ordinary && OrdinaryTasteIndex() >= 0) {
+        std::cerr << "world: the taste '" << t.id << "' is the ordinary one, and so is '"
+                  << tastes_db[OrdinaryTasteIndex()].id << "'" << std::endl;
+    }
+
+    tastes_db.push_back(t);
+}
+
+void RegisterTasteLua(sol::state_view& lua)
+{
+    lua.new_usertype<TasteBuilder>("Taste",
+        sol::constructors<TasteBuilder(TASTE)>(),
+        "Called", &TasteBuilder::Called,
+        "Ordinary", &TasteBuilder::Ordinary,
+        "Register", &TasteBuilder::Register
+    );
+}
+
+// Complains if no row is registered under this id and returns false.
+bool CheckTasteExists(const TASTE& id, const char* where)
+{
+    if (FindTaste(id)) {
+        return true;
+    }
+
+    std::cerr << "world: " << where << " names a taste '" << id
+              << "', which world/tastes.lua does not declare" << std::endl;
+
+    return false;
+}
 
 std::string XAnyFood::postEat(XCreature *eater)
 {
-    FOOD_TYPE ft = FoodTypeForCreature(eater);
-
-    if (ft > 1 && ft < 8) {
-        return food_type_feeling[ft - 2];
-    } else {
-        return "not bad";
-    }
+    return TasteWord(TasteForCreature(eater));
 }
 
-FOOD_TYPE XAnyFood::FoodTypeForCreature(XCreature * creature)
+// The same food is not the same meal to every stomach. Which taste each
+// of these lands on is a step along the order world/tastes.lua declares -
+// no taste is named here.
+TASTE XAnyFood::TasteForCreature(XCreature * creature)
 {
+    const int here = TasteIndex(food_type);
+
+    if (here < 0) {
+        return food_type;
+    }
+
     switch (creature->food_feeling) {
+        // Everything tastes a little worse than it is, and the worst
+        // there is cannot get worse - TasteAt() stops at the end.
         case FF_SENSITIVE :
-            if (food_type == FT_VOMIT) {
-                return FT_VOMIT;
-            } else {
-                return (FOOD_TYPE)(food_type + 1);
+            return TasteAt(here + 1);
+
+        // Nothing tastes worse than ordinary to a stomach that takes
+        // anything - and, oddly but as it has always been, nothing tastes
+        // better than ordinary either.
+        case FF_TOLERANT : {
+            const int ordinary = OrdinaryTasteIndex();
+
+            if (ordinary < 0) {
+                return food_type;
             }
 
-            break;
-
-        case FF_TOLERANT :
-            if (food_type > FT_NORMALFOOD) {
-                return (FOOD_TYPE)(food_type - 1);
-            } else {
-                return FT_NORMALFOOD;
-            }
-
-            break;
+            return here > ordinary ? TasteAt(here - 1) : TasteAt(ordinary);
+        }
 
         case FF_NORMAL :
             return food_type;
-            break;
 
         default:
             assert(0);

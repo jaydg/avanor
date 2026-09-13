@@ -484,7 +484,7 @@ FoodBuilder::FoodBuilder(std::string id) : id(std::move(id))
     t.view = '%';
     t.color = xBROWN;
     t.it = IT_NONE;
-    t.food_type = FT_NORMALFOOD;
+    t.food_type = OrdinaryTaste();
     t.probability = 0;
 }
 
@@ -511,8 +511,12 @@ FoodBuilder& FoodBuilder::Nutrition(const int food_nutrio, const int consume_nut
     return *this;
 }
 
-FoodBuilder& FoodBuilder::Taste(const FOOD_TYPE food_type)
+FoodBuilder& FoodBuilder::Taste(const std::string& food_type)
 {
+    if (!CheckTasteExists(food_type, "a food")) {
+        return *this;
+    }
+
     t.food_type = food_type;
     return *this;
 }

@@ -77,6 +77,11 @@ XCorpse::XCorpse(XCreature * corpse_owner, CORPSE_FLAG cf)
     time_of_roating = 0;
     roating_stopped = 0;
     pCorpseData = &XCreatureStorage::GetCreatureData(corpse_owner->creature_name)->pCorpseData;
+
+    if (!pCorpseData->taste.empty()) {
+        food_type = pCorpseData->taste;
+    }
+
     cn = corpse_owner->creature_name;
     Game.Scheduler.Add(this);
 }
@@ -163,9 +168,12 @@ RESULT XCorpse::onEat(XCreature * eater)
     return flag;
 }
 
+// A corpse tastes of what it is, whatever stomach is receiving it - which
+// is how it has always read, and why this overrides XAnyFood::postEat()
+// rather than letting the eater's own constitution shift it.
 std::string XCorpse::postEat(XCreature * /*eater*/)
 {
-    return "tasty";
+    return TasteWord(food_type);
 }
 
 bool XCorpse::Run()

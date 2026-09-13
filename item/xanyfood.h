@@ -21,18 +21,70 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XANYFOOD_H
 #define XANYFOOD_H
 
+#include <string>
+#include <vector>
+
 #include <cereal/types/base_class.hpp>
+#include <cereal/types/string.hpp>
+
+#include <sol/forward.hpp>
 
 #include "item/item.h"
 
-enum FOOD_TYPE {
-    FT_BESTFOOD     = 0x00000002, // feel very nice, +50% to food satiation
-    FT_GOODFOOD     = 0x00000003, // feel nice, +25% to food satiation
-    FT_NORMALFOOD   = 0x00000004, // ok
-    FT_BADFOOD      = 0x00000005, // -25% to food satiation
-    FT_VERYBADFOOD  = 0x00000006, // -50% to food satiation
-    FT_VOMIT        = 0x00000007, // -XXX from total satiation
+// How well something sits, from delicious down to outright sick-making.
+// Which tastes there are, what an eater calls them, and what order they
+// run in is content (world/tastes.lua). The engine only ever steps along
+// that order - a delicate stomach finds everything a little worse than it
+// is - and never names a taste of its own.
+using TASTE = std::string;
+
+struct TasteStats {
+    TASTE id;
+
+    // What the eater says of it: "You find that the apple is delicious."
+    std::string text;
+
+    // Which one a stomach that takes anything settles on: it finds
+    // nothing worse than this, and nothing better either.
+    bool ordinary = false;
 };
+
+const TasteStats* FindTaste(const TASTE& id);
+const std::vector<TasteStats>& AllTastes();
+
+// What an eater says of this taste. A taste nothing declares is "not
+// bad", which is what an unreadable food type used to come out as.
+std::string TasteWord(const TASTE& id);
+
+// Where a taste sits in the order content declared, and what sits at a
+// place in it. The index is clamped, so stepping off either end simply
+// stays there; an unknown taste has no place and answers -1.
+int TasteIndex(const TASTE& id);
+const TASTE& TasteAt(int index);
+
+// The place of the one marked :Ordinary(), or -1 if content marked none.
+int OrdinaryTasteIndex();
+
+// That one by id - what anything nobody has said a word about tastes of.
+const TASTE& OrdinaryTaste();
+
+class TasteBuilder
+{
+    public:
+        explicit TasteBuilder(TASTE id);
+
+        TasteBuilder& Called(const std::string& text);
+        TasteBuilder& Ordinary();
+        void Register();
+
+    private:
+        TasteStats t;
+};
+
+void RegisterTasteLua(sol::state_view& lua);
+
+// Complains if no row is registered under this id and returns false.
+bool CheckTasteExists(const TASTE& id, const char* where);
 
 class XAnyFood : public XItem
 {
@@ -66,7 +118,7 @@ class XAnyFood : public XItem
 
         int food_nutrio;
         int consumed_food;  // how much is eated
-        FOOD_TYPE FoodTypeForCreature(XCreature * creature);
+        TASTE TasteForCreature(XCreature * creature);
 
         // What it tastes like. Content states it with Food.new():Taste()
         // when it is worth stating - elvish waybread does, bat wings and
@@ -74,7 +126,7 @@ class XAnyFood : public XItem
         // Needs a value here rather than in the constructor, because
         // nothing but this declaration is common to every way a food comes
         // into existence.
-        FOOD_TYPE food_type = FT_NORMALFOOD;
+        TASTE food_type;
     protected:
         // Content-defined foods (world/items.lua) are plain XAnyFood
         // instances configured after construction rather than subclasses

@@ -163,7 +163,7 @@ class MonsterBuilder
         MonsterBuilder& LearnSpell(SPELL_NAME spn);
         MonsterBuilder& Equip(unsigned int mask, ItemType it, int prob);
         MonsterBuilder& EquipCount(unsigned int mask, int count, int prob);
-        MonsterBuilder& Corpse(int rotting_time, FOOD_TYPE ft);
+        MonsterBuilder& Corpse(int rotting_time, const std::string& taste);
         MonsterBuilder& CorpseEffect(XCorpse::EffectType cet, int val);
         MonsterBuilder& CorpseStat(const std::string& stat, int val);
         MonsterBuilder& CorpseResist(const std::string& resist, int val);

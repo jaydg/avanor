@@ -146,6 +146,7 @@ void XLua::Init()
     XCombatSkills::RegisterLua(lua);
     RegisterModifierLua(lua);
     RegisterBrandLua(lua);
+    RegisterTasteLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     RegisterBodyPartEnum(lua);
@@ -201,23 +202,13 @@ void XLua::Init()
         "ABORT", ABORT
     );
 
-    // How well a food sits once eaten (XAnyFood::onEat).
-    lua.new_enum("FoodType",
-        "BEST", FT_BESTFOOD,
-        "GOOD", FT_GOODFOOD,
-        "NORMAL", FT_NORMALFOOD,
-        "BAD", FT_BADFOOD,
-        "VERY_BAD", FT_VERYBADFOOD,
-        "VOMIT", FT_VOMIT
-    );
-
     // Every table above holds a fixed set of names the world scripts
     // spell out by hand, so a name that is not in one is a typo, not a
     // value. XTileType is here too: it is filled by DefineTile() as
     // world/tiles.lua runs, and read by name everywhere after that.
     for (const char* enum_table : {
             "BodyPart", "CorpseEffectType",
-            "CreatureSize", "CreatureTemplate", "FoodType", "Gender",
+            "CreatureSize", "CreatureTemplate", "Gender",
             "ItemKind", "FoodFeeling", "ItemQuality", "ItemUse", "LuaEvent", "Movability",
             "MagicSchool", "PersonType", "Result", "SpecialProperty", "SpellUse", "ScriptCommand", "ShopDoor",
             "Visibility", "xColor", "EffectTarget", "XLocation",
