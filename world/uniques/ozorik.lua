@@ -94,6 +94,14 @@ function OzorikHandler(e, t, p, v)
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (IsKind(kind, ItemKind.WEAPON) and HasBrand(brt, "orc_slayer") and wt == "sword") then
 			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
+
+			-- He looks the blade over and hands it straight back: it is one
+			-- of his guardians who must end up holding it, and that is what
+			-- finishes the quest (see RoyalGuardHandler in
+			-- world/valley_extras.lua). Answering true here would mean the
+			-- captain kept it - see XHero::GiveItem - leaving the hero with
+			-- his blessing, no sword, and no way to finish.
+			return false
 		else
 			AddMessage("'We are not looking for this.'")
 			return false
