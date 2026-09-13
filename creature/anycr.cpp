@@ -27,6 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/anycr.h"
 #include "creature/shopkeeper.h"
 #include "engine/xapi.h"
+#include "item/xenhance.h"
 #include "item/xring.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
@@ -38,8 +39,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 void CreatureTemplate::RegisterLua(sol::state_view& lua)
 {
     lua.new_enum("CreatureTemplate",
-        "SUPPRESS_INVIS", CreatureTemplate::SUPPRESS_INVIS,
-        "SEE_INVIS", CreatureTemplate::SEE_INVIS,
         "VERY_LOW", CreatureTemplate::Level::VERY_LOW,
         "LOW", CreatureTemplate::Level::LOW,
         "ABOVE_LOW", CreatureTemplate::Level::ABOVE_LOW,
@@ -166,11 +165,6 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
         hand_2->Wear(ICREATE(ItemKind::SHIELD, 0, 10000000));
     }
 
-    // supress invisibility, add see invisible
-    XBodyPart * neck = GetBodyPart(BP_NECK);
-    XBodyPart * ring1 = GetBodyPart(BP_RING, 0);
-    XBodyPart * ring2 = GetBodyPart(BP_RING, 1);
-
     // UnWear() doesn't remove the item from contain anymore (worn items
     // stay resident there - see XBodyPart::Wear()), so a bare
     // UnWear()->Invalidate() would leave a zombie entry behind: still in
@@ -185,41 +179,54 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
         old_item->Invalidate();
     };
 
-    if (cr->generation_flags & CreatureTemplate::SUPPRESS_INVIS) {
-        if (neck && neck->Item() && neck->Item()->resistances->GetResistance("invisible") > 0) {
-            unwear_and_invalidate(neck);
-        }
-
-        if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance("invisible") > 0) {
-            unwear_and_invalidate(ring1);
-        }
-
-        if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance("invisible") > 0) {
-            unwear_and_invalidate(ring2);
+    // What this sort may not walk around wearing.
+    for (const RESISTANCE& resist : cr->never) {
+        for (auto& bp : components) {
+            if (bp->Item() && bp->Item()->resistances->GetResistance(resist) > 0) {
+                unwear_and_invalidate(bp.get());
+            }
         }
     }
 
-    if (cr->generation_flags & CreatureTemplate::SEE_INVIS) {
-        while (true) {
-            if (neck && neck->Item() && neck->Item()->resistances->GetResistance("see_invisible")) {
-                break;
-            }
-
-            if (ring1 && ring1->Item() && ring1->Item()->resistances->GetResistance("see_invisible")) {
-                break;
-            }
-
-            if (ring2 && ring2->Item() && ring2->Item()->resistances->GetResistance("see_invisible")) {
-                break;
-            }
-
-            if (ring1 && ring1->Item()) {
-                unwear_and_invalidate(ring1);
-                ring1->Wear(new XRing("see_invisible"));
-            }
-
-            break;
+    // And what it must be wearing. GetResistance() already adds up
+    // everything worn, in every slot, on top of whatever the creature has
+    // by nature - so one that sees the invisible of its own accord is left
+    // alone rather than handed a ring it has no use for.
+    for (const RESISTANCE& resist : cr->always) {
+        if (GetResistance(resist) > 0) {
+            continue;
         }
+
+        const std::string enchantment = EnchantmentGranting(resist);
+
+        if (enchantment.empty()) {
+            std::cerr << "world: '" << cr->name << "' must have '" << resist
+                      << "', and no enchantment in world/items/enchantments.lua"
+                         " grants it" << std::endl;
+
+            continue;
+        }
+
+        // An empty finger first; failing that, take over the first one.
+        XBodyPart* finger = nullptr;
+
+        for (int i = 0; (finger = GetBodyPart(BP_RING, i)) != nullptr; i++) {
+            if (!finger->Item()) {
+                break;
+            }
+        }
+
+        if (!finger) {
+            finger = GetBodyPart(BP_RING, 0);
+
+            if (!finger) {
+                continue;
+            }
+
+            unwear_and_invalidate(finger);
+        }
+
+        finger->Wear(new XRing(enchantment));
     }
 
     // Create money if components more than 2
@@ -362,11 +369,41 @@ MonsterBuilder& MonsterBuilder::Basic(const std::string& speed, const std::strin
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::Body(const std::string& body, int prob, unsigned int gen_flags)
+MonsterBuilder& MonsterBuilder::Body(const std::string& body, const int prob)
 {
     cr.body = body;
     cr.equip_probability = prob;
-    cr.generation_flags = gen_flags;
+    return *this;
+}
+
+// What one of these may not be found wearing: :Never("invisible") takes
+// anything granting it back off, whatever slot it went into.
+MonsterBuilder& MonsterBuilder::Never(const std::string& resist)
+{
+    if (!FindResistance(resist)) {
+        std::cerr << "world: creature '" << id << "' may never have '" << resist
+                  << "', which world/resistances.lua does not declare" << std::endl;
+
+        return *this;
+    }
+
+    cr.never.push_back(resist);
+    return *this;
+}
+
+// What one of these must be found wearing, if it has not got it already
+// by nature: :Always("see_invisible") hands it a ring of whatever grants
+// that, and lets it be if anything already does.
+MonsterBuilder& MonsterBuilder::Always(const std::string& resist)
+{
+    if (!FindResistance(resist)) {
+        std::cerr << "world: creature '" << id << "' must always have '" << resist
+                  << "', which world/resistances.lua does not declare" << std::endl;
+
+        return *this;
+    }
+
+    cr.always.push_back(resist);
     return *this;
 }
 

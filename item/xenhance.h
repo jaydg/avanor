@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/archives/json.hpp>
 
 #include "item/item.h"
+#include "magic/resist.h"
 
 // Fluent builder for one sort of ring or amulet:
 //
@@ -62,6 +63,11 @@ class EnchantmentBuilder
         std::string dv, pv, hit, dice, z, rng, r, s;
         int value{0};
 };
+
+// The id of an enchantment that grants this resistance, drawn at random from
+// those that do, or empty when content declares none. What "a ring that lets
+// you see the invisible" is made of is declared by the enchantment table.
+std::string EnchantmentGranting(const RESISTANCE& resist);
 
 // The looks an unknown ring or amulet can have - "a ruby ring", "an
 // obsidian amulet" - given to the engine by world/items/enchantments.lua

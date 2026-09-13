@@ -53,11 +53,6 @@ struct EQUIP_REC {
 };
 
 struct CreatureTemplate {
-    enum GenerationFlag {
-        SUPPRESS_INVIS = 0x0001,
-        SEE_INVIS = 0x0002,
-    };
-
     enum class Level : unsigned int {
         VERY_LOW  = 0x0001,
         LOW       = 0x0002,
@@ -111,7 +106,15 @@ struct CreatureTemplate {
     std::vector<EQUIP_REC> equipment;
     std::vector<MELEE_ATTACK> melee_attack;
     int equip_probability;
-    unsigned int generation_flags;
+
+    // What one of these may not be found wearing, and what it must be
+    // found wearing, said as resistances: :Never("invisible") strips
+    // anything granting it off the outfit, :Always("see_invisible") makes
+    // sure something grants it. Both were a pair of hard-wired flags
+    // named after those two resistances; content names any it likes now,
+    // and the engine names none.
+    std::vector<RESISTANCE> never;
+    std::vector<RESISTANCE> always;
     bool unique = false;
 };
 
@@ -150,7 +153,9 @@ class MonsterBuilder
 
         MonsterBuilder& View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, const CREATURE_CLASS& cr_class);
         MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, XCreature::Size size, const std::string& weight);
-        MonsterBuilder& Body(const std::string& body, int prob, unsigned int gen_flags);
+        MonsterBuilder& Body(const std::string& body, int prob);
+        MonsterBuilder& Never(const std::string& resist);
+        MonsterBuilder& Always(const std::string& resist);
         MonsterBuilder& AI(unsigned int flags);
         MonsterBuilder& Stats(const std::string& stats);
         MonsterBuilder& Resist(const std::string& resists);

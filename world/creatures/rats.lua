@@ -3,7 +3,7 @@
 Monster.new("rat")
 	:View("rat", 'r', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "rat")
 	:Basic("1d30+90", "0d0+1000", "1d200+600", CreatureSize.VERY_SMALL, "5d4")
-	:Body("", 0, 0)
+	:Body("", 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PACK)
 	:Stats("St 1d2 Dx 2d4 To 1d2 Le 1d1 Wi 1d1 Ma 1d1 Pe 2d4 Ch 1d1")
 	:Resist("fire:5d5-50 cold:2d10")

@@ -86,6 +86,29 @@ static ENH_REC* FindEnchantment(const std::string& id)
     return nullptr;
 }
 
+std::string EnchantmentGranting(const RESISTANCE& resist)
+{
+    std::vector<const ENH_REC*> granting;
+
+    for (const auto& row : enh_db) {
+        if (row.r.empty()) {
+            continue;
+        }
+
+        // Built the same way the item itself builds its resistances, so
+        // whatever the spec means there it means here.
+        if (XResistance(row.r.c_str()).GetResistance(resist) > 0) {
+            granting.push_back(&row);
+        }
+    }
+
+    if (granting.empty()) {
+        return std::string();
+    }
+
+    return granting[vRand(static_cast<int>(granting.size()))]->id;
+}
+
 // A look no other sort has taken this game. The old table dealt these in a
 // static initialiser, before main() and before any seed, and then named
 // the item by its *enhancement* index rather than by the look it drew - so

@@ -13,7 +13,7 @@
 Monster.new("magnush")
 	:View("Magnush, the Kobold Lord", 'k', xColor.xRED, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "kobold")
 	:Basic("1d10+120", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d200+900")
-	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5, 0)
+	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 4d5 Dx 2d3+6 To 1d3+9 Le 2d4 Wi 2d4+6 Ma 3d3 Pe 1d8 Ch 1d4")
 	:Resist("")

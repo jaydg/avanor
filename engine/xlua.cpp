@@ -231,6 +231,8 @@ void XLua::Init()
             "View", &MonsterBuilder::View,
             "Basic", &MonsterBuilder::Basic,
             "Body", &MonsterBuilder::Body,
+            "Never", &MonsterBuilder::Never,
+            "Always", &MonsterBuilder::Always,
             "AI", &MonsterBuilder::AI,
             "Stats", &MonsterBuilder::Stats,
             "Resist", &MonsterBuilder::Resist,

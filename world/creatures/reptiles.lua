@@ -3,7 +3,7 @@
 Monster.new("small_snake")
 	:View("small snake", 'R', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "reptile")
 	:Basic("1d10+80", "0d0+1000", "1d200+900", CreatureSize.VERY_SMALL, "3d4")
-	:Body("", 0, 0)
+	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d2 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d2 Ch 1d1")
 	:Resist("cold:1d10-90")

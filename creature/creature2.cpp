@@ -382,7 +382,11 @@ int XCreature::isCreatureVisible(XCreature * cr)
         return 0;
     }
 
-    if ((cr->GetResistance("invisible") <= GetResistance("see_invisible")) || cr == this) {
+    // The one place the engine still names these two by hand: whether
+    // one creature can make out another is a rule about perception, not
+    // about outfitting, and it has to live somewhere. Spelt through the
+    // constants so the dependency is declared in one place.
+    if ((cr->GetResistance(RS_INVISIBLE) <= GetResistance(RS_SEE_INVISIBLE)) || cr == this) {
         return 1;
     } else {
         return 0;
