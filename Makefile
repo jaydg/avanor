@@ -88,7 +88,7 @@ else
 	CFLAGS += $(shell pkg-config --cflags fmt notcurses luajit)
 endif
 
-VPATH = creature engine game global helpers item magic map other lua
+VPATH = creature engine game global helpers item magic map other lua player
 
 SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        xscheduler.cpp xscroll.cpp xring.cpp xpotion.cpp                       \
