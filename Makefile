@@ -93,7 +93,8 @@ VPATH = creature engine game global helpers item magic map other lua
 SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        xscheduler.cpp xscroll.cpp xring.cpp xpotion.cpp                       \
        xobject.cpp xmoney.cpp xmissileweapon.cpp xmissile.cpp xmapobj.cpp     \
-       xhero3.cpp xhero2.cpp xhero.cpp xherb.cpp xguihtml.cpp xgui.cpp        \
+       xhero_commands.cpp xhero_game.cpp xhero_input.cpp xhero_items.cpp      \
+       xhero_sheet.cpp xhero.cpp xherb.cpp xguihtml.cpp xgui.cpp              \
        xgloves.cpp xgen.cpp xenhance.cpp xcorpse.cpp xclothes.cpp xcloak.cpp  \
        xcap.cpp xboots.cpp xbook.cpp xbaseobj.cpp xarmor.cpp xarchive.cpp     \
        xapi.cpp xanyplace.cpp xanyfood.cpp xamulet.cpp cskills.cpp            \
