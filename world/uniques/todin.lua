@@ -23,6 +23,22 @@ function CreateTodin(x, y)
 end
 
 
+-- What Todin can forge into a blade, by the key that picks it. The answer
+-- AskQuestion() hands back is the key's own letter, so this doubles as the
+-- list of what he will take for an answer.
+--
+-- He used to choose for you, at random. A player who wanted one particular
+-- brand had no way to ask for it: each attempt cost 450 gp and a weapon,
+-- and once a weapon carried any of the three he would not touch it again
+-- (he replaces what a weapon carries rather than adding to it - see
+-- SetItemBrand), so the wrong answer meant finding another blade as well.
+local TODIN_BRANDS = {
+	c = "cold",
+	f = "fire",
+	o = "orc_slayer",
+}
+
+
 function TodinHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		AddMessage("'Give me your weapon, and I'll make it the best!'")
@@ -33,17 +49,18 @@ function TodinHandler(e, t, p, v)
 			if (HasBrand(brt, "cold fire orc_slayer")) then
 				AddMessage("'This weapon's good enough!'")
 			else
-				if (AskQuestion("'I need 450 gp to improve this weapon. Do you agree?'", "esc y n", "yes", "no") == 'y') then
+				-- Asked before any money changes hands, so that walking away
+				-- from the price costs nothing.
+				local answer = AskQuestion(
+					"'I need 450 gp to improve this weapon. What shall I forge into it?'",
+					"esc c f o", "cold", "fire", "orc slaying")
+
+				local brand = TODIN_BRANDS[answer]
+
+				if (brand) then
 					if (MoneyOperation(p, -450) >= 0) then
 						MoneyOperation(t, 450)
-						local res = Rand(3)
-						if ( res == 0) then
-							SetItemBrand(v, "cold")
-						elseif (res == 1) then
-							SetItemBrand(v, "fire")
-						else
-							SetItemBrand(v, "orc_slayer")
-						end
+						SetItemBrand(v, brand)
 						AddMessage("'Thank you!'")
 					else
 						AddMessage("'But you haven't enough money!'")
