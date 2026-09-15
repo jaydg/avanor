@@ -160,7 +160,6 @@ class XPotion : public XItem
     public:
         // Only PotionColor now: which potions exist is content, so there
         // is no table of potion names to register any more.
-        static void RegisterLua(sol::state_view& lua);
 
         DECLARE_CREATOR(XPotion, XItem);
         explicit XPotion(const PotionName& _pn = PN_NONE);

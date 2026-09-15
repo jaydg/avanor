@@ -177,7 +177,6 @@ void XLua::Init()
     CreatureTemplate::RegisterLua(lua);
     RegisterCrDefsEnums(lua);
     XItem::RegisterLua(lua);
-    XPotion::RegisterLua(lua);
     RegisterCorpseEffectEnum(lua);
     RegisterSpellNameEnum(lua);
     XCreature::RegisterLua(lua);

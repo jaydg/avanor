@@ -41,14 +41,9 @@ REGISTER_CLASS(XPotion);
 CEREAL_REGISTER_TYPE(XPotion);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XPotion);
 
-void XPotion::RegisterLua(sol::state_view& lua)
-{
-    // How a potion looks before anyone knows what it is. Which potions
-    // exist is content (world/items/potions.lua); the vocabulary of
-    // appearances is not, because every colour has to be one no other
-    // potion took this game, and the engine deals them out.
-}
-
+// How a potion looks before anyone knows what it is. Which potions exist is
+// content; the vocabulary of appearances is not, because every colour has to
+// be one no other potion took this game, and the engine deals them out.
 Registry<PotionColourStats> potion_colours_db{"potion colour"};
 
 const PotionColourStats* FindPotionColour(const std::string& id)
