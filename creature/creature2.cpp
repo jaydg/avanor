@@ -78,7 +78,7 @@ int XCreature::MeleeAttack(XCreature * target, XItem * weapon)
         tohit = GetHIT() + wsk->GetHIT(wsk->Best(CombatRole::UNARMED));
         tdam = dice.Throw() + GetDMG() + wsk->GetDMG(wsk->Best(CombatRole::UNARMED));
 
-        for (const auto tit: *melee_attack) {
+        for (const auto& tit: *melee_attack) {
             if (vRand(100) < tit.prob) {
                 aet.Add(tit.br_attack);
             }
