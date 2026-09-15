@@ -62,7 +62,6 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
     lua.new_enum("ScriptCommand",
         "NONE", SCC_NONE,
         "MOVE_POINT", SCC_MOVE_POINT,
-        "MOVE_LOCATION", SCC_MOVE_LOCATION,
         "COLLECT_MUSHROOM", SCC_COLLECT_MUSHROOM,
         "DROP_ITEM", SCC_DROP_ITEM
     );
@@ -1321,13 +1320,6 @@ void XStandardAI::RunScript()
             flag = true;
         }
         break;
-
-        // SCC_MOVE_LOCATION is registered for Lua (ScriptCommand.
-        // MOVE_LOCATION) but nothing carries it out. Since flag stays
-        // false, a script that used it would never get past that step -
-        // no script does today.
-        default:
-            break;
     }
 
     if (flag) {
