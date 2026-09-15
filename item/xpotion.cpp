@@ -359,12 +359,28 @@ static int RunDrinkHandler(const std::string& handler,
         return 0;
     }
 
+    // A handler that says nothing did its business and fell off the end,
+    // which counts as having worked.
     if (result.get_type() == sol::type::none
         || result.get_type() == sol::type::lua_nil) {
         return 1;
     }
 
-    return result.get<int>() ? 1 : 0;
+    // Asked through sol::optional, and true/false before a number: "did
+    // anything happen" is a question Lua answers with a boolean, and every
+    // handler in world/items/potions.lua does.
+    if (const sol::optional<bool> answer = result.get<sol::optional<bool>>()) {
+        return *answer ? 1 : 0;
+    }
+
+    if (const sol::optional<int> answer = result.get<sol::optional<int>>()) {
+        return *answer != 0 ? 1 : 0;
+    }
+
+    std::cerr << "world: " << handler << " answered with neither true, false"
+                 " nor a number" << std::endl;
+
+    return 1;
 }
 
 void XPotion::onDrink(XCreature * cr)
