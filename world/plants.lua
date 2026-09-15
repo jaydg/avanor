@@ -170,6 +170,51 @@ function MushroomPick(mushroom, picker)
 	return CreateHerb(species, true)
 end
 
+-- Gathering, as an errand step: given to a creature with
+--
+--   {cmd = ScriptCommand.CALL, fn = "CollectMushroom"}
+--
+-- and asked once a turn until it answers true, which ends the step and
+-- sends the gatherer on to the next thing in its script.
+--
+-- Nothing here is about walking: a gatherer with RANDOM_MOVE in its AI
+-- flags wanders the cave of its own accord on the turns this finds
+-- nothing to pick, which is exactly what the engine used to do by hand.
+local COLLECT_ENOUGH_ODDS = 2
+
+function CollectMushroom(gatherer)
+	local x, y = GetCreatureXY(gatherer)
+	local here = GetSpecial(x, y)
+
+	-- Whatever is underfoot answers for itself, through the same handler
+	-- the hero's own picking goes through. Standing on nothing, or on
+	-- something that is not for picking, is not a reason to give up - the
+	-- cave is large and the gatherer keeps looking.
+	if (not here or GetSpecialId(x, y) ~= "mushroom") then
+		return false
+	end
+
+	local picked = MushroomPick(here, gatherer)
+
+	if (not picked) then
+		return false
+	end
+
+	local who = AsCreature(gatherer)
+	who:ContainItem(AsItem(picked))
+
+	if (isCreatureVisible(gatherer)) then
+		-- 0 is CRN_T1, the subject form - "the farmer", not "him". The
+		-- bare number is how the rest of world/ spells it.
+		AddMessage(string.format("%s collects %s.",
+			CreatureName(gatherer, 0), DescribeItem(picked)))
+	end
+
+	-- An armful is enough. Which armful is nobody's decision in
+	-- particular, so it is the same coin the engine used to toss.
+	return Rand(COLLECT_ENOUGH_ODDS) == 0
+end
+
 function MushroomName(mushroom, viewer)
 	return PlantName(Species(mushroom, "mushroom"), true) or "mushroom"
 end

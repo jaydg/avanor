@@ -22,11 +22,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <iostream>
+
 #include <sol/sol.hpp>
 
 #include "item/xscroll.h"
 #include "creature/std_ai.h"
 #include "engine/xapi.h"
+#include "engine/xlua.h"
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "map/map_objects.h"
@@ -62,7 +65,7 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
     lua.new_enum("ScriptCommand",
         "NONE", SCC_NONE,
         "MOVE_POINT", SCC_MOVE_POINT,
-        "COLLECT_MUSHROOM", SCC_COLLECT_MUSHROOM,
+        "CALL", SCC_CALL,
         "DROP_ITEM", SCC_DROP_ITEM
     );
 
@@ -1275,30 +1278,33 @@ void XStandardAI::RunScript()
 
             break;
 
-        case SCC_COLLECT_MUSHROOM: {
-            XMapObject* obj = ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y);
+        case SCC_CALL: {
+            // Hands the turn to content and believes what it answers: true
+            // when the errand's step is done and the creature should move
+            // on to the next one, false to be asked again next turn.
+            sol::state_view lua(XLua::State());
+            sol::protected_function fn = lua[cmd.fn];
 
-            // Pick() may destroy obj (self-eviction, kept alive through
-            // this call by the deferred-release graveyard).
-            auto* tit = (obj && obj->isValid()) ? dynamic_cast<XItem *>(obj->Pick(ai_owner)) : nullptr;
+            if (!fn.valid()) {
+                std::cerr << "world: a creature's errand calls '" << cmd.fn
+                          << "', which is not defined" << std::endl;
 
-            if (tit) {
-                if (ai_owner->PickUpItem(tit)) {
-                    if (ai_owner->isVisible()) {
-                        msgwin.Add(fmt::format("{} collects {}.",
-                            ai_owner->GetNameEx(CRN_T1), tit->toString()));
-                    }
-
-                    if (vRand(2) == 0) {
-                        flag = true;
-                    }
-                } else {
-                    tit->Invalidate();
-                }
-            } else {
-                ai_owner->nx = ai_owner->x + vRand(3) - 1;
-                ai_owner->ny = ai_owner->y + vRand(3) - 1;
+                // Nothing will ever answer, so do not leave the creature
+                // standing on this step for the rest of the game.
+                flag = true;
+                break;
             }
+
+            const auto result = fn((void*)ai_owner);
+
+            if (!result.valid()) {
+                const sol::error err = result;
+                std::cerr << "world: " << cmd.fn << ": " << err.what() << std::endl;
+                flag = true;
+                break;
+            }
+
+            flag = result.get<sol::optional<bool>>().value_or(false);
         }
         break;
 

@@ -47,10 +47,14 @@ enum COMPANION_COMMAND {
     CC_GUARD,
 };
 
+// The steps a creature's errand can be made of. Deliberately few: what a
+// step actually does is content's business wherever it can be, which is
+// what SCC_CALL is for - it hands the turn to a named Lua function and
+// takes that function's answer as "this step is finished".
 enum SCRIPT_COMMAND {
     SCC_NONE,
     SCC_MOVE_POINT,
-    SCC_COLLECT_MUSHROOM,
+    SCC_CALL,
     SCC_DROP_ITEM,
 };
 
@@ -61,10 +65,14 @@ struct SCRIPT_CMD {
     std::string ln;
     ItemKind kind;
 
+    // For SCC_CALL: the Lua function to hand each turn to. Empty for
+    // every other command.
+    std::string fn;
+
     template<class Archive>
     void serialize(Archive& ar)
     {
-        ar(cmd, pt_x, pt_y, ln, kind);
+        ar(cmd, pt_x, pt_y, ln, kind, fn);
     }
 };
 

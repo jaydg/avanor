@@ -488,6 +488,7 @@ void ExecuteCreatureScript(void* cr, sol::table script)
         cmd.pt_y = row.get_or("pt_y", 0);
         cmd.ln = row.get_or<std::string>("ln", "");
         cmd.kind = row.get_or("kind", ItemKind::UNKNOWN);
+        cmd.fn = row.get_or<std::string>("fn", "");
         cmds.push_back(cmd);
     }
 

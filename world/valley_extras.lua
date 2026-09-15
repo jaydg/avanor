@@ -36,7 +36,7 @@ function SendFarmersToCollectMushrooms()
 	local cave_x, cave_y = GetWayXY("MUSHROOMS_CAVE5")
 	local script = {
 		{cmd = ScriptCommand.MOVE_POINT, pt_x = cave_x, pt_y = cave_y, ln = "MUSHROOMS_CAVE5"},
-		{cmd = ScriptCommand.COLLECT_MUSHROOM},
+		{cmd = ScriptCommand.CALL, fn = "CollectMushroom"},
 		{cmd = ScriptCommand.MOVE_POINT, pt_x = 13, pt_y = 8, ln = "MAIN"},
 		{cmd = ScriptCommand.DROP_ITEM, kind = ItemKind.FOOD},
 	}
