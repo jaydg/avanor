@@ -26,6 +26,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/forward.hpp>
 
+/**
+ * @defgroup lua_api Lua scripting API
+ *
+ * Every call a world script can make. Two halves, one per file: the
+ * calls in lua/api_actor act on things that already exist, and the ones
+ * in lua/api_world build the location currently under construction.
+ *
+ * The rule for what belongs here is the same on both sides - a call
+ * should still mean something in a completely different game built on
+ * this engine. Anything Avanor-specific is written in Lua instead.
+ */
+
 // Script API operating on things that already exist - creatures, items,
 // the message window, the quest log - plus the small utility calls.
 //
@@ -39,6 +51,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // currently under construction (XLocation::current_location).
 namespace lua_api
 {
+/** @addtogroup lua_api
+ *  @{ */
+
     void InflictDamage(void* target, int dmg, const RESISTANCE& resist, sol::optional<std::string> msg);
     int ChangeStats(void* cr, int st, int val);
     void UseSkill(void* cr, int skill, sol::optional<int> amount);
@@ -149,6 +164,8 @@ namespace lua_api
 
     // Registers every function above under its Lua name.
     void RegisterActorApi(sol::state_view& lua);
+
+/** @} */
 }
 
 #endif
