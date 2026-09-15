@@ -21,28 +21,15 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // What a key does, once NewMove() has decided which key it was: the world
 // commands, the ones that act on something other than the pack.
 
-#include <algorithm>
 #include <cctype>
-#include <cmath>
-#include <filesystem>
-#include <iostream>
 #include <memory>
 #include <vector>
-
-#include <cereal/archives/json.hpp>
-#include <cereal/types/polymorphic.hpp>
 #include <fmt/format.h>
-#include <sol/sol.hpp>
 
 #include "creature/skeep_ai.h"
 #include "creature/xhero.h"
-#include "engine/xapi.h"
-#include "engine/xarchive.h"
-#include "engine/xlua.h"
 #include "game/game.h"
 #include "game/quest.h"
-#include "game/xtime.h"
-#include "helpers/hiscore.h"
 #include "helpers/manual.h"
 #include "helpers/msgwin.h"
 #include "item/item_misc.h"
@@ -50,7 +37,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xmissile.h"
 #include "item/xmissileweapon.h"
 #include "item/xpotion.h"
-#include "item/xtool.h"
 #include "magic/modifier.h"
 #include "map/map_objects.h"
 

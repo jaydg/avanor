@@ -25,34 +25,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // remembers which list it last showed and how far down it was scrolled, so
 // that reopening it lands where the player left it.
 
-#include <algorithm>
-#include <cctype>
-#include <cmath>
-#include <filesystem>
-#include <iostream>
 #include <memory>
-#include <vector>
-
-#include <cereal/archives/json.hpp>
-#include <cereal/types/polymorphic.hpp>
 #include <fmt/format.h>
-#include <sol/sol.hpp>
 
 #include "creature/skeep_ai.h"
 #include "creature/xhero.h"
-#include "engine/xapi.h"
-#include "engine/xarchive.h"
-#include "engine/xlua.h"
 #include "game/game.h"
 #include "game/quest.h"
-#include "game/xtime.h"
-#include "helpers/hiscore.h"
 #include "helpers/manual.h"
 #include "helpers/msgwin.h"
 #include "item/item_misc.h"
 #include "item/itemf.h"
-#include "item/xmissile.h"
-#include "item/xmissileweapon.h"
 #include "item/xpotion.h"
 #include "item/xtool.h"
 #include "magic/modifier.h"
