@@ -19,7 +19,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "magic/skills.h"
-#include "engine/xobject.h"
 
 #include <memory>
 

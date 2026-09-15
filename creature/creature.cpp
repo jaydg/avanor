@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/xpotion.h"
 #include "item/xcorpse.h"
 #include "item/xmissile.h"
-#include "item/xmissileweapon.h"
 #include "engine/xlua.h"
 #include <algorithm>
 #include <cmath>

@@ -23,9 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
-#include "creature/shopkeeper.h"
 #include "engine/xgen.h"
-#include "engine/xlua.h"
 #include "map/dungeon_builder.h"
 #include "map/windroad.h"
 #include "game/game.h"
@@ -620,8 +618,6 @@ void EventPlaceArea(int x, int y, int w, int h, const std::string& event)
     XRect area(x, y, x + w, y + h);
     AddEventPlace(area, event);
 }
-
-
 
 // ---------------------------------------------------------------------
 // Map queries and generic placement.

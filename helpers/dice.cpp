@@ -19,9 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <algorithm>
-#include <cassert>
 #include <charconv>
-#include <cmath>
 #include <stdexcept>
 
 #include "engine/global.h"

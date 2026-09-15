@@ -18,19 +18,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "engine/xlua.h"
-#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <vector>
-
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
+#include <sol/sol.hpp>
 
 #include "creature/skeep_ai.h"
-#include "creature/lua_ai.h"
 #include "creature/shopkeeper.h"
-#include "engine/xgen.h"
+#include "engine/xlua.h"
 #include "map/pattern_builder.h"
 #include "map/cave_builder.h"
 #include "map/chambers_builder.h"
@@ -42,15 +39,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/quest.h"
 #include "game/shop.h"
 #include "helpers/msgwin.h"
-#include "item/itemf.h"
 #include "item/item_misc.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
 #include "magic/brand.h"
 #include "map/map_objects.h"
-
-#include <sol/sol.hpp>
-
 
 REGISTER_CLASS(XLocation);
 CEREAL_REGISTER_TYPE(XLocation);
@@ -437,11 +430,9 @@ void XLocation::DumpLocation(std::ofstream &file)
     file << "\n\n";
 }
 
-
 XLocation* XLocation::current_location = nullptr;
 XCreature* XLocation::last_creature = nullptr;
 XPattern XLocation::current_pattern;
-
 
 //BuildShop(x, y, 9, 3, ItemKind.FOOD, 'Nobel', { wall = XTileType.STONE_WALL, floor = XTileType.STONE_FLOOR })
 // options: `door` picks the side its entrance is on, defaulting to
@@ -466,10 +457,8 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
         min_value, max_value);
 }
 
-
 std::vector<int>* XLocation::lua_int_buffer = nullptr;
 size_t XLocation::lua_int_index = 0;
-
 
 void XLocation::RegisterLua(sol::state_view& lua)
 {
@@ -521,7 +510,6 @@ void RegisterLuaEventEnum(sol::state_view& lua)
         "LOAD", LuaEvent::LOAD
     );
 }
-
 
 void XLocation::Restoration()
 {

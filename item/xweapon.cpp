@@ -20,7 +20,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
-#include "engine/xapi.h"
 #include "item/item_cereal.h"
 #include "item/xweapon.h"
 #include "magic/brand.h"
@@ -31,7 +30,6 @@ CEREAL_REGISTER_POLYMORPHIC_RELATION(XItem, XWeapon);
 
 // Filled from world/items/ as those scripts load.
 XItemBasicStructure gi_weapon;
-
 
 XWeapon::XWeapon(ItemType _it)
 {

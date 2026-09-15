@@ -18,23 +18,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <fstream>
-#include <fmt/format.h>
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 #include <vector>
 
 #include <cereal/types/map.hpp>
 #include <cereal/types/string.hpp>
-
+#include <fmt/format.h>
 #include <sol/sol.hpp>
 
 #include "helpers/registry.h"
 #include "helpers/msgwin.h"
 #include "engine/xlua.h"
 #include "item/item_cereal.h"
-#include <set>
 #include "item/xpotion.h"
 #include "magic/modifier.h"
 

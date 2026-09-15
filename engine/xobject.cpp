@@ -18,14 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <algorithm>
-#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <iostream>
-#include <fmt/format.h>
 
-#include "engine/global.h"
 #include "engine/xobject.h"
 
 long XObject::invalid_count = 0;

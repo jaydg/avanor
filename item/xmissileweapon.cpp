@@ -22,7 +22,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "item/item_cereal.h"
 #include "item/xmissileweapon.h"
-#include "item/xweapon.h"
 
 REGISTER_CLASS(XMissileWeapon);
 CEREAL_REGISTER_TYPE(XMissileWeapon);

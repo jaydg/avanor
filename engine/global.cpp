@@ -30,7 +30,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sstream>
 #include <string>
 #include <thread>
-#include <utility>
 
 #include <sol/sol.hpp>
 
@@ -809,7 +808,6 @@ int vGetch()
         } else {
             key = nc->get(true, &ni);
         }
-
 
         if (key == static_cast<uint32_t>(-1) || ni.evtype == NCTYPE_RELEASE) {
             continue;

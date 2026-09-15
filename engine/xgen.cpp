@@ -24,7 +24,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 
 #include "creature/anycr.h"
-#include "engine/xapi.h"
 #include "engine/xgen.h"
 #include "game/game.h"
 

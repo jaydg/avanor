@@ -20,20 +20,16 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <algorithm>
 #include <cassert>
-#include <cmath>
-#include <cstring>
 #include <iostream>
 #include <memory>
 #include <vector>
 
 #include "engine/global.h"
 #include "game/location.h"
-#include "creature/std_ai.h"
 #include "item/item_misc.h"
 #include "map/dungeon_builder.h"
 #include "map/map.h"
 #include "map/map_objects.h"
-
 
 std::vector<RoomTemplate> room_templates;
 

@@ -21,10 +21,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
 
-#include "engine/global.h"
 #include "engine/xbaseobj.h"
-
-#include "xobject.h"
+#include "engine/xobject.h"
 
 // XBaseObject, like XMapObject, is never itself a dynamic type - just
 // another link in the polymorphic pointer-cast chain (XObject ->

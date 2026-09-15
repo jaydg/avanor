@@ -23,7 +23,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sol/sol.hpp>
 
 #include "creature/lua_ai.h"
-#include "game/location.h"
 
 CEREAL_REGISTER_TYPE(XLuaAI);
 CEREAL_REGISTER_POLYMORPHIC_RELATION(XStandardAI, XLuaAI);

@@ -18,7 +18,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <algorithm>
 #include <iostream>
 
 #include <cereal/archives/json.hpp>
@@ -28,7 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/msgwin.h"
 #include "magic/modifier.h"
 #include "magic/modifiers.h"
-#include "magic/skills.h"
 
 namespace {
 

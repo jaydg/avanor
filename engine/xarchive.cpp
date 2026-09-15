@@ -35,12 +35,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/location.h"
 #include "game/quest.h"
 #include "game/xtime.h"
-#include "item/xamulet.h"
 #include "item/xbook.h"
 #include "item/xherb.h"
 #include "item/xpotion.h"
 #include "item/xenhance.h"
-#include "item/xring.h"
 #include "item/xscroll.h"
 
 constexpr unsigned int SAVE_GAME_VERSION = 0x0000080;

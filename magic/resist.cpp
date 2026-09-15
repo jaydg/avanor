@@ -20,11 +20,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
-#include <iostream>
 #include <utility>
 
 #include "helpers/registry.h"
-#include "engine/global.h"
 #include "helpers/keyword_dice.h"
 #include "magic/resist.h"
 
@@ -93,14 +91,12 @@ void ResistanceBuilder::Register()
     resistances_db.Add(std::move(t));
 }
 
-
 XResistance::XResistance(const XResistance* xr)
 {
     Set(xr);
 }
 
 namespace {
-
 
 // The value token following `param` in a "name value name value" string:
 // FindParam("fire 1d3 cold 2d2", "cold") is "2d2", and absent names give

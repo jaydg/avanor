@@ -27,7 +27,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/registry.h"
 #include "creature/creature.h"
-#include "game/game.h"
 #include "helpers/msgwin.h"
 #include "item/item_cereal.h"
 #include "item/xherb.h"
