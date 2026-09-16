@@ -96,6 +96,28 @@ Monster.new("royal_guard")
 	:Equip(ItemKind.SHIELD, "tower_shield", 100)
 	:Register()
 
+-- The detachment Ozorick brought down to the valley, and the only royal
+-- guards who have to stand in a line against twenty orcs. They are the
+-- king's best, and are built for that fight: everything is the ordinary
+-- guardian's except the hit points, which are what a soldier expected to
+-- hold a wall needs and an ordinary one does not have.
+--
+-- A separate sort rather than a change to royal_guard itself: the same
+-- template also stands in Roderick's palace and on his treasury door
+-- (world/valley.lua), and making the treasure harder to reach is a
+-- different decision from making the orc attack winnable.
+--
+-- 3d5+30 puts them at 33-45 against an orc's 27-35. Measured over 240
+-- worlds with `--simulate orc_attack`: on the ordinary guardian's 11-15
+-- the watch is wiped out 73% of the time, which is no fight at all; at
+-- 3d5+30 it is 54%, and 46% once the hero brings them the sword from
+-- Ozorick's errand. Still a hard fight, still lost about half the time,
+-- but no longer a foregone one.
+Monster.new("royal_guard_elite", "royal_guard")
+	:View("royal guardian", 'p', xColor.xBLUE, PersonType.HE, CreatureTemplate.LOW, "human")
+	:Main("3d2", "1d2", "3d5+30", "1d3+5")
+	:Register()
+
 Monster.new("death_knight")
 	:View("death knight", 'p', xColor.xDARKGRAY, PersonType.HE, CreatureTemplate.LOW, "human")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
