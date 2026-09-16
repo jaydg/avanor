@@ -158,6 +158,7 @@ namespace lua_api
     int StoreInt(lua_State * L);
     int RestoreInt(lua_State * L);
 
+    bool HasBodyPart(void* cr, int bodypart, int slot);
     sol::optional<void*> GetWornItem(void* cr, int bodypart, int slot);
     std::string GetItemId(void* item);
     std::string GetObjectClass(void* obj);

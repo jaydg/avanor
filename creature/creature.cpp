@@ -141,6 +141,15 @@ void XCreature::RegisterLua(sol::state_view& lua)
             XItem* item = (XItem*)item_ptr;
             XBodyPart* bp = cr.GetBodyPart((BODY_PART)bodypart, slot);
 
+            // Not every creature has every slot.
+            if (!bp) {
+                std::cerr << "world: " << cr.name << " has no body part "
+                          << bodypart << " to put " << item->toString()
+                          << " on" << std::endl;
+
+                return;
+            }
+
             if (bp->Item()) {
                 auto old_item = bp->UnWear();
 

@@ -996,6 +996,12 @@ int RestoreInt(lua_State * L)
     return 1;
 }
 
+// Whether a creature has this slot at all - a sheep dog has no hand.
+bool HasBodyPart(void* cr, const int bodypart, const int slot)
+{
+    return ((XCreature*)cr)->GetBodyPart((BODY_PART)bodypart, slot) != nullptr;
+}
+
 // The item worn in a body part slot, or nil when the slot is empty.
 //
 // sol::optional and not a plain void*, because that is the only way to
@@ -1051,6 +1057,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("AsCreature", &lua_api::AsCreature);
         lua.set_function("AsItem", &lua_api::AsItem);
         lua.set_function("GetWornItem", &lua_api::GetWornItem);
+        lua.set_function("HasBodyPart", &lua_api::HasBodyPart);
         lua.set_function("GetObjectClass", &lua_api::GetObjectClass);
         lua.set_function("GetItemId", &lua_api::GetItemId);
         lua.set_function("GetCreatureCount", &lua_api::CreatureCountInLocation);
