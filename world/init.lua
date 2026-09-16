@@ -25,6 +25,7 @@ function LoadScripts()
 	dofile("./world/traps.lua");
 	dofile("./world/plants.lua");
 	dofile("./world/tally.lua");
+	dofile("./world/simulations.lua");
 end
 
 -- Actually builds the world (as opposed to LoadScripts(), which only

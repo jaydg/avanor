@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <memory>
 #include <sstream>
 #include <typeinfo>
+#include <unistd.h>
 
 #include <argparse/argparse.hpp>
 #include <cereal/archives/json.hpp>
@@ -31,6 +32,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/set.hpp>
 
+#include "engine/simulation.h"
 #include "engine/global.h"
 #include "engine/xarchive.h"
 #include "game/game.h"
@@ -603,6 +605,16 @@ int main(int argc, char* argv[])
         .flag()
         .help("round-trip the serialization of one location and report");
 
+    mode.add_argument("--simulate")
+        .metavar("NAME")
+        .help("play out one of world/simulations.lua's questions and report");
+
+    program.add_argument("--arg")
+        .metavar("N")
+        .scan<'i', int>()
+        .default_value(0)
+        .help("the number --simulate hands to the scenario");
+
     // Before the screen is taken over by curses, so that --help and any
     // complaint about the command line can still be read.
     try {
@@ -741,6 +753,17 @@ int main(int argc, char* argv[])
         XObject::InvalidateAllObjects();
         vFinit();
         return ok ? 0 : 1;
+    } else if (program.is_used("--simulate")) {
+        static_cast<void>(Game.Create('T'));
+
+        const bool ran = RunSimulation(program.get<std::string>("--simulate"),
+                                       program.get<int>("--arg"));
+
+        // Out without tearing the world down again: a simulation is a
+        // measurement, and its answer has already been printed.
+        std::cout.flush();
+        std::cerr.flush();
+        _exit(ran ? 0 : 1);
     } else if (program.get<bool>("--test")) {
         static_cast<void>(Game.Create('T'));
         Game.RunWithoutHero();

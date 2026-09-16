@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/deity.h"
 #include "creature/std_ai.h"
 #include "engine/global.h"
+#include "engine/simulation.h"
 #include "engine/xlua.h"
 #include "map/dungeon_builder.h"
 #include "map/pattern.h"
@@ -188,6 +189,7 @@ void XLua::Init()
     RegisterTasteLua(lua);
     RegisterMagicSchoolLua(lua);
     RegisterItemKindRulesLua(lua);
+    RegisterSimulationLua(lua);
     XResistance::RegisterLua(lua);
     RegisterColorEnum(lua);
     RegisterBodyPartEnum(lua);
