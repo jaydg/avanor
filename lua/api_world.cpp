@@ -771,7 +771,7 @@ sol::object PlaceObject(const std::string& id, const int x, const int y,
     if (!FindMapObject(id)) {
         std::cerr << "world: nothing defines a map object '" << id << "'" << std::endl;
 
-        return sol::nil;
+        return sol::lua_nil;
     }
 
     XLocation* l = ResolveLocation(location);
@@ -780,13 +780,13 @@ sol::object PlaceObject(const std::string& id, const int x, const int y,
     // it would be written into this level's cell and read back from the
     // one underneath, so nothing would ever see it again.
     if (!l || !l->map->OwnsCell(x, y)) {
-        return sol::nil;
+        return sol::lua_nil;
     }
 
     auto* obj = new XLuaObject(id, x, y, l);
 
     if (!obj->isValid()) {
-        return sol::nil;
+        return sol::lua_nil;
     }
 
     return sol::make_object(s, static_cast<void*>(obj));
@@ -1064,7 +1064,7 @@ sol::object PlaceSpecial(const std::string& class_name, const int x, const int y
     auto* obj = dynamic_cast<XMapObject*>(XClassFactory::CreateNew(class_name));
 
     if (!obj) {
-        return sol::nil;
+        return sol::lua_nil;
     }
 
     XLocation* l = ResolveLocation(location);
@@ -1072,7 +1072,7 @@ sol::object PlaceSpecial(const std::string& class_name, const int x, const int y
     if (!l || !obj->PlaceAt(l, x, y)) {
         obj->Invalidate();
 
-        return sol::nil;
+        return sol::lua_nil;
     }
 
     return sol::make_object(s, static_cast<void*>(obj));
