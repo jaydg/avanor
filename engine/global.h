@@ -36,9 +36,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
     #define HOME_DIR "~/.avanor/"
 #endif
 
-// The terminal is driven by notcurses on every platform this builds for -
-// see engine/global.cpp. MSYS2/MinGW ships notcurses the same as *nix does,
-// so Windows takes this path too rather than a Windows-only backend.
+// The terminal is driven by plain ANSI escape sequences on every platform
+// this builds for - see engine/global.cpp, which carries the Windows and
+// the unixoid halves of that backend side by side. Building with
+// notcurses=1 swaps in notcurses instead.
 #include <cstring>
 #define stricmp(a, b) strcasecmp(a, b)
 #define strnicmp(a, b, n) strncasecmp(a, b, n)
@@ -280,10 +281,11 @@ constexpr char RGB_ESCAPE = 0x1E;
 constexpr int RGB_ESCAPE_LENGTH = 7;
 
 // A screen put aside while something is drawn over it - a menu, a
-// character sheet - and blitted back afterwards. On the terminal it is a
-// duplicate of the standard plane, made by notcurses itself.
+// character sheet - and blitted back afterwards. What it holds is the
+// backend's business: a copy of the cell grid by default, a duplicate of
+// the standard plane made by notcurses itself under notcurses=1.
 struct V_BUFFER {
-    void* saved = nullptr;    // ncplane*, the terminal's
+    void* saved = nullptr;    // the backend's own, see engine/global.cpp
 
     V_BUFFER();
     ~V_BUFFER();

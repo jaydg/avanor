@@ -3,12 +3,12 @@
 # What CI runs once a build is standing. Called with CONFIGURATION set to
 # the make flags that produced the binary, so this knows which one to run.
 #
-# Only an stc build can be tested here. Every mode calls vInit() before it
-# does anything, and the notcurses backend will not open without a
-# terminal - under Actions there is none, and it aborts. The stc backend
-# is plain ANSI on a file descriptor and does not care, so it runs
-# headless, and the game logic it exercises is the same either way: the
-# two backends differ only in how the screen is drawn.
+# Only a default build can be tested here. Every mode calls vInit() before
+# it does anything, and notcurses will not open without a terminal - under
+# Actions there is none, and it aborts. The default backend is plain ANSI
+# on a file descriptor and does not care, so it runs headless, and the
+# game logic it exercises is the same either way: the two backends differ
+# only in how the screen is drawn.
 #
 # Nothing here reads the keyboard on purpose, but --test polls for a key
 # to see whether it has been told to stop, and treats end-of-input as

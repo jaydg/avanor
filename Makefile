@@ -1,27 +1,37 @@
 ##############################################################################
-# Compiling Avanor: make {debug=1}                                           #
+# Compiling Avanor: make {debug=1} {notcurses=1}                             #
 #                                                                            #
 # Just typing 'make' builds the release version for the host platform - the  #
-# Windows/*nix split (native MinGW-w64 vs. notcurses-on-*nix's own build)    #
-# is detected from the environment, not a flag: $(OS) is Windows_NT on any   #
-# native Windows shell, MSYS2's UCRT64/MINGW64/CLANG64 included.             #
-# Define xmingw=1 when cross-compiling a Windows binary from *nix with the   #
-# MinGW-w64 crosscompiler - everything else about the build is identical     #
-# either way: same notcurses/fmt/luajit/zstd stack via pkg-config.           #
+# Windows/*nix split is detected from the environment, not a flag: $(OS) is  #
+# Windows_NT on any native Windows shell, MSYS2's UCRT64/MINGW64/CLANG64     #
+# included. Define xmingw=1 when cross-compiling a Windows binary from *nix  #
+# with the MinGW-w64 crosscompiler - everything else about the build is      #
+# identical either way.                                                      #
 # Define debug=1 when you want to build debug version of Avanor              #
 #                                                                            #
-# Define stc=1 to swap notcurses for a plain-ANSI terminal backend built on  #
-# the header-only stc.hpp, for a Windows terminal where notcurses' ConPTY/   #
-# terminfo negotiation doesn't come good (garbage escapes, or a crash).      #
-# Windows-only - it's built on conio.h and the Win32 console API. See        #
-# engine/global.cpp's USE_STC-guarded code for what it can't do that the     #
-# notcurses backend can (live resize, mainly).                               #
+# The terminal is driven by plain ANSI escape sequences, on the header-only  #
+# stc.hpp plus the platform's own keyboard reading - Win32 console calls on  #
+# Windows, termios and poll() everywhere else. Nothing beyond fmt, LuaJIT    #
+# and zstd has to be found, which is what keeps the game easy to build and   #
+# to hand to somebody.                                                       #
 #                                                                            #
-# argparse and stc.hpp are both header-only and not packaged for MSYS2's     #
-# mingw environments (argparse is on Fedora/Debian/Ubuntu, at least) - a     #
-# Windows/xmingw=1 build fetches whichever it needs with wget into           #
-# external/ on demand, pinned to the versions below, so the build stays      #
-# reproducible without a manual install step.                                #
+# Define notcurses=1 to build against notcurses instead, at the price of a   #
+# shared library to find, package and ship. What it buys is its own          #
+# terminal capability negotiation, and a live resize on Windows, where the   #
+# plain backend has no way to hear about one - everywhere else SIGWINCH      #
+# tells it and both handle resizing alike. See the USE_NOTCURSES-guarded     #
+# code in engine/global.cpp for exactly where the two differ.                #
+#                                                                            #
+# Both backends build the same avanor out of the same obj/, and nothing in   #
+# a source file says which one built it, so switching between them needs a   #
+# 'make clean' first. Without one make finds nothing to do and leaves the    #
+# binary already standing, whichever backend that was.                       #
+#                                                                            #
+# argparse and stc.hpp are both header-only. stc.hpp is not packaged         #
+# anywhere, and argparse is missing from MSYS2's mingw environments (it is   #
+# on Fedora/Debian/Ubuntu, at least), so the build fetches whichever it      #
+# needs with wget into external/ on demand, pinned to the versions below,    #
+# so it stays reproducible without a manual install step.                    #
 #                                                                            #
 # There are also targets for making tarballs with the sources and binaries   #
 # Example:                                                                   #
@@ -73,19 +83,18 @@ STC_URL = https://raw.githubusercontent.com/illyigan/simple_term_colors/$(STC_VE
 
 CFLAGS += -I.
 
-ifdef win
-	CFLAGS += -Iexternal
-endif
+# Whatever the build has to fetch for itself lands in external/ - stc.hpp
+# always, argparse.hpp on Windows.
+CFLAGS += -Iexternal
 
-ifdef stc
-	CFLAGS += -DUSE_STC
-	CFLAGS += $(shell pkg-config --cflags fmt luajit)
-
-	ifndef win
-		CFLAGS += -Iexternal
-	endif
+# The terminal backend, and the only thing that changes what has to be
+# installed. See the notes at the top of this file.
+ifdef notcurses
+	CFLAGS += -DUSE_NOTCURSES $(shell pkg-config --cflags fmt notcurses luajit)
+	LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
 else
-	CFLAGS += $(shell pkg-config --cflags fmt notcurses luajit)
+	CFLAGS += $(shell pkg-config --cflags fmt luajit)
+	LIBS = $(shell pkg-config --libs fmt luajit) -lzstd
 endif
 
 VPATH = creature engine game helpers item lua magic map player
@@ -108,12 +117,6 @@ SRCS = xlua.cpp api_actor.cpp api_world.cpp xweapon.cpp xtime.cpp xstring.cpp \
        creature2.cpp creature.cpp dungeon_builder.cpp cave_builder.cpp        \
        pattern_builder.cpp chambers_builder.cpp plain_builder.cpp             \
        delve_builder.cpp bodypart.cpp anycr.cpp ai_view.cpp
-
-ifdef stc
-	LIBS = $(shell pkg-config --libs fmt luajit) -lzstd
-else
-	LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
-endif
 
 ifdef debug
 	CFLAGS += -g
@@ -160,7 +163,7 @@ ifdef win
 $(OBJDIR)/Main.o: $(ARGPARSE_HEADER)
 endif
 
-ifdef stc
+ifndef notcurses
 $(OBJDIR)/global.o: $(STC_HEADER)
 endif
 

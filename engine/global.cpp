@@ -33,12 +33,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
-// Two interchangeable terminal backends, chosen at compile time (-DUSE_STC):
-// notcurses, the default everywhere, and a plain-ANSI backend built on the
-// header-only stc.hpp for when notcurses' ConPTY/terminfo negotiation
-// doesn't work out on a given Windows terminal - see engine/global.h and
-// the Makefile's `stc` variable.
-#ifdef USE_STC
+// Two interchangeable terminal backends, chosen at compile time. The
+// default is a plain-ANSI one built on the header-only stc.hpp: it asks
+// nothing of the system but a terminal that understands escape sequences,
+// which is what keeps the game simple to build and to hand to somebody.
+//
+// Building with notcurses=1 defines USE_NOTCURSES and takes the other
+// path instead, at the cost of a shared library to find, package and
+// ship. What it brings is its own capability negotiation, and a live
+// resize on Windows - see vUpdateScreenSize() for why the plain backend
+// cannot hear about one there, and why everywhere else it can.
+// See engine/global.h and the Makefile's `notcurses` variable.
+#ifndef USE_NOTCURSES
     #ifdef _WIN32
         #ifndef WIN32_LEAN_AND_MEAN
             #define WIN32_LEAN_AND_MEAN
@@ -119,7 +125,7 @@ int tile_jitter = 10;
 int tile_hue_jitter = 12;
 int tile_saturation_jitter = 15;
 
-#ifdef USE_STC
+#ifndef USE_NOTCURSES
 
 namespace {
 
@@ -476,7 +482,7 @@ void vPutCh(int x, int y, char ch)
     screen->putc(y, x, ch < ' ' ? ' ' : ch);
 };
 
-#endif // USE_STC
+#endif // !USE_NOTCURSES
 
 void vGotoXY(int x, int y)
 {
@@ -553,7 +559,7 @@ void vDelay(const int n)
     std::this_thread::sleep_for(std::chrono::milliseconds(n));
 }
 
-#ifdef USE_STC
+#ifndef USE_NOTCURSES
 #ifdef _WIN32
 
 int vKbhit()
@@ -737,6 +743,8 @@ int vGetch()
 
         // CSI or SS3: digits and separators, then a letter that says which
         // key it was.
+        constexpr int PARAM_MAX = 9999;
+
         int param = 0;
         bool have_param = false;
 
@@ -748,7 +756,16 @@ int vGetch()
             }
 
             if (b >= '0' && b <= '9') {
-                param = param * 10 + (b - '0');
+                // Every parameter this decodes is one or two digits. A
+                // longer run is a terminal talking nonsense, or something
+                // that is not a terminal at all, and is stopped here
+                // rather than left to overflow: nothing downstream reads
+                // a number this large, so pinning it loses nothing and
+                // keeps the arithmetic defined.
+                if (param <= PARAM_MAX / 10) {
+                    param = param * 10 + (b - '0');
+                }
+
                 have_param = true;
                 continue;
             }
@@ -859,7 +876,7 @@ int vGetch()
     }
 }
 
-#endif // USE_STC
+#endif // !USE_NOTCURSES
 
 int vXGetch(const char* ch_buf)
 {
@@ -880,7 +897,7 @@ int vXGetch(const char* ch_buf)
     }
 }
 
-#ifdef USE_STC
+#ifndef USE_NOTCURSES
 
 void vXGotoXY(int x, int y)
 {
@@ -907,7 +924,7 @@ void vHideCursor()
     nc->cursor_disable();
 }
 
-#endif // USE_STC
+#endif // !USE_NOTCURSES
 
 namespace {
 
@@ -1414,7 +1431,7 @@ long vRand(unsigned long n)
     }
 }
 
-#ifdef USE_STC
+#ifndef USE_NOTCURSES
 
 V_BUFFER::V_BUFFER()
 {
@@ -1517,7 +1534,7 @@ void vRestore(const V_BUFFER* buf)
     }
 }
 
-#endif // USE_STC
+#endif // !USE_NOTCURSES
 
 std::string vMakePath(std::string_view prefix, std::string_view filename)
 {

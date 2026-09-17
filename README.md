@@ -205,7 +205,7 @@ vendored into the tree and there are no git submodules, so a plain
 | ----------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
 | **LuaJIT 2.1**    | shared library | The scripting runtime. Every creature, item, location and quest in `world/` is Lua.                                                                              | `pkg-config luajit`      |
 | **sol2 3.x**      | header only    | The C++/Lua binding layer - usertypes, enum tables, protected calls. `#include <sol/sol.hpp>`                                                                    | `/usr/include/sol`       |
-| **notcurses 3.x** | shared library | The terminal display, including 24-bit colour and the resize handling. The C++ binding `notcurses++` is what is linked; the game includes `<ncpp/NotCurses.hh>`. | `pkg-config notcurses++` |
+| **stc.hpp**       | header only    | The terminal display - plain ANSI escape sequences, with the keyboard read through the Win32 console API or termios. Fetched by the build, nothing to install.   | `external/stc.hpp`       |
 | **{fmt} 9+**      | shared library | String formatting throughout the engine and the world scripts' messages.                                                                                         | `pkg-config fmt`         |
 | **cereal 1.3**    | header only    | Save and restore. The whole world graph goes through it. `#include <cereal/...>`                                                                                 | `/usr/include/cereal`    |
 | **Zstandard**     | shared library | Compresses the save file (`avanor.svg.zst`).                                                                                                                     | `-lzstd`                 |
@@ -218,16 +218,16 @@ GCC 9 or Clang 8 upwards will do. It is built and tested with GCC.
 The versions this is currently developed against:
 
 ```
-LuaJIT 2.1    notcurses 3.0.17    fmt 11.2.0
-sol2 3.5.0    cereal 1.3.2        zstd 1.5.7
+LuaJIT 2.1    fmt 11.2.0     zstd 1.5.7
+sol2 3.5.0    cereal 1.3.2
 ```
 
 On Fedora:
 
 ```bash
 sudo dnf install gcc-c++ make pkgconf-pkg-config \
-                 luajit-devel notcurses-devel fmt-devel \
-                 libzstd-devel sol2-devel cereal-devel argparse-devel
+                 luajit-devel fmt-devel libzstd-devel \
+                 sol2-devel cereal-devel argparse-devel
 ```
 
 On Debian and Ubuntu:
@@ -257,6 +257,27 @@ name, so a full clean is both:
 ```bash
 make clean && make debug=1 clean
 ```
+
+#### The notcurses backend
+
+The terminal is driven by plain ANSI escape sequences, which is why the
+list above has no display library in it: there is nothing to find, package
+or ship. `notcurses=1` builds against
+[notcurses](https://github.com/dankamongmen/notcurses) instead. What that
+buys is its own terminal capability negotiation, and a live resize on
+Windows - on Linux and macOS SIGWINCH tells the plain backend and both
+follow the window alike:
+
+```bash
+sudo dnf install notcurses-devel   # or libnotcurses++-dev on Debian/Ubuntu
+make notcurses=1 -j$(nproc)
+```
+
+Both backends produce the same `avanor` out of the same `obj/`, and nothing
+in a source file says which one built it, so switching between them needs a
+`make clean` first - without one make finds nothing to do and leaves the
+binary already standing. The two sit side by side in `engine/global.cpp`
+under `USE_NOTCURSES`.
 
 ### Running
 
