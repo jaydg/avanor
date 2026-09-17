@@ -230,10 +230,18 @@ sudo dnf install gcc-c++ make pkgconf-pkg-config \
                  libzstd-devel sol2-devel cereal-devel argparse-devel
 ```
 
-On Debian and Ubuntu the header-only three (sol2, cereal, argparse) may not
-be packaged under those names; dropping their headers under
-`/usr/local/include` works just as well, since the build finds them on the
-default include path.
+On Debian and Ubuntu:
+
+```bash
+sudo apt install g++ make pkg-config \
+                 libluajit-5.1-dev libnotcurses-dev libnotcurses++-dev \
+                 libfmt-dev libzstd-dev sol2-dev libcereal-dev libargparse-dev
+```
+
+Note the names differ from Fedora's, and so does what is available when:
+`sol2-dev` arrived in 26.04, `libargparse-dev` in 24.04. On an older release
+drop those headers under `/usr/local/include` instead - the build finds them
+on the default include path.
 
 ### Building
 
