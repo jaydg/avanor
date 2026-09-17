@@ -207,13 +207,12 @@ class XHero final : public XCreature
 
 class XGuiItem_Inventory final : public XGuiItem
 {
-        XItem* pItem;
         std::string str;
     public:
         // show_price swaps the trailing badge from the
         // item's weight to its total gp value.
         explicit XGuiItem_Inventory(XItem* item, bool worn = false, bool show_price = false,
-                                    int unpaid = 0) : pItem(item)
+                                    int unpaid = 0)
         {
             str = "<TEXT>" + item->toString();
 
