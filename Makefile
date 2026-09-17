@@ -49,10 +49,7 @@ ifeq ($(OS),Windows_NT)
 	win = 1
 endif
 
-CX = g++
-CC = gcc
-LD = g++
-CFLAGS = -std=c++17 -fsigned-char -pipe -Wall -Wextra
+CFLAGS += -std=c++17 -fsigned-char -pipe -Wall -Wextra -I.
 
 ifdef xmingw
     CX = x86_64-w64-mingw32-g++
@@ -89,20 +86,16 @@ STC_VERSION = 85c2194fe861d411c9790ea5362953ff5ca1bcd0
 STC_HEADER = external/stc.hpp
 STC_URL = https://raw.githubusercontent.com/illyigan/simple_term_colors/$(STC_VERSION)/include/stc.hpp
 
-CFLAGS += -I.
-
 # Whatever the build has to fetch for itself lands in external/ - stc.hpp
 # always, argparse.hpp on Windows.
-CFLAGS += -Iexternal
+CFLAGS += -Iexternal $(shell pkg-config --cflags fmt luajit)
+LIBS = $(shell pkg-config --libs fmt luajit) -lzstd
 
 # The terminal backend, and the only thing that changes what has to be
 # installed. See the notes at the top of this file.
 ifdef notcurses
-	CFLAGS += -DUSE_NOTCURSES $(shell pkg-config --cflags fmt notcurses luajit)
-	LIBS = $(shell pkg-config --libs fmt notcurses++ luajit) -lzstd
-else
-	CFLAGS += $(shell pkg-config --cflags fmt luajit)
-	LIBS = $(shell pkg-config --libs fmt luajit) -lzstd
+	CFLAGS += -DUSE_NOTCURSES $(shell pkg-config --cflags notcurses)
+	LIBS += $(shell pkg-config --libs notcurses++)
 endif
 
 VPATH = creature engine game helpers item lua magic map player
@@ -151,13 +144,10 @@ $(OBJDIR):
 	mkdir $(OBJDIR)
 
 $(OBJDIR)/%.o: %.cpp
-	$(CX) -MMD $(CFLAGS) -c $< -o $@
-
-$(OBJDIR)/%.o: %.c
-	$(CC) -MMD $(CFLAGS) -c $< -o $@
+	$(CXX) -MMD $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	$(LD) $(CFLAGS) -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(LIBS)
 
 $(ARGPARSE_HEADER):
 	mkdir -p $(dir $@)
