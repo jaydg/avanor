@@ -260,9 +260,6 @@ void XLua::Init()
         MakeStrict(lua, enum_table);
     }
 
-    // Still the only two bindings registered through the raw Lua C API
-    // rather than sol2 - they take a lua_State* and hand-roll the stack.
-
     lua.open_libraries(sol::lib::base, sol::lib::string);
 
     // Sol2-bound Monster builder - registered before world scripts
@@ -477,23 +474,8 @@ void XLua::Init()
     // Sol2-bound location/map-building functions
     // Registered before world scripts load below, since
     // locations.lua/valley.lua call these while loading.
-    {
-        lua_api::RegisterActorApi(lua);
+    lua_api::RegisterActorApi(lua);
     lua_api::RegisterWorldApi(lua);
-
-    }
-
-    {
-
-
-
-
-
-
-
-
-
-    }
 
     lua.script_file("./world/init.lua");
 
