@@ -454,13 +454,13 @@ void Door(const int x, const int y, sol::optional<bool> opened)
     new XDoor(x, y, opened.value_or(false) ? 1 : 0, XLocation::current_location);
 }
 
-//Furniture(x, y, xLIGHTRED, '~', 'a royal bad')
+// Furniture(x, y, xLIGHTRED, '~', 'a royal bed')
 void* Furniture(int x, int y, int color, const std::string& view, const std::string& descr)
 {
     return new XFurniture(x, y, color, view[0], (char*)descr.c_str(), XLocation::current_location);
 }
 
-//OuterObject(xLIGHTRED, '~', 'a royal bad', 'EventHandler')
+// OuterObject(xLIGHTRED, '~', 'a royal bed', 'EventHandler')
 sol::optional<void*> OuterObject(int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
 {
     const auto pt = XLocation::current_location->GetFreeXY();
@@ -474,7 +474,7 @@ sol::optional<void*> OuterObject(int color, const std::string& view, const std::
     return new XOuterObject(pt->x, pt->y, color, view[0], (char*)descr.c_str(), XLocation::current_location, event ? event->c_str() : nullptr);
 }
 
-//OuterObject(x, y, xLIGHTRED, '~', 'a royal bad', 'EventHandler')
+// OuterObject(x, y, xLIGHTRED, '~', 'a royal bed', 'EventHandler')
 void* OuterObjectAt(int x, int y, int color, const std::string& view, const std::string& descr, sol::optional<std::string> event)
 {
     return new XOuterObject(x, y, color, view[0], (char*)descr.c_str(), XLocation::current_location, event ? event->c_str() : nullptr);
