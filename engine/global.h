@@ -58,9 +58,6 @@ extern unsigned long cr_died;
 //global flags (users preferences)
 extern int __animation_flag; // 0 - none, other - delay milliseconds
 
-#ifndef M_E
-    #define M_E 2.7182818284590452354
-#endif
 #ifndef M_PI
     #define M_PI 3.1415926535897932384
 #endif

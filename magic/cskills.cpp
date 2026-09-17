@@ -122,7 +122,7 @@ void CombatSkillBuilder::Register()
 int XCombatSkills::GetN(const int level)
 {
     //30, 26
-    return 10 * std::lround((float)(25.0 * (pow(M_E, level / 4.0) - 1)));
+    return 10 * std::lround((float)(25.0 * (std::exp(level / 4.0) - 1)));
 }
 
 const std::string& XCombatSkills::GetName(const COMBAT_SKILL& cs)
