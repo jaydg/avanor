@@ -25,6 +25,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/cave_builder.h"
 #include "map/map.h"
 
+// Written out rather than taken from M_PI, which is a POSIX extension the
+// C++ standard does not require: glibc defines it, Windows' UCRT does not.
+// std::numbers::pi is the C++20 answer, and this builds as C++17. Local
+// because this is the only place in the game that needs it.
+namespace {
+    constexpr double PI = 3.14159265358979323846;
+}
+
 void XCaveBuilder::Build()
 {
     int cl = w;
@@ -64,8 +72,8 @@ void XCaveBuilder::Build()
 
             for (int angle = 0; angle < 360; angle += 3) {
                 for (int r = 0; r < blob_radius; r++) {
-                    const int tx = qx + (int)(r * cos(angle * M_PI / 180.0));
-                    const int ty = qy + (int)(r * sin(angle * M_PI / 180.0));
+                    const int tx = qx + (int)(r * cos(angle * PI / 180.0));
+                    const int ty = qy + (int)(r * sin(angle * PI / 180.0));
 
                     // Clipped against the map, not against the 80x20 one
                     // this generator was written for.
