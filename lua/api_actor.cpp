@@ -462,7 +462,7 @@ sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gi
     return sol::nullopt;
 }
 
-std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
+sol::table FindCreatures(sol::this_state state, const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XRect rect(0, 0, Game.Location(l_id)->map->len, Game.Location(l_id)->map->hgt);
 
@@ -473,14 +473,15 @@ std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid
         rect.bottom = rect.top + *h;
     }
 
-    std::vector<void*> result;
+    sol::state_view lua(state);
+    sol::table result = lua.create_table();
 
     for (int i = rect.left; i < rect.right; i++)
         for (int j = rect.top; j < rect.bottom; j++) {
             XCreature* cr = Game.Location(l_id)->map->GetMonster(i, j);
 
             if (cr && cr->groupID() == gid) {
-                result.push_back(cr);
+                result.add(static_cast<void*>(cr));
             }
         }
 
