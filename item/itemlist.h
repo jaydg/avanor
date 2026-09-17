@@ -27,7 +27,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 /* Forward declaration */
 class XItem;
 
-struct compare {
+struct XItemCompare {
     // Transparent so contain.erase(raw_ptr)/.find(raw_ptr) - pervasive
     // throughout the codebase - keep working by heterogeneous lookup once
     // XItemList holds shared_ptr<XItem> instead of raw XItem*, without
@@ -40,9 +40,9 @@ struct compare {
     bool operator()(const XItem* lhs, const std::shared_ptr<XItem>& rhs) const;
 };
 
-class XItemList : public std::set<std::shared_ptr<XItem>, compare>
+class XItemList : public std::set<std::shared_ptr<XItem>, XItemCompare>
 {
-        using Base = std::set<std::shared_ptr<XItem>, compare>;
+        using Base = std::set<std::shared_ptr<XItem>, XItemCompare>;
 
         // Returns an iterator to the stack item got merged into, or
         // end() if no matching stack exists.
