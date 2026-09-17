@@ -129,7 +129,14 @@ namespace lua_api
     void SetAIFlag(void* cr, unsigned int flags);
     void SetEnemy(void* cr, const sol::object& cr_class);
     sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
-    std::vector<void*> FindCreatures(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
+    // A real Lua table, not the std::vector this used to hand back. sol2
+    // pushes a container as userdata with container metamethods, and
+    // whether ipairs() will walk that depends on how the LuaJIT it is
+    // linked against was built: with LUAJIT_ENABLE_LUA52COMPAT it does,
+    // without it - Homebrew's plain upstream build, say - it answers
+    // "table expected, got userdata". Content should not turn on a flag
+    // of the Lua runtime, so everything handed to script is a table.
+    sol::table FindCreatures(sol::this_state state, const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void ExecuteCreatureScript(void* cr, sol::table script);
     std::tuple<int, int> GetWayXY(const std::string& l_id);
     void AddMessage(const std::string& str);
