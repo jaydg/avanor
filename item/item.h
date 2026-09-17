@@ -241,7 +241,7 @@ class XItem : public XBaseObject
         [[nodiscard]] std::string GetArtifactName(std::string real_name);
 };
 
-inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {
+inline bool XItemCompare::operator()(const XItem* lhs, const XItem* rhs) const {
     if (lhs->kind != rhs->kind) {
         return lhs->kind < rhs->kind;
     }
@@ -258,15 +258,15 @@ inline bool compare::operator()(const XItem* lhs, const XItem* rhs) const {
     return lhs < rhs;
 }
 
-inline bool compare::operator()(const std::shared_ptr<XItem>& lhs, const std::shared_ptr<XItem>& rhs) const {
+inline bool XItemCompare::operator()(const std::shared_ptr<XItem>& lhs, const std::shared_ptr<XItem>& rhs) const {
     return (*this)(lhs.get(), rhs.get());
 }
 
-inline bool compare::operator()(const std::shared_ptr<XItem>& lhs, const XItem* rhs) const {
+inline bool XItemCompare::operator()(const std::shared_ptr<XItem>& lhs, const XItem* rhs) const {
     return (*this)(lhs.get(), rhs);
 }
 
-inline bool compare::operator()(const XItem* lhs, const std::shared_ptr<XItem>& rhs) const {
+inline bool XItemCompare::operator()(const XItem* lhs, const std::shared_ptr<XItem>& rhs) const {
     return (*this)(lhs, rhs.get());
 }
 
