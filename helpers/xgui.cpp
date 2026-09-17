@@ -23,6 +23,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/xstring.h"
 
 #include <algorithm>
+#include <string>
+
+#include <fmt/format.h>
 
 // The XGuiItem_Text::WideBuffer() function tries to widen the input string
 // str to the given width. If it is impossible (size already is equal or
@@ -207,10 +210,18 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
                 if (file) {
                     vFPutS(file.value(), " ");
                 } else {
-                    char buf[256];
-                    sprintf(buf, "<DECORATION>[<SELECTOR>%c<DECORATION>]", i++ + 65);
+                    // The letter that picks this line: [A], [B], [C]...
+                    // Counted per screenful, not per list, so it runs past 'Z'
+                    // only on a terminal tall enough to show twenty-seven
+                    // selectable lines at once - and the key handler below
+                    // reads the letter back the same way it is written here,
+                    // so the two stay in step wherever ASCII takes them.
+                    const std::string selector =
+                        fmt::format("<DECORATION>[<SELECTOR>{}<DECORATION>]",
+                                    static_cast<char>('A' + i++));
+
                     vGotoXY(0, y_pos);
-                    vPutS(buf);
+                    vPutS(selector);
                     selectable_items_count++;
                 }
             }
