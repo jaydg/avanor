@@ -106,3 +106,116 @@ Simulation.new("orc_attack")
 	:Report("OrcAttackReport")
 	:Turns(300000)
 	:Register()
+
+-- How many of the village's farmers come back from the mushroom caves.
+--
+-- The Elder sends them down once his quest closes, and they keep going:
+-- the errand is a loop, not one trip, so what it costs the village is
+-- attrition rather than a single walk. They go in a robe and a long
+-- spear and nothing else, and die faster than the village can spare.
+--
+-- Beelzevile is killed before anyone sets out, because that is the only
+-- state of the world in which they ever set out: the Elder sends them
+-- when his quest closes, and it closes when the hero brings him word
+-- that the demon is dead. Leaving Beelzevile alive down there measures a
+-- walk the farmers never actually take.
+--
+-- --arg says what they are sent down in:
+--
+--   0  as they are - a robe and a long spear
+--   1  and soft boots, for the empty slot
+--   2  scale mail instead of the robe
+--   3  both
+--
+-- The report is how many of them are still alive after the errand has
+-- been running a while, so the arms can be compared as attrition rather
+-- than as one trip.
+
+local FARMER_NAME = "farmer"
+
+local farmers_at_start = 0
+
+local function Farmers()
+	local out = {}
+
+	for _, cr in ipairs(FindCreatures("MAIN", VILLAGE_GROUP)) do
+		if (AsCreature(cr).name == FARMER_NAME) then
+			out[#out + 1] = cr
+		end
+	end
+
+	-- They spend most of the errand underground, so the valley alone is
+	-- not where to count them.
+	for _, id in ipairs({"MUSHROOMS_CAVE1", "MUSHROOMS_CAVE2", "MUSHROOMS_CAVE5"}) do
+		for _, cr in ipairs(FindCreatures(id, VILLAGE_GROUP)) do
+			if (AsCreature(cr).name == FARMER_NAME) then
+				out[#out + 1] = cr
+			end
+		end
+	end
+
+	return out
+end
+
+local function Dress(farmer, kind, id, slot)
+	local it = CreateObject(kind, id, 1, 1000000)
+
+	if (it and HasBodyPart(farmer, slot, 0)) then
+		AsCreature(farmer):PutOnBody(slot, 0, it)
+	end
+end
+
+-- What the hero did before the Elder would send anyone down. Named by the
+-- blow so that, if it ever shows on screen, it reads as something rather
+-- than as nothing in particular.
+local function KillTheDemon()
+	for _, cr in ipairs(FindCreatures("MUSHROOMS_CAVE2", "")) do
+		if (AsCreature(cr).name:find("Beelzevile")) then
+			InflictDamage(cr, 100000, "", "the hero's errand")
+
+			return true
+		end
+	end
+
+	return false
+end
+
+function MushroomErrandSetup(outfit)
+	SIM_OUTFIT = outfit
+
+	if (not KillTheDemon()) then
+		print("NOTE: no demon found on MUSHROOMS_CAVE2")
+	end
+
+	local all = Farmers()
+	farmers_at_start = #all
+
+	for _, farmer in ipairs(all) do
+		if (outfit == 1 or outfit == 3) then
+			Dress(farmer, ItemKind.BOOTS, "soft_boots", BodyPart.BOOTS)
+		end
+
+		if (outfit == 2 or outfit == 3) then
+			Dress(farmer, ItemKind.BODY, "light_mail", BodyPart.BODY)
+		end
+	end
+
+	SendFarmersToCollectMushrooms()
+end
+
+function MushroomErrandDone()
+	return #Farmers() == 0
+end
+
+function MushroomErrandReport()
+	return string.format("outfit=%d farmers=%d/%d", SIM_OUTFIT or 0,
+		#Farmers(), farmers_at_start)
+end
+
+Simulation.new("mushroom_errand")
+	:Called("how many of the village's farmers survive the errand underground")
+	:Setup("MushroomErrandSetup")
+	:Finished("MushroomErrandDone")
+	:Report("MushroomErrandReport")
+	:Turns(1000000)
+	:Register()
