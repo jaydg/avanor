@@ -58,10 +58,6 @@ extern unsigned long cr_died;
 //global flags (users preferences)
 extern int __animation_flag; // 0 - none, other - delay milliseconds
 
-#ifndef M_PI
-    #define M_PI 3.1415926535897932384
-#endif
-
 // The sixteen colours Avanor was written in, as the colours they were
 // always meant to be rather than as terminal palette slots: brown is
 // brown here, not "yellow, but dim". A value IS an RGB triple, so
