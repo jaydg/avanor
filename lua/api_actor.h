@@ -112,6 +112,13 @@ namespace lua_api
     // back is the tile the creature is stepping *off*, which is what tells
     // a handler which way it is travelling.
     std::tuple<int, int> GetCreatureXY(void* cr);
+
+    // The location a creature stands in, as the same handle a location
+    // event handler is passed - what the map calls below want when they
+    // are asked at runtime rather than while a location is being built.
+    // Nothing for a creature that is nowhere.
+    sol::optional<void*> GetCreatureLocation(void* cr);
+
     bool isEnemy(void* cr1, void* cr2);
     void SetCreatureAI(void* cr, const std::string& lua_class);
     XCreature* AsCreature(void* p);

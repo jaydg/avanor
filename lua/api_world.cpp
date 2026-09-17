@@ -24,6 +24,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "creature/anycr.h"
 #include "engine/xgen.h"
+#include "helpers/registry.h"
 #include "map/dungeon_builder.h"
 #include "map/windroad.h"
 #include "game/game.h"
@@ -631,19 +632,41 @@ void EventPlaceArea(int x, int y, int w, int h, const std::string& event)
 
 // Every one of these takes an optional location handle - the same void*
 // that a location event handler is passed - and falls back to the location
-// currently being built. World-construction scripts want the default;
-// runtime event handlers (world/locations/mushroom_cave.lua's mushroom
-// spawner, say) are handed a specific location and must say so.
+// currently being built.
+//
+// That fallback is good only while a location is being built, which is
+// what world-construction scripts want. Once the world stands,
+// current_location is whichever location happened to be raised last, and
+// in a restored game it was never set at all. So anything asked at
+// runtime - a creature going about its business, an item being used - has
+// to name the location it means: GetCreatureLocation() for a creature's
+// own level, or the handle a location event handler was passed. Forgetting
+// is reported here rather than left to read another map's cells or to walk
+// off a null pointer.
 static XLocation* ResolveLocation(const sol::optional<void*>& location)
 {
-    return location ? static_cast<XLocation*>(*location) : XLocation::current_location;
+    if (location) {
+        return static_cast<XLocation*>(*location);
+    }
+
+    if (!XLocation::current_location) {
+        std::cerr << "world: " << WhereInContent()
+                  << " asks about the map without saying which location,"
+                     " and none is being built" << std::endl;
+    }
+
+    return XLocation::current_location;
 }
 
 std::tuple<int, int> GetMapSize(sol::optional<void*> location)
 {
-    const XMap* map = ResolveLocation(location)->map;
+    const XLocation* l = ResolveLocation(location);
 
-    return {map->len, map->hgt};
+    if (!l) {
+        return {0, 0};
+    }
+
+    return {l->map->len, l->map->hgt};
 }
 
 // What a wall becomes when somebody digs through it, or nothing if it is
@@ -662,7 +685,9 @@ sol::optional<int> TileDiggableInto(const int tile)
 
 int GetTile(const int x, const int y, sol::optional<void*> location)
 {
-    return ResolveLocation(location)->map->GetXY(x, y);
+    const XLocation* l = ResolveLocation(location);
+
+    return l && l->map->Cell(x, y) ? l->map->GetXY(x, y) : XTileType::NONE;
 }
 
 bool HasSpecial(const int x, const int y, sol::optional<void*> location)
@@ -671,7 +696,7 @@ bool HasSpecial(const int x, const int y, sol::optional<void*> location)
 
     // Nowhere at all holds nothing - see GetSpecialId() for why this is
     // asked rather than left to assert.
-    if (!l->map->Cell(x, y)) {
+    if (!l || !l->map->Cell(x, y)) {
         return false;
     }
 
@@ -691,7 +716,7 @@ sol::optional<std::string> GetSpecialId(const int x, const int y,
     // at the edge of the map. That is an ordinary answer - "nothing
     // there" - not a reason to stop the game, which is what the
     // unguarded GetSpecial() below would do.
-    if (!l->map->Cell(x, y)) {
+    if (!l || !l->map->Cell(x, y)) {
         return sol::nullopt;
     }
 
@@ -711,7 +736,7 @@ sol::optional<void*> GetSpecial(const int x, const int y, sol::optional<void*> l
 {
     const XLocation* l = ResolveLocation(location);
 
-    if (!l->map->Cell(x, y)) {
+    if (!l || !l->map->Cell(x, y)) {
         return sol::nullopt;
     }
 
@@ -730,7 +755,7 @@ bool TileFertile(const int x, const int y, sol::optional<void*> location)
 {
     const XLocation* l = ResolveLocation(location);
 
-    if (!l->map->Cell(x, y)) {
+    if (!l || !l->map->Cell(x, y)) {
         return false;
     }
 
@@ -754,7 +779,7 @@ sol::object PlaceObject(const std::string& id, const int x, const int y,
     // A hole showing the level below is not somewhere to put a thing:
     // it would be written into this level's cell and read back from the
     // one underneath, so nothing would ever see it again.
-    if (!l->map->OwnsCell(x, y)) {
+    if (!l || !l->map->OwnsCell(x, y)) {
         return sol::nil;
     }
 
@@ -949,7 +974,13 @@ void MemoriseText(void* object, const std::string& key, const std::string& value
 // ask about anywhere.
 bool SetTile(const int x, const int y, const int tile, sol::optional<void*> location)
 {
-    const XMap* map = ResolveLocation(location)->map;
+    const XLocation* l = ResolveLocation(location);
+
+    if (!l) {
+        return false;
+    }
+
+    const XMap* map = l->map;
 
     if (x < 0 || y < 0 || x >= map->len || y >= map->hgt) {
         return false;
@@ -979,7 +1010,13 @@ sol::table WindingRoad(sol::this_state s, const int x1, const int y1,
                        const int x2, const int y2, const int pertamt,
                        sol::optional<void*> location)
 {
-    return ToLuaPath(s, windroad::Wind(*ResolveLocation(location)->map,
+    const XLocation* l = ResolveLocation(location);
+
+    if (!l) {
+        return ToLuaPath(s, {});
+    }
+
+    return ToLuaPath(s, windroad::Wind(*l->map,
                                        XPoint(x1, y1), XPoint(x2, y2), pertamt));
 }
 
@@ -1003,7 +1040,13 @@ sol::table SigsagRoad(sol::this_state s, const int x1, const int y1,
 // none - a direct pass-through of XLocation::GetFreeXY()'s own optional.
 sol::optional<std::tuple<int, int>> GetFreeXY(sol::optional<void*> location)
 {
-    const auto pt = ResolveLocation(location)->GetFreeXY();
+    XLocation* l = ResolveLocation(location);
+
+    if (!l) {
+        return sol::nullopt;
+    }
+
+    const auto pt = l->GetFreeXY();
 
     if (!pt) {
         return sol::nullopt;
@@ -1024,7 +1067,9 @@ sol::object PlaceSpecial(const std::string& class_name, const int x, const int y
         return sol::nil;
     }
 
-    if (!obj->PlaceAt(ResolveLocation(location), x, y)) {
+    XLocation* l = ResolveLocation(location);
+
+    if (!l || !obj->PlaceAt(l, x, y)) {
         obj->Invalidate();
 
         return sol::nil;

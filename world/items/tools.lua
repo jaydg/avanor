@@ -48,7 +48,7 @@ function DigWithPickaxe(state, item, digger)
 		x = x + dx
 		y = y + dy
 
-		if (not TileDiggableInto(GetTile(x, y))) then
+		if (not TileDiggableInto(GetTile(x, y, GetCreatureLocation(digger)))) then
 			AddMessage("You can't dig something other than walls.")
 			return Result.FAIL
 		end
@@ -80,8 +80,11 @@ function DigWithPickaxe(state, item, digger)
 	local x = ToolRecall(item, "x")
 	local y = ToolRecall(item, "y")
 
+	-- The digger's own level, named rather than left to default.
+	local level = GetCreatureLocation(digger)
+
 	AddMessage(CreatureName(digger, 0) .. " " .. CreatureVerb(digger, "smash") .. " the stone to pieces.")
-	SetTile(x, y, TileDiggableInto(GetTile(x, y)))
+	SetTile(x, y, TileDiggableInto(GetTile(x, y, level)), level)
 	UseSkill(digger, XSkill.MINING)
 
 	if (Rand(3) == 0) then

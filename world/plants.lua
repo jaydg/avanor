@@ -183,14 +183,23 @@ end
 local COLLECT_ENOUGH_ODDS = 2
 
 function CollectMushroom(gatherer)
+	-- The gatherer's own cave, named rather than left to default: the
+	-- default is the location being built, which is nothing at all once
+	-- the world stands.
+	local cave = GetCreatureLocation(gatherer)
+
+	if (not cave) then
+		return false
+	end
+
 	local x, y = GetCreatureXY(gatherer)
-	local here = GetSpecial(x, y)
+	local here = GetSpecial(x, y, cave)
 
 	-- Whatever is underfoot answers for itself, through the same handler
 	-- the hero's own picking goes through. Standing on nothing, or on
 	-- something that is not for picking, is not a reason to give up - the
 	-- cave is large and the gatherer keeps looking.
-	if (not here or GetSpecialId(x, y) ~= "mushroom") then
+	if (not here or GetSpecialId(x, y, cave) ~= "mushroom") then
 		return false
 	end
 

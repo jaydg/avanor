@@ -426,6 +426,17 @@ std::tuple<int, int> GetCreatureXY(void* cr)
     return p ? std::tuple<int, int>{p->x, p->y} : std::tuple<int, int>{-1, -1};
 }
 
+sol::optional<void*> GetCreatureLocation(void* cr)
+{
+    XCreature* p = (XCreature*)cr;
+
+    if (!p || !p->l) {
+        return sol::nullopt;
+    }
+
+    return static_cast<void*>(p->l);
+}
+
 sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
 {
     XRect rect(0, 0, Game.Location(l_id)->map->len, Game.Location(l_id)->map->hgt);
@@ -1052,6 +1063,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("isHero", &lua_api::isHero);
         lua.set_function("GetGroupID", &lua_api::GetGroupID);
         lua.set_function("GetCreatureXY", &lua_api::GetCreatureXY);
+        lua.set_function("GetCreatureLocation", &lua_api::GetCreatureLocation);
         lua.set_function("isEnemy", &lua_api::isEnemy);
         lua.set_function("SetCreatureAI", &lua_api::SetCreatureAI);
         lua.set_function("AsCreature", &lua_api::AsCreature);
