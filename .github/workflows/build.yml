@@ -1,0 +1,115 @@
+name: C/C++ CI
+
+on:
+  push:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+# A new push to a branch makes the run already going on it pointless.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Every way the Makefile can be asked to build, under both compilers.
+  #
+  # The stc configurations deliberately do *not* install notcurses: the
+  # whole point of that backend is that it needs nothing but fmt and
+  # luajit, and the only way to keep that true is to build it on a machine
+  # where notcurses is absent.
+  #
+  # They are also the configurations that run the tests, because they are
+  # the ones that run without a terminal - see the test step below.
+  linux:
+    name: linux ${{ matrix.compiler }} ${{ matrix.configuration || 'release' }}
+    # Pinned rather than ubuntu-latest, which is still 24.04: sol2 was not
+    # packaged for Ubuntu until 26.04 (as sol2-dev). Move this forward when
+    # ubuntu-latest catches up.
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+        configuration: ["", "debug=1", "stc=1", "stc=1 debug=1"]
+        include:
+          - compiler: gcc
+            cxx: g++
+          - compiler: clang
+            cxx: clang++
+
+    steps:
+      - uses: actions/checkout@v7
+      - name: Update apt cache
+        run: sudo apt update
+      - name: Install dependencies
+        run: sudo apt install -y libargparse-dev libcereal-dev libfmt-dev libluajit-5.1-dev libzstd-dev pkg-config sol2-dev
+      - name: Install notcurses
+        run: sudo apt install -y libnotcurses-dev libnotcurses++-dev
+        if: ${{ !contains(matrix.configuration, 'stc=1') }}
+      - name: Build ${{ matrix.configuration || 'release' }}
+        run: make -j$(nproc) CX=${{ matrix.cxx }} LD=${{ matrix.cxx }} ${{ matrix.configuration }}
+      - name: Check the binary starts
+        run: ${{ contains(matrix.configuration, 'debug=1') && './avanor-d' || './avanor' }} --version
+      - name: Test
+        if: contains(matrix.configuration, 'stc=1')
+        env:
+          CONFIGURATION: ${{ matrix.configuration }}
+        run: ./.github/run-tests.sh
+
+  # The backend the stc build exists for. Nothing here is run: the Windows
+  # console under Actions is not a console either backend will open, so
+  # this proves the two builds still compile and link, no more.
+  windows:
+    name: windows ${{ matrix.configuration || 'release' }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: ["", "debug=1", "stc=1", "stc=1 debug=1"]
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >
+            git
+            make
+            wget
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cereal
+            mingw-w64-ucrt-x86_64-fmt
+            mingw-w64-ucrt-x86_64-luajit
+            mingw-w64-ucrt-x86_64-notcurses
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-sol2
+            mingw-w64-ucrt-x86_64-zstd
+      - uses: actions/checkout@v7
+      - name: Build ${{ matrix.configuration || 'release' }}
+        run: make -j$(nproc) ${{ matrix.configuration }}
+      - name: Check the binary starts
+        run: ${{ contains(matrix.configuration, 'debug=1') && './avanor-d.exe' || './avanor.exe' }} --version
+
+  macos:
+    name: macos ${{ matrix.configuration || 'release' }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: ["", "debug=1", "stc=1", "stc=1 debug=1"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install dependencies
+        run: brew install argparse cereal coreutils fmt luajit notcurses pkgconf sol2 wget zstd
+      - name: Build ${{ matrix.configuration || 'release' }}
+        run: make -j$(sysctl -n hw.ncpu) ${{ matrix.configuration }}
+      - name: Check the binary starts
+        run: ${{ contains(matrix.configuration, 'debug=1') && './avanor-d' || './avanor' }} --version
+      - name: Test
+        if: contains(matrix.configuration, 'stc=1')
+        env:
+          CONFIGURATION: ${{ matrix.configuration }}
+        run: ./.github/run-tests.sh
