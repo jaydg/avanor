@@ -251,12 +251,9 @@ make debug=1 -j$(nproc)  # debug build with symbols -> ./avanor-d
 ```
 
 The two builds keep their objects apart (`obj/` and `obj-d/`), so they do
-not tread on each other. `make clean` only clears the configuration you
-name, so a full clean is both:
-
-```bash
-make clean && make debug=1 clean
-```
+not tread on each other. `make clean` clears both of them and both
+binaries, whichever flags you pass it; the headers the build fetches into
+`external/` are left alone.
 
 #### The notcurses backend
 

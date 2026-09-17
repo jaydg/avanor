@@ -72,6 +72,14 @@ endif
 OBJDIR = obj
 NAME = avanor
 
+# Every directory and binary any configuration of this Makefile produces.
+# Taken now, with ':=', because $(OBJDIR) and $(NAME) pick up suffixes
+# further down according to the flags this particular run was given -
+# expanded later, 'make debug=1 clean' would go looking for obj-d-d.
+# `clean` uses these so that it clears the lot however it is invoked.
+ALL_OBJDIRS := $(OBJDIR) $(OBJDIR)-d
+ALL_NAMES := $(NAME) $(NAME)-d $(NAME).exe $(NAME)-d.exe
+
 ARGPARSE_VERSION = v3.2
 ARGPARSE_HEADER = external/argparse/argparse.hpp
 ARGPARSE_URL = https://raw.githubusercontent.com/p-ranav/argparse/$(ARGPARSE_VERSION)/include/argparse/argparse.hpp
@@ -167,10 +175,15 @@ ifndef notcurses
 $(OBJDIR)/global.o: $(STC_HEADER)
 endif
 
+# Clears every configuration, not just the one named on the command line:
+# a clean that left the other one behind is how stale objects survive to
+# confuse the next build, and telling the two backends apart needs a full
+# clean anyway. Leaves external/ alone - those are downloads, not build
+# output, and throwing them away only means fetching them again.
 clean:
-	$(RM) $(OBJDIR)/*.o
-	$(RM) $(OBJDIR)/*.d
-	$(RM) $(NAME)
+	$(RM) $(addsuffix /*.o,$(ALL_OBJDIRS))
+	$(RM) $(addsuffix /*.d,$(ALL_OBJDIRS))
+	$(RM) $(ALL_NAMES)
 
 source-zip:
 # create zip archive with Avanor sources, requires subversion command line client
