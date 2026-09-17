@@ -18,17 +18,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
 #include <sol/sol.hpp>
 
-#include "helpers/registry.h"
 #include "creature/anycr.h"
-#include "item/xscroll.h"
-#include "item/xbook.h"
-#include "item/xenhance.h"
-#include "item/xherb.h"
-#include "item/itemdb.h"
-#include "item/item_misc.h"
-#include "item/xtool.h"
 #include "creature/bodypart.h"
 #include "creature/cr_defs.h"
 #include "creature/deity.h"
@@ -36,16 +29,22 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/global.h"
 #include "engine/simulation.h"
 #include "engine/xlua.h"
-#include "map/dungeon_builder.h"
-#include "map/pattern.h"
 #include "game/location.h"
-#include "lua/api_actor.h"
-#include "lua/api_world.h"
 #include "game/quest.h"
+#include "helpers/registry.h"
 #include "item/item.h"
+#include "item/itemdb.h"
 #include "item/itemdef.h"
+#include "item/item_misc.h"
 #include "item/xcorpse.h"
 #include "item/xpotion.h"
+#include "item/xscroll.h"
+#include "item/xbook.h"
+#include "item/xenhance.h"
+#include "item/xherb.h"
+#include "item/xtool.h"
+#include "lua/api_actor.h"
+#include "lua/api_world.h"
 #include "magic/brand.h"
 #include "magic/effect.h"
 #include "magic/modifiers.h"
@@ -53,9 +52,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "magic/skill.h"
 #include "magic/stats.h"
 #include "magic/cskills.h"
-#include <iostream>
-
 #include "map/map.h"
+#include "map/dungeon_builder.h"
+#include "map/pattern.h"
 
 lua_State* XLua::L = nullptr;
 
