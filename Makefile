@@ -49,6 +49,20 @@ ifeq ($(OS),Windows_NT)
 	win = 1
 endif
 
+# Homebrew installs outside the compiler's default search path, so the
+# header-only packages - sol2, cereal, argparse - are invisible without
+# saying where they are. pkg-config finds the rest by itself. The prefix
+# is asked for rather than assumed: it is /opt/homebrew on Apple silicon
+# and /usr/local on Intel.
+ifeq ($(shell uname -s),Darwin)
+	BREW_PREFIX := $(shell brew --prefix 2>/dev/null)
+
+	ifneq ($(BREW_PREFIX),)
+		CFLAGS += -isystem $(BREW_PREFIX)/include
+		LDFLAGS += -L$(BREW_PREFIX)/lib
+	endif
+endif
+
 CFLAGS += -std=c++17 -fsigned-char -pipe -Wall -Wextra -I.
 
 ifdef xmingw
@@ -147,7 +161,7 @@ $(OBJDIR)/%.o: %.cpp
 	$(CXX) -MMD $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	$(CXX) -o $@ $^ $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 $(ARGPARSE_HEADER):
 	mkdir -p $(dir $@)
