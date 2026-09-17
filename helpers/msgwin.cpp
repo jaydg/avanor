@@ -19,10 +19,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <cctype>
+#include <iterator>
 #include <string>
 #include <string_view>
 
-#include <fmt/core.h>
 #include <fmt/format.h>
 
 #include "helpers/msgwin.h"
