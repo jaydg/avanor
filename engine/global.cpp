@@ -27,11 +27,29 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <thread>
 
 #include <sol/sol.hpp>
+
+// Asking the system where the running executable is, so the game can find
+// what was installed beside it. Each platform answers differently, and
+// only Windows needs a header the backends below may not have pulled in.
+#if defined(_WIN32)
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #include <windows.h>
+#elif defined(__APPLE__)
+    #include <mach-o/dyld.h>
+#else
+    #include <unistd.h>
+#endif
 
 // Two interchangeable terminal backends, chosen at compile time. The
 // default is a plain-ANSI one built on the header-only stc.hpp: it asks
@@ -1535,6 +1553,120 @@ void vRestore(const V_BUFFER* buf)
 }
 
 #endif // !USE_NOTCURSES
+
+namespace {
+
+// Where the running executable sits, or nothing if the system will not
+// say. Not argv[0], which is whatever the caller felt like passing.
+std::filesystem::path ExecutableDir()
+{
+    std::error_code ec;
+
+#if defined(_WIN32)
+    char path[MAX_PATH];
+    const DWORD len = GetModuleFileNameA(nullptr, path, sizeof(path));
+
+    if (len == 0 || len == sizeof(path)) {
+        return {};
+    }
+
+    return std::filesystem::path(std::string(path, len)).parent_path();
+#elif defined(__APPLE__)
+    uint32_t size = 0;
+    _NSGetExecutablePath(nullptr, &size);
+
+    std::string path(size, '\0');
+
+    if (_NSGetExecutablePath(path.data(), &size) != 0) {
+        return {};
+    }
+
+    path.resize(std::strlen(path.c_str()));
+
+    // Through weakly_canonical, because the answer may be a symlink or
+    // carry /./ segments, and ../Resources below has to mean what it says.
+    const std::filesystem::path resolved =
+        std::filesystem::weakly_canonical(path, ec);
+
+    return ec ? std::filesystem::path(path).parent_path() : resolved.parent_path();
+#else
+    const std::filesystem::path exe =
+        std::filesystem::read_symlink("/proc/self/exe", ec);
+
+    return ec ? std::filesystem::path() : exe.parent_path();
+#endif
+}
+
+// Whether a directory is the game's - the world is the thing it cannot
+// start without, so that is what is looked for.
+bool HoldsTheWorld(const std::filesystem::path& dir)
+{
+    std::error_code ec;
+
+    return !dir.empty()
+        && std::filesystem::exists(dir / "world" / "init.lua", ec);
+}
+
+} // namespace
+
+// Finds what was installed with the game and steps into it.
+//
+// Everything the game reads of itself is named relative to where it is
+// running from - "./world/init.lua" here, "manual/..." in the manual, and
+// six-and-twenty dofile("./world/...") inside init.lua itself. Rather
+// than teach each of them where the game lives, the game goes there.
+//
+// The working directory is tried first so that running from a source tree
+// keeps behaving exactly as it always has. Then beside the executable,
+// which is how an unpacked release is laid out; then, on macOS only,
+// ../Resources, which is where an application bundle keeps such things.
+//
+// Last is whatever DATA_DIR was compiled in, and that is the one a Linux
+// package uses: an RPM or a .deb puts the binary in /usr/bin and the data
+// in /usr/share/avanor, so nothing beside the executable is the answer
+// there - the path has to be built in.
+//
+// Finding nothing is reported but not treated as fatal: loading the world
+// fails immediately afterwards and names the file, which is the clearer
+// error of the two - this only adds where it looked, which is what a
+// half-unpacked copy needs said.
+void vEnterDataDir()
+{
+    std::error_code ec;
+    const std::filesystem::path here = std::filesystem::current_path(ec);
+    const std::filesystem::path exe_dir = ExecutableDir();
+
+    const std::filesystem::path candidates[] = {
+        ec ? std::filesystem::path(".") : here,
+        exe_dir,
+#ifdef __APPLE__
+        exe_dir.empty() ? std::filesystem::path() : exe_dir / ".." / "Resources",
+#endif
+        std::filesystem::path(DATA_DIR),
+    };
+
+    for (const std::filesystem::path& candidate : candidates) {
+        if (!HoldsTheWorld(candidate)) {
+            continue;
+        }
+
+        std::filesystem::current_path(candidate, ec);
+
+        return;
+    }
+
+    // Nothing left to do but say where it looked. Loading the world will
+    // fail in a moment and complain about the file; this is the part that
+    // tells somebody with a half-unpacked copy what went wrong.
+    std::cerr << "avanor: found no world to load. Looked in:" << std::endl;
+
+    for (const std::filesystem::path& candidate : candidates) {
+        if (!candidate.empty()) {
+            std::cerr << "  " << std::filesystem::weakly_canonical(candidate, ec).string()
+                      << std::endl;
+        }
+    }
+}
 
 std::string vMakePath(std::string_view prefix, std::string_view filename)
 {
