@@ -47,6 +47,26 @@
 # VERSION=x.y.z to name an archive something else for once.
 ifndef VERSION
 	VERSION := $(shell sed -n 's/^#define GAME_VERSION "\(.*\)".*/\1/p' helpers/hiscore.h)
+
+	# In a git checkout, a commit that no tag points at is not a release,
+	# and both the archive name and the version the game reports say so by
+	# carrying the commit they were built from. A tagged commit is left
+	# alone, and so is a source archive, which has no repository to ask.
+	#
+	# --points-at rather than --contains: the question is whether *this*
+	# commit was released, not whether some later tag has it in its
+	# history - by that test every commit before a release counts as one.
+	ifneq ($(wildcard .git),)
+		GITREV := $(shell git log -n1 --format=%h)
+		GITTAG := $(shell git tag --points-at HEAD)
+
+		ifeq ($(GITTAG),)
+			ifneq ($(GITREV),)
+				VERSION := $(VERSION)-g$(GITREV)
+				CFLAGS += -DGITREV=\"-g$(GITREV)\"
+			endif
+		endif
+	endif
 endif
 
 DISTNAME := avanor-$(VERSION)
@@ -188,6 +208,25 @@ ifdef win
 $(OBJDIR)/Main.o: $(ARGPARSE_HEADER)
 endif
 
+# Main.o is where the version string is compiled in, and nothing in
+# Main.cpp changes when the commit does - so after a commit, a rebuild
+# would happily keep reporting the commit before it. This stamp holds the
+# version and is rewritten only when that actually changes, which makes
+# Main.o out of date exactly then and at no other time.
+ifneq ($(GITREV),)
+VERSION_STAMP := $(OBJDIR)/.version
+
+$(OBJDIR)/Main.o: $(VERSION_STAMP)
+
+$(VERSION_STAMP): FORCE | $(OBJDIR)
+	@echo '$(VERSION)' > $@.new
+	@cmp -s $@.new $@ || mv -f $@.new $@
+	@$(RM) $@.new
+
+FORCE:
+.PHONY: FORCE
+endif
+
 ifndef notcurses
 $(OBJDIR)/global.o: $(STC_HEADER)
 endif
@@ -200,6 +239,7 @@ endif
 clean:
 	$(RM) $(addsuffix /*.o,$(ALL_OBJDIRS))
 	$(RM) $(addsuffix /*.d,$(ALL_OBJDIRS))
+	$(RM) $(addsuffix /.version,$(ALL_OBJDIRS))
 	$(RM) $(ALL_NAMES)
 
 # The source archives, one command each: git archive writes out what is

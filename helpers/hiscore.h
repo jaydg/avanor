@@ -26,7 +26,22 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "helpers/xgui.h"
 
+// The release this is. GAME_VERSION is the number and nothing else - the
+// Makefile reads it straight off this line to name its archives - while
+// GAME_VERSION_FULL is what a build calls itself when asked.
+//
+// They differ when the commit being built is one no tag points at: the
+// Makefile then defines GITREV as "-g<commit>" and appends it, so a build
+// from the middle of development says so and cannot be taken for the
+// release it was cut from. A source archive carries no repository, gets
+// no GITREV, and is a release by definition.
 #define GAME_VERSION "0.6.0"
+
+#ifndef GITREV
+    #define GITREV ""
+#endif
+
+#define GAME_VERSION_FULL GAME_VERSION GITREV
 
 class XHiScoreItem
 {

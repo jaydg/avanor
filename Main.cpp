@@ -545,7 +545,7 @@ const char* logo_text[] = {
     "                T h e  L a n d  o f  M y s t e r y",
     "",
     MSG_GREEN
-    "                      version " GAME_VERSION "\n",
+    "                      version " GAME_VERSION_FULL "\n",
     MSG_YELLOW,
     "              (c) 2000 - 2006 by Vadim Gaidukevich",
     "",
@@ -587,7 +587,7 @@ XGame Game;
 
 int main(int argc, char* argv[])
 {
-    argparse::ArgumentParser program("avanor", GAME_VERSION);
+    argparse::ArgumentParser program("avanor", GAME_VERSION_FULL);
     program.add_description("Avanor, the Land of Mystery - a roguelike.");
 
     program.add_argument("-g", "--god")
