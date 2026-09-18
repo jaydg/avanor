@@ -21,7 +21,7 @@ Unicode True
 !endif
 
 Name "Avanor ${VERSION}"
-OutFile "avanor-${VERSION}-setup.exe"
+OutFile "avanor-${VERSION}.exe"
 
 SetCompressor /SOLID lzma
 

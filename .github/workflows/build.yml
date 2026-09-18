@@ -85,6 +85,7 @@ jobs:
             mingw-w64-ucrt-x86_64-fmt
             mingw-w64-ucrt-x86_64-luajit
             mingw-w64-ucrt-x86_64-notcurses
+            mingw-w64-ucrt-x86_64-nsis
             mingw-w64-ucrt-x86_64-pkgconf
             mingw-w64-ucrt-x86_64-sol2
             mingw-w64-ucrt-x86_64-zstd
@@ -93,6 +94,21 @@ jobs:
         run: make -j$(nproc) ${{ matrix.configuration }}
       - name: Check the binary starts
         run: ${{ contains(matrix.configuration, 'debug=1') && './avanor-d.exe' || './avanor.exe' }} --version
+
+      # Only on a tag, and only from the release build of the default
+      # backend: the other three would each write the same file name, and
+      # a debug or notcurses build is not what anybody installs.
+      - name: Build the installer
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+        run: make installer
+      - name: Keep the installer
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: avanor-windows-installer
+          # [0-9] so this cannot pick up avanor-d.exe by accident
+          path: avanor-[0-9]*.exe
+          if-no-files-found: error
 
   macos:
     name: macos ${{ matrix.configuration || 'release' }}
