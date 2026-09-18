@@ -379,8 +379,19 @@ COMBAT_SKILL GetItemWarSkill(void* item)
     return item ? ((XItem*)item)->wt : CS_NONE;
 }
 
+// Nothing is not the hero. The check is not decoration: a place event
+// hands its handler whatever walked in, which is sometimes nothing, and
+// world/uniques/rotmoth.lua asks this before doing anything else. Calling
+// a member function on a null pointer is undefined, and clang at -O2 uses
+// that - it drops the null test inside isHero()'s dynamic_cast, having
+// been promised the pointer cannot be null, and the game dies. GCC keeps
+// the test and nobody notices.
 bool isHero(void* cr)
 {
+    if (!cr) {
+        return false;
+    }
+
     return ((XCreature*)cr)->isHero();
 }
 
