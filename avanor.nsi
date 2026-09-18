@@ -57,8 +57,8 @@ RequestExecutionLevel admin
 
 VIProductVersion "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.0"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Avanor"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Vadim Gaidukevich"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "(C) 2000-2006 Vadim Gaidukevich, GPLv2+"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Joachim de Groot"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "(C) 2000-2006 Vadim Gaidukevich, (C) 2025,2026 Joachim de Groot, GPLv2+"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "Avanor Installation Program"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
 
@@ -84,7 +84,7 @@ Section "Avanor (required)"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "DisplayIcon" '"$INSTDIR\avanor.exe"'
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "DisplayName" "Avanor ${VERSION}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "DisplayVersion" "${VERSION}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "Publisher" "Vadim Gaidukevich"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "Publisher" "Joachim de Groot"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Avanor" "NoRepair" 1
