@@ -28,6 +28,6 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>10.13</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright (C) 2000-2006 Vadim Gaidukevich, GPLv2+</string>
+	<string>Copyright (C) 2000-2006 Vadim Gaidukevich, (C) 2025,2026 Joachim de Groot, GPLv2+</string>
 </dict>
 </plist>
