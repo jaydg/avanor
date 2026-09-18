@@ -48,7 +48,7 @@ jobs:
         run: sudo apt install -y libnotcurses-dev libnotcurses++-dev
         if: contains(matrix.configuration, 'notcurses=1')
       - name: Build ${{ matrix.configuration || 'release' }}
-        run: make -j$(nproc) CX=${{ matrix.cxx }} LD=${{ matrix.cxx }} ${{ matrix.configuration }}
+        run: make -j$(nproc) CXX=${{ matrix.cxx }} ${{ matrix.configuration }}
       - name: Check the binary starts
         run: ${{ contains(matrix.configuration, 'debug=1') && './avanor-d' || './avanor' }} --version
       - name: Test
