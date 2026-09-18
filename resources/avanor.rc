@@ -1,0 +1,42 @@
+/*
+ * Windows resources compiled into avanor.exe by windres - the icon
+ * Explorer shows, and the version information the file's properties
+ * page reads.
+ *
+ * The numbers and the version string are not written here: the Makefile
+ * passes them in with -D, so this file never has to be edited when the
+ * version changes. See RESDEFINE there.
+ */
+
+/* Id 1, so this is the icon Explorer picks for the executable. The file
+ * carries every size from 16 to 256 in one, and Windows chooses.
+ *
+ * It is the "A" of the title screen - see resources/make-icon.sh, which
+ * takes it straight out of Main.cpp's logo_text[] and can rebuild it. */
+1 ICON "avanor.ico"
+
+1 VERSIONINFO
+FILEVERSION     VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,0
+PRODUCTVERSION  VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    /* US English (0x0409), codepage 1252 */
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "Vadim Gaidukevich"
+      VALUE "FileDescription", "Avanor, the Land of Mystery"
+      VALUE "FileVersion", VINFO
+      VALUE "InternalName", "avanor"
+      VALUE "LegalCopyright", "(C) 2000-2006 Vadim Gaidukevich, GPLv2+"
+      VALUE "OriginalFilename", "avanor.exe"
+      VALUE "ProductName", "Avanor"
+      VALUE "ProductVersion", VINFO
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252
+  END
+END

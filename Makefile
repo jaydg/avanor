@@ -71,6 +71,14 @@ endif
 
 DISTNAME := avanor-$(VERSION)
 
+# VERSIONINFO in the Windows resource takes four plain numbers, so the
+# release number is split up and any "-g<commit>" dropped - the full
+# string still goes in as text, under FileVersion.
+VERSION_NUMBER := $(firstword $(subst -, ,$(VERSION)))
+VERSION_MAJOR := $(word 1,$(subst ., ,$(VERSION_NUMBER)))
+VERSION_MINOR := $(word 2,$(subst ., ,$(VERSION_NUMBER)))
+VERSION_PATCH := $(word 3,$(subst ., ,$(VERSION_NUMBER)))
+
 ifeq ($(OS),Windows_NT)
 	win = 1
 endif
@@ -91,10 +99,16 @@ endif
 
 CFLAGS += -std=c++17 -fsigned-char -pipe -Wall -Wextra -Werror -I.
 
+WINDRES = windres
+
+# Cross-compiling a Windows binary from *nix. CXX and WINDRES are what
+# the rules below actually use - this block used to set CX/CC/LD, which
+# nothing has read since the rules were changed, so xmingw=1 quietly
+# built with the host compiler and produced a Linux binary called
+# avanor.exe.
 ifdef xmingw
-    CX = x86_64-w64-mingw32-g++
-    CC = x86_64-w64-mingw32-gcc
-    LD = x86_64-w64-mingw32-g++
+    CXX = x86_64-w64-mingw32-g++
+    WINDRES = x86_64-w64-mingw32-windres
     win = 1
 endif
 
@@ -169,6 +183,16 @@ endif
 
 ifdef win
 	NAME := ${addsuffix .exe,$(NAME)}
+
+	# The icon and the version information, compiled by windres and linked
+	# in like any other object. The .rc takes its numbers from here so it
+	# never has to be edited for a release; the backslashes survive make,
+	# the shell and windres in that order, which is why there are so many.
+	RESOURCE := $(OBJDIR)/avanor.res
+	RESDEFINE := -DVERSION_MAJOR=$(VERSION_MAJOR)
+	RESDEFINE += -DVERSION_MINOR=$(VERSION_MINOR)
+	RESDEFINE += -DVERSION_PATCH=$(VERSION_PATCH)
+	RESDEFINE += -DVINFO=\\\"$(VERSION)\\\"
 endif
 
 OBJS := $(SRCS:.cpp=.o)
@@ -178,7 +202,7 @@ DEPS = $(OBJS:.o=.d)
 
 ##############################################################################
 
-.PHONY: all clean version source-zip source-gz binary-zip binary-gz
+.PHONY: all clean version installer source-zip source-gz binary-zip binary-gz
 
 all: $(OBJDIR) $(NAME)
 
@@ -193,8 +217,13 @@ $(OBJDIR):
 $(OBJDIR)/%.o: %.cpp
 	$(CXX) -MMD $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) $(RESOURCE)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+# windres reads resources/avanor.rc, which names the .ico beside it - so
+# it is run with that directory included, and rebuilt when either changes.
+$(RESOURCE): resources/avanor.rc resources/avanor.ico | $(OBJDIR)
+	$(WINDRES) $(RESDEFINE) -I resources $< -O coff -o $@
 
 $(ARGPARSE_HEADER):
 	mkdir -p $(dir $@)
@@ -241,6 +270,41 @@ clean:
 	$(RM) $(addsuffix /*.d,$(ALL_OBJDIRS))
 	$(RM) $(addsuffix /.version,$(ALL_OBJDIRS))
 	$(RM) $(ALL_NAMES)
+	$(RM) mainfiles.nsh datafiles.nsh
+
+# The Windows installer. The two .nsh files are the lists of what to
+# install, generated here rather than kept in step by hand: MAINFILES is
+# what sits beside the executable, DATADIRS the trees that keep their
+# shape. The DLLs are asked of the binary itself - which ones are needed
+# depends on the backend it was built with, and a list written down here
+# would be wrong the first time that changed.
+INSTALLER := avanor-$(VERSION).exe
+MAINFILES = $(NAME) COPYING CHANGELOG.md README.md
+DATADIRS = world manual
+
+mainfiles.nsh: $(NAME)
+	@$(RM) $@
+	@for file in $(MAINFILES); do echo "  File \"$$file\"" >> $@; done
+	@dlls=$$(ldd $(NAME) | sed -n 's|.*=> \(/[^/]*/bin/[^ ]*\) .*|\1|p'); \
+	if [ -z "$$dlls" ]; then \
+		echo "$@: ldd named no libraries outside the system directories." >&2; \
+		echo "An installer without them would install a game that cannot start," >&2; \
+		echo "so this stops here. Check what 'ldd $(NAME)' prints." >&2; \
+		$(RM) $@; \
+		exit 1; \
+	fi; \
+	for dll in $$dlls; do echo "  File \"$$(cygpath -w $$dll)\"" >> $@; done
+
+datafiles.nsh:
+	@$(RM) $@
+	@for dir in $(DATADIRS); do echo "  File /r \"$$dir\"" >> $@; done
+
+installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
+	makensis //DVERSION="$(VERSION)" \
+		//DVERSION_MAJOR=$(VERSION_MAJOR) \
+		//DVERSION_MINOR=$(VERSION_MINOR) \
+		//DVERSION_PATCH=$(VERSION_PATCH) avanor.nsi
+	@$(RM) mainfiles.nsh datafiles.nsh
 
 # The source archives, one command each: git archive writes out what is
 # committed, under a $(DISTNAME)/ prefix, already compressed - so there is
