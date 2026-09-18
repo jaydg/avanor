@@ -642,6 +642,10 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // Before anything opens a file: the world, the manual and the score
+    // table are all named relative to where the game runs from.
+    vEnterDataDir();
+
     vRandSeed(program.is_used("--seed") ? program.get<unsigned long>("--seed")
                                         : static_cast<unsigned long>(time(nullptr)));
     vInit();
