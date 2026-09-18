@@ -260,7 +260,20 @@ void XLua::Init()
         MakeStrict(lua, enum_table);
     }
 
-    lua.open_libraries(sol::lib::base, sol::lib::string);
+    // What content may reach for. All three are pure computation - they
+    // touch nothing outside the Lua state - which is why they are here
+    // and the rest are not:
+    //
+    //   math        would bring math.random with it, and a world drawn
+    //               from that instead of the engine's Rand() no longer
+    //               follows from the seed it was built with. If content
+    //               ever needs floor() or max(), open it and remove
+    //               random/randomseed rather than leaving both.
+    //   io, os      files, processes and the clock. Content is data;
+    //   package     none of it has business reading the machine it runs
+    //   debug       on, and a world someone downloaded least of all.
+    //   coroutine   nothing has wanted it.
+    lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::table);
 
     // Sol2-bound Monster builder - registered before world scripts
     // load below, since world/creatures.lua calls it while loading.
