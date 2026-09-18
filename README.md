@@ -230,7 +230,12 @@ sudo dnf install gcc-c++ make pkgconf-pkg-config \
                  sol2-devel cereal-devel argparse-devel
 ```
 
-On Debian and Ubuntu:
+A Debian/Ubuntu package can be built from the tree with
+`dpkg-buildpackage -us -uc -b`; it installs the game as `/usr/games/avanor`
+and its world and manual under `/usr/share/avanor`, which is the path
+`debian/rules` compiles in as `DATA_DIR`. CI builds one on every tag.
+
+To build by hand, on Debian and Ubuntu:
 
 ```bash
 sudo apt install g++ make pkg-config \

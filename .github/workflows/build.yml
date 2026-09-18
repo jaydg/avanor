@@ -57,6 +57,32 @@ jobs:
           CONFIGURATION: ${{ matrix.configuration }}
         run: ./.github/run-tests.sh
 
+  # The Debian package, on a tag only. Pinned to the same 26.04 the build
+  # matrix uses, for the same reason: sol2-dev arrived there and exists in
+  # nothing older.
+  debian:
+    name: debian package
+    runs-on: ubuntu-26.04
+    if: github.ref_type == 'tag'
+    steps:
+      - uses: actions/checkout@v7
+      - name: Update apt cache
+        run: sudo apt update
+      - name: Install packaging dependencies
+        run: sudo apt install -y build-essential debhelper devscripts libargparse-dev libcereal-dev libfmt-dev libluajit-5.1-dev libzstd-dev pkg-config sol2-dev
+      - name: Set package version
+        run: dch --newversion "$(make -s version)-1" --distribution unstable "Automated build."
+      - name: Build the package
+        run: dpkg-buildpackage -us -uc -b
+      - name: Collect the package
+        run: mv ../avanor_*.deb .
+      - name: Keep the package
+        uses: actions/upload-artifact@v4
+        with:
+          name: avanor-debian-package
+          path: avanor_*.deb
+          if-no-files-found: error
+
   # Nothing here is run: the Windows console under Actions is not a
   # console either backend will open, so this proves the two builds still
   # compile and link, no more.

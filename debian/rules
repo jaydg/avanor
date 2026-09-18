@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+# DATA_DIR is compiled into the binary and is where it looks for the world
+# and the manual once neither the working directory nor the directory the
+# executable sits in has them - see vEnterDataDir() in engine/global.cpp.
+# It must match where dh_auto_install puts them below.
+override_dh_auto_build:
+	$(MAKE) DATA_DIR=/usr/share/avanor/
+
+# The test modes want a terminal, which a build daemon does not have.
+# They are run by CI instead, before the package is built.
+override_dh_auto_test:
+
+override_dh_auto_install:
+	install -D -m 0755 avanor debian/avanor/usr/games/avanor
+	mkdir -p debian/avanor/usr/share/avanor
+	cp -a world manual debian/avanor/usr/share/avanor/
+
+override_dh_auto_clean:
+	dh_auto_clean
+	$(MAKE) clean
