@@ -120,9 +120,13 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install dependencies
-        run: brew install argparse cereal coreutils fmt luajit notcurses pkgconf sol2 wget zstd
+        run: brew install argparse cereal coreutils fmt luajit make notcurses pkgconf sol2 wget zstd
+      # gmake, not make: macOS still ships GNU Make 3.81 from 2006, which
+      # reads a "#" inside $(shell ...) as the start of a comment and cuts
+      # the line in half. Homebrew's is the same 4.x every other platform
+      # builds with, so there is one make to support rather than two.
       - name: Build ${{ matrix.configuration || 'release' }}
-        run: make -j$(sysctl -n hw.ncpu) ${{ matrix.configuration }}
+        run: gmake -j$(sysctl -n hw.ncpu) ${{ matrix.configuration }}
       - name: Check the binary starts
         run: ${{ contains(matrix.configuration, 'debug=1') && './avanor-d' || './avanor' }} --version
       - name: Test
