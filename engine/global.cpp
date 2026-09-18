@@ -531,6 +531,7 @@ int vGetS(char* s, const int buffer_size)
 
         if (ch == 13 || ch == 27) {
             s[buffer_pos] = 0;
+            vHideCursor();
 
             if (ch == 13) {
                 return 1;
