@@ -235,7 +235,14 @@ static bool TestRealCreature()
         return false;
     }
 
-    std::cout << "TestRealCreature: runtime type is " << typeid(*original).name() << std::endl;
+    // Through a reference rather than typeid(*original): dereferencing a
+    // shared_ptr is a function call, and clang rightly points out that
+    // typeid evaluates its operand when the type is polymorphic. It is
+    // meant to - the runtime type is the whole point - and saying so this
+    // way asks for it without the warning.
+    const XCreature& creature = *original;
+
+    std::cout << "TestRealCreature: runtime type is " << typeid(creature).name() << std::endl;
 
     const auto original_guid = original->guid();
     const auto original_contain_size = original->contain.size();
@@ -454,9 +461,19 @@ static bool TestRealScheduler()
     auto entry = restored.Get();
     pass = pass && entry && dynamic_cast<XMoney*>(entry.get()) != nullptr;
 
+    // See TestRealCreature() above for why this goes through a reference.
+    // The name() a type_info hands back outlives everything here, so
+    // holding the pointer is safe.
+    const char* entry_type = "none";
+
+    if (entry) {
+        const XObject& object = *entry;
+        entry_type = typeid(object).name();
+    }
+
     std::cout
         << "  scheduler time " << local_sched.GetTime() << " -> " << restored.GetTime()
-        << ", entry " << (entry ? typeid(*entry).name() : "none")
+        << ", entry " << entry_type
         << std::endl;
 
     // Genuine orphan (Cereal's plain-delete deleter, no Invalidate()

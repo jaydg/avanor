@@ -523,14 +523,14 @@ void randdigperm(DigPerm& digperm)
     // (rnd_i0(5) + (0 == rnd_i0(4))) ? rnd_i0(30) : 4 and almost always
     // takes the rnd_i0(30) arm - where the comment above says it should
     // usually be a few and only sometimes a few dozen.
-    const int c1000 = rnd_i0(5) + (0 == rnd_i0(4)) ? rnd_i0(30) : 4;
+    const int c1000 = (rnd_i0(5) + (0 == rnd_i0(4))) ? rnd_i0(30) : 4;
 
     for (int i = 0; i < c1000; i++) {
         setsymmetr(digperm, rnd_i0(256), 1000);
     }
 
     /* usually a few, sometimes a few dozen entries with 200 permil prob */
-    const int c200 = rnd_i0(5) + (0 == rnd_i0(4)) ? rnd_i0(30) : 4;
+    const int c200 = (rnd_i0(5) + (0 == rnd_i0(4))) ? rnd_i0(30) : 4;
 
     for (int i = 0; i < c200; i++) {
         setsymmetr(digperm, rnd_i0(256), 200);
