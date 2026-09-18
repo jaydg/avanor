@@ -33,17 +33,23 @@
 # needs with wget into external/ on demand, pinned to the versions below,    #
 # so it stays reproducible without a manual install step.                    #
 #                                                                            #
-# There are also targets for making tarballs with the sources and binaries   #
-# Example:                                                                   #
-#    Create tarball (avanor-0.5.7-src.tar.bz2) with the sources of the game  #
-#    make VERSION=0.5.7 source-bz2                                           #
+# There are also targets for making tarballs with the sources and binaries.  #
+# The source ones pack what is committed, named after the version the game   #
+# reports, so `make source-gz` writes avanor-0.6.0-src.tar.gz. Override the  #
+# name with VERSION=x.y.z, and ask for it with `make -s version`.            #
 ##############################################################################
 
-ifdef VERSION
-	DISTNAME := avanor-$(VERSION)
-else
-	DISTNAME := avanor-r${shell svnversion .}
+# What the archives are named after. The version is not asked of the
+# version control system - the tags this history carries are not ancestors
+# of anything current, so git describe has nothing to say - but read from
+# the one place that already decides it: GAME_VERSION, which is what the
+# binary prints for --version and what stands on the title screen. Pass
+# VERSION=x.y.z to name an archive something else for once.
+ifndef VERSION
+	VERSION := $(shell sed -n 's/^#define GAME_VERSION "\(.*\)".*/\1/p' helpers/hiscore.h)
 endif
+
+DISTNAME := avanor-$(VERSION)
 
 ifeq ($(OS),Windows_NT)
 	win = 1
@@ -152,7 +158,14 @@ DEPS = $(OBJS:.o=.d)
 
 ##############################################################################
 
+.PHONY: all clean version source-zip source-gz binary-zip binary-gz
+
 all: $(OBJDIR) $(NAME)
+
+# What the archives will be named after, for a packaging script to read -
+# `make -s version` prints it and nothing else.
+version:
+	@echo $(VERSION)
 
 $(OBJDIR):
 	mkdir $(OBJDIR)
@@ -189,27 +202,16 @@ clean:
 	$(RM) $(addsuffix /*.d,$(ALL_OBJDIRS))
 	$(RM) $(ALL_NAMES)
 
+# The source archives, one command each: git archive writes out what is
+# committed, under a $(DISTNAME)/ prefix, already compressed - so there is
+# no export into a scratch directory to tidy up afterwards, and nothing
+# but git to have installed. What it packs is HEAD, not the working tree,
+# so an archive never carries a change that was not committed.
 source-zip:
-# create zip archive with Avanor sources, requires subversion command line client
-# and 7-zip archiver
-	-$(RM) $(DISTNAME)-src.zip
-	svn export . $(DISTNAME)
-	7z a -tzip -r -mx $(DISTNAME)-src.zip "$(DISTNAME)/*"
-	svn delete --force $(DISTNAME)
-
-source-bz2:
-# create tar.bz2 archive with Avanor sources (on *nix systems)
-	-$(RM) $(DISTNAME)-src.tar.bz2
-	svn export . $(DISTNAME)
-	tar -cjf $(DISTNAME)-src.tar.bz2 $(DISTNAME)
-	svn delete --force $(DISTNAME)
+	git archive --format=zip --prefix=$(DISTNAME)/ -o $(DISTNAME)-src.zip HEAD
 
 source-gz:
-# create tar.gz archive with Avanor sources (on *nix systems)
-	-$(RM) $(DISTNAME)-src.tar.gz
-	svn export . $(DISTNAME)
-	tar -czf $(DISTNAME)-src.tar.gz $(DISTNAME)
-	svn delete --force $(DISTNAME)
+	git archive --format=tar.gz --prefix=$(DISTNAME)/ -o $(DISTNAME)-src.tar.gz HEAD
 
 binary-zip: all
 	-$(RM) $(DISTNAME).zip
