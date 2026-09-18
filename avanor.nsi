@@ -94,6 +94,13 @@ SectionEnd
 
 Section "Start Menu Shortcuts"
 
+  ; The game reads ./world and ./manual from wherever it is started, so
+  ; the shortcut has to start it in the install directory. CreateShortCut
+  ; takes $OUTDIR for that, which is only still $INSTDIR here because the
+  ; section above happened to leave it there - said outright rather than
+  ; relied upon.
+  SetOutPath $INSTDIR
+
   CreateDirectory "$SMPROGRAMS\Avanor"
   CreateShortCut "$SMPROGRAMS\Avanor\Avanor.lnk" "$INSTDIR\avanor.exe" "" "$INSTDIR\avanor.exe" 0
   CreateShortCut "$SMPROGRAMS\Avanor\Manual.lnk" "$INSTDIR\manual\index.html"

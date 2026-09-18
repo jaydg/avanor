@@ -375,4 +375,10 @@ long vRand(unsigned long n);
 
 std::string vMakePath(std::string_view prefix, std::string_view filename);
 
+// Steps into the directory the game was installed into, so that the paths
+// it reads of itself - world/, manual/ - mean what they say wherever it
+// was started from. Call it before anything reads a file. See the comment
+// on the definition for the order it looks in.
+void vEnterDataDir();
+
 #endif
