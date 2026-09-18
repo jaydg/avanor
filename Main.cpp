@@ -1,7 +1,8 @@
 /*
 This file is part of "Avanor, the Land of Mystery" roguelike game
-Home page: http://www.avanor.com/
-Copyright (C) 2000-2003 Vadim Gaidukevich
+
+Copyright (C) 2000-2006 Vadim Gaidukevich
+Copyright (C) 2025,2026 Joachim de Groot
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -548,9 +549,10 @@ const char* logo_text[] = {
     "                      version " GAME_VERSION_FULL "\n",
     MSG_YELLOW,
     "              (c) 2000 - 2006 by Vadim Gaidukevich",
+    "              (c) 2025 - 2026 by Joachim de Groot",
     "",
     MSG_YELLOW
-    "                      http://www.avanor.com",
+    "                  http://avanor.sourceforge.net",
     "",
     "",
     " "

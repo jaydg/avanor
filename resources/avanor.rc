@@ -24,11 +24,11 @@ BEGIN
     /* US English (0x0409), codepage 1252 */
     BLOCK "040904E4"
     BEGIN
-      VALUE "CompanyName", "Vadim Gaidukevich"
+      VALUE "CompanyName", "Joachim de Groot"
       VALUE "FileDescription", "Avanor, the Land of Mystery"
       VALUE "FileVersion", VINFO
       VALUE "InternalName", "avanor"
-      VALUE "LegalCopyright", "(C) 2000-2006 Vadim Gaidukevich, GPLv2+"
+      VALUE "LegalCopyright", "(C) 2000-2006 Vadim Gaidukevich, (C) 2025,2026 Joachim de Groot, GPLv2+"
       VALUE "OriginalFilename", "avanor.exe"
       VALUE "ProductName", "Avanor"
       VALUE "ProductVersion", VINFO
