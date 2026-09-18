@@ -63,7 +63,7 @@ ifeq ($(shell uname -s),Darwin)
 	endif
 endif
 
-CFLAGS += -std=c++17 -fsigned-char -pipe -Wall -Wextra -I.
+CFLAGS += -std=c++17 -fsigned-char -pipe -Wall -Wextra -Werror -I.
 
 ifdef xmingw
     CX = x86_64-w64-mingw32-g++
