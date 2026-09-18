@@ -493,9 +493,17 @@ bool XItem::Compare(XObject* o)
     return it == tit->it && tit->aet == aet && XBaseObject::Compare(o);
 }
 
+// Every item that can actually be looked at overrides this; the base is
+// here only because XItem is not abstract. The return is not dead code
+// everywhere it looks dead: glibc's assert ends in a noreturn call, so
+// GCC knows control stops here, but MinGW's does not - and without a
+// return the function would fall off its end, which is undefined rather
+// than merely unreachable.
 std::string XItem::toString()
 {
     assert(0);
+
+    return {};
 }
 
 int XItem::ModifyDur(int val)
