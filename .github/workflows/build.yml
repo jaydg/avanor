@@ -57,6 +57,61 @@ jobs:
           CONFIGURATION: ${{ matrix.configuration }}
         run: ./.github/run-tests.sh
 
+  # The Debian package, on a tag only. Pinned to the same 26.04 the build
+  # matrix uses, for the same reason: sol2-dev arrived there and exists in
+  # nothing older.
+  debian:
+    name: debian package
+    runs-on: ubuntu-latest
+    # Built on the oldest release it is meant to install on, not the
+    # newest available: dpkg works the libc dependency out from what the
+    # binary actually references, so a package built against a newer glibc
+    # than the target has refuses to install there. Debian 13 carries
+    # glibc 2.41; building on Ubuntu 26.04 asked for 2.43 and would not go
+    # onto Debian at all. Move this forward only when dropping support for
+    # what it currently reaches.
+    container: debian:13
+    if: github.ref_type == 'tag'
+    steps:
+      # git before the checkout, as in the Fedora job - without it
+      # actions/checkout falls back to a REST tarball and leaves no .git.
+      - name: Install packaging dependencies
+        run: |
+          apt update
+          apt install -y build-essential debhelper devscripts git wget \
+            libargparse-dev libcereal-dev libfmt-dev libluajit-5.1-dev \
+            libzstd-dev pkg-config
+      # Everything else is packaged in Debian 13; sol2 is not - it arrived
+      # in forky. It is header-only, so the headers are put where the
+      # compiler looks and Build-Depends still names the package for the
+      # day trixie has one.
+      - name: Install sol2 headers
+        run: |
+          wget -q -O /tmp/sol2.tar.gz \
+            https://github.com/ThePhD/sol2/archive/refs/tags/v3.5.0.tar.gz
+          tar xzf /tmp/sol2.tar.gz -C /tmp
+          cp -r /tmp/sol2-3.5.0/include/sol /usr/local/include/
+      - uses: actions/checkout@v7
+      - name: Build the package
+        run: |
+          # See the Fedora job: a container's workspace belongs to somebody
+          # else as far as git is concerned.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          dch --newversion "$(make -s version)-1" --distribution unstable "Automated build."
+
+          # -d because sol2-dev is declared in Build-Depends but installed
+          # by hand above; the check would otherwise refuse to start.
+          dpkg-buildpackage -us -uc -b -d
+      - name: Collect the package
+        run: mv ../avanor_*.deb .
+      - name: Keep the package
+        uses: actions/upload-artifact@v4
+        with:
+          name: avanor-debian-package
+          path: avanor_*.deb
+          if-no-files-found: error
+
   # Nothing here is run: the Windows console under Actions is not a
   # console either backend will open, so this proves the two builds still
   # compile and link, no more.
