@@ -1,0 +1,26 @@
+Source: avanor
+Section: games
+Priority: optional
+Maintainer: Joachim de Groot <jdegroot@web.de>
+Build-Depends: debhelper-compat (= 13),
+               libargparse-dev,
+               libcereal-dev,
+               libfmt-dev,
+               libluajit-5.1-dev,
+               libzstd-dev,
+               pkg-config,
+               sol2-dev
+Standards-Version: 4.6.2
+Homepage: https://github.com/jaydg/avanor
+
+Package: avanor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: roguelike set in the land of Avanor
+ Avanor is a single-player dungeon exploration game in the tradition of
+ Rogue and Moria, set in a valley the player leaves to find what lies
+ under it: caves, a dwarven city, and the wizard who put it all there.
+ .
+ Nearly everything in it - the creatures, the items, the levels, the
+ quests and the people who give them - is written in Lua rather than
+ compiled in, so the world can be changed without a compiler.

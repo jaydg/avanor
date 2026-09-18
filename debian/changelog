@@ -1,0 +1,8 @@
+avanor (0.6.0-1) UNRELEASED; urgency=medium
+
+  * Packaging for Debian/Ubuntu.
+    The version above is a placeholder: CI rewrites it (via `dch
+    --newversion`) to match `make -s version` before every build, so it
+    does not need to be bumped by hand.
+
+ -- Joachim de Groot <jdegroot@web.de>  Thu, 18 Sep 2026 00:00:00 +0000

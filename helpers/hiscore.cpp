@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <algorithm>
 #include <ctime>
 #include <fmt/format.h>
+#include <iostream>
 #include <fstream>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
@@ -67,8 +68,17 @@ XHiScoreItem::XHiScoreItem(const int _place, const unsigned int _score, std::str
 
 XHiScore::XHiScore()
 {
-    // read existing scores, if present
-    std::ifstream file(vMakePath(DATA_DIR, FileName));
+    // The table lives with the player's other things - the saves, the
+    // memorials, the recipes - and not beside the game, which a packaged
+    // installation puts somewhere nobody may write to.
+    //
+    // A copy in the old place is still read, so a table written by an
+    // earlier version is not lost; the next score written moves it.
+    std::ifstream file(vMakePath(HOME_DIR, FileName));
+
+    if (!file.is_open()) {
+        file.open(vMakePath(DATA_DIR, FileName));
+    }
 
     if (!file.is_open()) {
         return;
@@ -122,8 +132,18 @@ void XHiScore::AddRecord(const std::shared_ptr<XHiScoreItem>& item)
         _item->place = place++;
     }
 
-    // write scores
-    std::ofstream file(vMakePath(DATA_DIR, FileName));
+    // write scores - always to the player's own directory, see the
+    // constructor above
+    const std::string path = vMakePath(HOME_DIR, FileName);
+    std::ofstream file(path);
+
+    if (!file.is_open()) {
+        std::cerr << "avanor: cannot write the score table to " << path
+                  << std::endl;
+
+        return;
+    }
+
     cereal::JSONOutputArchive archive(file);
 
     int version = HISCORE_VERSION;
