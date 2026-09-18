@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# What Finder runs when somebody opens Avanor.app.
+#
+# Avanor draws on a terminal, and an application launched from Finder does
+# not have one - so rather than the game itself, the bundle's executable is
+# this, which opens Terminal and starts the game there. The game finds its
+# world and manual by looking beside itself and then in ../Resources, so it
+# does not matter what directory Terminal happens to start in.
+#
+# The game binary keeps its own name beside this one, so what Terminal
+# shows in its title bar is "avanor" rather than a launcher.
+
+set -eu
+
+here=$(cd "$(dirname "$0")" && pwd)
+
+exec /usr/bin/open -a Terminal "$here/avanor"

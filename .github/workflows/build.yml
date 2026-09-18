@@ -120,7 +120,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install dependencies
-        run: brew install argparse cereal coreutils fmt luajit make notcurses pkgconf sol2 wget zstd
+        run: brew install argparse cereal coreutils create-dmg dylibbundler fmt luajit make notcurses pkgconf sol2 wget zstd
       # gmake, not make: macOS still ships GNU Make 3.81 from 2006, which
       # reads a "#" inside $(shell ...) as the start of a comment and cuts
       # the line in half. Homebrew's is the same 4.x every other platform
@@ -134,3 +134,16 @@ jobs:
         env:
           CONFIGURATION: ${{ matrix.configuration }}
         run: ./.github/run-tests.sh
+
+      # As on Windows: only on a tag, and only from the release build of
+      # the default backend, since all four would write the same file.
+      - name: Build the disk image
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+        run: gmake dmg
+      - name: Keep the disk image
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: avanor-macos-dmg
+          path: avanor-[0-9]*.dmg
+          if-no-files-found: error

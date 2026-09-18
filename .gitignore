@@ -8,6 +8,9 @@ avanor-d.exe
 mainfiles.nsh
 datafiles.nsh
 avanor-*.exe
+avanor-*.dmg
+dmgroot/
+resources/Avanor.icns
 
 # Source archives
 avanor-*-src.tar.gz

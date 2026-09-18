@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>Avanor</string>
+	<!-- Not the game itself but the script beside it: Avanor draws on a
+	     terminal, and an application launched from Finder has none, so the
+	     bundle opens one and starts the game inside it. -->
+	<key>CFBundleExecutable</key>
+	<string>avanor-launcher</string>
+	<key>CFBundleIconFile</key>
+	<string>Avanor.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.avanor.avanor</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Avanor</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.0</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.13</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (C) 2000-2006 Vadim Gaidukevich, GPLv2+</string>
+</dict>
+</plist>
