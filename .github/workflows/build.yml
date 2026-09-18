@@ -79,6 +79,7 @@ jobs:
             git
             make
             wget
+            diffutils
             mingw-w64-ucrt-x86_64-gcc
             mingw-w64-ucrt-x86_64-cereal
             mingw-w64-ucrt-x86_64-fmt
