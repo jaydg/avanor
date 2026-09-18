@@ -140,7 +140,7 @@ local function Farmers()
 
 	for _, cr in ipairs(FindCreatures("MAIN", VILLAGE_GROUP)) do
 		if (AsCreature(cr).name == FARMER_NAME) then
-			out[#out + 1] = cr
+			table.insert(out, cr)
 		end
 	end
 
@@ -149,7 +149,7 @@ local function Farmers()
 	for _, id in ipairs({"MUSHROOMS_CAVE1", "MUSHROOMS_CAVE2", "MUSHROOMS_CAVE5"}) do
 		for _, cr in ipairs(FindCreatures(id, VILLAGE_GROUP)) do
 			if (AsCreature(cr).name == FARMER_NAME) then
-				out[#out + 1] = cr
+				table.insert(out, cr)
 			end
 		end
 	end
