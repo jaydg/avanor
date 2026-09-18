@@ -89,6 +89,7 @@ endif
 # is asked for rather than assumed: it is /opt/homebrew on Apple silicon
 # and /usr/local on Intel.
 ifeq ($(shell uname -s),Darwin)
+	macos = 1
 	BREW_PREFIX := $(shell brew --prefix 2>/dev/null)
 
 	ifneq ($(BREW_PREFIX),)
@@ -202,7 +203,7 @@ DEPS = $(OBJS:.o=.d)
 
 ##############################################################################
 
-.PHONY: all clean version installer source-zip source-gz binary-zip binary-gz
+.PHONY: all clean version installer dmg source-zip source-gz binary-zip binary-gz
 
 all: $(OBJDIR) $(NAME)
 
@@ -271,6 +272,7 @@ clean:
 	$(RM) $(addsuffix /.version,$(ALL_OBJDIRS))
 	$(RM) $(ALL_NAMES)
 	$(RM) mainfiles.nsh datafiles.nsh
+	$(RM) -r $(DMGROOT) resources/Avanor.icns
 
 # The Windows installer. The two .nsh files are the lists of what to
 # install, generated here rather than kept in step by hand: MAINFILES is
@@ -305,6 +307,65 @@ installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
 		//DVERSION_MINOR=$(VERSION_MINOR) \
 		//DVERSION_PATCH=$(VERSION_PATCH) avanor.nsi
 	@$(RM) mainfiles.nsh datafiles.nsh
+
+# The macOS disk image: an application bundle, and the documents beside
+# it, wrapped in a .dmg with an Applications folder to drag it into.
+#
+# The bundle keeps the game in Contents/MacOS and its world and manual in
+# Contents/Resources, which is the layout vEnterDataDir() knows to look
+# for. What Finder runs is resources/avanor-launcher rather than the game
+# itself - see the comment in that file.
+#
+# dylibbundler copies the Homebrew libraries the binary needs into the
+# bundle and rewrites its load paths to point inside it, so the .dmg runs
+# on a Mac that has never seen Homebrew.
+DMG := avanor-$(VERSION).dmg
+DMGROOT := dmgroot
+APPDIR := $(DMGROOT)/Avanor.app
+
+resources/Avanor.icns: resources/avanor.iconset
+	iconutil -c icns -o $@ $<
+
+dmg: $(NAME) resources/Avanor.icns
+	$(RM) -r $(DMGROOT)
+	mkdir -p $(APPDIR)/Contents/MacOS $(APPDIR)/Contents/Resources
+
+	cp -p $(NAME) $(APPDIR)/Contents/MacOS/
+	cp -p resources/avanor-launcher $(APPDIR)/Contents/MacOS/
+	chmod +x $(APPDIR)/Contents/MacOS/avanor-launcher
+
+	dylibbundler -cd -b -of \
+		-x $(APPDIR)/Contents/MacOS/$(NAME) \
+		-d $(APPDIR)/Contents/MacOS/libs \
+		-p '@executable_path/libs/'
+
+	cp -pR $(DATADIRS) $(APPDIR)/Contents/Resources/
+	cp -p resources/Avanor.icns $(APPDIR)/Contents/Resources/
+	cp -p resources/Info.plist $(APPDIR)/Contents/
+
+	/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(VERSION)" \
+		$(APPDIR)/Contents/Info.plist
+	/usr/libexec/PlistBuddy -c \
+		"Add :CFBundleShortVersionString string $(VERSION_NUMBER)" \
+		$(APPDIR)/Contents/Info.plist
+
+	cp -p COPYING CHANGELOG.md README.md $(DMGROOT)/
+
+	create-dmg \
+		--volname "Avanor $(VERSION)" \
+		--volicon resources/Avanor.icns \
+		--window-pos 400 100 \
+		--window-size 480 360 \
+		--icon-size 64 \
+		--icon "Avanor.app" 110 130 \
+		--hide-extension "Avanor.app" \
+		--app-drop-link 350 130 \
+		--icon "README.md" 70 260 \
+		--icon "CHANGELOG.md" 190 260 \
+		--icon "COPYING" 310 260 \
+		$(DMG) $(DMGROOT)/
+
+	$(RM) -r $(DMGROOT)
 
 # The source archives, one command each: git archive writes out what is
 # committed, under a $(DISTNAME)/ prefix, already compressed - so there is
