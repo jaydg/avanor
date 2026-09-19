@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Notarisation requires the hardened runtime, and under it a process
+	     may not run code it wrote into its own memory unless it says so
+	     here. LuaJIT does exactly that, and the world is Lua, so it starts
+	     doing it immediately.
+
+	     Both keys, because they cover two different ways of asking.
+	     allow-jit is the narrow one and covers pages mapped with MAP_JIT;
+	     the LuaJIT Homebrew ships does not use MAP_JIT at all - it maps
+	     anonymous read-write pages and turns them executable with
+	     mprotect afterwards - and allow-unsigned-executable-memory is what
+	     covers that. The narrow one is kept for the day LuaJIT changes.
+
+	     Getting this wrong is quiet rather than loud: the refusal stops
+	     the compiler, not the game, so it still starts and still plays,
+	     only interpreted, and a smoke test would not notice.
+
+	     Mind the wording in here: codesign parses this file with a
+	     stricter reader than plutil does, and a pair of hyphens inside a
+	     comment - illegal in XML, tolerated nearly everywhere else - is
+	     rejected as a syntax error. Do not write option names with their
+	     leading dashes. -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<true/>
+</dict>
+</plist>

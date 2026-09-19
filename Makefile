@@ -337,11 +337,35 @@ installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
 # Rosetta translates x86_64 to arm64 and not the other way about. CI
 # builds one image on a runner of each kind and puts both on the release.
 #
-# The backdrop tells the user what to do, and - until the image is signed
-# - what macOS is about to say when they do it. See make-background.sh.
+# Signing is off unless CODESIGN_ID names a Developer ID Application
+# identity, and notarisation off unless NOTARY_PROFILE also names a
+# notarytool keychain profile. Neither is set in a fork, in a pull
+# request, or on anybody's own machine, and without them this builds
+# precisely the unsigned image it always has: there is no second path
+# kept alive for the unsigned case, only this one with the signing
+# collapsed to `:`, the shell command that does nothing with whatever it
+# is handed. See SIGNING.md for where the two values come from.
+CODESIGN_ID ?=
+NOTARY_PROFILE ?=
+
+sign = $(if $(CODESIGN_ID),codesign --force --timestamp --options runtime \
+	--sign "$(CODESIGN_ID)",:)
+notarise = $(if $(NOTARY_PROFILE),xcrun notarytool submit \
+	--keychain-profile "$(NOTARY_PROFILE)" --wait,:)
+staple = $(if $(NOTARY_PROFILE),xcrun stapler staple,:)
+
 ARCH := $(shell uname -m)
 DMG := avanor-$(VERSION)-$(ARCH).dmg
-DMG_BACKGROUND := resources/dmg-background-unsigned.png
+
+# The backdrop tells the user what to do, and - when the image is not
+# signed - what macOS is about to say when they do it. A signed image
+# gets the one without that warning, since it does not apply to it. See
+# make-background.sh.
+DMG_BACKGROUND := resources/dmg-background$(if $(CODESIGN_ID),,-unsigned).png
+
+# Notarisation is handed a zip rather than the bundle. ditto, not zip:
+# zip(1) drops the extended attributes and symlinks a bundle is made of.
+NOTARY_ZIP := avanor-$(VERSION)-$(ARCH)-app.zip
 DMGROOT := dmgroot
 APPDIR := $(DMGROOT)/Avanor.app
 
@@ -380,6 +404,39 @@ dmg: $(NAME) resources/Avanor.icns
 			| awk '/LC_BUILD_VERSION/ { f = 1 } f && /minos/ { print $$2; exit }')" \
 		$(APPDIR)/Contents/Info.plist
 
+	# Signing runs from the inside out, and has to: Contents/MacOS is a
+	# place macOS looks for nested code, so the bundle's own signature
+	# records those by the hash of *their* signatures - which therefore
+	# have to exist first. Nothing may be touched afterwards either, which
+	# is why dylibbundler rewrote the load paths further up and not here.
+	#
+	# No --deep. It has been deprecated for signing since macOS 13, and it
+	# would apply these entitlements to the three libraries as well, which
+	# is not what they are for.
+	@for lib in $(APPDIR)/Contents/MacOS/libs/*.dylib; do \
+		echo $(sign) "$$lib"; $(sign) "$$lib" || exit 1; \
+	done
+	# The entitlements go on the bundle, not on the game beneath it.
+	# Signing a bundle signs its executable too, and would throw away a
+	# signature already put there - entitlements and all - leaving
+	# something that verifies perfectly and has none of them. Since the
+	# game is now the bundle's executable rather than a file beside one,
+	# this signs both at once and is the only place they can be given.
+	$(sign) --entitlements resources/avanor.entitlements $(APPDIR)
+	$(if $(CODESIGN_ID),codesign --verify --deep --strict --verbose=2 $(APPDIR),:)
+
+	# Notarised twice, and stapled twice, because the two tickets are not
+	# the same ticket. The one on the disk image is left behind the moment
+	# the application is dragged out of it; only the one stapled into the
+	# application travels to /Applications, and that is the copy that has
+	# to open on a machine that is offline.
+	$(if $(NOTARY_PROFILE),ditto -c -k --keepParent $(APPDIR) $(NOTARY_ZIP))
+	$(notarise) $(NOTARY_ZIP)
+	$(if $(NOTARY_PROFILE),$(RM) $(NOTARY_ZIP))
+	# stapler is the gate rather than notarytool: it is what fails if the
+	# submission came back anything other than accepted.
+	$(staple) $(APPDIR)
+
 	cp -p COPYING CHANGELOG.md README.md $(DMGROOT)/
 
 	# The window and the backdrop behind it are one layout, drawn by
@@ -405,6 +462,8 @@ dmg: $(NAME) resources/Avanor.icns
 		--icon "CHANGELOG.md" 240 260 \
 		--icon "COPYING" 360 260 \
 		--no-internet-enable \
+		$(if $(CODESIGN_ID),--codesign "$(CODESIGN_ID)") \
+		$(if $(NOTARY_PROFILE),--notarize "$(NOTARY_PROFILE)") \
 		$(DMG) $(DMGROOT)/
 
 	$(RM) -r $(DMGROOT)
