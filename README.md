@@ -230,6 +230,11 @@ sudo dnf install gcc-c++ make pkgconf-pkg-config \
                  sol2-devel cereal-devel argparse-devel
 ```
 
+A Fedora package can be built with `rpmbuild` from `avanor.spec`; it
+installs the game as `/usr/bin/avanor` with its world and manual under
+`/usr/share/avanor`, which is the path the spec compiles in as `DATA_DIR`.
+CI builds one on every tag.
+
 A Debian/Ubuntu package can be built from the tree with
 `dpkg-buildpackage -us -uc -b`; it installs the game as `/usr/games/avanor`
 and its world and manual under `/usr/share/avanor`, which is the path

@@ -112,6 +112,52 @@ jobs:
           path: avanor_*.deb
           if-no-files-found: error
 
+  # The Fedora package, on a tag only.
+  fedora:
+    name: fedora package
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    if: github.ref_type == 'tag'
+    steps:
+      # git has to be there before the checkout: without it actions/checkout
+      # quietly falls back to fetching a tarball through the REST API, and
+      # the workspace ends up with no .git for `make version` to read.
+      - name: Install packaging dependencies
+        run: dnf install -y rpm-build gcc-c++ make git pkgconf-pkg-config argparse-devel cereal-devel fmt-devel libzstd-devel luajit-devel sol2-devel
+      - uses: actions/checkout@v7
+      - name: Build the package
+        run: |
+          # This job runs in a container, so the workspace belongs to the
+          # host's runner user while the step runs as root, and git refuses
+          # to touch a repository somebody else owns. actions/checkout
+          # works around that for itself in a temporary global config that
+          # later steps do not inherit, so it has to be said again here -
+          # before make or git archive, both of which ask git for things.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          # An RPM version may not contain a hyphen, so the "-g<commit>" a
+          # non-release build carries becomes ".g<commit>".
+          VERSION=$(make -s version | tr '-' '.')
+          mkdir -p rpmbuild/{SOURCES,SPECS,BUILD,RPMS,SRPMS,BUILDROOT}
+          sed "s/^Version:.*/Version: $VERSION/" avanor.spec > rpmbuild/SPECS/avanor.spec
+
+          # -o rather than piping into gzip: a pipeline reports the exit
+          # status of its last command, so a git archive that failed was
+          # hidden behind a gzip that cheerfully succeeded, and rpmbuild
+          # got a valid-looking archive of nothing.
+          git archive --prefix avanor-$VERSION/ --format=tar.gz \
+            -o rpmbuild/SOURCES/avanor-$VERSION.tar.gz HEAD
+
+          rpmbuild --define "_topdir $PWD/rpmbuild" -bb rpmbuild/SPECS/avanor.spec
+      - name: Collect the package
+        run: mv rpmbuild/RPMS/*/avanor-[0-9]*.rpm .
+      - name: Keep the package
+        uses: actions/upload-artifact@v4
+        with:
+          name: avanor-fedora-package
+          path: avanor-[0-9]*.rpm
+          if-no-files-found: error
+
   # Nothing here is run: the Windows console under Actions is not a
   # console either backend will open, so this proves the two builds still
   # compile and link, no more.
