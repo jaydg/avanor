@@ -6,11 +6,15 @@
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
 	<string>Avanor</string>
-	<!-- Not the game itself but the script beside it: Avanor draws on a
-	     terminal, and an application launched from Finder has none, so the
-	     bundle opens one and starts the game inside it. -->
+	<!-- The game itself. Avanor draws on a terminal and an application
+	     launched from Finder has none, so it notices it was started
+	     without one and hands itself to Terminal - see
+	     vRelaunchInTerminal() in Main.cpp. Doing that in the game rather
+	     than in a script beside it keeps the executable macOS approves and
+	     the executable that runs the same file, which is what lets a
+	     notarised copy open with no network. -->
 	<key>CFBundleExecutable</key>
-	<string>avanor-launcher</string>
+	<string>avanor</string>
 	<key>CFBundleIconFile</key>
 	<string>Avanor.icns</string>
 	<key>CFBundleIdentifier</key>

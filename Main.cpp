@@ -27,6 +27,12 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <typeinfo>
 #include <unistd.h>
 
+#ifdef __APPLE__
+    #include <climits>
+    #include <cstring>
+    #include <mach-o/dyld.h>
+#endif
+
 #include <argparse/argparse.hpp>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
@@ -587,8 +593,67 @@ void ShowLogo()
 XGame Game;
 
 
+#ifdef __APPLE__
+// Avanor draws on a terminal, and an application opened from Finder has
+// none. What used to bridge that was a shell script beside the game in
+// the bundle, with the script as the bundle's executable; the trouble is
+// that this left the game a plain executable standing next to the thing
+// macOS had approved rather than being it, and a plain executable can
+// carry no notarisation ticket of its own - so it was assessed a second
+// time, on its own, and that assessment can only be answered by asking
+// Apple over the network. Approving Avanor and then opening it again
+// with no network would fail.
+//
+// So the bundle's executable is the game, and the game is what hands
+// itself to Terminal.
+//
+// LaunchServices sets __CFBundleIdentifier to the bundle it is starting,
+// which is how this tells being opened from Finder from being run in a
+// shell. Terminal sets the variable too - to its own identifier - so the
+// copy it goes on to run does not bounce back here, and neither does
+// `./avanor --version` in CI, which has no bundle and no terminal.
+static void vRelaunchInTerminal()
+{
+    // Must match CFBundleIdentifier in resources/Info.plist.
+    static const char* const BundleId = "com.avanor.avanor";
+
+    const char* const launched = getenv("__CFBundleIdentifier");
+
+    if (launched == nullptr || strcmp(launched, BundleId) != 0) {
+        return;
+    }
+
+    if (isatty(STDOUT_FILENO)) {
+        return;
+    }
+
+    char path[PATH_MAX];
+    uint32_t size = sizeof(path);
+
+    if (_NSGetExecutablePath(path, &size) != 0) {
+        return;
+    }
+
+    execl("/usr/bin/open", "open", "-a", "Terminal", path,
+          static_cast<char*>(nullptr));
+
+    // Only reached if open could not be started at all. Carrying on would
+    // draw the game where nobody can see it, so say why instead.
+    std::cerr << "avanor: cannot open Terminal to play in" << std::endl;
+
+    exit(1);
+}
+#endif
+
+
 int main(int argc, char* argv[])
 {
+#ifdef __APPLE__
+    // Before the arguments are read: opened from Finder there are none
+    // worth reading, and this does not come back.
+    vRelaunchInTerminal();
+#endif
+
     argparse::ArgumentParser program("avanor", GAME_VERSION_FULL);
     program.add_description("Avanor, the Land of Mystery - a roguelike.");
 

@@ -323,8 +323,9 @@ installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
 #
 # The bundle keeps the game in Contents/MacOS and its world and manual in
 # Contents/Resources, which is the layout vEnterDataDir() knows to look
-# for. What Finder runs is resources/avanor-launcher rather than the game
-# itself - see the comment in that file.
+# for. What Finder runs is the game itself, which opens a Terminal to
+# draw in when it finds it was started without one - see
+# vRelaunchInTerminal() in Main.cpp.
 #
 # dylibbundler copies the Homebrew libraries the binary needs into the
 # bundle and rewrites its load paths to point inside it, so the .dmg runs
@@ -352,8 +353,6 @@ dmg: $(NAME) resources/Avanor.icns
 	mkdir -p $(APPDIR)/Contents/MacOS $(APPDIR)/Contents/Resources
 
 	cp -p $(NAME) $(APPDIR)/Contents/MacOS/
-	cp -p resources/avanor-launcher $(APPDIR)/Contents/MacOS/
-	chmod +x $(APPDIR)/Contents/MacOS/avanor-launcher
 
 	dylibbundler -cd -b -of \
 		-x $(APPDIR)/Contents/MacOS/$(NAME) \
