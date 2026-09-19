@@ -208,6 +208,12 @@ function BanditBridgeEvent(e, p)
 		return
 	end
 
+	-- Nor do they challenge one of their own.
+	-- Their cloak stops them attacking, and also stops them calling out.
+	if (AsCreature(p):IsWearingItemType(BodyPart.CLOAK, 0, "forest_brother_cloak")) then
+		return
+	end
+
 	if (QuestState:GetFlag('bandit_bridge_warned') == 0) then
 		QuestState:SetFlag('bandit_bridge_warned', 1)
 		AddMessage("A voice comes out of the trees on the far bank. 'Far enough!'")
