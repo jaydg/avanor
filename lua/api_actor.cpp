@@ -593,7 +593,7 @@ void SetEnemy(void* cr, const sol::object& cr_class)
     ((XCreature*)cr)->xai->SetEnemyClass(foes);
 }
 
-int Gender(void* cr)
+int GetGender(void* cr)
 {
     return ((XCreature*)cr)->GetGender();
 }
@@ -1167,7 +1167,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("Quest", &lua_api::Quest);
         lua.set_function("QuestModify", &lua_api::QuestModify);
         lua.set_function("QuestStatus", &lua_api::QuestStatus);
-        lua.set_function("Gender", &lua_api::Gender);
+        lua.set_function("GetGender", &lua_api::GetGender);
 }
 
 } // namespace lua_api
