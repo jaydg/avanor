@@ -33,7 +33,7 @@ function ElderBanditQuest(p)
 	if (bq >= XQuest.CLOSED) then
 		AddMessage("'The road is open and the carts come through. Have a nice day,'")
 
-		if (Gender(p) == Gender.MALE) then
+		if (GetGender(p) == Gender.MALE) then
 			AddMessage('sir!')
 		else
 			AddMessage("ma'am!")

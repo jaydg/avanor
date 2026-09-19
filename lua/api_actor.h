@@ -142,7 +142,7 @@ namespace lua_api
     std::tuple<int, int> GetWayXY(const std::string& l_id);
     void AddMessage(const std::string& str);
     std::string AskQuestion(const std::string& msg, const std::string& key, sol::variadic_args va);
-    int Gender(void* cr);
+    int GetGender(void* cr);
     XGUID GetObjectGUID(void* obj);
     std::tuple<int, std::string, COMBAT_SKILL, ItemType, int, std::string> GetItemParam(void* item);
     bool IsKind(int kind, int wanted);
