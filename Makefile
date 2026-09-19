@@ -100,6 +100,16 @@ endif
 
 CFLAGS += -std=c++17 -fsigned-char -pipe -Wall -Wextra -Werror -I.
 
+# sol2 decides how careful to be by looking for __OPTIMIZE__, so a release
+# build got none of its checks: an error inside a world script did not come
+# back as a failed result at all - it threw, or panicked LuaJIT, and took
+# the game with it. Asked for explicitly, so a release behaves like a debug
+# build here and a mistake in content is something the engine can report
+# rather than die of. SOL_ALL_SAFETIES_ON is the only switch that covers
+# calls made through the lua["name"](...) proxy; the finer-grained ones
+# leave that path unprotected.
+CFLAGS += -DSOL_ALL_SAFETIES_ON=1
+
 WINDRES = windres
 
 # Cross-compiling a Windows binary from *nix. CXX and WINDRES are what
