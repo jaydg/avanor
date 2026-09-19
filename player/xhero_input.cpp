@@ -88,9 +88,8 @@ void XHero::NewMove()
         int ch;
 
         if (--isDisturb <= 0) {
-            vXGotoXY(x + SCR_X - l->map->wx, y + SCR_Y - l->map->wy);
+            vGotoXY(x + SCR_X - l->map->wx, y + SCR_Y - l->map->wy);
             ch = vGetch();
-            vHideCursor();
         } else {
             ch = last_char;
         }
