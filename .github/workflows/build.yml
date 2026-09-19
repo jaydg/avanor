@@ -173,6 +173,10 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+    # As in macos-dmg: a secret cannot be read in an `if:`, an
+    # environment variable can.
+    env:
+      SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -211,6 +215,42 @@ jobs:
       - name: Build the installer
         if: github.ref_type == 'tag' && matrix.configuration == ''
         run: make installer
+
+      # SignPath signs from an artifact of this run rather than from a
+      # key on the runner - the certificate lives in their hardware and
+      # never comes here - so the installer is uploaded first and the
+      # signed copy comes back to replace it.
+      - name: Keep the unsigned installer
+        id: installer
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: avanor-windows-installer-unsigned
+          # [0-9] so this cannot pick up avanor-d.exe by accident
+          path: avanor-[0-9]*.exe
+          if-no-files-found: error
+
+      # Skipped when there is no token - a fork, a pull request, or an
+      # upstream that has not applied to SignPath yet - and the unsigned
+      # installer goes on the release instead, as it did before. See
+      # SIGNING.md.
+      - name: Sign the installer
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+             && env.SIGNPATH_API_TOKEN != ''
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+      - name: Take the signed installer over the unsigned one
+        if: github.ref_type == 'tag' && matrix.configuration == ''
+             && env.SIGNPATH_API_TOKEN != ''
+        run: mv -f signed/avanor-[0-9]*.exe .
+
       - name: Add it to the release
         if: github.ref_type == 'tag' && matrix.configuration == ''
         uses: softprops/action-gh-release@v3
