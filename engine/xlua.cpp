@@ -20,6 +20,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <iostream>
+#include <set>
 #include <sol/sol.hpp>
 
 #include "creature/anycr.h"
@@ -28,6 +29,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "creature/deity.h"
 #include "creature/std_ai.h"
 #include "engine/global.h"
+#include "helpers/msgwin.h"
 #include "engine/simulation.h"
 #include "engine/xlua.h"
 #include "game/location.h"
@@ -507,10 +509,46 @@ void XLua::Init()
     XCreatureStorage::CreateQuickBase();
 }
 
+namespace {
+
+// Said once each. A handler that goes wrong tends to go wrong on every
+// turn it runs, and the hundredth copy of the same complaint would bury
+// everything else the message window had to say.
+std::set<std::string> already_complained;
+
+// A handler that did not finish. This used to be swallowed whole: the
+// call failed, false went back to the caller, and the caller took that
+// for the script's considered answer - which is how a chat handler that
+// died halfway through came out as "You receive no answer" and nothing
+// else, anywhere.
+//
+// It goes to stderr, where the rest of the world's complaints go and
+// where the test harness looks, and to the message window, because
+// stderr during play is written onto the alternate screen and painted
+// over by the next frame.
+void ComplainAboutHandler(const std::string_view handler,
+                          const std::string_view what)
+{
+    std::string said = "world: ";
+    said.append(handler).append(": ").append(what);
+
+    if (!already_complained.insert(said).second) {
+        return;
+    }
+
+    std::cerr << said << std::endl;
+    msgwin.Add("<SEVERITY_CRITICAL>" + said);
+}
+
+} // namespace
+
 bool XLua::ResultToBool(const sol::protected_function_result& result,
                         const std::string_view handler)
 {
     if (!result.valid()) {
+        const sol::error err = result;
+        ComplainAboutHandler(handler, err.what());
+
         return false;
     }
 
