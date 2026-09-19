@@ -335,8 +335,12 @@ installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
 # single-slice, and an arm64 build does not start on an Intel Mac -
 # Rosetta translates x86_64 to arm64 and not the other way about. CI
 # builds one image on a runner of each kind and puts both on the release.
+#
+# The backdrop tells the user what to do, and - until the image is signed
+# - what macOS is about to say when they do it. See make-background.sh.
 ARCH := $(shell uname -m)
 DMG := avanor-$(VERSION)-$(ARCH).dmg
+DMG_BACKGROUND := resources/dmg-background-unsigned.png
 DMGROOT := dmgroot
 APPDIR := $(DMGROOT)/Avanor.app
 
@@ -379,18 +383,29 @@ dmg: $(NAME) resources/Avanor.icns
 
 	cp -p COPYING CHANGELOG.md README.md $(DMGROOT)/
 
+	# The window and the backdrop behind it are one layout, drawn by
+	# resources/make-background.sh from these same coordinates - move an
+	# icon here and the arrow there points at nothing. The taller window
+	# is what makes room for what the backdrop has to say underneath.
+	#
+	# No icon is nearer the left edge than 114: Finder will not put one
+	# there, and it shifts the whole window's worth of icons rather than
+	# clamp the one, which is how a README at 70 drags everything else
+	# out from under the backdrop. See the note in make-background.sh.
 	create-dmg \
 		--volname "Avanor $(VERSION) $(ARCH)" \
 		--volicon resources/Avanor.icns \
+		--background $(DMG_BACKGROUND) \
 		--window-pos 400 100 \
-		--window-size 480 360 \
+		--window-size 480 460 \
 		--icon-size 64 \
-		--icon "Avanor.app" 110 130 \
+		--icon "Avanor.app" 130 130 \
 		--hide-extension "Avanor.app" \
 		--app-drop-link 350 130 \
-		--icon "README.md" 70 260 \
-		--icon "CHANGELOG.md" 190 260 \
-		--icon "COPYING" 310 260 \
+		--icon "README.md" 120 260 \
+		--icon "CHANGELOG.md" 240 260 \
+		--icon "COPYING" 360 260 \
+		--no-internet-enable \
 		$(DMG) $(DMGROOT)/
 
 	$(RM) -r $(DMGROOT)
