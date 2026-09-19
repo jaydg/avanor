@@ -329,7 +329,14 @@ installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
 # dylibbundler copies the Homebrew libraries the binary needs into the
 # bundle and rewrites its load paths to point inside it, so the .dmg runs
 # on a Mac that has never seen Homebrew.
-DMG := avanor-$(VERSION).dmg
+#
+# The image is named for the architecture it holds, because it only ever
+# holds the one: the binary and the Homebrew libraries beside it are all
+# single-slice, and an arm64 build does not start on an Intel Mac -
+# Rosetta translates x86_64 to arm64 and not the other way about. CI
+# builds one image on a runner of each kind and puts both on the release.
+ARCH := $(shell uname -m)
+DMG := avanor-$(VERSION)-$(ARCH).dmg
 DMGROOT := dmgroot
 APPDIR := $(DMGROOT)/Avanor.app
 
@@ -359,10 +366,21 @@ dmg: $(NAME) resources/Avanor.icns
 		"Add :CFBundleShortVersionString string $(VERSION_NUMBER)" \
 		$(APPDIR)/Contents/Info.plist
 
+	# What the bundle claims to need has to be what it was built against.
+	# Every Homebrew bottle is compiled for the OS of the machine it was
+	# installed on, so the floor is whatever the build machine ran, and
+	# LC_BUILD_VERSION is where that is written down. Promising less than
+	# the truth does not widen the audience, it only swaps LaunchServices
+	# naming the macOS this needs for dyld failing over a library.
+	/usr/libexec/PlistBuddy -c \
+		"Set :LSMinimumSystemVersion $$(otool -l $(NAME) \
+			| awk '/LC_BUILD_VERSION/ { f = 1 } f && /minos/ { print $$2; exit }')" \
+		$(APPDIR)/Contents/Info.plist
+
 	cp -p COPYING CHANGELOG.md README.md $(DMGROOT)/
 
 	create-dmg \
-		--volname "Avanor $(VERSION)" \
+		--volname "Avanor $(VERSION) $(ARCH)" \
 		--volicon resources/Avanor.icns \
 		--window-pos 400 100 \
 		--window-size 480 360 \
