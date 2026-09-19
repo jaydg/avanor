@@ -41,7 +41,7 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 - **8 Professions**: Warrior, Wizard, Archer, Ranger, Cleric, Paladin, Alchemist, Bard
 - **8 Core Stats**: Strength, Dexterity, Toughness, Learning, Willpower, Mana, Perception, Charisma
 - **5 Schools of Magic**: Elemental, Body, Protection, Death and Surviving, with 26 spells between them
-- **23 Skills**: From archery and alchemy to mining, herbalism and climbing out of pits
+- **19 Skills**: From alchemy to mining, herbalism and climbing
 - **Experience & Leveling**: Exponential progression curve
 
 ### Game World
@@ -49,7 +49,6 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 - **Multiple Locations**: Main valley, dungeons, caves, towns
 - **Dungeon Levels**: Progressive difficulty through depth
 - **NPC System**: Unique characters with quests and dialogue, all scripted in Lua
-- **A Calendar**: The world keeps months, weeks and years, and herbs grow in their season
 
 ### Combat System
 
@@ -69,7 +68,7 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 
 - **15 Creature Classes**: Rats, felines, canines, reptiles, insects, humans, orcs, giants, kobolds, undead, goblins, demons, humanoids, blobs and others
 - **10 Difficulty Tiers**
-- **AI System**: 18 base flags + 6 composite presets for diverse behaviors
+- **AI System**: many base flags and composite presets for diverse behaviors, skriptable in Lua
 - **Special Abilities**: Spells, skills, brands, corpse effects
 
 ---
@@ -79,8 +78,8 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 ### Quick Start
 
 1. **Create a Character**: Choose race, profession, and gender
-2. **Enter the Valley**: Begin your adventure in the town of Avanor
-3. **Explore**: Visit shops, talk to NPCs, accept quests
+2. **Enter the Valley**: Begin your adventure in a village
+3. **Explore**: Talk to NPCs, receive hints and accept quests
 4. **Descend**: Venture into dungeons and caves
 5. **Survive**: Manage food, health, and equipment
 6. **Grow**: Gain experience, find better gear, learn new abilities
@@ -112,9 +111,6 @@ list. The ones you need first:
 | `M`             | The messages you have missed              |
 | `S`             | Save                                      |
 | `Q`             | Quit                                      |
-
-Two more exist only under `--god`: `^F` lights the whole level, and `^W`
-steps you anywhere on it. Neither costs a turn.
 
 ### Tips for New Players
 
@@ -152,13 +148,11 @@ The project is currently in **active modernization** with the following status:
 
 - Sol2 integration for Lua scripting
 - Cereal integration for serialization
-- Removal of legacy XFile system
 
 **Code Quality**
 
 - Conversion of legacy enums to C++11 enum classes
 - Type safety improvements
-- Removal of deprecated code
 - Modern C++ features (smart pointers, const correctness, etc.)
 
 **Game Content**
@@ -181,13 +175,6 @@ The project is currently in **active modernization** with the following status:
 - Continued conversion to modern C++ idioms
 - Performance optimizations
 - Memory management improvements
-
-### Upcoming
-
-**Planned for Next Release**
-
-- The remaining content still hard-coded in C++
-- **Official release** of revived Avanor
 
 ---
 
@@ -214,13 +201,6 @@ vendored into the tree and there are no git submodules, so a plain
 A **C++17** compiler is required - the code uses structured bindings,
 `std::optional`, `if`-initialisers, `std::string_view` and inline variables.
 GCC 9 or Clang 8 upwards will do. It is built and tested with GCC.
-
-The versions this is currently developed against:
-
-```
-LuaJIT 2.1    fmt 11.2.0     zstd 1.5.7
-sol2 3.5.0    cereal 1.3.2
-```
 
 On Fedora:
 
