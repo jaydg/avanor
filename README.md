@@ -10,6 +10,7 @@
 - [Project History](#project-history)
 - [Current Status](#current-status)
 - [Features](#features)
+- [Installing a release](#installing-a-release)
 - [Building and Running](#building-and-running)
   - [Required C++ modules](#required-c-modules)
 - [Gameplay](#gameplay)
@@ -175,6 +176,67 @@ The project is currently in **active modernization** with the following status:
 - Continued conversion to modern C++ idioms
 - Performance optimizations
 - Memory management improvements
+
+---
+
+## Installing a release
+
+Every tag builds a package for each platform and puts it on the
+[release](https://github.com/jaydg/avanor/releases). Building from source
+is the next section; this one is for the packages.
+
+### macOS
+
+There are two disk images and they are not interchangeable, because each
+holds one architecture:
+
+| | For |
+| --- | --- |
+| `avanor-<version>-arm64.dmg` | Apple silicon - M1 and later |
+| `avanor-<version>-x86_64.dmg` | Intel |
+
+If you are not sure which you have, the Apple menu, About This Mac, says
+so. Taking the wrong one gets you `Bad CPU type in executable`, which is
+the only thing it can do - Rosetta translates Intel code for Apple
+silicon and not the other way about.
+
+Open the image and drag Avanor into Applications.
+
+The first time you open it, macOS may refuse:
+
+> **"Avanor" Not Opened** - Apple could not verify "Avanor" is free of
+> malware that may harm your Mac or compromise your privacy.
+
+That is Gatekeeper saying the application is not signed by a registered
+Apple developer, which costs money the project has not spent. Nothing is
+wrong with the download. To open it anyway, go to **System Settings**,
+**Privacy & Security**, scroll to the bottom, and click **Open Anyway**
+beside the message about Avanor. You only have to do this once.
+
+Control-clicking the application and choosing Open used to be a quicker
+way through this. macOS 15 removed it; System Settings is now the only
+route.
+
+(If you are the person publishing these, [SIGNING.md](SIGNING.md)
+describes what it would take to make that dialogue stop appearing.)
+
+### Windows
+
+Run `avanor-<version>.exe`. SmartScreen will probably say "Windows
+protected your PC" and give the publisher as unknown, for the same reason
+as on macOS. Click **More info**, then **Run anyway**.
+
+### Debian, Ubuntu and Fedora
+
+Install the `.deb` or the `.rpm` from the release:
+
+```bash
+sudo apt install ./avanor_*.deb     # Debian, Ubuntu
+sudo dnf install ./avanor-*.rpm     # Fedora
+```
+
+Both put the game on the path as `avanor`, so there is nothing to drag
+anywhere and nothing to approve.
 
 ---
 
