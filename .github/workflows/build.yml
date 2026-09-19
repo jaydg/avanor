@@ -6,6 +6,11 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# The default for every job. The four that publish a release ask for
+# contents: write themselves - nothing else needs to change the repository.
+permissions:
+  contents: read
+
 # A new push to a branch makes the run already going on it pointless.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -72,6 +77,8 @@ jobs:
     # what it currently reaches.
     container: debian:13
     if: github.ref_type == 'tag'
+    permissions:
+      contents: write
     steps:
       # git before the checkout, as in the Fedora job - without it
       # actions/checkout falls back to a REST tarball and leaves no .git.
@@ -105,12 +112,11 @@ jobs:
           dpkg-buildpackage -us -uc -b -d
       - name: Collect the package
         run: mv ../avanor_*.deb .
-      - name: Keep the package
-        uses: actions/upload-artifact@v4
+      - name: Add it to the release
+        uses: softprops/action-gh-release@v3
         with:
-          name: avanor-debian-package
-          path: avanor_*.deb
-          if-no-files-found: error
+          files: avanor_*.deb
+          fail_on_unmatched_files: true
 
   # The Fedora package, on a tag only.
   fedora:
@@ -118,6 +124,8 @@ jobs:
     runs-on: ubuntu-latest
     container: fedora:latest
     if: github.ref_type == 'tag'
+    permissions:
+      contents: write
     steps:
       # git has to be there before the checkout: without it actions/checkout
       # quietly falls back to fetching a tarball through the REST API, and
@@ -151,12 +159,11 @@ jobs:
           rpmbuild --define "_topdir $PWD/rpmbuild" -bb rpmbuild/SPECS/avanor.spec
       - name: Collect the package
         run: mv rpmbuild/RPMS/*/avanor-[0-9]*.rpm .
-      - name: Keep the package
-        uses: actions/upload-artifact@v4
+      - name: Add it to the release
+        uses: softprops/action-gh-release@v3
         with:
-          name: avanor-fedora-package
-          path: avanor-[0-9]*.rpm
-          if-no-files-found: error
+          files: avanor-[0-9]*.rpm
+          fail_on_unmatched_files: true
 
   # Nothing here is run: the Windows console under Actions is not a
   # console either backend will open, so this proves the two builds still
@@ -164,6 +171,8 @@ jobs:
   windows:
     name: windows ${{ matrix.configuration || 'release' }}
     runs-on: windows-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -202,18 +211,19 @@ jobs:
       - name: Build the installer
         if: github.ref_type == 'tag' && matrix.configuration == ''
         run: make installer
-      - name: Keep the installer
+      - name: Add it to the release
         if: github.ref_type == 'tag' && matrix.configuration == ''
-        uses: actions/upload-artifact@v4
+        uses: softprops/action-gh-release@v3
         with:
-          name: avanor-windows-installer
           # [0-9] so this cannot pick up avanor-d.exe by accident
-          path: avanor-[0-9]*.exe
-          if-no-files-found: error
+          files: avanor-[0-9]*.exe
+          fail_on_unmatched_files: true
 
   macos:
     name: macos ${{ matrix.configuration || 'release' }}
     runs-on: macos-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -241,10 +251,9 @@ jobs:
       - name: Build the disk image
         if: github.ref_type == 'tag' && matrix.configuration == ''
         run: gmake dmg
-      - name: Keep the disk image
+      - name: Add it to the release
         if: github.ref_type == 'tag' && matrix.configuration == ''
-        uses: actions/upload-artifact@v4
+        uses: softprops/action-gh-release@v3
         with:
-          name: avanor-macos-dmg
-          path: avanor-[0-9]*.dmg
-          if-no-files-found: error
+          files: avanor-[0-9]*.dmg
+          fail_on_unmatched_files: true
