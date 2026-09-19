@@ -348,8 +348,30 @@ installer: $(NAME) mainfiles.nsh datafiles.nsh avanor.nsi
 CODESIGN_ID ?=
 NOTARY_PROFILE ?=
 
-sign = $(if $(CODESIGN_ID),codesign --force --timestamp --options runtime \
-	--sign "$(CODESIGN_ID)",:)
+# Signed either way, and the difference is what with. With an identity:
+# the hardened runtime and the entitlements, which is what notarisation
+# requires. Without one: an ad-hoc seal, which Gatekeeper still refuses -
+# as it should, nobody has vouched for this - but refuses cleanly, as an
+# application from an unidentified developer, which is the refusal the
+# README tells people how to get past.
+#
+# The alternative is not "no signature": the linker leaves an ad-hoc one
+# on the executable whatever we do, and since the executable is now the
+# bundle's own, a bundle with no seal around it is a bundle whose
+# signature says it has resources and has none. codesign calls that "code
+# has no resources but signature indicates they must be present", and
+# macOS can put it to the user as "Avanor is damaged and can't be
+# opened" - alarming, and untrue.
+#
+# No hardened runtime on the ad-hoc path. It turns on library validation,
+# which requires the libraries and the executable to share a team, and an
+# ad-hoc signature has no team at all - so the three bundled libraries
+# would refuse to load and the game would not start.
+sign_lib = $(if $(CODESIGN_ID),codesign --force --timestamp --options runtime \
+	--sign "$(CODESIGN_ID)",codesign --force --sign -)
+sign_app = $(if $(CODESIGN_ID),codesign --force --timestamp --options runtime \
+	--entitlements resources/avanor.entitlements --sign "$(CODESIGN_ID)",\
+	codesign --force --sign -)
 notarise = $(if $(NOTARY_PROFILE),xcrun notarytool submit \
 	--keychain-profile "$(NOTARY_PROFILE)" --wait,:)
 staple = $(if $(NOTARY_PROFILE),xcrun stapler staple,:)
@@ -414,7 +436,7 @@ dmg: $(NAME) resources/Avanor.icns
 	# would apply these entitlements to the three libraries as well, which
 	# is not what they are for.
 	@for lib in $(APPDIR)/Contents/MacOS/libs/*.dylib; do \
-		echo $(sign) "$$lib"; $(sign) "$$lib" || exit 1; \
+		echo $(sign_lib) "$$lib"; $(sign_lib) "$$lib" || exit 1; \
 	done
 	# The entitlements go on the bundle, not on the game beneath it.
 	# Signing a bundle signs its executable too, and would throw away a
@@ -422,8 +444,8 @@ dmg: $(NAME) resources/Avanor.icns
 	# something that verifies perfectly and has none of them. Since the
 	# game is now the bundle's executable rather than a file beside one,
 	# this signs both at once and is the only place they can be given.
-	$(sign) --entitlements resources/avanor.entitlements $(APPDIR)
-	$(if $(CODESIGN_ID),codesign --verify --deep --strict --verbose=2 $(APPDIR),:)
+	$(sign_app) $(APPDIR)
+	codesign --verify --deep --strict --verbose=2 $(APPDIR)
 
 	# Notarised twice, and stapled twice, because the two tickets are not
 	# the same ticket. The one on the disk image is left behind the moment
