@@ -27,7 +27,7 @@ end
 function JorgusHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		if (GetSkill(p, XSkill.STEALING) > 0) then
-			if (Gender(p) == Gender.MALE) then
+			if (GetGender(p) == Gender.MALE) then
 				AddMessage("Good day, brother!")
 			else
 				AddMessage("Good day, sister!")
@@ -37,7 +37,7 @@ function JorgusHandler(e, t, p, v)
 				if (MoneyOperation(p, -1000) >= 0) then
 					MoneyOperation(t, 1000)
 					LearnSkill(p, XSkill.STEALING, 1)
-					if (Gender(p) == Gender.MALE) then
+					if (GetGender(p) == Gender.MALE) then
 						AddMessage("You're welcome, brother!")
 					else
 						AddMessage("You're welcome, sister!")
