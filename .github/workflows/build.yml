@@ -275,6 +275,11 @@ jobs:
             arch: arm64
           - runner: macos-15-intel
             arch: x86_64
+    # A secret cannot be read in an `if:`, only an environment variable
+    # can, so the one that decides whether there is anything to sign with
+    # is lifted up here for the step below to test.
+    env:
+      MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
     steps:
       - uses: actions/checkout@v7
       - name: Install dependencies
@@ -296,6 +301,63 @@ jobs:
               exit 1
           fi
 
+      # Everything the signing needs, put where the Makefile will find it.
+      # Skipped when the certificate is not there - a fork has no secrets
+      # - and the build below then produces the unsigned image instead of
+      # failing. See SIGNING.md for where these five secrets come from.
+      - name: Set up the signing key
+        if: env.MACOS_CERTIFICATE != ''
+        env:
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.NOTARY_KEY }}
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER: ${{ secrets.NOTARY_ISSUER }}
+        run: |
+          set -eu
+
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          password=$(uuidgen)
+
+          printf '%s' "$MACOS_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          printf '%s' "$NOTARY_KEY" | base64 --decode > "$RUNNER_TEMP/notary.p8"
+
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          security import "$RUNNER_TEMP/cert.p12" -k "$keychain" \
+              -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+
+          # Without this codesign stops to ask permission to use the key,
+          # of a runner with nobody at it to answer.
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+              -s -k "$password" "$keychain" > /dev/null
+
+          # The default keychain, not merely a searched one: notarytool
+          # reads the default when it is given a profile name.
+          security list-keychains -d user -s "$keychain"
+          security default-keychain -d user -s "$keychain"
+
+          xcrun notarytool store-credentials AVANOR_NOTARY \
+              --key "$RUNNER_TEMP/notary.p8" \
+              --key-id "$NOTARY_KEY_ID" \
+              --issuer "$NOTARY_ISSUER" \
+              --keychain "$keychain"
+
+          rm -f "$RUNNER_TEMP/cert.p12" "$RUNNER_TEMP/notary.p8"
+
+          identity=$(security find-identity -v -p codesigning "$keychain" \
+              | sed -n 's/.*"\(Developer ID Application:.*\)"/\1/p' | head -1)
+
+          if [ -z "$identity" ]; then
+              echo "::error::no Developer ID Application identity in the certificate"
+              exit 1
+          fi
+
+          echo "CODESIGN_ID=$identity" >> "$GITHUB_ENV"
+          echo "NOTARY_PROFILE=AVANOR_NOTARY" >> "$GITHUB_ENV"
+
+      # CODESIGN_ID and NOTARY_PROFILE reach make through the environment
+      # when the step above ran, and are simply unset when it did not.
       - name: Build the disk image
         run: gmake dmg
       - name: Add it to the release
