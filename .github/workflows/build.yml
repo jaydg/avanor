@@ -219,11 +219,12 @@ jobs:
           files: avanor-[0-9]*.exe
           fail_on_unmatched_files: true
 
+  # Compiles and tests every configuration, on whatever macOS is newest,
+  # so a break there is seen when it lands. The release images are built
+  # by macos-dmg below, on runners pinned for the reasons given there.
   macos:
     name: macos ${{ matrix.configuration || 'release' }}
     runs-on: macos-latest
-    permissions:
-      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -231,7 +232,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install dependencies
-        run: brew install argparse cereal coreutils create-dmg dylibbundler fmt luajit make notcurses pkgconf sol2 wget zstd
+        run: brew install argparse cereal coreutils fmt luajit make notcurses pkgconf sol2 wget zstd
       # gmake, not make: macOS still ships GNU Make 3.81 from 2006, which
       # reads a "#" inside $(shell ...) as the start of a comment and cuts
       # the line in half. Homebrew's is the same 4.x every other platform
@@ -246,14 +247,59 @@ jobs:
           CONFIGURATION: ${{ matrix.configuration }}
         run: ./.github/run-tests.sh
 
-      # As on Windows: only on a tag, and only from the release build of
-      # the default backend, since all four would write the same file.
+  # The disk images, one per architecture, on a tag only.
+  #
+  # A Mach-O built here holds one architecture and the Homebrew libraries
+  # bundled beside it hold the same one, so an image made on an Apple
+  # silicon runner does not run on an Intel Mac at all - Rosetta goes from
+  # x86_64 to arm64, not back. Hence a runner of each kind rather than the
+  # `macos-latest` the job above uses.
+  #
+  # The OS is pinned for the same reason it is named: every Homebrew
+  # bottle is built for the OS of the machine that installed it, so the
+  # runner image decides the lowest macOS the release can run on, and
+  # `macos-latest` quietly moves that floor up with every new release of
+  # macOS. macos-15-intel is served until August 2027, after which the
+  # x86_64 half of this matrix goes away with it.
+  macos-dmg:
+    name: macos disk image (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    if: github.ref_type == 'tag'
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install dependencies
+        run: brew install argparse cereal create-dmg dylibbundler fmt luajit make pkgconf sol2 wget zstd
+      - name: Build
+        run: gmake -j$(sysctl -n hw.ncpu)
+      - name: Check the binary starts
+        run: ./avanor --version
+
+      # The runner labels decide which architecture each half of the
+      # matrix builds, and a label that quietly changes what it points at
+      # would otherwise put the same slice in both images under two
+      # different names. Say out loud which one was expected.
+      - name: Check it is the architecture this job is for
+        run: |
+          built=$(lipo -archs ./avanor)
+          if [ "$built" != "${{ matrix.arch }}" ]; then
+              echo "::error::${{ matrix.runner }} built $built, expected ${{ matrix.arch }}"
+              exit 1
+          fi
+
       - name: Build the disk image
-        if: github.ref_type == 'tag' && matrix.configuration == ''
         run: gmake dmg
       - name: Add it to the release
-        if: github.ref_type == 'tag' && matrix.configuration == ''
         uses: softprops/action-gh-release@v3
         with:
-          files: avanor-[0-9]*.dmg
+          files: avanor-[0-9]*-${{ matrix.arch }}.dmg
           fail_on_unmatched_files: true
