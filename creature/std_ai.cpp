@@ -75,6 +75,7 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
     // AsCreature(cr).xai.
     lua.new_usertype<XStandardAI>("CreatureAI",
         "AddPersonalEnemy", &XStandardAI::AddPersonalEnemy,
+        "isPersonalEnemy", &XStandardAI::isPersonalEnemy,
         "SetGroupEnemy", &XStandardAI::SetGroupEnemy,
         "isEnemy", &XStandardAI::isEnemy,
         "SetCompanion", &XStandardAI::SetCompanion,

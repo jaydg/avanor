@@ -132,15 +132,14 @@ function CreateBandit(x, y)
 
 end
 
--- Note: does not re-check personal-enemy status before the cloak check the
--- way the original C++ XBanditAI::isEnemy did (isPersonalEnemy isn't
--- exposed to Lua) - XStandardAI::isEnemy() still checks it as its own
--- final fallback when this returns nil, so the only behavior gap is a
--- forest-brother-cloaked creature that's *also* a declared personal enemy
--- getting treated as non-hostile instead of hostile. Narrow edge case,
--- accepted rather than adding new binding surface for it.
 BanditAI = {}
 function BanditAI.isEnemy(self, cr)
+	-- Asked before the cloak: a brother who has been struck knows
+	-- the person who struck him, whatever he is wearing.
+	if (self.xai:isPersonalEnemy(cr)) then
+		return true
+	end
+
 	if cr:IsWearingItemType(BodyPart.CLOAK, 0, "forest_brother_cloak") then
 		return false
 	end
