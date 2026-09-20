@@ -46,6 +46,8 @@
 --                           guard a patch
 --   SetEnemy(cr, ids)       whom this one fights, replacing whatever it
 --                           was told before
+--   OnSenseUnseen(cr, id)   what the hero feels when one of these stands
+--                           in plain sight but cannot be made out
 --   GetCreatureClass(cr)    what sort it is, to compare with "=="
 --   SetCreatureClass(cr, id)
 --   GetCreatureCount(loc, id)
@@ -95,6 +97,34 @@
 -- does, how it tastes - is said per creature in world/creatures/ with
 -- :Corpse(), :CorpseTaste() and the rest, not here. This file only
 -- decides whether there is a corpse at all.
+
+-- WHAT CANNOT BE SEEN
+--
+-- A creature can be invisible - the undead of world/creatures/undead.lua
+-- are so by nature, and anything that wears what it finds can become so by
+-- putting on a ring of invisibility. Whether the hero makes one out is a
+-- question of their see_invisible against its invisible, and losing that
+-- comparison used to mean no word of it at all: the first sign of a dread
+-- was being struck by nothing.
+--
+-- So the engine (XHero::SenseUnseen) asks here instead, for every creature
+-- standing on a lit tile within sight that the hero cannot make out, and
+-- says whatever comes back. It asks about the nearest one, when one
+-- arrives rather than every turn it stays, and it says nothing at all if
+-- this returns nothing - what a hero notices is not the engine's to word.
+--
+-- Deliberately vague: it tells you that something is there and roughly
+-- what sort of thing, not where it stands or what it is. That is enough to
+-- reach for a potion of see invisible, which is the whole point of saying
+-- it.
+function OnSenseUnseen(cr, class)
+	if (class == "undead") then
+		return "You feel a chill run up your spine."
+	end
+
+	return "You sense someone or something nearby."
+end
+
 
 CreatureClass.new("rat")
 	:Enemy()

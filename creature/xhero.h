@@ -98,6 +98,12 @@ class XHero final : public XCreature
         void PlayerSetup();
         void NewMove() override;
         void Move() override;
+
+        // Says that something in plain view cannot be made out, so the hero
+        // has the chance to reach for a potion before it reaches them.
+        // What is said is world/creature_classes.lua's business.
+        void SenseUnseen();
+
         // The shopkeeper of the shop the hero is standing in, or null
         // anywhere else. What the inventory needs to know whether it is
         // looking at somebody else's goods.
@@ -126,6 +132,12 @@ class XHero final : public XCreature
 
         int SelectPosition(XPoint * pt, int flag = 0);
         unsigned int turn_count{};
+
+        // Whether something unseen was within sight last turn, so that the
+        // warning is given when one arrives rather than once a turn for as
+        // long as it lingers.
+        bool sensed_unseen{};
+
         void OpenDoor();
         void OpenChest();
         void CloseDoor();

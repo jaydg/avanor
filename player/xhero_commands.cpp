@@ -23,11 +23,13 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // commands, the ones that act on something other than the pack.
 
 #include <cctype>
+#include <iostream>
 #include <memory>
 #include <vector>
 #include <fmt/format.h>
 
 #include "creature/skeep_ai.h"
+#include "engine/xlua.h"
 #include "creature/xhero.h"
 #include "game/game.h"
 #include "game/quest.h"
@@ -77,6 +79,10 @@ void XHero::Move()
     HideOldView();
     ShowNewView();
 
+    // After the view is redrawn, so the field of view being asked about is
+    // this turn's.
+    SenseUnseen();
+
     if (action_data.action == A_EAT || action_data.action == A_READ
         || action_data.action == A_USE_TOOL) {
         l->map->Center(x, y);
@@ -88,6 +94,80 @@ void XHero::Move()
 
     if (DecNutrio()) {
         XCreature::Move();
+    }
+}
+
+// Something standing in plain view that the hero cannot make out - an
+// invisible creature on a lit tile within sight. Being killed by something
+// there was never any way to notice is not a fight, so the fact that it is
+// there is said, though not what it is or where.
+//
+// Said when one arrives rather than every turn it stays: the same rule the
+// announcement of what lies underfoot follows, and for the same reason.
+// A creature that leaves sight and comes back is worth saying again.
+void XHero::SenseUnseen()
+{
+    const int radius = GetVisibleRadius();
+    XCreature* nearest = nullptr;
+    int nearest_range = 0;
+
+    for (int i = x - radius; i <= x + radius; i++) {
+        for (int j = y - radius; j <= y + radius; j++) {
+            // Bounds are this call's business: GetVisible() answers false
+            // for a cell off the map, and only once it has answered true
+            // is GetMonster() (which asserts on one) safe to ask.
+            if (!l->map->GetVisible(i, j)) {
+                continue;
+            }
+
+            XCreature* cr = l->map->GetMonster(i, j);
+
+            if (!cr || cr == this || isCreatureVisible(cr)) {
+                continue;
+            }
+
+            const int range = (i - x) * (i - x) + (j - y) * (j - y);
+
+            if (!nearest || range < nearest_range) {
+                nearest = cr;
+                nearest_range = range;
+            }
+        }
+    }
+
+    if (!nearest) {
+        sensed_unseen = false;
+
+        return;
+    }
+
+    if (sensed_unseen) {
+        return;
+    }
+
+    sensed_unseen = true;
+
+    // What an unseen creature of that sort feels like is content's to say,
+    // and a world that defines nothing simply stays quiet. The class comes
+    // along as an argument rather than through a new XCreature binding -
+    // see the string-interning hazard at XCreature::RegisterLua(). Called
+    // protected: a fault in it must not take down a fight in progress.
+    sol::state_view lua(XLua::State());
+
+    if (sol::protected_function on_sense = lua["OnSenseUnseen"]; on_sense.valid()) {
+        const auto result = on_sense((void*)nearest, nearest->creature_class);
+
+        if (!result.valid()) {
+            const sol::error err = result;
+            std::cerr << "world: OnSenseUnseen: " << err.what() << std::endl;
+
+            return;
+        }
+
+        if (const sol::optional<std::string> said = result;
+            said && !said->empty()) {
+            msgwin.Add(*said);
+        }
     }
 }
 

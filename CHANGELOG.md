@@ -320,6 +320,10 @@ as well, and the character screen shows you both penalties.
 list of five written into the engine, so a caster reaches for whatever it
 knows and can actually land.
 
+**You feel an invisible creature before it strikes** — a chill up the spine
+for the undead, a sense of someone nearby for anything else — which is time
+enough to reach for a potion of see invisible.
+
 ---
 
 ### What you are carrying
