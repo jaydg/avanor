@@ -207,6 +207,7 @@ class ArmourEnchantmentBuilder
         ArmourEnchantmentBuilder& Property(SPECIAL_PROPERTY spp);
         ArmourEnchantmentBuilder& Stats(const std::string& s);
         ArmourEnchantmentBuilder& Resist(const std::string& r);
+        ArmourEnchantmentBuilder& Resist(const sol::table& r);
 
         void Register();
 
@@ -280,6 +281,7 @@ class MaterialBuilder
         MaterialBuilder& Combat(const std::string& hit, const std::string& dice,
             const std::string& extra);
         MaterialBuilder& Resist(const std::string& r);
+        MaterialBuilder& Resist(const sol::table& r);
         MaterialBuilder& Property(SPECIAL_PROPERTY sp);
 
         void Register();

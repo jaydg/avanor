@@ -250,7 +250,7 @@ struct ContentItemTemplate {
 //       :View("ancient axe", '\\')
 //       :Basic(12000, 1200)
 //       :Combat(8, 2, 8, 5)
-//       :Resist("stun:1d1+99 confuse:1d1+99 see_invisible:0d0+20")
+//       :Resist{stun = "1d1+99", confuse = "1d1+99", see_invisible = true}
 //       :Stats("To:1d1+10")
 //       :Brand("cold")
 //       :Called("Axe of Torin")
@@ -292,6 +292,7 @@ class ItemBuilder
         ItemBuilder& Combat(int to_hit, int count, int sides, int bonus);
         ItemBuilder& Stats(const std::string& stats);
         ItemBuilder& Resist(const std::string& resists);
+        ItemBuilder& Resist(const sol::table& resists);
         ItemBuilder& Brand(const std::string& aet);
         ItemBuilder& Called(const std::string& display_name);
         ItemBuilder& Unique();

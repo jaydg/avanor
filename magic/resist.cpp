@@ -19,6 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <iostream>
 #include <sol/sol.hpp>
 
 #include <utility>
@@ -34,6 +35,7 @@ void XResistance::RegisterLua(sol::state_view& lua)
         "Called", &ResistanceBuilder::Called,
         "Gained", &ResistanceBuilder::Gained,
         "Lost", &ResistanceBuilder::Lost,
+        "Flag", &ResistanceBuilder::Flag,
         "Register", &ResistanceBuilder::Register
     );
 
@@ -80,6 +82,12 @@ ResistanceBuilder& ResistanceBuilder::Gained(const std::string& text)
 ResistanceBuilder& ResistanceBuilder::Lost(const std::string& text)
 {
     t.lost = text;
+    return *this;
+}
+
+ResistanceBuilder& ResistanceBuilder::Flag()
+{
+    t.flag = true;
     return *this;
 }
 
@@ -200,6 +208,86 @@ const std::string& XResistance::GetResistanceName(const RESISTANCE& r)
     static const std::string nothing;
     const ResistanceStats* row = FindResistance(r);
     return row ? row->name : nothing;
+}
+
+std::string ResistTableToString(const sol::table& t, const std::string& where)
+{
+    std::string out;
+
+    for (const auto& [key, value] : t) {
+        if (!key.is<std::string>()) {
+            std::cerr << "world: " << where
+                      << ": resistances are named, so { fire = \"5d5+25\" }"
+                         " rather than a list" << std::endl;
+
+            continue;
+        }
+
+        const std::string id = key.as<std::string>();
+
+        if (!FindResistance(id)) {
+            std::cerr << "world: " << where << ": no resistance '" << id
+                      << "' is declared in world/resistances.lua" << std::endl;
+
+            continue;
+        }
+
+        std::string dice;
+
+        // A boolean says "held" or "not held", which is the whole of what a
+        // :Flag() resistance has to say. false is not "none of it" but
+        // "nothing to declare", so it is left out rather than written as a
+        // zero that would read as a deliberate immunity to nothing.
+        if (value.is<bool>()) {
+            if (!isResistanceFlag(id)) {
+                std::cerr << "world: " << where << ": '" << id
+                          << "' is a matter of degree - give it dice"
+                             " (\"5d5+25\"), not true or false" << std::endl;
+
+                continue;
+            }
+
+            if (!value.as<bool>()) {
+                continue;
+            }
+
+            dice = "0d0+1";
+        } else if (value.is<std::string>()) {
+            if (isResistanceFlag(id)) {
+                std::cerr << "world: " << where << ": '" << id
+                          << "' is held or not held - say true, not dice"
+                          << std::endl;
+
+                continue;
+            }
+
+            dice = value.as<std::string>();
+        } else {
+            std::cerr << "world: " << where << ": '" << id
+                      << "' wants dice (\"5d5+25\") or, for one held"
+                         " outright, true" << std::endl;
+
+            continue;
+        }
+
+        // The string form this becomes is scanned name by name against the
+        // declared resistances (XResistance::Init), so the order written
+        // here does not matter - which is as well, a Lua table having none.
+        if (!out.empty()) {
+            out += ' ';
+        }
+
+        out += id + ':' + dice;
+    }
+
+    return out;
+}
+
+bool isResistanceFlag(const RESISTANCE& id)
+{
+    const ResistanceStats* row = resistances_db.Find(id);
+
+    return row && row->flag;
 }
 
 const char* resist_level[] = {

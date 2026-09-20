@@ -7,7 +7,7 @@ Monster.new("ahkulan")
 	:Always("see_invisible")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
 	:Stats("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5")
-	:Resist("see_invisible:0d0+100")
+	:Resist{ see_invisible = true }
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d1", "1d5+30", "5d5+50")
 	:Description("Once a bright and promising sorcerer, Ahk-Ulan delved into dark magics and soon became the dark and twisted being he is today.  The aura of power and decay surrounds him as he seeks to control the destructive magics he has consumed.")

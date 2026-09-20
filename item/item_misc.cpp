@@ -389,6 +389,11 @@ ItemBuilder& ItemBuilder::Resist(const std::string& resists)
     return *this;
 }
 
+ItemBuilder& ItemBuilder::Resist(const sol::table& resists)
+{
+    return Resist(ResistTableToString(resists, t.name));
+}
+
 // Called once per brand: :Brand("fire"):Brand("cold"). Adding rather than
 // replacing, so each brand a weapon carries is stated on its own.
 ItemBuilder& ItemBuilder::Brand(const std::string& aet)

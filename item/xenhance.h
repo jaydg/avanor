@@ -53,6 +53,7 @@ class EnchantmentBuilder
             const std::string& extra);
         EnchantmentBuilder& Range(const std::string& rng);
         EnchantmentBuilder& Resist(const std::string& r);
+        EnchantmentBuilder& Resist(const sol::table& r);
         EnchantmentBuilder& Stats(const std::string& s);
         EnchantmentBuilder& Worth(int value);
 

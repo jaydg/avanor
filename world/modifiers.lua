@@ -195,7 +195,7 @@ Modifier.new("see_invisible")
 	:Called("<TEXT>seeing")
 	:OnSet("Your eyes sharpen.")
 	:OnRemove("Your eyes dull again.")
-	:While{ Resistance = { see_invisible = 10 } }
+	:While{ Resistance = { see_invisible = 1 } }
 	:Register()
 
 Modifier.new("boost_speed")

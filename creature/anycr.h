@@ -160,6 +160,7 @@ class MonsterBuilder
         MonsterBuilder& AI(unsigned int flags);
         MonsterBuilder& Stats(const std::string& stats);
         MonsterBuilder& Resist(const std::string& resists);
+        MonsterBuilder& Resist(const sol::table& resists);
         MonsterBuilder& Combat(const std::string& hit, const std::string& dice);
         MonsterBuilder& Main(const std::string& dv, const std::string& pv, const std::string& hp, const std::string& pp);
         MonsterBuilder& Description(const std::string& descr);

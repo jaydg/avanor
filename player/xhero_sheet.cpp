@@ -438,8 +438,14 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
         tr.SetResistance(row.id, GetResistance(row.id));
 
         if (tr.GetResistance(row.id) != 0) {
-            auto res_str = fmt::format("<TEXT>{:<15}{}",
-                XResistance::GetResistanceName(row.id), tr.GetResistanceLevel(row.id));
+            // The intrinsics half of this screen: something held yes or no
+            // has no degree to grade, and grading it would say "mediocre"
+            // of a ring that works perfectly.
+            auto res_str = isResistanceFlag(row.id)
+                ? fmt::format("<TEXT>{:<15}{}",
+                    XResistance::GetResistanceName(row.id), "<QUALITY_GOOD>yes")
+                : fmt::format("<TEXT>{:<15}{}",
+                    XResistance::GetResistanceName(row.id), tr.GetResistanceLevel(row.id));
             list.AddItem(new XGuiItem_Text(res_str, 0), 0);
             flag = 1;
         }

@@ -5,7 +5,7 @@ Monster.new("gekta")
 	:Body("neck", 100)
 	:AI(XStandardAI.HI_ANIMAL + XStandardAI.PEACEFUL)
 	:Stats("St 1d3+10 Dx 1d5+20 To 1d3+8 Le 1d3+3 Wi 1d3+3 Ma 1d3+3 Pe 5d6 Ch 4d5")
-	:Resist("see_invisible:0d0+30")
+	:Resist{ see_invisible = true }
 	:Combat("5d5", "2d6")
 	:Main("4d5", "2d1", "1d5+10", "1d1+1")
 	:Description("The sheep dog is the mascot for the royal guardians.  It must represent strength, intelligence and unswerving loyalty.  Gekta is the current favorite.  She bounds towards you and knocks you flat, covering you with slobbery dog kisses.")

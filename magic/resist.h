@@ -65,11 +65,33 @@ struct ResistanceStats {
     // before, there being no text written for thirteen of the eighteen.
     std::string gained;
     std::string lost;
+
+    // A resistance one either has or has not, with no degree to it - the
+    // "Intrinsics" half of the screen that lists these. Seeing the
+    // invisible is the case in point: there is nothing a player could do
+    // with "how much" of it they have, so it is not asked, and the screen
+    // says the name alone rather than grading it "mediocre".
+    bool flag{};
 };
 
 // Every resistance content declared, in declaration order - which is the
 // order they are listed in wherever they are shown.
 extern Registry<ResistanceStats> resistances_db;
+
+// Whether this resistance is one of the yes-or-no sort (see
+// ResistanceStats::flag). Unknown ids are graded, which is what every
+// resistance did before any of them said otherwise.
+[[nodiscard]] bool isResistanceFlag(const RESISTANCE& id);
+
+// The table form of a resist declaration, rendered as the "id:dice" string
+// the builders already store and parse per instance:
+//
+//   :Resist{ fire = "5d5+25", see_invisible = true }
+//
+// A boolean is for the resistances world/resistances.lua marks :Flag() -
+// held or not, with no degree - and a dice string for the rest. `where`
+// names the declaration in anything reported while the world loads.
+[[nodiscard]] std::string ResistTableToString(const sol::table& t, const std::string& where);
 
 const ResistanceStats* FindResistance(const RESISTANCE& r);
 
@@ -88,6 +110,7 @@ class ResistanceBuilder
         ResistanceBuilder& Called(const std::string& name);
         ResistanceBuilder& Gained(const std::string& text);
         ResistanceBuilder& Lost(const std::string& text);
+        ResistanceBuilder& Flag();
 
         void Register();
 

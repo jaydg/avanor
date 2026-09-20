@@ -182,6 +182,11 @@ EnchantmentBuilder& EnchantmentBuilder::Resist(const std::string& _r)
     return *this;
 }
 
+EnchantmentBuilder& EnchantmentBuilder::Resist(const sol::table& _r)
+{
+    return Resist(ResistTableToString(_r, id));
+}
+
 EnchantmentBuilder& EnchantmentBuilder::Stats(const std::string& _s)
 {
     s = _s;

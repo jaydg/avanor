@@ -320,6 +320,17 @@ as well, and the character screen shows you both penalties.
 list of five written into the engine, so a caster reaches for whatever it
 knows and can actually land.
 
+**Seeing the invisible is a yes or a no.** It used to be a quantity weighed
+against how invisible the other thing was, and the arithmetic was hidden: a
+ring of see invisible is worth ten, a dread is invisible by twelve to
+twenty, so that ring could never reveal a dread at any roll — and nothing
+could have told you, the character sheet grading a resistance in words, so
+that ten and twenty both read as one vague band. Covering everything meant
+wearing two of the three enchanted slots you have, or drinking a potion at
+the right moment. One ring is now the whole answer, and the sheet lists
+seeing the invisible among your intrinsics rather than pretending to
+measure it.
+
 **You feel an invisible creature before it strikes** — a chill up the spine
 for the undead, a sense of someone nearby for anything else — which is time
 enough to reach for a potion of see invisible.

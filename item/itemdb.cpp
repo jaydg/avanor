@@ -161,6 +161,11 @@ MaterialBuilder& MaterialBuilder::Resist(const std::string& r)
     return *this;
 }
 
+MaterialBuilder& MaterialBuilder::Resist(const sol::table& r)
+{
+    return Resist(ResistTableToString(r, t.id));
+}
+
 MaterialBuilder& MaterialBuilder::Property(const SPECIAL_PROPERTY sp)
 {
     t.sp = sp;
@@ -277,6 +282,11 @@ ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Resist(const std::string& r)
 {
     t.r = r;
     return *this;
+}
+
+ArmourEnchantmentBuilder& ArmourEnchantmentBuilder::Resist(const sol::table& r)
+{
+    return Resist(ResistTableToString(r, t.name));
 }
 
 void ArmourEnchantmentBuilder::Register()

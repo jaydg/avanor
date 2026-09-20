@@ -9,7 +9,8 @@
 --       :Armour(dv, pv)       dice strings; omitted when it protects nothing
 --       :Combat(hit, dice, extra)
 --       :Range(dice)
---       :Resist(text)         the same dice strings Monster.new takes
+--       :Resist(table)        the same form Monster.new takes:
+--                             { fire = "5d5+25", see_invisible = true }
 --       :Stats(text)
 --       :Worth(value)
 --       :Register()
@@ -62,13 +63,13 @@ Enchantment.new("free_action")
 
 Enchantment.new("invisibility")
 	:Called("of invisibility")
-	:Resist("invisible:0d0+10")
+	:Resist{ invisible = true }
 	:Worth(500)
 	:Register()
 
 Enchantment.new("see_invisible")
 	:Called("of see invisible")
-	:Resist("see_invisible:0d0+10")
+	:Resist{ see_invisible = true }
 	:Worth(300)
 	:Register()
 

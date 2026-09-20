@@ -426,6 +426,11 @@ MonsterBuilder& MonsterBuilder::Resist(const std::string& resists)
     return *this;
 }
 
+MonsterBuilder& MonsterBuilder::Resist(const sol::table& resists)
+{
+    return Resist(ResistTableToString(resists, cr.name));
+}
+
 MonsterBuilder& MonsterBuilder::Combat(const std::string& hit, const std::string& dice)
 {
     cr.hit = XDice(hit);
