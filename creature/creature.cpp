@@ -2088,24 +2088,18 @@ int XCreature::MoneyOp(int money_count)
 
     if (money) {
         if (money_count >= 0) {
-            carried_weight -= money->quantity / 10;
             money->quantity += money_count;
-            carried_weight += money->quantity / 10;
 
             return money->quantity;
         }
 
         if (money->quantity + money_count > 0) {
-            carried_weight -= money->quantity / 10;
             money->quantity += money_count;
-            carried_weight += money->quantity / 10;
 
             return money->quantity;
         }
 
         if (money->quantity + money_count == 0) {
-            carried_weight -= money->quantity / 10;
-
             // Invalidate() must run before erase() now that contain holds
             // money's real shared_ptr ownership (opposite of the old
             // raw-pointer ordering): contain can be money's only reference,
@@ -2128,7 +2122,6 @@ int XCreature::MoneyOp(int money_count)
     }
 
     if (money_count > 0) {
-        carried_weight += money_count / 10;
         contain.insert(XItem::Own(new XMoney(money_count)));
 
         return money_count;

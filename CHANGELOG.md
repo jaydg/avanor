@@ -450,6 +450,15 @@ Things that went quietly wrong the longer you played:
   thanked you and handed over your reward, the game stopped counting it, and
   only players who never went back to claim it were ever paid. The pump is
   what earns those points now, and nothing afterwards takes them away.
+- Your purse could switch off the burden system for good. Gold weighs
+  nothing in Avanor, but the code that handed coins in and out kept a weight
+  of its own — one unit for every ten coins — that no other part of the game
+  agreed with. Coins picked up off the floor never entered that account,
+  while spending your purse down to exactly nothing withdrew the whole of
+  it. Enough finding and spending and the weight you were reckoned to be
+  carrying dropped below zero, after which no amount of loot could ever slow
+  you down again. Characters whose burden has already drifted are put right
+  when their game is loaded.
 
 ---
 
