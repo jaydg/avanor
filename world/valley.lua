@@ -87,9 +87,9 @@ function MakeAvanorValley()
 		SetPattern(55, 31,
 		"                       =                               " ..
 		"                       ========                       9" ..
-		"       P  @@@@@@@  @@@@@@G.....==                      " ..
-		"        ..@A;B;A@..@...A@......X.=                     " ..
-		"        ..@@@/@@@..@+@@@@XXXXXXX..=                    " ..
+		"       P  @@@@@@@  @@@@@@......==                      " ..
+		"        ..@A;B;A@..@;;;A@........=                     " ..
+		"        ..@@@/@@@..@+@@@@.........=                    " ..
 		"        .....1......1.............=                    " ..
 		"   >111111111111111111111111111...=F                   " ..
 		"       .#####/####1...####....11..=                    " ..
@@ -98,8 +98,8 @@ function MakeAvanorValley()
 		"       .##########1#######.......==       ##;##        " ..
 		"      ............1.............===       #Y;;;        " ..
 		"     ...@@@@@@@@@@1....... ==========     #;;.#        " ..
-		"      ..@......+.+111111==============    ;####        " ..
-		"      ..@.A.A.@@@@.====2===============                " ..
+		"      ..@;;;;;;+;+111111==============    ;####        " ..
+		"      ..@;A;A;@@@@.====2===============                " ..
 		"     ...@@@@@@@...=====2==================             " ..
 		"      ..........=======2====================           " ..
 		"       .===============2======================         " ..
@@ -133,15 +133,15 @@ function MakeAvanorValley()
 				SetEventHandler(Guardian('farmer', VILLAGE_GROUP, area.x, area.y, area.w, area.h), 'FarmerHandler')
 				SetEventHandler(Guardian('goodwife', VILLAGE_GROUP, area.x, area.y, area.w, area.h), 'FarmerHandler')
 			end
+
+			-- Some goats.
+			for i = 1, 5 do
+				Guardian("goat", "village_goats", area.x, area.y, area.w, area.h,
+					{ on = XTileType.GREEN_GRASS })
+			end
 		end)
 		AddTranslation("B", function(x, y) CreateBrida(x, y) end)
 		AddTranslation("E", function(x, y) CreateElderGridor(x, y) end)
-		AddTranslation("X", XTileType.FENCE)
-		-- The goats of the fenced pen behind the houses. The marker sits in
-		-- its north-west corner and the rect covers the whole enclosure
-		-- (x 25-30, y 2-3), so they are scattered through it rather than
-		-- stacked on one tile.
-		AddTranslation("G", function(x, y) for i = 1, 3 do Creature("goat", x, y, 6, 2) end end)
 		AddTranslation("Y", function(x, y) CreateJorgus(x, y) end)
 		AddTranslation("F", function(x, y) for i = 1, 5 do CreateBandit(x, y) end end)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "MUSHROOMS_CAVE1", x, y) end)
@@ -158,7 +158,6 @@ function MakeAvanorValley()
 
 		-- Connect Rotmoth's hideout with Jorgus' HQ
 		for _, c in ipairs(WindingRoad(53, 2, 43, 10, 9)) do
-			local t = GetTile(c.x, c.y)
 			SetTile(c.x, c.y, XTileType.ROAD)
 		end
 
@@ -169,7 +168,7 @@ function MakeAvanorValley()
 		".###########.###########.#####.#####.#####...." ..
 		".#B;;;A#;>;#.#B;;;;;;;A#.#A;A#.#A;A#.#A;A#...." ..
 		".##+#####+##.##+########.##+##.##+##.##+##...." ..
-		".11111G1111111111111111111111111111111111111.." ..
+		".11111G111111111111111111111111111111111111111" ..
 		".##+##F.....11&=&11.###########1#####+######.." ..
 		".#B;A#......11=&=11.#B;B;B;B;B#1#B;+;;;#B;A#.." ..
 		".#####......11&=&111+;;;;;;;;;+1+;;#;B;+;;;#.." ..
@@ -346,7 +345,7 @@ function MakeAvanorValley()
 		".....#;;;;>...;#....." ..
 		".....#;...;;;;;#....." ..
 		"X......#;;..;........" ..
-		"........../##.......X" ..
+		".........#/##.......X" ..
 		"X...................." ..
 		"X...................X" ..
 		"....XX..X...X.....X..")
@@ -390,20 +389,37 @@ function MakeAvanorValley()
 		end)
 		DrawPattern(45, 25)
 
-	-- The road east out of the village has always stopped dead in open country,
-	-- and the city's western gate has always been reached over a bridge with
-	-- nothing on the near side of it. Lay the track that ought to have joined
-	-- them, wandering the way a road worn by use wanders rather than ruled
-	-- straight across the plain. Placed here because it has to come after every
-	--  pattern that is stamped onto the Valley.
-	for _, c in ipairs(WindingRoad(53, 9, 128, 13, 14)) do
-		local t = GetTile(c.x, c.y)
+	function PlaceRoad(x, y)
+		local t = GetTile(x, y)
 
 		if (t == XTileType.WATER or t == XTileType.DEEP_WATER) then
-			SetTile(c.x, c.y, XTileType.BRIDGE)
+			SetTile(x, y, XTileType.BRIDGE)
 		else
-			SetTile(c.x, c.y, XTileType.ROAD)
+			SetTile(x, y, XTileType.ROAD)
 		end
+	end
+
+	-- The road east out of the village to the city's western gate. Placed here
+	-- because it has to come after every pattern that is stamped onto the Valley.
+	for _, c in ipairs(WindingRoad(53, 9, 128, 13, 14)) do
+		PlaceRoad(c.x, c.y)
+	end
+
+	-- The road connecting the small town to the southern gate of the city.
+	-- Connect two paths on a waypoint, from there add a path to the tomb.
+	for _, c in ipairs(WindingRoad(56, 44, 90, 48, 14)) do
+		PlaceRoad(c.x, c.y)
+	end
+	for _, c in ipairs(WindingRoad(91, 47, 153, 32, 14)) do
+		PlaceRoad(c.x, c.y)
+	end
+	-- From the waypoint to the tomb
+	for _, c in ipairs(WindingRoad(91, 49, 99, 54, 8)) do
+		PlaceRoad(c.x, c.y)
+	end
+	-- From the exit of the small town to Yohjishiro's tower
+	for _, c in ipairs(WindingRoad(53, 43, 55, 36, 4)) do
+		PlaceRoad(c.x, c.y)
 	end
 
 	-- Last thing done to the Valley itself, after every pattern is
