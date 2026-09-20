@@ -641,7 +641,16 @@ void XHero::GiveItem()
             }
 
             if (!flag || res == 0) {
-                carried_weight += gitem->weight;
+                // Only a refused give has weight to put back, and it is the
+                // weight of everything that left: res == 0 means the "how
+                // much?" prompt was answered with nothing, which never
+                // reached the subtraction above, and a partial give that
+                // came back used to be credited with a single item's weight
+                // however large the heap offered had been.
+                if (!flag) {
+                    carried_weight += gitem->weight * gitem->quantity;
+                }
+
                 contain.insert(gitem);
                 gitem->SetOwner(this);
             } else if (!gitem->GetOwner().lock()) {
