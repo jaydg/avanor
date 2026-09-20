@@ -44,6 +44,20 @@
 --                           eight times as many creatures as naming one
 --   GuardianClass(ids, ...) posts one of these sorts, drawn at random, to
 --                           guard a patch
+--
+-- Guardian() and GuardianClass() both end with either the AI flags or a
+-- table saying more about where one may stand:
+--
+--   Guardian("sheep", GID, x, y, 19, 9, { on = XTileType.GREEN_GRASS })
+--   Guardian("guard", GID, x, y, 8, 8, { flags = XStandardAI.NO_SWAP,
+--                                        on = { XTileType.PATH,
+--                                               XTileType.ROAD } })
+--
+-- `on` is the ground the spot is drawn from, one tile or several. Without
+-- it any ground inside the patch will do, which is what a walled garden
+-- used to need two separate patches to work around - see Yohjishiro's
+-- flock in world/valley.lua, which grazes the grass and keeps out of her
+-- tower because of this and not because of where it was put.
 --   SetEnemy(cr, ids)       whom this one fights, replacing whatever it
 --                           was told before
 --   OnSenseUnseen(cr, id)   what the hero feels when one of these stands

@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <cereal/archives/json.hpp>
 #include <cereal/types/polymorphic.hpp>
@@ -189,7 +190,7 @@ void XLocation::AddPlace(XAnyPlace * pl)
     assert(0);
 }
 
-std::optional<XPoint> XLocation::GetFreeXY(XRect * area)
+std::optional<XPoint> XLocation::GetFreeXY(XRect * area, const std::vector<XTileType::Id>& on)
 {
     int bx, by, dx, dy;
 
@@ -212,9 +213,19 @@ std::optional<XPoint> XLocation::GetFreeXY(XRect * area)
         const int tx = vRand() % dx + bx;
         const int ty = vRand() % dy + by;
 
-        if (map->XGetMovability(tx, ty) == 0 && map->GetSpecial(tx, ty) == nullptr) {
-            return XPoint(tx, ty);
+        if (map->XGetMovability(tx, ty) != 0 || map->GetSpecial(tx, ty) != nullptr) {
+            continue;
         }
+
+        // Named ground only. Walked rather than indexed: a caller names
+        // one or two tiles, so a set would cost more to build than the
+        // comparison saves.
+        if (!on.empty()
+            && std::find(on.begin(), on.end(), map->GetXY(tx, ty)) == on.end()) {
+            continue;
+        }
+
+        return XPoint(tx, ty);
     }
 
     return std::nullopt;
@@ -241,9 +252,10 @@ XCreature* XLocation::NewCreature(CREATURE_NAME cn)
     return pt ? NewCreature(cn, pt->x, pt->y) : nullptr;
 }
 
-XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
+XCreature* XLocation::NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid, unsigned int ai_flags,
+    const std::vector<XTileType::Id>& on)
 {
-    const auto pt = GetFreeXY(&rect);
+    const auto pt = GetFreeXY(&rect, on);
 
     if (!pt) {
         return nullptr;
@@ -280,9 +292,10 @@ XCreature* XLocation::NewCreatureOfClass(const CreatureClassSet& crc)
     return cr;
 }
 
-XCreature* XLocation::NewCreatureOfClass(const CreatureClassSet& crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags)
+XCreature* XLocation::NewCreatureOfClass(const CreatureClassSet& crc, XRect& rect, GROUP_ID gid, unsigned int ai_flags,
+    const std::vector<XTileType::Id>& on)
 {
-    const auto pt = GetFreeXY(&rect);
+    const auto pt = GetFreeXY(&rect, on);
 
     if (!pt) {
         return nullptr;

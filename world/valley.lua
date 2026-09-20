@@ -359,7 +359,7 @@ function MakeAvanorValley()
 -- YOHJI's TOWER --
 		SetPattern(21, 11,
 		"XXXXXXXXXXXXXXXXXXXXX" ..
-		"Xq..............q...X" ..
+		"Xq..................X" ..
 		"X......#######......X" ..
 		"X.....##22#22##.....X" ..
 		"X....##222#222##....X" ..
@@ -374,14 +374,18 @@ function MakeAvanorValley()
 		AddTranslation("#", XTileType.MARBLE_WALL)
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "WIZTOWER_TOP", x, y) end)
 
-		-- Yohjishiro's flock, grazing the grass either side of her
-		-- tower. Each mark is the corner of the strip its four sheep
-		-- keep to, so they stay inside the fence and out of the tower.
+		-- Yohjishiro's flock, grazing the grass around her tower. The
+		-- mark is the corner of the whole walled garden, and `on` keeps
+		-- them off everything in it that is not grass - the tower, its
+		-- floors and the road up to its door - so one flock can have the
+		-- run of the place where it used to take two strips either side
+		-- to keep them out of the building.
 		-- They share her group: harm one and she knows (see YOHJI's
 		-- TOWER SECOND FLOOR below, and XStandardAI::SetGroupEnemy).
 		AddTranslation("q", function(x, y)
-			for i = 1, 4 do
-				Guardian('sheep', "yohji_flock", x, y, 4, 8)
+			for i = 1, 8 do
+				Guardian('sheep', "yohji_flock", x, y, 19, 9,
+					{ on = XTileType.GREEN_GRASS })
 			end
 		end)
 		DrawPattern(45, 25)

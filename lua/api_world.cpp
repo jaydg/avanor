@@ -123,17 +123,145 @@ sol::optional<void*> Creature(const std::string& crn, sol::optional<int> x, sol:
     return static_cast<void*>(cr);
 }
 
-//cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags])
-void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
-{
-    XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
-    int flag = XStandardAI::GUARD_AREA;
+namespace {
 
-    if (flags) {
-        flag |= *flags;
+// Where a guard may stand, and how it behaves: what Guardian() and
+// GuardianClass() take in their last argument. The AI flags on their own,
+// as a number, the way it has always been written -
+//
+//   Guardian("royal_guard", GID, x, y, 1, 1, XStandardAI.NO_SWAP)
+//
+// or a table, when the ground matters too:
+//
+//   Guardian("sheep", GID, x, y, 12, 9, { on = XTileType.GREEN_GRASS })
+//   Guardian("bandit", GID, x, y, 8, 8, { flags = XStandardAI.NO_SWAP,
+//                                         on = { XTileType.GREEN_GRASS,
+//                                                XTileType.PATH } })
+//
+// `on` names the ground the spot is drawn from, one tile or several, by
+// the ids world/tiles.lua defines. Without it any ground will do, which
+// is what every call did before there was a way to say otherwise.
+struct Placement {
+    int flags = 0;
+    std::vector<XTileType::Id> on;
+};
+
+void ReadTiles(const sol::object& value, Placement& out, const std::string& where)
+{
+    const auto known = [](const XTileType::Id id) {
+        // NONE is "nothing here", which nothing can stand on, so it is
+        // never a sensible answer even though it is a valid id.
+        return id > XTileType::NONE
+            && static_cast<size_t>(id) < XTileType::Names().size();
+    };
+
+    const auto one = [&](const sol::object& o) {
+        // XTileType.GREEN_GRASS, the way the rest of world/ names a tile.
+        if (o.is<XTileType::Id>()) {
+            const XTileType::Id id = o.as<XTileType::Id>();
+
+            if (!known(id)) {
+                std::cerr << "world: " << where << ": " << id
+                          << " is no tile world/tiles.lua defines" << std::endl;
+
+                return;
+            }
+
+            out.on.push_back(id);
+
+            return;
+        }
+
+        // Or its name in quotes, which unlike XTileType.MISSPELLED can be
+        // told apart from saying nothing at all.
+        if (o.is<std::string>()) {
+            const std::string name = o.as<std::string>();
+            const XTileType::Id id = XTileType::ByName(name);
+
+            if (!known(id)) {
+                std::cerr << "world: " << where << ": no tile '" << name
+                          << "' is defined in world/tiles.lua" << std::endl;
+
+                return;
+            }
+
+            out.on.push_back(id);
+
+            return;
+        }
+
+        std::cerr << "world: " << where << ": `on` takes tiles -"
+                     " XTileType.GREEN_GRASS, or \"GREEN_GRASS\"" << std::endl;
+    };
+
+    if (value.is<sol::table>()) {
+        for (const auto& [key, tile] : value.as<sol::table>()) {
+            static_cast<void>(key);
+            one(tile);
+        }
+    } else {
+        one(value);
+    }
+}
+
+Placement ReadPlacement(const sol::optional<sol::object>& opts, const std::string& where)
+{
+    Placement out;
+
+    if (!opts || !opts->valid()) {
+        return out;
     }
 
-    XCreature * cr = XLocation::current_location->NewCreature(crn, rect, gid, flag);
+    if (opts->is<int>()) {
+        out.flags = opts->as<int>();
+
+        return out;
+    }
+
+    if (!opts->is<sol::table>()) {
+        std::cerr << "world: " << where << ": the last argument is the AI"
+                     " flags, or a table { flags = ..., on = ... }" << std::endl;
+
+        return out;
+    }
+
+    const sol::table t = opts->as<sol::table>();
+
+    if (const sol::optional<int> flags = t["flags"]) {
+        out.flags = *flags;
+    }
+
+    if (const sol::object on = t["on"]; on.valid()) {
+        ReadTiles(on, out, where);
+    }
+
+    return out;
+}
+
+} // namespace
+
+//cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags or {...}])
+void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<sol::object> opts)
+{
+    XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
+    const Placement where = ReadPlacement(opts, "Guardian('" + crn + "')");
+    const int flag = XStandardAI::GUARD_AREA | where.flags;
+
+    XCreature * cr = XLocation::current_location->NewCreature(crn, rect, gid, flag, where.on);
+
+    // Nothing free to stand on. Always possible - an area can be packed
+    // solid - but naming the ground makes it likely enough to say so,
+    // since a patch holding none of the named tile is an authoring
+    // mistake rather than bad luck. Silence here used to end in a null
+    // dereference on the very next line.
+    if (!cr) {
+        if (!where.on.empty()) {
+            std::cerr << "world: Guardian('" << crn << "'): no free tile of"
+                         " the named sort in that area" << std::endl;
+        }
+
+        return nullptr;
+    }
 
     // NewCreature() already set enemy_class to NONE for a PEACEFUL
     // creature (see its own comment) - respect that instead of
@@ -153,16 +281,21 @@ void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol
 }
 
 //GuardianClass("orc", "orcs_war_party", 10, 70, 20, 10, XStandardAI.GUARD_AREA)
-void* GuardianClass(const sol::object& crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<int> flags)
+void* GuardianClass(const sol::object& crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<sol::object> opts)
 {
     XRect rect = w ? XRect(x, y, x + *w, y + *h) : XRect(x, y, x + 1, y + 1);
-    int flag = XStandardAI::GUARD_AREA;
+    const Placement where = ReadPlacement(opts, "GuardianClass()");
+    const int flag = XStandardAI::GUARD_AREA | where.flags;
 
-    if (flags) {
-        flag |= *flags;
+    XCreature* cr = XLocation::current_location->NewCreatureOfClass(
+        ClassesOf(crc, "GuardianClass()"), rect, gid, flag, where.on);
+
+    if (!cr && !where.on.empty()) {
+        std::cerr << "world: GuardianClass(): no free tile of the named sort"
+                     " in that area" << std::endl;
     }
 
-    return XLocation::current_location->NewCreatureOfClass(ClassesOf(crc, "GuardianClass()"), rect, gid, flag);
+    return cr;
 }
 
 //SetStartLocation("MAIN", 26, 4, 6, 5)

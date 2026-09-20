@@ -152,7 +152,11 @@ class XLocation : public XObject
         XMap* map;
         // A random walkable, unoccupied cell inside area (or the whole map
         // when null), or nullopt when there is none.
-        std::optional<XPoint> GetFreeXY(XRect * area = nullptr);
+        // A free spot, and with `on` a free spot whose ground is one of
+        // those tiles - what keeps a flock on the grass rather than in
+        // the tower it grazes beside. An empty `on` takes any ground.
+        std::optional<XPoint> GetFreeXY(XRect * area = nullptr,
+            const std::vector<XTileType::Id>& on = {});
         void AddPlace(XAnyPlace * pl);
 
         // ways_list holds raw, non-owning XObject* into two different
@@ -260,13 +264,15 @@ class XLocation : public XObject
 
         XCreature* NewCreature(CREATURE_NAME cn, int x, int y, GROUP_ID gid = GID_NONE);
         XCreature* NewCreature(CREATURE_NAME cn);
-        XCreature* NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
+        XCreature* NewCreature(CREATURE_NAME cn, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0,
+            const std::vector<XTileType::Id>& on = {});
 
         // By class rather than by name: one of whatever sorts are asked
         // for, drawn at random. Named apart from NewCreature() because a
         // class and a creature name are both strings.
         XCreature* NewCreatureOfClass(const CreatureClassSet& crc);
-        XCreature* NewCreatureOfClass(const CreatureClassSet& crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0);
+        XCreature* NewCreatureOfClass(const CreatureClassSet& crc, XRect& rect, GROUP_ID gid = GID_NONE, unsigned int ai_flags = 0,
+            const std::vector<XTileType::Id>& on = {});
 
         XStairWay* NewWay(const std::string& target_ln, XStairWay::Type s_type, XRect * area = nullptr); //creates way at random place
         XStairWay* NewWay(int x, int y, const std::string& target_ln, XStairWay::Type s_type);
