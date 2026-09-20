@@ -322,6 +322,23 @@ knows and can actually land.
 
 ---
 
+### What you are carrying
+
+**Your inventory now lists what you are wearing**, each piece marked
+`(worn)`. Before, anything you put on left the pack entirely, and the
+equipment screen was the only place it could be seen — so there was no one
+list that answered "what have I got on me?". The commands that would part you
+from your gear leave the worn pieces out: you cannot drop, give away or
+sacrifice the boots you are standing in without taking them off first.
+
+**Identical rings, armour and weapons no longer heap up in your pack.** Two
+rings that match down to the metal used to collapse into one line reading
+"heap of (2)", and a heap is the wrong shape for something you wear one of.
+Arrows and bolts still stack — a quiver is meant to hold a heap — as do
+potions, scrolls, books, food and oddments.
+
+---
+
 ### Fixed
 
 Things that used to lose your belongings:

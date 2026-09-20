@@ -104,6 +104,14 @@ class XItem : public XBaseObject
         // and invalidates it.
         void Concat(XItem *it);
 
+        // Whether this item may be heaped together with an identical one.
+        // Anything worn in a slot of its own may not.
+        // The quiver is the exception, a heap being exactly what it is for.
+        [[nodiscard]] bool Stacks() const
+        {
+            return bp == BP_OTHER || bp == BP_MISSILE;
+        }
+
         BODY_PART bp;    // fit to what bp???
         ItemType it;   // main type of item such IT_POTION
         COMBAT_SKILL wt;  // weapon skill of item
@@ -290,7 +298,8 @@ inline XItemList::iterator XItemList::TryMerge(const std::shared_ptr<XItem>& ite
             return it;
         }
 
-        if ((*it)->kind == item->kind && (*it)->Compare(item.get())) {
+        if ((*it)->kind == item->kind && item->Stacks()
+            && (*it)->Compare(item.get())) {
             (*it)->Concat(item.get());
             return it;
         }
