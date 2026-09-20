@@ -290,9 +290,7 @@ void XLua::Init()
             "Always", &MonsterBuilder::Always,
             "AI", &MonsterBuilder::AI,
             "Stats", &MonsterBuilder::Stats,
-            "Resist", sol::overload(
-                sol::resolve<MonsterBuilder&(const std::string&)>(&MonsterBuilder::Resist),
-                sol::resolve<MonsterBuilder&(const sol::table&)>(&MonsterBuilder::Resist)),
+            "Resist", sol::resolve<MonsterBuilder&(const sol::table&)>(&MonsterBuilder::Resist),
             "Combat", &MonsterBuilder::Combat,
             "Main", &MonsterBuilder::Main,
             "Description", &MonsterBuilder::Description,
@@ -330,9 +328,7 @@ void XLua::Init()
             "Body", &MaterialBuilder::Body,
             "Armour", &MaterialBuilder::Armour,
             "Combat", &MaterialBuilder::Combat,
-            "Resist", sol::overload(
-                sol::resolve<MaterialBuilder&(const std::string&)>(&MaterialBuilder::Resist),
-                sol::resolve<MaterialBuilder&(const sol::table&)>(&MaterialBuilder::Resist)),
+            "Resist", sol::resolve<MaterialBuilder&(const sol::table&)>(&MaterialBuilder::Resist),
             "Property", &MaterialBuilder::Property,
             "Register", &MaterialBuilder::Register
         );
@@ -347,9 +343,7 @@ void XLua::Init()
             "Brand", &ArmourEnchantmentBuilder::Brand,
             "Property", &ArmourEnchantmentBuilder::Property,
             "Stats", &ArmourEnchantmentBuilder::Stats,
-            "Resist", sol::overload(
-                sol::resolve<ArmourEnchantmentBuilder&(const std::string&)>(&ArmourEnchantmentBuilder::Resist),
-                sol::resolve<ArmourEnchantmentBuilder&(const sol::table&)>(&ArmourEnchantmentBuilder::Resist)),
+            "Resist", sol::resolve<ArmourEnchantmentBuilder&(const sol::table&)>(&ArmourEnchantmentBuilder::Resist),
             "Register", &ArmourEnchantmentBuilder::Register
         );
 
@@ -359,9 +353,7 @@ void XLua::Init()
             "Armour", &EnchantmentBuilder::Armour,
             "Combat", &EnchantmentBuilder::Combat,
             "Range", &EnchantmentBuilder::Range,
-            "Resist", sol::overload(
-                sol::resolve<EnchantmentBuilder&(const std::string&)>(&EnchantmentBuilder::Resist),
-                sol::resolve<EnchantmentBuilder&(const sol::table&)>(&EnchantmentBuilder::Resist)),
+            "Resist", sol::resolve<EnchantmentBuilder&(const sol::table&)>(&EnchantmentBuilder::Resist),
             "Stats", &EnchantmentBuilder::Stats,
             "Worth", &EnchantmentBuilder::Worth,
             "Register", &EnchantmentBuilder::Register
@@ -470,9 +462,7 @@ void XLua::Init()
             "Armour", &ItemBuilder::Armour,
             "Combat", &ItemBuilder::Combat,
             "Stats", &ItemBuilder::Stats,
-            "Resist", sol::overload(
-                sol::resolve<ItemBuilder&(const std::string&)>(&ItemBuilder::Resist),
-                sol::resolve<ItemBuilder&(const sol::table&)>(&ItemBuilder::Resist)),
+            "Resist", sol::resolve<ItemBuilder&(const sol::table&)>(&ItemBuilder::Resist),
             "Brand", &ItemBuilder::Brand,
             "Called", &ItemBuilder::Called,
             "Unique", &ItemBuilder::Unique,

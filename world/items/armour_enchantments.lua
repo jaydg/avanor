@@ -27,7 +27,7 @@ ArmourEnchantment.new("fire_resistance")
 	:Looks(xColor.xRED)
 	:Rarity(1)
 	:Fits(ItemKind.ARMOUR)
-	:Resist("fire:5d5+25")
+	:Resist{ fire = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("cold_resistance")
@@ -35,7 +35,7 @@ ArmourEnchantment.new("cold_resistance")
 	:Looks(xColor.xWHITE)
 	:Rarity(1)
 	:Fits(ItemKind.ARMOUR)
-	:Resist("cold:5d5+25")
+	:Resist{ cold = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("air_resistance")
@@ -43,7 +43,7 @@ ArmourEnchantment.new("air_resistance")
 	:Looks(xColor.xLIGHTBLUE)
 	:Rarity(1)
 	:Fits(ItemKind.ARMOUR)
-	:Resist("air:5d5+25")
+	:Resist{ air = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("acid_resistance")
@@ -51,14 +51,14 @@ ArmourEnchantment.new("acid_resistance")
 	:Looks(xColor.xDARKGRAY)
 	:Rarity(5)
 	:Fits(ItemKind.ARMOUR)
-	:Resist("acid:5d5+25")
+	:Resist{ acid = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("poison_resistance")
 	:Called("{} of poison resistance")
 	:Rarity(2)
 	:Fits(ItemKind.ARMOUR)
-	:Resist("poison:5d5+25")
+	:Resist{ poison = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("resistance")
@@ -67,7 +67,7 @@ ArmourEnchantment.new("resistance")
 	:Rarity(80)
 	:Fits(ItemKind.ARMOUR)
 	:Property(SpecialProperty.FAST_DIGESTION)
-	:Resist("poison:5d5+25 fire:5d5+25 cold:5d5+25 water:5d5+25 acid:5d5+25 earth:5d5+25")
+	:Resist{ poison = "5d5+25", fire = "5d5+25", cold = "5d5+25", water = "5d5+25", acid = "5d5+25", earth = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("magi")
@@ -75,14 +75,14 @@ ArmourEnchantment.new("magi")
 	:Rarity(50)
 	:Fits(ItemKind.ARMOUR)
 	:Stats("Le:1d5 Wi:1d5 Ma:1d5")
-	:Resist("fire:5d5+25 cold:5d5+25")
+	:Resist{ fire = "5d5+25", cold = "5d5+25" }
 	:Register()
 
 ArmourEnchantment.new("free_action")
 	:Called("{} of free action")
 	:Rarity(50)
 	:Fits(ItemKind.ARMOUR)
-	:Resist("confuse:5d5+25 stun:5d5+25")
+	:Resist{ confuse = "5d5+25", stun = "5d5+25" }
 	:Register()
 
 -- Its whole effect is the property below: the wearer grows hungry at half

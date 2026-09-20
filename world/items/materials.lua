@@ -69,7 +69,7 @@ Material.new("stone")
 	:Body(20, 5)
 	:Armour("1d3", "1d4+1")
 	:Combat("1d3", "0d0", "1d2")
-	:Resist("earth:0d0+10")
+	:Resist{ earth = "0d0+10" }
 	:Register()
 
 Material.new("iron")
@@ -88,7 +88,7 @@ Material.new("bronze")
 	:Body(26, 17)
 	:Armour("1d3", "1d5+1")
 	:Combat("1d4", "0d0", "1d3+0")
-	:Resist("stun:0d0+5")
+	:Resist{ stun = "0d0+5" }
 	:Register()
 
 Material.new("brass")
@@ -98,7 +98,7 @@ Material.new("brass")
 	:Body(30, 30)
 	:Armour("1d3", "1d5+1")
 	:Combat("1d3", "0d0", "1d3+0")
-	:Resist("stun:0d0+10")
+	:Resist{ stun = "0d0+10" }
 	:Property(SpecialProperty.SLOW_DIGESTION)
 	:Register()
 
@@ -109,7 +109,7 @@ Material.new("silver")
 	:Body(20, 30)
 	:Armour("1d3", "1d5+2")
 	:Combat("1d4+0", "0d0", "1d4+0")
-	:Resist("acid:0d0+10")
+	:Resist{ acid = "0d0+10" }
 	:Register()
 
 Material.new("golden")
@@ -119,7 +119,7 @@ Material.new("golden")
 	:Body(22, 50)
 	:Armour("1d3+1", "1d5+2")
 	:Combat("1d5", "0d0", "1d5+0")
-	:Resist("acid:0d0+20")
+	:Resist{ acid = "0d0+20" }
 	:Property(SpecialProperty.REGENERATION + SpecialProperty.FAST_DIGESTION)
 	:Register()
 
@@ -130,7 +130,7 @@ Material.new("crystal")
 	:Body(25, 14)
 	:Armour("1d3+3", "1d5+2")
 	:Combat("1d5+1", "0d0", "1d5+1")
-	:Resist("water:0d0+10")
+	:Resist{ water = "0d0+10" }
 	:Register()
 
 Material.new("steel")
@@ -140,7 +140,7 @@ Material.new("steel")
 	:Body(15, 20)
 	:Armour("1d3+3", "1d5+2")
 	:Combat("1d6+1", "0d0", "1d5+1")
-	:Resist("stun:0d0+15")
+	:Resist{ stun = "0d0+15" }
 	:Register()
 
 Material.new("obsidian")
@@ -150,7 +150,7 @@ Material.new("obsidian")
 	:Body(13, 20)
 	:Armour("1d3+3", "1d6+2")
 	:Combat("1d6+1", "0d0", "1d6+1")
-	:Resist("fire:0d0+15")
+	:Resist{ fire = "0d0+15" }
 	:Register()
 
 Material.new("mithril")
@@ -160,7 +160,7 @@ Material.new("mithril")
 	:Body(11, 100)
 	:Armour("1d3+6", "2d3+3")
 	:Combat("2d4+4", "0d1", "2d4+3")
-	:Resist("poison:0d0+10 stun:0d0+10 confuse:0d0+20")
+	:Resist{ poison = "0d0+10", stun = "0d0+10", confuse = "0d0+20" }
 	:Register()
 
 Material.new("adamantium")
@@ -170,7 +170,7 @@ Material.new("adamantium")
 	:Body(9, 300)
 	:Armour("1d3+12", "2d4+5")
 	:Combat("2d6+6", "1d0", "2d6+3")
-	:Resist("paralyse:0d0+20 stun:0d0+15 confuse:0d0+30 blind:0d0+30")
+	:Resist{ paralyse = "0d0+20", stun = "0d0+15", confuse = "0d0+30", blind = "0d0+30" }
 	:Property(SpecialProperty.REGENERATION)
 	:Register()
 

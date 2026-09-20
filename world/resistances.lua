@@ -6,17 +6,14 @@
 --
 -- The id is what a declaration spells. Anything that can be resistant -
 -- Monster.new, Item.new, Enchantment.new, Material.new and
--- ArmourEnchantment.new - takes :Resist() in either of two forms:
+-- ArmourEnchantment.new - takes :Resist() with a table:
 --
---   :Resist{ fire = "5d5+25", see_invisible = true }   a table
---   :Resist("fire:5d5+25 see_invisible:0d0+1")         one string
+--   :Resist{ fire = "5d5+25", see_invisible = true }
 --
--- The table is the one to write. It says true or false for the flags
--- below and dice for the rest, and it is checked as the world loads: a
--- name no row declares, dice given to a flag, or true given to a matter of
--- degree are each reported by the creature or item that said it. The
--- string form takes the same names and is checked not at all, so a typo in
--- one is simply a resistance you never get.
+-- Dice for a matter of degree, true or false for the flags below. It is
+-- checked as the world loads: a name no row declares, dice given to a
+-- flag, or true given to a matter of degree are each reported against the
+-- creature or item that said it.
 --
 --   Resistance.new(id)
 --       :Called(name)     what the Resistances screen shows

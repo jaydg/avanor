@@ -57,7 +57,7 @@ Enchantment.new("slaying")
 
 Enchantment.new("free_action")
 	:Called("of free action")
-	:Resist("stun:8d5+50 confuse:8d5+50")
+	:Resist{ stun = "8d5+50", confuse = "8d5+50" }
 	:Worth(200)
 	:Register()
 
@@ -75,19 +75,19 @@ Enchantment.new("see_invisible")
 
 Enchantment.new("fire_resistance")
 	:Called("of fire resistance")
-	:Resist("fire:8d5+30")
+	:Resist{ fire = "8d5+30" }
 	:Worth(250)
 	:Register()
 
 Enchantment.new("acid_resistance")
 	:Called("of acid resistance")
-	:Resist("acid:8d5+25")
+	:Resist{ acid = "8d5+25" }
 	:Worth(300)
 	:Register()
 
 Enchantment.new("poison_resistance")
 	:Called("of poison resistance")
-	:Resist("poison:8d5+25")
+	:Resist{ poison = "8d5+25" }
 	:Worth(300)
 	:Register()
 
