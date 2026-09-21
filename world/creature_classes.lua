@@ -41,7 +41,12 @@
 --   Settle(ids, level, ...) fills the current location with them over
 --                           time. The ceiling counts each sort
 --                           separately, so naming eight settles up to
---                           eight times as many creatures as naming one
+--                           eight times as many creatures as naming one.
+--                           A table in place of the ceiling says more:
+--                           { max = .., refresh = .., area = {x=, y=,
+--                           w=, h=}, on = .. }, where `area` confines it
+--                           to a patch of the location and `on` names the
+--                           ground, both as Guardian's do
 --   GuardianClass(ids, ...) posts one of these sorts, drawn at random, to
 --                           guard a patch
 --

@@ -46,7 +46,7 @@ namespace lua_api
 /** @addtogroup lua_api
  *  @{ */
 
-    void Settle(const sol::object& crc, int crl, sol::optional<int> max_creature, sol::optional<int> refresh);
+    void Settle(const sol::object& crc, int crl, sol::optional<sol::object> opts, sol::optional<int> refresh);
     sol::optional<void*> Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<sol::object> opts);
     void* GuardianClass(const sol::object& crc, const std::string& gid, int x, int y, sol::optional<int> w, sol::optional<int> h, sol::optional<sol::object> opts);

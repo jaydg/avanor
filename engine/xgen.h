@@ -96,12 +96,15 @@ class XUniversalGen final : public XGenerator
 
     public:
         DECLARE_CREATOR(XUniversalGen, XGenerator);
-        XUniversalGen(XLocation * loc, CreatureClassSet _crc, CreatureTemplate::Level _crl, unsigned int _max_creature = 8, int refresh_time = 15000) : XGenerator(refresh_time)
+        XUniversalGen(XLocation * loc, CreatureClassSet _crc, CreatureTemplate::Level _crl, unsigned int _max_creature = 8, int refresh_time = 15000,
+                      const XRect& _area = {}, std::vector<XTileType::Id> _on = {}) : XGenerator(refresh_time)
         {
             l = loc;
             crl = _crl;
             crc = std::move(_crc);
             max_creature = _max_creature;
+            area = _area;
+            on = std::move(_on);
         }
 
         bool Run() override;
@@ -110,12 +113,18 @@ class XUniversalGen final : public XGenerator
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XGenerator>(this));
-            ar(crl, crc, max_creature);
+            ar(crl, crc, max_creature, area, on);
         }
     protected:
         CreatureTemplate::Level crl;
         CreatureClassSet crc;
         unsigned int max_creature{};
+
+        // Where what this settles may stand. An area of no width settles
+        // anywhere in the location, and an empty `on` takes any
+        // ground. Both are asked of XLocation::GetFreeXY().
+        XRect area;
+        std::vector<XTileType::Id> on;
 };
 
 

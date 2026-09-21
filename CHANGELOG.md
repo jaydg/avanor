@@ -74,6 +74,10 @@ The road is what he wants cleared, not the brotherhood. Jorgus keeps his
 house behind the camp and his own counsel, and the man who teaches thieving
 is not part of the bargain.
 
+**There are wolves between the village and the city.** The dungeons were
+full of canines and the valley had none, so the one stretch of the walk
+west with nothing in it was empty road.
+
 **The bandits at the bridge say so first.** Five forest brothers hold the
 only crossing of the river, and until now the first a new character knew of
 them was dying to one. They call out from the trees as you set foot on the

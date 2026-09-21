@@ -69,6 +69,11 @@ function MakeAvanorValley()
 	-- ALLOW_MOVE_OUT (the hero's dog, escorts) follow a stairway up here.
 	SetWanderingAllowed("MAIN", false)
 
+	-- Wolves in the open country between the village and the city.
+	Settle("canine", CreatureTemplate.AVG, {
+		max = 5, refresh = 40000,
+		area = {x = 75, y = 5, w = 25, h = 10}})
+
 	-- Orcish war party.
 	-- GuardianClass() picks a random ORC-class monster per spawn
 	-- (7 templates - orc, large orc, hill orc, ...).
