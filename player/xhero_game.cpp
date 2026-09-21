@@ -331,7 +331,7 @@ void XHero::EndGame(const char* end_msg)
         score += quest->score;
     }
 
-    list.AddItem(new XGuiItem_Text(fmt::format("You scored %{}.", score)));
+    list.AddItem(new XGuiItem_Text(fmt::format("You scored {}.", score)));
     list.SetCaption("<DECORATION>###<TEXT> Achievements <DECORATION>###");
     list.Run();
 

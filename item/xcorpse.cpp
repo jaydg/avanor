@@ -260,7 +260,7 @@ void XCorpse::FixupCorpseData()
 std::string XCorpse::toString()
 {
     if (corpse_flag & CF_COOKED) {
-        return fmt::format("cooked %s", name);
+        return fmt::format("cooked {}", name);
     }
 
     return name;
