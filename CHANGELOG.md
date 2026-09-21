@@ -465,6 +465,13 @@ Things that went quietly wrong the longer you played:
   thanked you and handed over your reward, the game stopped counting it, and
   only players who never went back to claim it were ever paid. The pump is
   what earns those points now, and nothing afterwards takes them away.
+- A quest you had finished disappeared from your quest log. The log listed
+  only the errands still being worked on, so the moment the deed was done
+  the entry vanished - while whoever asked for it was still waiting to hear
+  about it, holding your reward, and nothing anywhere said so. The log now
+  keeps quests under headings - open, finished but not yet reported, failed
+  and completed - so what is left to collect is as plain as what is left to
+  do, and what you have already done is there to read.
 - One line of every long list could not be chosen. The letters that pick
   lines are counted down the screen, and on a terminal tall enough to show
   twenty-six of them at once the twenty-sixth was labelled `[Z]` - which is

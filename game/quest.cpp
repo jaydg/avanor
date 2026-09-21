@@ -76,21 +76,80 @@ void XQuest::SetCreatureRef(const std::string& name, XCreature* cr)
     creature_refs[name] = XCreature::ToWeakPtr(cr);
 }
 
+// The log used to show none but the quests still being worked on, which
+// left the ones already done but not yet reported nowhere at all: kill
+// Ahk-Ulan and Gefeon's errand vanished from the list, though the reward
+// was still sitting with Gefeon and nothing anywhere said so. A quest is
+// in one of three states worth reading about, so the log says which.
+//
+// What each entry shows is the line the quest was given with, in every
+// state: it names who asked and for what, which is exactly what someone
+// wondering "where do I take this?" needs. The achievements screen is
+// where a quest's own past tense belongs (XQuestRec::complete/closed).
+//
+// The list scrolls, so there is no need to be sparing with it: XGuiList
+// draws "(more)" at the foot whenever it holds more lines than the window
+// has room for, and the scroll keys work here as anywhere else.
 void XQuest::ShowQuests()
 {
     XGuiList list;
 
-    list.SetCaption("<DECORATION>### <VALUE>Current Quests<DECORATION> ###");
-    int flag = 1;
+    list.SetCaption("<DECORATION>### <VALUE>Quests<DECORATION> ###");
 
-    for (auto& quest: quests) {
-        if (quest->status == XQuest::KNOWN) {
-            list.AddItem(new XGuiItem_Text(quest->know));
-            flag = 0;
+    struct Section {
+        XQuest::Id status;
+        const char* heading;
+    };
+
+    // In this order on purpose: what is still to do first, what is owed to
+    // you next, then what went wrong, and last of all the tally of what is
+    // behind you - which is the part worth reading and the part that can
+    // be left off the bottom of the screen without costing anything.
+    static constexpr Section sections[] = {
+        { XQuest::KNOWN,    "<VALUE>Open" },
+        { XQuest::COMPLETE, "<QUALITY_GOOD>Finished - not yet reported" },
+        { XQuest::FAIL,     "<QUALITY_POOR>Failed" },
+        { XQuest::CLOSED,   "<QUALITY_GOOD>Completed" },
+    };
+
+    bool anything = false;
+
+    for (const auto& section : sections) {
+        bool headed = false;
+
+        for (const auto& quest : quests) {
+            if (quest->status != section.status) {
+                continue;
+            }
+
+            if (!headed) {
+                // A blank line between sections, but not above the first.
+                if (anything) {
+                    list.AddItem(new XGuiItem_Text(""));
+                }
+
+                list.AddItem(new XGuiItem_Text(section.heading));
+                headed = true;
+                anything = true;
+            }
+
+            // A quest still in play is named by what was asked of you,
+            // which says who to go back to. One already behind you is
+            // named by what you did, which is the line written for the
+            // achievements screen and reads as a record rather than an
+            // errand - "You killed the demon that preyed on the village"
+            // rather than "the Elder asked you to kill the demon". Not
+            // every quest has one, and those fall back to the asking.
+            const std::string& said =
+                (section.status == XQuest::CLOSED && !quest->closed.empty())
+                    ? quest->closed
+                    : quest->know;
+
+            list.AddItem(new XGuiItem_Text("<TEXT>" + said));
         }
     }
 
-    if (flag) {
+    if (!anything) {
         list.AddItem(new XGuiItem_Text("You have no quests."));
     }
 
