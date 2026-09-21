@@ -24,6 +24,17 @@ function CreateAllQuests()
 	-- COMPLETE at all - they go straight from KNOWN to CLOSED - and those
 	-- only need a closed line.
 
+	-- Noberik's cellar. Offered the moment the hero walks into his shop
+	-- (NoberikHandler, world/uniques/noberik.lua), because the two errands
+	-- the village hands out first - the Elder's demon and Roderick's crypt -
+	-- both want a hero who has been in a fight already, and nothing else in
+	-- the early game says "start here".
+	Quest("noberik_cellar", XQuest.UNKNOWN,
+		"Noberik, the armourer in the town, asked you to clear whatever is nesting in his cellar. The way down is in his shop.",
+		"You put down the dead that walked in Noberik's cellar.",
+		"You cleared Noberik's cellar, and he was glad to have his stock to himself again.",
+		0)
+
 	Quest("elder", XQuest.UNKNOWN,
 		"The Village Elder asked you to kill the demon who attacks villagers and has occupied the caves to the west of the village.",
 		"You killed the demon that preyed on the village to the west.",

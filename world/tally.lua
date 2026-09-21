@@ -90,7 +90,29 @@ local function DropSkeletonBone(cr, class)
 end
 
 
+-- Noberik's errand is done when the last of the cellar's dead is down -
+-- counted here rather than when the hero next speaks to him, so the quest
+-- log can say "finished, not yet reported" on the climb back up, which is
+-- the whole reason that heading exists.
+local function TallyNoberikCellar(cr, class)
+	if (class ~= "undead" or QuestStatus("noberik_cellar") ~= XQuest.KNOWN) then
+		return
+	end
+
+	if (GetLocationId(GetCreatureLocation(cr)) ~= "RATCELLAR") then
+		return
+	end
+
+	-- One, not none: the zombie dying right now still stands on its cell,
+	-- the same as the orcs above.
+	if (GetCreatureCount("RATCELLAR", "undead") == 1) then
+		QuestModify("noberik_cellar", XQuest.COMPLETE)
+	end
+end
+
+
 function OnCreatureDie(cr, killer, class)
+	TallyNoberikCellar(cr, class)
 	TallyOrcs(cr, killer, class)
 	DropYohjiTrophy(cr, class)
 	DropSkeletonBone(cr, class)

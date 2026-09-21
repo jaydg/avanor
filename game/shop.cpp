@@ -70,8 +70,9 @@ std::optional<XPoint> XShop::FindDoor()
 
 XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
              const XTileType::Id wall, const XTileType::Id floor,
-             const int _min_value, const int _max_value)
-    : XAnyPlace(_area, _loc)
+             const int _min_value, const int _max_value,
+             const std::string& handler)
+    : XAnyPlace(_area, _loc, handler)
 {
     shop_mask = _kind;
     min_value = _min_value;
@@ -151,6 +152,10 @@ bool XShop::onCreatureEnter(XCreature* cr)
     if (auto o = owner.lock()) {
         dynamic_cast<XShopKeeperAI *>(o->xai.get())->onCreatureEnterShop(cr);
     }
+
+    // And then the shop's own script, if it was given one - a shop is a place
+    // like any other, and this is the same MOVE_IN that EventPlace() delivers.
+    XAnyPlace::onCreatureEnter(cr);
 
     return true;
 }

@@ -200,7 +200,8 @@ function MakeAvanorValley()
 			BuildShop(x, y, 9, 3,
 				ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW,
 				'Noberik, the human shopkeeper',
-				{ wall = SHOP.wall, floor = SHOP.floor, min_value = 20 })
+				{ wall = SHOP.wall, floor = SHOP.floor, min_value = 20,
+				  handler = 'NoberikHandler' })
 		end)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "RATCELLAR", x, y) end)
 		DrawPattern(10, 40)

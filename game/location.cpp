@@ -413,12 +413,18 @@ std::pair<int, int> Range(const sol::optional<sol::table>& options, const char* 
 
 void XLocation::CreateShop(unsigned int kind, XRect& rect, const std::string& sk_name, XShop::Door sd,
                            const XTileType::Id wall, const XTileType::Id floor,
-                           const int min_value, const int max_value)
+                           const int min_value, const int max_value,
+                           const std::string& handler)
 {
-    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd, wall, floor, min_value, max_value);
+    // The handler goes to both: to the shop, which is the place that
+    // notices somebody walking in (MOVE_IN, as EventPlace delivers it),
+    // and to the keeper, who is the creature that notices being spoken to
+    // (CHAT). One name, so a shop's script is one script.
+    XShop * shop = new XShop(rect, (ItemKind)kind, this, sd, wall, floor, min_value, max_value, handler);
     AddPlace(shop);
     XCreature * cr = NewCreature(CN_SHOPKEEPER, rect);
     ((XShopkeeper*)cr)->SetShop(sk_name, shop);
+    cr->event_handler = handler;
 }
 
 int XLocation::GetCreatureCount(const CREATURE_CLASS& creature_class)
@@ -428,7 +434,13 @@ int XLocation::GetCreatureCount(const CREATURE_CLASS& creature_class)
     for (const auto& [key, obj] : objects) {
         auto* cr = dynamic_cast<XCreature*>(obj);
 
-        if (cr && !cr->isHero() && cr->l->guid() == this->guid() && cr->creature_class == creature_class) {
+        // cr->l, not just cr: a creature that is in the middle of dying has
+        // had its location cleared already, and this is reachable from the
+        // death hook itself - world/tally.lua counts what is left the
+        // moment something dies. Asking a null location for its guid is
+        // how counting the dead used to end.
+        if (cr && cr->l && !cr->isHero() && cr->l->guid() == this->guid()
+            && cr->creature_class == creature_class) {
             count++;
         }
     }
@@ -465,10 +477,15 @@ void XLocation::BuildShop(int x, int y, int w, int h, int mask, const std::strin
     const auto min_value = options ? options->get_or("min_value", 0) : 0;
     const auto max_value = options ? options->get_or("max_value", 10000) : 10000;
 
+    // `handler` names a script this keeper answers with, the same way a
+    // creature given one by SetEventHandler() does: it hears CHAT, and it
+    // hears MOVE_IN when a customer walks in.
+    const auto handler = options ? options->get_or("handler", std::string()) : std::string();
+
     current_location->CreateShop(mask, shop_rect, keeper_name, static_cast<XShop::Door>(door),
         RequiredTile(options, "wall", current_location->id),
         RequiredTile(options, "floor", current_location->id),
-        min_value, max_value);
+        min_value, max_value, handler);
 }
 
 std::vector<int>* XLocation::lua_int_buffer = nullptr;

@@ -10,20 +10,13 @@ amount that had quietly never worked now does.
 
 ### New things to do
 
-**Bring Brida's daughter home.**
-Brida keeps a house in the village, and she has lost her daughter. Giana went
-into the valley and never came back — a bandit calling himself Rotmoth is
-holding her in a cave east of the village, past where the bandits lurk near
-the bridge, and he wants 150 gold coins for her.
-
-You can pay him. You can also refuse, in which case he will not take it well.
-Either way Giana follows you out of the cave, and once she is back among the
-houses she stays there, where her mother can find her. Brida has little to
-give you but she has not forgotten her own mother's craft, and what she
-presses into your hands is worth having.
-
-The quest was started by the original development team, but existed only in
-fragments. It can now be started, played and finished.
+**Noberik has a cellar problem.** The armourer in the small town asks anyone
+capable-looking who walks into his shop to clear out whatever is nesting
+below it - rodents, restless dead, or anything in between - and you keep
+whatever you carry up. The stair opposite his shop has always been there
+and nothing ever gave you a reason to take it, while the two errands the
+valley hands out first both want a hero who has already been in a fight.
+This is where to learn that.
 
 **The beginner's dungeon can be finished in one visit.**
 The Elder sends you to kill the demon in the caves west of the village, and
@@ -45,6 +38,21 @@ rather than a wall. He is still far stronger than you and will win a
 straight exchange of blows — but he is slower than you are, which he always
 was, and that is the opening. Back away, shoot, drink something, and pick
 your ground.
+
+**Bring Brida's daughter home.**
+Brida keeps a house in the village, and she has lost her daughter. Giana went
+into the valley and never came back — a bandit calling himself Rotmoth is
+holding her in a cave east of the village, past where the bandits lurk near
+the bridge, and he wants 150 gold coins for her.
+
+You can pay him. You can also refuse, in which case he will not take it well.
+Either way Giana follows you out of the cave, and once she is back among the
+houses she stays there, where her mother can find her. Brida has little to
+give you but she has not forgotten her own mother's craft, and what she
+presses into your hands is worth having.
+
+The quest was started by the original development team, but existed only in
+fragments. It can now be started, played and finished.
 
 **Clear the old road east.** Once the demon is dead and his farmers are
 back at work, Elder Gridor has a second thing to ask. The road east has been

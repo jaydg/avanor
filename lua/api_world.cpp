@@ -298,6 +298,19 @@ void* GuardianClass(const sol::object& crc, const std::string& gid, int x, int y
     return cr;
 }
 
+// The id a location was created under, for content holding one of the
+// pointers GetCreatureLocation() and GetObjectLocation() hand out and
+// wanting to know which place it is. Nil for nothing at all, so that
+// "is this creature in the cellar?" reads the same as every other maybe.
+sol::optional<std::string> GetLocationId(sol::optional<void*> location)
+{
+    if (!location || !*location) {
+        return sol::nullopt;
+    }
+
+    return static_cast<XLocation*>(*location)->id;
+}
+
 //SetStartLocation("MAIN", 26, 4, 6, 5)
 // Names the location a new hero starts in, optionally narrowed to an
 // area of it. Without a call to this there is no world to start a game
@@ -1258,6 +1271,7 @@ void RegisterWorldApi(sol::state_view& lua)
     lua.set_function("isObjectVisible", &lua_api::isObjectVisible);
     lua.set_function("GetObjectXY", &lua_api::GetObjectXY);
     lua.set_function("GetObjectLocation", &lua_api::GetObjectLocation);
+    lua.set_function("GetLocationId", &lua_api::GetLocationId);
     lua.set_function("Recall", &lua_api::Recall);
     lua.set_function("RecallText", &lua_api::RecallText);
     lua.set_function("MemoriseText", &lua_api::MemoriseText);

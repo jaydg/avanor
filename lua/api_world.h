@@ -80,6 +80,7 @@ namespace lua_api
     void Treasure(int x, int y, int val);
     void Chest(int x, int y, sol::optional<int> cnt, sol::optional<int> flg, sol::optional<int> mnval, sol::optional<int> mxval);
     void Trap(int x, int y);
+    sol::optional<std::string> GetLocationId(sol::optional<void*> location);
     void SetStartLocation(const std::string& loc_id, sol::optional<int> x, sol::optional<int> y,
                           sol::optional<int> w, sol::optional<int> h);
     void SetWanderingAllowed(const std::string& loc_id, bool allowed);

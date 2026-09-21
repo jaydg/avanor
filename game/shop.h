@@ -56,7 +56,8 @@ class XShop : public XAnyPlace
         DECLARE_CREATOR(XShop, XAnyPlace);
         XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
               XTileType::Id wall, XTileType::Id floor,
-              int _min_value, int _max_value);
+              int _min_value, int _max_value,
+              const std::string& handler = {});
 
         // What this shop is willing to have on its floor, in gold. The
         // generator rolls an item up to a hundred times looking for one
