@@ -18,6 +18,12 @@ and nothing ever gave you a reason to take it, while the two errands the
 valley hands out first both want a hero who has already been in a fight.
 This is where to learn that.
 
+He is also the one who knows where to get a sword that kills orcs. Ozorick
+wants one, there is exactly one forge in the world that makes them -
+Todin's, under the mountain - and nothing used to say so, or say what the
+road down to him is like. Ask Noberik while the captain's errand is open
+and he will tell you both.
+
 **The beginner's dungeon can be finished in one visit.**
 The Elder sends you to kill the demon in the caves west of the village, and
 until now that was not a fight you could have. Beelzevile stood behind so

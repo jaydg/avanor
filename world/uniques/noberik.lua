@@ -32,6 +32,28 @@ local function OfferTheErrand()
 	QuestModify("noberik_cellar", XQuest.KNOWN)
 end
 
+-- WHERE TO GET A SWORD THAT KILLS ORCS
+--
+-- Ozorick wants a blade branded for orc-slaying (world/uniques/ozorik.lua)
+-- and there is exactly one place in the world that will make one: Todin,
+-- under the mountain, who forges a brand into a weapon for 450 gp
+-- (world/uniques/todin.lua). An armourer is the one man in the valley who
+--  would know of another smith, and would know what the road to him is like.
+--
+-- Said while Ozorick's errand is open and not yet done, so that it arrives
+-- when it is worth something rather than as scenery.
+local function MentionTodin()
+	AddMessage("'Orcs, is it? Then you want better steel than mine. Todin keeps a forge under the mountain, east of the village - he'll work a blade so that it bites orcs like kindling, and he asks about four hundred and fifty gold for it.'")
+	AddMessage("'Mind the way down, though. Six floors of old dwarven delving, and it has not been empty in years.'")
+end
+
+-- Whether that is worth saying: he has the captain's errand and has not
+-- yet finished it.
+local function OzorikNeedsASword()
+	return QuestStatus("ozorik") == XQuest.KNOWN
+end
+
+
 -- Paid in the only coin he promised: whatever came up the stair.
 local function PayOff()
 	AddMessage("'You cleared them out! The place is mine again - and what you carried up is yours, as I said.'")
@@ -61,6 +83,14 @@ function NoberikHandler(e, a, b)
 			PayOff()
 		end
 
+		-- His own errand first - it is why he calls out at all - and the
+		-- smith after it, once, so that walking past his door every day is
+		-- not a lecture.
+		if (OzorikNeedsASword() and QuestState:GetFlag('noberik_told_of_todin') ~= 1) then
+			QuestState:SetFlag('noberik_told_of_todin', 1)
+			MentionTodin()
+		end
+
 		return true
 	end
 
@@ -79,8 +109,16 @@ function NoberikHandler(e, a, b)
 			end
 		elseif (status == XQuest.COMPLETE) then
 			PayOff()
-		else
+		elseif (not OzorikNeedsASword()) then
 			AddMessage("'Good hunting to you.'")
+		end
+
+		-- Asked for rather than volunteered, and so repeated as often as it
+		-- is wanted: a player who has forgotten the name has nowhere else
+		-- to get it.
+		if (OzorikNeedsASword()) then
+			QuestState:SetFlag('noberik_told_of_todin', 1)
+			MentionTodin()
 		end
 
 		return true
