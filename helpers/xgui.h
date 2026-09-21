@@ -172,6 +172,11 @@ class XGuiList final
         std::size_t top_item_lines_count{};
         std::size_t top_line{};
         int top_item_index{};
+        // Which key labels which line, and back again - see the comment
+        // on SelectorChar() for why Z is never one of them.
+        static char SelectorChar(int index);
+        static int SelectorIndex(int ch, int count);
+
         int top_selectable_index;
         int selectable_items_count;
 

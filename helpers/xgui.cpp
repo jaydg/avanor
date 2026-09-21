@@ -212,14 +212,12 @@ void XGuiList::Put(const std::optional<std::reference_wrapper<std::ofstream>> fi
                     vFPutS(file.value(), " ");
                 } else {
                     // The letter that picks this line: [A], [B], [C]...
-                    // Counted per screenful, not per list, so it runs past 'Z'
-                    // only on a terminal tall enough to show twenty-seven
-                    // selectable lines at once - and the key handler below
-                    // reads the letter back the same way it is written here,
-                    // so the two stay in step wherever ASCII takes them.
+                    // Counted per screenful, not per list. SelectorChar()
+                    // decides it and SelectorIndex() reads it back, so the
+                    // two stay in step wherever ASCII takes them.
                     const std::string selector =
                         fmt::format("<DECORATION>[<SELECTOR>{}<DECORATION>]",
-                                    static_cast<char>('A' + i++));
+                                    SelectorChar(i++));
 
                     vGotoXY(0, y_pos);
                     vPutS(selector);
@@ -354,6 +352,42 @@ void XGuiList::Relayout()
     top_selectable_index = 0;
 }
 
+// Z is how a list is closed, so no line is ever labelled with it: the
+// letters run A, B, ... Y and then straight past Z into the punctuation
+// that follows it in ASCII, which is where a screenful of more than
+// twenty-five selectable lines ended up anyway. Labelling one [Z] made it
+// unselectable - the key closed the list instead, the caller was told
+// nothing had been picked, and in the give command that looked like the
+// item doing nothing at all.
+char XGuiList::SelectorChar(const int index)
+{
+    const char c = static_cast<char>('A' + index);
+
+    return c >= 'Z' ? static_cast<char>(c + 1) : c;
+}
+
+// The inverse: which line that key picks, or -1 for a key that picks none.
+// Upper and lower case both choose, as they always have.
+int XGuiList::SelectorIndex(const int ch, const int count)
+{
+    // Neither case of the key that closes the list is ever a selector.
+    if (ch == 'Z' || ch == 'z') {
+        return -1;
+    }
+
+    int index;
+
+    if (ch >= 'A' && ch < 'a') {
+        index = ch - 'A' - (ch > 'Z' ? 1 : 0);
+    } else if (ch >= 'a') {
+        index = ch - 'a' - (ch > 'z' ? 1 : 0);
+    } else {
+        return -1;
+    }
+
+    return (index >= 0 && index < count) ? index : -1;
+}
+
 int XGuiList::Run(int flag, int flag2)
 {
     V_BUFFER xyzbuf;
@@ -371,6 +405,16 @@ int XGuiList::Run(int flag, int flag2)
         Put();
         int ch = vGetch();
         last_pressed_key = ch;
+
+        if (const int picked = SelectorIndex(ch, selectable_items_count); picked >= 0) {
+            vRestore(&xyzbuf);
+
+            if (!flag) {
+                vRefresh();
+            }
+
+            return top_selectable_index + picked;
+        }
 
         switch (ch) {
             case KEY_RESIZE:
@@ -412,20 +456,6 @@ int XGuiList::Run(int flag, int flag2)
 
             default:
                 break;
-        }
-
-        if ((ch >= 'a' && ch < 'a' + selectable_items_count) || (ch >= 'A' && ch < 'A' + selectable_items_count)) {
-            vRestore(&xyzbuf);
-
-            if (!flag) {
-                vRefresh();
-            }
-
-            if (ch - 'a' >= 0) {
-                return top_selectable_index + (ch - 'a');
-            } else {
-                return top_selectable_index + (ch - 'A');
-            }
         }
 
         // if flag then we need to return

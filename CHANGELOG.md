@@ -465,6 +465,12 @@ Things that went quietly wrong the longer you played:
   thanked you and handed over your reward, the game stopped counting it, and
   only players who never went back to claim it were ever paid. The pump is
   what earns those points now, and nothing afterwards takes them away.
+- One line of every long list could not be chosen. The letters that pick
+  lines are counted down the screen, and on a terminal tall enough to show
+  twenty-six of them at once the twenty-sixth was labelled `[Z]` - which is
+  also the key that closes the list. Closing won, so pressing it shut the
+  list and reported that nothing had been picked: the item was simply
+  unusable, silently, with no way to tell what was wrong.
 - Your purse could switch off the burden system for good. Gold weighs
   nothing in Avanor, but the code that handed coins in and out kept a weight
   of its own — one unit for every ten coins — that no other part of the game
