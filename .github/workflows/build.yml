@@ -130,8 +130,11 @@ jobs:
       # git has to be there before the checkout: without it actions/checkout
       # quietly falls back to fetching a tarball through the REST API, and
       # the workspace ends up with no .git for `make version` to read.
+      # wget along with the rest: stc.hpp is packaged nowhere, so the
+      # default build fetches it into external/ on demand (see the Makefile
+      # header), and rpmbuild runs that build inside this container.
       - name: Install packaging dependencies
-        run: dnf install -y rpm-build gcc-c++ make git pkgconf-pkg-config argparse-devel cereal-devel fmt-devel libzstd-devel luajit-devel sol2-devel
+        run: dnf install -y rpm-build gcc-c++ make git wget pkgconf-pkg-config argparse-devel cereal-devel fmt-devel libzstd-devel luajit-devel sol2-devel
       - uses: actions/checkout@v7
       - name: Build the package
         run: |
