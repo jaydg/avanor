@@ -153,7 +153,13 @@ STC_URL = https://raw.githubusercontent.com/illyigan/simple_term_colors/$(STC_VE
 
 # Whatever the build has to fetch for itself lands in external/ - stc.hpp
 # always, argparse.hpp on Windows.
-CFLAGS += -Iexternal $(shell pkg-config --cflags fmt luajit)
+#
+# -isystem rather than -I: these are somebody else's headers, and -Werror is
+# ours. stc.hpp narrows unsigned to int in a braced return, which our own
+# compiler says nothing about and Debian's refuses outright. A system include
+# directory is how a compiler is told to hold its tongue about code that is
+# not the project's to change.
+CFLAGS += -isystem external $(shell pkg-config --cflags fmt luajit)
 LIBS = $(shell pkg-config --libs fmt luajit) -lzstd
 
 # The terminal backend, and the only thing that changes what has to be
