@@ -74,14 +74,9 @@ function MakeAvanorValley()
 		max = 5, refresh = 40000,
 		area = {x = 75, y = 5, w = 25, h = 10}})
 
-	-- Orcish war party.
-	-- GuardianClass() picks a random ORC-class monster per spawn
-	-- (7 templates - orc, large orc, hill orc, ...).
-	for i = 1, ORC_WAR_PARTY_SIZE do
-		GuardianClass("orc", ORC_WAR_PARTY, ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y,
-			ORC_MUSTER_AREA.w, ORC_MUSTER_AREA.h, XStandardAI.GUARD_AREA)
-	end
-
+	-- The war party itself is mustered further down, with the camp it
+	-- musters in: it stands on the trampled earth that camp lays, so it
+	-- cannot be raised before there is any.
 	CreateTimerEvent('OrcWarPartyAttack', ORC_ATTACK_DELAY)
 
 	-- The village <-> town teleports.
@@ -295,6 +290,46 @@ function MakeAvanorValley()
 		AddTranslation("^", XTileType.HIGH_MOUNTAIN)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "EXTINCT_VOLCANO", x, y) end)
 		DrawPattern(46, 75)
+
+
+-- ORCISH WAR CAMP --
+--
+-- Where the war party musters, in the grass under the southern foothills.
+-- Nothing here is built: a war party on the march drives a ring of stakes,
+-- pitches hide tents inside it and tramples the grass to bare earth, and
+-- that is the whole of the camp. The one gap in the ring faces north up
+-- the valley, towards the town they mean to sack, and is flanked by two
+-- stakes of skulls, which is what passes for a gate. A great fire burns at
+-- the middle of it with a spit over it, and what the party has taken so
+-- far sits beside the largest tent.
+		SetPattern(ORC_MUSTER_AREA.w, ORC_MUSTER_AREA.h,
+		"    XXXXttttXXXX    " ..
+		"  XXXttTttttTttXXX  " ..
+		" XXttnttttttttnttXX " ..
+		"XXttttttttttttttttXX" ..
+		"Xttnttttt*ttttttnttX" ..
+		"XttttttttrtttttttttX" ..
+		"XXttttttttttttttttXX" ..
+		" XXttntttnctttnttXX " ..
+		"  XXXttttttttttXXX  " ..
+		"    XXXXXXXXXXXX    ")
+		AddTranslation("t", XTileType.PATH)
+		AddTranslation("n", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a hide tent') end)
+		AddTranslation("T", function(x, y) Furniture(x, y, xColor.xWHITE, '|', 'a stake of skulls') end)
+		AddTranslation("*", function(x, y) Furniture(x, y, xColor.xRED, '*', 'a great fire') end)
+		AddTranslation("r", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a roasting spit') end)
+		AddTranslation("c", function(x, y) Chest(x, y, 6) end)
+		DrawPattern(ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y)
+
+		-- GuardianClass() picks a random ORC-class monster per spawn
+		-- (7 templates - orc, large orc, hill orc, ...). `on` musters
+		-- them on the camp's trampled earth, which is to say inside
+		-- their own palisade and out of the fire, the tents and the
+		-- chief's plunder.
+		for i = 1, ORC_WAR_PARTY_SIZE do
+			GuardianClass("orc", ORC_WAR_PARTY, ORC_MUSTER_AREA.x, ORC_MUSTER_AREA.y,
+				ORC_MUSTER_AREA.w, ORC_MUSTER_AREA.h, { on = XTileType.PATH })
+		end
 
 
 -- UNDEAD's TOMB --
