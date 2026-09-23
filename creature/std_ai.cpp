@@ -220,6 +220,13 @@ void XStandardAI::Move()
         return;
     }
 
+    // Mending, when there is nobody to fight.
+    if (!enemy && CastSpell()) {
+        ai_owner->nx = ai_owner->x;
+        ai_owner->ny = ai_owner->y;
+        return;
+    }
+
     int was_attack = 0;
     int was_item_pick = 0;
 

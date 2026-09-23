@@ -90,6 +90,9 @@ function MakeDwarvenCity()
 			local altar = PlaceSpecial("XAltar", x, y)
 			SetView(altar, "_", xColor.xWHITE)
 			SetAltarDeity(altar, "life")
+
+			-- And the cleric who keeps it.
+			CreateDwarfCleric(x, y)
 		end)
 		AddTranslation("P", function(x, y) for i = 1, 6 do Guardian('dwarf', "dwarven_guardian", x, y, 32, 16) end end)
 		AddTranslation("T", function(x, y) CreateTodin(x, y) end)

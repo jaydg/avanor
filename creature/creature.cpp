@@ -104,6 +104,8 @@ void XCreature::RegisterLua(sol::state_view& lua)
         "MoneyOp", &XCreature::MoneyOp,
         "IsCreatureVisible", [](XCreature& cr, XCreature* target) { return cr.isCreatureVisible(target) != 0; },
         "isHero", &XCreature::isHero,
+        "hp", sol::readonly(&XCreature::HP),
+        "max_hp", sol::property(&XCreature::GetMaxHP),
         "name", &XMapObject::name,
         "ContainItem", &XCreature::ContainItem,
         "IsMale", [](XCreature& cr) { return static_cast<bool>(cr.creature_person_type & XCreature::HE); },

@@ -6,6 +6,7 @@
 -- calls inherit from a base template defined there.
 dofile("./world/uniques/ahkulan.lua")
 dofile("./world/uniques/beelzevile.lua")
+dofile("./world/uniques/dwarf_cleric.lua")
 dofile("./world/uniques/elder_gridor.lua")
 dofile("./world/uniques/gefeon.lua")
 dofile("./world/uniques/gekta.lua")
