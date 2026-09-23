@@ -490,6 +490,11 @@ Things that went quietly wrong the longer you played:
   keeps quests under headings - open, finished but not yet reported, failed
   and completed - so what is left to collect is as plain as what is left to
   do, and what you have already done is there to read.
+- The dwarven city's guard was worn away and never replaced. The guards at the
+  gate were peaceful, which meant they were set on nobody at all and watched
+  what came down the stair walk past them; and they were cowards, so the
+  moment one was hurt he ran - from things faster than he was. They also had
+  fewer hit points than the goblin warmasters that live on the level above.
 - One line of every long list could not be chosen. The letters that pick
   lines are counted down the screen, and on a terminal tall enough to show
   twenty-six of them at once the twenty-sixth was labelled `[Z]` - which is
