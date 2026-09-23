@@ -624,6 +624,19 @@ int XEffect::Engine(const EffectPart& part, const EFFECT_DATA* pData)
     return 0;
 }
 
+namespace {
+
+// Who an effect's self-acting parts treat: the one it is aimed at, or the
+// one who called it up when nothing else is named. Every ordinary cast
+// aims at the caster (XEffect::Make sets it), so this changes nothing for
+// them; it is what lets a named target mean something.
+XCreature* Recipient(const EFFECT_DATA* pData)
+{
+    return pData->target ? pData->target : pData->caller;
+}
+
+} // namespace
+
 int XEffect::Make(const EFFECT_DATA* pData)
 {
     const EffectStats* row = FindEffect(pData->effect);
@@ -644,16 +657,22 @@ int XEffect::Make(const EFFECT_DATA* pData)
         int done = 0;
 
         switch (part.kind) {
+            // On whoever the effect is aimed at. XEffect::Make(caster, ..)
+            // aims one at the caster, so a spell cast on oneself, a potion
+            // drunk and a scroll read all land exactly where they always
+            // did - but a trap names the creature that stepped on it, and
+            // MakeEffect() and a healer casting on a hurt ally name
+            // somebody else.
             case EffectPart::Kind::HEAL:
-                done = Heal(pData->caller, part.count, sides, part.bonus);
+                done = Heal(Recipient(pData), part.count, sides, part.bonus);
                 break;
 
             case EffectPart::Kind::CURE:
-                done = Cure(pData->caller, part.count, sides, part.bonus);
+                done = Cure(Recipient(pData), part.count, sides, part.bonus);
                 break;
 
             case EffectPart::Kind::MANA:
-                done = Mana(pData->caller, part.count, sides, part.bonus);
+                done = Mana(Recipient(pData), part.count, sides, part.bonus);
                 break;
 
             case EffectPart::Kind::MODIFIER: {
@@ -661,8 +680,8 @@ int XEffect::Make(const EFFECT_DATA* pData)
                     ? pData->power
                     : XDice(part.count, sides, part.bonus).GetResult();
 
-                done = pData->caller->md->Add(part.modifier,
-                    part.relieves ? -val : val, pData->caller);
+                done = Recipient(pData)->md->Add(part.modifier,
+                    part.relieves ? -val : val, Recipient(pData));
                 break;
             }
 

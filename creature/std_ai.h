@@ -270,6 +270,8 @@ class XStandardAI
 
         int FindPath(const XPoint* target, XPoint* direction) const;
         int AttackEnemy(int x, int y) const;
+        // The worst-hurt of its own kind standing beside it, or null.
+        XCreature* WoundedAlly() const;
         int CastSpell() const;
         int Shoot() const;
         int ReadScroll() const;

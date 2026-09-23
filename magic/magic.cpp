@@ -288,19 +288,47 @@ int XMagic::GetSpellRange(const XSpell* spell, XCreature* caster)
     return XEffect::GetRange(spell->GetEffect(), GetSpellPower(spell, caster));
 }
 
-RESULT XMagic::Cast(XSpell* spell, XCreature* caster)
+RESULT XMagic::Cast(XSpell* spell, XCreature* caster, XCreature* on)
 {
     const int power = GetSpellPower(spell, caster);
 
     if (caster->PP - spell->GetManaCost() >= 0) {
         if (caster->isInVisibleArea() && !caster->isHero()) {
-            msgwin.Add(fmt::format("{} {} {}.",
-                caster->GetNameEx(CRN_T1),
-                caster->GetVerb("cast"),
-                spell->GetName()));
+            // Said as it looks from outside: casting at somebody names
+            // them, so a shaman patching up a warrior reads as that rather
+            // than as one more spell going off.
+            msgwin.Add(on && on != caster
+                ? fmt::format("{} {} {} on {}.",
+                    caster->GetNameEx(CRN_T1),
+                    caster->GetVerb("cast"),
+                    spell->GetName(),
+                    on->GetNameEx(CRN_T1))
+                : fmt::format("{} {} {}.",
+                    caster->GetNameEx(CRN_T1),
+                    caster->GetVerb("cast"),
+                    spell->GetName()));
         }
 
-        const int res = XEffect::Make(caster, spell->GetEffect(), power);
+        int res;
+
+        if (on && on != caster) {
+            // The long form of Make(), the one a trap or a script uses,
+            // because the short one always acts on whoever cast it.
+            EFFECT_DATA ed;
+            ed.effect = spell->GetEffect();
+            ed.caller = caster;
+            ed.l = caster->l;
+            ed.call_x = caster->x;
+            ed.call_y = caster->y;
+            ed.target = on;
+            ed.target_x = on->x;
+            ed.target_y = on->y;
+            ed.power = power;
+
+            res = XEffect::Make(&ed);
+        } else {
+            res = XEffect::Make(caster, spell->GetEffect(), power);
+        }
 
         if (res != ABORT) {
             caster->PP -= spell->GetManaCost();

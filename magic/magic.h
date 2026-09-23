@@ -105,7 +105,10 @@ class XMagic
         XMagic();
         explicit XMagic(XMagic*) = delete;
 
-        RESULT Cast(XSpell* spell, XCreature* caster);
+        // `on` is who the spell is meant for. Left out, a caster casts on
+        // themselves, which is what casting has always meant here; naming
+        // somebody else is how a healer treats the wounded beside them.
+        RESULT Cast(XSpell* spell, XCreature* caster, XCreature* on = nullptr);
 
         // How hard a spell hits and how far it reaches: the caster's
         // willpower, what they know of this particular spell, and what

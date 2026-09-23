@@ -917,6 +917,58 @@ int XStandardAI::AttackEnemy(int ex, int ey) const
 
 }
 
+// Somebody beside this one who is worth a healing spell: hurt as badly as
+// this creature would have to be to treat itself, and one of its own.
+//
+// "Its own" is the group it belongs to, or failing that the sort of
+// creature it is - a kobold shaman patches up kobolds and gnolls because
+// they are kobolds, a city guard patches up the watch because they share
+// its group. Never the hero: a monster is not a field hospital for whoever
+// walks in, and never somebody it would fight.
+//
+// Adjacent only, because a healing spell takes no aim at all
+// (XSpell::CanReach answers false for one at any distance), so the only
+// honest reading is that it is laid on by hand. A healer therefore has to
+// walk to the wounded, which is worth watching.
+XCreature* XStandardAI::WoundedAlly() const
+{
+    XCreature* worst = nullptr;
+    int worst_hp = 0;
+
+    for (int dx = -1; dx <= 1; dx++) {
+        for (int dy = -1; dy <= 1; dy++) {
+            if (dx == 0 && dy == 0) {
+                continue;
+            }
+
+            XCreature* other = ai_owner->l->map->GetMonster(ai_owner->x + dx, ai_owner->y + dy);
+
+            // isEnemy() is not const in this codebase, hence the cast; it
+            // decides nothing and changes nothing here.
+            if (!other || other->isHero()
+                || const_cast<XStandardAI*>(this)->isEnemy(other)
+                || !ai_owner->isCreatureVisible(other)) {
+                continue;
+            }
+
+            const bool same_lot =
+                (ai_owner->groupID() != GID_NONE && other->groupID() == ai_owner->groupID())
+                || other->creature_class == ai_owner->creature_class;
+
+            if (!same_lot || other->HP >= other->GetMaxHP() / 3) {
+                continue;
+            }
+
+            if (!worst || other->HP < worst_hp) {
+                worst = other;
+                worst_hp = other->HP;
+            }
+        }
+    }
+
+    return worst;
+}
+
 int XStandardAI::CastSpell() const {
     if (ai_owner->m->spells.empty()) {
         return 0;
@@ -928,6 +980,18 @@ int XStandardAI::CastSpell() const {
             if (spell->GetUse() == XSpell::Use::HEALING
                 && spell->GetManaCost() <= ai_owner->PP
                 && ai_owner->m->Cast(spell.get(), ai_owner) == SUCCESS) {
+                return 1;
+            }
+        }
+    }
+
+    // then the worst hurt of its own standing next to it. After itself,
+    // deliberately: a healer that dies helping is no help to anybody.
+    if (XCreature* hurt = WoundedAlly()) {
+        for (const auto& spell: ai_owner->m->spells) {
+            if (spell->GetUse() == XSpell::Use::HEALING
+                && spell->GetManaCost() <= ai_owner->PP
+                && ai_owner->m->Cast(spell.get(), ai_owner, hurt) == SUCCESS) {
                 return 1;
             }
         }
