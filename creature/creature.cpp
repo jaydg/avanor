@@ -477,12 +477,39 @@ bool XCreature::Run()
     return isValid();
 }
 
+// A door in the way, and hands to open it with. A creature with no hand to
+// pull with still cannot: a rat is stopped by a closed door, as it should be.
+bool XCreature::OpenTheWay()
+{
+    if (nx == x && ny == y) {
+        return false;
+    }
+
+    auto* door = dynamic_cast<XDoor *>(l->map->GetSpecial(nx, ny));
+
+    if (!door || door->isOpened || !GetBodyPart(BP_HAND)) {
+        return false;
+    }
+
+    door->Switch();
+
+    if (isInVisibleArea()) {
+        msgwin.Add(fmt::format("{} {} the door.", GetNameEx(CRN_T1), GetVerb("open")));
+    }
+
+    return true;
+}
+
 void XCreature::DoMove()
 {
     if (l->map->XGetMovability(nx, ny) == 2 && (nx != x || ny != y)) {
         Attack();
     } else if (TestMove() || (x == nx && y == ny)) {
         Move();
+    } else {
+        // Blocked. If it is a door and this one has hands, working it is
+        // what the turn is spent on; the step itself comes next turn.
+        OpenTheWay();
     }
 }
 

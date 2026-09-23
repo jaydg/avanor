@@ -179,7 +179,9 @@ class XStandardAI
 
         int Wear() const;
 
-        void GetDirection(const XPoint* target, XPoint* direction) const;      // calculate exact direction to target
+        // The step to take towards a target. False when there is no way
+        // there at all, which is not the same as being there already.
+        bool GetDirection(const XPoint* target, XPoint* direction) const;
         void GetRandDirection(const XPoint* target, XPoint* direction) const;  // calculate approximate direction target
         void GetExactDirection(const XPoint* target, XPoint* direction) const; // calculate exact direction on target
 
@@ -268,7 +270,28 @@ class XStandardAI
     protected:
         std::weak_ptr<XCreature> personal_enemy[ENEMY_LIST_SIZE];
 
-        int FindPath(const XPoint* target, XPoint* direction) const;
+        bool FindPath(const XPoint* target, XPoint* direction) const;
+
+        // What the ground costs this creature to cross - see the comment
+        // on the definition.
+        int StepCost(int x, int y) const;
+
+        // The way last worked out and how far along it this creature is,
+        // so a route is walked rather than re-derived every turn. Not
+        // saved: a restored creature simply works out its way again, and
+        // a path that outlived the map it was found on would be worse
+        // than none.
+        mutable std::vector<XPoint> path;
+        mutable size_t path_step = 0;
+        mutable XPoint path_goal;
+        mutable std::string path_location;
+
+        // Whether anything asked for a way this turn. Move() lets the
+        // cache go when nothing did.
+        mutable bool path_wanted = false;
+
+        void ForgetPath() const;
+
         int AttackEnemy(int x, int y) const;
         // The worst-hurt of its own kind standing beside it, or null.
         XCreature* WoundedAlly() const;

@@ -34,6 +34,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/game.h"
 #include "helpers/msgwin.h"
 #include "map/map_objects.h"
+#include "map/pathfinder.h"
 
 void XStandardAI::RegisterLua(sol::state_view& lua)
 {
@@ -222,6 +223,10 @@ void XStandardAI::Move()
     int was_attack = 0;
     int was_item_pick = 0;
 
+    // Nobody has asked for a way yet this turn - see ForgetPath() at the
+    // end of it.
+    path_wanted = false;
+
     // companion may have died independently since we last checked; lock once
     // and reuse for the rest of this function rather than re-locking per use.
     auto companion_sp = companion.lock();
@@ -344,203 +349,138 @@ void XStandardAI::Move()
             invisible_hunting_mode = 1;
         }
     }
+
+    // Went nowhere in particular: wandered, pottered about with the pack,
+    // stood still. Whatever way was worked out before is of no more use
+    // to this creature, and most creatures spend most of their lives here
+    // - so it is let go of rather than carried around until they die.
+    //
+    // Asked here rather than in the branches themselves because the guard
+    // who has strayed off his beat takes the aimless branch first and is
+    // sent home afterwards; only once the whole turn is settled is it
+    // known that nothing wanted a way.
+    if (!path_wanted) {
+        ForgetPath();
+    }
 }
 
+// Let go of the way last worked out.
+//
+// shrink_to_fit() and not only clear(): clear() leaves the vector's buffer
+// exactly where it was, which is the room this is trying to give back.
+void XStandardAI::ForgetPath() const
+{
+    path.clear();
+    path.shrink_to_fit();
+    path_step = 0;
+}
+
+// How far a creature will bother to look for a way round. A level is at
+// most a couple of hundred cells on a side, so this is "anywhere on this
+// level" with room to spare; what actually bounds the work is the budget
+// A* is given below, not this.
 constexpr int find_path_deep = 200;
 
-int XStandardAI::FindPath(const XPoint* target, XPoint * direction) const
+// What the ground costs this creature.
+int XStandardAI::StepCost(const int x, const int y) const
 {
-    int dist_x = abs(target->x - ai_owner->x);
-    int dist_y = abs(target->y - ai_owner->y);
+    const XMapTile* cell = ai_owner->l->map->Cell(x, y);
 
-    if (dist_x > find_path_deep || dist_y > find_path_deep) {
-        direction->x = 0;
-        direction->y = 0;
-        return 0;
+    if (!cell) {
+        return PathBlocked;
     }
 
-    int center_x = (target->x + ai_owner->x) / 2;
-    int center_y = (target->y + ai_owner->y) / 2;
-
-    int path_flags[find_path_deep + 4][find_path_deep + 4] = {};
-
-    int map_x = center_x - find_path_deep / 2 + 2;
-    int map_y = center_y - find_path_deep / 2 + 2;
-    XRect map_rect(map_x, map_y, map_x + find_path_deep, map_y + find_path_deep);
-
-    XPoint pa[8 * find_path_deep];
-    XPoint pb[8 * find_path_deep];
-
-    path_flags[target->x - map_x][target->y - map_y] = 1;
-    pa[0].x = target->x;
-    pa[0].y = target->y;
-    int stop_flag = 1;
-    XPoint *pc = pa;
-    int list_len_pc = 1;
-    XPoint *pd = pb;
-
-    for (int i = 2; i < find_path_deep + 2 && stop_flag; i++) {
-        int list_len_pd = 0;
-
-        for (int j = 0; j < list_len_pc; j++) {
-            XPoint *cpt = &pc[j];
-
-            if (map_rect.PointIn(cpt->x - 1, cpt->y - 1) &&
-                path_flags[cpt->x - map_x - 1][cpt->y - map_y - 1] == 0) {
-                if (cpt->x - 1 == ai_owner->x &&
-                    cpt->y - 1 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = 1;
-                    direction->y = 1;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x - 1, cpt->y - 1) == 0) {
-                    path_flags[cpt->x - map_x - 1][cpt->y - map_y - 1] = i;
-                    pd[list_len_pd].x = cpt->x - 1;
-                    pd[list_len_pd].y = cpt->y - 1;
-                    list_len_pd++;
-                }
-            }
-
-            if (map_rect.PointIn(cpt->x - 0, cpt->y - 1) &&
-                path_flags[cpt->x - map_x - 0][cpt->y - map_y - 1] == 0) {
-                if (cpt->x - 0 == ai_owner->x &&
-                    cpt->y - 1 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = 0;
-                    direction->y = 1;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x - 0, cpt->y - 1) == 0) {
-                    path_flags[cpt->x - map_x - 0][cpt->y - map_y - 1] = i;
-                    pd[list_len_pd].x = cpt->x - 0;
-                    pd[list_len_pd].y = cpt->y - 1;
-                    list_len_pd++;
-                }
-            }
-
-            if (map_rect.PointIn(cpt->x + 1, cpt->y - 1) &&
-                path_flags[cpt->x - map_x + 1][cpt->y - map_y - 1] == 0) {
-                if (cpt->x + 1 == ai_owner->x &&
-                    cpt->y - 1 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = -1;
-                    direction->y = 1;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x + 1, cpt->y - 1) == 0) {
-                    path_flags[cpt->x - map_x + 1][cpt->y - map_y - 1] = i;
-                    pd[list_len_pd].x = cpt->x + 1;
-                    pd[list_len_pd].y = cpt->y - 1;
-                    list_len_pd++;
-                }
-            }
-
-            if (map_rect.PointIn(cpt->x + 1, cpt->y + 0) &&
-                path_flags[cpt->x - map_x + 1][cpt->y - map_y + 0] == 0) {
-                if (cpt->x + 1 == ai_owner->x &&
-                    cpt->y + 0 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = -1;
-                    direction->y = 0;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x + 1, cpt->y + 0) == 0) {
-                    path_flags[cpt->x - map_x + 1][cpt->y - map_y + 0] = i;
-                    pd[list_len_pd].x = cpt->x + 1;
-                    pd[list_len_pd].y = cpt->y + 0;
-                    list_len_pd++;
-                }
-            }
-
-            if (map_rect.PointIn(cpt->x - 1, cpt->y + 0) &&
-                path_flags[cpt->x - map_x - 1][cpt->y - map_y + 0] == 0) {
-                if (cpt->x - 1 == ai_owner->x &&
-                    cpt->y + 0 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = +1;
-                    direction->y = 0;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x - 1, cpt->y + 0) == 0) {
-                    path_flags[cpt->x - map_x - 1][cpt->y - map_y + 0] = i;
-                    pd[list_len_pd].x = cpt->x - 1;
-                    pd[list_len_pd].y = cpt->y + 0;
-                    list_len_pd++;
-                }
-
-            }
-
-            if (map_rect.PointIn(cpt->x - 1, cpt->y + 1) &&
-                path_flags[cpt->x - map_x - 1][cpt->y - map_y + 1] == 0) {
-                if (cpt->x - 1 == ai_owner->x &&
-                    cpt->y + 1 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = +1;
-                    direction->y = -1;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x - 1, cpt->y + 1) == 0) {
-                    path_flags[cpt->x - map_x - 1][cpt->y - map_y + 1] = i;
-                    pd[list_len_pd].x = cpt->x - 1;
-                    pd[list_len_pd].y = cpt->y + 1;
-                    list_len_pd++;
-                }
-            }
-
-            if (map_rect.PointIn(cpt->x + 0, cpt->y + 1) &&
-                path_flags[cpt->x - map_x + 0][cpt->y - map_y + 1] == 0) {
-                if (cpt->x + 0 == ai_owner->x &&
-                    cpt->y + 1 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = 0;
-                    direction->y = -1;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x + 0, cpt->y + 1) == 0) {
-                    path_flags[cpt->x - map_x + 0][cpt->y - map_y + 1] = i;
-                    pd[list_len_pd].x = cpt->x + 0;
-                    pd[list_len_pd].y = cpt->y + 1;
-                    list_len_pd++;
-                }
-            }
-
-            if (map_rect.PointIn(cpt->x + 1, cpt->y + 1) &&
-                path_flags[cpt->x - map_x + 1][cpt->y - map_y + 1] == 0) {
-                if (cpt->x + 1 == ai_owner->x &&
-                    cpt->y + 1 == ai_owner->y) {
-                    stop_flag = 0;
-                    direction->x = -1;
-                    direction->y = -1;
-                    break;
-                }
-
-                if (ai_owner->l->map->XGetMovability(cpt->x + 1, cpt->y + 1) == 0) {
-                    path_flags[cpt->x - map_x + 1][cpt->y - map_y + 1] = i;
-                    pd[list_len_pd].x = cpt->x + 1;
-                    pd[list_len_pd].y = cpt->y + 1;
-                    list_len_pd++;
-                }
-            }
+    // Somebody is standing there. Not a wall: they are walking about their
+    // own business and will be somewhere else shortly, so going round is
+    // worth about two steps and going through is worth waiting for. An
+    // enemy is not an obstacle at all - reaching one is the point.
+    if (XCreature* other = ai_owner->l->map->GetMonster(x, y)) {
+        if (other == ai_owner) {
+            return PathStep;
         }
 
-        XPoint* pt = pd;
-        pd = pc;
-        pc = pt;
-        list_len_pc = list_len_pd;
+        // The cast is the usual one - isEnemy() is not const here; see
+        // the note in WoundedAlly() below.
+        return const_cast<XStandardAI*>(this)->isEnemy(other)
+            ? PathStep
+            : PathStep * 3;
     }
 
-    return 1;
-};
+    auto* door = dynamic_cast<XDoor *>(cell->pSpecialObject.get());
 
-void XStandardAI::GetDirection(const XPoint* target, XPoint * direction) const
+    if (door && door->isOpened == 0) {
+        // A shut door is a step to open and a step to walk through, and
+        // only to somebody with a hand to pull it with (XCreature::
+        // OpenTheWay). To everything else it is still a wall.
+        return ai_owner->GetBodyPart(BP_HAND) ? PathStep * 2 : PathBlocked;
+    }
+
+    return std_tile_data[cell->n].movability < XTileType::Movability::UNWALKABLE
+        ? PathStep
+        : PathBlocked;
+}
+
+// The next step towards a target, or nothing when there is no way there.
+bool XStandardAI::FindPath(const XPoint* target, XPoint* direction) const
+{
+    if (abs(target->x - ai_owner->x) > find_path_deep
+        || abs(target->y - ai_owner->y) > find_path_deep) {
+        return false;
+    }
+
+    path_wanted = true;
+
+    const XPoint here(ai_owner->x, ai_owner->y);
+
+    // The way worked out last time, if it still goes where this one wants
+    // and the next step of it is still there to take. Walking a path that
+    // is already known is the whole reason to keep one: the search below
+    // used to be run from scratch by every creature on every turn of its
+    // life.
+    if (!path.empty()
+        && path_goal.x == target->x && path_goal.y == target->y
+        && path_location == ai_owner->l->id) {
+        // How far along it this creature actually is, rather than how far
+        // it was told to go: being handed a step is not the same as taking
+        // one - the move can be refused, or spent attacking instead, or
+        // the same question asked twice in a turn. Reading progress off
+        // the ground keeps all three honest.
+        while (path_step < path.size()
+            && path[path_step].x == here.x && path[path_step].y == here.y) {
+            path_step++;
+        }
+
+        if (path_step < path.size()) {
+            const XPoint& next = path[path_step];
+
+            if (abs(next.x - here.x) <= 1 && abs(next.y - here.y) <= 1
+                && StepCost(next.x, next.y) != PathBlocked) {
+                direction->x = next.x - here.x;
+                direction->y = next.y - here.y;
+
+                return true;
+            }
+        }
+    }
+
+    path = ::FindPath(*ai_owner->l->map, here, *target,
+        [this](const int x, const int y) { return StepCost(x, y); });
+
+    path_goal = *target;
+    path_location = ai_owner->l->id;
+    path_step = 0;
+
+    if (path.empty()) {
+        return false;
+    }
+
+    direction->x = path[0].x - here.x;
+    direction->y = path[0].y - here.y;
+
+    return true;
+}
+
+bool XStandardAI::GetDirection(const XPoint* target, XPoint * direction) const
 {
     int dx = sgn(target->x - ai_owner->x);
     int dy = sgn(target->y - ai_owner->y);
@@ -548,10 +488,10 @@ void XStandardAI::GetDirection(const XPoint* target, XPoint * direction) const
     if (ai_owner->x + dx == target->x && ai_owner->y + dy == target->y) {
         direction->x = dx;
         direction->y = dy;
-        return;
+        return true;
     }
 
-    FindPath(target, direction);
+    return FindPath(target, direction);
 }
 
 void XStandardAI::GetRandDirection(const XPoint* target, XPoint * direction) const
@@ -829,7 +769,11 @@ int XStandardAI::MoveTo(int x, int y, XLocation * l) const
         } else {
             XPoint direction_point;
             XPoint target_point(way->x, way->y);
-            GetDirection(&target_point, &direction_point);
+
+            if (!GetDirection(&target_point, &direction_point)) {
+                return 0;
+            }
+
             ai_owner->nx = ai_owner->x + direction_point.x;
             ai_owner->ny = ai_owner->y + direction_point.y;
             return 1;
@@ -838,7 +782,15 @@ int XStandardAI::MoveTo(int x, int y, XLocation * l) const
         // if it is this location than move to...
         XPoint direction_point;
         XPoint target_point(x, y);
-        GetDirection(&target_point, &direction_point);
+
+        // No way there is an answer, and the caller gets it: a follower
+        // that cannot reach its leader, or a hunter whose quarry is walled
+        // off, should go and do something else rather than shuffle in
+        // place against the wall between them for the rest of its life.
+        if (!GetDirection(&target_point, &direction_point)) {
+            return 0;
+        }
+
         ai_owner->nx = ai_owner->x + direction_point.x;
         ai_owner->ny = ai_owner->y + direction_point.y;
         return 1;

@@ -352,6 +352,9 @@ class XCreature : public XBaseObject
         static std::weak_ptr<XCreature> ToWeakPtr(XCreature* cr);
 
         int TestMove();
+
+        // Works a closed door in the way, if this one has hands.
+        bool OpenTheWay();
         virtual void NewMove();
         virtual void Move();
         virtual void HideOldView();
