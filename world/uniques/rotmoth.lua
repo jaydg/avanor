@@ -337,20 +337,7 @@ function SmallCaveEvent(e, p)
 	local bandit = FindCreature("SMALL_CAVE_2", "rotmoth")
 	local giana = FindCreature("SMALL_CAVE_2", "giana")
 
-	if (e == LuaEvent.MOVE and isHero(p)) then
---[[		local c = FindCreature("DWARFCITY", "dwarven_guardian", 75, 1, 4, 2)
-		if (not isEnemy(c, p)) then
-			DvCityEventMoveCount = DvCityEventMoveCount + 1
-			if (DvCityEventMoveCount < 3) then
-				AddMessage("'Leave here immediately!'")
-			elseif (DvCityEventMoveCount == 3) then
-				AddMessage("'This is your last chance to leave!'")
-			elseif (DvCityEventMoveCount > 3) then
-				SetItEnemyFor(p, c)
-			end
-		end
-]]--
-	elseif (e == LuaEvent.MOVE_IN and isHero(p)) then
+	if (e == LuaEvent.MOVE_IN and isHero(p)) then
 		if (QuestState:GetFlag('rotmoth_status') == 0) then
 			AddMessage("Halt! Don't move anymore or I'll kill her!")
 			AddMessage("Back off now, and bring me 150 golden coins - do that, and I might just show her mercy!")
