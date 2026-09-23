@@ -31,6 +31,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "map/dungeon_builder.h"
 #include "map/map.h"
 #include "map/map_objects.h"
+#include "engine/xlua.h"
 
 std::vector<RoomTemplate> room_templates;
 
@@ -200,7 +201,12 @@ void XRoom::Draw(XLocation * l, const XTileType::Id floor, const RoomShape& shap
         }
 
         if (room->on_drawn.valid()) {
-            room->on_drawn(r.left, r.top, room->pattern.Width(), room->pattern.Height());
+            // Reported rather than discarded, for the same reason as a
+            // pattern's marks - see XPattern::Draw().
+            const auto result =
+                room->on_drawn(r.left, r.top, room->pattern.Width(), room->pattern.Height());
+
+            XLua::ResultToBool(result, "a room's on_drawn");
         }
     }
 }

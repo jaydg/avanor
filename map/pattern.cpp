@@ -25,6 +25,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/point.h"
 #include "map/map.h"
 #include "map/pattern.h"
+#include "engine/xlua.h"
+#include <fmt/format.h>
 
 std::vector<XPattern::Translation> XPattern::default_translations;
 std::vector<XTileType::Id> XPattern::floor_priority;
@@ -143,9 +145,16 @@ int XPattern::Draw(XLocation* location, int x, int y) const
             location->map->SetXY(pt.x, pt.y, floor_priority[0]);
         }
 
-        if (const Translation* translation = Lookup(text[(pt.y - y) * w + pt.x - x]);
-            translation && translation->callback.valid()) {
-            translation->callback(pt.x, pt.y);
+        if (const char mark = text[(pt.y - y) * w + pt.x - x];
+            const Translation* translation = Lookup(mark)) {
+            if (translation->callback.valid()) {
+                // ResultToBool() carries the Lua error, which names the file
+                // and line that misspelt it, and says each one once.
+                const auto result = translation->callback(pt.x, pt.y);
+
+                XLua::ResultToBool(result,
+                    fmt::format("{}: the '{}' in its map", location->id, mark));
+            }
         }
     }
 
