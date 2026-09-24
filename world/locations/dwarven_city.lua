@@ -25,32 +25,32 @@ function MakeDwarvenCity()
 	CreateLocation("DWARFCITYCAVE1", "PDC:1", "Path to the Dwarven City Level 1", XLocation.DELVE, DwarfPathShape())
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE2")
-		Settle({"blob", "insect", "reptile", "rat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
+		Settle({"blob", "insect", "reptile", "rat", "bat", "feline", "canine"}, CreatureTemplate.VERY_LOW)
 
 	CreateLocation("DWARFCITYCAVE2", "PDC:2", "Path to the Dwarven City Level 2", XLocation.DELVE, DwarfPathShape())
 		Way(XStairWay.UP, "DWARFCITYCAVE1")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE3")
-		Settle({"blob", "insect", "reptile", "rat"}, CreatureTemplate.LOW)
+		Settle({"blob", "insect", "reptile", "rat", "bat"}, CreatureTemplate.LOW)
 
 	CreateLocation("DWARFCITYCAVE3", "PDC:3", "Path to the Dwarven City Level 3", XLocation.DELVE, DwarfPathShape())
 		Way(XStairWay.UP, "DWARFCITYCAVE2")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE4")
-		Settle({"undead", "blob", "insect", "rat"}, CreatureTemplate.LOW)
+		Settle({"undead", "blob", "insect", "rat", "bat"}, CreatureTemplate.LOW)
 
 	CreateLocation("DWARFCITYCAVE4", "PDC:4", "Path to the Dwarven City Level 4", XLocation.DELVE, DwarfPathShape())
 		Way(XStairWay.UP, "DWARFCITYCAVE3")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE5")
-		Settle({"undead", "blob", "insect", "rat", "kobold"}, CreatureTemplate.LOW)
+		Settle({"undead", "blob", "insect", "rat", "bat", "kobold"}, CreatureTemplate.LOW)
 
 	CreateLocation("DWARFCITYCAVE5", "PDC:5", "Path to the Dwarven City Level 5", XLocation.DELVE, DwarfPathShape())
 		Way(XStairWay.UP, "DWARFCITYCAVE4")
 		Way(XStairWay.DOWN, "DWARFCITYCAVE6")
-		Settle({"undead", "blob", "insect", "rat", "kobold", "goblin"}, CreatureTemplate.LOW)
+		Settle({"undead", "blob", "insect", "rat", "bat", "kobold", "goblin"}, CreatureTemplate.LOW)
 
 	CreateLocation("DWARFCITYCAVE6", "PDC:6", "Path to the Dwarven City Level 6", XLocation.DELVE, DwarfPathShape())
 		Way(XStairWay.UP, "DWARFCITYCAVE5")
 		Way(XStairWay.DOWN, "DWARFCITY")
-		Settle({"undead", "blob", "insect", "rat", "goblin"}, CreatureTemplate.LOW)
+		Settle({"undead", "blob", "insect", "rat", "bat", "goblin"}, CreatureTemplate.LOW)
 		DropItem(CreateObject("cooking_set"))
 
 

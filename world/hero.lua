@@ -641,5 +641,5 @@ function OnHeroPlaced(hero, race, profession)
 
 	AsCreature(dog).xai:SetCompanion(AsCreature(hero))
 	SetAIFlag(dog, XStandardAI.ALLOW_MOVE_OUT + XStandardAI.PEACEFUL)
-	SetEnemy(dog, {"kobold", "goblin", "undead", "insect", "blob", "canine", "feline", "rat", "reptile", "orc"})
+	SetEnemy(dog, {"kobold", "goblin", "undead", "insect", "blob", "canine", "feline", "rat", "bat", "reptile", "orc"})
 end

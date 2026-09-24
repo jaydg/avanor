@@ -44,8 +44,14 @@ local YOHJI_TROPHIES = {
 -- used to make it - the creatures that carry nothing still spend the roll.
 local YOHJI_TROPHY_ODDS = 40
 
+-- Both sorts, because bats used to be rats. Their own class was split out
+-- of "rat" later (world/creature_classes.lua), and this gate is the one
+-- place that would have quietly stopped paying for bat wings if it had
+-- gone on asking only about rats.
+local YOHJI_QUARRY = { ["rat"] = true, ["bat"] = true }
+
 function DropYohjiTrophy(cr, class)
-	if (class ~= "rat" or Rand(YOHJI_TROPHY_ODDS) ~= 0) then
+	if (not YOHJI_QUARRY[class] or Rand(YOHJI_TROPHY_ODDS) ~= 0) then
 		return
 	end
 

@@ -149,6 +149,10 @@ CreatureClass.new("rat")
 	:Enemy()
 	:Register()
 
+CreatureClass.new("bat")
+	:Enemy()
+	:Register()
+
 CreatureClass.new("feline")
 	:Enemy()
 	:Register()

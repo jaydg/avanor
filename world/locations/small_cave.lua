@@ -12,7 +12,7 @@ function MakeSmallCave()
 	CreateLocation("SMALL_CAVE_1", "SmCv:1", "Small Cave Level 1", XLocation.CHAMBERS, caverns)
 		Way(XStairWay.UP, "MAIN")
 		Way(XStairWay.DOWN, "SMALL_CAVE_2")
-		Settle({"rat", "insect"}, CreatureTemplate.ABOVE_LOW)
+		Settle({"bat", "insect"}, CreatureTemplate.ABOVE_LOW)
 
 	CreateLocation("SMALL_CAVE_2", "SmCv:2", "Small Cave Level 2", XLocation.PATTERN, Drawn())
 		SetPattern(80, 20,
