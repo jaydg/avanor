@@ -113,6 +113,18 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
     // Setup AI
     xai->SetAIFlag(static_cast<XStandardAI::Flag>(cr->ai_flags));
 
+    // Basic competence with whatever this one is handed. Raises only: two
+    // items of the same skill must not have the second reset the first,
+    // and content that says otherwise (SetWarSkill) has the last word
+    // because it runs afterwards. Harmless on an item with no skill at
+    // all - XCombatSkills::SetLevel() returns on an empty one, so armour
+    // and light sources pass straight through.
+    const auto competent_with = [this](const XItem* item) {
+        if (item && wsk->GetLevel(item->wt) < 2) {
+            wsk->SetLevel(item->wt, 2);
+        }
+    };
+
     // EQUIP CREATURE
     for (auto [mask, count, probability, it] : cr->equipment) {
         for (int i = 0; i < count; i++)
@@ -129,6 +141,7 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
                     // Anything that needs a second thing to be any use -
                     // a bow without arrows - asks for it here.
                     item->OnOutfit(this);
+                    competent_with(item);
                     Wear(item);
                 } else {
                     ContainItem(item);
@@ -158,12 +171,14 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
 
     if (hand_1) {
         XItem * weapon = ICREATE(ItemKind::WEAPON, 0, 10000000);
-        wsk->SetLevel(weapon->wt, 2); // just basic weapon level
+        competent_with(weapon);
         hand_1->Wear(weapon);
     }
 
     if (hand_2) {
-        hand_2->Wear(ICREATE(ItemKind::SHIELD, 0, 10000000));
+        XItem * shield = ICREATE(ItemKind::SHIELD, 0, 10000000);
+        competent_with(shield);
+        hand_2->Wear(shield);
     }
 
     // UnWear() doesn't remove the item from contain anymore (worn items
