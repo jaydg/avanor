@@ -57,8 +57,16 @@ struct Node {
 
 } // namespace
 
-std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& to,
-                             const PathCost& cost, const int budget)
+namespace {
+
+// What the two searches below both do. `arrived` says what is being
+// looked for and `heuristic` how to lean towards it; a heuristic that
+// always answers zero turns this from A* into Dijkstra, which is what
+// looking for the nearest anything needs.
+std::vector<XPoint> Search(const XMap& map, const XPoint& from,
+                           const PathGoal& arrived,
+                           const std::function<int(int, int)>& heuristic,
+                           const PathCost& cost, const int budget)
 {
     // The part of the map that exists. A level above another one holds
     // only its own window of the world, and nothing outside it is even a
@@ -72,7 +80,7 @@ std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& 
         return x >= left && x < left + width && y >= top && y < top + height;
     };
 
-    if (!inside(from.x, from.y) || !inside(to.x, to.y)) {
+    if (!inside(from.x, from.y)) {
         return {};
     }
 
@@ -81,28 +89,6 @@ std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& 
     };
 
     const int start = index_of(from.x, from.y);
-    const int goal = index_of(to.x, to.y);
-
-    if (start == goal) {
-        return {};
-    }
-
-    // Somewhere nobody can stand: a guard's post reckoned as the middle of
-    // his beat and the middle is a pillar, an item lying in a wall, a
-    // corpse under a closed portcullis. Walking up to it is what was meant,
-    // so the search settles for standing next to it rather than answering
-    // that the world is unreachable. The flood this replaces did the same
-    // by accident - it started at the target and never asked whether the
-    // target could be stood on - and every failed search in a run of the
-    // whole world turned out to be this case, so it is the common one, not
-    // a corner.
-    const bool alongside = cost(to.x, to.y) == PathBlocked;
-
-    const auto arrived = [&](const int x, const int y) {
-        return alongside
-            ? std::abs(x - to.x) <= 1 && std::abs(y - to.y) <= 1
-            : x == to.x && y == to.y;
-    };
 
     std::vector<int> spent(static_cast<size_t>(width) * height, Unvisited);
     std::vector<int> came_from(static_cast<size_t>(width) * height, -1);
@@ -110,7 +96,7 @@ std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& 
     std::priority_queue<Node> open;
 
     spent[start] = 0;
-    open.push({Octile(to.x - from.x, to.y - from.y), start});
+    open.push({heuristic(from.x, from.y), start});
 
     int settled = 0;
     int reached = -1;
@@ -135,7 +121,7 @@ std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& 
         // Already settled by a cheaper route: the queue holds one entry
         // per improvement rather than being rearranged, so stale ones
         // surface and are dropped here.
-        if (here.estimate - Octile(to.x - hx, to.y - hy) > spent[here.index]) {
+        if (here.estimate - heuristic(hx, hy) > spent[here.index]) {
             continue;
         }
 
@@ -172,7 +158,7 @@ std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& 
                 if (through < spent[next]) {
                     spent[next] = through;
                     came_from[next] = here.index;
-                    open.push({through + Octile(to.x - nx, to.y - ny), next});
+                    open.push({through + heuristic(nx, ny), next});
                 }
             }
         }
@@ -193,4 +179,51 @@ std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& 
     std::reverse(path.begin(), path.end());
 
     return path;
+}
+
+} // namespace
+
+std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& to,
+                             const PathCost& cost, const int budget)
+{
+    if (from.x == to.x && from.y == to.y) {
+        return {};
+    }
+
+    // Nowhere this map holds a cell for is nowhere to walk to. Asked of
+    // the target here rather than inside the search, which has no target.
+    if (to.x < map.stored_x || to.x >= map.stored_x + map.stored_len
+        || to.y < map.stored_y || to.y >= map.stored_y + map.stored_hgt) {
+        return {};
+    }
+
+    // Somewhere nobody can stand: a guard's post reckoned as the middle of
+    // his beat and the middle is a pillar, an item lying in a wall, a
+    // corpse under a closed portcullis. Walking up to it is what was meant,
+    // so the search settles for standing next to it rather than answering
+    // that the world is unreachable. The flood this replaces did the same
+    // by accident - it started at the target and never asked whether the
+    // target could be stood on - and every failed search in a run of the
+    // whole world turned out to be this case, so it is the common one, not
+    // a corner.
+    const bool alongside = cost(to.x, to.y) == PathBlocked;
+
+    const auto arrived = [&](const int x, const int y) {
+        return alongside
+            ? std::abs(x - to.x) <= 1 && std::abs(y - to.y) <= 1
+            : x == to.x && y == to.y;
+    };
+
+    const auto heuristic = [&](const int x, const int y) {
+        return Octile(to.x - x, to.y - y);
+    };
+
+    return Search(map, from, arrived, heuristic, cost, budget);
+}
+
+std::vector<XPoint> FindNearest(const XMap& map, const XPoint& from,
+                                const PathGoal& arrived, const PathCost& cost,
+                                const int budget)
+{
+    return Search(map, from, arrived, [](int, int) { return 0; }, cost, budget);
 }

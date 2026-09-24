@@ -45,6 +45,11 @@ constexpr int PathDiagonal = 14;
 // great many cells, so it should be cheap and must not change the world.
 using PathCost = std::function<int(int x, int y)>;
 
+// Whether this cell is somewhere the search was looking for. Lets a
+// caller ask for the nearest anything - the nearest cell nobody has seen,
+// the nearest stair - rather than naming a place in advance.
+using PathGoal = std::function<bool(int x, int y)>;
+
 // The way from `from` to `to`, as the steps to take: the first entry is
 // the cell to move into next and the last is `to` itself. Empty when
 // there is no way - which is a real answer, not an error, and the caller
@@ -58,5 +63,19 @@ using PathCost = std::function<int(int x, int y)>;
 // search costs a known amount rather than the whole map.
 std::vector<XPoint> FindPath(const XMap& map, const XPoint& from, const XPoint& to,
                              const PathCost& cost, int budget = 4000);
+
+// The way to the nearest cell `arrived` accepts, by the same rules and
+// with the same answer shape as FindPath. Empty when there is no such
+// cell within reach, which - for a search that settles everywhere it can
+// get to - means there is none at all.
+//
+// This one has no heuristic to steer by, because it has nowhere in
+// particular to go: it settles outwards from `from` in order of distance
+// and stops at the first cell that will do. That is Dijkstra rather than
+// A*, and it costs what the distance to the answer costs, so it suits
+// being asked for something usually close by.
+std::vector<XPoint> FindNearest(const XMap& map, const XPoint& from,
+                                const PathGoal& arrived, const PathCost& cost,
+                                int budget = 4000);
 
 #endif

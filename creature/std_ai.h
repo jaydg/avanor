@@ -276,6 +276,11 @@ class XStandardAI
 
         bool FindPath(const XPoint* target, XPoint* direction) const;
 
+        // A step towards the nearest place this one has not been shown.
+        // False when there is nowhere left within reach, which is also
+        // how an explorer knows it has swept the level.
+        bool MoveToFrontier() const;
+
         // What the ground costs this creature to cross - see the comment
         // on the definition.
         int StepCost(int x, int y) const;
@@ -289,6 +294,16 @@ class XStandardAI
         mutable size_t path_step = 0;
         mutable XPoint path_goal;
         mutable std::string path_location;
+
+        // Whether the cached path leads somewhere new rather than to a
+        // named place: the two are re-walked on different terms, since a
+        // frontier that somebody else has since looked at is spent.
+        mutable bool path_frontier = false;
+
+        // Turns left before an explorer that found nowhere to go asks
+        // again. Not saved, like the path itself - a restored creature
+        // simply asks once more.
+        mutable int frontier_idle = 0;
 
         // Whether anything asked for a way this turn. Move() lets the
         // cache go when nothing did.
