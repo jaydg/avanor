@@ -38,6 +38,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/rect.h"
 #include "item/item.h"
 #include "item/itemkind.h"
+#include "map/pathfinder.h"
 
 enum COMPANION_COMMAND {
     CC_NONE,
@@ -276,10 +277,22 @@ class XStandardAI
 
         bool FindPath(const XPoint* target, XPoint* direction) const;
 
+        // Which question the cached path was worked out for. Two walks
+        // share one cache, and a way to the nearest unseen cell is no
+        // answer at all to "where is the nearest thing worth picking up".
+        enum PathWalk { TARGET, FRONTIER, LOOT };
+
         // A step towards the nearest place this one has not been shown.
         // False when there is nowhere left within reach, which is also
         // how an explorer knows it has swept the level.
         bool MoveToFrontier() const;
+
+        // A step towards the nearest thing this one, or anybody it
+        // explores with, walked past and left lying.
+        bool MoveToRememberedLoot() const;
+
+        // What both of those are: go to the nearest cell that will do.
+        bool WalkToNearest(PathWalk kind, int& idle, const PathGoal& wanted) const;
 
         // What the ground costs this creature to cross - see the comment
         // on the definition.
@@ -295,15 +308,14 @@ class XStandardAI
         mutable XPoint path_goal;
         mutable std::string path_location;
 
-        // Whether the cached path leads somewhere new rather than to a
-        // named place: the two are re-walked on different terms, since a
-        // frontier that somebody else has since looked at is spent.
-        mutable bool path_frontier = false;
+        mutable PathWalk path_kind = TARGET;
 
-        // Turns left before an explorer that found nowhere to go asks
-        // again. Not saved, like the path itself - a restored creature
-        // simply asks once more.
+        // Turns left before an explorer that found nothing asks again.
+        // One counter per question, so having swept the level does not
+        // also stop it going back for what it passed. Not saved, like the
+        // path itself - a restored creature simply asks once more.
         mutable int frontier_idle = 0;
+        mutable int loot_idle = 0;
 
         // Whether anything asked for a way this turn. Move() lets the
         // cache go when nothing did.

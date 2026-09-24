@@ -724,7 +724,43 @@ void XMap::MarkSeen(const std::string& who, const int x, const int y)
         record.assign(CellCount(), 0);
     }
 
-    record[at] = 1;
+    record[at] |= 1;
+}
+
+void XMap::MarkLoot(const std::string& who, const int x, const int y, const bool there)
+{
+    const int at = SeenIndex(x, y);
+
+    if (at < 0) {
+        return;
+    }
+
+    const auto it = seen.find(who);
+
+    // Nothing is remembered about somewhere nobody has been shown -
+    // MarkSeen() comes first, and this only adds to what it recorded.
+    if (it == seen.end() || it->second.empty()) {
+        return;
+    }
+
+    if (there) {
+        it->second[at] |= 2;
+    } else {
+        it->second[at] &= ~2;
+    }
+}
+
+bool XMap::hasLoot(const std::string& who, const int x, const int y) const
+{
+    const int at = SeenIndex(x, y);
+
+    if (at < 0) {
+        return false;
+    }
+
+    const auto it = seen.find(who);
+
+    return it != seen.end() && !it->second.empty() && (it->second[at] & 2);
 }
 
 bool XMap::hasSeen(const std::string& who, const int x, const int y) const
@@ -737,7 +773,7 @@ bool XMap::hasSeen(const std::string& who, const int x, const int y) const
 
     const auto it = seen.find(who);
 
-    return it != seen.end() && !it->second.empty() && it->second[at];
+    return it != seen.end() && !it->second.empty() && (it->second[at] & 1);
 }
 
 double XMap::SeenShare(const std::string& who) const
@@ -758,7 +794,7 @@ double XMap::SeenShare(const std::string& who) const
 
         walkable++;
 
-        if (it->second[i]) {
+        if (it->second[i] & 1) {
             known++;
         }
     }

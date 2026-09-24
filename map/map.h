@@ -227,8 +227,11 @@ class XMap
         // stored_len * stored_hgt cells, row-major within the stored part.
         XMapTile* map;
 
-        // What explorers have seen of this level, one byte per stored
-        // cell, indexed the same way as `map`.
+        // What explorers know of this level, one byte per stored cell,
+        // indexed the same way as `map`. Bit 0 is "has been shown this
+        // cell"; bit 1 is "there was something lying here when it was
+        // last looked at", which is what lets a band come back for what
+        // it walked past.
         //
         // Keyed by whoever is doing the exploring: a band shares one
         // record under its group id, so its members do not each re-walk
@@ -327,6 +330,16 @@ class XMap
         // map holds no cell of its own, and for a `who` that has never
         // looked at anything.
         [[nodiscard]] bool hasSeen(const std::string& who, int x, int y) const;
+
+        // Remember whether something was lying here when `who` last
+        // looked. Only recorded for a cell already being marked seen, so
+        // it never invents knowledge of somewhere nobody has been.
+        void MarkLoot(const std::string& who, int x, int y, bool there);
+
+        // Whether `who` last saw something lying here. A cell it has
+        // never been shown answers false, as does one it has since walked
+        // over and found bare.
+        [[nodiscard]] bool hasLoot(const std::string& who, int x, int y) const;
 
         // How much of what can be walked on `who` has seen, 0 to 1. The
         // measure is walkable cells rather than all of them, because the

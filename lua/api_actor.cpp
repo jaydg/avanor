@@ -562,6 +562,34 @@ sol::optional<void*> CreatureNear(void* who, const std::string& name)
     return sol::nullopt;
 }
 
+// How much of what can be walked on this one - or the band it explores
+// with - has been shown, 0 to 1. What counts as swept enough is content's
+// to decide; the engine only keeps the record.
+double ExploredShare(void* cr)
+{
+    auto* c = (XCreature*)cr;
+
+    return c->l->map->SeenShare(c->xai->ExplorerKey());
+}
+
+// Whether there is anywhere left on this level it could still go and look
+// at. False the moment the last reachable corner has been seen, which is
+// what a raiding party waits for before going home.
+bool ExplorationDone(void* cr)
+{
+    auto* c = (XCreature*)cr;
+    const std::string key = c->xai->ExplorerKey();
+    XMap* map = c->l->map;
+
+    return FindNearest(*map, XPoint(c->x, c->y),
+        [&](const int x, const int y) {
+            return map->StoredCell(x, y) && !map->hasSeen(key, x, y);
+        },
+        [&](const int x, const int y) {
+            return map->XGetMovability(x, y) == 0 ? PathStep : PathBlocked;
+        }).empty();
+}
+
 void SetAIFlag(void* cr, unsigned int flags)
 {
     ((XCreature*)cr)->xai->SetAIFlag(static_cast<XStandardAI::Flag>(flags));
@@ -1094,6 +1122,8 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("AskQuestion", &lua_api::AskQuestion);
         lua.set_function("SetItEnemyFor", &lua_api::SetItEnemyFor);
         lua.set_function("SetEnemy", &lua_api::SetEnemy);
+        lua.set_function("ExploredShare", &lua_api::ExploredShare);
+        lua.set_function("ExplorationDone", &lua_api::ExplorationDone);
         lua.set_function("SetAIFlag", &lua_api::SetAIFlag);
         lua.set_function("CreatureNear", &lua_api::CreatureNear);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);

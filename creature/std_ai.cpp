@@ -144,7 +144,19 @@ void XStandardAI::AnalyzeGrid(int j, int i, int w)
     // this cheap enough to do per cell; only an explorer pays for it, so
     // a world with none carries no records at all.
     if (ai_flag & XStandardAI::EXPLORER_MOVE) {
-        ai_owner->l->map->MarkSeen(ExplorerKey(), j, i);
+        const std::string key = ExplorerKey();
+        XMap* map = ai_owner->l->map;
+
+        map->MarkSeen(key, j, i);
+
+        // And whether there was anything lying there. Recorded either way
+        // round: a cell walked over and found bare has to lose the note,
+        // or a band would go back for something one of them already took.
+        // A shop counter is passed over - what is on it belongs to
+        // somebody, which is what GetPlace() answers here and in the
+        // picking-up below.
+        map->MarkLoot(key, j, i,
+            map->GetItemCount(j, i) > 0 && !map->GetPlace(j, i));
     }
 
     //test for monsters
@@ -338,6 +350,15 @@ void XStandardAI::Move()
         } else {
             MoveTo(way_x, way_y);
         }
+    } else if ((ai_flag & (XStandardAI::EXPLORER_MOVE | XStandardAI::ALLOW_PICK_UP))
+            == (XStandardAI::EXPLORER_MOVE | XStandardAI::ALLOW_PICK_UP)
+        && MoveToRememberedLoot())
+    {
+        // Something this one walked past, or that somebody else in the
+        // band did. Below anything in sight (item_dist above), so what is
+        // under its nose still wins, and above exploring on, so a level
+        // is emptied before it is left.
+        was_item_pick = 1;
     } else if (ai_flag & XStandardAI::EXPLORER_MOVE && MoveToFrontier()) {
         // On its way somewhere it has not been. Below picking things up
         // and below the stairs, so an explorer takes what it passes and
@@ -502,7 +523,7 @@ bool XStandardAI::FindPath(const XPoint* target, XPoint* direction) const
     path_goal = *target;
     path_location = ai_owner->l->id;
     path_step = 0;
-    path_frontier = false;
+    path_kind = PathWalk::TARGET;
 
     if (path.empty()) {
         return false;
@@ -514,40 +535,68 @@ bool XStandardAI::FindPath(const XPoint* target, XPoint* direction) const
     return true;
 }
 
-// How long an explorer that found nowhere new waits before asking again.
-// A search that fails has settled everywhere it could reach, which is the
+constexpr int walk_retry = 50;
+
+bool XStandardAI::MoveToRememberedLoot() const
+{
+    XMap* map = ai_owner->l->map;
+    const std::string key = ExplorerKey();
+
+    return WalkToNearest(PathWalk::LOOT, loot_idle, [&](const int x, const int y) {
+        return map->hasLoot(key, x, y);
+    });
+}
+
+bool XStandardAI::MoveToFrontier() const
+{
+    XMap* map = ai_owner->l->map;
+    const std::string key = ExplorerKey();
+
+    return WalkToNearest(PathWalk::FRONTIER, frontier_idle, [&](const int x, const int y) {
+        // Somewhere this map holds a cell of its own for, and that nobody
+        // has been shown. The cell test matters on a floor above: it
+        // reads through to the level below for whatever it holds nothing
+        // for, and XMap::MarkSeen() keeps no record of those, so without
+        // this an explorer up there would walk for ever towards somewhere
+        // it can never mark off.
+        return map->StoredCell(x, y) && !map->hasSeen(key, x, y);
+    });
+}
+
+// A step towards the nearest cell `wanted` accepts.
+//
+// `idle` is how long to wait before asking again after finding nothing. A
+// search that fails has settled everywhere it could reach, which is the
 // dearest answer there is, and what would change it - a door unbarred, a
 // wall dug through, a companion opening the way - happens rarely enough
 // that asking every turn would be paying the worst price for the least
 // likely news.
-constexpr int frontier_retry = 50;
-
-bool XStandardAI::MoveToFrontier() const
+bool XStandardAI::WalkToNearest(const PathWalk kind, int& idle, const PathGoal& wanted) const
 {
-    if (frontier_idle > 0) {
-        frontier_idle--;
+    if (idle > 0) {
+        idle--;
+
         return false;
     }
 
-    XMap* map = ai_owner->l->map;
-    const std::string key = ExplorerKey();
     const XPoint here(ai_owner->x, ai_owner->y);
 
     // Asked for a way, so the cache is not let go of at the end of the
     // turn - see ForgetPath().
     path_wanted = true;
 
-    // The way worked out last time, if it still leads somewhere nobody
-    // has been shown. A band shares one record, so the place this one is
-    // walking to may have been looked at by somebody else in the
-    // meantime, and then it is worth nothing.
-    if (path_frontier && !path.empty() && path_location == ai_owner->l->id) {
+    // The way worked out last time, if it was worked out for this same
+    // question and still leads somewhere that will do. A band shares what
+    // it knows, so the place this one is walking to may have been seen -
+    // or emptied - by somebody else in the meantime, and then it is worth
+    // nothing.
+    if (path_kind == kind && !path.empty() && path_location == ai_owner->l->id) {
         while (path_step < path.size()
             && path[path_step].x == here.x && path[path_step].y == here.y) {
             path_step++;
         }
 
-        if (path_step < path.size() && !map->hasSeen(key, path_goal.x, path_goal.y)) {
+        if (path_step < path.size() && wanted(path_goal.x, path_goal.y)) {
             const XPoint& next = path[path_step];
 
             if (abs(next.x - here.x) <= 1 && abs(next.y - here.y) <= 1
@@ -560,24 +609,15 @@ bool XStandardAI::MoveToFrontier() const
         }
     }
 
-    path = ::FindNearest(*map, here,
-        [&](const int x, const int y) {
-            // Somewhere this map holds a cell of its own for, and that
-            // nobody has been shown. The cell test matters on a floor
-            // above: it reads through to the level below for whatever it
-            // holds nothing for, and XMap::MarkSeen() keeps no record of
-            // those, so without this an explorer up there would walk for
-            // ever towards somewhere it can never mark off.
-            return map->StoredCell(x, y) && !map->hasSeen(key, x, y);
-        },
+    path = ::FindNearest(*ai_owner->l->map, here, wanted,
         [this](const int x, const int y) { return StepCost(x, y); });
 
-    path_frontier = true;
+    path_kind = kind;
     path_location = ai_owner->l->id;
     path_step = 0;
 
     if (path.empty()) {
-        frontier_idle = frontier_retry;
+        idle = walk_retry;
 
         return false;
     }
