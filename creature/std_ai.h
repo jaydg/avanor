@@ -282,6 +282,9 @@ class XStandardAI
         // answer at all to "where is the nearest thing worth picking up".
         enum PathWalk { TARGET, FRONTIER, LOOT };
 
+        // A step at random, for a creature whose errand came to nothing.
+        void Wander() const;
+
         // A step towards the nearest place this one has not been shown.
         // False when there is nowhere left within reach, which is also
         // how an explorer knows it has swept the level.

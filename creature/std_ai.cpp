@@ -329,13 +329,18 @@ void XStandardAI::Move()
         RunScript();
     } else if (ai_flag & XStandardAI::ALLOW_PICK_UP &&
         !(ai_owner->l->map->GetItemList(ai_owner->x, ai_owner->y))->empty() &&
-        !ai_owner->l->map->GetPlace(ai_owner->x, ai_owner->y))
+        !ai_owner->l->map->GetPlace(ai_owner->x, ai_owner->y) &&
+        PickUpItems())
     {
-        if (PickUpItems()) {
-            return;
-        }
-    } else if (ai_flag & XStandardAI::ALLOW_PICK_UP && item_dist < 10000) {
-        MoveTo(item_x, item_y);
+        // Picking up has to be part of the test, not the body. These are
+        // else-ifs: a branch that matches and then does nothing ends the
+        // turn with nowhere chosen, and since the reason it did nothing
+        // does not change - an artifact cannot be picked up today or
+        // tomorrow - the creature stands there for the rest of the game.
+        return;
+    } else if (ai_flag & XStandardAI::ALLOW_PICK_UP && item_dist < 10000
+        && MoveTo(item_x, item_y))
+    {
         was_item_pick = 1;
     } else if (ai_flag & (XStandardAI::ALLOW_MOVE_WAY_DOWN | XStandardAI::ALLOW_MOVE_WAY_UP)
         && way_dist < 10000 && !(ai_flag & XStandardAI::GUARD_AREA))
@@ -347,8 +352,11 @@ void XStandardAI::Move()
             ((spec->view == '<') && (ai_flag & XStandardAI::ALLOW_MOVE_WAY_UP)))) {
             ai_owner->MoveStairWay();
             last_moved_way = XMapObject::ToWeakPtr(ai_owner->l->map->GetSpecial(ai_owner->x, ai_owner->y));
-        } else {
-            MoveTo(way_x, way_y);
+        } else if (!MoveTo(way_x, way_y)) {
+            // No way to the stair after all. Same reasoning as the
+            // picking-up above: rather than stand still, let whatever
+            // comes next have the turn.
+            Wander();
         }
     } else if ((ai_flag & (XStandardAI::EXPLORER_MOVE | XStandardAI::ALLOW_PICK_UP))
             == (XStandardAI::EXPLORER_MOVE | XStandardAI::ALLOW_PICK_UP)
@@ -545,6 +553,17 @@ bool XStandardAI::MoveToRememberedLoot() const
     return WalkToNearest(PathWalk::LOOT, loot_idle, [&](const int x, const int y) {
         return map->hasLoot(key, x, y);
     });
+}
+
+// A step at random, for a creature whose chosen errand came to nothing.
+// Without it a branch that matches and then fails ends the turn with
+// nowhere to go, and the creature simply stops.
+void XStandardAI::Wander() const
+{
+    if (ai_flag & XStandardAI::RANDOM_MOVE) {
+        ai_owner->nx = ai_owner->x + vRand(3) - 1;
+        ai_owner->ny = ai_owner->y + vRand(3) - 1;
+    }
 }
 
 bool XStandardAI::MoveToFrontier() const

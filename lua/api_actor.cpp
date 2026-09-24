@@ -590,6 +590,69 @@ bool ExplorationDone(void* cr)
         }).empty();
 }
 
+// Whether this item is one the creature has on rather than in: a worn
+// item stays resident in contain (see XBodyPart::Wear), so telling the
+// two apart means asking the body.
+static bool IsWorn(XCreature* c, const XItem* item)
+{
+    for (const auto& bp : c->components) {
+        if (bp->Item() == item) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// How many things this one is carrying, of a kind or of any kind.
+//
+// Carrying, not wearing: the sword in its hand and the mail on its back
+// are not loot, and content asking "has it got enough to be worth taking
+// home" means what is in the sack. What counts as enough is content's to
+// decide; the engine only counts.
+int CarriedCount(void* cr, sol::optional<unsigned int> kind)
+{
+    auto* c = (XCreature*)cr;
+    const auto want = static_cast<ItemKind>(kind.value_or(
+        static_cast<unsigned int>(ItemKind::ALL)));
+    int n = 0;
+
+    for (const auto& item : c->contain) {
+        if ((item->kind & want) && !IsWorn(c, item.get())) {
+            n++;
+        }
+    }
+
+    return n;
+}
+
+// Put down what it is carrying, and say how many. What it is wearing or
+// wielding stays where it is - a thief emptying its sack into the hoard
+// does not also drop its sword.
+int DropCarried(void* cr, sol::optional<unsigned int> kind)
+{
+    auto* c = (XCreature*)cr;
+    const auto want = static_cast<ItemKind>(kind.value_or(
+        static_cast<unsigned int>(ItemKind::ALL)));
+    int n = 0;
+
+    // Erase-returns-next-iterator, because DropItem() takes the item out
+    // of `contain` as it goes and a range-for would be walking a
+    // container that moved under it.
+    for (auto it = c->contain.begin(); it != c->contain.end();) {
+        if (((*it)->kind & want) && !IsWorn(c, it->get())) {
+            auto item = *it;
+            it = c->contain.erase(it);
+            c->DropItem(item.get());
+            n++;
+        } else {
+            ++it;
+        }
+    }
+
+    return n;
+}
+
 void SetAIFlag(void* cr, unsigned int flags)
 {
     ((XCreature*)cr)->xai->SetAIFlag(static_cast<XStandardAI::Flag>(flags));
@@ -1124,6 +1187,8 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SetEnemy", &lua_api::SetEnemy);
         lua.set_function("ExploredShare", &lua_api::ExploredShare);
         lua.set_function("ExplorationDone", &lua_api::ExplorationDone);
+        lua.set_function("CarriedCount", &lua_api::CarriedCount);
+        lua.set_function("DropCarried", &lua_api::DropCarried);
         lua.set_function("SetAIFlag", &lua_api::SetAIFlag);
         lua.set_function("CreatureNear", &lua_api::CreatureNear);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);

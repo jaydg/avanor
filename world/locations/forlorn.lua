@@ -92,6 +92,11 @@ function MakeDungeonForlorn()
 	-- same depth are not the same descent.
 	local footing = Rand(2)
 
+	-- Which level the goblins have made their camp on. Somewhere in the
+	-- middle of the mine, so finding it is a thing that happens on the way
+	-- down rather than at either end of it.
+	local goblins_at = Rand(depth - 2) + 2
+
 	for i = 1, depth do
 		local workings = Delve(preset)
 		workings.width = 80
@@ -120,6 +125,15 @@ function MakeDungeonForlorn()
 		end
 
 		Settle(DUNGEON_FORLORN_CLASSES, DUNGEON_FORLORN_LADDER[rung], 4, 50000)
+
+		-- One goblin camp in the mine, never on the first level - the
+		-- pack has come up from below, not in through the front door -
+		-- and never the last, where the Eye is: what is down there is
+		-- meant to be guarded by what killed the thief, not carried off
+		-- to a hoard before the player arrives.
+		if (i == goblins_at) then
+			CreateGoblinCamp(workings.width, workings.height)
+		end
 
 		-- The thief got this far and no further.
 		if (i == depth) then
