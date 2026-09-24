@@ -60,8 +60,7 @@ void XStandardAI::RegisterLua(sol::state_view& lua)
         "LO_ANIMAL", XStandardAI::LO_ANIMAL,
         "HI_ANIMAL", XStandardAI::HI_ANIMAL,
         "CREATURE", XStandardAI::CREATURE,
-        "HUMAN", XStandardAI::HUMAN,
-        "GHOST", XStandardAI::GHOST
+        "HUMAN", XStandardAI::HUMAN
     );
 
     lua.new_enum("ScriptCommand",
