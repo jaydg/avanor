@@ -12,7 +12,7 @@ Monster.new("farmer")
 	:Description("This fellow is pale as something grown under a stone, and no wonder: the village lives on mushrooms, and mushrooms come out of the caves to the west.  He and his fellows have spent their working lives underground.  The long spear he leans upon is not for digging - there are things down there that bite.")
 	:LearnSkill(XSkill.HEALING, 2)
 	:Equip(ItemKind.WEAPON, "long_spear", 100)
-	:Equip(ItemKind.BODY, "robe", 100)
+	:Equip(ItemKind.BODY, "light_mail", 100)
 	:Register()
 
 Monster.new("goodwife")
