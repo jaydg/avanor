@@ -5,7 +5,7 @@ Monster.new("farmer")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
-	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL)
+	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+4", "2d2")
@@ -20,7 +20,7 @@ Monster.new("goodwife")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
-	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL)
+	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
@@ -34,7 +34,7 @@ Monster.new("bandit")
 	:View("bandit", 'p', xColor.xLIGHTGRAY, PersonType.HE, CreatureTemplate.LOW, "human")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50)
-	:AI(XStandardAI.HUMAN)
+	:AI(XStandardAI.HUMAN + XStandardAI.COWARD)
 	:Stats("St 1d4+10 Dx 1d4+10 To 1d4+10 Le 1d4+10 Wi 1d4+10 Ma 1d4+10 Pe 1d4+15 Ch 1d4+10")
 	:Combat("1d4", "1d3")
 	:Main("1d4", "0d0", "1d4+10", "2d5")
@@ -52,7 +52,7 @@ Monster.new("citizen")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
-	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL)
+	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
@@ -65,7 +65,7 @@ Monster.new("fcitizen")
 	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
-	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL)
+	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
@@ -102,11 +102,16 @@ Monster.new("royal_guard")
 -- different decision from making the orc attack winnable.
 --
 -- 3d5+30 puts them at 33-45 against an orc's 27-35. Measured over 240
--- worlds with `--simulate orc_attack`: on the ordinary guardian's 11-15
--- the watch is wiped out 73% of the time, which is no fight at all; at
--- 3d5+30 it is 54%, and 46% once the hero brings them the sword from
--- Ozorick's errand. Still a hard fight, still lost about half the time,
+-- worlds each with `--simulate orc_attack`, counting the runs that end
+-- with no guard standing:
+--
+--     ordinary guardian (1d5+10), no swords   64.6%
+--     3d5+30, no swords                       43.8%
+--     3d5+30, one sword from Ozorick's errand 37.1%
+--
+-- Still a hard fight and still lost more often than not without help,
 -- but no longer a foregone one.
+--
 Monster.new("royal_guard_elite", "royal_guard")
 	:View("royal guardian", 'p', xColor.xBLUE, PersonType.HE, CreatureTemplate.LOW, "human")
 	:Main("3d2", "1d2", "3d5+30", "1d3+5")

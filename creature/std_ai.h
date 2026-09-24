@@ -109,7 +109,7 @@ class XStandardAI
             LO_ANIMAL           = FREE_WAY | RANDOM_MOVE | COWARD,
             HI_ANIMAL           = FREE_WAY | RANDOM_MOVE | FIND_WAY | COWARD,
             CREATURE            = ALLOW_PICK_UP | ALLOW_WEAR_ITEM | FREE_WAY | RANDOM_MOVE | FIND_WAY | COWARD,
-            HUMAN               = ALLOW_PICK_UP | ALLOW_WEAR_ITEM | FREE_MOVE | RANDOM_MOVE | FIND_WAY | COWARD,
+            HUMAN               = ALLOW_PICK_UP | ALLOW_WEAR_ITEM | FREE_MOVE | RANDOM_MOVE | FIND_WAY,
             GHOST               = FREE_WAY | RANDOM_MOVE | FIND_WAY | COWARD,
         };
 
