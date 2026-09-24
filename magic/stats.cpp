@@ -72,10 +72,9 @@ XStats::XStats()
 
 XStats::XStats(const XStats* xs)
 {
-    if (xs)
-        for (int i = XStats::STR; i < XStats::COUNT; i++) {
-            stats[i] = xs->Get(static_cast<XStats::Id>(i));
-        }
+    if (xs) {
+        Set(xs);
+    }
 }
 
 XStats::XStats(const char* str)
