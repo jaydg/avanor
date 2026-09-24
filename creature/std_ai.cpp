@@ -694,6 +694,11 @@ void XStandardAI::GetExactDirection(const XPoint* target, XPoint* direction) con
 
 bool XStandardAI::isEnemy(XCreature *cr)
 {
+    // A spectator is nobody's enemy.
+    if (XGame::isSpectator && cr->isHero()) {
+        return false;
+    }
+
     if (cr == companion.lock().get()
         || (ai_flag & XStandardAI::GUARD_AREA && cr->groupID() == ai_owner->groupID())) {
         return false;

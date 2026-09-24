@@ -22,6 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <fmt/format.h>
 
 #include "creature/creature.h"
+#include "game/game.h"
 #include "helpers/msgwin.h"
 #include "magic/brand.h"
 #include "magic/modifier.h"
@@ -380,6 +381,11 @@ int XCreature::isCreatureVisible(XCreature * cr)
     assert(isValid());
 
     if (!cr) {
+        return 0;
+    }
+
+    // Spectator mode: the hero is not there as far as anybody is concerned.
+    if (XGame::isSpectator && cr->isHero() && !isHero()) {
         return 0;
     }
 

@@ -90,6 +90,9 @@ class XGame
 
         // God mode's map reveal
         static bool isMapRevealed;
+
+        // Spectator mode: nothing notices the hero. Part of god mode.
+        static bool isSpectator;
 };
 
 extern XGame Game;

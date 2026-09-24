@@ -323,6 +323,9 @@ struct V_BUFFER {
 
 #define KEY_CTRL_D		  4
 #define KEY_CTRL_F		  6
+
+// Also what Tab sends - the two are one byte in a terminal.
+#define KEY_CTRL_I		  9
 #define KEY_CTRL_O		  15
 #define KEY_CTRL_T		  20
 #define KEY_CTRL_W		  23

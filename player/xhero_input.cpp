@@ -365,6 +365,17 @@ void XHero::NewMove()
                     moved = 0;
                     break;
 
+                case KEY_CTRL_I:
+                    if (XGame::isGodMode) {
+                        XGame::isSpectator = !XGame::isSpectator;
+                        msgwin.Add(XGame::isSpectator
+                            ? "Nothing can see you."
+                            : "You are among them again.");
+                    }
+
+                    moved = 0;
+                    break;
+
                 case KEY_CTRL_T:
                     ActivateTrap();
                     break;

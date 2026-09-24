@@ -515,12 +515,16 @@ Things that went quietly wrong the longer you played:
 
 ### For the curious
 
-God mode (`avanor --god`) has two new keys. `^F` lights the whole level, walls
+God mode (`avanor --god`) has three new keys. `^F` lights the whole level, walls
 and creatures and all, and pressing it again puts the dark back — what it
 shows you is never written into your character's memory, so switching it off
 leaves the map as unexplored as it was. `^W` steps you anywhere on the level,
 scrolling the map under the cursor so you are not limited to what you can see.
-Neither costs a turn.
+`^I` makes you unnoticeable. Nothing can see you while it is on, nothing comes
+after you, and a creature that blunders into you stops instead of striking at
+what it cannot see.
+
+None of the three costs a turn.
 
 ---
 
