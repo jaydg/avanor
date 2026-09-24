@@ -192,6 +192,11 @@ class XStandardAI
             return ai_flag;
         }
 
+        // Whose record of the level this one reads and writes: its group,
+        // so a band explores together, or its own guid when it belongs to
+        // no group. See XMap::seen.
+        [[nodiscard]] std::string ExplorerKey() const;
+
         void SetEnemyClass(const CreatureClassSet& cr_class);
 
         // Carries ai_flag/enemy_class/guard_area(+location) forward onto a

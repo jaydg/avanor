@@ -23,6 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MAP_H
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <memory>
@@ -31,6 +32,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <cereal/archives/json.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/set.hpp>
+#include <cereal/types/string.hpp>
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/vector.hpp>
 
 #include <sol/forward.hpp>
 
@@ -223,6 +227,21 @@ class XMap
         // stored_len * stored_hgt cells, row-major within the stored part.
         XMapTile* map;
 
+        // What explorers have seen of this level, one byte per stored
+        // cell, indexed the same way as `map`.
+        //
+        // Keyed by whoever is doing the exploring: a band shares one
+        // record under its group id, so its members do not each re-walk
+        // the same corridor, while a creature with no group gets a record
+        // of its own under its guid - otherwise every groupless explorer
+        // in the world would pool its knowledge with every other, and
+        // each would believe corridors seen that nobody had walked.
+        // XStandardAI::ExplorerKey() decides which.
+        //
+        // Empty until somebody with EXPLORER_MOVE looks around, so a
+        // world with no explorers in it carries nothing.
+        std::unordered_map<std::string, std::vector<uint8_t>> seen;
+
         // The level this one is a floor above, or null. Whatever this map
         // holds no cell for - outside its own part of the space, or
         // holding XTileType::NONE within it, which is a hole in the floor
@@ -291,6 +310,32 @@ class XMap
         void SetRoom(int x, int y, int room_id) const;
         [[nodiscard]] int GetRoom(int x, int y) const;
 
+        // Remember that `who` can see this cell. Coordinates outside the
+        // part of the world this map holds are ignored rather than
+        // refused: a floor above reads through to the level below for
+        // anything it has no cell of its own for, and what the level
+        // below holds is that level's to remember.
+        void MarkSeen(const std::string& who, int x, int y);
+
+    private:
+        // Where a cell sits in `seen`, or -1 for nowhere this map holds.
+        [[nodiscard]] int SeenIndex(int x, int y) const;
+
+    public:
+
+        // Whether `who` has been shown this cell. False for anywhere this
+        // map holds no cell of its own, and for a `who` that has never
+        // looked at anything.
+        [[nodiscard]] bool hasSeen(const std::string& who, int x, int y) const;
+
+        // How much of what can be walked on `who` has seen, 0 to 1. The
+        // measure is walkable cells rather than all of them, because the
+        // solid rock a level is cut out of is not somewhere anybody was
+        // ever going to go and counting it would put a ceiling on the
+        // answer that has nothing to do with how well the level was
+        // swept.
+        [[nodiscard]] double SeenShare(const std::string& who) const;
+
         void SetVisible(int x, int y) const;
         void ResVisible(int x, int y) const;
         [[nodiscard]] bool GetVisible(int x, int y) const;
@@ -324,6 +369,7 @@ class XMap
         void serialize(Archive& ar)
         {
             ar(len, hgt, wx, wy, stored_x, stored_y, stored_len, stored_hgt);
+            ar(seen);
 
             if constexpr (Archive::is_loading::value) {
                 map = new XMapTile[CellCount()];

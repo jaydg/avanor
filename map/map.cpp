@@ -697,6 +697,75 @@ int XMap::GetRoom(const int x, const int y) const
     return cell->room_id;
 }
 
+// Where a cell sits in `seen`, or -1 for anywhere this map holds no cell
+// of its own. The same row-major indexing as `map`, over the stored part.
+int XMap::SeenIndex(const int x, const int y) const
+{
+    if (x < stored_x || x >= stored_x + stored_len
+        || y < stored_y || y >= stored_y + stored_hgt) {
+        return -1;
+    }
+
+    return (y - stored_y) * stored_len + (x - stored_x);
+}
+
+void XMap::MarkSeen(const std::string& who, const int x, const int y)
+{
+    const int at = SeenIndex(x, y);
+
+    if (at < 0) {
+        return;
+    }
+
+    // Allocated on first sight, so a level nobody explores costs nothing.
+    auto& record = seen[who];
+
+    if (record.empty()) {
+        record.assign(CellCount(), 0);
+    }
+
+    record[at] = 1;
+}
+
+bool XMap::hasSeen(const std::string& who, const int x, const int y) const
+{
+    const int at = SeenIndex(x, y);
+
+    if (at < 0) {
+        return false;
+    }
+
+    const auto it = seen.find(who);
+
+    return it != seen.end() && !it->second.empty() && it->second[at];
+}
+
+double XMap::SeenShare(const std::string& who) const
+{
+    const auto it = seen.find(who);
+
+    if (it == seen.end() || it->second.empty()) {
+        return 0.0;
+    }
+
+    int walkable = 0;
+    int known = 0;
+
+    for (int i = 0; i < CellCount(); i++) {
+        if (std_tile_data[map[i].n].movability >= XTileType::Movability::UNWALKABLE) {
+            continue;
+        }
+
+        walkable++;
+
+        if (it->second[i]) {
+            known++;
+        }
+    }
+
+    return walkable > 0 ? static_cast<double>(known) / walkable : 0.0;
+}
+
 void XMap::CreateRoom(const int x, const int y, const int l, const int h, const int px, const int py, const XTileType::Id m1, const XTileType::Id m2) const
 {
     CreateRoom(x, y, l, h, m1, m2);

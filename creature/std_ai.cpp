@@ -125,8 +125,28 @@ XStandardAI::~XStandardAI()
     }
 }
 
+std::string XStandardAI::ExplorerKey() const
+{
+    const GROUP_ID& gid = ai_owner->groupID();
+
+    // A groupless creature keeps its own record. Sharing one under the
+    // empty id would pool every lone explorer in the world into a single
+    // memory, and each would take the others' corridors for its own.
+    // The '#' cannot collide with a group id, which content spells out
+    // as a plain word.
+    return gid != GID_NONE ? gid : "#" + std::to_string(ai_owner->guid());
+}
+
 void XStandardAI::AnalyzeGrid(int j, int i, int w)
 {
+    // Remembering where this one has been. AnalyzeGrid() is already
+    // walking exactly the cells it can see this turn, which is what makes
+    // this cheap enough to do per cell; only an explorer pays for it, so
+    // a world with none carries no records at all.
+    if (ai_flag & XStandardAI::EXPLORER_MOVE) {
+        ai_owner->l->map->MarkSeen(ExplorerKey(), j, i);
+    }
+
     //test for monsters
     XCreature * tgt = ai_owner->l->map->GetMonster(j, i);
 
