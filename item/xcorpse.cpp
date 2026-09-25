@@ -191,20 +191,32 @@ bool XCorpse::Run()
     }
 
     if (cc != GetCondition()) {
+        // Decay on the way is told by the nose, not the eye, and the nose
+        // does not say which of several it is - so this stays "something"
+        // even for a corpse the hero is carrying and could name.
         if (owner_sp && owner_sp->isHero()) {
-            msgwin.Add("Something in your backpack seems to rotting.");
+            msgwin.Add("Something in your backpack smells like it is rotting.");
         } else if (l && isInVisibleArea()) {
-            msgwin.Add("Something seems to rotting.");
+            msgwin.Add("Something nearby smells like it is rotting.");
         }
     } else if (time_of_roating > pCorpseData->roating_time) {
         if (owner_sp) {
+            // Out of sight in a pack, the nose is still the only witness,
+            // so this stays as vague as the smell that announced it -
+            // naming what went would be knowing more than a smell can
+            // tell. What carries the news is the tense: the "is rotting"
+            // above has become "has rotted away", so the message reads as
+            // the end of something the hero was already following.
             if (owner_sp->isHero()) {
-                msgwin.Add("Suddenly your equipment weighs less.");
+                msgwin.Add("Something in your backpack has rotted away.");
             }
 
             owner_sp->UnCarryItem(this);
         } else if (l && isInVisibleArea()) {
-            msgwin.Add("Suddenly something disappered from the ground.");
+            // On the ground it can be watched going, so here it is named.
+            // Said before Invalidate() below, while toString() still has
+            // a corpse to describe.
+            msgwin.Add(fmt::format("The {} has decomposed.", toString()));
         }
 
         Invalidate();
