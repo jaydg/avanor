@@ -56,7 +56,8 @@ function DigWithPickaxe(state, item, digger)
 		ToolRemember(item, "x", x)
 		ToolRemember(item, "y", y)
 		ToolRemember(item, "rock", 1000)
-		AddMessage(CreatureName(digger, 0) .. " " .. CreatureVerb(digger, "start") .. " to dig.")
+		AddMessage(CreatureName(digger, 0) .. " "
+			.. CreatureVerb(digger, "start") .. " to dig.")
 
 		return Result.CONTINUE
 	end
@@ -83,7 +84,8 @@ function DigWithPickaxe(state, item, digger)
 	-- The digger's own level, named rather than left to default.
 	local level = GetCreatureLocation(digger)
 
-	AddMessage(CreatureName(digger, 0) .. " " .. CreatureVerb(digger, "smash") .. " the stone to pieces.")
+	AddMessage(CreatureName(digger, 0) .. " "
+		.. CreatureVerb(digger, "smash") .. " the stone to pieces.")
 	SetTile(x, y, TileDiggableInto(GetTile(x, y, level)), level)
 	UseSkill(digger, XSkill.MINING)
 

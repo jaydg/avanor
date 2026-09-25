@@ -154,7 +154,7 @@ function MushroomTurn(mushroom)
 	Species(mushroom, "mushroom")
 
 	if (isObjectVisible(mushroom)) then
-		AddMessage("Suddenly mushroom dissapered in the small cloud of spores.")
+		AddMessage("Suddenly the mushroom disappears in a small cloud of spores.")
 	end
 
 	return nil
