@@ -292,7 +292,8 @@ bool XShopKeeperAI::onAnyoneDropItem(XCreature* customer, XItem* item)
     int price = (item->GetValue() / 4 + 1) * item->quantity;
 
     if (customer->isHero()) {
-        msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_PRICE, price, item->toString()));
+        msgwin.Add(fmt::format(GMSG_SHOPKEEPER_ASK_PRICE, price,
+            item->toSentence()));
     }
 
     //if it is NPC or Hero asked YES

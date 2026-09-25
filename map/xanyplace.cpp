@@ -104,7 +104,9 @@ void XAnyPlace::OnInvalidate()
 
 std::string XAnyPlace::onShowItem(XItem* item)
 {
-    return item->toString();
+    // Its sole caller drops this into "There is {} here.", so it has to
+    // arrive ready for a sentence, article and all.
+    return item->toSentence();
 }
 
 void XAnyPlace::Setup(XLocation* _map)

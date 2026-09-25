@@ -293,7 +293,7 @@ void XBook::onRead(XCreature * reader)
 
         if (!isIdentified()) {
             Identify();
-            msgwin.Add(fmt::format("It was {}.", toString()));
+            msgwin.Add(fmt::format("It was {}.", toSentence()));
         }
     }
 }

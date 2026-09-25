@@ -859,15 +859,18 @@ int XStandardAI::Wear() const
             switch (item->kind) {
                 case ItemKind::WEAPON :
                 case ItemKind::MISSILEW :
-                    str = fmt::format("{} has wielded {}.", ai_owner->name, item->toString());
+                    str = fmt::format("{} has wielded {}.", ai_owner->name,
+                        item->toSentence());
                     break;
 
                 case ItemKind::MISSILE :
-                    str = fmt::format("{} has armed {}.", ai_owner->name, item->toString());
+                    str = fmt::format("{} has armed {}.", ai_owner->name,
+                        item->toSentence());
                     break;
 
                 default :
-                    str = fmt::format("{} puts on {}.", ai_owner->name, item->toString());
+                    str = fmt::format("{} puts on {}.", ai_owner->name,
+                        item->toSentence());
                     break;
             }
 

@@ -245,7 +245,7 @@ int XSkill::UseSteal(XCreature * user)
 
             if (vRand() % 100 < p || !user->isVisible()) {
                 if (user->isVisible()) {
-                    msgwin.Add(fmt::format("You steal {}.", object->toString()));
+                    msgwin.Add(fmt::format("You steal {}.", object->toSentence()));
                 }
 
                 cr->UnCarryItem(object);

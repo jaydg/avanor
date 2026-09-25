@@ -417,7 +417,7 @@ void XPotion::onDrink(XCreature * cr)
         msgwin.Add("You feel nothing special!");
     } else if (!isIdentified()) {
         Identify();
-        msgwin.Add(fmt::format("It was {}.", toString()));
+        msgwin.Add(fmt::format("It was {}.", toSentence()));
     }
 }
 

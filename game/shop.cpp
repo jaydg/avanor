@@ -185,10 +185,12 @@ bool XShop::onCreatureMove(XCreature * /*cr*/)
 
 std::string XShop::onShowItem(XItem* item)
 {
-    auto desc = item->toString();
+    auto desc = item->toSentence();
 
     if (owner.lock()) {
-        desc.append(fmt::format("{{{}gp}}", item->quantity * item->GetValue()));
+        // Spaced off the name, the way a part-eaten ration's "{3/4}" is -
+        // without it the two ran together as "ration{1gp}".
+        desc.append(fmt::format(" {{{}gp}}", item->quantity * item->GetValue()));
     }
 
     return desc;

@@ -1240,7 +1240,7 @@ bool XCreature::PickUpItem(XItem* i)
             // if we can't pick item, then drop it
             if (isHero()) {
                 msgwin.ClrMsg();
-                msgwin.Add(fmt::format("{} is to heavy for you!", i->toString()));
+                msgwin.Add(fmt::format("{} is too heavy for you!", i->toSentence(XItem::Article::DEFINITE)));
             }
 
             int tx = i->x;
@@ -1605,11 +1605,11 @@ int XCreature::Shoot(int tx, int ty)
         msgwin.Add(GetNameEx(CRN_T1));
 
         if (launcher) {
-            msgwin.Add(fmt::format("{} from {}.",
-                GetVerb("shoot"), launcher->name));
+            msgwin.Add(fmt::format("{} with {}.", GetVerb("shoot"),
+                launcher->GetNameEx(XItem::Article::INDEFINITE)));
         } else {
-            msgwin.Add(fmt::format("{} {}.",
-                GetVerb("throw"), missile->name));
+            msgwin.Add(fmt::format("{} {}.", GetVerb("throw"),
+                missile->GetNameEx(XItem::Article::INDEFINITE)));
         }
     }
 
@@ -1672,7 +1672,9 @@ int XCreature::Shoot(int tx, int ty)
         if (tgt && tgt->isVisible()) {
             msgwin.Add(tgt->GetNameEx(CRN_T1));
             msgwin.Add(tgt->GetVerb("avoid"));
-            msgwin.Add("missile.");
+
+            // The one just loosed at them, so "the".
+            msgwin.Add("the missile.");
         }
     }
 

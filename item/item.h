@@ -171,6 +171,15 @@ class XItem : public XBaseObject
             return false;
         }
 
+        // Whether a sentence about it wants a plural verb: "there ARE 70
+        // golden coins", against "there IS a heap of (3) scrolls" - a
+        // heap is one heap however much is in it, so only something that
+        // counts itself is ever plural, and then only above one.
+        [[nodiscard]] virtual bool IsPlural() const
+        {
+            return false;
+        }
+
         // What toString() says, with the article a sentence needs in
         // front of it - the counterpart of GetNameEx(), which does the
         // same for the bare singular name. Use this rather than writing

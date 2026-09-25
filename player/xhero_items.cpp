@@ -443,7 +443,7 @@ void XHero::DropItem()
             return;
         }
 
-        msgwin.Add(fmt::format("{} drops {}.", name, drop_item->toString()));
+        msgwin.Add(fmt::format("{} drops {}.", name, drop_item->toSentence()));
     }
 }
 
@@ -708,7 +708,7 @@ void XHero::MixPotions()
             if (pn != PN_NONE && vRand(100) < val) {
                 const auto pot = new XPotion(pn);
                 sk->UseSkill(XSkill::Skill::ALCHEMY, 3);
-                msgwin.Add(fmt::format("You have mixed {}.", pot->toString()));
+                msgwin.Add(fmt::format("You have mixed {}.", pot->toSentence()));
                 CarryItem(pot);
                 contain.insert(XItem::Own(pot));
             } else {

@@ -71,7 +71,8 @@ void XHero::Move()
             XItem* item = ilist->begin()->get();
             XAnyPlace* place = l->map->GetPlace(nx, ny);
 
-            msgwin.Add(fmt::format("There is {} here.",
+            msgwin.Add(fmt::format("There {} {} here.",
+                item->IsPlural() ? "are" : "is",
                 place ? place->onShowItem(item) : item->toSentence()));
         }
     }
@@ -611,13 +612,15 @@ void XHero::PayBill()
         const int price = picked->GetValue() * picked->quantity;
 
         if (MoneyOp(0) < price) {
-            msgwin.Add(fmt::format("You don't have enough money for {}.", picked->toString()));
+            msgwin.Add(fmt::format("You don't have enough money for {}.",
+                picked->toSentence()));
             continue;
         }
 
         MoneyOp(-price);
         pai->debt.unpaid_items.erase(pai->debt.unpaid_items.begin() + item_number);
-        msgwin.Add(fmt::format("You paid {}gp for {}.", price, picked->toString()));
+        msgwin.Add(fmt::format("You paid {}gp for {}.", price,
+            picked->toSentence()));
     }
 }
 

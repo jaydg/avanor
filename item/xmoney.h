@@ -39,6 +39,12 @@ class XMoney : public XItem
         {
             return true;
         }
+
+        // "one golden coin" is the only singular amount of money there is.
+        [[nodiscard]] bool IsPlural() const override
+        {
+            return quantity != 1;
+        }
         bool Compare(XObject* o) override;
         XItem* MakeCopy() override
         {
