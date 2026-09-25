@@ -257,7 +257,9 @@ int XReligion::SacrificeItem(XCreature* cr, XItem* item, const DEITY& deity_in)
     DEITY deity = deity_in;
 
     if (deity.empty()) {
-        deity = BestRegarded();
+        // What the sacrificer chose, and only failing that a
+        // guess from who happens to regard them best.
+        deity = patron.empty() ? BestRegarded() : patron;
     }
 
     XMapObject* tmo = cr->l->map->GetSpecial(cr->x, cr->y);

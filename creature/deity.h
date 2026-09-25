@@ -165,9 +165,12 @@ class XReligion
         void SetFavour(const DEITY& deity, int value);
         void ChangeFavour(const DEITY& deity, int delta);
 
-        // The god this creature stands best with - where a sacrifice goes
-        // when it names none.
+        // The god this creature stands best with.
         [[nodiscard]] DEITY BestRegarded() const;
+
+        // The god this one has taken as its own, if any.
+        [[nodiscard]] const DEITY& GetPatron() const { return patron; }
+        void SetPatron(const DEITY& deity) { patron = deity; }
 
         void KillCreature(XCreature* killer, XCreature* victim);
         int SacrificeItem(XCreature* cr, XItem* item, const DEITY& deity = DEITY_NONE);
@@ -183,8 +186,11 @@ class XReligion
         template<class Archive>
         void serialize(Archive& ar)
         {
-            ar(favour);
+            ar(favour, patron);
         }
+
+    private:
+        DEITY patron;
 };
 
 #endif

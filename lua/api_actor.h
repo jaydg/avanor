@@ -153,6 +153,9 @@ namespace lua_api
     void ChangeFavour(void* who, const std::string& deity, int delta);
     void SetFavour(void* who, const std::string& deity, int value);
     std::string GetDeityName(const std::string& deity);
+    sol::table AllDeities(sol::this_state state);
+    std::string GetPatron(void* who);
+    void SetPatron(void* who, const std::string& deity);
     int Sacrifice(void* who, void* item, const std::string& deity);
     void SetItemBrand(void* item, const std::string& br);
     std::string GetItemName(void* item);

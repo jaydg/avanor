@@ -21,6 +21,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <sol/sol.hpp>
 
+#include "creature/deity.h"
 #include "creature/anycr.h"
 #include "creature/lua_ai.h"
 #include "creature/xhero.h"
@@ -881,6 +882,39 @@ std::string GetDeityName(const std::string& deity)
     return DeityName(deity);
 }
 
+// Every god this world declared, in the order it declared them, as
+// {key = id, name = what worshippers call it}. Asked by world/hero.lua so
+// the choice of a patron is built from the gods that exist rather than
+// from a list kept in step by hand: a world that adds a third god gets it
+// in the menu without touching anything else.
+sol::table AllDeities(sol::this_state state)
+{
+    sol::state_view lua(state);
+    sol::table out = lua.create_table();
+
+    for (const auto& row : deities_db) {
+        out.add(lua.create_table_with("key", row.id, "name", DeityName(row.id)));
+    }
+
+    return out;
+}
+
+// The god a creature has taken as its own - where its offerings go when
+// they name none and it is not standing on an altar.
+std::string GetPatron(void* who)
+{
+    const XCreature* cr = (XCreature*)who;
+
+    return cr ? cr->religion.GetPatron() : std::string();
+}
+
+void SetPatron(void* who, const std::string& deity)
+{
+    if (XCreature* cr = (XCreature*)who) {
+        cr->religion.SetPatron(deity);
+    }
+}
+
 // Give something up to a god. Naming none offers it to whichever the
 // giver already stands best with, and an altar underfoot overrides both.
 int Sacrifice(void* who, void* item, const std::string& deity)
@@ -1246,6 +1280,9 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("ChangeFavour", &lua_api::ChangeFavour);
         lua.set_function("SetFavour", &lua_api::SetFavour);
         lua.set_function("GetDeityName", &lua_api::GetDeityName);
+        lua.set_function("AllDeities", &lua_api::AllDeities);
+        lua.set_function("GetPatron", &lua_api::GetPatron);
+        lua.set_function("SetPatron", &lua_api::SetPatron);
         lua.set_function("Sacrifice", &lua_api::Sacrifice);
         lua.set_function("GetItemName", &lua_api::GetItemName);
         lua.set_function("MissileForLauncher", &lua_api::MissileForLauncher);

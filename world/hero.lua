@@ -182,15 +182,39 @@ function HeroGenders()
 end
 
 
+-- The gods a character may take as a patron, and where their offerings go
+-- when they name none and stand on no altar. Built from the gods
+-- world/deities.lua actually declared, so declaring a third one puts it in
+-- the menu without touching anything here.
+function HeroDeities()
+	return AllDeities()
+end
+
+
+-- What a calling begins already standing with. Which god that standing is
+-- with is the player's answer at creation, never the character's race: a
+-- cleric of the god of death is as sound a character as a cleric of the
+-- god of life, and the game has no business deciding that a half-orc must
+-- be one and a gnome the other.
+local STARTING_FAVOUR = {
+	cleric  = 200,
+	paladin = 100,
+}
+
+
 -- Builds the character the player asked for. Called by the engine
--- (XHero::PlayerSetup) once all three choices are made, and responsible for
--- the whole of what those choices mean - the figures, the pace, the
--- stomach, what the race simply knows.
+-- (XHero::PlayerSetup) once every choice is made, and responsible for the
+-- whole of what those choices mean - the figures, the pace, the stomach,
+-- what the race simply knows, what standing the patron starts with.
 --
 -- The three stat blocks are added in the order they were chosen, and only
 -- then clamped: a race and a profession that disagree sharply can drive a
 -- figure below one between them, and nothing may start below one.
-function InitHero(hero, race_key, gender_key, profession_key)
+--
+-- deity_key is what the player chose to worship. It is already set as the
+-- hero's patron by the time this runs; what it is worth in standing is
+-- decided here.
+function InitHero(hero, race_key, gender_key, profession_key, deity_key)
 	local race = Find(HERO_RACES, race_key)
 	local gender = Find(HERO_GENDERS, gender_key)
 	local profession = Find(HERO_PROFESSIONS, profession_key)
@@ -225,6 +249,15 @@ function InitHero(hero, race_key, gender_key, profession_key)
 
 	if (weapon and IsKind(AsItem(weapon).kind, ItemKind.WEAPON)) then
 		SetWarSkill(hero, GetItemWarSkill(weapon), 2)
+	end
+
+	-- A devout calling sets out with the ear of the god it chose. Nothing
+	-- is granted when no god was picked, which is what happens in a world
+	-- that declares none.
+	local devotion = STARTING_FAVOUR[profession_key]
+
+	if (devotion and deity_key and deity_key ~= "") then
+		SetFavour(hero, deity_key, devotion)
 	end
 
 	-- Nobody sets out unable to spot a tripwire, lay one, or climb out of
@@ -525,16 +558,6 @@ HERO_KITS["cleric"] = function(hero, who, race)
 	LearnSkill(hero, XSkill.LITERACY, 1)
 	LearnSkill(hero, XSkill.HERBALISM, 1)
 	LearnSkill(hero, XSkill.RELIGION, 1)
-	if (race == "human") then
-	elseif (race == "half_orc") then
-		SetFavour(hero, "death", 200)
-	elseif (race == "half_elf") then
-	elseif (race == "high_elf") then
-	elseif (race == "halfling") then
-	elseif (race == "dwarf") then
-	elseif (race == "gnome") then
-		SetFavour(hero, "life", 200)
-	end
 end
 
 HERO_KITS["paladin"] = function(hero, who, race)
@@ -556,16 +579,6 @@ HERO_KITS["paladin"] = function(hero, who, race)
 	LearnSkill(hero, XSkill.LITERACY, 1)
 	LearnSkill(hero, XSkill.RELIGION, 1)
 	LearnSkill(hero, XSkill.ATHLETICS, 1)
-	if (race == "human") then
-	elseif (race == "half_orc") then
-		SetFavour(hero, "death", 100)
-	elseif (race == "half_elf") then
-	elseif (race == "high_elf") then
-	elseif (race == "halfling") then
-	elseif (race == "dwarf") then
-	elseif (race == "gnome") then
-		SetFavour(hero, "life", 100)
-	end
 end
 
 HERO_KITS["alchemist"] = function(hero, who, race)

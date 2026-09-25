@@ -195,10 +195,34 @@ void XHero::PlayerSetup()
         profession = chosen_profession["key"];
         profession_name = chosen_profession["name"];
 
-        // Everything those three choices mean - the figures, the pace, the
-        // stomach, what the race simply knows - belongs to content.
+        // Who this one worships, asked rather than worked out. A world
+        // that declares no gods offers no choice and the hero simply has
+        // no patron, which is what every creature in the world has.
+        std::string deity_key;
+        sol::table deities = lua["HeroDeities"]();
+        std::vector<std::string> deity_labels;
+
+        for (auto& [_, row] : deities) {
+            deity_labels.push_back(row.as<sol::table>()["name"]);
+        }
+
+        if (!deity_labels.empty()) {
+            const int dch = ChooseFromMenu("<TEXT>Choose a patron deity:",
+                deity_labels);
+            sol::table chosen_deity = deities[dch - 'a' + 1];
+            deity_key = chosen_deity["key"];
+
+            // Where offerings go from here on, unless an altar says
+            // otherwise. Set before InitHero so content may read it back.
+            religion.SetPatron(deity_key);
+        }
+
+        // Everything those choices mean - the figures, the pace, the
+        // stomach, what the race simply knows, what standing the patron
+        // starts with - belongs to content.
         if (sol::protected_function init = lua["InitHero"]; init.valid()) {
-            if (const auto result = init((void*)this, race, gender_key, profession);
+            if (const auto result = init((void*)this, race, gender_key,
+                    profession, deity_key);
                 !result.valid()) {
                 const sol::error err = result;
                 std::cerr << "world: InitHero: " << err.what() << std::endl;

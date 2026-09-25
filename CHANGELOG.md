@@ -206,6 +206,27 @@ The manual was no help either: it called `~` a debugging command, which it
 has never been, and described `5` only as "current position". They are a rest
 and a single turn spent waiting where you stand, and they now say so.
 
+**You choose a god when you make a character.** Tiamat or Marduk, asked
+alongside your race and your calling, and whichever you name is where your
+offerings go from then on.
+
+They all used to go to Marduk. An offering that named no god went to whoever
+regarded you best, and what you had killed decided that for you: Tiamat is
+pleased by the destruction of the undead and Marduk by death of every other
+kind, so one dead rat put you in credit with him and in debt with her. From
+your first kill onwards there was only ever one answer, and nothing on screen
+ever said so.
+
+Clerics and paladins still set out with their god's ear — two hundred favour
+and one hundred — but it is now the god they chose rather than one chosen for
+them by their race. A half-orc cleric was handed to Marduk and a gnome to
+Tiamat, while a human cleric began with no standing anywhere. A cleric of the
+god of death is a perfectly ordinary character, and so is a gnome who keeps
+one.
+
+Standing on a god's altar still settles the matter whatever else is true, as
+it always did.
+
 ---
 
 ### Skills
