@@ -760,6 +760,11 @@ class XCreature : public XBaseObject
             tactics = tact;
         }
 
+        // How badly hurt this one is. Without a flag, the past
+        // participle for a description ("critically wounded"); with one,
+        // the bare verb for a clause about the blow that did it
+        // ("critically wound"), left uninflected because only the call
+        // site knows whose clause it is.
         const char* GetWoundMsg(int flag = 0);
 
         void GetRangeAttackInfo(int* range, int* hit, XDice* dmg);
@@ -783,6 +788,13 @@ class XCreature : public XBaseObject
         const std::string GetNameEx(CR_NAME_TYPE crn);
 
         [[nodiscard]] std::string GetVerb(std::string verb) const;
+
+        // The third-person singular of a verb: "kill" -> "kills",
+        // "smash" -> "smashes". GetVerb() is this plus the question of
+        // who is doing it - a clause whose subject is a thing rather
+        // than a creature ("a small ball of fire ... and kills you")
+        // needs the inflection without that question.
+        [[nodiscard]] static std::string ThirdPerson(std::string verb);
 };
 
 // Fake creature is need

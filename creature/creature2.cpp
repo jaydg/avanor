@@ -559,8 +559,27 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             }
         }
 
+        // The blow and what it did are one sentence, so whatever finishes
+        // it takes the subject the first half took: the attack, when it
+        // has a name of its own ("a small ball of fire ... and kills
+        // you"), and otherwise whoever struck ("you ... and kill it").
+        // Reading the person off the attacker in both cases is what used
+        // to produce "You hit the spider. And kills it."
+        const auto clause_verb = [&pData](const std::string& verb) {
+            return pData->attack_name.empty()
+                ? pData->attacker->GetVerb(verb)
+                : ThirdPerson(verb);
+        };
+
         if (vis1 || vis2) {
-            auto str = fmt::format("{}{} {} {}{}.",
+            // Only a blow that lands on somebody other than the hero is
+            // told as one sentence. Everything else starts a new one, so
+            // this is the only case where the full stop waits for the
+            // clause below - without that wait the message window sees a
+            // finished sentence and capitalises the "and" that follows.
+            const bool clause_follows = !isHero() && (dmg > 0 || isVisible());
+
+            auto str = fmt::format("{}{} {} {}{}{}",
                 !pData->attack_name.empty() ? pData->attack_name : pData->attacker->GetNameEx(CRN_T1),
                 critical_hit ? " exactly" : "",
                 !pData->attack_name.empty()
@@ -569,7 +588,8 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                                                    ? "backstab"
                                                    : GetMeleeAttackMsg(pData->weapon)),
                 GetNameEx(CRN_T1),
-                ignore_armour ? ", penetrating a piece of armour" : ""
+                ignore_armour ? ", penetrating a piece of armour" : "",
+                clause_follows ? "" : "."
                 );
 
             msgwin.Add(str);
@@ -594,7 +614,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             if (HP > 0) {
                 if ((vis1 || vis2) && !isHero()) {
                     msgwin.Add(fmt::format("and {} {}.",
-                        GetWoundMsg(1),
+                        clause_verb(GetWoundMsg(1)),
                         GetNameEx(CRN_T3)));
                 }
 
@@ -609,9 +629,7 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
                     const std::string verb = crow ? crow->slain_verb : "kill";
 
                     auto str = fmt::format("and {} {}.",
-                        !pData->attack_name.empty()
-                            ? pData->attacker->GetVerb(verb)
-                            : verb + "s",
+                        clause_verb(verb),
                         GetNameEx(CRN_T3)
                     );
 

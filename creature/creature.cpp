@@ -1431,25 +1431,25 @@ const char* XCreature::GetWoundMsg(int flag)
         }
     } else if (rel < 1.3) {
         if (flag) {
-            return "slightly wounds";
+            return "slightly wound";
         } else {
             return "slightly wounded";
         }
     } else if (rel < 2.0) {
         if (flag) {
-            return "wounds";
+            return "wound";
         } else {
             return "wounded";
         }
     } else if (rel < 3.0) {
         if (flag) {
-            return "seriously wounds";
+            return "seriously wound";
         } else {
             return "seriously wounded";
         }
     } else {
         if (flag) {
-            return "critically wounds";
+            return "critically wound";
         } else {
             return "critically wounded";
         }
@@ -2362,7 +2362,21 @@ std::string XCreature::GetVerb(std::string verb) const
         return verb;
     }
 
-    char last_char = verb.back();
+    return ThirdPerson(std::move(verb));
+}
+
+std::string XCreature::ThirdPerson(std::string verb)
+{
+    // Nothing to inflect - GetWoundMsg() answers with an empty verb for
+    // a creature that took no visible harm.
+    if (verb.empty()) {
+        return verb;
+    }
+
+    // The last word carries it, so a verb that arrives with an adverb in
+    // front of it still comes out right: "slightly wound" -> "slightly
+    // wounds".
+    const char last_char = verb.back();
 
     if (last_char == 's' || last_char == 'h') {
         return verb.append("es");
