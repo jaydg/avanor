@@ -199,9 +199,11 @@ function MakeAvanorValley()
 		AddTranslation("S", function(x, y)
 			BuildShop(x, y, 9, 3,
 				ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.MISSILE + ItemKind.MISSILEW,
-				'Noberik, the human shopkeeper',
-				{ wall = SHOP.wall, floor = SHOP.floor, min_value = 20,
-				  handler = 'NoberikHandler' })
+				'Noberik, the human shopkeeper', {
+					wall = SHOP.wall,
+					floor = SHOP.floor, min_value = 20,
+					handler = 'NoberikHandler'
+				})
 		end)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "RATCELLAR", x, y) end)
 		DrawPattern(10, 40)
@@ -250,7 +252,12 @@ function MakeAvanorValley()
 
 		AddTranslation("A", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'eternal flame') end)
 		AddTranslation("B", function(x, y) CreateGefeon(x, y) end)
-		AddTranslation("C", function(x, y) for i = 1, 5 do Guardian('citizen', "roderick_guardian", x, y, 30, 25) Guardian('fcitizen', "roderick_guardian", x, y, 30, 25) end end)
+		AddTranslation("C", function(x, y)
+			for i = 1, 5 do
+				Guardian('citizen', "roderick_guardian", x, y, 30, 25)
+				Guardian('fcitizen', "roderick_guardian", x, y, 30, 25)
+			end
+		end)
 		AddTranslation("_", function(x, y)
 			local altar = PlaceSpecial("XAltar", x, y)
 			SetView(altar, "_", xColor.xWHITE)
@@ -259,9 +266,15 @@ function MakeAvanorValley()
 		AddTranslation("E", function(x, y) CreateHighPriest(x, y) end)
 		AddTranslation("F", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'pew') end)
 
-		AddTranslation("R", function(x, y) CreateRoderik(x, y) Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor') end)
+		AddTranslation("R", function(x, y)
+			CreateRoderik(x, y)
+			Furniture(x, y, xColor.xYELLOW, '~', 'the throne of Avanor')
+		end)
 		AddTranslation("G", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y) end)
-		AddTranslation("H", function(x, y) Guardian('royal_guard', "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP) Way(XStairWay.DOWN, "KINGS_TREASURE", x, y) end)
+		AddTranslation("H", function(x, y)
+			Guardian('royal_guard', "roderick_guardian", x, y, 1, 1, XStandardAI.NO_SWAP)
+			Way(XStairWay.DOWN, "KINGS_TREASURE", x, y)
+		end)
 
 		AddTranslation("Q", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'royal bed') end)
 		AddTranslation("O", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'dinner table') end)
@@ -271,7 +284,11 @@ function MakeAvanorValley()
 		AddTranslation("N", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'bed') end)
 
 
-		AddTranslation("S", function(x, y) BuildShop(x, y, 4, 4, ItemKind.BOOK + ItemKind.SCROLL + ItemKind.POTION, 'Toberik, the human shopkeeper', SHOP) end)
+		AddTranslation("S", function(x, y)
+			BuildShop(x, y, 4, 4,
+				ItemKind.BOOK + ItemKind.SCROLL + ItemKind.POTION,
+				'Toberik, the human shopkeeper', SHOP)
+		end)
 		DrawPattern(129, 2)
 
 
@@ -345,7 +362,11 @@ function MakeAvanorValley()
 		"              ########")
 		AddTranslation(".", XTileType.CAVE_FLOOR)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "UNDEADS_TOMB1", x, y) end)
-		AddTranslation("U", function(x, y) for i = 1, 20 do Creature('skeleton', x, y, 14, 4) end end)
+		AddTranslation("U", function(x, y)
+			for i = 1, 20 do
+				Creature('skeleton', x, y, 14, 4)
+			end
+		end)
 		DrawPattern(100, 50)
 
 
