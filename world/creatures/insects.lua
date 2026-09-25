@@ -48,7 +48,7 @@ Monster.new("tarantula")
 	:Description("These spiders live in nooks and crannies in the rock and "
 		.. "can pop into view when least expected. Unable to spin webs, "
 		.. "they rely on brute strength and venom to overcome a victim. "
-		.. "Creatures may be paralyzed by their venom only to be hauled "
+		.. "Creatures may be paralysed by their venom only to be hauled "
 		.. "back to a hole and eaten alive by the tarantula's young.")
 	:Melee("poison", 40)
 	:Melee("paralyse", 10)
@@ -67,7 +67,7 @@ Monster.new("scorpion")
 	:Combat("5d5", "1d6")
 	:Main("1d1", "0d0", "1d5", "0d0")
 	:Description("This creature is a foot long and colored a dusty brown "
-		.. "with a tail arching high over it's back. Scorpions use the "
+		.. "with a tail arching high over its back. Scorpions use the "
 		.. "poison in their stinging tail as well as formidable pincers as "
 		.. "a powerful attack. They also have a strong exoskeleton which "
 		.. "protects them from many attacks.")
@@ -217,7 +217,7 @@ Monster.new("death_beetle")
 	:Combat("2d10", "3d15")
 	:Main("1d1", "6d7", "1d10", "0d0")
 	:Description("Extremely heavily armored, the death beetle is a dark "
-		.. "blue color bordering on black. The white markings on it's shell "
+		.. "blue colour bordering on black. The white markings on its shell "
 		.. "resemble bleached skulls. Although slow moving, the death "
 		.. "beetle's venom is extremely potent and unless treated "
 		.. "immediately can kill an individual within minutes.")
@@ -270,7 +270,7 @@ Monster.new("centipede")
 	:Combat("1d3", "1d3")
 	:Main("1d4", "1d1", "1d2", "0d0")
 	:Description("Marching forward the centipede comes into view. Low to "
-		.. "the ground and a dark red color, it clearly advertises the fact "
+		.. "the ground and a dark red colour, it clearly advertises the fact "
 		.. "that it carries poison. The multiple legs make it easy for the "
 		.. "centipede to capture its prey.")
 	:Melee("paralyse", 3)
@@ -319,7 +319,7 @@ Monster.new("giant_crawler")
 	:Combat("2d4", "1d3")
 	:Main("1d1", "1d8", "1d4", "0d0")
 	:Description("This appears to be a mound of flesh approximately a foot "
-		.. "high. Only as it moves towards you do you realize that it still "
+		.. "high. Only as it moves towards you do you realise that it still "
 		.. "lives and sees you as viable prey. The greyish green surface "
 		.. "undulates hypnotically as you watch it ooze its way across the "
 		.. "floor.")
@@ -336,7 +336,7 @@ Monster.new("carrion_crawler")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "2d15")
 	:Main("1d1", "1d10", "1d8", "0d0")
-	:Description("This giant bug has numerous paralyzing tentacles just "
+	:Description("This giant bug has numerous paralysing tentacles just "
 		.. "waiting for you to wander into range. They live mostly in "
 		.. "subterranean caverns and feed on dead or dying matter, but they "
 		.. "will attack if hungry...")

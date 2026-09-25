@@ -101,7 +101,7 @@ Monster.new("gnoll")
 	:Main("1d4", "1d2", "2d5+15", "2d5")
 	:Description("A gnoll is to a kobold what a giant is to a man. This "
 		.. "towering cross between man and dog is known for its cunning and "
-		.. "strength. Carrying an axe it will plow right through most "
+		.. "strength. Carrying an axe it will plough right through most "
 		.. "opponents leaving them dazed... if they are lucky.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)

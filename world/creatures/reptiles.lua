@@ -16,7 +16,7 @@ Monster.new("small_snake")
 	:Register()
 
 Monster.new("gray_snake", "small_snake")
-	:View("gray snake", 'R', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "reptile")
+	:View("grey snake", 'R', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "reptile")
 	:Basic("1d10+80", "0d0+1000", "1d200+900", CreatureSize.VERY_SMALL, "5d4")
 	:Stats("St 1d2 Dx 1d4 To 1d2 Pe 1d2")
 	:Resist{ cold = "1d10-50" }
@@ -36,7 +36,7 @@ Monster.new("brown_snake", "gray_snake")
 	:Main("1d3", "0d0", "1d5", "0d0")
 	:Description("This snake will normally keep to the forests and caves of "
 		.. "Avanor. The naturally mottled brown coat allows it to blend in "
-		.. "with the area around it. Though not a great danger, travelers "
+		.. "with the area around it. Though not a great danger, travellers "
 		.. "are urged to leave them alone since others may be nearby.")
 	:Register()
 
@@ -65,7 +65,7 @@ Monster.new("large_snake", "gray_snake")
 		.. "travelling show. Its emerald green scales show up clearly "
 		.. "against the stone and dirt. Idly you wonder how it has survived "
 		.. "for so long seeing as travelling shows just don't reach the "
-		.. "valley anymore. Then you realize that the snake is already "
+		.. "valley anymore. Then you realise that the snake is already "
 		.. "closing the distance between its position and yours and "
 		.. "suddenly you know exactly how it survived.")
 	:Melee("poison", 10)

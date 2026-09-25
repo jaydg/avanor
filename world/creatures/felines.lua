@@ -28,5 +28,5 @@ Monster.new("wild_cat")
 		.. "as large as a wolf, the mottled markings make it difficult to "
 		.. "see in the shadows. As its slitted eyes glance from side to "
 		.. "side you can tell it is hunting for something. Only then do you "
-		.. "realize it is looking for you!")
+		.. "realise it is looking for you!")
 	:Register()

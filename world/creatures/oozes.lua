@@ -1,7 +1,7 @@
 ------------------------------ OOZE, JELLY, etc. --------------------------------------
 
 Monster.new("gray_ooze")
-	:View("gray ooze", 'j', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, "blob")
+	:View("grey ooze", 'j', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, "blob")
 	:Basic("1d10+40", "0d0+1000", "1d100+600", CreatureSize.VERY_SMALL, "1d10+10")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
@@ -12,8 +12,8 @@ Monster.new("gray_ooze")
 	:Description("This quivering gelatinous mass slowly oozes across the "
 		.. "floor towards you. It appears almost that two separate "
 		.. "intelligences control the creature, straining to separate from "
-		.. "each other. It is said that the gray ooze steals life energy "
-		.. "from those it attacks in order to reproduce. It also is rumored "
+		.. "each other. It is said that the grey ooze steals life energy "
+		.. "from those it attacks in order to reproduce. It also is rumoured "
 		.. "to have a deadly poison.")
 	:Melee("poison", 15)
 	:CorpseResist("poison", 1)
@@ -29,7 +29,7 @@ Monster.new("gelatinous_cube")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "2d15")
 	:Main("1d1", "1d10", "1d8", "0d0")
-	:Description("As you watch this clear mass you realize that you can "
+	:Description("As you watch this clear mass you realise that you can "
 		.. "still see the remains of its last meal suspended inside. The "
 		.. "skull seems to laugh at you as ready your weapon to face this "
 		.. "three foot oozing mass. The skeletal hand still grips the "

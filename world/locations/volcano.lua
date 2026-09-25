@@ -12,7 +12,7 @@ Monster.new("xshee_voo")
 	:Description("Xshee-Voo has lived in his mountain cave for as long as "
 		.. "anyone can remember. He never shows himself outside, and the "
 		.. "few that have been in his cave and returned speak of piles of "
-		.. "bones and armor slowly decaying. They also speak of his "
+		.. "bones and armour slowly decaying. They also speak of his "
 		.. "enormous club which looks to have been carved from the rock of "
 		.. "the mountain and is written over with Runes of great power.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)

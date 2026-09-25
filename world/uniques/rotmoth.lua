@@ -2,7 +2,7 @@
 Monster.new("rotmoth", "bandit")
 	:View("Rotmoth", 'p', xColor.xDARKGRAY, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "human")
 	:Description("A wiry, hollow-eyed man with a bandit's cunning and a "
-		.. "coward's cruelty, Rotmoth long ago traded whatever honor he "
+		.. "coward's cruelty, Rotmoth long ago traded whatever honour he "
 		.. "once had for easier profits. He holds his captive in this cave "
 		.. "not through any real strength of his own, but because he knows "
 		.. "precisely what a frightened hostage is worth in gold - and "
@@ -40,7 +40,7 @@ Monster.new("brida", "goodwife")
 -- narrative entry and exit point for the quest.
 function CreateBrida(x, y)
 	-- Her house is a single-row 5-tile room (see world/valley.lua's "B"
-	-- placement) - x,y is the exact spawn tile, so center the guard rect
+	-- placement) - x,y is the exact spawn tile, so centre the guard rect
 	-- on the room rather than just the one tile.
 	local brida = Guardian("brida", VILLAGE_GROUP, x - 2, y, 5, 1)
 	SetEventHandler(brida, 'BridaHandler')
@@ -136,7 +136,7 @@ function SmallCaveQuestPersons(x, y)
 	-- creature/std_ai.cpp) - Rotmoth is right there in the same small
 	-- room from the moment this location is built, so without this she
 	-- attacks her own captor before the hero ever arrives (that
-	-- self-defense clause is suppressed while a companion is set, see
+	-- self-defence clause is suppressed while a companion is set, see
 	-- the escort-gate fix). Marking Rotmoth as her "companion" here isn't
 	-- really about following him - it reuses that same suppression to
 	-- mean "captive, not fighting anyone right now". RotmothHandler's

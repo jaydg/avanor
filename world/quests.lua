@@ -94,7 +94,7 @@ function CreateAllQuests()
 		5000)
 
 	Quest("roderick_eye", XQuest.UNKNOWN,
-		"Roderick, the King of Avanor has asked you to find an artifact called the 'Eye of Raa'.",
+		"Roderick, the King of Avanor has asked you to find an artefact called the 'Eye of Raa'.",
 		"",
 		"You returned 'Eye of Raa' to Roderick.",
 		10000)

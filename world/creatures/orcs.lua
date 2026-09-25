@@ -69,7 +69,7 @@ Monster.new("dark_orc")
 	:Description("Dark orcs retreated to the farthest corners of the "
 		.. "caverns and were enslaved by the other orcs. They were used to "
 		.. "delve great cities beneath the earth like the dwarves. Because "
-		.. "of all this manual labor they grew extremely strong. Before any "
+		.. "of all this manual labour they grew extremely strong. Before any "
 		.. "battle, they cover themselves in coal dust to appear jet black "
 		.. "and frighten their opponents.")
 	:LearnSkill(XSkill.HEALING, 6)

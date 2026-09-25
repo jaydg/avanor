@@ -88,7 +88,7 @@ function RoderikHandler(e, t, p, v)
 		if (roderik.xai:isEnemy(chatter)) then
 			AddMessage("'No mercy!'")
 		elseif (isWieldingItem(p, "avanor_defender")) then
-			AddMessage("'I recognize that sword in your hand. You have "
+			AddMessage("'I recognise that sword in your hand. You have "
 				.. "looted the tomb of my ancestors! Guards! Seize the traitor!'")
 			roderik.xai:AddPersonalEnemy(chatter)
 			roderik.xai:SetGroupEnemy(chatter)
@@ -118,10 +118,10 @@ function RoderikHandler(e, t, p, v)
 				end
 			elseif (eye == XQuest.UNKNOWN) then
 				AddMessage("'Some years ago one of my trusted servants stole "
-					.. "a powerful artifact, the Eye of Raa, from me.He tried "
+					.. "a powerful artefact, the Eye of Raa, from me. He tried "
 					.. "to hide it from me in one of the caves far south from "
 					.. "here, but people say that he was killed while hiding "
-					.. "it. Could you return this artifact to me?'")
+					.. "it. Could you return this artefact to me?'")
 				QuestModify("roderick_eye", XQuest.KNOWN)
 			elseif (eye == XQuest.KNOWN) then
 				AddMessage("'Please, return the Eye of Raa to me.'")

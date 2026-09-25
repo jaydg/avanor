@@ -98,6 +98,7 @@ PotionColour.new("mouldy")
 	:Register()
 
 PotionColour.new("gray")
+	:Called("grey")
 	:Looks(xColor.xLIGHTGRAY)
 	:Register()
 
@@ -138,12 +139,12 @@ PotionColour.new("brown")
 	:Register()
 
 PotionColour.new("light_gray")
-	:Called("light gray")
+	:Called("light grey")
 	:Looks(xColor.xLIGHTGRAY)
 	:Register()
 
 PotionColour.new("dark_gray")
-	:Called("dark gray")
+	:Called("dark grey")
 	:Looks(xColor.xDARKGRAY)
 	:Register()
 

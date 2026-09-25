@@ -80,7 +80,7 @@ Resistance.new("disease")
 	:Register()
 
 Resistance.new("paralyse")
-	:Called("Paralyzation")
+	:Called("Paralysation")
 	:Gained("Your movements grow stronger!")
 	:Lost("Your movements are unsure!")
 	:Register()
