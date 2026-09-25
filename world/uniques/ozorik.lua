@@ -55,7 +55,34 @@ Item.new("death_hack")
 
 
 ozorik_award = 0
-orcs_live = 50
+
+-- What the royal guardians read as, for telling them apart from the rest
+-- of their own group: the captain and Gekta the sheep dog share it.
+local GUARD_NAME = "royal guardian"
+
+-- How much of the war party is still standing, and how many of his men
+-- are left to hand a blade to.
+--
+-- Counted, not tallied. There used to be an `orcs_live` set to fifty when
+-- this file loaded and decremented precisely nowhere, so "the orcs are
+-- still coming" was true for ever: the captain greeted a hero who had
+-- killed the last orc with "the orc war-party will be here soon", and the
+-- victory he was written to declare was unreachable code.
+local function OrcsInTheField()
+	return #FindCreatures("MAIN", ORC_WAR_PARTY)
+end
+
+local function GuardsAlive()
+	local n = 0
+
+	for _, cr in ipairs(FindCreatures("MAIN", "guardian")) do
+		if (AsCreature(cr).name == GUARD_NAME) then
+			n = n + 1
+		end
+	end
+
+	return n
+end
 
 
 function CreateOzorik(x, y)
@@ -73,7 +100,16 @@ function OzorikHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus("ozorik")
 		local demon_quest = QuestStatus("elder")
-		if (orcs_live > 0 and qs < XQuest.COMPLETE) then
+
+		-- Anything already settled, one way or the other, is only worth a
+		-- greeting.
+		if (qs >= XQuest.CLOSED) then
+			AddMessage("'Good day, hero!'")
+
+			return true
+		end
+
+		if (OrcsInTheField() > 0) then
 			if (qs == XQuest.UNKNOWN) then
 				if (demon_quest == XQuest.KNOWN) then
 					AddMessage("'Demons? We are mighty enough to slay them, "
@@ -83,25 +119,57 @@ function OzorikHandler(e, t, p, v)
 					AddMessage("'Sorry, but I'm really busy now. The orc "
 						.. "war-party will be here soon!'")
 				end
+
 				QuestModify("ozorik", XQuest.KNOWN)
+			elseif (qs < XQuest.COMPLETE and GuardsAlive() == 0) then
+				-- The fight is still on and he has nobody left to arm.
+				-- Said plainly rather than sending the hero off to find a
+				-- guardian who is lying in the square outside.
+				AddMessage("'Do not bring me steel. I have no one left to "
+					.. "put it in the hands of - they are all of them "
+					.. "dead, and I am still here.'")
 			else
 				AddMessage("'Sorry, but I'm really busy right now. The orc "
 					.. "war-party will be here soon!'")
 			end
-		else
-			if (qs < XQuest.CLOSED) then
-				AddMessage("'You gained us victory!'")
-				if (GiveAward(t, ozorik_award, p)) then
-					AddMessage("'Take this dagger as a reward!'")
-				end
-				QuestModify("ozorik", XQuest.CLOSED)
-			else
-				AddMessage("'Good day, hero!'")
-			end
+
+			return true
 		end
+
+		-- The war party is broken.
+		if (qs < XQuest.COMPLETE and GuardsAlive() == 0) then
+			-- Won, and for nothing he wanted: the errand was to arm his
+			-- guard, and there is no guard to arm. Failed rather than
+			-- closed, because closing it would have the log say he paid
+			-- the hero for arming men who never held the blade.
+			AddMessage("'It is over. The last of them is down, and so is "
+				.. "every man I had.'")
+			AddMessage("'There is nothing left to arm and nothing left to pay you "
+				.. "out of. Go well, and do not think it was for nothing.'")
+			QuestModify("ozorik", XQuest.FAIL)
+
+			return true
+		end
+
+		AddMessage("'You gained us victory!'")
+
+		if (GiveAward(t, ozorik_award, p)) then
+			AddMessage("'Take this dagger as a reward!'")
+		end
+
+		QuestModify("ozorik", XQuest.CLOSED)
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (IsKind(kind, ItemKind.WEAPON) and HasBrand(brt, "orc_slayer") and wt == "sword") then
+			-- Only if there is somebody left to carry it. Sending the hero
+			-- to find a guardian when every one of them is dead is how the
+			-- errand used to become quietly impossible.
+			if (GuardsAlive() == 0) then
+				AddMessage("'Keep it. I have no one left to give it to.'")
+
+				return false
+			end
+
 			AddMessage("'Wow, you've probably saved our lives! Please, take "
 				.. "this weapon to one of my guardians, then return to me!'")
 

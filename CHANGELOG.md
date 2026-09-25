@@ -484,6 +484,15 @@ Things that simply did not happen:
 - Beating off the orc war party was never acknowledged at the end of the
   game: the achievements screen asked for thirty orc deaths, and only twenty
   orcs have ever existed
+- Ozorick had nothing to say about a victory that cost him everything. His
+  errand is to put a sword of orc slaying into the hands of one of his royal
+  guardians, and a battle that ends with the war party broken and every one
+  of those guardians dead used to close it regardless — he thanked the hero
+  and paid out for arming men who never held the blade. He now says what has
+  become of his command, and the errand fails rather than closing on that.
+  If the fighting is still going and his guard is already gone he says so
+  too, instead of sending the hero off to find a guardian who is lying in the
+  square outside
 - Unidentified scrolls carried the same labels in every game. The nonsense
   name on a scroll you have not read is meant to be rolled afresh each game,
   so that learning one teaches you nothing about the next; it was rolled
