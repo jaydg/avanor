@@ -42,6 +42,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "engine/simulation.h"
 #include "engine/global.h"
 #include "engine/xarchive.h"
+#include "engine/xlua.h"
 #include "game/game.h"
 #include "helpers/hiscore.h"
 #include "helpers/manual.h"
@@ -646,6 +647,24 @@ static void vRelaunchInTerminal()
 #endif
 
 
+namespace {
+
+// Out of a world that would not load. The reason is said here rather than
+// where it was found: XLua::Init() runs with the alternate screen up, and
+// vFinit() takes that screen away along with everything written on it, so
+// the one line worth reading would go with it.
+int WorldFailed()
+{
+    vFinit();
+    std::cerr << "world: " << XLua::LastError() << std::endl;
+    std::cerr << "avanor: the world could not be loaded - fix the script"
+                 " above and start again" << std::endl;
+
+    return 1;
+}
+
+} // namespace
+
 int main(int argc, char* argv[])
 {
 #ifdef __APPLE__
@@ -736,7 +755,9 @@ int main(int argc, char* argv[])
         // already-live Game.Create('T') world would silently orphan the
         // live locations via plain shared_ptr reassignment, without ever
         // Invalidate()ing them first.
-        static_cast<void>(Game.Create('T'));
+        if (!Game.Create('T')) {
+            return WorldFailed();
+        }
 
         for (int i = 0; i < 100; i++) {
             const auto o = Game.Scheduler.Get();
@@ -767,7 +788,10 @@ int main(int argc, char* argv[])
         vFinit();
         return ok ? 0 : 1;
     } else if (program.get<bool>("--test-load")) {
-        XLocation::Restoration();
+        if (!XLocation::Restoration()) {
+            return WorldFailed();
+        }
+
         const int ok = XArchive::RestoreGame(XArchive::TEST_SLOT);
         std::cout << "RestoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
 
@@ -842,7 +866,9 @@ int main(int argc, char* argv[])
         vFinit();
         return ok ? 0 : 1;
     } else if (program.is_used("--simulate")) {
-        static_cast<void>(Game.Create('T'));
+        if (!Game.Create('T')) {
+            return WorldFailed();
+        }
 
         const bool ran = RunSimulation(program.get<std::string>("--simulate"),
                                        program.get<int>("--arg"));
@@ -853,10 +879,14 @@ int main(int argc, char* argv[])
         std::cerr.flush();
         _exit(ran ? 0 : 1);
     } else if (program.get<bool>("--test")) {
-        static_cast<void>(Game.Create('T'));
+        if (!Game.Create('T')) {
+            return WorldFailed();
+        }
         Game.RunWithoutHero();
     } else if (program.get<bool>("--demo")) {
-        static_cast<void>(Game.Create('D'));
+        if (!Game.Create('D')) {
+            return WorldFailed();
+        }
         Game.RunDemo();
     } else {
         Game.isGodMode = program.get<bool>("--god");
@@ -892,10 +922,14 @@ int main(int argc, char* argv[])
             }
         }
 
-        // False only for a restore that produced nothing playable; the
-        // message has already been shown, so just do not run it.
+        // False for a restore that produced nothing playable, which has
+        // already said so on screen, or for a world that would not load,
+        // which has not - the screen it would have said it on is about to
+        // be taken away.
         if (Game.Create(ch)) {
             Game.Run();
+        } else if (!XLua::LastError().empty()) {
+            return WorldFailed();
         }
     }
 

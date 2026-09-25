@@ -33,7 +33,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class XGame
 {
-        void CreateLocations() const;
+        // False when the world scripts would not build the world, with
+        // XLua::LastError() saying why.
+        [[nodiscard]] bool CreateLocations() const;
+
         void CreateHero() const;
 
         bool demo = false;

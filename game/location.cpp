@@ -542,14 +542,14 @@ void RegisterLuaEventEnum(sol::state_view& lua)
     );
 }
 
-void XLocation::Restoration()
+bool XLocation::Restoration()
 {
     // Only what has to exist *before* a saved world can be read: the
     // tile table, the creature templates, the map alphabet. The world
     // itself arrives afterwards, in XArchive::RestoreGame(), which
     // validates and links it once every location is back - doing either
     // here would sweep an empty Game.locations and link nothing.
-    XLua::Init();
+    return XLua::Init();
 }
 
 int XLocation::ValidateWorld(const bool new_game)
@@ -695,21 +695,20 @@ int XLocation::ValidateWays()
 // steps, not one: the tables those scripts fill - potions above all - have
 // to exist before XAlchemy::Init() and PlantDefinition::Create() read them,
 // and both of those must run before any location is populated with herbs.
-void XLocation::LoadScripts()
+bool XLocation::LoadScripts()
 {
-    XLua::Init();
+    return XLua::Init();
 }
 
-void XLocation::CreateNewGame()
+bool XLocation::CreateNewGame()
 {
-    sol::state_view lua(XLua::State());
-    if (const sol::protected_function_result result = lua["InitWorld"]();
-        !result.valid()) {
-        const sol::error err = result;
-        std::cerr << "world: " << err.what() << std::endl;
-        assert(false && "InitWorld() failed - see the message above");
+    if (!XLua::RunWorldEntry("InitWorld")) {
+        return false;
     }
+
     ValidateWorld(true);
+
+    return true;
 }
 
 //CreateLocation(L_SMALL_CAVE1, "SmCv:1", "Small Cave Level 1", CAVE)

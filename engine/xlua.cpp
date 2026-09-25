@@ -63,6 +63,9 @@ lua_State* XLua::L = nullptr;
 
 namespace {
 
+// Why the last XLua::Init() gave up, for XLua::LastError().
+std::string last_error;
+
 // An enum table the engine registered answers an unknown member with an
 // error rather than with nil. Lua hands nil back for a missing table
 // field, sol2 turns that nil into 0 for an enum-typed parameter, and
@@ -161,7 +164,7 @@ std::string WhereInContent()
     return src + ":" + std::to_string(ar.currentline);
 }
 
-void XLua::Init()
+bool XLua::Init()
 {
     // The rooms and the map alphabet both hold sol::protected_functions
     // belonging to the state being replaced here, so neither can outlive
@@ -497,16 +500,38 @@ void XLua::Init()
 
     // Catch Lua errors loading data.
     // The message is what says which file and line went wrong.
-    if (const sol::protected_function_result result = lua["LoadScripts"]();
-        !result.valid()) {
-        const sol::error err = result;
-        std::cerr << "world: " << err.what() << std::endl;
-        assert(false && "LoadScripts() failed - see the message above");
+    if (!RunWorldEntry("LoadScripts")) {
+        return false;
     }
 
     // Nothing can be drawn or walked on before this holds.
     XTileType::ValidateTiles();
     XCreatureStorage::CreateQuickBase();
+
+    return true;
+}
+
+bool XLua::RunWorldEntry(const char* entry)
+{
+    sol::state_view lua(L);
+
+    if (const sol::protected_function_result result = lua[entry]();
+        !result.valid()) {
+        const sol::error err = result;
+        last_error = err.what();
+
+        // Not an assert: a typo in a world script is the most ordinary
+        // thing a content author does, not an impossible internal state,
+        // and aborting here dumps core and leaves the terminal raw.
+        return false;
+    }
+
+    return true;
+}
+
+const std::string& XLua::LastError()
+{
+    return last_error;
 }
 
 namespace {

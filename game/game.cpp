@@ -108,7 +108,9 @@ bool XGame::Create(const char type_of_start)
             vGotoXY((size_x - strlen("Restoring game objects, please wait...")) / 2, size_y / 2);
             vPutS("<TEXT>Restoring game objects, please wait...");
             vRefresh();
-            XLocation::Restoration();
+            if (!XLocation::Restoration()) {
+                return false;
+            }
 
             if (XArchive::RestoreGame()) {
                 if (WorldHasHero()) {
@@ -142,19 +144,28 @@ bool XGame::Create(const char type_of_start)
             [[fallthrough]];
 
         case 'N' :
-            XLocation::LoadScripts();
+            if (!XLocation::LoadScripts()) {
+                return false;
+            }
+
             XAlchemy::Init();
             PlantDefinition::Create();
             vClrScr();
             vGotoXY((size_x - strlen("Generating game objects, please wait...")) / 2, size_y / 2);
             vPutS("<TEXT>Generating game objects, please wait...");
             vRefresh();
-            CreateLocations();
+            if (!CreateLocations()) {
+                return false;
+            }
+
             CreateHero();
             break;
 
         case 'T' :
-            XLocation::LoadScripts();
+            if (!XLocation::LoadScripts()) {
+                return false;
+            }
+
             XAlchemy::Init();
             PlantDefinition::Create();
             vClrScr();
@@ -162,11 +173,17 @@ bool XGame::Create(const char type_of_start)
             vPutS("<TEXT>Preparing for test, please wait...");
             vRefresh();
 
-            CreateLocations();
+            if (!CreateLocations()) {
+                return false;
+            }
+
             break;
 
         case 'D' :
-            XLocation::LoadScripts();
+            if (!XLocation::LoadScripts()) {
+                return false;
+            }
+
             XAlchemy::Init();
             PlantDefinition::Create();
             vClrScr();
@@ -175,7 +192,10 @@ bool XGame::Create(const char type_of_start)
             vRefresh();
             demo = true;
 
-            CreateLocations();
+            if (!CreateLocations()) {
+                return false;
+            }
+
             break;
     }
 
@@ -408,10 +428,12 @@ void XGame::Run()
     vGetch();
 }
 
-void XGame::CreateLocations() const
+bool XGame::CreateLocations() const
 {
     //	Create locations
-    XLocation::CreateNewGame();
+    if (!XLocation::CreateNewGame()) {
+        return false;
+    }
 
     //	Bind ways
     for (const auto& [key, loc] : locations) {
@@ -434,6 +456,8 @@ void XGame::CreateLocations() const
 
     XLocation::ValidateWays();
     XLocation::LinkLevels();
+
+    return true;
 }
 
 void XGame::CreateHero() const

@@ -34,7 +34,22 @@ class XLua
     public:
         // Creates the state, registers every binding and enum, then runs
         // world/init.lua. Called once per game start (new or restored).
-        static void Init();
+        // False when the world scripts would not load, with LastError()
+        // saying why.
+        [[nodiscard]] static bool Init();
+
+        // Calls one of the world's own entry points - LoadScripts(),
+        // InitWorld() - and remembers why if it throws. Both are content
+        // rather than engine, so both fail the same way: by saying what
+        // is wrong and letting the caller stop, never by asserting.
+        [[nodiscard]] static bool RunWorldEntry(const char* entry);
+
+        // Why the last Init() or RunWorldEntry() failed. Kept rather than only printed:
+        // Init() runs with the alternate screen up, and handing the
+        // terminal back takes that screen away along with anything
+        // written on it, so the one line worth reading has to be said
+        // again afterwards.
+        static const std::string& LastError();
 
         // The raw state, for the `sol::state_view lua(XLua::State())` call
         // sites scattered through the creature/map/location code.

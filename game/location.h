@@ -293,9 +293,11 @@ class XLocation : public XObject
         // of complaints, each already reported.
         static int ValidateWays();
 
-        static void LoadScripts();
-        static void CreateNewGame();
-        static void Restoration();
+        // Both answer false when the world scripts would not load, with
+        // XLua::LastError() saying why.
+        [[nodiscard]] static bool LoadScripts();
+        [[nodiscard]] static bool CreateNewGame();
+        [[nodiscard]] static bool Restoration();
         // options carries what the chosen generator needs - which tiles
         // it builds from, how large the map is, and for a DUNGEON the
         // chance of a defined room. The engine supplies no tiles of its
