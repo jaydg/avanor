@@ -376,6 +376,19 @@ spell you know within that school hits harder and reaches further for it, even
 the ones you have barely practised. Press `#` to see how far you have come;
 schools you know no spells of are not listed at all.
 
+**Curing poison now cures poison.** It never has, in any released version of
+Avanor. Poison is counted in doses and laid on at ten turns to the dose, but
+a cure took its amount off in single turns — so a potion or a prayer removed
+about a tenth of what was on you, said "You feel somewhat relieved", and left
+you dying of the rest. A snake bite runs to two hundred turns; a cure of it
+was worth twenty.
+
+Both halves are fixed. Relief is now counted in the same units the poison was
+laid on with, and cure poison lifts the whole of it rather than rolling for
+an amount — including any dose still working its way in, which is what makes
+it a cure rather than a strong drink. It is the one modifier in the game with
+a scale, so nothing else was affected.
+
 **Draining life now drains it.** The spell did damage and nothing else; half
 of what it takes from you now goes to whatever cast it. Spectres and vampires
 are meaningfully harder.

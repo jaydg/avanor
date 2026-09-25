@@ -12,7 +12,12 @@
 --       :Cures(count, divisor, bonus)      bleeding staunched
 --       :Restores(count, divisor, bonus)   power points back
 --       :Inflicts(modifier, c, d, b)       laid on the causer
---       :Relieves(modifier, c, d, b)       taken off the causer
+--       :Relieves(modifier, c, d, b)       taken off the causer, by an
+--                                          amount
+--       :Lifts(modifier)                   taken off the causer entirely,
+--                                          doses still on their way
+--                                          included - for a cure that
+--                                          means to cure
 --       :Sustains(modifier)                laid on for `power` itself, with
 --                                          no dice - a heroism or a
 --                                          resistance held while it lasts
@@ -76,8 +81,12 @@ Effect.new("restoration")
 	:Restores(5, 1, 20)
 	:Register()
 
+-- A cure that cures. It used to take a roll of poison off and leave the
+-- rest, which on any real dose meant "You feel somewhat relieved." and a
+-- character still dying of it - and a player who drinks a potion of cure
+-- poison is entitled to be cured of poison.
 Effect.new("cure_poison")
-	:Relieves("poison", 1, 1, 5)
+	:Lifts("poison")
 	:Register()
 
 Effect.new("cure_disease")

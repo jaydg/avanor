@@ -150,9 +150,10 @@ void XModifier::Add(XBasicModifier mod, XCreature* owner)
     ml.push_back(std::move(mod));
 }
 
-void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
+bool XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
 {
     bool first = true;
+    bool removed = false;
 
     for (auto it = ml.begin(); it != ml.end();) {
         auto& tmod = *it;
@@ -171,10 +172,13 @@ void XModifier::Remove(const MODIFIER& mdt, XCreature* owner)
 
             // gone for real
             it = ml.erase(it);
+            removed = true;
         } else {
             ++it;
         }
     }
+
+    return removed;
 }
 
 void XModifier::Cure(XCreature* owner)

@@ -53,7 +53,9 @@ class XModifier
         int Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr = nullptr,
             int delay = 0);
 
-        void Remove(const MODIFIER& mdt, XCreature* owner);
+        // Takes it off entirely, doses still on their way included, and
+        // says whether there was anything there to take off.
+        bool Remove(const MODIFIER& mdt, XCreature* owner);
 
         // Lifts everything content calls an illness - what a prayer for
         // healing answers. Which modifiers those are is written in

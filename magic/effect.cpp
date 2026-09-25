@@ -49,6 +49,7 @@ void XEffect::RegisterLua(sol::state_view& lua)
         "Restores", &EffectBuilder::Restores,
         "Inflicts", &EffectBuilder::Inflicts,
         "Relieves", &EffectBuilder::Relieves,
+        "Lifts", &EffectBuilder::Lifts,
         "Sustains", &EffectBuilder::Sustains,
         "Touches", &EffectBuilder::Touches,
         "Throws", &EffectBuilder::Throws,
@@ -136,6 +137,29 @@ EffectBuilder& EffectBuilder::Relieves(const std::string& modifier, const int co
     part.modifier = modifier;
     part.relieves = true;
     t.parts.push_back(part);
+    return *this;
+}
+
+// Not a large :Relieves(): a cure that clears the whole of something is
+// saying a different thing from one that takes an amount off, and a
+// number big enough to always win is a way of writing "all of it" that
+// stops being true the moment content lays one on harder.
+EffectBuilder& EffectBuilder::Lifts(const std::string& modifier)
+{
+    // A name nothing knows: say so while the file that wrote it is
+    // loading, and lay nothing on.
+    if (!IsKnownModifier(modifier)) {
+        std::cerr << "world: :Lifts() names a modifier '" << modifier
+                  << "', which nothing defines" << std::endl;
+
+        return *this;
+    }
+
+    EffectPart part;
+    part.kind = EffectPart::Kind::LIFT;
+    part.modifier = modifier;
+    t.parts.push_back(part);
+
     return *this;
 }
 
@@ -684,6 +708,15 @@ int XEffect::Make(const EFFECT_DATA* pData)
                     part.relieves ? -val : val, Recipient(pData));
                 break;
             }
+
+            case EffectPart::Kind::LIFT:
+                // Remove() says whether there was anything there, which
+                // is what decides whether this effect found work to do -
+                // a cure drunk by somebody hale should report that it
+                // did nothing, not swallow the dose silently.
+                done = Recipient(pData)->md->Remove(part.modifier,
+                    Recipient(pData));
+                break;
 
             case EffectPart::Kind::TOUCH:
                 done = Touch(pData, part.count, sides, part.bonus,
