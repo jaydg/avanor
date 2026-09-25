@@ -23,7 +23,7 @@ Monster.new("beelzevile")
 	:Stats("St 5d5+50 Dx 3d3+10 To 2d5+30 Le 9d5 Wi 3d4 Ma 5d4 Pe 1d3 Ch 1d3")
 	:Combat("0d0+10", "2d8")
 	:Main("0d0-5", "0d0+2", "1d6+22", "5d5+100")
-	:Description("How he got to the mushroom caves is anyones guess but it "
+	:Description("How he got to the mushroom caves is anyone's guess but it "
 		.. "is commonly believed that some kobold shaman got a little "
 		.. "carried away with his magic and summoned Beelzevile from the "
 		.. "netherworld. Standing 10 feet high and carrying a reek of "

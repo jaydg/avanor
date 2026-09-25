@@ -49,7 +49,7 @@ function DigWithPickaxe(state, item, digger)
 		y = y + dy
 
 		if (not TileDiggableInto(GetTile(x, y, GetCreatureLocation(digger)))) then
-			AddMessage("You can't dig something other than walls.")
+			AddMessage("You can only dig through walls.")
 			return Result.FAIL
 		end
 
@@ -90,7 +90,7 @@ function DigWithPickaxe(state, item, digger)
 	UseSkill(digger, XSkill.MINING)
 
 	if (Rand(3) == 0) then
-		AddMessage("There was some gold in ore.")
+		AddMessage("There was some gold in the ore.")
 		DropMoney(digger, Rand(100) + 10, x, y)
 	end
 

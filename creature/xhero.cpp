@@ -137,7 +137,7 @@ void XHero::Die(XCreature * killer)
 {
     if (XGame::isGodMode) {
         // God mode entails a choice about whether I die.
-        msgwin.Add("You died!!!  Continue game?");
+        msgwin.Add("You died!!! Continue game?");
 
         if (GetTarget(TR_NO_YES)) {
             // Don't want to die twice, since we are cheating it!
@@ -239,7 +239,7 @@ std::shared_ptr<XItem> XHero::onIdentifyItem()
 
 bool XHero::Chat(XCreature * /*chatter*/, const char* /*msg*/)
 {
-    msgwin.Add("You don't like to speak yourself");
+    msgwin.Add("You don't like talking to yourself.");
     return true;
 }
 

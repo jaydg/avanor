@@ -1007,7 +1007,7 @@ int XCreature::GainAttr(XStats::Id st, int val)
                         break;
 
                     case XStats::WIL:
-                        msgwin.Add("You feel more powerfull!");
+                        msgwin.Add("You feel more powerful!");
                         break;
 
                     case XStats::LEN:

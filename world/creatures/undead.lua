@@ -88,7 +88,7 @@ Monster.new("dread")
 	:Combat("6d6", "5d5")
 	:Main("8d5", "0d0", "8d5", "10d8")
 	:Description("Panic and fear threaten to overwhelm you as you face "
-		.. "thise evil spirit. Aptly named for the feelings it causes, The "
+		.. "this evil spirit. Aptly named for the feelings it causes, the "
 		.. "dread seeks only to destroy all living things. So stealthy and "
 		.. "invisible are they that most people will never know exactly "
 		.. "what did them in.")

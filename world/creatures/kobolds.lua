@@ -31,7 +31,7 @@ Monster.new("large_kobold")
 	:Main("1d3", "1d1", "2d5", "2d3")
 	:Description("Somehow this kobold managed to survive its early "
 		.. "development. It is not much smarter than the smaller, younger "
-		.. "kobolds but definately has more strength.")
+		.. "kobolds but definitely has more strength.")
 	:LearnSkill(XSkill.HEALING, 5)
 	:LearnSkill(XSkill.FINDWEAKNESS, 5)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 3, 12)
@@ -52,7 +52,7 @@ Monster.new("chieftain_kobold")
 	:Main("1d4", "1d2", "2d6", "2d3")
 	:Description("The largest kobold you have yet seen. There is a glint of "
 		.. "wicked intelligence behind its eyes as it approaches. The "
-		.. "kobold chieftain only acheived his position by being stronger, "
+		.. "kobold chieftain only achieved his position by being stronger, "
 		.. "smarter and meaner then everyone else.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)

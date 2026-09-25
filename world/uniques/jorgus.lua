@@ -11,10 +11,10 @@ Monster.new("jorgus")
 	:Main("4d2", "1d3", "1d5+15", "1d5+5")
 	:Description("As you enter his dwelling you keep a tight hold on your "
 		.. "purse. The shifty eyes and too quick smile of the owner makes "
-		.. "you nervous. Jorgush is the leader of his outlaw band. They are "
+		.. "you nervous. Jorgus is the leader of his outlaw band. They are "
 		.. "known for stealing from the rich and keeping it for themselves. "
 		.. "He appears to evaluate you and the weapons you bear and then "
-		.. "gestures to the cahir at the table. Perhaps he has a "
+		.. "gestures to the chair at the table. Perhaps he has a "
 		.. "proposition for you...")
 	:LearnSkill(XSkill.STEALING, 15)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 30)

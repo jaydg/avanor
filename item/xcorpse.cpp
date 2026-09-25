@@ -144,10 +144,10 @@ RESULT XCorpse::onEat(XCreature * eater)
                 case EffectType::STOMACH:
                     if (eater->isHero()) {
                         if (it.value < 0) {
-                            msgwin.Add("You stomach shrinks from pain!");
+                            msgwin.Add("Your stomach shrinks from pain!");
                             eater->nutrio_speed++;
                         } else {
-                            msgwin.Add("You stomach rumbles peacefully!");
+                            msgwin.Add("Your stomach rumbles peacefully!");
 
                             if (eater->nutrio_speed > 1) { // 1 is the minimum rate of food processing
                                 eater->nutrio_speed--;

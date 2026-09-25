@@ -290,7 +290,7 @@ int XEffect::Heal(XCreature * caster, int X, int Y, int Z)
             msgwin.Add(caster->GetVerb("feel"));
 
             if (caster->GetMaxHP() == caster->HP) {
-                msgwin.Add("completly healed.");
+                msgwin.Add("completely healed.");
             } else if (d.GetResult() < 8) {
                 msgwin.Add("slightly healed.");
             } else if (d.GetResult()< 15) {
@@ -590,7 +590,7 @@ int XEffect::Engine(const EffectPart& part, const EFFECT_DATA* pData)
 
         if (pData->caller->isVisible()) {
             msgwin.Add(pData->caller->name);
-            msgwin.Add("has suddenly disappered.");
+            msgwin.Add("has suddenly disappeared.");
         }
 
         // See the SUMMON_MONSTER case above for why this keepalive is
@@ -619,7 +619,7 @@ int XEffect::Engine(const EffectPart& part, const EFFECT_DATA* pData)
 
         if (!pData->target->isHero() && pData->target->isVisible()) {
             msgwin.Add(pData->target->name);
-            msgwin.Add("has suddenly disappered.");
+            msgwin.Add("has suddenly disappeared.");
         }
 
         // See the SUMMON_MONSTER case above - pData->target is whoever

@@ -11,7 +11,7 @@ Monster.new("bat")
 	:Main("1d4", "0d0", "1d2", "0d0")
 	:Description("Flapping wings and squeaks in the darkness are a common "
 		.. "sound to all who enter the caves of Avanor. Usually bats leave "
-		.. "travlers alone, but sickness and magic sometimes cause them to "
+		.. "travelers alone, but sickness and magic sometimes cause them to "
 		.. "attack.")
 	:Register()
 

@@ -357,7 +357,7 @@ int XTrap::MoveOut(XCreature* cr)
 
             if (cr->isVisible()) {
                 msgwin.Add(cr->GetNameEx(CRN_T1));
-                msgwin.Add("managed to climb out from the pit.");
+                msgwin.Add("managed to climb out of the pit.");
             }
 
             last_activator = 0;
@@ -369,7 +369,7 @@ int XTrap::MoveOut(XCreature* cr)
 
             if (cr->isVisible()) {
                 msgwin.Add(cr->GetNameEx(CRN_T1));
-                msgwin.Add("can not to climb out from the pit.");
+                msgwin.Add("cannot climb out of the pit.");
             }
         } else {
             // no luck!
@@ -542,7 +542,7 @@ int XTrap::Disarm(XCreature * cr)
     if (val < chance) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
         msgwin.Add(cr->GetVerb("disarm"));
-        msgwin.Add("a trap successfully.");
+        msgwin.Add("the trap successfully.");
 
         // Invalidate() handles the map-cell eviction itself (see
         // XMapObject::Invalidate()).
@@ -553,7 +553,7 @@ int XTrap::Disarm(XCreature * cr)
 
     if (val < static_cast<int>(chance * 1.3)) {
         msgwin.Add(cr->GetNameEx(CRN_T1));
-        msgwin.Add("doesn't manage to disarm a trap.");
+        msgwin.Add("doesn't manage to disarm the trap.");
     } else {
         Activate(cr);
     }

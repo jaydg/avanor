@@ -219,8 +219,8 @@ Monster.new("death_beetle")
 	:Description("Extremely heavily armored, the death beetle is a dark "
 		.. "blue color bordering on black. The white markings on it's shell "
 		.. "resemble bleached skulls. Although slow moving, the death "
-		.. "beetles venom is extremely potent and unless treated "
-		.. "immeadiately can kill an individual within minutes.")
+		.. "beetle's venom is extremely potent and unless treated "
+		.. "immediately can kill an individual within minutes.")
 	:Melee("poison", 50)
 	:Melee("paralyse", 100)
 	:CorpseResist("paralyse", 15)

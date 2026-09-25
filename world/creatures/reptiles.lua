@@ -24,8 +24,8 @@ Monster.new("gray_snake", "small_snake")
 	:Main("1d3", "0d0", "1d3", "0d0")
 	:Description("A long serpent slithers towards you, its grey-black "
 		.. "scales making it hard to see against the stone of the cavern "
-		.. "floor. The pale green eyes glimmer with hunger. Its pink tounge "
-		.. "tastes the air as it contemplates this, its lastest meal... "
+		.. "floor. The pale green eyes glimmer with hunger. Its pink tongue "
+		.. "tastes the air as it contemplates this, its latest meal... "
 		.. "YOU!")
 	:Register()
 

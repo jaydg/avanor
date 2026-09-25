@@ -32,7 +32,7 @@ Monster.new("gelatinous_cube")
 	:Description("As you watch this clear mass you realize that you can "
 		.. "still see the remains of its last meal suspended inside. The "
 		.. "skull seems to laugh at you as ready your weapon to face this "
-		.. "three foot oozing mass. The skelatal hand still grips the "
+		.. "three foot oozing mass. The skeletal hand still grips the "
 		.. "remains of a sword, slowly being digested.")
 	:Melee("paralyse", 100)
 	:Melee("acid", 100)

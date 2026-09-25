@@ -15,7 +15,7 @@ Monster.new("roderik")
 		.. "rule lies in his hand looking like an ornament but it has been "
 		.. "said it is a formidable weapon wrought with great magic in days "
 		.. "of yore. Rodrick's face is happy but you can see great concern "
-		.. "in his eyes. The responsibilty for this nation must truly weigh "
+		.. "in his eyes. The responsibility for this nation must truly weigh "
 		.. "on him.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)

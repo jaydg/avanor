@@ -353,7 +353,7 @@ RESULT XMagic::Cast(XSpell* spell, XCreature* caster, XCreature* on)
         }
     } else {
         if (caster->isHero()) {
-            msgwin.Add("You have not enough mana to cast the spell.");
+            msgwin.Add("You don't have enough mana to cast the spell.");
         }
     }
 

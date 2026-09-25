@@ -33,7 +33,7 @@ function GektaHandler(e, t, p, v)
 			if (it == "bone") then
 				for i = 1, count do
 					if (Rand(7) == 0) then
-						 AddMessage("Gekta suddenly start to dig in the "
+						 AddMessage("Gekta suddenly starts to dig in the "
 							.. "ground. She digs a pit. Gekta digs "
 							.. "something up from the ground. After this, "
 							.. "she puts a bone in the pit and buries it.")

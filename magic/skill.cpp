@@ -324,7 +324,7 @@ static int TrapChargeFiltr(XItem* item)
 int XSkill::UseCreate(XCreature * user)
 {
     if (user->l->map->GetSpecial(user->x, user->y)) {
-        msgwin.Add("You can not create trap here.");
+        msgwin.Add("You cannot create a trap here.");
         return 0;
     }
 
@@ -365,7 +365,7 @@ int XSkill::UseCreate(XCreature * user)
         XSpell* sp = user->m->GetSpell(recipe.spell);
 
         if (!sp) {
-            msgwin.Add("You have to learn spell first!");
+            msgwin.Add("You have to learn the spell first!");
             return 0;
         }
 
@@ -381,7 +381,7 @@ int XSkill::UseCreate(XCreature * user)
 
         user->PP -= sp->GetManaCost() * 2 * count;
         user->sk->UseSkill(XSkill::Skill::CREATETRAP, recipe.practice);
-        msgwin.Add("You have successfuly created a trap!");
+        msgwin.Add("You have successfully created a trap!");
         return 1;
     }
 
@@ -412,6 +412,6 @@ int XSkill::UseCreate(XCreature * user)
 
     new XTrap(user->x, user->y, user->l, XTrap::Level::RANDOM, recipe.type, user, charge.get());
     user->sk->UseSkill(XSkill::Skill::CREATETRAP, recipe.practice);
-    msgwin.Add("You have successfuly created a trap!");
+    msgwin.Add("You have successfully created a trap!");
     return 1;
 }

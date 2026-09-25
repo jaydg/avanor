@@ -25,7 +25,7 @@ Monster.new("wild_cat")
 	:Combat("1d4", "1d4")
 	:Main("2d4", "1d2", "2d4", "0d0")
 	:Description("Tawny and muscled, this cat silently pads forward. Almost "
-		.. "as large as a wolf, the mottled markings make it dificult to "
+		.. "as large as a wolf, the mottled markings make it difficult to "
 		.. "see in the shadows. As its slitted eyes glance from side to "
 		.. "side you can tell it is hunting for something. Only then do you "
 		.. "realize it is looking for you!")

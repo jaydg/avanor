@@ -21,7 +21,7 @@ Monster.new("goblin")
 	:Main("1d3", "1d1", "1d5+6", "1d5")
 	:Description("This scruffy looking humanoid glances at you with fear in "
 		.. "its face. The stench it carries indicates that it has probably "
-		.. "never been clean in its life. Goblins normally perfer secrecy "
+		.. "never been clean in its life. Goblins normally prefer secrecy "
 		.. "and stealing to open confrontation but have been known to "
 		.. "attack travellers.")
 	:LearnSkill(XSkill.HEALING, 4)

@@ -208,11 +208,11 @@ void XHero::OpenDoor()
     }
 
     if (c_door == 0 && o_door == 1) {
-        msgwin.Add("The door is already opened.");
+        msgwin.Add("The door is already open.");
     }
 
     if (c_door == 0 && o_door > 1) {
-        msgwin.Add("The doors are already opened.");
+        msgwin.Add("The doors are already open.");
     }
 
     if (c_door == 1) {
@@ -239,7 +239,7 @@ void XHero::OpenDoor()
         auto* xdoor = dynamic_cast<XDoor *>(door);
 
         if (xdoor && xdoor->isOpened) {
-            msgwin.Add("The door is already opened.");
+            msgwin.Add("The door is already open.");
         } else if (xdoor && xdoor->isOpened == 0) {
             msgwin.Add("You have opened the door.");
             xdoor->Switch();
@@ -366,8 +366,10 @@ int XHero::XShoot()
 
     if (!missile || !XMissile::isProperWeapon(missile, missile_w)) {
         if (missile_w) {
-            msgwin.Add(fmt::format("You need a proper ammo to shoot from {}.",
-                missile_w->name));
+            // "ammo" is not a thing you can have one of, and one shoots
+            // with a bow rather than from one.
+            msgwin.Add(fmt::format("You need proper ammunition to shoot with {}.",
+                missile_w->GetNameEx(XItem::Article::DEFINITE)));
         } else {
             msgwin.Add("You need something to throw.");
         }
@@ -821,7 +823,7 @@ int XHero::OrderCompanion()
         msgwin.Add("You command");
         msgwin.Add(slave->GetNameEx(CRN_T1));
         msgwin.Add("to attack");
-        msgwin.Add(tgt->GetNameEx(CRN_T1));
+        msgwin.Add(tgt->GetNameEx(CRN_T1) + ".");
         slave->xai->SetOrderedEnemy(tgt);
         slave->xai->companion_command = CC_ATTACK;
         slave->xai->ResAIFlag(XStandardAI::GUARD_AREA);

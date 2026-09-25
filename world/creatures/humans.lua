@@ -100,7 +100,7 @@ Monster.new("royal_guard")
 	:Combat("1d6", "2d2")
 	:Main("3d2", "1d2", "1d5+10", "1d3+5")
 	:Description("The elite guard of Avanor was organized by King Rodrick "
-		.. "to protect citizens from the depradations of bandits and the "
+		.. "to protect citizens from the depredations of bandits and the "
 		.. "monsters that live in the valley. Every child dreams of someday "
 		.. "serving in the King's guard. Royal Guardians are well equipped "
 		.. "to protect the people and themselves.")
