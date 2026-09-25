@@ -1560,14 +1560,29 @@ void XStandardAI::RunScript()
 
 void XStandardAI::LearnTraps()
 {
-    for (int i = guard_area.left; i < guard_area.right; i++)
+    const XMap* map = ai_owner->l->map;
+
+    for (int i = guard_area.left; i < guard_area.right; i++) {
         for (int j = guard_area.top; j < guard_area.bottom; j++) {
-            XMapObject * pO = ai_owner->l->map->GetSpecial(i, j);
+            // A guard area is allowed to hang over the edge of the map -
+            // a camp pitched three cells from the bottom of a level is
+            // enough to do it - and only the part the map actually holds
+            // can have a trap in it. Cell() answers null for the rest,
+            // where GetSpecial() asserts, which is what this used to do
+            // instead: abort the game while the level was being built.
+            const XMapTile* cell = map->Cell(i, j);
+
+            if (!cell) {
+                continue;
+            }
+
+            XMapObject* pO = cell->pSpecialObject.get();
 
             if (dynamic_cast<XTrap *>(pO)) {
                 known_traps.push_back(XMapObject::ToWeakPtr(pO));
             }
         }
+    }
 }
 
 bool XStandardAI::isKnowThisTrap(const XMapObject* trap)
