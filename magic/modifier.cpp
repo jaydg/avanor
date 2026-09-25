@@ -72,6 +72,18 @@ int XModifier::Add(const MODIFIER& mt, int val, XCreature* owner, XCreature* cr,
 
         return 1;
     } else {
+        // Relief is given in the units the modifier was laid on with, so
+        // it has to be scaled the same way that did. Without this a cure
+        // is quietly weaker than it reads by exactly the modifier's
+        // scale: poison is counted in doses and goes on at ten turns to
+        // the dose, so a potion meant to clear it took a tenth off
+        // instead and said "You feel somewhat relieved" while the
+        // poisoning carried on. Poison is the only modifier with a scale, so
+        // it is the only one this ever came up on.
+        if (const ModifierStats* row = FindModifier(mt)) {
+            val *= row->scale;
+        }
+
         int flag = 0;
 
         for (auto it = ml.begin(); it != ml.end(); )
