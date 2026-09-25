@@ -253,7 +253,8 @@ that accrues while you play.
 **And the gods introduce themselves.** Choosing between them meant choosing
 between two names, which was no choice at all now that they want different
 things of you. Each god says on the selection screen what it is like and what
-it asks.
+it asks, and your character screen (`@`) names the one you chose and how it
+currently regards you.
 
 ---
 

@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <fmt/format.h>
 
+#include "creature/deity.h"
 #include "creature/xhero.h"
 #include "game/game.h"
 #include "game/xtime.h"
@@ -117,22 +118,35 @@ void XHero::InfoList()
     vGotoXY(50, 4);
     vPutS(GetProfessionStr());
     vGotoXY(40, 5);
-    vPutS("<LABEL>Gold:");
+    vPutS("<LABEL>Deity:");
     vGotoXY(50, 5);
-    vPutS(fmt::format("<VALUE>{}<DECORATION> gp", MoneyOp(0)));
+
+    if (const DEITY& patron = religion.GetPatron(); patron.empty()) {
+        vPutS("<DECORATION>none");
+    } else if (const DeityRank* rank = religion.GetRank(patron)) {
+        vPutS(fmt::format("<VALUE>{}<DECORATION> ({})",
+            DeityName(patron), rank->name));
+    } else {
+        vPutS(fmt::format("<VALUE>{}", DeityName(patron)));
+    }
+
     vGotoXY(40, 6);
-    vPutS("<LABEL>Time:");
+    vPutS("<LABEL>Gold:");
     vGotoXY(50, 6);
+    vPutS(fmt::format("<VALUE>{}<DECORATION> gp", MoneyOp(0)));
+    vGotoXY(40, 7);
+    vPutS("<LABEL>Time:");
+    vGotoXY(50, 7);
     vPutS(fmt::format("<VALUE>{}<DECORATION> : <VALUE>{}<DECORATION> : "
         "<VALUE>{}", XTime::GetHour(), XTime::GetMin(), XTime::GetSec()));
-    vGotoXY(40, 7);
+    vGotoXY(40, 8);
     vPutS("<LABEL>Date:");
-    vGotoXY(50, 7);
+    vGotoXY(50, 8);
     vPutS(fmt::format("<VALUE>{}<DECORATION>, <VALUE>{}<DECORATION>, "
         "<VALUE>{}", XTime::GetMonthName(), XTime::GetDay(), XTime::GetYear()));
-    vGotoXY(40, 8);
+    vGotoXY(40, 9);
     vPutS("<LABEL>Day/Week");
-    vGotoXY(50, 8);
+    vGotoXY(50, 9);
     vPutS(fmt::format("<VALUE>{}<DECORATION>/<VALUE>{}",
         XTime::GetDayName(), XTime::GetWeekName()));
 
