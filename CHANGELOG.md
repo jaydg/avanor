@@ -210,6 +210,11 @@ and a single turn spent waiting where you stand, and they now say so.
 
 ### Skills
 
+**Healing can be learned.** Every calling but the ranger sets out knowing how
+to tend a wound, and a ranger who goes into the dungeons without it is a
+ranger who does not come back out of them. Aphilius, the high priest in the
+valley temple, will now teach it for a donation of 500 gold.
+
 **Tactics finally improves.** Your stance has always shaped how well you
 strike, how hard you hit and how well you defend — but the skill behind it
 could never rise above 4, however long you fought, because nothing counted
