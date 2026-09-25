@@ -10,7 +10,13 @@ Monster.new("todin", "dwarf")
 	:Stats("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
 	:Combat("1d8", "2d2")
 	:Main("4d2", "1d3", "1d5+15", "1d5+5")
-	:Description("Squat, sturdy and built like a boulder here stands the King's twin brother and master smith.  Todin stands at his forge and works the bellows with one hand while nonchalantly shaping a sword with the hammer in his other hand.  The ruddy glow of the forge glimmers on his sweat drenched skin.  Truly he is a master smith as the weapons hanging about the room display his craft.")
+	:Description("Squat, sturdy and built like a boulder here stands the "
+		.. "King's twin brother and master smith. Todin stands at his forge "
+		.. "and works the bellows with one hand while nonchalantly shaping "
+		.. "a sword with the hammer in his other hand. The ruddy glow of "
+		.. "the forge glimmers on his sweat drenched skin. Truly he is a "
+		.. "master smith as the weapons hanging about the room display his "
+		.. "craft.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:Unique()

@@ -9,7 +9,10 @@ Monster.new("cat")
 	:Resist{ fire = "5d5-80", cold = "3d10" }
 	:Combat("1d2", "1d3")
 	:Main("2d3", "1d1", "1d4", "0d0")
-	:Description("This mangy little furball looks so cute and cuddly that you just want hug it.  That is you would want to if it weren't hissing, spitting and taking swipes at your face with its claws.")
+	:Description("This mangy little furball looks so cute and cuddly that "
+		.. "you just want hug it. That is you would want to if it weren't "
+		.. "hissing, spitting and taking swipes at your face with its "
+		.. "claws.")
 	:Register()
 
 Monster.new("wild_cat")
@@ -21,5 +24,9 @@ Monster.new("wild_cat")
 	:Resist{ fire = "5d5-25", cold = "5d10" }
 	:Combat("1d4", "1d4")
 	:Main("2d4", "1d2", "2d4", "0d0")
-	:Description("Tawny and muscled, this cat silently pads forward.  Almost as large as a wolf, the mottled markings make it dificult to see in the shadows.  As its slitted eyes glance from side to side you can tell it is hunting for something.  Only then do you realize it is looking for you!")
+	:Description("Tawny and muscled, this cat silently pads forward. Almost "
+		.. "as large as a wolf, the mottled markings make it dificult to "
+		.. "see in the shadows. As its slitted eyes glance from side to "
+		.. "side you can tell it is hunting for something. Only then do you "
+		.. "realize it is looking for you!")
 	:Register()

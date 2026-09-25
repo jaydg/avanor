@@ -9,7 +9,12 @@ Monster.new("xshee_voo")
 	:Stats("St 5d5+150 Dx 1d10+10 To 1d10+80 Le 1d5+5 Wi 1d5+5 Ma 1d5+5 Pe 1d6 Ch 1d5")
 	:Combat("1d5", "2d5")
 	:Main("0d0-10", "0d0+15", "1d5+70", "1d5+5")
-	:Description("Xshee-Voo has lived in his mountain cave for as long as anyone can remember.  He never shows himself outside, and the few that have been in his cave and returned speak of piles of bones and armor slowly decaying.  They also speak of his enormous club which looks to have been carved from the rock of the mountain and is written over with Runes of great power.")
+	:Description("Xshee-Voo has lived in his mountain cave for as long as "
+		.. "anyone can remember. He never shows himself outside, and the "
+		.. "few that have been in his cave and returned speak of piles of "
+		.. "bones and armor slowly decaying. They also speak of his "
+		.. "enormous club which looks to have been carved from the rock of "
+		.. "the mountain and is written over with Runes of great power.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)
 	:Unique()

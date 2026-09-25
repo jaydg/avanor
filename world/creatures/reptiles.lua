@@ -9,7 +9,10 @@ Monster.new("small_snake")
 	:Resist{ cold = "1d10-90" }
 	:Combat("2d5", "1d3")
 	:Main("1d3", "0d0", "1d2", "0d0")
-	:Description("This tiny creature lies in the dust looking like a piece of rope.  Suddenly a pink tongue protrudes from one end and eyes open sensing your presence.  Though unimposing at best, this snake harbors one of the deadliest poisons in the valley.")
+	:Description("This tiny creature lies in the dust looking like a piece "
+		.. "of rope. Suddenly a pink tongue protrudes from one end and eyes "
+		.. "open sensing your presence. Though unimposing at best, this "
+		.. "snake harbors one of the deadliest poisons in the valley.")
 	:Register()
 
 Monster.new("gray_snake", "small_snake")
@@ -19,7 +22,11 @@ Monster.new("gray_snake", "small_snake")
 	:Resist{ cold = "1d10-50" }
 	:Combat("2d5", "1d3")
 	:Main("1d3", "0d0", "1d3", "0d0")
-	:Description("A long serpent slithers towards you, its grey-black scales making it hard to see against the stone of the cavern floor.  The pale green eyes glimmer with hunger.  Its pink tounge tastes the air as it contemplates this, its lastest meal... YOU!")
+	:Description("A long serpent slithers towards you, its grey-black "
+		.. "scales making it hard to see against the stone of the cavern "
+		.. "floor. The pale green eyes glimmer with hunger. Its pink tounge "
+		.. "tastes the air as it contemplates this, its lastest meal... "
+		.. "YOU!")
 	:Register()
 
 Monster.new("brown_snake", "gray_snake")
@@ -27,7 +34,10 @@ Monster.new("brown_snake", "gray_snake")
 	:Resist{ cold = "1d10-30" }
 	:Combat("2d5", "1d4")
 	:Main("1d3", "0d0", "1d5", "0d0")
-	:Description("This snake will normally keep to the forests and caves of Avanor.  The naturally mottled brown coat allows it to blend in with the area around it.  Though not a great danger, travelers are urged to leave them alone since others may be nearby.")
+	:Description("This snake will normally keep to the forests and caves of "
+		.. "Avanor. The naturally mottled brown coat allows it to blend in "
+		.. "with the area around it. Though not a great danger, travelers "
+		.. "are urged to leave them alone since others may be nearby.")
 	:Register()
 
 Monster.new("salamander", "gray_snake")
@@ -35,7 +45,11 @@ Monster.new("salamander", "gray_snake")
 	:Resist{ cold = "1d10-50", fire = "1d90" }
 	:Combat("2d4", "1d4")
 	:Main("1d9", "1d3", "1d3", "0d0")
-	:Description("Salamanders prefer living in dark, damp caves and eating the bugs that fly around.  The release of Power mutated the salamanders in the valley of Avanor until they were 4 feet long and had a taste for warm blooded flesh.  They can't see well but they have a powerful bite.")
+	:Description("Salamanders prefer living in dark, damp caves and eating "
+		.. "the bugs that fly around. The release of Power mutated the "
+		.. "salamanders in the valley of Avanor until they were 4 feet long "
+		.. "and had a taste for warm blooded flesh. They can't see well but "
+		.. "they have a powerful bite.")
 	:Melee("fire", 100)
 	:CorpseResist("fire", 1)
 	:Register()
@@ -47,7 +61,13 @@ Monster.new("large_snake", "gray_snake")
 	:Resist{ cold = "1d10-40" }
 	:Combat("6d5", "1d5")
 	:Main("1d4", "1d1", "2d3", "0d0")
-	:Description("This serpent seems to have been lost from some sort of travelling show.  Its emerald green scales show up clearly against the stone and dirt.  Idly you wonder how it has survived for so long seeing as travelling shows just don't reach the valley anymore.  Then you realize that the snake is already closing the distance between its position and yours and suddenly you know exactly how it survived.")
+	:Description("This serpent seems to have been lost from some sort of "
+		.. "travelling show. Its emerald green scales show up clearly "
+		.. "against the stone and dirt. Idly you wonder how it has survived "
+		.. "for so long seeing as travelling shows just don't reach the "
+		.. "valley anymore. Then you realize that the snake is already "
+		.. "closing the distance between its position and yours and "
+		.. "suddenly you know exactly how it survived.")
 	:Melee("poison", 10)
 	:CorpseResist("poison", 1)
 	:Register()
@@ -59,7 +79,10 @@ Monster.new("cobra", "gray_snake")
 	:Resist{ cold = "1d10-30" }
 	:Combat("7d5", "1d7")
 	:Main("1d8", "1d1", "3d3", "0d0")
-	:Description("The cobra looks much like a normal snake until it lifts its head and spreads its hood.  Then the markings clearly indicate the danger you face.  A cobra's poison is more deadly than other snakes and the cobra is much more aggressive.")
+	:Description("The cobra looks much like a normal snake until it lifts "
+		.. "its head and spreads its hood. Then the markings clearly "
+		.. "indicate the danger you face. A cobra's poison is more deadly "
+		.. "than other snakes and the cobra is much more aggressive.")
 	:Melee("poison", 40)
 	:CorpseResist("poison", 2)
 	:Register()
@@ -71,7 +94,12 @@ Monster.new("king_cobra", "gray_snake")
 	:Resist{ cold = "1d10-20" }
 	:Combat("8d5", "1d12")
 	:Main("2d5", "2d2", "4d3", "0d0")
-	:Description("The distinct crown shaped mark on the back of this snake's head gave the title it now carries.  However, if you are close enough to see the crown than you should have been able to distinguish it by its size alone.  Bigger, faster and stronger than its smaller cousin, the king cobra is best left alone by anyone without several anti-venom potions.")
+	:Description("The distinct crown shaped mark on the back of this "
+		.. "snake's head gave the title it now carries. However, if you are "
+		.. "close enough to see the crown than you should have been able to "
+		.. "distinguish it by its size alone. Bigger, faster and stronger "
+		.. "than its smaller cousin, the king cobra is best left alone by "
+		.. "anyone without several anti-venom potions.")
 	:Melee("poison", 60)
 	:CorpseResist("poison", 5)
 	:Register()
@@ -83,7 +111,11 @@ Monster.new("rattlesnake", "gray_snake")
 	:Resist{ cold = "1d10-30" }
 	:Combat("10d5", "1d12")
 	:Main("1d5", "1d2", "5d3", "0d0")
-	:Description("An ominous rattle sounds from ahead of you as a coiled rattlesnake prepares to defend its territory.  Poison drips from its fangs and the cold glint in its eyes seem to foreshadow your certain death if you don't retreat now.  It may even be too late...")
+	:Description("An ominous rattle sounds from ahead of you as a coiled "
+		.. "rattlesnake prepares to defend its territory. Poison drips from "
+		.. "its fangs and the cold glint in its eyes seem to foreshadow "
+		.. "your certain death if you don't retreat now. It may even be too "
+		.. "late...")
 	:Melee("poison", 80)
 	:CorpseResist("poison", 10)
 	:Register()

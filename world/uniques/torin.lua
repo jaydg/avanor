@@ -11,7 +11,13 @@ Monster.new("torin", "dwarf")
 	:Stats("St 1d8+35 Dx 1d8+20 To 1d8+30 Le 1d5+25 Wi 1d5+25 Ma 1d5+25 Pe 5d6 Ch 4d5")
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d2", "1d5+30", "1d5+10")
-	:Description("Twin brother to the master smith, Torin's obvious strength and coloring are all that own the relationship.  The crown on his head glitters and his great golden beard flows over his expansive chest.  The hand he rests on the hammer at his belt belies his prowess in battle.  As your eyes drift to the door at the back of his throne room he clears his throat as if to address you, and draw your attention.")
+	:Description("Twin brother to the master smith, Torin's obvious "
+		.. "strength and coloring are all that own the relationship. The "
+		.. "crown on his head glitters and his great golden beard flows "
+		.. "over his expansive chest. The hand he rests on the hammer at "
+		.. "his belt belies his prowess in battle. As your eyes drift to "
+		.. "the door at the back of his throne room he clears his throat as "
+		.. "if to address you, and draw your attention.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)
 	:Unique()

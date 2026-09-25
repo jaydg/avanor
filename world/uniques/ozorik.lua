@@ -9,7 +9,14 @@ Monster.new("ozorik")
 	:Stats("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
 	:Combat("1d8", "2d2")
 	:Main("4d2", "1d3", "1d5+15", "1d3+5")
-	:Description("Standing just over five feet tall, Ozorick doesn't seem like such an imposing figure but the air of command about him is complete.  His thickly corded neck and arms lightly balance a huge broadsword covered with runes.  He swings it down as you enter and you can't help but gasp as the point cuts right through a stone in the floor and barely even slows.  No one who has seen him wield his mighty sword in battle would dream of opposing him.")
+	:Description("Standing just over five feet tall, Ozorick doesn't seem "
+		.. "like such an imposing figure but the air of command about him "
+		.. "is complete. His thickly corded neck and arms lightly balance a "
+		.. "huge broadsword covered with runes. He swings it down as you "
+		.. "enter and you can't help but gasp as the point cuts right "
+		.. "through a stone in the floor and barely even slows. No one who "
+		.. "has seen him wield his mighty sword in battle would dream of "
+		.. "opposing him.")
 	:LearnSkill(XSkill.HEALING, 10)
 	:LearnSkill(XSkill.FINDWEAKNESS, 10)
 	:Unique()

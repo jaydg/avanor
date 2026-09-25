@@ -9,7 +9,11 @@ Monster.new("farmer")
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+4", "2d2")
-	:Description("This fellow is pale as something grown under a stone, and no wonder: the village lives on mushrooms, and mushrooms come out of the caves to the west.  He and his fellows have spent their working lives underground.  The long spear he leans upon is not for digging - there are things down there that bite.")
+	:Description("This fellow is pale as something grown under a stone, and "
+		.. "no wonder: the village lives on mushrooms, and mushrooms come "
+		.. "out of the caves to the west. He and his fellows have spent "
+		.. "their working lives underground. The long spear he leans upon "
+		.. "is not for digging - there are things down there that bite.")
 	:LearnSkill(XSkill.HEALING, 2)
 	:Equip(ItemKind.WEAPON, "long_spear", 100)
 	:Equip(ItemKind.BODY, "light_mail", 100)
@@ -24,7 +28,9 @@ Monster.new("goodwife")
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
-	:Description("This woman's clothing tells a story of a simple but hard life.  She prepares the meals for her husband every day and takes care of their cottage.")
+	:Description("This woman's clothing tells a story of a simple but hard "
+		.. "life. She prepares the meals for her husband every day and "
+		.. "takes care of their cottage.")
 	:LearnSkill(XSkill.HEALING, 2)
 	:Equip(ItemKind.BODY, "dress", 100)
 	:Register()
@@ -38,7 +44,11 @@ Monster.new("bandit")
 	:Stats("St 1d4+10 Dx 1d4+10 To 1d4+10 Le 1d4+10 Wi 1d4+10 Ma 1d4+10 Pe 1d4+15 Ch 1d4+10")
 	:Combat("1d4", "1d3")
 	:Main("1d4", "0d0", "1d4+10", "2d5")
-	:Description("A scruffy looking fellow, he looks much like any citizen of the valley except for the green cape, the twin daggers and the malicious glint in his eye.  You get the distinct impression that he would rob his own mother if she had anything worth taking.")
+	:Description("A scruffy looking fellow, he looks much like any citizen "
+		.. "of the valley except for the green cape, the twin daggers and "
+		.. "the malicious glint in his eye. You get the distinct impression "
+		.. "that he would rob his own mother if she had anything worth "
+		.. "taking.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 30)
@@ -56,7 +66,10 @@ Monster.new("citizen")
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
-	:Description("This upstanding citizen of the castle of Avanor hurries about the duties of the day.  The calm relaxed confidence surrounding him demonstrates his faith in the forces of the guard and the king to protect him and his family.")
+	:Description("This upstanding citizen of the castle of Avanor hurries "
+		.. "about the duties of the day. The calm relaxed confidence "
+		.. "surrounding him demonstrates his faith in the forces of the "
+		.. "guard and the king to protect him and his family.")
 	:Equip(ItemKind.BODY, "clothes", 100)
 	:Register()
 
@@ -69,7 +82,10 @@ Monster.new("fcitizen")
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
-	:Description("This upstanding citizen of the castle of Avanor hurries about the duties of the day.  The calm relaxed confidence surrounding her demonstrates her faith in the forces of the guard and the king to protect her and her family.")
+	:Description("This upstanding citizen of the castle of Avanor hurries "
+		.. "about the duties of the day. The calm relaxed confidence "
+		.. "surrounding her demonstrates her faith in the forces of the "
+		.. "guard and the king to protect her and her family.")
 	:Equip(ItemKind.BODY, "dress", 100)
 	:Register()
 
@@ -83,7 +99,11 @@ Monster.new("royal_guard")
 	:Stats("St 1d8+15 Dx 1d8+20 To 1d8+10 Le 1d5+10 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
 	:Combat("1d6", "2d2")
 	:Main("3d2", "1d2", "1d5+10", "1d3+5")
-	:Description("The elite guard of Avanor was organized by King Rodrick to protect citizens from the depradations of bandits and the monsters that live in the valley.  Every child dreams of someday serving in the King's guard.  Royal Guardians are well equipped to protect the people and themselves.")
+	:Description("The elite guard of Avanor was organized by King Rodrick "
+		.. "to protect citizens from the depradations of bandits and the "
+		.. "monsters that live in the valley. Every child dreams of someday "
+		.. "serving in the King's guard. Royal Guardians are well equipped "
+		.. "to protect the people and themselves.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:Equip(ItemKind.WEAPON, "long_sword", 100)
@@ -125,7 +145,10 @@ Monster.new("death_knight")
 	:Stats("St 1d8+20 Dx 1d8+20 To 1d8+10 Le 1d5+10 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
 	:Combat("1d6", "2d2")
 	:Main("3d2", "1d2", "1d5+10", "1d3+5")
-	:Description("The elite guard of Ahk-Ulan the sorcerer.  Deprived of all human emotion, they have become finely tuned killing machines who worship only death.  The stench of blood surrounds them and their soulless gaze makes your flesh crawl.")
+	:Description("The elite guard of Ahk-Ulan the sorcerer. Deprived of all "
+		.. "human emotion, they have become finely tuned killing machines "
+		.. "who worship only death. The stench of blood surrounds them and "
+		.. "their soulless gaze makes your flesh crawl.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:Equip(ItemKind.WEAPON, "long_sword", 100)
@@ -142,7 +165,11 @@ Monster.new("shopkeeper")
 	:Stats("St 1d8+20 Dx 1d8+20 To 1d8+20 Le 1d5+20 Wi 1d4+20 Ma 1d4+20 Pe 3d6 Ch 5d5")
 	:Combat("1d6", "2d2")
 	:Main("3d2", "1d2", "1d5+10", "1d3+5")
-	:Description("It takes a special breed to set up shop in this remote valley.  Shopkeepers must be able to defend their wares as well as chat amiably with customers.  Behind the cheery exterior is a sharp intelligence and well toned muscles.  Only the desperate or the foolish would try to steal from one of them.")
+	:Description("It takes a special breed to set up shop in this remote "
+		.. "valley. Shopkeepers must be able to defend their wares as well "
+		.. "as chat amiably with customers. Behind the cheery exterior is a "
+		.. "sharp intelligence and well toned muscles. Only the desperate "
+		.. "or the foolish would try to steal from one of them.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:Unique()
@@ -156,7 +183,12 @@ Monster.new("dwarf")
 	:Stats("St 1d3+10 Dx 1d3+7 To 1d3+12 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3+1", "2d2")
-	:Description("Standing only about 4 feet high, dwarves are known to be master diggers and metal workers.  With a beard starting right below the merrily twinkling eyes, the dwarf whistles a lively tune as he goes about his business.  The axe stuck in his belt and his easy balance indicate that he can be a formidable warrior in times of danger.")
+	:Description("Standing only about 4 feet high, dwarves are known to be "
+		.. "master diggers and metal workers. With a beard starting right "
+		.. "below the merrily twinkling eyes, the dwarf whistles a lively "
+		.. "tune as he goes about his business. The axe stuck in his belt "
+		.. "and his easy balance indicate that he can be a formidable "
+		.. "warrior in times of danger.")
 	:Register()
 
 Monster.new("dwarf_guard", "dwarf")
@@ -165,7 +197,12 @@ Monster.new("dwarf_guard", "dwarf")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 1d3+20 Dx 1d3+7 To 1d3+22 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3")
 	:Main("1d1", "0d0", "2d4+3", "2d2")
-	:Description("Guardians of the underground dwarven city, these dwarves are well armed and prepared for any breach of security both physical and magical.  Only a fool would attempt to accost one as he goes about his duties.  The cold glare and cold steel they carry is usually more than enough to keep trouble makers in line.")
+	:Description("Guardians of the underground dwarven city, these dwarves "
+		.. "are well armed and prepared for any breach of security both "
+		.. "physical and magical. Only a fool would attempt to accost one "
+		.. "as he goes about his duties. The cold glare and cold steel they "
+		.. "carry is usually more than enough to keep trouble makers in "
+		.. "line.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:Equip(ItemKind.WEAPON, "great_axe", 100)

@@ -8,7 +8,10 @@ Monster.new("kobold")
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "2d3", "2d2")
-	:Description("Kobolds resemble nothing better than a small yipping dog that has somehow learned to walk on hind legs and wield weapons.  They are more nuisance than anything else but more than one adventurer has been swarmed under by a pack of them.")
+	:Description("Kobolds resemble nothing better than a small yipping dog "
+		.. "that has somehow learned to walk on hind legs and wield "
+		.. "weapons. They are more nuisance than anything else but more "
+		.. "than one adventurer has been swarmed under by a pack of them.")
 	:LearnSkill(XSkill.HEALING, 4)
 	:LearnSkill(XSkill.FINDWEAKNESS, 4)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 2, 10)
@@ -26,7 +29,9 @@ Monster.new("large_kobold")
 	:Stats("St 2d5 Dx 2d4 To 2d3 Le 2d4 Wi 1d5 Ma 1d3 Pe 1d8 Ch 1d4")
 	:Combat("1d3", "1d2")
 	:Main("1d3", "1d1", "2d5", "2d3")
-	:Description("Somehow this kobold managed to survive its early development. It is not much smarter than the smaller, younger kobolds but definately has more strength.")
+	:Description("Somehow this kobold managed to survive its early "
+		.. "development. It is not much smarter than the smaller, younger "
+		.. "kobolds but definately has more strength.")
 	:LearnSkill(XSkill.HEALING, 5)
 	:LearnSkill(XSkill.FINDWEAKNESS, 5)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 3, 12)
@@ -45,7 +50,10 @@ Monster.new("chieftain_kobold")
 	:Stats("St 3d5 Dx 2d5 To 3d3 Le 2d4 Wi 1d5 Ma 1d3 Pe 1d8 Ch 1d4")
 	:Combat("1d4", "1d3")
 	:Main("1d4", "1d2", "2d6", "2d3")
-	:Description("The largest kobold you have yet seen. There is a glint of wicked intelligence behind its eyes as it approaches.  The kobold chieftain only acheived his position by being stronger, smarter and meaner then everyone else.")
+	:Description("The largest kobold you have yet seen. There is a glint of "
+		.. "wicked intelligence behind its eyes as it approaches. The "
+		.. "kobold chieftain only acheived his position by being stronger, "
+		.. "smarter and meaner then everyone else.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 4, 15)
@@ -65,7 +73,12 @@ Monster.new("shaman_kobold")
 	:Stats("St 2d4 Dx 2d4 To 2d3 Le 4d4 Wi 4d5 Ma 4d6 Pe 1d6+6 Ch 2d4")
 	:Combat("1d2", "1d2")
 	:Main("1d1", "0d0", "1d8", "5d5")
-	:Description("Smeared with arcane symbols in white chalk and wearing a necklace of bones, the kobold shaman is only a little larger than the average kobold.  The intensity of its gaze shows the resentment it feels for having a superior mind locked into an inferior body.  As you watch, it begins a chant to call forth its powers of magic against you...")
+	:Description("Smeared with arcane symbols in white chalk and wearing a "
+		.. "necklace of bones, the kobold shaman is only a little larger "
+		.. "than the average kobold. The intensity of its gaze shows the "
+		.. "resentment it feels for having a superior mind locked into an "
+		.. "inferior body. As you watch, it begins a chant to call forth "
+		.. "its powers of magic against you...")
 	:LearnSpell("magic_arrow")
 	:LearnSpell("cure_light_wounds")
 	:LearnSkill(XSkill.HEALING, 4)
@@ -86,7 +99,10 @@ Monster.new("gnoll")
 	:Stats("St 3d4 Dx 3d3 To 3d5 Le 1d4 Wi 1d4 Ma 1d4 Pe 2d5 Ch 2d3")
 	:Combat("1d3", "1d4")
 	:Main("1d4", "1d2", "2d5+15", "2d5")
-	:Description("A gnoll is to a kobold what a giant is to a man.  This towering cross between man and dog is known for its cunning and strength.  Carrying an axe it will plow right through most opponents leaving them dazed... if they are lucky.")
+	:Description("A gnoll is to a kobold what a giant is to a man. This "
+		.. "towering cross between man and dog is known for its cunning and "
+		.. "strength. Carrying an axe it will plow right through most "
+		.. "opponents leaving them dazed... if they are lucky.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 2, 10)
@@ -103,7 +119,10 @@ Monster.new("gnoll_warmaster")
 	:Stats("St 6d4 Dx 7d3 To 6d5 Le 3d4 Wi 3d4 Ma 3d4 Pe 8d5 Ch 2d3")
 	:Combat("2d5", "2d4")
 	:Main("2d5", "3d2", "3d5+25", "2d5")
-	:Description("The gnoll warmaster is an eight foot fighting machine.  The double axes it carries weave an intricate dance of death around it as it takes on multiple opponents.  Only a fool would get in this berserker's way.")
+	:Description("The gnoll warmaster is an eight foot fighting machine. "
+		.. "The double axes it carries weave an intricate dance of death "
+		.. "around it as it takes on multiple opponents. Only a fool would "
+		.. "get in this berserker's way.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 3, 10)

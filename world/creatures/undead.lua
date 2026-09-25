@@ -8,7 +8,10 @@ Monster.new("skeleton")
 	:Stats("St 4d3 Dx 2d2 To 2d3 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1")
 	:Combat("1d3", "2d3")
 	:Main("1d3", "1d2", "1d8", "1d3")
-	:Description("Returned to life by evil magics, this creature shuffles towards you, fueled by hate for those still living.  It seeks only to return to the sweet oblivion of death, but first it wants to take you with it.")
+	:Description("Returned to life by evil magics, this creature shuffles "
+		.. "towards you, fueled by hate for those still living. It seeks "
+		.. "only to return to the sweet oblivion of death, but first it "
+		.. "wants to take you with it.")
 	:Register()
 
 Monster.new("zombie")
@@ -19,7 +22,10 @@ Monster.new("zombie")
 	:Stats("St 8d3 Dx 2d2 To 5d5 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1")
 	:Combat("1d3", "2d3")
 	:Main("1d3", "1d2", "2d9", "1d3")
-	:Description("The zombie stumbles across the floor, leaving a trail of decaying flesh behind it.  Though muscles makes the zombie stronger, the magics that animate it can do nothing to preserve the diseased hulk.  The stench is almost unbearable.")
+	:Description("The zombie stumbles across the floor, leaving a trail of "
+		.. "decaying flesh behind it. Though muscles makes the zombie "
+		.. "stronger, the magics that animate it can do nothing to preserve "
+		.. "the diseased hulk. The stench is almost unbearable.")
 	:Melee("paralyse", 2)
 	:Register()
 
@@ -31,7 +37,11 @@ Monster.new("ghoul")
 	:Stats("St 10d3 Dx 2d3 To 7d5 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1")
 	:Combat("1d3", "2d3")
 	:Main("1d2", "1d4", "3d9", "1d3")
-	:Description("The pasty white flesh of the ghoul is the result of numerous alchemical and magical experiments.  The preserved flesh makes it strong and tough but not much else.  Ghouls are not smart and have been observed attacking walls that stand in their way.")
+	:Description("The pasty white flesh of the ghoul is the result of "
+		.. "numerous alchemical and magical experiments. The preserved "
+		.. "flesh makes it strong and tough but not much else. Ghouls are "
+		.. "not smart and have been observed attacking walls that stand in "
+		.. "their way.")
 	:Melee("paralyse", 10)
 	:Register()
 
@@ -44,7 +54,10 @@ Monster.new("ghost")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("4d4", "2d4")
 	:Main("6d4", "0d0", "1d9", "1d3")
-	:Description("A chill breeze passing by is all most ever felt of this spirit set to wander upon the earth.  Those with good eyesight may spot ghosts in the dark corridors of the earth, but they do not take kindly to people who invade their domain.")
+	:Description("A chill breeze passing by is all most ever felt of this "
+		.. "spirit set to wander upon the earth. Those with good eyesight "
+		.. "may spot ghosts in the dark corridors of the earth, but they do "
+		.. "not take kindly to people who invade their domain.")
 	:Register()
 
 Monster.new("spectre")
@@ -56,7 +69,11 @@ Monster.new("spectre")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("4d4", "4d4")
 	:Main("6d4", "0d0", "2d9", "1d3")
-	:Description("It is said the spectres were once the evil people of this earth.  Forbidden entry into the next world, their spirits seek to destroy those of this world.  They are almost never seen before their chill hands take hold upon the heart of their victim.")
+	:Description("It is said the spectres were once the evil people of this "
+		.. "earth. Forbidden entry into the next world, their spirits seek "
+		.. "to destroy those of this world. They are almost never seen "
+		.. "before their chill hands take hold upon the heart of their "
+		.. "victim.")
 	:LearnSpell("drain_life")
 	:LearnSkill(XSkill.CONCENTRATION, 10)
 	:Register()
@@ -70,7 +87,11 @@ Monster.new("dread")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("6d6", "5d5")
 	:Main("8d5", "0d0", "8d5", "10d8")
-	:Description("Panic and fear threaten to overwhelm you as you face thise evil spirit.  Aptly named for the feelings it causes, The dread seeks only to destroy all living things.  So stealthy and invisible are they that most people will never know exactly what did them in.")
+	:Description("Panic and fear threaten to overwhelm you as you face "
+		.. "thise evil spirit. Aptly named for the feelings it causes, The "
+		.. "dread seeks only to destroy all living things. So stealthy and "
+		.. "invisible are they that most people will never know exactly "
+		.. "what did them in.")
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.CONCENTRATION, 10)
 	:LearnSpell("drain_life")
@@ -85,7 +106,11 @@ Monster.new("vampire")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("4d6", "3d5")
 	:Main("8d5", "0d0", "3d5", "10d10")
-	:Description("This foul creature of the night drinks of its victims for sustenance, slowly draining their victim of life until they also become a vampire.  They possess numerous abilities, and have much power in the undead realms.  They fear light and holy powers, but are immune to many non-magical weapons.")
+	:Description("This foul creature of the night drinks of its victims for "
+		.. "sustenance, slowly draining their victim of life until they "
+		.. "also become a vampire. They possess numerous abilities, and "
+		.. "have much power in the undead realms. They fear light and holy "
+		.. "powers, but are immune to many non-magical weapons.")
 	:Melee("paralyse", 20)
 	:LearnSkill(XSkill.BACKSTABBING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)
@@ -102,7 +127,11 @@ Monster.new("lich")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("2d5", "1d4")
 	:Main("8d5", "0d0", "3d5", "10d10")
-	:Description("\"Once a sorcerer, always a sorcerer.\" Liches were powerful magic wielders in life and they continue to wield that power after their death.  They are able to summon great magics down upon the living and absorb living energies to sustain their own existence.")
+	:Description("\"Once a sorcerer, always a sorcerer.\" Liches were "
+		.. "powerful magic wielders in life and they continue to wield that "
+		.. "power after their death. They are able to summon great magics "
+		.. "down upon the living and absorb living energies to sustain "
+		.. "their own existence.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.CONCENTRATION, XSkill.MAX_LEVEL)

@@ -9,7 +9,9 @@ Monster.new("highpriest")
 	:Stats("St 1d8+10 Dx 1d8+15 To 1d8+10 Le 1d5+25 Wi 1d5+25 Ma 1d5+10 Pe 5d6 Ch 6d5")
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d2", "1d5+30", "1d5+10")
-	:Description("This compassionate soul gives his time and devotion to maintaining the temple.  He is dressed in the vestments of his position and bears the mitre of the priesthood...")
+	:Description("This compassionate soul gives his time and devotion to "
+		.. "maintaining the temple. He is dressed in the vestments of his "
+		.. "position and bears the mitre of the priesthood...")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.RELIGION, XSkill.MAX_LEVEL)
 	:LearnSpell("heal")

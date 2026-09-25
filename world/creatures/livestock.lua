@@ -12,7 +12,11 @@ Monster.new("sheep")
 	:Resist{ cold = "2d10+20" }
 	:Combat("0d0", "1d2")
 	:Main("1d2", "0d0", "2d4+4", "0d0")
-	:Description("A ewe in a thick winter fleece, cropping the grass with the single-mindedness of a creature that has never once been asked to think. She watches you approach, decides you are neither grass nor wolf, and goes back to grazing. Whoever keeps her keeps her well.")
+	:Description("A ewe in a thick winter fleece, cropping the grass with "
+		.. "the single-mindedness of a creature that has never once been "
+		.. "asked to think. She watches you approach, decides you are "
+		.. "neither grass nor wolf, and goes back to grazing. Whoever keeps "
+		.. "her keeps her well.")
 	:Register()
 
 Monster.new("goat")
@@ -24,5 +28,10 @@ Monster.new("goat")
 	:Resist{ cold = "2d10+10" }
 	:Combat("1d2", "1d3")
 	:Main("1d2+1", "0d0", "2d4+4", "0d0")
-	:Description("Lean where the sheep is round, and a good deal less agreeable about it. She has already eaten everything in the pen worth eating and is presently working on the fence. When you come close she stops, turns those slotted yellow eyes on you, and holds them there a moment too long before going back to the rail.")
+	:Description("Lean where the sheep is round, and a good deal less "
+		.. "agreeable about it. She has already eaten everything in the pen "
+		.. "worth eating and is presently working on the fence. When you "
+		.. "come close she stops, turns those slotted yellow eyes on you, "
+		.. "and holds them there a moment too long before going back to the "
+		.. "rail.")
 	:Register()

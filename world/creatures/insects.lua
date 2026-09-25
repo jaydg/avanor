@@ -9,7 +9,11 @@ Monster.new("spider")
 	:Resist{ fire = "1d30-50", cold = "1d20-40" }
 	:Combat("2d5", "1d2")
 	:Main("1d1", "0d0", "1d2", "0d0")
-	:Description("A foot wide and covered with grayish brown hair, this spider contemplates you with its eight eyes.  Spiders like this one have filled the corners of the caves of Avanor with webs.  Usually just a nuisance, some of them are equipped with deadly venom.")
+	:Description("A foot wide and covered with grayish brown hair, this "
+		.. "spider contemplates you with its eight eyes. Spiders like this "
+		.. "one have filled the corners of the caves of Avanor with webs. "
+		.. "Usually just a nuisance, some of them are equipped with deadly "
+		.. "venom.")
 	:Register()
 
 Monster.new("giant_spider")
@@ -21,7 +25,11 @@ Monster.new("giant_spider")
 	:Resist{ fire = "1d30-50", cold = "1d20-40" }
 	:Combat("3d5", "1d3")
 	:Main("1d2", "0d0", "1d3", "0d0")
-	:Description("These eight legged monstrosities escaped from a long dead wizard's laboratory and made homes in the deep caves of the mountains surrounding the valley.  Their webs are capable of ensnaring an unwary adventurer and their venom can be quite deadly.")
+	:Description("These eight legged monstrosities escaped from a long dead "
+		.. "wizard's laboratory and made homes in the deep caves of the "
+		.. "mountains surrounding the valley. Their webs are capable of "
+		.. "ensnaring an unwary adventurer and their venom can be quite "
+		.. "deadly.")
 	:Melee("poison", 15)
 	:CorpseResist("poison", 1)
 	:CorpseModifier("poison", 10)
@@ -37,7 +45,11 @@ Monster.new("tarantula")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("3d5", "1d6")
 	:Main("1d1", "0d0", "1d3", "0d0")
-	:Description("These spiders live in nooks and crannies in the rock and can pop into view when least expected.  Unable to spin webs, they rely on brute strength and venom to overcome a victim.  Creatures may be paralyzed by their venom only to be hauled back to a hole and eaten alive by the tarantula's young.")
+	:Description("These spiders live in nooks and crannies in the rock and "
+		.. "can pop into view when least expected. Unable to spin webs, "
+		.. "they rely on brute strength and venom to overcome a victim. "
+		.. "Creatures may be paralyzed by their venom only to be hauled "
+		.. "back to a hole and eaten alive by the tarantula's young.")
 	:Melee("poison", 40)
 	:Melee("paralyse", 10)
 	:CorpseResist("poison", 2)
@@ -54,7 +66,11 @@ Monster.new("scorpion")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("5d5", "1d6")
 	:Main("1d1", "0d0", "1d5", "0d0")
-	:Description("This creature is a foot long and colored a dusty brown with a tail arching high over it's back.  Scorpions use the poison in their stinging tail as well as formidable pincers as a powerful attack.  They also have a strong exoskeleton which protects them from many attacks.")
+	:Description("This creature is a foot long and colored a dusty brown "
+		.. "with a tail arching high over it's back. Scorpions use the "
+		.. "poison in their stinging tail as well as formidable pincers as "
+		.. "a powerful attack. They also have a strong exoskeleton which "
+		.. "protects them from many attacks.")
 	:Melee("poison", 60)
 	:Melee("paralyse", 20)
 	:CorpseResist("poison", 3)
@@ -72,7 +88,10 @@ Monster.new("black_scorpion")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("10d5", "1d10")
 	:Main("1d1", "0d0", "1d7", "0d0")
-	:Description("Black scorpions hide in the shadows of caves and will often flee from a light source.  When cornered, they fight with both pincers and their tail with great agility.  Though not as strong as their dusty cousins, they do move quite a bit faster.")
+	:Description("Black scorpions hide in the shadows of caves and will "
+		.. "often flee from a light source. When cornered, they fight with "
+		.. "both pincers and their tail with great agility. Though not as "
+		.. "strong as their dusty cousins, they do move quite a bit faster.")
 	:Melee("poison", 80)
 	:Melee("paralyse", 30)
 	:CorpseResist("poison", 5)
@@ -90,7 +109,11 @@ Monster.new("pink_scorpion")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("20d5", "1d20")
 	:Main("1d1", "0d0", "1d9", "0d0")
-	:Description("This scorpion originally evolved with this coloring in order to hide among plant flowers and surprise prey.  These scorpions are extremely aggressive and dangerous.  Sometimes they still carry exotic pollen from the flowers on the tip of their tails.")
+	:Description("This scorpion originally evolved with this coloring in "
+		.. "order to hide among plant flowers and surprise prey. These "
+		.. "scorpions are extremely aggressive and dangerous. Sometimes "
+		.. "they still carry exotic pollen from the flowers on the tip of "
+		.. "their tails.")
 	:Melee("poison", 100)
 	:Melee("paralyse", 40)
 	:Melee("stun", 40)
@@ -111,7 +134,11 @@ Monster.new("fire_beetle")
 	:Resist{ fire = "1d90", cold = "1d20-80" }
 	:Combat("1d3", "1d3")
 	:Main("1d1", "1d8", "1d3", "0d0")
-	:Description("Usually living only in depths of the earth, fire beetles were drawn to the surface by the intense energies used to raise the mountains surrounding Avanor.  Their normal habitat has made them immune to great heat and their thick exo-skeleton protects them from many physical attacks.")
+	:Description("Usually living only in depths of the earth, fire beetles "
+		.. "were drawn to the surface by the intense energies used to raise "
+		.. "the mountains surrounding Avanor. Their normal habitat has made "
+		.. "them immune to great heat and their thick exo-skeleton protects "
+		.. "them from many physical attacks.")
 	:Melee("fire", 100)
 	:CorpseResist("fire", 2)
 	:CorpseResist("cold", -1)
@@ -127,7 +154,12 @@ Monster.new("frost_beetle")
 	:Resist{ fire = "1d20-80", cold = "1d80" }
 	:Combat("1d5", "1d10")
 	:Main("1d1", "4d4", "1d5", "0d0")
-	:Description("Frost beetles are characterized by a white shell and faint blue markings.  They usually live high in the mountains upon snow capped peaks.  With the release of power in the mountain chain, many of them fled to the caverns below to seek shelter.  They are immune to cold attacks and their thick exo-skeleton protects them from many physical attacks.")
+	:Description("Frost beetles are characterized by a white shell and "
+		.. "faint blue markings. They usually live high in the mountains "
+		.. "upon snow capped peaks. With the release of power in the "
+		.. "mountain chain, many of them fled to the caverns below to seek "
+		.. "shelter. They are immune to cold attacks and their thick "
+		.. "exo-skeleton protects them from many physical attacks.")
 	:Melee("cold", 100)
 	:CorpseResist("cold", 2)
 	:CorpseResist("fire", -1)
@@ -143,7 +175,9 @@ Monster.new("green_beetle")
 	:Resist{ acid = "1d80" }
 	:Combat("1d5", "1d12")
 	:Main("1d1", "5d4", "1d8", "0d0")
-	:Description("Green beetles are often seen in packs.  Their exo-skeleton is not as tough as the frost or fire beetle, but they are able to shoot streams of acid at their target with great accuracy.")
+	:Description("Green beetles are often seen in packs. Their exo-skeleton "
+		.. "is not as tough as the frost or fire beetle, but they are able "
+		.. "to shoot streams of acid at their target with great accuracy.")
 	:Melee("acid", 100)
 	:CorpseResist("acid", 2)
 	:CorpseEffect(CorpseEffectType.STOMACH, 1)
@@ -160,7 +194,11 @@ Monster.new("killer_beetle")
 	:Resist{ acid = "1d80", cold = "1d80", fire = "1d80" }
 	:Combat("1d10", "2d15")
 	:Main("1d1", "6d5", "1d8", "0d0")
-	:Description("This beetle scuttles around with great energy, moving half and again as fast as any other beetle you have seen.  Its shell seems thin but the formidable jaws leave no doubt of the damage it can inflict.  Its large antennae make it able to detect creatures around it, visible or not.")
+	:Description("This beetle scuttles around with great energy, moving "
+		.. "half and again as fast as any other beetle you have seen. Its "
+		.. "shell seems thin but the formidable jaws leave no doubt of the "
+		.. "damage it can inflict. Its large antennae make it able to "
+		.. "detect creatures around it, visible or not.")
 	:Melee("poison", 30)
 	:Melee("paralyse", 70)
 	:CorpseResist("paralyse", 10)
@@ -178,7 +216,11 @@ Monster.new("death_beetle")
 	:Resist{ acid = "1d100", cold = "1d100", fire = "1d100" }
 	:Combat("2d10", "3d15")
 	:Main("1d1", "6d7", "1d10", "0d0")
-	:Description("Extremely heavily armored, the death beetle is a dark blue color bordering on black.  The white markings on it's shell resemble bleached skulls.  Although slow moving, the death beetles venom is extremely potent and unless treated immeadiately can kill an individual within minutes.")
+	:Description("Extremely heavily armored, the death beetle is a dark "
+		.. "blue color bordering on black. The white markings on it's shell "
+		.. "resemble bleached skulls. Although slow moving, the death "
+		.. "beetles venom is extremely potent and unless treated "
+		.. "immeadiately can kill an individual within minutes.")
 	:Melee("poison", 50)
 	:Melee("paralyse", 100)
 	:CorpseResist("paralyse", 15)
@@ -195,7 +237,11 @@ Monster.new("giant_bee")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("1d5", "1d30")
 	:Main("5d5", "1d1", "1d2", "0d0")
-	:Description("The buzz in the air reminds you more of a hailstorm on a tin roof than an insect but as the giant bee rounds the corner ahead you can see why.  Three feet long and armed with a six inch stinger, this is a far cry from a normal bee.  It doesn't look like it is happy to see you in its territory either.")
+	:Description("The buzz in the air reminds you more of a hailstorm on a "
+		.. "tin roof than an insect but as the giant bee rounds the corner "
+		.. "ahead you can see why. Three feet long and armed with a six "
+		.. "inch stinger, this is a far cry from a normal bee. It doesn't "
+		.. "look like it is happy to see you in its territory either.")
 	:Melee("poison", 100)
 	:Register()
 
@@ -207,7 +253,11 @@ Monster.new("giant_wasp")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("1d8", "1d10")
 	:Main("7d5", "1d1", "1d2", "0d0")
-	:Description("Wasps tend to build nests in areas inaccessible to larger creatures and many wasps can sometimes be found clustered around the opening.  The wasp is stronger than the bee and generally more irritable.  The thin waist of the wasp is a weak point and can be severed with a carefully aimed blow.")
+	:Description("Wasps tend to build nests in areas inaccessible to larger "
+		.. "creatures and many wasps can sometimes be found clustered "
+		.. "around the opening. The wasp is stronger than the bee and "
+		.. "generally more irritable. The thin waist of the wasp is a weak "
+		.. "point and can be severed with a carefully aimed blow.")
 	:Melee("poison", 100)
 	:Register()
 
@@ -219,7 +269,10 @@ Monster.new("centipede")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("1d3", "1d3")
 	:Main("1d4", "1d1", "1d2", "0d0")
-	:Description("Marching forward the centipede comes into view.  Low to the ground and a dark red color, it clearly advertises the fact that it carries poison.  The multiple legs make it easy for the centipede to capture its prey.")
+	:Description("Marching forward the centipede comes into view. Low to "
+		.. "the ground and a dark red color, it clearly advertises the fact "
+		.. "that it carries poison. The multiple legs make it easy for the "
+		.. "centipede to capture its prey.")
 	:Melee("paralyse", 3)
 	:CorpseTaste("aversive")
 	:Register()
@@ -232,7 +285,10 @@ Monster.new("stegocentipede")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d3", "2d3")
 	:Main("1d8", "1d2", "1d4", "0d0")
-	:Description("Slower than their smaller cousins, the stegocentipede is also that much more heavily armored.  It uses its spiked tail to its advantage to knock prey down before attempting to poison it.")
+	:Description("Slower than their smaller cousins, the stegocentipede is "
+		.. "also that much more heavily armored. It uses its spiked tail to "
+		.. "its advantage to knock prey down before attempting to poison "
+		.. "it.")
 	:Melee("paralyse", 7)
 	:CorpseTaste("aversive")
 	:Register()
@@ -245,7 +301,11 @@ Monster.new("dungeon_crawler")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "1d3")
 	:Main("1d1", "1d4", "1d2", "0d0")
-	:Description("This filthy little insect wanders the floor.  Evolving in the caves, it almost completely forsook the use of eyes, relying on other senses to help it through the darkness.  Usually more of a nuisance than anything else, many adventurers simply crush them with a boot as they walk past.")
+	:Description("This filthy little insect wanders the floor. Evolving in "
+		.. "the caves, it almost completely forsook the use of eyes, "
+		.. "relying on other senses to help it through the darkness. "
+		.. "Usually more of a nuisance than anything else, many adventurers "
+		.. "simply crush them with a boot as they walk past.")
 	:Melee("poison", 1)
 	:CorpseTaste("aversive")
 	:Register()
@@ -258,7 +318,11 @@ Monster.new("giant_crawler")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "1d3")
 	:Main("1d1", "1d8", "1d4", "0d0")
-	:Description("This appears to be a mound of flesh approximately a foot high.  Only as it moves towards you do you realize that it still lives and sees you as viable prey.  The greyish green surface undulates hypnotically as you watch it ooze its way across the floor.")
+	:Description("This appears to be a mound of flesh approximately a foot "
+		.. "high. Only as it moves towards you do you realize that it still "
+		.. "lives and sees you as viable prey. The greyish green surface "
+		.. "undulates hypnotically as you watch it ooze its way across the "
+		.. "floor.")
 	:Melee("paralyse", 40)
 	:Melee("poison", 60)
 	:CorpseTaste("aversive")
@@ -272,7 +336,10 @@ Monster.new("carrion_crawler")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "2d15")
 	:Main("1d1", "1d10", "1d8", "0d0")
-	:Description("This giant bug has numerous paralyzing tentacles just waiting for you to wander into range.  They live mostly in subterranean caverns and feed on dead or dying matter, but they will attack if hungry...")
+	:Description("This giant bug has numerous paralyzing tentacles just "
+		.. "waiting for you to wander into range. They live mostly in "
+		.. "subterranean caverns and feed on dead or dying matter, but they "
+		.. "will attack if hungry...")
 	:Melee("paralyse", 100)
 	:Melee("poison", 100)
 	:CorpseTaste("aversive")

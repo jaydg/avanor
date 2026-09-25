@@ -9,7 +9,14 @@ Monster.new("roderik")
 	:Stats("St 1d8+55 Dx 1d8+60 To 1d8+40 Le 1d5+35 Wi 1d5+20 Ma 1d5+20 Pe 8d6 Ch 12d5")
 	:Combat("1d6", "1d5")
 	:Main("1d8", "1d3", "1d5+70", "1d5+30")
-	:Description("The mystical crown of Avanor rests upon the head of this noble looking man.  Curls of red hair stick out from under it but don't detract from his noble bearing.  The sceptre of his rule lies in his hand looking like an ornament but it has been said it is a formidable weapon wrought with great magic in days of yore.  Rodrick's face is happy but you can see great concern in his eyes.  The responsibilty for this nation must truly weigh on him.")
+	:Description("The mystical crown of Avanor rests upon the head of this "
+		.. "noble looking man. Curls of red hair stick out from under it "
+		.. "but don't detract from his noble bearing. The sceptre of his "
+		.. "rule lies in his hand looking like an ornament but it has been "
+		.. "said it is a formidable weapon wrought with great magic in days "
+		.. "of yore. Rodrick's face is happy but you can see great concern "
+		.. "in his eyes. The responsibilty for this nation must truly weigh "
+		.. "on him.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSkill(XSkill.FINDWEAKNESS, XSkill.MAX_LEVEL)
 	:Unique()

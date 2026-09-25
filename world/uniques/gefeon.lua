@@ -9,7 +9,11 @@ Monster.new("gefeon")
 	:Stats("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5")
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d1", "1d5+10", "5d5+50")
-	:Description("As master of the eternal flame of Avanor, Gefeon advises the king in all matters arcane.  Clad only in robes and wearing rings of power, he sits and meditates on the state of the universe.  As you watch a furrow creases on his brow as if he is greatly worried by something.")
+	:Description("As master of the eternal flame of Avanor, Gefeon advises "
+		.. "the king in all matters arcane. Clad only in robes and wearing "
+		.. "rings of power, he sits and meditates on the state of the "
+		.. "universe. As you watch a furrow creases on his brow as if he is "
+		.. "greatly worried by something.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSpell("fire_bolt")
 	:LearnSpell("heal")

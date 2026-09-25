@@ -23,7 +23,15 @@ Monster.new("beelzevile")
 	:Stats("St 5d5+50 Dx 3d3+10 To 2d5+30 Le 9d5 Wi 3d4 Ma 5d4 Pe 1d3 Ch 1d3")
 	:Combat("0d0+10", "2d8")
 	:Main("0d0-5", "0d0+2", "1d6+22", "5d5+100")
-	:Description("How he got to the mushroom caves is anyones guess but it is commonly believed that some kobold shaman got a little carried away with his magic and summoned Beelzevile from the netherworld.  Standing 10 feet high and carrying a reek of sulphur about him, he strides around the cavern, furious at being trapped in this cold place.  His massive claws can shred flesh and steel alike.  You catch a glimpse of a magnificent ring on one of his hands as he noisily chews on the haunch of a kobold who wandered a little too close.")
+	:Description("How he got to the mushroom caves is anyones guess but it "
+		.. "is commonly believed that some kobold shaman got a little "
+		.. "carried away with his magic and summoned Beelzevile from the "
+		.. "netherworld. Standing 10 feet high and carrying a reek of "
+		.. "sulphur about him, he strides around the cavern, furious at "
+		.. "being trapped in this cold place. His massive claws can shred "
+		.. "flesh and steel alike. You catch a glimpse of a magnificent "
+		.. "ring on one of his hands as he noisily chews on the haunch of a "
+		.. "kobold who wandered a little too close.")
 	:Melee("poison", 80)
 	:Melee("fire", 100)
 	:Melee("cold", 100)

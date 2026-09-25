@@ -9,7 +9,12 @@ Monster.new("gray_ooze")
 	:Resist{ acid = "0d0+100", poison = "0d0+100" }
 	:Combat("3d5", "1d3")
 	:Main("1d2", "0d0", "1d3", "0d0")
-	:Description("This quivering gelatinous mass slowly oozes across the floor towards you.  It appears almost that two separate intelligences control the creature, straining to separate from each other.  It is said that the gray ooze steals life energy from those it attacks in order to reproduce.  It also is rumored to have a deadly poison.")
+	:Description("This quivering gelatinous mass slowly oozes across the "
+		.. "floor towards you. It appears almost that two separate "
+		.. "intelligences control the creature, straining to separate from "
+		.. "each other. It is said that the gray ooze steals life energy "
+		.. "from those it attacks in order to reproduce. It also is rumored "
+		.. "to have a deadly poison.")
 	:Melee("poison", 15)
 	:CorpseResist("poison", 1)
 	:CorpseModifier("poison", 10)
@@ -24,7 +29,11 @@ Monster.new("gelatinous_cube")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "2d15")
 	:Main("1d1", "1d10", "1d8", "0d0")
-	:Description("As you watch this clear mass you realize that you can still see the remains of its last meal suspended inside.  The skull seems to laugh at you as ready your weapon to face this three foot oozing mass.  The skelatal hand still grips the remains of a sword, slowly being digested.")
+	:Description("As you watch this clear mass you realize that you can "
+		.. "still see the remains of its last meal suspended inside. The "
+		.. "skull seems to laugh at you as ready your weapon to face this "
+		.. "three foot oozing mass. The skelatal hand still grips the "
+		.. "remains of a sword, slowly being digested.")
 	:Melee("paralyse", 100)
 	:Melee("acid", 100)
 	:CorpseTaste("aversive")

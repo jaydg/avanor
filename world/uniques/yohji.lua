@@ -9,7 +9,16 @@ Monster.new("yohjishiro")
 	:Stats("St 1d8+15 Dx 1d8+40 To 1d8+10 Le 1d5+45 Wi 1d5+45 Ma 1d5+45 Pe 5d6 Ch 7d5")
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d1", "1d5+10", "5d5+50")
-	:Description("Last of the elder wizards to live in the vale of Avanor, Yohjishiro quietly tends her herbs and gardens. Her white hair hangs down her back as she kneels down to look at one of her bushes.  Her pointed ears stick out from under a floppy hat that keeps the sun from her eyes.  As she walks through the garden, you notice plants sprouting wherever her feet touch the soil.  Truly she is a power of life.  Frail but intelligent, she remains apart from most of the happenings of Avanor.  Occasionally she will accept a pupil or give aid to those in need.")
+	:Description("Last of the elder wizards to live in the vale of Avanor, "
+		.. "Yohjishiro quietly tends her herbs and gardens. Her white hair "
+		.. "hangs down her back as she kneels down to look at one of her "
+		.. "bushes. Her pointed ears stick out from under a floppy hat that "
+		.. "keeps the sun from her eyes. As she walks through the garden, "
+		.. "you notice plants sprouting wherever her feet touch the soil. "
+		.. "Truly she is a power of life. Frail but intelligent, she "
+		.. "remains apart from most of the happenings of Avanor. "
+		.. "Occasionally she will accept a pupil or give aid to those in "
+		.. "need.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
 	:LearnSpell("lightning_bolt")
 	:LearnSpell("heal")

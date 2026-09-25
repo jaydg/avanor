@@ -9,7 +9,13 @@ Monster.new("jorgus")
 	:Stats("St 1d8+30 Dx 1d8+30 To 1d8+15 Le 1d5+15 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
 	:Combat("1d8", "2d2")
 	:Main("4d2", "1d3", "1d5+15", "1d5+5")
-	:Description("As you enter his dwelling you keep a tight hold on your purse.  The shifty eyes and too quick smile of the owner makes you nervous.  Jorgush is the leader of his outlaw band.  They are known for stealing from the rich and keeping it for themselves.  He appears to evaluate you and the weapons you bear and then gestures to the cahir at the table.  Perhaps he has a proposition for you...")
+	:Description("As you enter his dwelling you keep a tight hold on your "
+		.. "purse. The shifty eyes and too quick smile of the owner makes "
+		.. "you nervous. Jorgush is the leader of his outlaw band. They are "
+		.. "known for stealing from the rich and keeping it for themselves. "
+		.. "He appears to evaluate you and the weapons you bear and then "
+		.. "gestures to the cahir at the table. Perhaps he has a "
+		.. "proposition for you...")
 	:LearnSkill(XSkill.STEALING, 15)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 30)
 	:Equip(ItemKind.BODY, "clothes", 100)

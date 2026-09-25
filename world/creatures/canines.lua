@@ -9,7 +9,11 @@ Monster.new("dog")
 	:Resist{ fire = "5d5-40", cold = "5d10" }
 	:Combat("1d2", "2d3")
 	:Main("1d4", "1d2", "2d3", "0d0")
-	:Description("Dogs were brought to the valley of Avanor to serve the residents of the kingdom, but some of them escaped and became feral and breeding in the caves below the surface.  Mongrels in every sense, these animals now prey upon other creatures for food, including silly adventurers.")
+	:Description("Dogs were brought to the valley of Avanor to serve the "
+		.. "residents of the kingdom, but some of them escaped and became "
+		.. "feral and breeding in the caves below the surface. Mongrels in "
+		.. "every sense, these animals now prey upon other creatures for "
+		.. "food, including silly adventurers.")
 	:Register()
 
 Monster.new("large_dog")
@@ -21,7 +25,11 @@ Monster.new("large_dog")
 	:Resist{ fire = "5d5-30", cold = "6d10" }
 	:Combat("1d4", "2d4")
 	:Main("1d4", "1d3", "2d4", "0d0")
-	:Description("Obviously the leader of his pack, this dog is larger than the others and may be the offspring of a dog and a wolf.  Its muzzle and body are scarred from numerous fights and it limps slightly.  The deference the other dogs show it indicates that it is still a dangerous foe.")
+	:Description("Obviously the leader of his pack, this dog is larger than "
+		.. "the others and may be the offspring of a dog and a wolf. Its "
+		.. "muzzle and body are scarred from numerous fights and it limps "
+		.. "slightly. The deference the other dogs show it indicates that "
+		.. "it is still a dangerous foe.")
 	:Register()
 
 Monster.new("rabid_dog")
@@ -33,7 +41,10 @@ Monster.new("rabid_dog")
 	:Resist{ fire = "5d5-30", cold = "4d10" }
 	:Combat("2d4", "2d3")
 	:Main("1d2", "1d1", "2d3", "0d0")
-	:Description("White foam drips from the jaws of this dog.  The wild look in its eyes indicate that something is not quite right, and it snaps at everything and everyone around it with the strength born of its diseased madness.")
+	:Description("White foam drips from the jaws of this dog. The wild look "
+		.. "in its eyes indicate that something is not quite right, and it "
+		.. "snaps at everything and everyone around it with the strength "
+		.. "born of its diseased madness.")
 	:Melee("disease", 50)
 	:CorpseModifier("disease", 50)
 	:CorpseTaste("aversive")
@@ -48,7 +59,9 @@ Monster.new("wolf")
 	:Resist{ fire = "5d5-20", cold = "7d10" }
 	:Combat("3d4", "2d6")
 	:Main("2d4", "2d3", "3d4", "0d0")
-	:Description("One glance at this wolf tells you why it has come down from the mountains... to look for food.  The shaggy pelt and thin body are proof of hard times since the eruption of Power.")
+	:Description("One glance at this wolf tells you why it has come down "
+		.. "from the mountains... to look for food. The shaggy pelt and "
+		.. "thin body are proof of hard times since the eruption of Power.")
 	:Register()
 
 Monster.new("large_wolf")
@@ -60,7 +73,10 @@ Monster.new("large_wolf")
 	:Resist{ cold = "9d10" }
 	:Combat("5d5", "3d6")
 	:Main("2d4", "3d3", "5d4", "0d0")
-	:Description("This wolf is almost the size of a small pony.  It is fast, strong and eager to eat anything smaller than itself.  Its hungry gaze makes you uncomfortable as it faces you with fangs bared.")
+	:Description("This wolf is almost the size of a small pony. It is fast, "
+		.. "strong and eager to eat anything smaller than itself. Its "
+		.. "hungry gaze makes you uncomfortable as it faces you with fangs "
+		.. "bared.")
 	:Register()
 
 Monster.new("werewolf")
@@ -72,7 +88,11 @@ Monster.new("werewolf")
 	:Resist{ fire = "4d10", cold = "9d10" }
 	:Combat("6d5", "4d6")
 	:Main("2d8", "3d4", "7d4", "7d4")
-	:Description("As you gaze on this creature its features shift from wolf to man and back again.  Product of a dreadful experiment in magic, the werewolf hunts in the caves of Avanor for food.  It is said that silver weapons are the only true way to defeat a werewolf.")
+	:Description("As you gaze on this creature its features shift from wolf "
+		.. "to man and back again. Product of a dreadful experiment in "
+		.. "magic, the werewolf hunts in the caves of Avanor for food. It "
+		.. "is said that silver weapons are the only true way to defeat a "
+		.. "werewolf.")
 	:Melee("disease", 100)
 	:Melee("paralyse", 20)
 	:CorpseModifier("paralyse", 50)

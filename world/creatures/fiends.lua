@@ -40,7 +40,11 @@ Monster.new("lemure")
 	:Resist{ fire = "0d0+80", cold = "0d0-40" }
 	:Combat("1d2", "1d4")
 	:Main("0d0", "1d2", "1d8+2", "0d0")
-	:Description("A mound of wet grey tallow in the rough shape of a man, running and re-forming as it comes. It has no face to read and makes no sound beyond the wet slap of itself against the floor. Whatever it was before it was sent here, nothing of that is left to appeal to.")
+	:Description("A mound of wet grey tallow in the rough shape of a man, "
+		.. "running and re-forming as it comes. It has no face to read and "
+		.. "makes no sound beyond the wet slap of itself against the floor. "
+		.. "Whatever it was before it was sent here, nothing of that is "
+		.. "left to appeal to.")
 	:CorpseTaste("aversive")
 	:Register()
 
@@ -53,7 +57,10 @@ Monster.new("dretch")
 	:Resist{ fire = "0d0+60", cold = "0d0-30" }
 	:Combat("1d3", "1d5")
 	:Main("1d2", "1d1", "1d8+3", "1d2")
-	:Description("Squat, pot-bellied and altogether wretched, the dretch is what the pit makes when it is not paying attention. It is a coward alone and a menace in a dozen, and it is never alone. The smell arrives before it does.")
+	:Description("Squat, pot-bellied and altogether wretched, the dretch is "
+		.. "what the pit makes when it is not paying attention. It is a "
+		.. "coward alone and a menace in a dozen, and it is never alone. "
+		.. "The smell arrives before it does.")
 	:Melee("disease", 25)
 	:CorpseTaste("aversive")
 	:Register()
@@ -69,7 +76,10 @@ Monster.new("imp")
 	:Resist{ invisible = true, see_invisible = true, fire = "0d0+80", cold = "0d0-30" }
 	:Combat("3d4", "1d4")
 	:Main("4d3", "0d0", "2d4+4", "2d3")
-	:Description("No larger than a cat and a great deal worse tempered, the imp is mostly tail and malice. It spends its time unseen and its patience is shorter than its attention, so what usually gives it away is the sting.")
+	:Description("No larger than a cat and a great deal worse tempered, the "
+		.. "imp is mostly tail and malice. It spends its time unseen and "
+		.. "its patience is shorter than its attention, so what usually "
+		.. "gives it away is the sting.")
 	:Melee("poison", 60)
 	:Register()
 
@@ -82,7 +92,10 @@ Monster.new("quasit")
 	:Resist{ invisible = true, see_invisible = true, fire = "0d0+50", cold = "0d0-30" }
 	:Combat("3d4", "1d4")
 	:Main("4d3", "0d0", "2d4+4", "2d4")
-	:Description("The demons' answer to the imp, and no improvement on it. A knot of horns and claws that is rarely where you last saw it, the quasit prefers to make its victims afraid before it makes them bleed.")
+	:Description("The demons' answer to the imp, and no improvement on it. "
+		.. "A knot of horns and claws that is rarely where you last saw it, "
+		.. "the quasit prefers to make its victims afraid before it makes "
+		.. "them bleed.")
 	:Melee("poison", 40)
 	:Melee("confuse", 30)
 	:Register()
@@ -102,7 +115,10 @@ Monster.new("hell_hound")
 	:Resist{ fire = "0d0+100", cold = "0d0-50" }
 	:Combat("2d5", "2d5")
 	:Main("2d4", "1d3", "2d8+4", "0d0")
-	:Description("It hunts the way a dog hunts, in a line abreast and without hurry, and the heat comes off it in a wash you feel before you see the eyes. What it leaves behind it is not tracks but scorch.")
+	:Description("It hunts the way a dog hunts, in a line abreast and "
+		.. "without hurry, and the heat comes off it in a wash you feel "
+		.. "before you see the eyes. What it leaves behind it is not tracks "
+		.. "but scorch.")
 	:Melee("fire", 100)
 	:CorpseTaste("aversive")
 	:Register()
@@ -123,7 +139,10 @@ Monster.new("bearded_devil")
 	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+60" }
 	:Combat("3d5", "2d4")
 	:Main("3d4", "2d2", "3d8+6", "1d4")
-	:Description("Lean and grey and taller than a man, with a writhing mass of oiled snakes where a beard should be. It holds its glaive the way a soldier holds one, and it has clearly been shown how by somebody who minded whether it learned.")
+	:Description("Lean and grey and taller than a man, with a writhing mass "
+		.. "of oiled snakes where a beard should be. It holds its glaive "
+		.. "the way a soldier holds one, and it has clearly been shown how "
+		.. "by somebody who minded whether it learned.")
 	:LearnSkill(XSkill.FINDWEAKNESS, 8)
 	:Equip(ItemKind.WEAPON, "halberd", 100)
 	:Melee("disease", 40)
@@ -141,7 +160,10 @@ Monster.new("barbed_devil")
 	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+60" }
 	:Combat("3d5", "3d4")
 	:Main("2d4", "3d3", "4d8+8", "3d4")
-	:Description("Every inch of it is spines, from the crown of its head to the backs of its hands, and it holds still in a way that invites you to come closer and find out. When it tires of waiting it throws fire instead.")
+	:Description("Every inch of it is spines, from the crown of its head to "
+		.. "the backs of its hands, and it holds still in a way that "
+		.. "invites you to come closer and find out. When it tires of "
+		.. "waiting it throws fire instead.")
 	:LearnSkill(XSkill.CONCENTRATION, 6)
 	:LearnSpell("fire_bolt")
 	:Melee("fire", 70)
@@ -163,7 +185,10 @@ Monster.new("vrock")
 	:Resist{ fire = "0d0+70", cold = "0d0-30", poison = "0d0+80" }
 	:Combat("3d5", "3d5")
 	:Main("3d4", "2d2", "4d8+6", "2d4")
-	:Description("A vulture the size of a man, if a vulture stood upright and had hands. It stinks of carrion and rot, and the noise it makes when it decides about you is not a cry so much as a physical blow.")
+	:Description("A vulture the size of a man, if a vulture stood upright "
+		.. "and had hands. It stinks of carrion and rot, and the noise it "
+		.. "makes when it decides about you is not a cry so much as a "
+		.. "physical blow.")
 	:Melee("poison", 60)
 	:Melee("stun", 30)
 	:CorpseTaste("aversive")
@@ -180,7 +205,10 @@ Monster.new("bone_devil")
 	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+100" }
 	:Combat("4d5", "3d5")
 	:Main("5d4", "3d3", "4d9+10", "4d5")
-	:Description("Nine feet of dry hide stretched over a frame that is mostly angles, with a hooked tail it carries arched over its own shoulder the way a scorpion does. It gives orders in a language you are glad not to understand.")
+	:Description("Nine feet of dry hide stretched over a frame that is "
+		.. "mostly angles, with a hooked tail it carries arched over its "
+		.. "own shoulder the way a scorpion does. It gives orders in a "
+		.. "language you are glad not to understand.")
 	:LearnSkill(XSkill.FINDWEAKNESS, 10)
 	:LearnSkill(XSkill.HEALING, 8)
 	:Equip(ItemKind.WEAPON, "halberd", 100)
@@ -199,7 +227,10 @@ Monster.new("horned_devil")
 	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+100" }
 	:Combat("5d5", "4d5")
 	:Main("4d5", "4d3", "5d9+14", "5d5")
-	:Description("Kin to the thing that got loose in the mushroom caves, and no happier to be here. Twelve feet of red hide and muscle under a rack of horns, with a barbed tail it uses first and a fork it uses when the tail has not been enough.")
+	:Description("Kin to the thing that got loose in the mushroom caves, "
+		.. "and no happier to be here. Twelve feet of red hide and muscle "
+		.. "under a rack of horns, with a barbed tail it uses first and a "
+		.. "fork it uses when the tail has not been enough.")
 	:LearnSkill(XSkill.FINDWEAKNESS, 10)
 	:LearnSkill(XSkill.CONCENTRATION, 8)
 	:LearnSpell("fire_bolt")
@@ -244,7 +275,11 @@ Monster.new("starveling")
 	:Resist{ fire = "0d0+40", cold = "0d0-20", poison = "0d0+80", disease = "0d0+100" }
 	:Combat("3d4", "2d4")
 	:Main("3d4", "0d0", "3d8+4", "1d3")
-	:Description("The lesser hunger, and not lesser by much. Skin drawn tight enough to count the bones through it, the grey of three days dead, and the smell arrives well before it does. What it has for lips are torn and will not close. It watches your hands rather than your face.")
+	:Description("The lesser hunger, and not lesser by much. Skin drawn "
+		.. "tight enough to count the bones through it, the grey of three "
+		.. "days dead, and the smell arrives well before it does. What it "
+		.. "has for lips are torn and will not close. It watches your hands "
+		.. "rather than your face.")
 	:Melee("drain_life", 60)
 	:Melee("disease", 30)
 	:CorpseTaste("aversive")
@@ -261,7 +296,12 @@ Monster.new("wendigo")
 	:Resist{ fire = "0d0+60", cold = "0d0-20", poison = "0d0+100", disease = "0d0+100" }
 	:Combat("5d5", "4d4")
 	:Main("6d4", "1d3", "4d9+10", "2d4")
-	:Description("Gaunt past starvation, the skin desiccated and pulled so tight over the bones that they push back through it, and the complexion of it the ash-grey of death. The eyes have gone back deep into the skull. What lips it has are tattered and bloody. It gives off the smell of a thing that has been dead a while and has not stopped moving, and it has never once been full.")
+	:Description("Gaunt past starvation, the skin desiccated and pulled so "
+		.. "tight over the bones that they push back through it, and the "
+		.. "complexion of it the ash-grey of death. The eyes have gone back "
+		.. "deep into the skull. What lips it has are tattered and bloody. "
+		.. "It gives off the smell of a thing that has been dead a while "
+		.. "and has not stopped moving, and it has never once been full.")
 	:Melee("drain_life", 100)
 	:Melee("disease", 40)
 	:CorpseTaste("aversive")

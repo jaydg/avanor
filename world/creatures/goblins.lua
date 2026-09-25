@@ -19,7 +19,11 @@ Monster.new("goblin")
 	:Stats("St 3d3 Dx 2d3 To 2d3 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d3", "1d3")
 	:Main("1d3", "1d1", "1d5+6", "1d5")
-	:Description("This scruffy looking humanoid glances at you with fear in its face.  The stench it carries indicates that it has probably never been clean in its life.  Goblins normally perfer secrecy and stealing to open confrontation but have been known to attack travellers.")
+	:Description("This scruffy looking humanoid glances at you with fear in "
+		.. "its face. The stench it carries indicates that it has probably "
+		.. "never been clean in its life. Goblins normally perfer secrecy "
+		.. "and stealing to open confrontation but have been known to "
+		.. "attack travellers.")
 	:LearnSkill(XSkill.HEALING, 4)
 	:LearnSkill(XSkill.FINDWEAKNESS, 4)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 1, 10)
@@ -34,7 +38,10 @@ Monster.new("goblin_warrior")
 	:Stats("St 3d4 Dx 3d3 To 3d3 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 2d3")
 	:Combat("1d4", "1d3")
 	:Main("1d4", "1d1", "1d5+10", "1d5")
-	:Description("This goblin carries a nasty looking knife, almost a sword for one as short as he is.  His posture and multiple scars indicate that he is more than a novice at handling them as well.")
+	:Description("This goblin carries a nasty looking knife, almost a sword "
+		.. "for one as short as he is. His posture and multiple scars "
+		.. "indicate that he is more than a novice at handling them as "
+		.. "well.")
 	:LearnSkill(XSkill.HEALING, 5)
 	:LearnSkill(XSkill.FINDWEAKNESS, 5)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 2, 10)
@@ -49,7 +56,10 @@ Monster.new("goblin_warmaster")
 	:Stats("St 5d4 Dx 6d3 To 5d5 Le 2d4 Wi 2d4 Ma 2d4 Pe 5d5 Ch 3d3")
 	:Combat("1d8", "2d3")
 	:Main("1d8", "1d3", "2d5+20", "2d5")
-	:Description("Arms criss-crossed with scars and bulging with muscle, this goblin has a hint of white hair.  Not many goblins can live so long but the worn weapons at his side indicate that he is capable of keeping his place in the earth.")
+	:Description("Arms criss-crossed with scars and bulging with muscle, "
+		.. "this goblin has a hint of white hair. Not many goblins can live "
+		.. "so long but the worn weapons at his side indicate that he is "
+		.. "capable of keeping his place in the earth.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 10)
@@ -64,7 +74,10 @@ Monster.new("goblin_chieftain")
 	:Stats("St 5d4 Dx 6d3 To 5d5 Le 2d4 Wi 2d4 Ma 2d4 Pe 5d5 Ch 3d3")
 	:Combat("1d8", "2d4")
 	:Main("1d10", "2d2", "2d5+25", "2d5")
-	:Description("Stronger and smarter than the other goblins.  This goblin has become the chief and now commands all the troops.  His shock of white hair is the only part of him that shows his age and his muscular body is toned from battles past.")
+	:Description("Stronger and smarter than the other goblins. This goblin "
+		.. "has become the chief and now commands all the troops. His shock "
+		.. "of white hair is the only part of him that shows his age and "
+		.. "his muscular body is toned from battles past.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 4, 10)

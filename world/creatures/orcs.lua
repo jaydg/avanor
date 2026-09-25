@@ -8,7 +8,11 @@ Monster.new("orc")
 	:Stats("St 2d5+15 Dx 1d5+5 To 2d5+15 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("Orcs are roughly dwarf sized with a light green pallor to their skin.  Not extremely intelligent, they avoid sunlight whenever possible.  It has been speculated that they were once humans elves or dwarves but something drove them deep underground and they became the hardy race they are today.")
+	:Description("Orcs are roughly dwarf sized with a light green pallor to "
+		.. "their skin. Not extremely intelligent, they avoid sunlight "
+		.. "whenever possible. It has been speculated that they were once "
+		.. "humans elves or dwarves but something drove them deep "
+		.. "underground and they became the hardy race they are today.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)
@@ -23,7 +27,10 @@ Monster.new("large_orc")
 	:Stats("St 2d5+20 Dx 1d5+5 To 2d5+20 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("Bigger, meaner and nastier than its smaller cousins, this orc stands near as tall as a man.  It bears a cruel looking axe and is well armored.  The wicked grin on its face tells you that it will enjoy picking your flesh from your bones.")
+	:Description("Bigger, meaner and nastier than its smaller cousins, this "
+		.. "orc stands near as tall as a man. It bears a cruel looking axe "
+		.. "and is well armored. The wicked grin on its face tells you that "
+		.. "it will enjoy picking your flesh from your bones.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)
@@ -39,7 +46,11 @@ Monster.new("hill_orc")
 	:Stats("St 2d5+25 Dx 1d5+5 To 2d5+25 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("Hill orcs are descendants of orcs that left their caves to live back under the sky.  They still prefer to sleep during the day but move around enough during the day to acquire a healthy tan.  Perhaps their return to sunlight is the reason they are stronger than their cousins.")
+	:Description("Hill orcs are descendants of orcs that left their caves "
+		.. "to live back under the sky. They still prefer to sleep during "
+		.. "the day but move around enough during the day to acquire a "
+		.. "healthy tan. Perhaps their return to sunlight is the reason "
+		.. "they are stronger than their cousins.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)
@@ -55,7 +66,12 @@ Monster.new("dark_orc")
 	:Stats("St 2d5+30 Dx 1d5+5 To 2d5+30 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("Dark orcs retreated to the farthest corners of the caverns and were enslaved by the other orcs.  They were used to delve great cities beneath the earth like the dwarves.  Because of all this manual labor they grew extremely strong.  Before any battle, they cover themselves in coal dust to appear jet black and frighten their opponents.")
+	:Description("Dark orcs retreated to the farthest corners of the "
+		.. "caverns and were enslaved by the other orcs. They were used to "
+		.. "delve great cities beneath the earth like the dwarves. Because "
+		.. "of all this manual labor they grew extremely strong. Before any "
+		.. "battle, they cover themselves in coal dust to appear jet black "
+		.. "and frighten their opponents.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)
@@ -71,7 +87,10 @@ Monster.new("lieutenant_orc")
 	:Stats("St 2d5+30 Dx 1d5+5 To 2d5+30 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("\"Git yur sorry corpses movin'!\"  Orc sergeants act as the first tier of leadership for any orcish raid.  Known to be exceptionally mean spirited, they have been seen to kill their own troops in order to \"inspire\" the rest to better results.")
+	:Description("\"Git yur sorry corpses movin'!\" Orc sergeants act as "
+		.. "the first tier of leadership for any orcish raid. Known to be "
+		.. "exceptionally mean spirited, they have been seen to kill their "
+		.. "own troops in order to \"inspire\" the rest to better results.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)
@@ -87,7 +106,13 @@ Monster.new("captain_orc")
 	:Stats("St 2d5+40 Dx 1d5+5 To 2d5+40 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("Captain is a precarious position for any orc.  Displeased chiefs might have their captains killed for any failure, success or even on a whim.  The orcs under him are ready to mutiny and kill him for his position.  Thus the orc captain is always on edge and ready to strike down anything that might pose a danger.  His large frame and hefty axe are usually more than adequate to take care of any and all threats.")
+	:Description("Captain is a precarious position for any orc. Displeased "
+		.. "chiefs might have their captains killed for any failure, "
+		.. "success or even on a whim. The orcs under him are ready to "
+		.. "mutiny and kill him for his position. Thus the orc captain is "
+		.. "always on edge and ready to strike down anything that might "
+		.. "pose a danger. His large frame and hefty axe are usually more "
+		.. "than adequate to take care of any and all threats.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)
@@ -103,7 +128,11 @@ Monster.new("chieftain_orc")
 	:Stats("St 2d5+50 Dx 1d5+5 To 2d5+50 Le 1d4 Wi 1d4 Ma 1d4 Pe 3d3 Ch 1d5")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
-	:Description("The orc chieftain is the biggest, meanest orc you have ever seen.  His skin alone looks tougher than studded leather.  The axe he carries is well worn and scarred from many battles.  Only someone this mean and nasty could get the various orc tribes to work together for a raid.")
+	:Description("The orc chieftain is the biggest, meanest orc you have "
+		.. "ever seen. His skin alone looks tougher than studded leather. "
+		.. "The axe he carries is well worn and scarred from many battles. "
+		.. "Only someone this mean and nasty could get the various orc "
+		.. "tribes to work together for a raid.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 50)

@@ -18,7 +18,12 @@ Monster.new("magnush")
 	:Stats("St 4d5 Dx 2d3+6 To 1d3+9 Le 2d4 Wi 2d4+6 Ma 3d3 Pe 1d8 Ch 1d4")
 	:Combat("1d3+6", "2d6")
 	:Main("1d4+1", "0d0+3", "1d4+22", "2d3+6")
-	:Description("Magnush the kobold lord stands before you with all the majesty he can muster.  Bigger than most kobolds (some say his father was a gnoll), he has managed to bully his way to the prime position in his pack.  His mangy fur and crooked legs give him an almost laughable appearance though and you have difficulty hiding your mirth from this overgrown puppy.")
+	:Description("Magnush the kobold lord stands before you with all the "
+		.. "majesty he can muster. Bigger than most kobolds (some say his "
+		.. "father was a gnoll), he has managed to bully his way to the "
+		.. "prime position in his pack. His mangy fur and crooked legs give "
+		.. "him an almost laughable appearance though and you have "
+		.. "difficulty hiding your mirth from this overgrown puppy.")
 	:LearnSkill(XSkill.HEALING, 10)
 	:LearnSkill(XSkill.FINDWEAKNESS, 10)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION + ItemKind.BOOK + ItemKind.FOOD, 6, 20)

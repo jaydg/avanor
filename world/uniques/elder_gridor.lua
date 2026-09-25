@@ -8,7 +8,11 @@ Monster.new("elder_gridor")
 	:Stats("St 1d3+5 Dx 1d3+5 To 1d3+4 Le 9d5 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 4d4")
 	:Combat("1d1", "1d1")
 	:Main("1d1", "0d0", "1d5+5", "1d5+5")
-	:Description("This kind looking old man leans on a cane as he gazes towards you.  As leader of this small farming community, he is responsible for their well being.  He gazes at you and asks for help to a serious problem that has recently arisen and is out of his power to control.")
+	:Description("This kind looking old man leans on a cane as he gazes "
+		.. "towards you. As leader of this small farming community, he is "
+		.. "responsible for their well being. He gazes at you and asks for "
+		.. "help to a serious problem that has recently arisen and is out "
+		.. "of his power to control.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:EquipCount(ItemKind.SCROLL + ItemKind.POTION, 3, 30)
 	:Equip(ItemKind.BODY, "clothes", 100)
