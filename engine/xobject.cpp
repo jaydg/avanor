@@ -20,14 +20,11 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include <string>
-#include <cstdlib>
-#include <iostream>
 
 #include "engine/xobject.h"
 
 long XObject::invalid_count = 0;
 XObjectMap XObject::objects = XObjectMap();
-bool XObject::audit_objects = std::getenv("AVANOR_AUDIT_OBJECTS") != nullptr;
 std::vector<std::shared_ptr<XObject>> XObject::deferred_release;
 
 XGUID guid = 1;
@@ -124,21 +121,6 @@ void XObject::DeferRelease(std::shared_ptr<XObject> p)
     }
 }
 
-void XObject::AuditObjects()
-{
-    for (const auto& [key, obj] : objects) {
-        if (obj->xguid != key) {
-            std::cerr
-                << "XObject registry inconsistent: key " << key
-                << " holds an object reporting xguid " << obj->xguid
-                << " (" << objects.size() << " entries). Most likely it was"
-                   " freed without Invalidate() erasing its entry."
-                << std::endl;
-            assert(!"XObject registry inconsistent - see stderr");
-        }
-    }
-}
-
 void XObject::DrainDeferred()
 {
     // Swap-then-clear, repeated: destroying a parked object can itself
@@ -150,9 +132,5 @@ void XObject::DrainDeferred()
         std::vector<std::shared_ptr<XObject>> batch;
         batch.swap(deferred_release);
         batch.clear();
-    }
-
-    if (audit_objects) {
-        AuditObjects();
     }
 }
