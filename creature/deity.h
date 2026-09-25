@@ -78,6 +78,10 @@ struct DeityStats {
     // a world says so.
     std::string on_kill;
 
+    // What this god is like, and - since it now decides what a
+    // kill is worth - what it wants of a follower.
+    std::string description;
+
     std::vector<DeityHelp> grants;
 };
 
@@ -125,6 +129,7 @@ class DeityBuilder
         explicit DeityBuilder(std::string id);
 
         DeityBuilder& Called(const std::string& name);
+        DeityBuilder& Description(const std::string& text);
         DeityBuilder& OnKill(const std::string& handler);
         DeityBuilder& Grants(const std::string& name, const std::string& needs,
             int cost, const std::string& effect,

@@ -80,6 +80,12 @@ DeityBuilder& DeityBuilder::Called(const std::string& name)
     return *this;
 }
 
+DeityBuilder& DeityBuilder::Description(const std::string& text)
+{
+    t.description = text;
+    return *this;
+}
+
 DeityBuilder& DeityBuilder::OnKill(const std::string& handler)
 {
     t.on_kill = handler;
@@ -164,6 +170,7 @@ void XDeity::RegisterLua(sol::state_view& lua)
     lua.new_usertype<DeityBuilder>("Deity",
         sol::constructors<DeityBuilder(std::string)>(),
         "Called", &DeityBuilder::Called,
+        "Description", &DeityBuilder::Description,
         "OnKill", &DeityBuilder::OnKill,
         "Grants", &DeityBuilder::Grants,
         "Register", &DeityBuilder::Register

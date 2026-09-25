@@ -8,6 +8,10 @@
 --
 --   Deity.new(id)
 --       :Called(name)          what worshippers call it
+--       :Description(text)     what it is like and what it wants of a
+--                              follower, shown where a character chooses
+--                              one. Wrapped to the terminal, so it is
+--                              written as prose and not laid out here
 --       :OnKill(handler)       a Lua function called on every kill, with
 --                              the killer and the victim, so the god can
 --                              decide whether it approves
@@ -79,6 +83,13 @@ DeityRank.new("champion")
 
 Deity.new("life")
 	:Called("Tiamat")
+	:Description("Goddess of the living. She does not begrudge the living "
+		.. "their quarrels: something that comes at you and dies fighting "
+		.. "is a death she accepts, and asks nothing of you for it. What "
+		.. "offends her is a kill that was never a fight - one that had "
+		.. "turned and run, or one that would never have raised a hand "
+		.. "against you. The undead are an affront to life itself, and "
+		.. "putting one down pleases her.")
 	:OnKill("TiamatWatches")
 	:Grants("cure light wounds", "adept", 3, "cure_light_wounds")
 	:Grants("minor divine intervention", "adept", 5, "magic_arrow")
@@ -91,6 +102,11 @@ Deity.new("life")
 
 Deity.new("death")
 	:Called("Marduk")
+	:Description("God of death, and of the cruelty in it. An honest fight "
+		.. "bores him and he pays nothing for one. What he rewards, and "
+		.. "rewards at twice the rate, is the blow struck at something "
+		.. "already running - the kill that was never in doubt and was "
+		.. "made anyway.")
 	:OnKill("MardukWatches")
 	:Grants("cure light wounds", "adept", 5, "cure_light_wounds")
 	:Grants("minor divine intervention", "adept", 5, "magic_arrow")

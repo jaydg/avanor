@@ -19,7 +19,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <sstream>
 #include <string>
+#include <vector>
 
 #include "engine/global.h"
 #include "helpers/xstring.h"
@@ -50,4 +52,28 @@ int x_strlen(const char* str)
     }
 
     return count;
+}
+
+std::vector<std::string> WrapText(const std::string& text, const int width)
+{
+    std::vector<std::string> lines;
+    std::string line;
+    std::istringstream words(text);
+    std::string word;
+
+    while (words >> word) {
+        if (!line.empty()
+            && x_strlen(line.c_str()) + 1 + x_strlen(word.c_str()) > width) {
+            lines.push_back(line);
+            line.clear();
+        }
+
+        line += line.empty() ? word : " " + word;
+    }
+
+    if (!line.empty()) {
+        lines.push_back(line);
+    }
+
+    return lines;
 }

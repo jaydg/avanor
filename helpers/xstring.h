@@ -22,6 +22,19 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef XSTRING_H
 #define XSTRING_H
 
+#include <string>
+#include <vector>
+
 int x_strlen(const char* str);
+
+// Breaks prose into lines no wider than `width` as it will be drawn,
+// splitting at spaces. Measured with x_strlen(), so a word carrying a
+// role - "<WARNING>careful" - is counted at the width it draws and not
+// the width it is written.
+//
+// A word wider than the whole line is left on one of its own rather than
+// broken: prose does not contain such words, and running on is the lesser
+// wrong when something else does.
+std::vector<std::string> WrapText(const std::string& text, int width);
 
 #endif

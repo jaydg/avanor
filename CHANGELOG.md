@@ -250,6 +250,11 @@ within a tenth of each other, where Marduk used to earn eleven times what
 Tiamat did — and devotion is something you go and do rather than something
 that accrues while you play.
 
+**And the gods introduce themselves.** Choosing between them meant choosing
+between two names, which was no choice at all now that they want different
+things of you. Each god says on the selection screen what it is like and what
+it asks.
+
 ---
 
 ### Skills

@@ -916,7 +916,8 @@ sol::table AllDeities(sol::this_state state)
     sol::table out = lua.create_table();
 
     for (const auto& row : deities_db) {
-        out.add(lua.create_table_with("key", row.id, "name", DeityName(row.id)));
+        out.add(lua.create_table_with("key", row.id, "name", DeityName(row.id),
+            "description", row.description));
     }
 
     return out;

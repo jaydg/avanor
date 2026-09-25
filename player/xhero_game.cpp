@@ -38,6 +38,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "helpers/hiscore.h"
 #include "helpers/manual.h"
 #include "helpers/msgwin.h"
+#include "helpers/xstring.h"
 #include "item/item_misc.h"
 #include "magic/modifier.h"
 
@@ -51,17 +52,37 @@ namespace {
 // redrawn from scratch each time round, which costs nothing here and
 // means the resize needs no special case beyond falling through to the
 // next turn of the loop.
-int ChooseFromMenu(const char* title, const std::vector<std::string>& names)
+int ChooseFromMenu(const char* title, const std::vector<std::string>& names,
+    const std::vector<std::string>& notes = {})
 {
     while (true) {
         vClrScr();
         vGotoXY(7, 4);
         vPutS(title);
 
+        // Laid out top to bottom rather than by index, because an entry
+        // with something to say about itself is several lines tall and
+        // one without is a single line.
+        int row = 6;
+
         for (std::size_t i = 0; i < names.size(); i++) {
-            vGotoXY(7, 6 + static_cast<int>(i));
+            vGotoXY(7, row++);
             vPutS(fmt::format("<TEXT>[<SELECTOR>{:c}<TEXT>] {} ",
                               static_cast<int>(i) + 'a', names[i]));
+
+            if (i >= notes.size() || notes[i].empty()) {
+                continue;
+            }
+
+            // Indented under the name it belongs to, and wrapped to
+            // whatever the terminal is now - the loop above redraws on a
+            // resize, so this has to measure rather than assume.
+            for (const auto& line : WrapText(notes[i], size_x - 15)) {
+                vGotoXY(11, row++);
+                vPutS(fmt::format("<TEXT>{}", line));
+            }
+
+            row++;
         }
 
         vRefresh();
@@ -201,14 +222,17 @@ void XHero::PlayerSetup()
         std::string deity_key;
         sol::table deities = lua["HeroDeities"]();
         std::vector<std::string> deity_labels;
+        std::vector<std::string> deity_notes;
 
         for (auto& [_, row] : deities) {
-            deity_labels.push_back(row.as<sol::table>()["name"]);
+            const sol::table god = row.as<sol::table>();
+            deity_labels.push_back(god["name"]);
+            deity_notes.push_back(god["description"].get_or<std::string>(""));
         }
 
         if (!deity_labels.empty()) {
             const int dch = ChooseFromMenu("<TEXT>Choose a patron deity:",
-                deity_labels);
+                deity_labels, deity_notes);
             sol::table chosen_deity = deities[dch - 'a' + 1];
             deity_key = chosen_deity["key"];
 
