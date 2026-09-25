@@ -87,28 +87,6 @@ static CreatureClassSet ClassesOf(const sol::object& classes, const char* where)
 
 //cr = Creature("rotmoth")
 //cr = Creature("rat", [x, y, [w, h]])
-sol::optional<void*> Creature(const std::string& crn, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h)
-{
-    XCreature * cr = nullptr;
-
-    if (!x) {
-        cr = XLocation::current_location->NewCreature(crn);
-    } else {
-        int tx = *x;
-        int ty = *y;
-        XRect rect = w ? XRect(tx, ty, tx + *w, ty + *h) : XRect(tx, ty, tx + 1, ty + 1);
-        cr = XLocation::current_location->NewCreature(crn, rect);
-    }
-
-    // No room left to put one - nil, not a null pointer dressed as a
-    // value. See GetWornItem() in api_actor.cpp.
-    if (!cr) {
-        return sol::nullopt;
-    }
-
-    return static_cast<void*>(cr);
-}
-
 namespace {
 
 // Where a guard may stand, and how it behaves: what Guardian() and
@@ -235,6 +213,50 @@ Placement ReadPlacement(const sol::optional<sol::object>& opts, const std::strin
 }
 
 } // namespace
+
+//Creature("skeleton", x, y, [w, h], [flags or {...}])
+//
+// One creature, put where the world says. The last argument is what
+// Guardian() takes, less the parts about guarding: which ground it may be
+// put on, which ground it keeps to afterwards, and any AI flags. It posts
+// no guard area and joins no group - it is one creature standing where it
+// was put, which is the whole difference between this and Guardian().
+sol::optional<void*> Creature(const std::string& crn, sol::optional<int> x,
+    sol::optional<int> y, sol::optional<int> w, sol::optional<int> h,
+    sol::optional<sol::object> opts)
+{
+    const Placement where = ReadPlacement(opts, "Creature('" + crn + "')");
+    XCreature* cr = nullptr;
+
+    if (!x) {
+        cr = XLocation::current_location->NewCreature(crn);
+
+        // The placed form hands these to NewCreature(), which is where an
+        // area is read; this one has no area to be put in, so the flags
+        // go on afterwards and `on` has nothing to say.
+        if (cr && where.flags) {
+            cr->xai->SetAIFlag(static_cast<XStandardAI::Flag>(where.flags));
+        }
+    } else {
+        int tx = *x;
+        int ty = *y;
+        XRect rect = w ? XRect(tx, ty, tx + *w, ty + *h) : XRect(tx, ty, tx + 1, ty + 1);
+        cr = XLocation::current_location->NewCreature(crn, rect, GID_NONE,
+            where.flags, where.on);
+    }
+
+    // No room left to put one - nil, not a null pointer dressed as a
+    // value. See GetWornItem() in api_actor.cpp.
+    if (!cr) {
+        return sol::nullopt;
+    }
+
+    if (!where.stays_on.empty()) {
+        cr->xai->KeepTo(where.stays_on);
+    }
+
+    return static_cast<void*>(cr);
+}
 
 //Settle({"rat", "feline", "insect"}, CreatureTemplate.VERY_LOW)
 //Settle("rat", CreatureTemplate.LOW)

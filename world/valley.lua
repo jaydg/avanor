@@ -365,9 +365,14 @@ function MakeAvanorValley()
 		"              ########")
 		AddTranslation(".", XTileType.CAVE_FLOOR)
 		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "UNDEADS_TOMB1", x, y) end)
+		-- Bound to the tomb. They wander (RANDOM_MOVE) and they have hands, which
+		-- since creatures learned to work doors was enough to let them try the
+		-- three on the west wall and go walking in the valley. The cave floor stops
+		-- at the outermost door, so keeping to it is the whole of the leash.
 		AddTranslation("U", function(x, y)
 			for i = 1, 20 do
-				Creature('skeleton', x, y, 14, 4)
+				Creature('skeleton', x, y, 14, 4,
+					{ stays_on = XTileType.CAVE_FLOOR })
 			end
 		end)
 		DrawPattern(100, 50)
