@@ -91,24 +91,28 @@ function YohjiHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local result
 		if (GetSkill(p, XSkill.LITERACY) == 0) then
-			result = AskQuestion("What do you wish to speak about?", "esc q l", "quest", "learn")
+			result = AskQuestion("What do you wish to speak about?",
+				"esc q l", "quest", "learn")
 		else
 			result = 'q'
 		end
 		if (result == 'q') then
 			if (QuestStatus("yohji_bat") ~= XQuest.KNOWN and QuestStatus("yohji_rat") ~= XQuest.KNOWN) then
 				if (Rand(2) == 1) then
-					AddMessage("'I can identify all items in your inventory, if you bring me a bat wing.'")
+					AddMessage("'I can identify all items in your "
+						.. "inventory, if you bring me a bat wing.'")
 					QuestModify("yohji_bat", XQuest.KNOWN)
 				else
-					AddMessage("'I can identify all items in your inventory, if you bring me a rat tail.'")
+					AddMessage("'I can identify all items in your "
+						.. "inventory, if you bring me a rat tail.'")
 					QuestModify("yohji_rat", XQuest.KNOWN)
 				end
 			else
-				AddMessage("'Please, complete my last request first'")
+				AddMessage("'Please, complete my last request first.'")
 			end
 		elseif (result == 'l') then
-			if (AskQuestion("'Do you want to learn literacy for 500gp?'", "y n", "yes", "no") == 'y') then
+			if (AskQuestion("'Do you want to learn literacy for 500gp?'",
+					"y n", "yes", "no") == 'y') then
 				if (MoneyOperation(p, -500) >= 0) then
 					LearnSkill(p, XSkill.LITERACY, 1)
 					MoneyOperation(t, 500)
@@ -123,7 +127,8 @@ function YohjiHandler(e, t, p, v)
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == "rat_tail" or it == "bat_wing") then
-			local success_msg = "'Oh, thank you!' Yohjishiro touches you. Suddenly you know more about the items in your inventory."
+			local success_msg = "'Oh, thank you!' Yohjishiro touches you. "
+				.. "Suddenly you know more about the items in your inventory."
 			if (it == "rat_tail" and QuestStatus("yohji_rat") == XQuest.KNOWN) then
 				AddMessage(success_msg)
 				MakeEffect("great_identify", t, nil, 0, 0, p, 0, 0, 0, nil)
@@ -134,10 +139,11 @@ function YohjiHandler(e, t, p, v)
 				QuestModify("yohji_bat", XQuest.UNKNOWN)
 			else
 				if (MoneyOperation(t, -50 * count) >= 0) then
-					AddMessage(string.format("'I hope %d gp will be enough for this.'", 50 * count))
+					AddMessage(string.format("'I hope %d gp will be enough "
+						.. "for this.'", 50 * count))
 					MoneyOperation(p, 50 * count)
 				else
-					AddMessage("Sorry, I don't have enough money to buy this.")
+					AddMessage("'Sorry, I don't have enough money to buy this.'")
 				end
 			end
 		else

@@ -86,13 +86,14 @@ function RoderikHandler(e, t, p, v)
 		local chatter = AsCreature(p)
 
 		if (roderik.xai:isEnemy(chatter)) then
-			AddMessage("No mercy!")
+			AddMessage("'No mercy!'")
 		elseif (isWieldingItem(p, "avanor_defender")) then
-			AddMessage("I recognize that sword in your hand. You have looted the tomb of my ancestors! Guards! Seize the traitor!")
+			AddMessage("'I recognize that sword in your hand. You have "
+				.. "looted the tomb of my ancestors! Guards! Seize the traitor!'")
 			roderik.xai:AddPersonalEnemy(chatter)
 			roderik.xai:SetGroupEnemy(chatter)
 		else
-			AddMessage("Hello, brave hero.")
+			AddMessage("'Hello, brave hero.'")
 
 			-- The crypt first, the artifact after: he does not hand a
 			--  stranger the errand that matters until the nearer one is done.
@@ -100,21 +101,30 @@ function RoderikHandler(e, t, p, v)
 			local eye = QuestStatus("roderick_eye")
 
 			if (crypt == XQuest.UNKNOWN) then
-				AddMessage("I have heard that my family crypt has been occupied by a group of undead. Clear the crypt and I will reward you. It lies to the south-west of the city.")
+				AddMessage("'I have heard that my family crypt has been occupied "
+					.. "by a group of undead. Clear the crypt and I will "
+					.. "reward you. It lies to the south-west of the city.'")
 				QuestModify("roderick_crypt", XQuest.KNOWN)
 			elseif (crypt == XQuest.KNOWN) then
 				if (GetCreatureCount("UNDEADS_TOMB1", "undead") == 0) then
-					AddMessage("Thank you for destroying the evil in our crypt. Please accept these coins and my gratitude for a job well done.")
+					AddMessage("'Thank you for destroying the evil in our "
+						.. "crypt. Please accept these coins and my "
+						.. "gratitude for a job well done.'")
 					QuestModify("roderick_crypt", XQuest.CLOSED)
 					chatter:MoneyOp(1000)
 				else
-					AddMessage("You still have not cleansed my ancestor's crypt.")
+					AddMessage("'You still have not cleansed my ancestor's "
+						.. "crypt.'")
 				end
 			elseif (eye == XQuest.UNKNOWN) then
-				AddMessage("Some years ago one of my trusted servants stole a powerful artifact, the 'Eye of Raa' from me. He tried to hide it from me in one of the caves far south from here, but people say that he was killed while hiding it.  Could you return this artifact to me?")
+				AddMessage("'Some years ago one of my trusted servants stole "
+					.. "a powerful artifact, the Eye of Raa, from me.He tried "
+					.. "to hide it from me in one of the caves far south from "
+					.. "here, but people say that he was killed while hiding "
+					.. "it. Could you return this artifact to me?'")
 				QuestModify("roderick_eye", XQuest.KNOWN)
 			elseif (eye == XQuest.KNOWN) then
-				AddMessage("Please, return the 'Eye of Raa' to me.")
+				AddMessage("'Please, return the Eye of Raa to me.'")
 			end
 		end
 
@@ -138,12 +148,13 @@ function RoderikHandler(e, t, p, v)
 		local item = AsItem(v)
 
 		if (item.it == "eye_of_raa") then
-			AddMessage("Thank you for your great help. The citizens of Avanor never forget your exploits!")
+			AddMessage("'Thank you for your great help. The citizens of "
+				.. "Avanor never forget your exploits!'")
 			QuestModify("roderick_eye", XQuest.CLOSED)
 			roderik:ContainItem(item)
 			return true
 		else
-			AddMessage("I don't need this")
+			AddMessage("'I don't need this.'")
 		end
 
 		return false

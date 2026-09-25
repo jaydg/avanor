@@ -66,10 +66,13 @@ function FarmerHandler(e, t, p, v)
 			-- to hear. Said here as well as shouted at the bridge, because
 			-- a player who never crosses the river still ought to learn
 			-- that east is not the way out of the valley.
-			AddMessage("'You'll not be going east, will you? The forest brothers hold the bridge.'")
-			AddMessage("'There's five of them and they don't ask twice. Better men than us have gone that way and not come back.'")
+			AddMessage("'You'll not be going east, will you? "
+				.. "The forest brothers hold the bridge.'")
+			AddMessage("'There's five of them and they don't ask twice. "
+				.. "Better men than us have gone that way and not come back.'")
 		else
-			AddMessage("'Please speak with our elder. He lives in the stone house.'")
+			AddMessage("'Please speak with our elder. "
+				.. "He lives in the stone house.'")
 		end
 	end
 	return true
@@ -90,7 +93,8 @@ function RoyalGuardHandler(e, t, p, v)
 		-- His guards are where the hero learns of it - the quest itself is just
 		-- stops appearing in the log.
 		if (QuestStatus("ozorik") == XQuest.FAIL) then
-			AddMessage("'The captain is dead. We hold this ground because it is ours to hold, not because anyone is left to order it.'")
+			AddMessage("'The captain is dead. We hold this ground because it "
+				.. "is ours to hold, not because anyone is left to order it.'")
 		else
 			AddMessage("'Don't bother me!'")
 		end
@@ -216,10 +220,13 @@ function BanditBridgeEvent(e, p)
 
 	if (QuestState:GetFlag('bandit_bridge_warned') == 0) then
 		QuestState:SetFlag('bandit_bridge_warned', 1)
-		AddMessage("A voice comes out of the trees on the far bank. 'Far enough!'")
-		AddMessage("'This road is ours now. Set one foot past the water and we will have everything you carry - and your life to finish with.'")
+		AddMessage("A voice comes out of the trees on the far bank. "
+			.. "'Far enough!'")
+		AddMessage("'This road is ours now. Set one foot past the water and we "
+			.. "will have everything you carry - and your life to finish with.'")
 	else
-		AddMessage("From the trees on the far bank: 'Still breathing? Come across, then.'")
+		AddMessage("From the trees on the far bank: "
+			.. "'Still breathing? Come across, then.'")
 	end
 end
 
@@ -230,7 +237,7 @@ end
 function StandardGraveEvent(e, cr, o)
 	if (e == LuaEvent.OUTER_USE) then
 		if (GetView(o) == "+") then
-			AddMessage('You move the headstone. Something glimmers in the dark.')
+			AddMessage("You move the headstone. Something glimmers in the dark.")
 			SetView(o, '-', xColor.xLIGHTGRAY);
 			SetName(o, 'the desecrated grave');
 			for i = 1, Rand(3) + 2 do

@@ -33,30 +33,34 @@ function AhkUlanHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus("ancient_part")
 		if (qs == XQuest.UNKNOWN) then
-			AddMessage("Hello, brave hero.")
-			AddMessage("Some years ago, some evil wizards destroyed my tower.")
-			AddMessage("Now I wait here gaining strength and planning my revenge.")
-			AddMessage("I am searching for 3 parts to an ancient machine.")
-			AddMessage("Bring them to me and I will reward you well.")
+			AddMessage("'Hello, brave hero.'")
+			AddMessage("'Some years ago, some evil wizards destroyed my tower.'")
+			AddMessage("'Now I wait here gaining strength and planning my revenge.'")
+			AddMessage("'I am searching for 3 parts to an ancient machine.'")
+			AddMessage("'Bring them to me and I will reward you well.'")
 			QuestModify("ancient_part", XQuest.KNOWN)
 		elseif (QuestStatus("usurper") == XQuest.COMPLETE) then
 			-- The parts are his and the King is dead. He has no further use
 			-- for the hero, and no reason left to pretend otherwise - this
 			-- is the game's second ending (XHero::EndGame scores a win with
 			-- Ahk-Ulan still alive as the usurper's).
-			AddMessage("'The King is dead.' Ahk-Ulan does not smile. The air around him simply grows colder.")
-			AddMessage("'There is no one left in Avanor who can stand between me and the throne, and that is as much your doing as mine.'")
-			AddMessage("'Go. Take what you can carry, and be far from here when I come to claim what is mine.'")
+			AddMessage("'The King is dead.' Ahk-Ulan does not smile. The "
+				.. "air around him simply grows colder.")
+			AddMessage("'There is no one left in Avanor who can stand "
+				.. "between me and the throne, and that is as much your "
+				.. "doing as mine.'")
+			AddMessage("'Go. Take what you can carry, and be far from here "
+				.. "when I come to claim what is mine.'")
 			QuestModify("usurper", XQuest.CLOSED)
 			QuestState:WinGame("You killed the King of Avanor and helped Ahk-Ulan to become Usurper of Avanor.")
 		else
-			AddMessage("Don't disturb me before completing my quest, puny mortal!")
+			AddMessage("'Don't disturb me before completing my quest, puny mortal!'")
 		end
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (it == "ancient_machine_part") then
 			if (count == 3) then
-				AddMessage("Very nice job, servant!")
+				AddMessage("'Very nice job, servant!'")
 				QuestModify("ancient_part", XQuest.CLOSED)
 
 				-- The machine was never the point. With it in his hands the
@@ -65,21 +69,25 @@ function AhkUlanHandler(e, t, p, v)
 				-- him. A hero who has already killed Roderick for reasons of
 				-- his own skips straight to the reckoning.
 				if (QuestState:GetFlag('roderick_killed') == 1) then
-					AddMessage("'And Roderick already lies dead. You have been busier than I asked.'")
-					AddMessage("'Come to me again when you have caught your breath. We have a throne to speak of.'")
+					AddMessage("'And Roderick already lies dead. "
+						.. "You have been busier than I asked.'")
+					AddMessage("'Come to me again when you have caught your "
+						.. "breath. We have a throne to speak of.'")
 					QuestModify("usurper", XQuest.COMPLETE)
 				else
-					AddMessage("'And now, my last request: kill Roderick, for he is the only one who can stop me now.'")
+					AddMessage("'And now, my last request: kill Roderick, "
+						.. "for he is the only one who can stop me now.'")
 					QuestModify("usurper", XQuest.KNOWN)
 				end
 
 				return true
 			else
-				AddMessage("PLEASE! Return with THREE... THREE parts of an ancient machine!")
+				AddMessage("'PLEASE! Return with THREE... "
+					.. "THREE parts of an ancient machine!'")
 				return false
 			end
 		else
-			AddMessage("Are you jeering at me?")
+			AddMessage("'Are you jeering at me?'")
 			return false
 		end
 	elseif (e == LuaEvent.DIE) then
@@ -92,7 +100,8 @@ function AhkUlanHandler(e, t, p, v)
 
 		if (qs < XQuest.CLOSED) then
 			if (qs == XQuest.KNOWN) then
-				AddMessage("Whatever Ahk-Ulan wanted with the ancient machine, he will not be asking for its parts now.")
+				AddMessage("Whatever Ahk-Ulan wanted with the ancient "
+					.. "machine, he will not be asking for its parts now.")
 			end
 
 			QuestModify("ancient_part", XQuest.FAIL)

@@ -52,9 +52,9 @@ function HighPriestHandler(e, t, p, v)
 		local chatter = AsCreature(p)
 
 		if (hp.xai:isEnemy(chatter)) then
-			AddMessage("Defiler, you must be punished!")
+			AddMessage("'Defiler, you must be punished!'")
 		else
-			AddMessage("Blessings on you.")
+			AddMessage("'Blessings on you.'")
 		end
 
 		return true
@@ -64,9 +64,11 @@ function HighPriestHandler(e, t, p, v)
 		local killer = AsCreature(p)
 
 		if (killer:isHero()) then
-			AddMessage(GetDeityName("life") .. " will not be pleased about this...")
+			AddMessage(GetDeityName("life")
+				.. " will not be pleased about this...")
 		else
-			AddMessage(killer.name .. " seems to be trying to anger " .. GetDeityName("life") .. "...")
+			AddMessage(killer.name .. " seems to be trying to anger "
+				.. GetDeityName("life") .. "...")
 		end
 
 		ChangeFavour(p, "life", -50)
@@ -77,7 +79,7 @@ function HighPriestHandler(e, t, p, v)
 		local giver = AsCreature(p)
 		local item = AsItem(v)
 
-		AddMessage("Thank you for your charitable donation!")
+		AddMessage("'Thank you for your charitable donation!'")
 		Sacrifice(p, v, "life")
 		return true
 	end

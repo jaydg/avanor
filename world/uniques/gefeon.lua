@@ -41,12 +41,13 @@ function GefeonHandler(e, t, p, v)
 			-- Both of them dead and the throne of Avanor standing empty.
 			-- Gefeon is the last man in the kingdom whose word carries, and
 			-- he gives it to the hero.
-			AddMessage("Well, you killed the pretender and the King, I guess that makes you the new ruler!")
+			AddMessage("'Well, you killed the pretender and the King, I "
+				.. "guess that makes you the new ruler!'")
 			ending = string.format(
 				"You killed Ahk-Ulan and the King of Avanor and became the new %s of Avanor.",
 				AsCreature(p):IsMale() and "King" or "Queen")
 		else
-			AddMessage("You did a great thing! You truly are the best!")
+			AddMessage("'You did a great thing! You truly are the best!'")
 			ending = "You killed evil Ahk-Ulan and saved the Kingdom of Avanor from Ahk-Ulan's deadly plans."
 		end
 
@@ -56,12 +57,15 @@ function GefeonHandler(e, t, p, v)
 	end
 
 	if (QuestStatus("gefeon") == XQuest.UNKNOWN) then
-		AddMessage("Ahk-Ulan, the evil wizard and master of black magic, lives in the dungeon beneath the ruins of his magic tower. The ruins are to the south-east of town. He causes great evil, and he should be eliminated.")
+		AddMessage("'Ahk-Ulan, the evil wizard and master of black magic, "
+			.. "lives in the dungeon beneath the ruins of his magic tower. "
+			.. "The ruins are to the south-east of town. He causes great "
+			.. "evil, and he should be eliminated.'")
 		QuestModify("gefeon", XQuest.KNOWN)
 		return true
 	end
 
-	AddMessage("And how is Ahk-Ulan? Still alive? That is very bad.")
+	AddMessage("'And how is Ahk-Ulan? Still alive? That is very bad.'")
 
 	return true
 end

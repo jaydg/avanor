@@ -26,21 +26,24 @@ end
 
 function GektaHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
-		AddMessage("'Woof! Woof! Woof'");
+		AddMessage("'Woof! Woof! Woof!'");
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (kind == ItemKind.FOOD) then
 			if (it == "bone") then
 				for i = 1, count do
 					if (Rand(7) == 0) then
-						 AddMessage("Gekta suddenly start to dig in the ground. She digs a pit. Gekta digs something up from the ground. After this, she puts a bone in the pit and buries it.")
+						 AddMessage("Gekta suddenly start to dig in the "
+							.. "ground. She digs a pit. Gekta digs "
+							.. "something up from the ground. After this, "
+							.. "she puts a bone in the pit and buries it.")
 						 DropItem(CreateObject(ItemKind.ITEM - ItemKind.FOOD, 20, 500), t)
 					else
 						AddMessage(string.format("Gekta eats the %s.", name))
 					end
 				end
 			else
-				AddMessage(string.format("'Gekta eats the %s.'", name))
+				AddMessage(string.format("Gekta eats the %s.", name))
 				if (Rand(5) == 0) then
 					SetCompanion(p, t, true)
 					AddMessage("Gekta looks at you faithfully!");
@@ -48,7 +51,7 @@ function GektaHandler(e, t, p, v)
 			end
 			DestroyObject(v)
 		else
-			AddMessage('Woof?');
+			AddMessage("'Woof?'");
 			return false;
 		end
 	end

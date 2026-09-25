@@ -34,12 +34,12 @@ function ElderBanditQuest(p)
 	local bq = QuestStatus("bandits")
 
 	if (bq >= XQuest.CLOSED) then
-		AddMessage("'The road is open and the carts come through. Have a nice day,'")
+		AddMessage("'The road is open and the carts come through.'")
 
 		if (GetGender(p) == Gender.MALE) then
-			AddMessage('sir!')
+			AddMessage("'Have a nice day, sir!'")
 		else
-			AddMessage("ma'am!")
+			AddMessage("'Have a nice day, ma'am!'")
 		end
 
 		return
@@ -51,7 +51,8 @@ function ElderBanditQuest(p)
 	-- the valley's only teacher of stealing.
 	if (BanditsOnTheRoad() == 0) then
 		if (bq == XQuest.UNKNOWN) then
-			AddMessage("'You have been east already, have you? We wondered why the smoke over the bridge went out.'")
+			AddMessage("'You have been east already, have you? We wondered "
+				.. "why the smoke over the bridge went out.'")
 		else
 			AddMessage("'The road is open! We have not walked it in years.'")
 		end
@@ -64,12 +65,16 @@ function ElderBanditQuest(p)
 
 	if (bq == XQuest.UNKNOWN) then
 		AddMessage("'There is one thing more, if you have the stomach for it.'")
-		AddMessage("'The old road east is ours by right and we have not used it in years. Five of them hold the bridge - forest brothers, they call themselves, as if robbery were a family trade.'")
-		AddMessage("'And one of them took one of ours. Brida's girl. Go and speak to her; she will tell it better than I can.'")
+		AddMessage("'The old road east is ours by right and we have not used "
+			.. "it in years. Five of them hold the bridge - forest brothers, "
+			.. "they call themselves, as if robbery were a family trade.'")
+		AddMessage("'And one of them took one of ours. Brida's girl. Go and "
+			.. "speak to her; she will tell it better than I can.'")
 		AddMessage("'Clear the road for us and the valley will not forget it.'")
 		QuestModify("bandits", XQuest.KNOWN)
 	else
-		AddMessage("'They are still out there. We hear them at night, on the far bank.'")
+		AddMessage("'They are still out there. We hear them at night, "
+			.. "on the far bank.'")
 	end
 end
 
@@ -77,16 +82,17 @@ function ElderGridorHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus("elder")
 		if (qs == XQuest.UNKNOWN) then
-			AddMessage('Good day, friend! All that we have are our mushrooms.')
-			AddMessage('We collect them in the cave to the west of the village.')
-			AddMessage('But a short time ago, an evil monster occupied the cave.')
-			AddMessage('It looks like a demon and is very dangerous.')
-			AddMessage('Maybe the people who live to the south of the lake can help.')
+			AddMessage("'Good day, friend! All that we have are our mushrooms.'")
+			AddMessage("'We collect them in the cave to the west of the village.'")
+			AddMessage("'But a short time ago, an evil monster occupied the cave.'")
+			AddMessage("'It looks like a demon and is very dangerous.'")
+			AddMessage("'Maybe the people who live to the south of the lake can help.'")
 			QuestModify("elder", XQuest.KNOWN)
 		elseif (qs == XQuest.KNOWN) then
-			AddMessage('The evil monster is still there.')
+			AddMessage("'The evil monster is still there.'")
 		elseif (qs == XQuest.COMPLETE) then
-			AddMessage('Thank you for your great help! Now, our farmers can collect mushrooms.')
+			AddMessage("'Thank you for your great help! Now, our farmers "
+				.. "can collect mushrooms.'")
 			QuestModify("elder", XQuest.CLOSED)
 			SendFarmersToCollectMushrooms()
 		else

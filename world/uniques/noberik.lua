@@ -28,7 +28,9 @@ end
 -- Said once on the way in, and it is the whole point of the errand: it
 -- names the cellar, says where the way down is, and promises the loot.
 local function OfferTheErrand()
-	AddMessage("'Finally! You look like you could give me a hand! Clear out whatever's nesting in my cellar - rodents, restless dead, or anything in between, and you may keep everything you find.'")
+	AddMessage("'Finally! You look like you could give me a hand! Clear out "
+		.. "whatever's nesting in my cellar - rodents, restless dead, or "
+		.. "anything in between, and you may keep everything you find.'")
 	QuestModify("noberik_cellar", XQuest.KNOWN)
 end
 
@@ -43,8 +45,12 @@ end
 -- Said while Ozorick's errand is open and not yet done, so that it arrives
 -- when it is worth something rather than as scenery.
 local function MentionTodin()
-	AddMessage("'Orcs, is it? Then you want better steel than mine. Todin keeps a forge under the mountain, east of the village - he'll work a blade so that it bites orcs like kindling, and he asks about four hundred and fifty gold for it.'")
-	AddMessage("'Mind the way down, though. Six floors of old dwarven delving, and it has not been empty in years.'")
+	AddMessage("'Orcs, is it? Then you want better steel than mine. Todin "
+		.. "keeps a forge under the mountain, east of the village - he'll "
+		.. "work a blade so that it bites orcs like kindling, and he asks "
+		.. "about four hundred and fifty gold for it.'")
+	AddMessage("'Mind the way down, though. Six floors of old dwarven "
+		.. "delving, and it has not been empty in years.'")
 end
 
 -- Whether that is worth saying: he has the captain's errand and has not
@@ -56,7 +62,8 @@ end
 
 -- Paid in the only coin he promised: whatever came up the stair.
 local function PayOff()
-	AddMessage("'You cleared them out! The place is mine again - and what you carried up is yours, as I said.'")
+	AddMessage("'You cleared them out! The place is mine again - and "
+		.. "what you carried up is yours, as I said.'")
 	QuestModify("noberik_cellar", XQuest.CLOSED)
 end
 
@@ -105,7 +112,8 @@ function NoberikHandler(e, a, b)
 				QuestModify("noberik_cellar", XQuest.COMPLETE)
 				PayOff()
 			else
-				AddMessage("'They're still down there. The stairs are in the shed on the opposite side of the square.'")
+				AddMessage("'They're still down there. The stairs are in "
+					.. "the shed on the opposite side of the square.'")
 			end
 		elseif (status == XQuest.COMPLETE) then
 			PayOff()

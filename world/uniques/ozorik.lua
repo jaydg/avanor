@@ -76,29 +76,34 @@ function OzorikHandler(e, t, p, v)
 		if (orcs_live > 0 and qs < XQuest.COMPLETE) then
 			if (qs == XQuest.UNKNOWN) then
 				if (demon_quest == XQuest.KNOWN) then
-					AddMessage("'Demons? We are mighty enough to slay them, but now another problem approaches from the south - an orc war-party!'")
+					AddMessage("'Demons? We are mighty enough to slay them, "
+						.. "but now another problem approaches from the "
+						.. "south - an orc war-party!'")
 				elseif (demon_quest == XQuest.UNKNOWN) then
-					AddMessage("'Sorry, but I'm really busy now. The orc war-party will be here soon!'")
+					AddMessage("'Sorry, but I'm really busy now. The orc "
+						.. "war-party will be here soon!'")
 				end
 				QuestModify("ozorik", XQuest.KNOWN)
 			else
-				AddMessage("'Sorry, but I'm really busy right now. The orc war-party will be here soon!'")
+				AddMessage("'Sorry, but I'm really busy right now. The orc "
+					.. "war-party will be here soon!'")
 			end
 		else
 			if (qs < XQuest.CLOSED) then
 				AddMessage("'You gained us victory!'")
 				if (GiveAward(t, ozorik_award, p)) then
-					AddMessage('Take this dagger as a reward!')
+					AddMessage("'Take this dagger as a reward!'")
 				end
 				QuestModify("ozorik", XQuest.CLOSED)
 			else
-				AddMessage('Good day, hero!')
+				AddMessage("'Good day, hero!'")
 			end
 		end
 	elseif (e == LuaEvent.GIVE_ITEM) then
 		local kind, brt, wt, it, count, name = GetItemParam(v)
 		if (IsKind(kind, ItemKind.WEAPON) and HasBrand(brt, "orc_slayer") and wt == "sword") then
-			AddMessage("'Wow, you've probably saved our lives! Please, take this weapon to one of my guardians, then return to me!'")
+			AddMessage("'Wow, you've probably saved our lives! Please, take "
+				.. "this weapon to one of my guardians, then return to me!'")
 
 			-- He looks the blade over and hands it straight back: it is one
 			-- of his guardians who must end up holding it, and that is what

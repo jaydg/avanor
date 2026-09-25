@@ -81,18 +81,24 @@ function TorinHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local qs = QuestStatus("torin")
 		if (qs == XQuest.UNKNOWN) then
-			AddMessage("Hello, brave hero. As you know, we dwarves mine our treasures deep from the ground. Some time ago, one of our mine was filled by a mysterious gas, which slowly kills all living things. It is oozing from the rocks. We have gas pump there, but there is no one who can switch this pump on. Please solve this problem.")
+			AddMessage("'Hello, brave hero. As you know, we dwarves mine "
+				.. "our treasures deep from the ground. Some time ago, one "
+				.. "of our mine was filled by a mysterious gas, which "
+				.. "slowly kills all living things. It is oozing from the "
+				.. "rocks. We have gas pump there, but there is no one who "
+				.. "can switch this pump on. Please solve this problem.'")
 			QuestModify("torin", XQuest.KNOWN)
 		elseif (qs == XQuest.KNOWN) then
-			AddMessage("You haven\'t completed my previous request? Hmm... GET OUT OF HERE!")
+			AddMessage("'You haven't completed my previous request? Hmm... "
+				.. "GET OUT OF HERE!'")
 		elseif (qs == XQuest.COMPLETE) then
-			AddMessage("Thank you for your great help.")
+			AddMessage("'Thank you for your great help.'")
 			QuestModify("torin", XQuest.CLOSED)
 			if (GiveAward(t, torin_award, p)) then
-				AddMessage('Take this tool as a reward.')
+				AddMessage("'Take this tool as a reward.'")
 			end
 		else
-			AddMessage("Thank you for your help.")
+			AddMessage("'Thank you for your help.'")
 		end
 	elseif (e == LuaEvent.SAVE) then
 		StoreInt(torin_award)

@@ -59,9 +59,12 @@ function BridaHandler(e, t, p, v)
 	-- through to the plea below and the news waits for the way back.
 	if (status == 3 and QuestStatus("giana") ~= XQuest.UNKNOWN) then
 		if (QuestState:GetFlag('brida_told_of_death') ~= 1) then
-			AddMessage("Brida reads your face before you have said a word, and her hands go still.")
+			AddMessage("Brida reads your face before you have said a word, "
+				.. "and her hands go still.")
 			AddMessage("'...She isn't coming home. Is she.'")
-			AddMessage("She turns to the window with her back to you. 'You went. That is more than anyone else did. Please - leave me be now.'")
+			AddMessage("She turns to the window with her back to you. 'You "
+				.. "went. That is more than anyone else did. Please - leave "
+				.. "me be now.'")
 
 			QuestState:SetFlag('brida_told_of_death', 1)
 			-- FAIL, not CLOSED: the quest is over either way and neither
@@ -69,19 +72,28 @@ function BridaHandler(e, t, p, v)
 			-- did not end well and the record should say so.
 			QuestModify("giana", XQuest.FAIL)
 		else
-			AddMessage("Brida sits at the window with her back to the door, and does not answer.")
+			AddMessage("Brida sits at the window with her back to the door, "
+				.. "and does not answer.")
 		end
 	elseif (status == 0 or status == 3) then
-		AddMessage("'My Giana... she never came back from the valley!' Brida sobs.")
-		AddMessage("'A bandit - Rotmoth, he calls himself - is holding her in a cave east of here, past where the bandits lurk near the bridge. He wants 150 gold coins for her, but I have nothing left to give him.'")
-		AddMessage("'Please - if you have the coin, or the courage - bring my daughter home!'")
+		AddMessage("'My Giana... she never came back from the valley!' "
+			.. "Brida sobs.")
+		AddMessage("'A bandit - Rotmoth, he calls himself - is holding her "
+			.. "in a cave east of here, past where the bandits lurk near "
+			.. "the bridge. He wants 150 gold coins for her, but I have "
+			.. "nothing left to give him.'")
+		AddMessage("'Please - if you have the coin, or the courage - bring "
+			.. "my daughter home!'")
 		QuestModify("giana", XQuest.KNOWN)
 	elseif (status == 1) then
 		AddMessage("'Is she safe? Please, hurry her home to me!'")
 	elseif (status == 2) then
 		if (QuestState:GetFlag('brida_reward_given') ~= 1) then
-			AddMessage("Brida pulls you into a fierce hug, tears streaming down her face.")
-			AddMessage("'Thank you, thank you! I have little to offer, but... here, take these. I brewed them myself, from what I still remember of my own mother's craft.'")
+			AddMessage("Brida pulls you into a fierce hug, tears streaming "
+				.. "down her face.")
+			AddMessage("'Thank you, thank you! I have little to offer, "
+				.. "but... here, take these. I brewed them myself, from "
+				.. "what I still remember of my own mother's craft.'")
 
 			for i = 1, 3 do
 				GiveObjectToCreature(CreatePotion("cure_light_wounds"), p)
@@ -90,7 +102,8 @@ function BridaHandler(e, t, p, v)
 			QuestState:SetFlag('brida_reward_given', 1)
 			QuestModify("giana", XQuest.CLOSED)
 		else
-			AddMessage("'Bless you, again and again, for bringing my Giana home.'")
+			AddMessage("'Bless you, again and again, for bringing my Giana "
+				.. "home.'")
 		end
 	end
 
@@ -220,23 +233,23 @@ function RotmothHandler(e, t, p, v)
 	local chatter = AsCreature(p)
 
 	if (rotmoth.xai:isEnemy(chatter)) then
-		AddMessage("You will be rewarded for your stupidness!")
+		AddMessage("'You will be rewarded for your stupidness!'")
 		return true
 	end
 
 	if (QuestState:GetFlag('rotmoth_status') ~= 0) then
-		AddMessage("Run away quickly before I change my mind!")
+		AddMessage("'Run away quickly before I change my mind!'")
 		return true
 	end
 
 	local girl = QuestState:GetCreatureRef('kidnapped_girl')
 
 	if (not girl or not rotmoth:IsCreatureVisible(girl)) then
-		AddMessage("I dont know what you are asking about.")
+		AddMessage("'I don't know what you are asking about.'")
 		return true
 	end
 
-	AddMessage("Bring me 150 gold coins, or the girl dies.")
+	AddMessage("'Bring me 150 gold coins, or the girl dies.'")
 
 	if (chatter:MoneyOp(0) >= 150) then
 		if (AskQuestion("Pay him?", "y n", "yes", "no") == 'y') then
@@ -244,9 +257,9 @@ function RotmothHandler(e, t, p, v)
 			rotmoth:MoneyOp(150)
 
 			if (chatter:IsMale()) then
-				AddMessage("Thank you, boy!")
+				AddMessage("'Thank you, boy!'")
 			else
-				AddMessage("Thank you, girl!")
+				AddMessage("'Thank you, girl!'")
 			end
 
 			girl.xai:SetCompanion(chatter)
@@ -317,7 +330,8 @@ function GianaHandler(e, t, p, v)
 			or kind == ItemKind.CLOAK or kind == ItemKind.SHIELD or kind == ItemKind.GLOVES
 			or kind == ItemKind.BOOTS) then
 			AsCreature(t):ContainItem(AsItem(v))
-			AddMessage(string.format("'Thank you - %s will serve me well on the road home.'", name))
+			AddMessage(string.format("'Thank you - %s will serve me well "
+				.. "on the road home.'", name))
 			return true
 		end
 
@@ -333,11 +347,11 @@ function GianaHandler(e, t, p, v)
 	local chatter = AsCreature(p)
 
 	if (giana.xai:isEnemy(chatter)) then
-		AddMessage("Don't touch me!")
+		AddMessage("'Don't touch me!'")
 	elseif (QuestState:GetFlag('rotmoth_status') < 2) then
-		AddMessage("Please, save me.")
+		AddMessage("'Please, save me.'")
 	else
-		AddMessage("Thank you again for saving me. I'm happy to be back home.")
+		AddMessage("'Thank you again for saving me. I'm happy to be back home.'")
 	end
 
 	return true
@@ -354,11 +368,13 @@ function SmallCaveEvent(e, p)
 
 	if (e == LuaEvent.MOVE_IN and isHero(p)) then
 		if (QuestState:GetFlag('rotmoth_status') == 0) then
-			AddMessage("Halt! Don't move anymore or I'll kill her!")
-			AddMessage("Back off now, and bring me 150 golden coins - do that, and I might just show her mercy!")
+			AddMessage("'Halt! Don't move anymore or I'll kill her!'")
+			AddMessage("'Back off now, and bring me 150 golden coins - do "
+				.. "that, and I might just show her mercy!'")
 
 			if (MoneyOperation(p, 0) >= 150) then
-				if (AskQuestion("Pay him right now?", "esc y n", "yes", "no") == 'y') then
+				if (AskQuestion("Pay him right now?", "esc y n",
+						"yes", "no") == 'y') then
 					MoneyOperation(p, -150)
 				end
 			end
@@ -368,7 +384,7 @@ function SmallCaveEvent(e, p)
 
 	elseif (e == LuaEvent.MOVE_OUT and isHero(p)) then
 		if (QuestState:GetFlag('rotmoth_status') == 0) then
-			AddMessage("Hurry! 150 golden coins!")
+			AddMessage("'Hurry! 150 golden coins!'")
 		end
 	end
 end
