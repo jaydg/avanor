@@ -242,24 +242,27 @@ Placement ReadPlacement(const sol::optional<sol::object>& opts, const std::strin
 //Settle("canine", CreatureTemplate.LOW,
 //       { max = 3, refresh = 30000,
 //         area = {x = 20, y = 28, w = 40, h = 16},
-//         on = XTileType.GREEN_GRASS })
+//         on = XTileType.GREEN_GRASS,
+//         stays_on = { XTileType.GREEN_GRASS, XTileType.PATH } })
 //
 // `max` (`max_creature` in the older positional form) is a ceiling per
 // creature *class*, not per level: a call naming eight classes settles up
 // to eight times that many. `refresh` is how long between one spawn
 // attempt and the next.
 //
-// The table form says two more things. `area` confines what is settled to
-// a patch of the location rather than the whole of it, written the way
-// every other area in world/ is; `on` names the ground it may stand on,
-// one tile or several, exactly as Guardian's does. Without them a
-// generator fills the location and takes any ground.
+// The table form says three more things. `area` confines what is settled
+// to a patch of the location rather than the whole of it, written the way
+// every other area in world/ is; `on` names the ground it may be settled
+// on, one tile or several, and `stays_on` the ground it keeps to
+// afterwards - both exactly as Guardian's do. Without them a generator
+// fills the location, takes any ground, and what it settles then wanders
+// wherever it likes.
 void Settle(const sol::object& crc, int crl, sol::optional<sol::object> opts, sol::optional<int> refresh)
 {
     unsigned int max_creature = 5;
     int refresh_time = refresh.value_or(25000);
     XRect area;
-    std::vector<XTileType::Id> on;
+    Placement ground;
 
     if (opts && opts->valid()) {
         if (opts->is<int>()) {
@@ -286,21 +289,24 @@ void Settle(const sol::object& crc, int crl, sol::optional<sol::object> opts, so
                 }
             }
 
-            Placement ground;
             if (const sol::object named = t["on"]; named.valid()) {
                 ReadTiles(named, ground.on, "Settle()");
             }
-            on = std::move(ground.on);
+
+            if (const sol::object stays = t["stays_on"]; stays.valid()) {
+                ReadTiles(stays, ground.stays_on, "Settle()");
+            }
         } else {
             std::cerr << "world: Settle(): the third argument is the ceiling,"
                          " or a table { max = .., refresh = .., area = ..,"
-                         " on = .. }" << std::endl;
+                         " on = .., stays_on = .. }" << std::endl;
         }
     }
 
     Game.Scheduler.Add(new XUniversalGen(XLocation::current_location, ClassesOf(crc, "Settle()"),
                                          static_cast<CreatureTemplate::Level>(crl),
-                                         max_creature, refresh_time, area, std::move(on)));
+                                         max_creature, refresh_time, area,
+                                         std::move(ground.on), std::move(ground.stays_on)));
 }
 
 //cr = Guardian("dwarf_guard", GID_DWARVEN_GUARDIAN, x, y, [len,  hgt], [flags or {...}])

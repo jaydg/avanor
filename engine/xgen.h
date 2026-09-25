@@ -97,7 +97,8 @@ class XUniversalGen final : public XGenerator
     public:
         DECLARE_CREATOR(XUniversalGen, XGenerator);
         XUniversalGen(XLocation * loc, CreatureClassSet _crc, CreatureTemplate::Level _crl, unsigned int _max_creature = 8, int refresh_time = 15000,
-                      const XRect& _area = {}, std::vector<XTileType::Id> _on = {}) : XGenerator(refresh_time)
+                      const XRect& _area = {}, std::vector<XTileType::Id> _on = {},
+                      std::vector<XTileType::Id> _stays_on = {}) : XGenerator(refresh_time)
         {
             l = loc;
             crl = _crl;
@@ -105,6 +106,7 @@ class XUniversalGen final : public XGenerator
             max_creature = _max_creature;
             area = _area;
             on = std::move(_on);
+            stays_on = std::move(_stays_on);
         }
 
         bool Run() override;
@@ -113,7 +115,7 @@ class XUniversalGen final : public XGenerator
         void serialize(Archive& ar)
         {
             ar(cereal::base_class<XGenerator>(this));
-            ar(crl, crc, max_creature, area, on);
+            ar(crl, crc, max_creature, area, on, stays_on);
         }
     protected:
         CreatureTemplate::Level crl;
@@ -125,6 +127,10 @@ class XUniversalGen final : public XGenerator
         // ground. Both are asked of XLocation::GetFreeXY().
         XRect area;
         std::vector<XTileType::Id> on;
+
+        // And the ground it keeps to afterwards, handed to each creature
+        // as it is settled.
+        std::vector<XTileType::Id> stays_on;
 };
 
 

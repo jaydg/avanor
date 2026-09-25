@@ -67,6 +67,10 @@ bool XUniversalGen::Run()
             if (XCreature* cr = XCreatureStorage::CreateRnd(room, crl)) {
                 Game.NewCreature(cr, pt->x, pt->y, l);
                 cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
+
+                if (!stays_on.empty()) {
+                    cr->xai->KeepTo(stays_on);
+                }
             }
         }
     }
