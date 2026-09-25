@@ -39,6 +39,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "item/item.h"
 #include "item/itemkind.h"
 #include "map/pathfinder.h"
+#include "map/map.h"
 
 enum COMPANION_COMMAND {
     CC_NONE,
@@ -193,6 +194,23 @@ class XStandardAI
             return ai_flag;
         }
 
+        // The ground this one keeps to, or empty for anything it can
+        // walk on at all.
+        //
+        // Placement already took a list of tiles, but only to pick the
+        // spot: a sheep put on the grass was free to wander into the
+        // tower the moment the world started running, and eight of them
+        // standing in the stairwell is how that ends. This is the other
+        // half - the ground it will still be on later.
+        void KeepTo(const std::vector<XTileType::Id>& tiles)
+        {
+            keeps_to = tiles;
+        }
+
+        // Whether this one will set foot there. True of everywhere for a
+        // creature that was never told otherwise.
+        [[nodiscard]] bool GroundAllowed(int x, int y) const;
+
         // Whose record of the level this one reads and writes: its group,
         // so a band explores together, or its own guid when it belongs to
         // no group. See XMap::seen.
@@ -249,6 +267,7 @@ class XStandardAI
             ar(script);
             ar(companion, ordered_enemy, last_enemy, personal_enemy);
             ar(known_traps, last_moved_way);
+            ar(keeps_to);
         }
 
         void SetGroupEnemy(XCreature* cr) const;
@@ -319,6 +338,8 @@ class XStandardAI
         // path itself - a restored creature simply asks once more.
         mutable int frontier_idle = 0;
         mutable int loot_idle = 0;
+
+        std::vector<XTileType::Id> keeps_to;
 
         // Whether anything asked for a way this turn. Move() lets the
         // cache go when nothing did.

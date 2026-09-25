@@ -130,9 +130,15 @@ namespace {
 struct Placement {
     int flags = 0;
     std::vector<XTileType::Id> on;
+
+    // Where it stays, as opposed to where it starts. Kept apart from `on`
+    // deliberately: the orc war party musters on the trampled earth of
+    // its camp and then marches off it, so "drawn from this ground" and
+    // "keeps to this ground" cannot be the same answer.
+    std::vector<XTileType::Id> stays_on;
 };
 
-void ReadTiles(const sol::object& value, Placement& out, const std::string& where)
+void ReadTiles(const sol::object& value, std::vector<XTileType::Id>& into, const std::string& where)
 {
     const auto known = [](const XTileType::Id id) {
         // NONE is "nothing here", which nothing can stand on, so it is
@@ -153,7 +159,7 @@ void ReadTiles(const sol::object& value, Placement& out, const std::string& wher
                 return;
             }
 
-            out.on.push_back(id);
+            into.push_back(id);
 
             return;
         }
@@ -171,7 +177,7 @@ void ReadTiles(const sol::object& value, Placement& out, const std::string& wher
                 return;
             }
 
-            out.on.push_back(id);
+            into.push_back(id);
 
             return;
         }
@@ -218,7 +224,11 @@ Placement ReadPlacement(const sol::optional<sol::object>& opts, const std::strin
     }
 
     if (const sol::object on = t["on"]; on.valid()) {
-        ReadTiles(on, out, where);
+        ReadTiles(on, out.on, where);
+    }
+
+    if (const sol::object stays = t["stays_on"]; stays.valid()) {
+        ReadTiles(stays, out.stays_on, where);
     }
 
     return out;
@@ -278,7 +288,7 @@ void Settle(const sol::object& crc, int crl, sol::optional<sol::object> opts, so
 
             Placement ground;
             if (const sol::object named = t["on"]; named.valid()) {
-                ReadTiles(named, ground, "Settle()");
+                ReadTiles(named, ground.on, "Settle()");
             }
             on = std::move(ground.on);
         } else {
@@ -323,6 +333,10 @@ void* Guardian(const std::string& crn, const std::string& gid, int x, int y, sol
     // anyone else inheriting their template) ends up hostile to every
     // non-human/humanoid class regardless, silently defeating the whole
     // point of being flagged PEACEFUL.
+    if (!where.stays_on.empty()) {
+        cr->xai->KeepTo(where.stays_on);
+    }
+
     if (!(cr->xai->GetAIFlag() & XStandardAI::PEACEFUL)) {
         // Everything a creature fights by default, less the folk a guard
         // is posted to protect - both marked in world/creature_classes.lua,
@@ -346,6 +360,10 @@ void* GuardianClass(const sol::object& crc, const std::string& gid, int x, int y
     if (!cr && !where.on.empty()) {
         std::cerr << "world: GuardianClass(): no free tile of the named sort"
                      " in that area" << std::endl;
+    }
+
+    if (cr && !where.stays_on.empty()) {
+        cr->xai->KeepTo(where.stays_on);
     }
 
     return cr;

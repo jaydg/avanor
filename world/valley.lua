@@ -134,10 +134,13 @@ function MakeAvanorValley()
 				SetEventHandler(Guardian('goodwife', VILLAGE_GROUP, area.x, area.y, area.w, area.h), 'FarmerHandler')
 			end
 
-			-- Some goats.
+			-- Some goats. Kept to the green the same way the flock at
+			-- Yohji's tower is: `on` puts them on it, `stays_on` is what
+			-- has them still on it an hour later.
 			for i = 1, 5 do
 				Guardian("goat", "village_goats", area.x, area.y, area.w, area.h,
-					{ on = XTileType.GREEN_GRASS })
+					{ on = XTileType.GREEN_GRASS,
+					  stays_on = { XTileType.GREEN_GRASS, XTileType.PATH } })
 			end
 		end)
 		AddTranslation("B", function(x, y) CreateBrida(x, y) end)
@@ -436,17 +439,16 @@ function MakeAvanorValley()
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "WIZTOWER_TOP", x, y) end)
 
 		-- Yohjishiro's flock, grazing the grass around her tower. The
-		-- mark is the corner of the whole walled garden, and `on` keeps
-		-- them off everything in it that is not grass - the tower, its
-		-- floors and the road up to its door - so one flock can have the
-		-- run of the place where it used to take two strips either side
-		-- to keep them out of the building.
+		-- mark is the corner of the whole walled garden, and `on` draws
+		-- their spots from the grass in it.
+		--
 		-- They share her group: harm one and she knows (see YOHJI's
 		-- TOWER SECOND FLOOR below, and XStandardAI::SetGroupEnemy).
 		AddTranslation("q", function(x, y)
 			for i = 1, 8 do
 				Guardian('sheep', "yohji_flock", x, y, 19, 9,
-					{ on = XTileType.GREEN_GRASS })
+					{ on = XTileType.GREEN_GRASS,
+					  stays_on = { XTileType.GREEN_GRASS, XTileType.ROAD } })
 			end
 		end)
 		DrawPattern(45, 25)

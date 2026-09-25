@@ -125,6 +125,21 @@ XStandardAI::~XStandardAI()
     }
 }
 
+bool XStandardAI::GroundAllowed(const int x, const int y) const
+{
+    if (keeps_to.empty()) {
+        return true;
+    }
+
+    const XMapTile* cell = ai_owner->l->map->Cell(x, y);
+
+    if (!cell) {
+        return false;
+    }
+
+    return std::find(keeps_to.begin(), keeps_to.end(), cell->n) != keeps_to.end();
+}
+
 std::string XStandardAI::ExplorerKey() const
 {
     const GROUP_ID& gid = ai_owner->groupID();
@@ -398,6 +413,15 @@ void XStandardAI::Move()
         }
     }
 
+    // Ground this one keeps to. Checked here, after every branch has had
+    // its say, because a step can be chosen by any of them - a random
+    // wander, a drift towards the flock, a path - and there is no sense
+    // in teaching each of them separately what a sheep will walk on.
+    if (!GroundAllowed(ai_owner->nx, ai_owner->ny)) {
+        ai_owner->nx = ai_owner->x;
+        ai_owner->ny = ai_owner->y;
+    }
+
     //Prevents from attacking friends...
     const auto tgt = ai_owner->l->map->GetMonster(ai_owner->nx, ai_owner->ny);
 
@@ -475,6 +499,10 @@ int XStandardAI::StepCost(const int x, const int y) const
         // only to somebody with a hand to pull it with (XCreature::
         // OpenTheWay). To everything else it is still a wall.
         return ai_owner->GetBodyPart(BP_HAND) ? PathStep * 2 : PathBlocked;
+    }
+
+    if (!GroundAllowed(x, y)) {
+        return PathBlocked;
     }
 
     return std_tile_data[cell->n].movability < XTileType::Movability::UNWALKABLE
