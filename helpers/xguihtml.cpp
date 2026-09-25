@@ -152,13 +152,14 @@ static std::string parse_href(std::string_view tag_content)
 //   <table>…</table>    entire block skipped
 //   <form>…</form>      entire block skipped
 //   <!--…-->            comment skipped
-//   \n \r               skipped (whitespace normalized by SetWidth later)
+//   \n \r               one space (a line ending is a word break)
 //   other tags          silently ignored
 //   plain text          appended verbatim
 // ---------------------------------------------------------------------------
 void XGuiList::AddHtmlText(std::string_view text)
 {
     bool             is_ref = false;
+    bool             pending_break = false;
     std::stack<char> colors;
     std::string      ref_name;
     std::string      out;
@@ -190,8 +191,14 @@ void XGuiList::AddHtmlText(std::string_view text)
             return;
         }
 
-        // Newline / carriage-return: skip
+        // Newline / carriage-return: a word break, not nothing.
+        //
+        // Noted rather than written: a gap is only wanted when something
+        // visible follows it. Adding one here and then reaching the end of
+        // a paragraph would leave a space hanging off the line, which the
+        // width fitting would widen into nothing and shove the text left.
         if (ch == '\n' || ch == '\r') {
+            pending_break = true;
             ++pos;
             continue;
         }
@@ -242,6 +249,7 @@ void XGuiList::AddHtmlText(std::string_view text)
             if (iequal(tag_name, "br")) {
                 prepend_color();
                 out += '\n';
+                pending_break = false;
                 continue;
             }
 
@@ -319,6 +327,26 @@ void XGuiList::AddHtmlText(std::string_view text)
 
         // Plain text character
         prepend_color();
+
+        if (pending_break) {
+            // Looking past any colour escape, which is two bytes - 0x1F and
+            // an index of 0-15 - and so is never the space or newline this
+            // is asking after.
+            std::size_t seen = out.size();
+
+            while (seen >= 2 && out[seen - 2] == static_cast<char>(0x1F)) {
+                seen -= 2;
+            }
+
+            const char last = seen == 0 ? '\0' : out[seen - 1];
+
+            if (last != '\0' && last != ' ' && last != '\n') {
+                out += ' ';
+            }
+
+            pending_break = false;
+        }
+
         out += ch;
         ++pos;
     }
