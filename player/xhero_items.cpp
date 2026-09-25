@@ -465,9 +465,9 @@ void XHero::PickItem()
         } else {
             const auto tit = XItem::Own(picked);
 
-            auto desc = tit->toString();
+            auto desc = tit->toSentence();
             if (PickUpItem(tit.get())) {
-                msgwin.Add(fmt::format("You pick a {}.", desc));
+                msgwin.Add(fmt::format("You pick up {}.", desc));
             } else {
                 tit->Invalidate();
             }
@@ -477,7 +477,7 @@ void XHero::PickItem()
         tmpquae->erase(tit);
 
         if (PickUpItem(tit.get())) {
-            msgwin.Add(fmt::format("You pick up a {}.", tit->toString()));
+            msgwin.Add(fmt::format("You pick up {}.", tit->toSentence()));
         } else {
             tmpquae->insert(tit);
         }
@@ -505,7 +505,7 @@ void XHero::PickItem()
         }
 
         if (nitem == 1) {
-            msgwin.Add(fmt::format("You pick up a {}.", last_picked->toString()));
+            msgwin.Add(fmt::format("You pick up {}.", last_picked->toSentence()));
         } else if (nitem > 1) {
             msgwin.Add("You pick up a heap of items.");
         }

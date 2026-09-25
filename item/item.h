@@ -162,6 +162,22 @@ class XItem : public XBaseObject
         // creature.
         [[nodiscard]] std::string GetNameEx(Article article = Article::NONE);
 
+        // Whether toString() already says how many there are. Money does
+        // - "70 golden coins" - and no article belongs in front of that.
+        // A heap does not: "a heap of (3) scrolls" is right, so a heap
+        // answers false along with everything else.
+        [[nodiscard]] virtual bool CountsItself() const
+        {
+            return false;
+        }
+
+        // What toString() says, with the article a sentence needs in
+        // front of it - the counterpart of GetNameEx(), which does the
+        // same for the bare singular name. Use this rather than writing
+        // "a {}" around toString(): what the article should be, or
+        // whether there should be one at all, is the item's business.
+        [[nodiscard]] std::string toSentence(Article article = Article::INDEFINITE);
+
         // Answer "can these two items stack?"
         virtual bool Compare(XObject* o);
         virtual bool isIdentified()

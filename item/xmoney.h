@@ -32,6 +32,13 @@ class XMoney : public XItem
         XMoney(XMoney * copy) : XItem((XItem*)copy) {}
 
         std::string toString() override;
+
+        // "70 golden coins" counts itself; "one golden coin" says so in
+        // words. Neither wants an article in front of it.
+        [[nodiscard]] bool CountsItself() const override
+        {
+            return true;
+        }
         bool Compare(XObject* o) override;
         XItem* MakeCopy() override
         {

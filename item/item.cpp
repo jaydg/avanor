@@ -754,6 +754,24 @@ void XItem::OnOutfit(XCreature* who)
     }
 }
 
+namespace {
+
+// "a stone arrow", "an iron dagger", "the stone arrow".
+std::string WithArticle(const std::string& text, const XItem::Article article)
+{
+    if (article == XItem::Article::DEFINITE) {
+        return fmt::format("the {}", text);
+    }
+
+    const char first = text.empty() ? '\0' : text.front();
+    const bool vowel = first == 'a' || first == 'e' || first == 'i'
+        || first == 'o' || first == 'u';
+
+    return fmt::format("{} {}", vowel ? "an" : "a", text);
+}
+
+} // namespace
+
 std::string XItem::GetNameEx(const Article article)
 {
     if (const std::string proper = GetProperName(); !proper.empty()) {
@@ -764,15 +782,21 @@ std::string XItem::GetNameEx(const Article article)
         return name;
     }
 
-    if (article == Article::DEFINITE) {
-        return fmt::format("the {}", name);
+    return WithArticle(name, article);
+}
+
+std::string XItem::toSentence(const Article article)
+{
+    const std::string text = toString();
+
+    // A thing that names itself, and a thing that counts itself, are
+    // introduced by neither "a" nor "the": "the Axe of Torin" and "a 70
+    // golden coins" are wrong in the same way.
+    if (article == Article::NONE || CountsItself() || !GetProperName().empty()) {
+        return text;
     }
 
-    const char first = name.empty() ? '\0' : name.front();
-    const bool vowel = first == 'a' || first == 'e' || first == 'i'
-        || first == 'o' || first == 'u';
-
-    return fmt::format("{} {}", vowel ? "an" : "a", name);
+    return WithArticle(text, article);
 }
 
 std::string XItem::GetFullName()

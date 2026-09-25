@@ -71,8 +71,8 @@ void XHero::Move()
             XItem* item = ilist->begin()->get();
             XAnyPlace* place = l->map->GetPlace(nx, ny);
 
-            msgwin.Add(fmt::format("There is a {} here.",
-                place ? place->onShowItem(item) : item->toString()));
+            msgwin.Add(fmt::format("There is {} here.",
+                place ? place->onShowItem(item) : item->toSentence()));
         }
     }
 
