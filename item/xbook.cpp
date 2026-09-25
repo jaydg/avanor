@@ -278,23 +278,22 @@ void XBook::onRead(XCreature * reader)
         reader->m->Learn(spell_name);
         skill->UseSkill(10);
 
-        if (reader->isHero()) {
-            msgwin.Add(fmt::format("You read the {}.", toString()));
-
-            if (!isIdentified()) {
-                Identify();
-                msgwin.Add(fmt::format("It was {}.", toString()));
+        if (!reader->isHero()) {
+            if (reader->isVisible()) {
+                msgwin.Add(fmt::format("{} {} {}.",
+                    reader->GetNameEx(CRN_T1),
+                    reader->GetVerb("read"),
+                    toString()));
             }
-        } else if (reader->isVisible()) {
-            msgwin.Add(fmt::format("{} {} {}.",
-                reader->GetNameEx(CRN_T1),
-                reader->GetVerb("read"),
-                toString()));
 
-            if (!isIdentified()) {
-                Identify();
-                msgwin.Add(fmt::format("It was {}.", toString()));
-            }
+            return;
+        }
+
+        msgwin.Add(fmt::format("You read the {}.", toString()));
+
+        if (!isIdentified()) {
+            Identify();
+            msgwin.Add(fmt::format("It was {}.", toString()));
         }
     }
 }

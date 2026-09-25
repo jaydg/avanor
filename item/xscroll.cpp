@@ -340,18 +340,14 @@ int XScroll::onRead(XCreature * cr)
         return flag; // $$$
     }
 
+    if (!cr->isHero())
+        return flag;
+
     if (flag == 0) {
-        if (cr->isHero()) {
-            msgwin.Add("You feel nothing special.");
-        } else if (cr->isVisible()) {
-            msgwin.Add(cr->name);
-            msgwin.Add("feels nothing special.");
-        }
-    } else {
-        if (!isIdentified() && cr->isHero()) {
-            Identify();
-            msgwin.Add(fmt::format("It was {}.", toString()));
-        }
+        msgwin.Add("You feel nothing special.");
+    } else if (!isIdentified()) {
+        Identify();
+        msgwin.Add(fmt::format("It was {}.", toString()));
     }
 
     return flag;

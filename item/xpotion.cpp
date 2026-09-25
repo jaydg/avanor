@@ -410,13 +410,12 @@ void XPotion::onDrink(XCreature * cr)
         did_something = RunDrinkHandler(pdescr->on_drink, pn, cr) != 0;
     }
 
-    if (!did_something && cr->isVisible()) {
-        if (cr->isHero()) {
-            msgwin.Add("You feel nothing special!");
-        } else {
-            msgwin.Add(fmt::format("Nothing special happens to {}.", cr->name));
-        }
-    } else if (!isIdentified() && cr->isHero()) {
+    if (!cr->isHero())
+        return;
+
+    if (!did_something) {
+        msgwin.Add("You feel nothing special!");
+    } else if (!isIdentified()) {
         Identify();
         msgwin.Add(fmt::format("It was {}.", toString()));
     }

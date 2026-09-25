@@ -108,12 +108,6 @@ RESULT XAnyFood::onEat(XCreature * eater)
         if (eater->isHero()) {
             msgwin.Add(fmt::format("You find that the {} is {}.",
                 name, postEat(eater)));
-        } else if (eater->isVisible()) {
-            msgwin.Add(fmt::format("{} {} that {} is {}.",
-                eater->GetNameEx(CRN_T1),
-                eater->GetVerb("find"),
-                name,
-                postEat(eater)));
         }
 
         UnCarry();
