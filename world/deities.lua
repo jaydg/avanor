@@ -101,35 +101,64 @@ Deity.new("death")
 	:Grants("major divine intervention", "champion", 5, "lightning_bolt", "acid_bolt")
 	:Register()
 
--- What these two make of a kill. Tiamat is the goddess of the living and
--- is pleased by the destruction of the undead; Marduk is pleased by a
--- death of any other kind. Killing to please one is how you displease the
--- other, which is the whole of the tension between them.
+-- What these two make of a kill.
 --
--- How much a kill is worth depends on how well the killer understands
--- what they are doing: a novice angers a god more than they please one,
--- and only real devotion makes the two balance.
+-- Tiamat is the goddess of the living, and she does not begrudge the
+-- living their quarrels: something that came at you and died fighting is
+-- a death she accepts, and asks nothing for either way. What offends her
+-- is a kill that was never a fight - one that had turned and run, or one
+-- that would never have raised a hand against you. The undead are an
+-- affront to life itself, and putting one down pleases her.
+--
+-- Marduk is the god of death, and of the cruelty in it. An honest fight
+-- bores him; what he pays for is the blow struck at something already
+-- running, and he pays double for it.
+--
+-- An ordinary kill credits neither of them, which is the whole of what
+-- holds the two level. While killing anything at all was a devotional
+-- act, the god pleased by ordinary killing was always going to run away
+-- with it: nine tenths of everything that dies is a living thing that
+-- fought back, so he collected on nine kills in ten and she was in debt
+-- from her first.
+--
+-- How much a kill is worth still depends on how well the killer
+-- understands what they are doing: a novice angers a god more than they
+-- please one, and only real devotion makes the two balance.
 local DEVOTION_GOOD = {5, 5, 5, 5, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
 local DEVOTION_BAD = {-15, -14, -12, -10, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 0}
 
-local function JudgeKill(killer, victim, pleased_by_undead)
+-- What Marduk pays for a cruel kill, as a multiple of what a kill is
+-- otherwise worth. Two, because that is what makes the books balance:
+-- measured over a world left to itself, a fleeing creature dies about
+-- three times in a hundred and an undead about eight, so paying him twice
+-- for the rarer act brings his takings and hers out within a tenth of
+-- each other.
+local CRUELTY_REWARD = 2
+
+-- A kill that was not a fight: something running, or something that would
+-- never have fought. Both are asked of the victim, not of the killer -
+-- being attacked makes anything regard its attacker as an enemy, so what
+-- the victim thought of the killer says nothing about who started it.
+local function WasHelpless(victim)
+	return IsFleeing(victim) or HasAIFlag(victim, XStandardAI.PEACEFUL)
+end
+
+local function Devotion(killer, table_)
 	-- Lua tables count from one; the skill counts from zero.
-	local devotion = GetSkill(killer, XSkill.RELIGION) + 1
-	local good = DEVOTION_GOOD[devotion] or 0
-	local bad = DEVOTION_BAD[devotion] or 0
-	local undead = GetCreatureClass(victim) == "undead"
-
-	if (undead == pleased_by_undead) then
-		return good
-	end
-
-	return bad
+	return table_[GetSkill(killer, XSkill.RELIGION) + 1] or 0
 end
 
 function TiamatWatches(killer, victim)
-	ChangeFavour(killer, "life", JudgeKill(killer, victim, true))
+	if (WasHelpless(victim)) then
+		ChangeFavour(killer, "life", Devotion(killer, DEVOTION_BAD))
+	elseif (GetCreatureClass(victim) == "undead") then
+		ChangeFavour(killer, "life", Devotion(killer, DEVOTION_GOOD))
+	end
 end
 
 function MardukWatches(killer, victim)
-	ChangeFavour(killer, "death", JudgeKill(killer, victim, false))
+	if (WasHelpless(victim)) then
+		ChangeFavour(killer, "death",
+			Devotion(killer, DEVOTION_GOOD) * CRUELTY_REWARD)
+	end
 end

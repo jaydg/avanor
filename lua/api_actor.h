@@ -128,6 +128,8 @@ namespace lua_api
     void SetItEnemyFor(void* cr1, void* cr2);
     sol::optional<void*> CreatureNear(void* who, const std::string& name);
     void SetAIFlag(void* cr, unsigned int flags);
+    bool HasAIFlag(void* cr, unsigned int flag);
+    bool IsFleeing(void* cr);
     void SetEnemy(void* cr, const sol::object& cr_class);
     sol::optional<void*> FindCreature(const std::string& l_id, const std::string& gid, sol::optional<int> x, sol::optional<int> y, sol::optional<int> w, sol::optional<int> h);
     // A real Lua table, not the std::vector this used to hand back. sol2

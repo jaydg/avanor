@@ -1044,15 +1044,20 @@ int XStandardAI::TryToRunAway() const
     return 0;
 }
 
-int XStandardAI::AttackEnemy(int ex, int ey) const
+int XStandardAI::AttackEnemy(int ex, int ey)
 {
     // try to run away if we must or can
     if (ai_flag & XStandardAI::COWARD && enemy &&
         (enemy->GetExp() / 10 > ai_owner->GetExp() * friends_count // creature is more powerful
         || ai_owner->GetMaxHP() / ai_owner->HP > 4) // less than 25% of HP
         && TryToRunAway()) {
+        fleeing = true;
+
         return 0;
     }
+
+    // Standing in it, then - whatever it did last turn.
+    fleeing = false;
 
     XPoint direction_point;
     XPoint target_point(ex, ey);

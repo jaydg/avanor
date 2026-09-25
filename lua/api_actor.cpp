@@ -659,6 +659,29 @@ void SetAIFlag(void* cr, unsigned int flags)
     ((XCreature*)cr)->xai->SetAIFlag(static_cast<XStandardAI::Flag>(flags));
 }
 
+// Whether one of them is set:
+//
+//   if (HasAIFlag(victim, XStandardAI.PEACEFUL)) then
+//
+// A test rather than the raw word of flags, for the same reason IsKind()
+// is: this Lua has no bitwise operator and no bit library opened, so a
+// number of flags is of no use to content on its own.
+bool HasAIFlag(void* cr, unsigned int flag)
+{
+    const XCreature* p = (XCreature*)cr;
+
+    return p && (p->xai->GetAIFlag() & flag) != 0;
+}
+
+// Whether this one ran from its last fight rather than standing in it -
+// asked of the dead, by gods with an opinion about how they died.
+bool IsFleeing(void* cr)
+{
+    const XCreature* p = (XCreature*)cr;
+
+    return p && p->xai->isFleeing();
+}
+
 // SetEnemy(cr, "orc") or SetEnemy(cr, {"orc", "goblin", "undead"}) - whom
 // this one fights, replacing whatever it was told before.
 void SetEnemy(void* cr, const sol::object& cr_class)
@@ -1224,6 +1247,8 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("CarriedCount", &lua_api::CarriedCount);
         lua.set_function("DropCarried", &lua_api::DropCarried);
         lua.set_function("SetAIFlag", &lua_api::SetAIFlag);
+        lua.set_function("HasAIFlag", &lua_api::HasAIFlag);
+        lua.set_function("IsFleeing", &lua_api::IsFleeing);
         lua.set_function("CreatureNear", &lua_api::CreatureNear);
         lua.set_function("ChangeStats", &lua_api::ChangeStats);
         lua.set_function("UseSkill", &lua_api::UseSkill);

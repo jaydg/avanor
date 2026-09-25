@@ -227,6 +227,29 @@ one.
 Standing on a god's altar still settles the matter whatever else is true, as
 it always did.
 
+**The gods care how you kill, not how much.** Every death used to be a
+devotional act. Tiamat is pleased by the destruction of the undead and Marduk
+by death of every other kind, so the two were simply counted against each
+other — and since nine tenths of everything that dies is a living thing that
+fought back, Marduk collected on nine kills in ten while Tiamat went into debt
+on the first rat you stepped on.
+
+Neither of them is interested in an ordinary fight any more. Tiamat is the
+goddess of the living and does not begrudge the living their quarrels: a
+creature that came at you and died fighting is a death she accepts, and asks
+nothing for. What offends her is a kill that was never a fight — something
+that had turned and run, or something that would never have raised a hand
+against you. Putting down the undead still pleases her.
+
+Marduk is the god of death and of the cruelty in it. An honest fight bores
+him. What he pays for is the blow struck at something already running, and he
+pays double for it.
+
+So the two now stand level — measured over a world left to itself they earn
+within a tenth of each other, where Marduk used to earn eleven times what
+Tiamat did — and devotion is something you go and do rather than something
+that accrues while you play.
+
 ---
 
 ### Skills

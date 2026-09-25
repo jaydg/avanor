@@ -207,6 +207,12 @@ class XStandardAI
             keeps_to = tiles;
         }
 
+        // Whether this one ran from its last fight instead of standing in it.
+        [[nodiscard]] bool isFleeing() const
+        {
+            return fleeing;
+        }
+
         // Whether this one will set foot there. True of everywhere for a
         // creature that was never told otherwise.
         [[nodiscard]] bool GroundAllowed(int x, int y) const;
@@ -267,7 +273,7 @@ class XStandardAI
             ar(script);
             ar(companion, ordered_enemy, last_enemy, personal_enemy);
             ar(known_traps, last_moved_way);
-            ar(keeps_to);
+            ar(keeps_to, fleeing);
         }
 
         void SetGroupEnemy(XCreature* cr) const;
@@ -341,13 +347,20 @@ class XStandardAI
 
         std::vector<XTileType::Id> keeps_to;
 
+        // Whether this one turned and ran rather than fight, as of its
+        // last turn. Recorded rather than worked out on demand: the test
+        // AttackEnemy() makes divides by the creature's hit points, and
+        // the one moment anybody wants to ask - as it dies - is the one
+        // moment those are zero or less.
+        bool fleeing = false;
+
         // Whether anything asked for a way this turn. Move() lets the
         // cache go when nothing did.
         mutable bool path_wanted = false;
 
         void ForgetPath() const;
 
-        int AttackEnemy(int x, int y) const;
+        int AttackEnemy(int x, int y);
         // The worst-hurt of its own kind standing beside it, or null.
         XCreature* WoundedAlly() const;
         int CastSpell() const;
