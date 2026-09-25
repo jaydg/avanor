@@ -389,6 +389,10 @@ an amount — including any dose still working its way in, which is what makes
 it a cure rather than a strong drink. It is the one modifier in the game with
 a scale, so nothing else was affected.
 
+**Cure disease likewise.** It was never a tenth of a cure the way poison was,
+but it did roll for how much of the illness to take off and fell short about
+three times in ten. A cure of something now takes the whole of it.
+
 **Draining life now drains it.** The spell did damage and nothing else; half
 of what it takes from you now goes to whatever cast it. Spectres and vampires
 are meaningfully harder.

@@ -89,8 +89,9 @@ Effect.new("cure_poison")
 	:Lifts("poison")
 	:Register()
 
+-- And likewise: a cure of it takes the whole illness, not a roll of it.
 Effect.new("cure_disease")
-	:Relieves("disease", 1, 1, 3)
+	:Lifts("disease")
 	:Register()
 
 -- Touch: it lands on the square the caster faces.
