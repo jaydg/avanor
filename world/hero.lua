@@ -30,7 +30,8 @@ ALL_PROFESSIONS = {"warrior", "wizard", "archer", "ranger", "cleric",
 --   name        what the menu and the character sheet show
 --   stats       starting figures
 --   max_stats   how far they can ever be trained
---   speed       how long a turn takes; "0d0+1000" is ordinary
+--   speed       how fast, as a rate; "0d0+100" is a person's pace,
+--               half that is half as fast, twice it is twice as fast
 --   class       what sort of creature the hero counts as, to a sword that
 --               slays its kind and to anything deciding whom to fight.
 --               Unsaid, "human" - which is what every race here counted
@@ -43,7 +44,7 @@ HERO_RACES = {
 		key = "human", name = "human",
 		stats = "St:1d4+8 Dx:1d4+8 To:1d4+8 Le:1d4+8 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
 		max_stats = "St:1d8+18 Dx:1d8+18 To:1d8+18 Le:1d8+18 Wi:1d8+18 Ma:1d8+18 Pe:1d8+18 Ch:1d8+18",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.NORMAL,
 		skills = {XSkill.COOKING, XSkill.BACKSTABBING},
 		professions = ALL_PROFESSIONS,
@@ -52,7 +53,7 @@ HERO_RACES = {
 		key = "half_elf", name = "half elf",
 		stats = "St:1d4+6 Dx:1d4+10 To:1d4+6 Le:1d4+10 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
 		max_stats = "St:1d8+16 Dx:1d8+20 To:1d8+16 Le:1d8+20 Wi:1d8+18 Ma:1d8+18 Pe:1d8+18 Ch:1d8+18",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.NORMAL,
 		skills = {},
 		professions = ALL_PROFESSIONS,
@@ -61,7 +62,7 @@ HERO_RACES = {
 		key = "high_elf", name = "high elf",
 		stats = "St:1d4+5 Dx:1d4+12 To:1d4+4 Le:1d4+12 Wi:1d4+8 Ma:1d4+8 Pe:1d4+8 Ch:1d4+8",
 		max_stats = "St:1d8+15 Dx:1d8+22 To:1d8+14 Le:1d8+22 Wi:1d8+18 Ma:1d8+18 Pe:1d8+18 Ch:1d8+18",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.NORMAL,
 		skills = {XSkill.COOKING},
 		professions = ALL_PROFESSIONS,
@@ -70,7 +71,7 @@ HERO_RACES = {
 		key = "halfling", name = "halfling",
 		stats = "St:1d4+5 Dx:1d4+12 To:1d4+4 Le:1d4+8 Wi:1d4+8 Ma:1d4+8 Pe:1d4+10 Ch:1d4+10",
 		max_stats = "St:1d8+15 Dx:1d8+22 To:1d8+14 Le:1d8+18 Wi:1d8+18 Ma:1d8+18 Pe:1d8+20 Ch:1d8+20",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.SENSITIVE,
 		skills = {XSkill.DODGE},
 		professions = ALL_PROFESSIONS,
@@ -79,7 +80,7 @@ HERO_RACES = {
 		key = "half_orc", name = "half orc",
 		stats = "St:1d4+14 Dx:1d4+10 To:1d4+12 Le:1d4+4 Wi:1d4+4 Ma:1d4+4 Pe:1d4+10 Ch:1d4+6",
 		max_stats = "St:1d8+24 Dx:1d8+20 To:1d8+22 Le:1d8+14 Wi:1d4+14 Ma:1d8+14 Pe:1d8+20 Ch:1d8+16",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.TOLERANT,
 		skills = {XSkill.ATHLETICS},
 		professions = ALL_PROFESSIONS,
@@ -88,7 +89,7 @@ HERO_RACES = {
 		key = "dwarf", name = "dwarf",
 		stats = "St:1d4+10 Dx:1d4+4 To:1d4+14 Le:1d4+8 Wi:1d4+10 Ma:1d4+6 Pe:1d4+6 Ch:1d4+6",
 		max_stats = "St:1d8+20 Dx:1d8+14 To:1d8+24 Le:1d8+18 Wi:1d8+20 Ma:1d8+16 Pe:1d8+16 Ch:1d8+16",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.NORMAL,
 		skills = {XSkill.MINING},
 		professions = ALL_PROFESSIONS,
@@ -97,7 +98,7 @@ HERO_RACES = {
 		key = "gnome", name = "gnome",
 		stats = "St:1d4+5 Dx:1d4+8 To:1d4+5 Le:1d4+12 Wi:1d4+12 Ma:1d4+8 Pe:1d4+8 Ch:1d4+6",
 		max_stats = "St:1d8+15 Dx:1d8+18 To:1d8+15 Le:1d8+22 Wi:1d8+22 Ma:1d8+18 Pe:1d8+18 Ch:1d8+16",
-		speed = "0d0+1000",
+		speed = "0d0+100",
 		food = FoodFeeling.NORMAL,
 		skills = {XSkill.MINING, XSkill.FINDWEAKNESS},
 		professions = ALL_PROFESSIONS,
@@ -220,7 +221,7 @@ function InitHero(hero, race_key, gender_key, profession_key, deity_key)
 	local profession = Find(HERO_PROFESSIONS, profession_key)
 
 	SetCreatureClass(hero, race.class or "human")
-	SetMoveEnergy(hero, race.speed)
+	SetSpeed(hero, race.speed)
 	SetStats(hero, race.stats)
 	SetMaxStats(hero, race.max_stats)
 	SetFoodFeeling(hero, race.food)

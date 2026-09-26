@@ -31,7 +31,7 @@
 
 Monster.new("lemure")
 	:View("lemure", 'u', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "demon")
-	:Basic("1d10+150", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d100+900")
+	:Basic("0d0+100", "0d0+1000", CreatureSize.SMALL, "1d100+900")
 	:Body("", 0)
 	-- No COWARD: a lemure has nothing left to be frightened with. It comes
 	-- on until it is cut down, which is the whole of what it is for.
@@ -50,7 +50,7 @@ Monster.new("lemure")
 
 Monster.new("dretch")
 	:View("dretch", 'u', xColor.xLIGHTGREEN, PersonType.IT, CreatureTemplate.VERY_LOW, "demon")
-	:Basic("1d10+120", "0d0+1000", "0d0+1000", CreatureSize.SMALL, "1d100+800")
+	:Basic("0d0+100", "0d0+1000", CreatureSize.SMALL, "1d100+800")
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Body("head neck body hand hand", 5)
 	:Stats("St 4d3 Dx 2d3 To 3d3 Le 1d2 Wi 1d2 Ma 1d2 Pe 2d3 Ch 1d1")
@@ -67,7 +67,7 @@ Monster.new("dretch")
 
 Monster.new("imp")
 	:View("imp", 'u', xColor.xRED, PersonType.IT, CreatureTemplate.LOW, "demon")
-	:Basic("1d10+80", "0d0+900", "0d0+900", CreatureSize.VERY_SMALL, "1d50+200")
+	:Basic("0d0+111", "0d0+900", CreatureSize.VERY_SMALL, "1d50+200")
 	:Body("head neck body", 2)
 	:AI(XStandardAI.CREATURE)
 	:Stats("St 2d3 Dx 5d4 To 2d3 Le 4d3 Wi 3d3 Ma 3d3 Pe 4d4 Ch 2d3")
@@ -85,7 +85,7 @@ Monster.new("imp")
 
 Monster.new("quasit")
 	:View("quasit", 'u', xColor.xLIGHTMAGENTA, PersonType.IT, CreatureTemplate.LOW, "demon")
-	:Basic("1d10+80", "0d0+900", "0d0+900", CreatureSize.VERY_SMALL, "1d50+200")
+	:Basic("0d0+111", "0d0+900", CreatureSize.VERY_SMALL, "1d50+200")
 	:Body("head neck body", 2)
 	:AI(XStandardAI.CREATURE)
 	:Stats("St 2d3 Dx 5d4 To 2d3 Le 3d3 Wi 3d3 Ma 4d3 Pe 4d4 Ch 1d3")
@@ -105,7 +105,7 @@ Monster.new("quasit")
 
 Monster.new("hell_hound")
 	:View("hell hound", 'C', xColor.xRED, PersonType.IT, CreatureTemplate.ABOVE_LOW, "demon")
-	:Basic("1d10+130", "0d0+1000", "1d100+700", CreatureSize.NORMAL, "1d200+1200")
+	:Basic("0d0+100", "1d100+700", CreatureSize.NORMAL, "1d200+1200")
 	:Body("", 0)
 	-- A hunting pack that does not break. The dogs upstairs flee when they
 	-- are outmatched; these were bred somewhere that does not allow it.
@@ -131,7 +131,7 @@ Monster.new("hell_hound")
 
 Monster.new("bearded_devil")
 	:View("bearded devil", '&', xColor.xGREEN, PersonType.HE, CreatureTemplate.AVG, "demon")
-	:Basic("1d10+100", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1400")
+	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1400")
 	:Body("head neck body hand hand boots", 30)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY)
@@ -150,7 +150,7 @@ Monster.new("bearded_devil")
 
 Monster.new("barbed_devil")
 	:View("barbed devil", '&', xColor.xLIGHTRED, PersonType.HE, CreatureTemplate.AVG, "demon")
-	:Basic("1d10+100", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d200+1600")
+	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1600")
 	-- Hands, so it can work a door, but nothing drawn: a barbed devil
 	-- fights with what it is covered in.
 	:Body("head neck body hand hand", 0)
@@ -177,7 +177,7 @@ Monster.new("barbed_devil")
 
 Monster.new("vrock")
 	:View("vrock", '&', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.AVG, "demon")
-	:Basic("1d10+110", "0d0+1000", "1d100+900", CreatureSize.LARGE, "1d300+1800")
+	:Basic("0d0+100", "1d100+900", CreatureSize.LARGE, "1d300+1800")
 	:Body("head neck body hand hand", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.FREE_WAY + XStandardAI.FIND_WAY
 		+ XStandardAI.ALLOW_PACK)
@@ -197,7 +197,7 @@ Monster.new("vrock")
 
 Monster.new("bone_devil")
 	:View("bone devil", '&', xColor.xWHITE, PersonType.HE, CreatureTemplate.HI, "demon")
-	:Basic("1d10+95", "0d0+1000", "0d0+1000", CreatureSize.LARGE, "1d300+1600")
+	:Basic("0d0+100", "0d0+1000", CreatureSize.LARGE, "1d300+1600")
 	:Body("head neck body cloak hand hand ring ring", 40)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY)
@@ -217,7 +217,7 @@ Monster.new("bone_devil")
 
 Monster.new("horned_devil")
 	:View("horned devil", '&', xColor.xLIGHTCYAN, PersonType.HE, CreatureTemplate.HI, "demon")
-	:Basic("1d10+90", "0d0+1000", "0d0+900", CreatureSize.LARGE, "1d400+2400")
+	:Basic("1d10+90", "0d0+900", CreatureSize.LARGE, "1d400+2400")
 	-- No random weapon: the tail and the fork are the point of it, and
 	-- a horned devil turning up with a looted short sword is not.
 	:Body("head neck body hand hand ring ring", 0)
@@ -265,7 +265,7 @@ Monster.new("horned_devil")
 
 Monster.new("starveling")
 	:View("starveling", 'W', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.AVG, "demon")
-	:Basic("1d10+90", "0d0+1000", "0d0+1000", CreatureSize.NORMAL, "1d100+700")
+	:Basic("1d10+90", "0d0+1000", CreatureSize.NORMAL, "1d100+700")
 	:Body("head neck body cloak hand hand boots", 20)
 	-- No COWARD, and EXPLORER_MOVE: whatever judgement it had about odds
 	-- went the way everything else did, and it does not wait to be found.
@@ -288,7 +288,7 @@ Monster.new("starveling")
 Monster.new("wendigo")
 	:View("wendigo", 'W', xColor.xWHITE, PersonType.IT, CreatureTemplate.HI, "demon")
 	-- Quicker than anything else this deep. Outrunning one is not a plan.
-	:Basic("1d10+65", "0d0+900", "0d0+900", CreatureSize.LARGE, "1d200+1100")
+	:Basic("0d0+111", "0d0+900", CreatureSize.LARGE, "1d200+1100")
 	:Body("head neck body hand hand", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY + XStandardAI.EXPLORER_MOVE)

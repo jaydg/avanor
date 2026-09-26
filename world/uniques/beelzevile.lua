@@ -15,7 +15,7 @@ Item.new("great_elemental_ring")
 
 Monster.new("beelzevile")
 	:View("Beelzevile, the horned demon", '&', xColor.xLIGHTCYAN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "demon")
-	:Basic("1d30+50", "0d0+1500", "0d0+900", CreatureSize.LARGE, "1d400+4000")
+	:Basic("0d0+67", "0d0+900", CreatureSize.LARGE, "1d400+4000")
 	:Body("head body ring ring", 100)
 	:Never("invisible")
 	:Always("see_invisible")

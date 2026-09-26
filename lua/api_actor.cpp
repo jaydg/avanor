@@ -333,11 +333,11 @@ void ClampStats(void* cr)
     }
 }
 
-// How long a turn takes this character - "0d0+1000" is the ordinary pace.
-void SetMoveEnergy(void* cr, const std::string& dice)
+// How fast this character is, as a rate: 100 is the ordinary pace.
+void SetSpeed(void* cr, const std::string& dice)
 {
     XDice d(dice.c_str());
-    ((XCreature*)cr)->SetMoveEnergy(d.Throw());
+    ((XCreature*)cr)->SetSpeed(d.Throw());
 }
 
 void SetFoodFeeling(void* cr, int ff)
@@ -1279,7 +1279,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("AddStats", &lua_api::AddStats);
         lua.set_function("SetMaxStats", &lua_api::SetMaxStats);
         lua.set_function("ClampStats", &lua_api::ClampStats);
-        lua.set_function("SetMoveEnergy", &lua_api::SetMoveEnergy);
+        lua.set_function("SetSpeed", &lua_api::SetSpeed);
         lua.set_function("SetFoodFeeling", &lua_api::SetFoodFeeling);
         lua.set_function("InflictDamage", &lua_api::InflictDamage);
         lua.set_function("Rand", sol::overload(&lua_api::Rand, &lua_api::RandRaw));

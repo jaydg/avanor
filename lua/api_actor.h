@@ -84,7 +84,7 @@ namespace lua_api
     void AddStats(void* cr, const std::string& dice);
     void SetMaxStats(void* cr, const std::string& dice);
     void ClampStats(void* cr);
-    void SetMoveEnergy(void* cr, const std::string& dice);
+    void SetSpeed(void* cr, const std::string& dice);
     void SetFoodFeeling(void* cr, int ff);
     int Rand(int val);
     double RandRaw();

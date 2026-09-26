@@ -81,8 +81,10 @@ struct CreatureTemplate {
     int color;                      // xGREEN
 
     // main params
-    XDice speed;                    // "2d5+50"
-    XDice move_energy;              // 1000
+    // How fast, as a rate: 100 is a person's pace, 50 is half of it, 200
+    // is twice. The same number the status line prints as "Sp:". The
+    // engine turns it into the duration it schedules by, ttmb.
+    XDice speed;                    // 100
     XDice attack_energy;            // 1000
     XCreature::Size creature_size;  // small creatures were meant to gain DV
     XDice creature_weight;          // how much corpse weight for example
@@ -153,7 +155,7 @@ class MonsterBuilder
         explicit MonsterBuilder(CREATURE_NAME id, CREATURE_NAME base = CN_NONE);
 
         MonsterBuilder& View(const std::string& name, char view, int color, XCreature::PersonType person, CreatureTemplate::Level crl, const CREATURE_CLASS& cr_class);
-        MonsterBuilder& Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, XCreature::Size size, const std::string& weight);
+        MonsterBuilder& Basic(const std::string& speed, const std::string& attack_energy, XCreature::Size size, const std::string& weight);
         MonsterBuilder& Body(const std::string& body, int prob);
         MonsterBuilder& Never(const std::string& resist);
         MonsterBuilder& Always(const std::string& resist);

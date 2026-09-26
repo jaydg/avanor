@@ -2,7 +2,7 @@
 
 Monster.new("bat")
 	:View("bat", 'b', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "bat")
-	:Basic("1d30+120", "0d0+1000", "1d200+800", CreatureSize.VERY_SMALL, "3d4")
+	:Basic("0d0+100", "1d200+800", CreatureSize.VERY_SMALL, "3d4")
 	:Body("", 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
 	:Stats("St 1d1 Dx 1d4 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 3d10 Ch 1d1")
@@ -17,7 +17,7 @@ Monster.new("bat")
 
 Monster.new("huge_bat", "bat")
 	:View("huge bat", 'b', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "bat")
-	:Basic("1d30+150", "0d0+1000", "1d200+700", CreatureSize.VERY_SMALL, "10d4")
+	:Basic("0d0+100", "1d200+700", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 1d4 Dx 1d6 To 1d2 Pe 4d10")
 	:Resist{ see_invisible = true }
 	:Combat("1d2", "1d4")
@@ -40,7 +40,7 @@ Monster.new("huge_bat", "bat")
 -- that the same way its cousins do.
 Monster.new("mongbat")
 	:View("mongbat", 'b', xColor.xLIGHTRED, PersonType.IT, CreatureTemplate.LOW, "bat")
-	:Basic("1d20+85", "0d0+900", "1d100+700", CreatureSize.SMALL, "1d50+300")
+	:Basic("0d0+111", "1d100+700", CreatureSize.SMALL, "1d50+300")
 	:Body("head neck body hand hand", 5)
 	-- A flock, and a cowardly one: alone it thinks better of it, and in a
 	-- dozen it never has to. ALLOW_PACK is what makes the difference
@@ -62,7 +62,7 @@ Monster.new("mongbat")
 
 Monster.new("greater_mongbat", "mongbat")
 	:View("greater mongbat", 'b', xColor.xRED, PersonType.IT, CreatureTemplate.ABOVE_LOW, "bat")
-	:Basic("1d20+80", "0d0+900", "1d100+600", CreatureSize.NORMAL, "1d100+600")
+	:Basic("0d0+111", "1d100+600", CreatureSize.NORMAL, "1d100+600")
 	:Stats("St 4d4 Dx 7d4 To 2d4 Le 1d3 Wi 1d3 Ma 1d2 Pe 5d8 Ch 1d1")
 	:Combat("4d4", "3d3")
 	:Main("6d3", "1d1", "2d6+4", "0d0")

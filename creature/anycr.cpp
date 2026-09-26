@@ -86,12 +86,10 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
 
     XBodyPart::Create(this, cr->body);
 
-    ttmb = cr->move_energy.Throw();
+    ttmb = XCreature::SpeedToTurnTime(cr->speed.Throw());
     ttm	= ttmb;
     weight = cr->creature_weight.Throw();
     attack_energy = cr->attack_energy.Throw();
-    move_energy = cr->move_energy.Throw();
-    base_speed = cr->speed.Throw();
 
     creature_size	= cr->creature_size;
 
@@ -375,10 +373,9 @@ MonsterBuilder& MonsterBuilder::View(const std::string& name, char view, int col
     return *this;
 }
 
-MonsterBuilder& MonsterBuilder::Basic(const std::string& speed, const std::string& move_energy, const std::string& attack_energy, XCreature::Size size, const std::string& weight)
+MonsterBuilder& MonsterBuilder::Basic(const std::string& speed, const std::string& attack_energy, XCreature::Size size, const std::string& weight)
 {
     cr.speed = XDice(speed);
-    cr.move_energy = XDice(move_energy);
     cr.attack_energy = XDice(attack_energy);
     cr.creature_size = size;
     cr.creature_weight = XDice(weight);

@@ -2,7 +2,7 @@
 
 Monster.new("small_snake")
 	:View("small snake", 'R', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "reptile")
-	:Basic("1d10+80", "0d0+1000", "1d200+900", CreatureSize.VERY_SMALL, "3d4")
+	:Basic("1d10+80", "1d200+900", CreatureSize.VERY_SMALL, "3d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d2 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d2 Ch 1d1")
@@ -17,7 +17,7 @@ Monster.new("small_snake")
 
 Monster.new("gray_snake", "small_snake")
 	:View("grey snake", 'R', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "reptile")
-	:Basic("1d10+80", "0d0+1000", "1d200+900", CreatureSize.VERY_SMALL, "5d4")
+	:Basic("1d10+80", "1d200+900", CreatureSize.VERY_SMALL, "5d4")
 	:Stats("St 1d2 Dx 1d4 To 1d2 Pe 1d2")
 	:Resist{ cold = "1d10-50" }
 	:Combat("2d5", "1d3")
@@ -56,7 +56,7 @@ Monster.new("salamander", "gray_snake")
 
 Monster.new("large_snake", "gray_snake")
 	:View("large snake", 'R', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, "reptile")
-	:Basic("1d10+80", "0d0+1000", "1d200+800", CreatureSize.VERY_SMALL, "10d4")
+	:Basic("1d10+80", "1d200+800", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 1d3 Dx 1d5 To 1d3 Pe 1d2")
 	:Resist{ cold = "1d10-40" }
 	:Combat("6d5", "1d5")
@@ -74,7 +74,7 @@ Monster.new("large_snake", "gray_snake")
 
 Monster.new("cobra", "gray_snake")
 	:View("cobra", 'R', xColor.xGREEN, PersonType.IT, CreatureTemplate.LOW, "reptile")
-	:Basic("1d10+90", "0d0+1000", "1d200+700", CreatureSize.VERY_SMALL, "15d4")
+	:Basic("1d10+90", "1d200+700", CreatureSize.VERY_SMALL, "15d4")
 	:Stats("St 1d3 Dx 1d7 To 2d2 Pe 1d4")
 	:Resist{ cold = "1d10-30" }
 	:Combat("7d5", "1d7")
@@ -89,7 +89,7 @@ Monster.new("cobra", "gray_snake")
 
 Monster.new("king_cobra", "gray_snake")
 	:View("king cobra", 'R', xColor.xLIGHTRED, PersonType.IT, CreatureTemplate.AVG, "reptile")
-	:Basic("1d10+90", "0d0+1000", "1d200+500", CreatureSize.VERY_SMALL, "20d4")
+	:Basic("1d10+90", "1d200+500", CreatureSize.VERY_SMALL, "20d4")
 	:Stats("St 1d7 Dx 1d8 To 3d2 Pe 2d3")
 	:Resist{ cold = "1d10-20" }
 	:Combat("8d5", "1d12")
@@ -106,7 +106,7 @@ Monster.new("king_cobra", "gray_snake")
 
 Monster.new("rattlesnake", "gray_snake")
 	:View("rattlesnake", 'R', xColor.xRED, PersonType.IT, CreatureTemplate.AVG, "reptile")
-	:Basic("1d10+90", "0d0+1000", "1d200+500", CreatureSize.VERY_SMALL, "10d4")
+	:Basic("1d10+90", "1d200+500", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 2d4 Dx 2d5 To 3d2 Pe 2d3")
 	:Resist{ cold = "1d10-30" }
 	:Combat("10d5", "1d12")

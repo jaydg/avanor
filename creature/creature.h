@@ -412,14 +412,28 @@ class XCreature : public XBaseObject
         int DecNutrio();
         FOOD_FEELING food_feeling;
 
-        // How long a turn takes this creature. ttm/ttmb live on XObject and
-        // are protected there; character building sets them from content
-        // (world/hero.lua, through SetMoveEnergy), so one accessor rather
-        // than opening the fields to everything.
-        void SetMoveEnergy(int energy)
+        // Content declares how fast a creature is as a rate - 100 is a
+        // person's pace, 50 half of it, 200 twice - which is the figure
+        // the status line prints as "Sp:". The scheduler wants the
+        // opposite: ttmb is how many time units one turn costs, so
+        // bigger is slower. This is the only place the two meet.
+        //
+        // Nothing content can write should divide by zero, but content
+        // is content, so a speed of nothing is read as the ordinary pace
+        // rather than as an eternity.
+        [[nodiscard]] static int SpeedToTurnTime(int speed)
         {
-            ttmb = energy;
-            ttm = energy;
+            return speed > 0 ? 100000 / speed : 1000;
+        }
+
+        // ttm/ttmb live on XObject and are protected there; character
+        // building sets them from content (world/hero.lua, through
+        // SetSpeed), so one accessor rather than opening the fields to
+        // everything.
+        void SetSpeed(int speed)
+        {
+            ttmb = SpeedToTurnTime(speed);
+            ttm = ttmb;
         }
 
         void MoveStairWay();
@@ -647,7 +661,7 @@ class XCreature : public XBaseObject
             ar(HP, PP, MAX_HP, MAX_PP);
             ar(experience, added_DMG, added_DV, added_HIT, added_PV);
             ar(added_slow_digestion, digestion_phase);
-            ar(attack_energy, move_energy, base_speed);
+            ar(attack_energy);
             ar(added_resists, added_range, added_stats);
             ar(base_exp, base_nutrio, carried_weight);
             ar(components);
@@ -771,8 +785,6 @@ class XCreature : public XBaseObject
 
         Size creature_size;
         int attack_energy;
-        int move_energy;
-        int base_speed;
         int MeleeAttack(XCreature* target, XItem* weapon);
         std::vector<MELEE_ATTACK>* melee_attack;
 

@@ -352,6 +352,35 @@ applied to plain steel and not to fire, a sword of Fire was doing no more
 than an ordinary one. It does now, and so does a weapon that slays orcs or
 demons, against what it was made for.
 
+**Almost nothing in the world had a speed.** Every creature has always
+declared one — a gelatinous cube says it moves at about half a person's
+pace, a grey ooze slower still, a giant bee at two and a half times —
+and the engine has never read a word of it. It read a second number
+instead, which nobody ever filled in: ninety-three creatures out of a
+hundred and four carried the same default value, so very nearly
+everything alive moved at exactly your pace. A blob of jelly kept step
+with a running adventurer, and no amount of running ever opened a gap
+between you and anything at all.
+
+The declared speeds are now the speeds. Oozes, crawlers and gelatinous
+cubes move at around half your pace; spiders and scorpions at three
+quarters; snakes, kobolds and goblins a little under yours. Twenty-six
+creatures in all have slowed down to the pace they always claimed, and
+backing away from something is a tactic again.
+
+**Nothing was made faster.** Everything already quicker than you —
+Roderick, Torin, Aphilius, the imps and the mongbats — moves exactly as
+it did.
+
+Nor has anything that declares itself quicker been let loose yet.
+Another two dozen creatures say they should outpace you, some of them
+emphatically: wolves and bats by a third again, the werewolf and the
+killer beetle by half, the huge bat and the death beetle very nearly
+double, Gekta twice over and the giant bees two and a half times.
+Every one of them is held at your pace for the moment. Waking that up
+is a much larger change than slowing the jelly down, and it wants doing
+one creature at a time, with a sword in hand.
+
 **Resistance no longer betrays you at the top.** Fire resistance stacked
 past 100% used to turn itself inside out: a creature — or a hero — who was
 *completely* immune to fire took the full damage of a fire spell, while
