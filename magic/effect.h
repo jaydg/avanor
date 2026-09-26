@@ -166,26 +166,34 @@ class EffectBuilder
         EffectStats t;
 };
 
+// Every field carries a default, because a caller that fills in only the
+// fields its own effect needs is the normal way this is built - and the
+// fields it leaves alone are read all the same, by a part of an effect it
+// did not know about.
 struct EFFECT_DATA {
     EFFECT effect;
 
     // In many case effects fill caller, but not when cause by a trap.
-    XCreature* caller;
+    XCreature* caller = nullptr;
 
     // For many visual effects this field must be filled.
-    XLocation* l;
+    XLocation* l = nullptr;
 
     // Starting point of effect (for example for trap).
-    int call_x, call_y;
+    int call_x = 0, call_y = 0;
 
-    // Target creature, usually not required
-    XCreature* target;
+    // Whoever the effect acts on, which is not always whoever caused it:
+    // a trap names the creature that stepped on it, and a healer names
+    // the patient. Recipient() falls back to the caller when it is null,
+    // but the engine effects that move or read a creature use it
+    // directly, so anything that can reach one must set it.
+    XCreature* target = nullptr;
 
     // target position: we can make fire-bolt traps :)
-    int target_x, target_y;
+    int target_x = 0, target_y = 0;
 
     // power == willpower
-    int power;
+    int power = 0;
 };
 
 #endif

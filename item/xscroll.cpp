@@ -300,6 +300,10 @@ int XScroll::onRead(XCreature * cr)
         ed.call_x	= cr->x;
         ed.call_y	= cr->y;
 
+        // Reading a scroll acts on the reader, the same rule the short
+        // form of XEffect::Make() follows for a spell cast on oneself.
+        ed.target	= cr;
+
         if (XEffect::GetReq(row->effect) == EffectTarget::DIRECTION) {
             XPoint pt;
             cr->GetTarget(TR_ATTACK_DIRECTION, &pt);
