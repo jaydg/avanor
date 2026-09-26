@@ -185,12 +185,6 @@ The shopkeeper has also learned to stand in his own doorway while you are
 carrying something you have not paid for. He steps aside the moment the bill
 is settled, and goes back to wandering about his shop.
 
-**Everything you own on one screen.**
-Worn items no longer disappear out of your inventory when you put them on.
-They stay in the list with a `(worn)` badge, so comparing the sword in your
-hand against the one in your pack no longer means flipping between the
-inventory and the equipment screens.
-
 **Ground that isn't flat.**
 No two patches of the same floor are quite the same shade any more. Each cell
 strays a little from its tile's colour in brightness, in hue and in how much
