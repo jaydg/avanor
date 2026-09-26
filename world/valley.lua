@@ -378,32 +378,15 @@ function MakeAvanorValley()
 		DrawPattern(100, 50)
 
 
--- THE FORLORN MINE --
+-- THE ABANDONED MINES --
 --
--- The head-house of a gem mine, far south of the valley, and the apron of
--- spoil and dressed stone the miners left spread around it. The roof is
--- down in two places and there are saplings in what was the yard, but the
--- doorway still stands and so does the shaft inside it. See
--- world/locations/forlorn.lua for what is below.
---
--- It sits where the three random caves of the original game had their
--- entrances - x 115..180, y 60..80 of the plain - which is the ground
--- Roderick means when he says the Eye of Raa was hidden in the caves far
--- south of here.
-		SetPattern(21, 11,
-		"        ;;;;;        " ..
-		"     ;;;;;;;;; ;;    " ..
-		"   ;;;;##### ###;;;  " ..
-		"  ;;;;;#;;;;;;;#;;;  " ..
-		" ;; ;;;+;;>;;;;#;;;; " ..
-		"  ;;;;;#;;;;;;;# ;;  " ..
-		"   ;;;;###;; ###;;;  " ..
-		"    ;;;;;;;;;;;;;;   " ..
-		"  &   ;;  ;;;;;   &  " ..
-		"       ;;;; ;;       " ..
-		"         ;;;         ")
-		AddTranslation(">", function(x, y) Way(XStairWay.DOWN, "FORLORN1", x, y) end)
-		DrawPattern(140, 66)
+-- Three ruins over three shafts, on the ground the original game's three
+-- random caves put their entrances on - x 115..180, y 60..80 of the plain
+-- - which is what Roderick means when he says the Eye of Raa was hidden in
+-- the caves far south of here. Which ruin stands where, and which of them
+-- the Eye is under, is settled by AssignMines() before this runs. See
+-- world/locations/mines.lua.
+		DrawMineEntrances()
 
 
 -- BLACK TOWER RUINS --

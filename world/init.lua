@@ -32,6 +32,10 @@ end
 -- defines functions/creature templates) - only called for a brand new
 -- game. A restored game skips this.
 function InitWorld()
+	-- Before the valley: it draws the three mine entrances and has to know
+	-- which ruin belongs at which site.
+	AssignMines()
+
 	MakeAvanorValley()
 	MakeSmallCave()
 	MakeMushroomCave()
@@ -39,7 +43,7 @@ function InitWorld()
 	MakeRatCellar()
 	MakeVulcano()
 	MakeWizardDungeon()
-	MakeDungeonForlorn()
+	MakeAbandonedMines()
 	CreateAllQuests()
 end
 

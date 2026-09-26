@@ -89,24 +89,42 @@ all the warning was ever meant to buy you.
 They only shout at somebody about to cross. Coming home the other way, they
 have nothing to say to you; and once they are dead the road is quiet.
 
-**The Forlorn Mine, and the artifact at the bottom of it.** A ruined
-head-house stands on the plain far south of the valley, roof down in two
-places, an apron of spoil and dressed stone spreading out around it and
-saplings coming up in what was the yard. The shaft inside it still goes
-down — five to ten levels of galleries and halls, harder the deeper you
-go, and at the very bottom the Eye of Raa.
+**Three abandoned mines, and the artifact at the bottom of one.** Far south
+of the valley, three ruins stand over three shafts. Each goes down five to
+ten levels, harder the deeper you go, and one of them has the Eye of Raa
+lying at the very bottom on the servant of King Roderick who stole it.
 
-The mine stands where one of the three unnamed random dungeons of old
-stood — "Random Place Level 1" and so on, three of them, cut when the world
-moved to Lua and never replaced, taking the Eye with them. This is one
-mine rather than three caves, and it has a name and a reason to be there:
-it was a gem mine, and the miners who sank it followed the seams down and
-then kept following them, until they broke into something that was not a
-seam. What came up through that hole took the mine in a night. Nobody has
-been back for the tools, let alone the stones.
+They are not three of a kind. **Forlorn** was a gem mine: the dwarves who
+sank it followed the seams down and then kept following them, until they
+broke into something that was not a seam, and what came up through that
+hole took the mine in a night. It is galleries and halls, and its ruined
+head-house sprawls on an apron of spoil and dressed stone with saplings
+coming up in the yard. **Forsworn** was a poor iron mine worked by men who
+had sworn to the crown for the right to it and kept that oath about as long
+as the ore lasted; nothing dramatic happened there, it simply stopped being
+worth the digging. Straight adits crosscut on the square, because that is
+how you chase a flat seam cheaply, and above it one long shed with its west
+end fallen in and the spoil still banked outside the door. **Forfeit** was
+a silver mine good enough to be worth taking, and when the crown finally
+settled whose it was it settled it by forfeit, to nobody at all. Silver
+wanders in veins rather than running in seams, so the workings wander with
+it; the wall and the single gate were built by an owner who expected to be
+robbed, and in the end they kept out the only people who knew where the
+silver was.
 
-Every game digs it afresh, and the whole mine takes one shape — you will
-not find a warren of passages on one level and a hall on the next.
+All three stand on the ground the old game's three unnamed random dungeons
+used — "Random Place Level 1" and so on — which were cut when the world
+moved to Lua, taking the Eye and Roderick's quest with them. Three for
+three, then, but not the same three: those were one generator run three
+times, with nothing to tell one from another and no reason for any of them
+to be there. Which ruin stands on which of the three sites is shuffled
+each game, and so is the mine the Eye is in — the original always buried it
+in the third cave, so two of its three entrances never held anything at
+all.
+
+Every game digs each mine afresh, and a mine takes one shape all the way
+down — you will not find a warren of passages on one level and a hall on
+the next. The goblin raiders remain Forlorn's alone.
 
 **Caves that look like caves.**
 A second kind of cavern joins the old blob-shaped ones: rounded chambers grown
