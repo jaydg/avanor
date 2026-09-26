@@ -12,12 +12,12 @@
 
 Monster.new("magnush")
 	:View("Magnush, the Kobold Lord", 'k', xColor.xRED, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "kobold")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.SMALL, "1d200+900")
+	:Basic(100, 1000, CreatureSize.SMALL, "1d200+900")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 4d5 Dx 2d3+6 To 1d3+9 Le 2d4 Wi 2d4+6 Ma 3d3 Pe 1d8 Ch 1d4")
 	:Combat("1d3+6", "2d6")
-	:Main("1d4+1", "0d0+3", "1d4+22", "2d3+6")
+	:Main("1d4+1", 3, "1d4+22", "2d3+6")
 	:Description("Magnush the kobold lord stands before you with all the "
 		.. "majesty he can muster. Bigger than most kobolds (some say his "
 		.. "father was a gnoll), he has managed to bully his way to the "

@@ -43,7 +43,7 @@ Monster.new("dwarf_cleric", "dwarf")
 	:Stats("St 1d3+10 Dx 1d3+7 To 1d3+16 Le 2d4 Wi 2d4+4 Ma 2d5+4 Pe 1d6 Ch 2d3")
 	-- Hardier than a townsman (2d3+1) and with the mana a caster needs
 	-- (2d2); the swing and the rest of the build stay theirs.
-	:Main("1d1", "0d0", "3d3+4", "3d3+6")
+	:Main("1d1", 0, "3d3+4", "3d3+6")
 	:Description("A stout dwarven woman in the white of the life-givers, "
 		.. "her beard braided with silver rings. She does not look up as "
 		.. "you pass: her business is with the wounded they carry in from "

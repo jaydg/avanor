@@ -8,7 +8,7 @@ Monster.new("spider")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d30-50", cold = "1d20-40" }
 	:Combat("2d5", "1d2")
-	:Main("1d1", "0d0", "1d2", "0d0")
+	:Main("1d1", 0, "1d2", 0)
 	:Description("A foot wide and covered with grayish brown hair, this "
 		.. "spider contemplates you with its eight eyes. Spiders like this "
 		.. "one have filled the corners of the caves of Avanor with webs. "
@@ -24,7 +24,7 @@ Monster.new("giant_spider")
 	:Stats("St 1d2 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d30-50", cold = "1d20-40" }
 	:Combat("3d5", "1d3")
-	:Main("1d2", "0d0", "1d3", "0d0")
+	:Main("1d2", 0, "1d3", 0)
 	:Description("These eight legged monstrosities escaped from a long dead "
 		.. "wizard's laboratory and made homes in the deep caves of the "
 		.. "mountains surrounding the valley. Their webs are capable of "
@@ -44,7 +44,7 @@ Monster.new("tarantula")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("3d5", "1d6")
-	:Main("1d1", "0d0", "1d3", "0d0")
+	:Main("1d1", 0, "1d3", 0)
 	:Description("These spiders live in nooks and crannies in the rock and "
 		.. "can pop into view when least expected. Unable to spin webs, "
 		.. "they rely on brute strength and venom to overcome a victim. "
@@ -65,7 +65,7 @@ Monster.new("scorpion")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("5d5", "1d6")
-	:Main("1d1", "0d0", "1d5", "0d0")
+	:Main("1d1", 0, "1d5", 0)
 	:Description("This creature is a foot long and colored a dusty brown "
 		.. "with a tail arching high over its back. Scorpions use the "
 		.. "poison in their stinging tail as well as formidable pincers as "
@@ -87,7 +87,7 @@ Monster.new("black_scorpion")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("10d5", "1d10")
-	:Main("1d1", "0d0", "1d7", "0d0")
+	:Main("1d1", 0, "1d7", 0)
 	:Description("Black scorpions hide in the shadows of caves and will "
 		.. "often flee from a light source. When cornered, they fight with "
 		.. "both pincers and their tail with great agility. Though not as "
@@ -108,7 +108,7 @@ Monster.new("pink_scorpion")
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("20d5", "1d20")
-	:Main("1d1", "0d0", "1d9", "0d0")
+	:Main("1d1", 0, "1d9", 0)
 	:Description("This scorpion originally evolved with this coloring in "
 		.. "order to hide among plant flowers and surprise prey. These "
 		.. "scorpions are extremely aggressive and dangerous. Sometimes "
@@ -127,13 +127,13 @@ Monster.new("pink_scorpion")
 
 Monster.new("fire_beetle")
 	:View("fire beetle", 'i', xColor.xRED, PersonType.IT, CreatureTemplate.VERY_LOW, "insect")
-	:Basic("0d0+100", "1d300+900", CreatureSize.VERY_SMALL, "5d4")
+	:Basic(100, "1d300+900", CreatureSize.VERY_SMALL, "5d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d3 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d90", cold = "1d20-80" }
 	:Combat("1d3", "1d3")
-	:Main("1d1", "1d8", "1d3", "0d0")
+	:Main("1d1", "1d8", "1d3", 0)
 	:Description("Usually living only in depths of the earth, fire beetles "
 		.. "were drawn to the surface by the intense energies used to raise "
 		.. "the mountains surrounding Avanor. Their normal habitat has made "
@@ -147,13 +147,13 @@ Monster.new("fire_beetle")
 
 Monster.new("frost_beetle")
 	:View("frost beetle", 'i', xColor.xWHITE, PersonType.IT, CreatureTemplate.LOW, "insect")
-	:Basic("0d0+100", "1d300+900", CreatureSize.VERY_SMALL, "7d4")
+	:Basic(100, "1d300+900", CreatureSize.VERY_SMALL, "7d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d3 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ fire = "1d20-80", cold = "1d80" }
 	:Combat("1d5", "1d10")
-	:Main("1d1", "4d4", "1d5", "0d0")
+	:Main("1d1", "4d4", "1d5", 0)
 	:Description("Frost beetles are characterized by a white shell and "
 		.. "faint blue markings. They usually live high in the mountains "
 		.. "upon snow capped peaks. With the release of power in the "
@@ -168,13 +168,13 @@ Monster.new("frost_beetle")
 
 Monster.new("green_beetle")
 	:View("green beetle", 'i', xColor.xGREEN, PersonType.IT, CreatureTemplate.LOW, "insect")
-	:Basic("0d0+100", "1d300+900", CreatureSize.VERY_SMALL, "7d4")
+	:Basic(100, "1d300+900", CreatureSize.VERY_SMALL, "7d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d5 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ acid = "1d80" }
 	:Combat("1d5", "1d12")
-	:Main("1d1", "5d4", "1d8", "0d0")
+	:Main("1d1", "5d4", "1d8", 0)
 	:Description("Green beetles are often seen in packs. Their exo-skeleton "
 		.. "is not as tough as the frost or fire beetle, but they are able "
 		.. "to shoot streams of acid at their target with great accuracy.")
@@ -187,13 +187,13 @@ Monster.new("green_beetle")
 
 Monster.new("killer_beetle")
 	:View("killer beetle", 'i', xColor.xBLUE, PersonType.IT, CreatureTemplate.AVG, "insect")
-	:Basic("0d0+100", "1d300+900", CreatureSize.VERY_SMALL, "10d4")
+	:Basic(100, "1d300+900", CreatureSize.VERY_SMALL, "10d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d10 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ acid = "1d80", cold = "1d80", fire = "1d80" }
 	:Combat("1d10", "2d15")
-	:Main("1d1", "6d5", "1d8", "0d0")
+	:Main("1d1", "6d5", "1d8", 0)
 	:Description("This beetle scuttles around with great energy, moving "
 		.. "half and again as fast as any other beetle you have seen. Its "
 		.. "shell seems thin but the formidable jaws leave no doubt of the "
@@ -209,13 +209,13 @@ Monster.new("killer_beetle")
 
 Monster.new("death_beetle")
 	:View("death beetle", 'i', xColor.xDARKGRAY, PersonType.IT, CreatureTemplate.HI, "insect")
-	:Basic("0d0+100", "1d300+900", CreatureSize.VERY_SMALL, "15d4")
+	:Basic(100, "1d300+900", CreatureSize.VERY_SMALL, "15d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d15 Dx 1d5 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Resist{ acid = "1d100", cold = "1d100", fire = "1d100" }
 	:Combat("2d10", "3d15")
-	:Main("1d1", "6d7", "1d10", "0d0")
+	:Main("1d1", "6d7", "1d10", 0)
 	:Description("Extremely heavily armored, the death beetle is a dark "
 		.. "blue colour bordering on black. The white markings on its shell "
 		.. "resemble bleached skulls. Although slow moving, the death "
@@ -231,12 +231,12 @@ Monster.new("death_beetle")
 
 Monster.new("giant_bee")
 	:View("giant bee", 'b', xColor.xYELLOW, PersonType.IT, CreatureTemplate.AVG, "insect")
-	:Basic("0d0+100", "1d300+1300", CreatureSize.VERY_SMALL, "5d4")
+	:Basic(100, "1d300+1300", CreatureSize.VERY_SMALL, "5d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("1d5", "1d30")
-	:Main("5d5", "1d1", "1d2", "0d0")
+	:Main("5d5", "1d1", "1d2", 0)
 	:Description("The buzz in the air reminds you more of a hailstorm on a "
 		.. "tin roof than an insect but as the giant bee rounds the corner "
 		.. "ahead you can see why. Three feet long and armed with a six "
@@ -247,12 +247,12 @@ Monster.new("giant_bee")
 
 Monster.new("giant_wasp")
 	:View("giant wasp", 'b', xColor.xBROWN, PersonType.IT, CreatureTemplate.AVG, "insect")
-	:Basic("0d0+100", "1d300+600", CreatureSize.VERY_SMALL, "5d4")
+	:Basic(100, "1d300+600", CreatureSize.VERY_SMALL, "5d4")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("1d8", "1d10")
-	:Main("7d5", "1d1", "1d2", "0d0")
+	:Main("7d5", "1d1", "1d2", 0)
 	:Description("Wasps tend to build nests in areas inaccessible to larger "
 		.. "creatures and many wasps can sometimes be found clustered "
 		.. "around the opening. The wasp is stronger than the bee and "
@@ -268,7 +268,7 @@ Monster.new("centipede")
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("1d3", "1d3")
-	:Main("1d4", "1d1", "1d2", "0d0")
+	:Main("1d4", "1d1", "1d2", 0)
 	:Description("Marching forward the centipede comes into view. Low to "
 		.. "the ground and a dark red colour, it clearly advertises the fact "
 		.. "that it carries poison. The multiple legs make it easy for the "
@@ -284,7 +284,7 @@ Monster.new("stegocentipede")
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d3", "2d3")
-	:Main("1d8", "1d2", "1d4", "0d0")
+	:Main("1d8", "1d2", "1d4", 0)
 	:Description("Slower than their smaller cousins, the stegocentipede is "
 		.. "also that much more heavily armored. It uses its spiked tail to "
 		.. "its advantage to knock prey down before attempting to poison "
@@ -300,7 +300,7 @@ Monster.new("dungeon_crawler")
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "1d3")
-	:Main("1d1", "1d4", "1d2", "0d0")
+	:Main("1d1", "1d4", "1d2", 0)
 	:Description("This filthy little insect wanders the floor. Evolving in "
 		.. "the caves, it almost completely forsook the use of eyes, "
 		.. "relying on other senses to help it through the darkness. "
@@ -317,7 +317,7 @@ Monster.new("giant_crawler")
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "1d3")
-	:Main("1d1", "1d8", "1d4", "0d0")
+	:Main("1d1", "1d8", "1d4", 0)
 	:Description("This appears to be a mound of flesh approximately a foot "
 		.. "high. Only as it moves towards you do you realise that it still "
 		.. "lives and sees you as viable prey. The greyish green surface "
@@ -335,7 +335,7 @@ Monster.new("carrion_crawler")
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "2d15")
-	:Main("1d1", "1d10", "1d8", "0d0")
+	:Main("1d1", "1d10", "1d8", 0)
 	:Description("This giant bug has numerous paralysing tentacles just "
 		.. "waiting for you to wander into range. They live mostly in "
 		.. "subterranean caverns and feed on dead or dying matter, but they "

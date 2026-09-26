@@ -2,13 +2,13 @@
 
 Monster.new("cat")
 	:View("cat", 'f', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "feline")
-	:Basic("0d0+100", "1d500+500", CreatureSize.SMALL, "1d40+50")
+	:Basic(100, "1d500+500", CreatureSize.SMALL, "1d40+50")
 	:Body("", 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
 	:Stats("St 2d2 Dx 2d4 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 3d3 Ch 1d1")
 	:Resist{ fire = "5d5-80", cold = "3d10" }
 	:Combat("1d2", "1d3")
-	:Main("2d3", "1d1", "1d4", "0d0")
+	:Main("2d3", "1d1", "1d4", 0)
 	:Description("This mangy little furball looks so cute and cuddly that "
 		.. "you just want hug it. That is you would want to if it weren't "
 		.. "hissing, spitting and taking swipes at your face with its "
@@ -17,13 +17,13 @@ Monster.new("cat")
 
 Monster.new("wild_cat")
 	:View("wildcat", 'f', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "feline")
-	:Basic("0d0+100", "1d300+300", CreatureSize.SMALL, "1d40+70")
+	:Basic(100, "1d300+300", CreatureSize.SMALL, "1d40+70")
 	:Body("", 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
 	:Stats("St 2d3 Dx 2d6 To 1d2 Le 1d1 Wi 1d1 Ma 1d1 Pe 3d3 Ch 1d1")
 	:Resist{ fire = "5d5-25", cold = "5d10" }
 	:Combat("1d4", "1d4")
-	:Main("2d4", "1d2", "2d4", "0d0")
+	:Main("2d4", "1d2", "2d4", 0)
 	:Description("Tawny and muscled, this cat silently pads forward. Almost "
 		.. "as large as a wolf, the mottled markings make it difficult to "
 		.. "see in the shadows. As its slitted eyes glance from side to "

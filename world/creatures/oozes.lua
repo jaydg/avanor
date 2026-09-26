@@ -6,9 +6,9 @@ Monster.new("gray_ooze")
 	:Body("", 0)
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
-	:Resist{ acid = "0d0+100", poison = "0d0+100" }
+	:Resist{ acid = 100, poison = 100 }
 	:Combat("3d5", "1d3")
-	:Main("1d2", "0d0", "1d3", "0d0")
+	:Main("1d2", 0, "1d3", 0)
 	:Description("This quivering gelatinous mass slowly oozes across the "
 		.. "floor towards you. It appears almost that two separate "
 		.. "intelligences control the creature, straining to separate from "
@@ -28,7 +28,7 @@ Monster.new("gelatinous_cube")
 	:AI(XStandardAI.INSECT)
 	:Stats("St 1d1 Dx 1d1 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d1 Ch 1d1")
 	:Combat("2d4", "2d15")
-	:Main("1d1", "1d10", "1d8", "0d0")
+	:Main("1d1", "1d10", "1d8", 0)
 	:Description("As you watch this clear mass you realise that you can "
 		.. "still see the remains of its last meal suspended inside. The "
 		.. "skull seems to laugh at you as ready your weapon to face this "

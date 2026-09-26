@@ -3,12 +3,12 @@
 
 Monster.new("xshee_voo")
 	:View("Xshee-Voo, the Cyclope", 'H', xColor.xLIGHTMAGENTA, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "giant")
-	:Basic("0d0+111", "0d0+900", CreatureSize.LARGE, "1d400+3000")
+	:Basic(111, 900, CreatureSize.LARGE, "1d400+3000")
 	:Body("head neck body cloak hand hand boots", 50)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 5d5+150 Dx 1d10+10 To 1d10+80 Le 1d5+5 Wi 1d5+5 Ma 1d5+5 Pe 1d6 Ch 1d5")
 	:Combat("1d5", "2d5")
-	:Main("0d0-10", "0d0+15", "5d5+150", "1d5+5")
+	:Main(-10, 15, "5d5+150", "1d5+5")
 	:Description("Xshee-Voo has lived in his mountain cave for as long as "
 		.. "anyone can remember. He never shows himself outside, and the "
 		.. "few that have been in his cave and returned speak of piles of "
@@ -29,7 +29,7 @@ Item.new("black_club")
 	:Basic(10000, 8000)
 	:Armour(-10, 0)
 	:Combat(-15, 2, 20, 0)
-	:Resist{ fire = "0d0+50" }
+	:Resist{ fire = 50 }
 	:Stats("")
 	:Brand("fire")
 	:Called("club of black obsidian")

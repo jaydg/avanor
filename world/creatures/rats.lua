@@ -2,13 +2,13 @@
 
 Monster.new("rat")
 	:View("rat", 'r', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "rat")
-	:Basic("0d0+100", "1d200+600", CreatureSize.VERY_SMALL, "5d4")
+	:Basic(100, "1d200+600", CreatureSize.VERY_SMALL, "5d4")
 	:Body("", 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PACK)
 	:Stats("St 1d2 Dx 2d4 To 1d2 Le 1d1 Wi 1d1 Ma 1d1 Pe 2d4 Ch 1d1")
 	:Resist{ fire = "5d5-50", cold = "2d10" }
-	:Combat("0d0", "1d2")
-	:Main("1d3", "0d0", "1d3", "0d0")
+	:Combat(0, "1d2")
+	:Main("1d3", 0, "1d3", 0)
 	:Description("Scuttling about in the shadows, rats can be found most "
 		.. "places in the valley. Those in the caves have grown larger and "
 		.. "bolder and present a threat to any explorers.")
@@ -18,11 +18,11 @@ Monster.new("rat")
 
 Monster.new("large_rat", "rat")
 	:View("large rat", 'r', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "rat")
-	:Basic("0d0+100", "1d200+600", CreatureSize.VERY_SMALL, "10d4")
+	:Basic(100, "1d200+600", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 1d3 Dx 2d5 To 1d3")
 	:Resist{ fire = "5d5-25", cold = "3d10" }
 	:Combat("1d2", "1d3")
-	:Main("2d2", "1d1", "2d3", "0d0")
+	:Main("2d2", "1d1", "2d3", 0)
 	:Description("These large rodents have grown almost to the size of a "
 		.. "housecat. Their sharp incisors glitter brightly in the light "
 		.. "from your torch. It is said that their teeth never stop growing "
@@ -33,11 +33,11 @@ Monster.new("large_rat", "rat")
 
 Monster.new("black_rat", "rat")
 	:View("black rat", 'r', xColor.xDARKGRAY, PersonType.IT, CreatureTemplate.LOW, "rat")
-	:Basic("0d0+100", "1d200+500", CreatureSize.VERY_SMALL, "10d4")
+	:Basic(100, "1d200+500", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 1d5 Dx 2d8 To 2d2 Pe 2d5")
 	:Resist{ fire = "5d5", cold = "5d10", acid = "5d10+40" }
 	:Combat("1d4", "1d6")
-	:Main("2d3", "1d2", "3d3", "0d0")
+	:Main("2d3", "1d2", "3d3", 0)
 	:Description("A foot long and covered in jet black fur, this rat "
 		.. "appears rather harmless (as far as rats go). Then you notice "
 		.. "the wildness in its eyes and slight froth dripping from its "
@@ -52,11 +52,11 @@ Monster.new("black_rat", "rat")
 
 Monster.new("huge_rat", "rat")
 	:View("huge rat", 'r', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, "rat")
-	:Basic("0d0+100", "1d200+400", CreatureSize.SMALL, "50d4")
+	:Basic(100, "1d200+400", CreatureSize.SMALL, "50d4")
 	:Stats("St 2d5 Dx 2d7 To 3d2 Pe 2d6")
 	:Resist{ cold = "5d10" }
 	:Combat("2d4", "2d3")
-	:Main("2d3", "2d2", "5d3", "0d0")
+	:Main("2d3", "2d2", "5d3", 0)
 	:Description("Come closer my child and you will hear of the giant rats "
 		.. "that come to take bad children away... Deep in the caves of "
 		.. "Avanor they nest, big as a wolf and meaner too. They come at "

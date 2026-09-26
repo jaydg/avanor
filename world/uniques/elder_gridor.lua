@@ -1,13 +1,13 @@
 
 Monster.new("elder_gridor")
 	:View("Elder Gridor", 'p', xColor.xWHITE, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
 	:Stats("St 1d3+5 Dx 1d3+5 To 1d3+4 Le 9d5 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 4d4")
 	:Combat("1d1", "1d1")
-	:Main("1d1", "0d0", "1d5+5", "1d5+5")
+	:Main("1d1", 0, "1d5+5", "1d5+5")
 	:Description("This kind looking old man leans on a cane as he gazes "
 		.. "towards you. As leader of this small farming community, he is "
 		.. "responsible for their well being. He gazes at you and asks for "

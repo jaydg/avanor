@@ -2,13 +2,13 @@
 
 Monster.new("farmer")
 	:View("farmer", 'p', xColor.xBROWN, PersonType.HE, CreatureTemplate.VERY_LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
 	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "2d3+4", "2d2")
+	:Main("1d1", 0, "2d3+4", "2d2")
 	:Description("This fellow is pale as something grown under a stone, and "
 		.. "no wonder: the village lives on mushrooms, and mushrooms come "
 		.. "out of the caves to the west. He and his fellows have spent "
@@ -21,13 +21,13 @@ Monster.new("farmer")
 
 Monster.new("goodwife")
 	:View("goodwife", 'p', xColor.xYELLOW, PersonType.SHE, CreatureTemplate.VERY_LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
 	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "2d3+1", "2d2")
+	:Main("1d1", 0, "2d3+1", "2d2")
 	:Description("This woman's clothing tells a story of a simple but hard "
 		.. "life. She prepares the meals for her husband every day and "
 		.. "takes care of their cottage.")
@@ -38,12 +38,12 @@ Monster.new("goodwife")
 
 Monster.new("bandit")
 	:View("bandit", 'p', xColor.xLIGHTGRAY, PersonType.HE, CreatureTemplate.LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50)
 	:AI(XStandardAI.HUMAN + XStandardAI.COWARD)
 	:Stats("St 1d4+10 Dx 1d4+10 To 1d4+10 Le 1d4+10 Wi 1d4+10 Ma 1d4+10 Pe 1d4+15 Ch 1d4+10")
 	:Combat("1d4", "1d3")
-	:Main("1d4", "0d0", "1d4+10", "2d5")
+	:Main("1d4", 0, "1d4+10", "2d5")
 	:Description("A scruffy looking fellow, he looks much like any citizen "
 		.. "of the valley except for the green cape, the twin daggers and "
 		.. "the malicious glint in his eye. You get the distinct impression "
@@ -59,13 +59,13 @@ Monster.new("bandit")
 
 Monster.new("citizen")
 	:View("citizen", 'p', xColor.xLIGHTGRAY, PersonType.HE, CreatureTemplate.VERY_LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
 	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "2d3+1", "2d2")
+	:Main("1d1", 0, "2d3+1", "2d2")
 	:Description("This upstanding citizen of the castle of Avanor hurries "
 		.. "about the duties of the day. The calm relaxed confidence "
 		.. "surrounding him demonstrates his faith in the forces of the "
@@ -75,13 +75,13 @@ Monster.new("citizen")
 
 Monster.new("fcitizen")
 	:View("citizen", 'p', xColor.xLIGHTGRAY, PersonType.SHE, CreatureTemplate.VERY_LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 0)
 	:Never("invisible")
 	:AI(XStandardAI.HUMAN + XStandardAI.PEACEFUL + XStandardAI.COWARD)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6+6 Ch 1d3")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "2d3+1", "2d2")
+	:Main("1d1", 0, "2d3+1", "2d2")
 	:Description("This upstanding citizen of the castle of Avanor hurries "
 		.. "about the duties of the day. The calm relaxed confidence "
 		.. "surrounding her demonstrates her faith in the forces of the "
@@ -91,7 +91,7 @@ Monster.new("fcitizen")
 
 Monster.new("royal_guard")
 	:View("royal guardian", 'p', xColor.xBLUE, PersonType.HE, CreatureTemplate.LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50)
 	:Never("invisible")
 	:Always("see_invisible")
@@ -139,7 +139,7 @@ Monster.new("royal_guard_elite", "royal_guard")
 
 Monster.new("death_knight")
 	:View("death knight", 'p', xColor.xDARKGRAY, PersonType.HE, CreatureTemplate.LOW, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 1d8+20 Dx 1d8+20 To 1d8+10 Le 1d5+10 Wi 1d4+5 Ma 1d4+5 Pe 3d6 Ch 5d5")
@@ -157,7 +157,7 @@ Monster.new("death_knight")
 
 Monster.new("shopkeeper")
 	:View("shopkeeper", 'p', xColor.xLIGHTGRAY, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "human")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100)
 	:Never("invisible")
 	:Always("see_invisible")
@@ -177,12 +177,12 @@ Monster.new("shopkeeper")
 
 Monster.new("dwarf")
 	:View("dwarf", 'h', xColor.xBROWN, PersonType.HE, CreatureTemplate.VERY_LOW, "humanoid")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 50)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)
 	:Stats("St 1d3+10 Dx 1d3+7 To 1d3+12 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "2d3+1", "2d2")
+	:Main("1d1", 0, "2d3+1", "2d2")
 	:Description("Standing only about 4 feet high, dwarves are known to be "
 		.. "master diggers and metal workers. With a beard starting right "
 		.. "below the merrily twinkling eyes, the dwarf whistles a lively "
@@ -196,7 +196,7 @@ Monster.new("dwarf_guard", "dwarf")
 	:Always("see_invisible")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 1d3+20 Dx 1d3+7 To 1d3+22 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3")
-	:Main("1d1", "0d0", "2d4+3", "2d2")
+	:Main("1d1", 0, "2d4+3", "2d2")
 	:Description("Guardians of the underground dwarven city, these dwarves "
 		.. "are well armed and prepared for any breach of security both "
 		.. "physical and magical. Only a fool would attempt to accost one "

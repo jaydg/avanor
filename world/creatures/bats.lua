@@ -2,13 +2,13 @@
 
 Monster.new("bat")
 	:View("bat", 'b', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "bat")
-	:Basic("0d0+100", "1d200+800", CreatureSize.VERY_SMALL, "3d4")
+	:Basic(100, "1d200+800", CreatureSize.VERY_SMALL, "3d4")
 	:Body("", 0)
 	:AI(XStandardAI.COWARD + XStandardAI.RANDOM_MOVE)
 	:Stats("St 1d1 Dx 1d4 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 3d10 Ch 1d1")
 	:Resist{ fire = "5d5-50", see_invisible = true }
-	:Combat("0d0", "1d2")
-	:Main("1d4", "0d0", "1d2", "0d0")
+	:Combat(0, "1d2")
+	:Main("1d4", 0, "1d2", 0)
 	:Description("Flapping wings and squeaks in the darkness are a common "
 		.. "sound to all who enter the caves of Avanor. Usually bats leave "
 		.. "travellers alone, but sickness and magic sometimes cause them to "
@@ -17,11 +17,11 @@ Monster.new("bat")
 
 Monster.new("huge_bat", "bat")
 	:View("huge bat", 'b', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.VERY_LOW, "bat")
-	:Basic("0d0+100", "1d200+700", CreatureSize.VERY_SMALL, "10d4")
+	:Basic(100, "1d200+700", CreatureSize.VERY_SMALL, "10d4")
 	:Stats("St 1d4 Dx 1d6 To 1d2 Pe 4d10")
 	:Resist{ see_invisible = true }
 	:Combat("1d2", "1d4")
-	:Main("1d4", "1d1", "1d6", "0d0")
+	:Main("1d4", "1d1", "1d6", 0)
 	:Description("With a wing span up to 10 feet, these bats can carry away "
 		.. "much larger prey than their smaller cousins. They have been "
 		.. "seen carrying creatures as large as a wolf away to feed their "
@@ -40,7 +40,7 @@ Monster.new("huge_bat", "bat")
 -- that the same way its cousins do.
 Monster.new("mongbat")
 	:View("mongbat", 'b', xColor.xLIGHTRED, PersonType.IT, CreatureTemplate.LOW, "bat")
-	:Basic("0d0+111", "1d100+700", CreatureSize.SMALL, "1d50+300")
+	:Basic(111, "1d100+700", CreatureSize.SMALL, "1d50+300")
 	:Body("head neck body hand hand", 5)
 	-- A flock, and a cowardly one: alone it thinks better of it, and in a
 	-- dozen it never has to. ALLOW_PACK is what makes the difference
@@ -51,7 +51,7 @@ Monster.new("mongbat")
 	:Stats("St 2d3 Dx 6d4 To 1d3 Le 1d3 Wi 1d2 Ma 1d2 Pe 4d8 Ch 1d1")
 	:Resist{ fire = "5d5-40", see_invisible = true }
 	:Combat("3d4", "2d3")
-	:Main("5d3", "0d0", "1d6+2", "0d0")
+	:Main("5d3", 0, "1d6+2", 0)
 	:Description("A thing the size of a small boy with the face of a bat "
 		.. "and the hands of a monkey, matted brown fur over all of it and "
 		.. "the talons never sheathed. One is a nuisance. They do not come "
@@ -62,10 +62,10 @@ Monster.new("mongbat")
 
 Monster.new("greater_mongbat", "mongbat")
 	:View("greater mongbat", 'b', xColor.xRED, PersonType.IT, CreatureTemplate.ABOVE_LOW, "bat")
-	:Basic("0d0+111", "1d100+600", CreatureSize.NORMAL, "1d100+600")
+	:Basic(111, "1d100+600", CreatureSize.NORMAL, "1d100+600")
 	:Stats("St 4d4 Dx 7d4 To 2d4 Le 1d3 Wi 1d3 Ma 1d2 Pe 5d8 Ch 1d1")
 	:Combat("4d4", "3d3")
-	:Main("6d3", "1d1", "2d6+4", "0d0")
+	:Main("6d3", "1d1", "2d6+4", 0)
 	:Description("Older, heavier and no better tempered, with a wingspan "
 		.. "that fills the passage and scars enough to show it has been "
 		.. "doing this a while. It leads, in the loose sense that a mob has "

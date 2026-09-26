@@ -8,7 +8,7 @@ Monster.new("small_snake")
 	:Stats("St 1d1 Dx 1d2 To 1d1 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d2 Ch 1d1")
 	:Resist{ cold = "1d10-90" }
 	:Combat("2d5", "1d3")
-	:Main("1d3", "0d0", "1d2", "0d0")
+	:Main("1d3", 0, "1d2", 0)
 	:Description("This tiny creature lies in the dust looking like a piece "
 		.. "of rope. Suddenly a pink tongue protrudes from one end and eyes "
 		.. "open sensing your presence. Though unimposing at best, this "
@@ -21,7 +21,7 @@ Monster.new("gray_snake", "small_snake")
 	:Stats("St 1d2 Dx 1d4 To 1d2 Pe 1d2")
 	:Resist{ cold = "1d10-50" }
 	:Combat("2d5", "1d3")
-	:Main("1d3", "0d0", "1d3", "0d0")
+	:Main("1d3", 0, "1d3", 0)
 	:Description("A long serpent slithers towards you, its grey-black "
 		.. "scales making it hard to see against the stone of the cavern "
 		.. "floor. The pale green eyes glimmer with hunger. Its pink tongue "
@@ -33,7 +33,7 @@ Monster.new("brown_snake", "gray_snake")
 	:View("brown snake", 'R', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "reptile")
 	:Resist{ cold = "1d10-30" }
 	:Combat("2d5", "1d4")
-	:Main("1d3", "0d0", "1d5", "0d0")
+	:Main("1d3", 0, "1d5", 0)
 	:Description("This snake will normally keep to the forests and caves of "
 		.. "Avanor. The naturally mottled brown coat allows it to blend in "
 		.. "with the area around it. Though not a great danger, travellers "
@@ -44,7 +44,7 @@ Monster.new("salamander", "gray_snake")
 	:View("salamander", 'R', xColor.xRED, PersonType.IT, CreatureTemplate.LOW, "reptile")
 	:Resist{ cold = "1d10-50", fire = "1d90" }
 	:Combat("2d4", "1d4")
-	:Main("1d9", "1d3", "1d3", "0d0")
+	:Main("1d9", "1d3", "1d3", 0)
 	:Description("Salamanders prefer living in dark, damp caves and eating "
 		.. "the bugs that fly around. The release of Power mutated the "
 		.. "salamanders in the valley of Avanor until they were 4 feet long "
@@ -60,7 +60,7 @@ Monster.new("large_snake", "gray_snake")
 	:Stats("St 1d3 Dx 1d5 To 1d3 Pe 1d2")
 	:Resist{ cold = "1d10-40" }
 	:Combat("6d5", "1d5")
-	:Main("1d4", "1d1", "2d3", "0d0")
+	:Main("1d4", "1d1", "2d3", 0)
 	:Description("This serpent seems to have been lost from some sort of "
 		.. "travelling show. Its emerald green scales show up clearly "
 		.. "against the stone and dirt. Idly you wonder how it has survived "
@@ -78,7 +78,7 @@ Monster.new("cobra", "gray_snake")
 	:Stats("St 1d3 Dx 1d7 To 2d2 Pe 1d4")
 	:Resist{ cold = "1d10-30" }
 	:Combat("7d5", "1d7")
-	:Main("1d8", "1d1", "3d3", "0d0")
+	:Main("1d8", "1d1", "3d3", 0)
 	:Description("The cobra looks much like a normal snake until it lifts "
 		.. "its head and spreads its hood. Then the markings clearly "
 		.. "indicate the danger you face. A cobra's poison is more deadly "
@@ -93,7 +93,7 @@ Monster.new("king_cobra", "gray_snake")
 	:Stats("St 1d7 Dx 1d8 To 3d2 Pe 2d3")
 	:Resist{ cold = "1d10-20" }
 	:Combat("8d5", "1d12")
-	:Main("2d5", "2d2", "4d3", "0d0")
+	:Main("2d5", "2d2", "4d3", 0)
 	:Description("The distinct crown shaped mark on the back of this "
 		.. "snake's head gave the title it now carries. However, if you are "
 		.. "close enough to see the crown than you should have been able to "
@@ -110,7 +110,7 @@ Monster.new("rattlesnake", "gray_snake")
 	:Stats("St 2d4 Dx 2d5 To 3d2 Pe 2d3")
 	:Resist{ cold = "1d10-30" }
 	:Combat("10d5", "1d12")
-	:Main("1d5", "1d2", "5d3", "0d0")
+	:Main("1d5", "1d2", "5d3", 0)
 	:Description("An ominous rattle sounds from ahead of you as a coiled "
 		.. "rattlesnake prepares to defend its territory. Poison drips from "
 		.. "its fangs and the cold glint in its eyes seem to foreshadow "

@@ -2,7 +2,7 @@
 
 Monster.new("skeleton")
 	:View("skeleton", 's', xColor.xWHITE, PersonType.IT, CreatureTemplate.VERY_LOW, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body hand hand", 2)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 4d3 Dx 2d2 To 2d3 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1")
@@ -16,7 +16,7 @@ Monster.new("skeleton")
 
 Monster.new("zombie")
 	:View("zombie", 'z', xColor.xBROWN, PersonType.IT, CreatureTemplate.LOW, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body hand hand boots", 5)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 8d3 Dx 2d2 To 5d5 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1")
@@ -31,7 +31,7 @@ Monster.new("zombie")
 
 Monster.new("ghoul")
 	:View("ghoul", 'z', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.LOW, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body hand hand boots", 10)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 10d3 Dx 2d3 To 7d5 Le 1d3 Wi 1d3 Ma 1d2 Pe 1d2 Ch 1d1")
@@ -47,13 +47,13 @@ Monster.new("ghoul")
 
 Monster.new("ghost")
 	:View("ghost", 'G', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.ABOVE_LOW, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 6d5 Dx 4d5 To 2d5 Le 5d5 Wi 5d5 Ma 5d5 Pe 1d2 Ch 1d1")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("4d4", "2d4")
-	:Main("6d4", "0d0", "1d9", "1d3")
+	:Main("6d4", 0, "1d9", "1d3")
 	:Description("A chill breeze passing by is all most ever felt of this "
 		.. "spirit set to wander upon the earth. Those with good eyesight "
 		.. "may spot ghosts in the dark corridors of the earth, but they do "
@@ -62,13 +62,13 @@ Monster.new("ghost")
 
 Monster.new("spectre")
 	:View("spectre", 'G', xColor.xMAGENTA, PersonType.IT, CreatureTemplate.AVG, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 6d5 Dx 4d5 To 2d5 Le 5d5 Wi 5d5 Ma 5d5 Pe 1d2 Ch 1d1")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("4d4", "4d4")
-	:Main("6d4", "0d0", "2d9", "1d3")
+	:Main("6d4", 0, "2d9", "1d3")
 	:Description("It is said the spectres were once the evil people of this "
 		.. "earth. Forbidden entry into the next world, their spirits seek "
 		.. "to destroy those of this world. They are almost never seen "
@@ -80,13 +80,13 @@ Monster.new("spectre")
 
 Monster.new("dread")
 	:View("dread", 'G', xColor.xBROWN, PersonType.IT, CreatureTemplate.HI, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM)
 	:Stats("St 6d10 Dx 5d5 To 3d5 Le 8d5 Wi 8d5 Ma 8d5 Pe 1d2 Ch 1d1")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("6d6", "5d5")
-	:Main("8d5", "0d0", "8d5", "10d8")
+	:Main("8d5", 0, "8d5", "10d8")
 	:Description("Panic and fear threaten to overwhelm you as you face "
 		.. "this evil spirit. Aptly named for the feelings it causes, the "
 		.. "dread seeks only to destroy all living things. So stealthy and "
@@ -99,13 +99,13 @@ Monster.new("dread")
 
 Monster.new("vampire")
 	:View("vampire", 'V', xColor.xBLUE, PersonType.HE, CreatureTemplate.HI, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots", 100)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 4d6 Dx 5d5 To 3d5 Le 8d5 Wi 8d5 Ma 8d8 Pe 1d2 Ch 1d1")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("4d6", "3d5")
-	:Main("8d5", "0d0", "3d5", "10d10")
+	:Main("8d5", 0, "3d5", "10d10")
 	:Description("This foul creature of the night drinks of its victims for "
 		.. "sustenance, slowly draining their victim of life until they "
 		.. "also become a vampire. They possess numerous abilities, and "
@@ -120,13 +120,13 @@ Monster.new("vampire")
 
 Monster.new("lich")
 	:View("lich", 'L', xColor.xLIGHTGRAY, PersonType.HE, CreatureTemplate.HI, "undead")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1200")
 	:Body("head neck body cloak hand hand ring ring gloves boots", 100)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 3d8 Dx 5d5 To 3d5 Le 8d5 Wi 6d5+5 Ma 10d8 Pe 1d2 Ch 1d1")
 	:Resist{ invisible = true, see_invisible = true }
 	:Combat("2d5", "1d4")
-	:Main("8d5", "0d0", "3d5", "10d10")
+	:Main("8d5", 0, "3d5", "10d10")
 	:Description("\"Once a sorcerer, always a sorcerer.\" Liches were "
 		.. "powerful magic wielders in life and they continue to wield that "
 		.. "power after their death. They are able to summon great magics "

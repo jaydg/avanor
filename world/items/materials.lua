@@ -31,7 +31,7 @@ Material.new("cloth")
 	:Quality(ItemQuality.POOR)
 	:Body(4, 8)
 	:Armour("1d1", "1d1")
-	:Combat("", "0d0", "")
+	:Combat("", 0, "")
 	:Register()
 
 Material.new("leather")
@@ -40,7 +40,7 @@ Material.new("leather")
 	:Quality(ItemQuality.POOR)
 	:Body(6, 10)
 	:Armour("1d2", "1d1")
-	:Combat("", "0d0", "")
+	:Combat("", 0, "")
 	:Register()
 
 Material.new("studded_leather")
@@ -50,7 +50,7 @@ Material.new("studded_leather")
 	:Quality(ItemQuality.AVG)
 	:Body(8, 12)
 	:Armour("1d3", "1d2")
-	:Combat("", "0d0", "")
+	:Combat("", 0, "")
 	:Register()
 
 Material.new("wooden")
@@ -59,7 +59,7 @@ Material.new("wooden")
 	:Quality(ItemQuality.POOR)
 	:Body(8, 7)
 	:Armour("1d2", "1d3")
-	:Combat("1d2", "0d0", "1d2")
+	:Combat("1d2", 0, "1d2")
 	:Register()
 
 Material.new("stone")
@@ -68,8 +68,8 @@ Material.new("stone")
 	:Quality(ItemQuality.POOR)
 	:Body(20, 5)
 	:Armour("1d3", "1d4+1")
-	:Combat("1d3", "0d0", "1d2")
-	:Resist{ earth = "0d0+10" }
+	:Combat("1d3", 0, "1d2")
+	:Resist{ earth = 10 }
 	:Register()
 
 Material.new("iron")
@@ -78,7 +78,7 @@ Material.new("iron")
 	:Quality(ItemQuality.POOR)
 	:Body(30, 15)
 	:Armour("1d3", "1d5+1")
-	:Combat("1d2", "0d0", "1d3+0")
+	:Combat("1d2", 0, "1d3+0")
 	:Register()
 
 Material.new("bronze")
@@ -87,8 +87,8 @@ Material.new("bronze")
 	:Quality(ItemQuality.AVG)
 	:Body(26, 17)
 	:Armour("1d3", "1d5+1")
-	:Combat("1d4", "0d0", "1d3+0")
-	:Resist{ stun = "0d0+5" }
+	:Combat("1d4", 0, "1d3+0")
+	:Resist{ stun = 5 }
 	:Register()
 
 Material.new("brass")
@@ -97,8 +97,8 @@ Material.new("brass")
 	:Quality(ItemQuality.AVG)
 	:Body(30, 30)
 	:Armour("1d3", "1d5+1")
-	:Combat("1d3", "0d0", "1d3+0")
-	:Resist{ stun = "0d0+10" }
+	:Combat("1d3", 0, "1d3+0")
+	:Resist{ stun = 10 }
 	:Property(SpecialProperty.SLOW_DIGESTION)
 	:Register()
 
@@ -108,8 +108,8 @@ Material.new("silver")
 	:Quality(ItemQuality.FAIR)
 	:Body(20, 30)
 	:Armour("1d3", "1d5+2")
-	:Combat("1d4+0", "0d0", "1d4+0")
-	:Resist{ acid = "0d0+10" }
+	:Combat("1d4+0", 0, "1d4+0")
+	:Resist{ acid = 10 }
 	:Register()
 
 Material.new("golden")
@@ -118,8 +118,8 @@ Material.new("golden")
 	:Quality(ItemQuality.GOOD)
 	:Body(22, 50)
 	:Armour("1d3+1", "1d5+2")
-	:Combat("1d5", "0d0", "1d5+0")
-	:Resist{ acid = "0d0+20" }
+	:Combat("1d5", 0, "1d5+0")
+	:Resist{ acid = 20 }
 	:Property(SpecialProperty.REGENERATION + SpecialProperty.FAST_DIGESTION)
 	:Register()
 
@@ -129,8 +129,8 @@ Material.new("crystal")
 	:Quality(ItemQuality.AVG)
 	:Body(25, 14)
 	:Armour("1d3+3", "1d5+2")
-	:Combat("1d5+1", "0d0", "1d5+1")
-	:Resist{ water = "0d0+10" }
+	:Combat("1d5+1", 0, "1d5+1")
+	:Resist{ water = 10 }
 	:Register()
 
 Material.new("steel")
@@ -139,8 +139,8 @@ Material.new("steel")
 	:Quality(ItemQuality.FAIR)
 	:Body(15, 20)
 	:Armour("1d3+3", "1d5+2")
-	:Combat("1d6+1", "0d0", "1d5+1")
-	:Resist{ stun = "0d0+15" }
+	:Combat("1d6+1", 0, "1d5+1")
+	:Resist{ stun = 15 }
 	:Register()
 
 Material.new("obsidian")
@@ -149,8 +149,8 @@ Material.new("obsidian")
 	:Quality(ItemQuality.FAIR)
 	:Body(13, 20)
 	:Armour("1d3+3", "1d6+2")
-	:Combat("1d6+1", "0d0", "1d6+1")
-	:Resist{ fire = "0d0+15" }
+	:Combat("1d6+1", 0, "1d6+1")
+	:Resist{ fire = 15 }
 	:Register()
 
 Material.new("mithril")
@@ -160,7 +160,7 @@ Material.new("mithril")
 	:Body(11, 100)
 	:Armour("1d3+6", "2d3+3")
 	:Combat("2d4+4", "0d1", "2d4+3")
-	:Resist{ poison = "0d0+10", stun = "0d0+10", confuse = "0d0+20" }
+	:Resist{ poison = 10, stun = 10, confuse = 20 }
 	:Register()
 
 Material.new("adamantium")
@@ -170,7 +170,7 @@ Material.new("adamantium")
 	:Body(9, 300)
 	:Armour("1d3+12", "2d4+5")
 	:Combat("2d6+6", "1d0", "2d6+3")
-	:Resist{ paralyse = "0d0+20", stun = "0d0+15", confuse = "0d0+30", blind = "0d0+30" }
+	:Resist{ paralyse = 20, stun = 15, confuse = 30, blind = 30 }
 	:Property(SpecialProperty.REGENERATION)
 	:Register()
 

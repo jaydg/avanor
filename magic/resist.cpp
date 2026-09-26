@@ -262,10 +262,25 @@ std::string ResistTableToString(const sol::table& t, const std::string& where)
             }
 
             dice = value.as<std::string>();
+        } else if (value.is<int>()) {
+            // A plain number is a constant. sol2 hands a Lua number to a
+            // std::string parameter quite happily, but is<std::string>()
+            // on a table value is strict, so the table form needs this
+            // branch of its own to keep { fire = 50 } working the same
+            // way :Basic(50, ...) does.
+            if (isResistanceFlag(id)) {
+                std::cerr << "world: " << where << ": '" << id
+                          << "' is held or not held - say true, not a"
+                             " number" << std::endl;
+
+                continue;
+            }
+
+            dice = std::to_string(value.as<int>());
         } else {
             std::cerr << "world: " << where << ": '" << id
-                      << "' wants dice (\"5d5+25\") or, for one held"
-                         " outright, true" << std::endl;
+                      << "' wants a number, dice (\"5d5+25\") or, for one"
+                         " held outright, true" << std::endl;
 
             continue;
         }

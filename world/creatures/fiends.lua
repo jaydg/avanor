@@ -31,15 +31,15 @@
 
 Monster.new("lemure")
 	:View("lemure", 'u', xColor.xBROWN, PersonType.IT, CreatureTemplate.VERY_LOW, "demon")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.SMALL, "1d100+900")
+	:Basic(100, 1000, CreatureSize.SMALL, "1d100+900")
 	:Body("", 0)
 	-- No COWARD: a lemure has nothing left to be frightened with. It comes
 	-- on until it is cut down, which is the whole of what it is for.
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.FREE_WAY)
 	:Stats("St 3d3 Dx 1d2 To 4d3 Le 1d1 Wi 1d1 Ma 1d1 Pe 1d2 Ch 1d1")
-	:Resist{ fire = "0d0+80", cold = "0d0-40" }
+	:Resist{ fire = 80, cold = -40 }
 	:Combat("1d2", "1d4")
-	:Main("0d0", "1d2", "1d8+2", "0d0")
+	:Main(0, "1d2", "1d8+2", 0)
 	:Description("A mound of wet grey tallow in the rough shape of a man, "
 		.. "running and re-forming as it comes. It has no face to read and "
 		.. "makes no sound beyond the wet slap of itself against the floor. "
@@ -50,11 +50,11 @@ Monster.new("lemure")
 
 Monster.new("dretch")
 	:View("dretch", 'u', xColor.xLIGHTGREEN, PersonType.IT, CreatureTemplate.VERY_LOW, "demon")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.SMALL, "1d100+800")
+	:Basic(100, 1000, CreatureSize.SMALL, "1d100+800")
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Body("head neck body hand hand", 5)
 	:Stats("St 4d3 Dx 2d3 To 3d3 Le 1d2 Wi 1d2 Ma 1d2 Pe 2d3 Ch 1d1")
-	:Resist{ fire = "0d0+60", cold = "0d0-30" }
+	:Resist{ fire = 60, cold = -30 }
 	:Combat("1d3", "1d5")
 	:Main("1d2", "1d1", "1d8+3", "1d2")
 	:Description("Squat, pot-bellied and altogether wretched, the dretch is "
@@ -67,15 +67,15 @@ Monster.new("dretch")
 
 Monster.new("imp")
 	:View("imp", 'u', xColor.xRED, PersonType.IT, CreatureTemplate.LOW, "demon")
-	:Basic("0d0+111", "0d0+900", CreatureSize.VERY_SMALL, "1d50+200")
+	:Basic(111, 900, CreatureSize.VERY_SMALL, "1d50+200")
 	:Body("head neck body", 2)
 	:AI(XStandardAI.CREATURE)
 	:Stats("St 2d3 Dx 5d4 To 2d3 Le 4d3 Wi 3d3 Ma 3d3 Pe 4d4 Ch 2d3")
 	-- Unseen until it stings. The hero's own warning that something unseen
 	-- is near is the only notice they get, which is the point of it.
-	:Resist{ invisible = true, see_invisible = true, fire = "0d0+80", cold = "0d0-30" }
+	:Resist{ invisible = true, see_invisible = true, fire = 80, cold = -30 }
 	:Combat("3d4", "1d4")
-	:Main("4d3", "0d0", "2d4+4", "2d3")
+	:Main("4d3", 0, "2d4+4", "2d3")
 	:Description("No larger than a cat and a great deal worse tempered, the "
 		.. "imp is mostly tail and malice. It spends its time unseen and "
 		.. "its patience is shorter than its attention, so what usually "
@@ -85,13 +85,13 @@ Monster.new("imp")
 
 Monster.new("quasit")
 	:View("quasit", 'u', xColor.xLIGHTMAGENTA, PersonType.IT, CreatureTemplate.LOW, "demon")
-	:Basic("0d0+111", "0d0+900", CreatureSize.VERY_SMALL, "1d50+200")
+	:Basic(111, 900, CreatureSize.VERY_SMALL, "1d50+200")
 	:Body("head neck body", 2)
 	:AI(XStandardAI.CREATURE)
 	:Stats("St 2d3 Dx 5d4 To 2d3 Le 3d3 Wi 3d3 Ma 4d3 Pe 4d4 Ch 1d3")
-	:Resist{ invisible = true, see_invisible = true, fire = "0d0+50", cold = "0d0-30" }
+	:Resist{ invisible = true, see_invisible = true, fire = 50, cold = -30 }
 	:Combat("3d4", "1d4")
-	:Main("4d3", "0d0", "2d4+4", "2d4")
+	:Main("4d3", 0, "2d4+4", "2d4")
 	:Description("The demons' answer to the imp, and no improvement on it. "
 		.. "A knot of horns and claws that is rarely where you last saw it, "
 		.. "the quasit prefers to make its victims afraid before it makes "
@@ -105,16 +105,16 @@ Monster.new("quasit")
 
 Monster.new("hell_hound")
 	:View("hell hound", 'C', xColor.xRED, PersonType.IT, CreatureTemplate.ABOVE_LOW, "demon")
-	:Basic("0d0+100", "1d100+700", CreatureSize.NORMAL, "1d200+1200")
+	:Basic(100, "1d100+700", CreatureSize.NORMAL, "1d200+1200")
 	:Body("", 0)
 	-- A hunting pack that does not break. The dogs upstairs flee when they
 	-- are outmatched; these were bred somewhere that does not allow it.
 	:AI(XStandardAI.FREE_WAY + XStandardAI.RANDOM_MOVE + XStandardAI.FIND_WAY
 		+ XStandardAI.ALLOW_PACK)
 	:Stats("St 5d4 Dx 4d3 To 4d4 Le 1d2 Wi 2d3 Ma 1d2 Pe 5d4 Ch 1d1")
-	:Resist{ fire = "0d0+100", cold = "0d0-50" }
+	:Resist{ fire = 100, cold = -50 }
 	:Combat("2d5", "2d5")
-	:Main("2d4", "1d3", "2d8+4", "0d0")
+	:Main("2d4", "1d3", "2d8+4", 0)
 	:Description("It hunts the way a dog hunts, in a line abreast and "
 		.. "without hurry, and the heat comes off it in a wash you feel "
 		.. "before you see the eyes. What it leaves behind it is not tracks "
@@ -131,12 +131,12 @@ Monster.new("hell_hound")
 
 Monster.new("bearded_devil")
 	:View("bearded devil", '&', xColor.xGREEN, PersonType.HE, CreatureTemplate.AVG, "demon")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1400")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1400")
 	:Body("head neck body hand hand boots", 30)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY)
 	:Stats("St 7d4 Dx 5d4 To 6d4 Le 3d3 Wi 4d3 Ma 2d3 Pe 4d3 Ch 1d3")
-	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+60" }
+	:Resist{ fire = 100, cold = -40, poison = 60 }
 	:Combat("3d5", "2d4")
 	:Main("3d4", "2d2", "3d8+6", "1d4")
 	:Description("Lean and grey and taller than a man, with a writhing mass "
@@ -150,14 +150,14 @@ Monster.new("bearded_devil")
 
 Monster.new("barbed_devil")
 	:View("barbed devil", '&', xColor.xLIGHTRED, PersonType.HE, CreatureTemplate.AVG, "demon")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+1600")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+1600")
 	-- Hands, so it can work a door, but nothing drawn: a barbed devil
 	-- fights with what it is covered in.
 	:Body("head neck body hand hand", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.FREE_WAY
 		+ XStandardAI.FIND_WAY)
 	:Stats("St 8d4 Dx 4d4 To 8d4 Le 3d3 Wi 4d3 Ma 4d3 Pe 5d4 Ch 1d2")
-	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+60" }
+	:Resist{ fire = 100, cold = -40, poison = 60 }
 	:Combat("3d5", "3d4")
 	:Main("2d4", "3d3", "4d8+8", "3d4")
 	:Description("Every inch of it is spines, from the crown of its head to "
@@ -177,12 +177,12 @@ Monster.new("barbed_devil")
 
 Monster.new("vrock")
 	:View("vrock", '&', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.AVG, "demon")
-	:Basic("0d0+100", "1d100+900", CreatureSize.LARGE, "1d300+1800")
+	:Basic(100, "1d100+900", CreatureSize.LARGE, "1d300+1800")
 	:Body("head neck body hand hand", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.FREE_WAY + XStandardAI.FIND_WAY
 		+ XStandardAI.ALLOW_PACK)
 	:Stats("St 8d4 Dx 6d4 To 7d4 Le 2d3 Wi 3d3 Ma 3d3 Pe 6d4 Ch 1d2")
-	:Resist{ fire = "0d0+70", cold = "0d0-30", poison = "0d0+80" }
+	:Resist{ fire = 70, cold = -30, poison = 80 }
 	:Combat("3d5", "3d5")
 	:Main("3d4", "2d2", "4d8+6", "2d4")
 	:Description("A vulture the size of a man, if a vulture stood upright "
@@ -197,12 +197,12 @@ Monster.new("vrock")
 
 Monster.new("bone_devil")
 	:View("bone devil", '&', xColor.xWHITE, PersonType.HE, CreatureTemplate.HI, "demon")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.LARGE, "1d300+1600")
+	:Basic(100, 1000, CreatureSize.LARGE, "1d300+1600")
 	:Body("head neck body cloak hand hand ring ring", 40)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY)
 	:Stats("St 9d5 Dx 7d4 To 8d5 Le 5d4 Wi 6d4 Ma 5d4 Pe 6d4 Ch 2d3")
-	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+100" }
+	:Resist{ fire = 100, cold = -40, poison = 100 }
 	:Combat("4d5", "3d5")
 	:Main("5d4", "3d3", "4d9+10", "4d5")
 	:Description("Nine feet of dry hide stretched over a frame that is "
@@ -217,14 +217,14 @@ Monster.new("bone_devil")
 
 Monster.new("horned_devil")
 	:View("horned devil", '&', xColor.xLIGHTCYAN, PersonType.HE, CreatureTemplate.HI, "demon")
-	:Basic("1d10+90", "0d0+900", CreatureSize.LARGE, "1d400+2400")
+	:Basic("1d10+90", 900, CreatureSize.LARGE, "1d400+2400")
 	-- No random weapon: the tail and the fork are the point of it, and
 	-- a horned devil turning up with a looted short sword is not.
 	:Body("head neck body hand hand ring ring", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY)
 	:Stats("St 12d5 Dx 6d4 To 10d5 Le 5d4 Wi 6d4 Ma 6d4 Pe 6d4 Ch 3d3")
-	:Resist{ fire = "0d0+100", cold = "0d0-40", poison = "0d0+100" }
+	:Resist{ fire = 100, cold = -40, poison = 100 }
 	:Combat("5d5", "4d5")
 	:Main("4d5", "4d3", "5d9+14", "5d5")
 	:Description("Kin to the thing that got loose in the mushroom caves, "
@@ -265,16 +265,16 @@ Monster.new("horned_devil")
 
 Monster.new("starveling")
 	:View("starveling", 'W', xColor.xLIGHTGRAY, PersonType.IT, CreatureTemplate.AVG, "demon")
-	:Basic("1d10+90", "0d0+1000", CreatureSize.NORMAL, "1d100+700")
+	:Basic("1d10+90", 1000, CreatureSize.NORMAL, "1d100+700")
 	:Body("head neck body cloak hand hand boots", 20)
 	-- No COWARD, and EXPLORER_MOVE: whatever judgement it had about odds
 	-- went the way everything else did, and it does not wait to be found.
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY + XStandardAI.EXPLORER_MOVE)
 	:Stats("St 6d4 Dx 5d4 To 4d4 Le 2d3 Wi 1d2 Ma 1d2 Pe 5d4 Ch 1d1")
-	:Resist{ fire = "0d0+40", cold = "0d0-20", poison = "0d0+80", disease = "0d0+100" }
+	:Resist{ fire = 40, cold = -20, poison = 80, disease = 100 }
 	:Combat("3d4", "2d4")
-	:Main("3d4", "0d0", "3d8+4", "1d3")
+	:Main("3d4", 0, "3d8+4", "1d3")
 	:Description("The lesser hunger, and not lesser by much. Skin drawn "
 		.. "tight enough to count the bones through it, the grey of three "
 		.. "days dead, and the smell arrives well before it does. What it "
@@ -288,12 +288,12 @@ Monster.new("starveling")
 Monster.new("wendigo")
 	:View("wendigo", 'W', xColor.xWHITE, PersonType.IT, CreatureTemplate.HI, "demon")
 	-- Quicker than anything else this deep. Outrunning one is not a plan.
-	:Basic("0d0+111", "0d0+900", CreatureSize.LARGE, "1d200+1100")
+	:Basic(111, 900, CreatureSize.LARGE, "1d200+1100")
 	:Body("head neck body hand hand", 0)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP
 		+ XStandardAI.FREE_WAY + XStandardAI.FIND_WAY + XStandardAI.EXPLORER_MOVE)
 	:Stats("St 10d5 Dx 9d4 To 8d5 Le 3d3 Wi 5d4 Ma 3d3 Pe 8d4 Ch 1d1")
-	:Resist{ fire = "0d0+60", cold = "0d0-20", poison = "0d0+100", disease = "0d0+100" }
+	:Resist{ fire = 60, cold = -20, poison = 100, disease = 100 }
 	:Combat("5d5", "4d4")
 	:Main("6d4", "1d3", "4d9+10", "2d4")
 	:Description("Gaunt past starvation, the skin desiccated and pulled so "

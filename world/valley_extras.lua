@@ -8,7 +8,7 @@ Item.new("avanor_defender")
 	:Basic(3000, 110)
 	:Armour(0, 0)
 	:Combat(18, 4, 4, 15)
-	:Resist{ poison = "0d0+100", stun = "0d0+100", confuse = "0d0+100", fire = "0d0+100", cold = "0d0+100" }
+	:Resist{ poison = 100, stun = 100, confuse = 100, fire = 100, cold = 100 }
 	:Stats("St:0d0+10 To:0d0+10")
 	:Brand("cold")
 	:Brand("fire")
@@ -26,7 +26,7 @@ Item.new("forest_brother_cloak")
 	:Basic(100, 20)
 	:Armour(3, 1)
 	:Combat(0, 1, 2, 0)
-	:Resist{ poison = "0d0+20", stun = "0d0+20" }
+	:Resist{ poison = 20, stun = 20 }
 	:Stats("")
 	:Unique()
 	:Register()

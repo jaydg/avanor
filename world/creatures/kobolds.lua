@@ -2,12 +2,12 @@
 
 Monster.new("kobold")
 	:View("kobold", 'k', xColor.xLIGHTGREEN, PersonType.HE, CreatureTemplate.VERY_LOW, "kobold")
-	:Basic("1d10+90", "0d0+1000", CreatureSize.SMALL, "1d200+600")
+	:Basic("1d10+90", 1000, CreatureSize.SMALL, "1d200+600")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 1)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Stats("St 2d3 Dx 2d3 To 1d3 Le 2d3 Wi 1d3 Ma 1d2 Pe 1d6 Ch 1d3")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "2d3", "2d2")
+	:Main("1d1", 0, "2d3", "2d2")
 	:Description("Kobolds resemble nothing better than a small yipping dog "
 		.. "that has somehow learned to walk on hind legs and wield "
 		.. "weapons. They are more nuisance than anything else but more "
@@ -23,7 +23,7 @@ Monster.new("kobold")
 
 Monster.new("large_kobold")
 	:View("large kobold", 'k', xColor.xGREEN, PersonType.HE, CreatureTemplate.LOW, "kobold")
-	:Basic("1d10+90", "0d0+1000", CreatureSize.SMALL, "1d200+800")
+	:Basic("1d10+90", 1000, CreatureSize.SMALL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 2)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Stats("St 2d5 Dx 2d4 To 2d3 Le 2d4 Wi 1d5 Ma 1d3 Pe 1d8 Ch 1d4")
@@ -44,7 +44,7 @@ Monster.new("large_kobold")
 
 Monster.new("chieftain_kobold")
 	:View("kobold chieftain", 'k', xColor.xGREEN, PersonType.HE, CreatureTemplate.LOW, "kobold")
-	:Basic("1d10+90", "0d0+1000", CreatureSize.SMALL, "1d200+800")
+	:Basic("1d10+90", 1000, CreatureSize.SMALL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Stats("St 3d5 Dx 2d5 To 3d3 Le 2d4 Wi 1d5 Ma 1d3 Pe 1d8 Ch 1d4")
@@ -67,12 +67,12 @@ Monster.new("chieftain_kobold")
 
 Monster.new("shaman_kobold")
 	:View("kobold shaman", 'k', xColor.xLIGHTCYAN, PersonType.HE, CreatureTemplate.LOW, "kobold")
-	:Basic("1d10+90", "0d0+1000", CreatureSize.SMALL, "1d200+600")
+	:Basic("1d10+90", 1000, CreatureSize.SMALL, "1d200+600")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Stats("St 2d4 Dx 2d4 To 2d3 Le 4d4 Wi 4d5 Ma 4d6 Pe 1d6+6 Ch 2d4")
 	:Combat("1d2", "1d2")
-	:Main("1d1", "0d0", "1d8", "5d5")
+	:Main("1d1", 0, "1d8", "5d5")
 	:Description("Smeared with arcane symbols in white chalk and wearing a "
 		.. "necklace of bones, the kobold shaman is only a little larger "
 		.. "than the average kobold. The intensity of its gaze shows the "
@@ -93,7 +93,7 @@ Monster.new("shaman_kobold")
 
 Monster.new("gnoll")
 	:View("gnoll", 'g', xColor.xBROWN, PersonType.HE, CreatureTemplate.ABOVE_LOW, "kobold")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.SMALL, "1d200+800")
+	:Basic(100, 1000, CreatureSize.SMALL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 5)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Stats("St 3d4 Dx 3d3 To 3d5 Le 1d4 Wi 1d4 Ma 1d4 Pe 2d5 Ch 2d3")
@@ -113,7 +113,7 @@ Monster.new("gnoll")
 
 Monster.new("gnoll_warmaster")
 	:View("gnoll warmaster", 'g', xColor.xYELLOW, PersonType.HE, CreatureTemplate.AVG, "kobold")
-	:Basic("0d0+100", "0d0+1000", CreatureSize.NORMAL, "1d200+800")
+	:Basic(100, 1000, CreatureSize.NORMAL, "1d200+800")
 	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 7)
 	:AI(XStandardAI.CREATURE + XStandardAI.ALLOW_PACK)
 	:Stats("St 6d4 Dx 7d3 To 6d5 Le 3d4 Wi 3d4 Ma 3d4 Pe 8d5 Ch 2d3")

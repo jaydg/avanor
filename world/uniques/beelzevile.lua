@@ -15,14 +15,14 @@ Item.new("great_elemental_ring")
 
 Monster.new("beelzevile")
 	:View("Beelzevile, the horned demon", '&', xColor.xLIGHTCYAN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "demon")
-	:Basic("0d0+67", "0d0+900", CreatureSize.LARGE, "1d400+4000")
+	:Basic(67, 900, CreatureSize.LARGE, "1d400+4000")
 	:Body("head body ring ring", 100)
 	:Never("invisible")
 	:Always("see_invisible")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 5d5+50 Dx 3d3+10 To 2d5+30 Le 9d5 Wi 3d4 Ma 5d4 Pe 1d3 Ch 1d3")
-	:Combat("0d0+10", "2d8")
-	:Main("0d0-5", "0d0+2", "1d6+22", "5d5+100")
+	:Combat(10, "2d8")
+	:Main(-5, 2, "1d6+22", "5d5+100")
 	:Description("How he got to the mushroom caves is anyone's guess but it "
 		.. "is commonly believed that some kobold shaman got a little "
 		.. "carried away with his magic and summoned Beelzevile from the "

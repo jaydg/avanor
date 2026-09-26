@@ -49,6 +49,37 @@ void XDice::Setup(const std::string& str)
         return;
     }
 
+    // A plain number is a constant, and is the same thing as "0d0+n"
+    // without the ceremony. Content writes a great many of these - a
+    // speed, a price, an amount of nothing in particular - and spelling
+    // them as dice that are never rolled reads badly and hides the one
+    // real dice expression in a line of five.
+    //
+    // Recognised by having no 'd' in it at all, so that a malformed
+    // dice expression still fails as a dice expression rather than
+    // being quietly read as something else.
+    if (str.find('d') == std::string::npos) {
+        const char* begin = str.data();
+        const char* const stop = begin + str.size();
+        int value = 0;
+
+        // from_chars takes a leading '-' but not a leading '+'.
+        if (*begin == '+') {
+            ++begin;
+        }
+
+        const auto res = std::from_chars(begin, stop, value);
+
+        if (res.ec != std::errc() || res.ptr != stop) {
+            throw std::invalid_argument("Invalid dice format");
+        }
+
+        count_ = sides_ = 0;
+        bonus_ = value;
+        Throw();
+        return;
+    }
+
     const char* cur = str.data();
     const char* const end = cur + str.size();
 

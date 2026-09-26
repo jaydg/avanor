@@ -27,8 +27,8 @@
 --                             or a material from world/items/materials.lua - and how
 --                             well made it is
 --   :Worth(value, weight)
---   :Armour(dv, pv)           dice strings; omitted when it protects nothing
---   :Combat(hit, dice, extra) dice strings; omitted when it strikes nothing
+--   :Armour(dv, pv)           dice; omitted when it protects nothing
+--   :Combat(hit, dice, extra) dice; omitted when it strikes nothing
 --   :Range(dice)              for bows and what they throw
 --   :Skill(id)                which combat skill wielding one exercises,
 --                             from world/combat_skills.lua
@@ -55,6 +55,13 @@
 --                             that make a bow a weapon. See ArmLauncher in
 --                             missile_weapons.lua. Unsaid, the item stands
 --                             on its own, which is what almost all do
+--
+-- Anywhere dice are wanted, "2d6", "1d8+3" and "3d4-2" say what they look
+-- like, and a plain number is a constant: 50 and "50" both mean fifty
+-- every time, and both are what the old "0d0+50" spelled out the long
+-- way. Prefer the number where nothing is being rolled - it reads as the
+-- fixed quantity it is, and it stops a line of five dice expressions
+-- hiding the one that is really a die.
 --
 -- Only the things that belong to nobody in particular live in this file.
 -- An item with a single owner is defined beside that owner instead, so
@@ -108,7 +115,7 @@
 --   :Basic(value, weight)
 --   :Armour(dv, pv)
 --   :Combat(to_hit, count, sides, bonus)
---   :Stats / :Resist     the same dice strings Monster.new takes
+--   :Stats / :Resist     the same dice Monster.new takes
 --   :Brand("fire")       one brand; call it again for each further one
 --   :Called(name)        what it is once known. Left unsaid, it reads as an
 --                        ordinary item of its kind - which is what a

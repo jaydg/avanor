@@ -40,7 +40,7 @@ Item.new("eye_of_raa")
 	:Basic(150, 100)
 	:Combat(0, 1, 10, 0)
 	:Stats("Ma:0d0+10 Wi:0d0+10")
-	:Resist{ air = "0d0+100" }
+	:Resist{ air = 100 }
 	:Artifact()
 	:Use('EyeOfRaaUse')
 	:Register()
