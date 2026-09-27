@@ -498,7 +498,9 @@ static bool TestRealScheduler()
 
 } // namespace cereal_pilot
 
-static void RunCerealPilotTest()
+// Answers whether every round-trip came back intact, so that
+// the caller can make that the process's exit status.
+[[nodiscard]] static bool RunCerealPilotTest()
 {
     const bool item_pass = cereal_pilot::TestPolymorphicItem();
     const bool list_pass = cereal_pilot::TestItemList();
@@ -513,7 +515,10 @@ static void RunCerealPilotTest()
     std::cout << "real creature:         " << (creature_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "real location:         " << (location_pass ? "PASS" : "FAIL") << std::endl;
     std::cout << "scheduler round-trip:  " << (scheduler_pass ? "PASS" : "FAIL") << std::endl;
-    std::cout << "CEREAL PILOT: " << ((item_pass && list_pass && selfref_pass && creature_pass && location_pass && scheduler_pass) ? "PASS" : "FAIL") << std::endl;
+    const bool pass = item_pass && list_pass && selfref_pass && creature_pass
+        && location_pass && scheduler_pass;
+
+    std::cout << "CEREAL PILOT: " << (pass ? "PASS" : "FAIL") << std::endl;
 
     // TestRealCreature() calls Game.Create('T'), populating a whole real
     // game world - unlike -test/-demo mode, this mode returns from main()
@@ -537,6 +542,8 @@ static void RunCerealPilotTest()
     }
 
     XObject::InvalidateAllObjects();
+
+    return pass;
 }
 
 const char* logo_text[] = {
@@ -741,9 +748,9 @@ int main(int argc, char* argv[])
     ShowLogo();
 
     if (program.get<bool>("--test-cereal")) {
-        RunCerealPilotTest();
+        const bool ok = RunCerealPilotTest();
         vFinit();
-        return 0;
+        return ok ? EXIT_SUCCESS : EXIT_FAILURE;
     } else if (program.get<bool>("--test-save")) {
         // End-to-end proof of the real XArchive::StoreGame()/RestoreGame()
         // entry points, as two separate process invocations (this one,
