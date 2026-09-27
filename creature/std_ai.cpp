@@ -413,6 +413,17 @@ void XStandardAI::Move()
         }
     }
 
+    // Ground that would hurt to stand on, on the same terms and in the
+    // same place, and for the same reason: a step towards the lava can be
+    // chosen by any branch above, and none of them should have to know
+    // what lava is.
+    //
+    // The test is "not further in than I already am" rather than "not hot
+    // at all", so that something caught out on the hot ground walks off
+    // it instead of standing there unable to choose a step. Along the
+    // edge of the heat it can still move sideways.
+    RefuseTheFire();
+
     // Ground this one keeps to. Checked here, after every branch has had
     // its say, because a step can be chosen by any of them - a random
     // wander, a drift towards the flock, a path - and there is no sense
@@ -505,9 +516,25 @@ int XStandardAI::StepCost(const int x, const int y) const
         return PathBlocked;
     }
 
-    return std_tile_data[cell->n].movability < XTileType::Movability::UNWALKABLE
-        ? PathStep
-        : PathBlocked;
+    if (std_tile_data[cell->n].movability >= XTileType::Movability::UNWALKABLE) {
+        return PathBlocked;
+    }
+
+    // Ground that hurts to cross is not shut, only dear: a creature will
+    // go a long way round rather than walk through the heat, and will
+    // still walk through it when there is no way round at all. Scaled by
+    // how fierce it is, so the edge of the heat is a cheaper crossing
+    // than the middle.
+    const XTileType* source = nullptr;
+    const int heat = ai_owner->l->map->hasHazard()
+        ? ai_owner->HazardAt(x, y, &source)
+        : 0;
+
+    if (heat > 0 && source && ai_owner->HeedsHazard(*source)) {
+        return PathStep + PathStep * heat / 4;
+    }
+
+    return PathStep;
 }
 
 // The next step towards a target, or nothing when there is no way there.
@@ -1455,6 +1482,29 @@ int XStandardAI::GetTargetPos(XPoint * pt)
 
     } else {
         return 0;
+    }
+}
+
+// Takes back a step that would carry this creature further into ground
+// that hurts to be near. See the call in Move() for why it lives at that
+// one point rather than in each branch that chooses a step.
+void XStandardAI::RefuseTheFire() const
+{
+    if (!ai_owner->l || !ai_owner->l->map || !ai_owner->l->map->hasHazard()
+        || (ai_owner->nx == ai_owner->x && ai_owner->ny == ai_owner->y)) {
+        return;
+    }
+
+    const XTileType* going_to = nullptr;
+    const int there = ai_owner->HazardAt(ai_owner->nx, ai_owner->ny, &going_to);
+
+    if (there <= 0 || !going_to || !ai_owner->HeedsHazard(*going_to)) {
+        return;
+    }
+
+    if (there > ai_owner->HazardAt(ai_owner->x, ai_owner->y)) {
+        ai_owner->nx = ai_owner->x;
+        ai_owner->ny = ai_owner->y;
     }
 }
 

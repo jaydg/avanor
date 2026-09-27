@@ -657,7 +657,8 @@ void DefineTile(sol::this_state s, const std::string& id_name, const std::string
             properties->get_or("power", 0),
             properties->get_or<std::string>("spits", ""),
             properties->get_or("spit_one_in", 0),
-            properties->get_or("spit_range", 0));
+            properties->get_or("spit_range", 0),
+            properties->get_or<std::string>("warded_by", ""));
     }
 
     sol::state_view lua(s);

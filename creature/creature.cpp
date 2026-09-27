@@ -1464,6 +1464,75 @@ const char* XCreature::GetWoundMsg(int flag)
     }
 }
 
+// The power a radiating tile would act with on something standing at
+// (px, py): full against the tile itself, nothing one step past its
+// reach, and a straight line between. When several reach the cell the
+// nearest wins, which is also the fiercest.
+int XCreature::HazardAt(const int px, const int py, const XTileType** source) const
+{
+    if (source) {
+        *source = nullptr;
+    }
+
+    if (!l || !l->map || !l->map->hasHazard()) {
+        return 0;
+    }
+
+    const int reach = XTileType::MaxHazardReach();
+    const XTileType* nearest = nullptr;
+    int nearest_distance = 0;
+
+    for (int dy = -reach; dy <= reach; dy++) {
+        for (int dx = -reach; dx <= reach; dx++) {
+            // Cell() answers null off the edge of the map, and on a level
+            // with a hole in it hands back the ground below - which is
+            // the right answer here: lava one floor down is still lava
+            // you can feel.
+            const XMapTile* cell = l->map->Cell(px + dx, py + dy);
+
+            if (!cell) {
+                continue;
+            }
+
+            const XTileType& tile = XTileType::Data(cell->n);
+
+            if (tile.radiates.empty()) {
+                continue;
+            }
+
+            // Chebyshev, because a diagonal step is one step here.
+            const int distance = std::max(abs(dx), abs(dy));
+
+            if (distance <= tile.reach && (!nearest || distance < nearest_distance)) {
+                nearest = &tile;
+                nearest_distance = distance;
+            }
+        }
+    }
+
+    if (!nearest) {
+        return 0;
+    }
+
+    if (source) {
+        *source = nearest;
+    }
+
+    return (nearest->power * (nearest->reach + 1 - nearest_distance))
+        / (nearest->reach + 1);
+}
+
+bool XCreature::HeedsHazard(const XTileType& source) const
+{
+    // Ground that says nothing about what answers it is something nobody
+    // has an answer to.
+    if (source.warded_by.empty()) {
+        return true;
+    }
+
+    return const_cast<XCreature*>(this)->GetResistance(source.warded_by) < 100;
+}
+
 // Ground that is dangerous to be near: lava in this world, and whatever
 // else content gives a `radiates` or `spits` to. Two separate things
 // happen here, and both of them are the tile's doing rather than the
@@ -1482,14 +1551,29 @@ void XCreature::TerrainHazard()
     // The common case, and the one every other game reusing this engine
     // will be in: no ground anywhere is dangerous, so this costs one
     // comparison.
-    if (!XTileType::AnyHazard() || !l || !l->map) {
+    if (!l || !l->map || !l->map->hasHazard()) {
         return;
     }
 
-    const int reach = XTileType::MaxHazardReach();
+    const XTileType* source = nullptr;
+    const int power = HazardAt(x, y, &source);
 
-    const XTileType* nearest = nullptr;
-    int nearest_distance = 0;
+    if (power > 0 && source) {
+        EFFECT_DATA ed;
+        ed.effect = source->radiates;
+        ed.l = l;
+        ed.call_x = x;
+        ed.call_y = y;
+        ed.target = this;
+        ed.target_x = x;
+        ed.target_y = y;
+        ed.power = power;
+        XEffect::Make(&ed);
+    }
+
+    // Which ground throws, picked separately: the heat is whatever is
+    // nearest, but a gout can come from any of the pools in range.
+    const int reach = XTileType::MaxHazardReach();
 
     const XTileType* thrower = nullptr;
     int throw_x = 0, throw_y = 0;
@@ -1497,14 +1581,7 @@ void XCreature::TerrainHazard()
 
     for (int dy = -reach; dy <= reach; dy++) {
         for (int dx = -reach; dx <= reach; dx++) {
-            const int tx = x + dx;
-            const int ty = y + dy;
-
-            // Cell() answers null off the edge of the map, and on a
-            // level with a hole in it hands back the ground below -
-            // which is the right answer here: lava one floor down is
-            // still lava you can feel.
-            const XMapTile* cell = l->map->Cell(tx, ty);
+            const XMapTile* cell = l->map->Cell(x + dx, y + dy);
 
             if (!cell) {
                 continue;
@@ -1512,43 +1589,14 @@ void XCreature::TerrainHazard()
 
             const XTileType& tile = XTileType::Data(cell->n);
 
-            // Chebyshev, because a diagonal step is one step here.
-            const int distance = std::max(abs(dx), abs(dy));
-
-            if (!tile.radiates.empty() && distance <= tile.reach
-                && (!nearest || distance < nearest_distance)) {
-                nearest = &tile;
-                nearest_distance = distance;
-            }
-
             // Reservoir sampling, so that one of however many hot tiles
             // are in range is picked evenly without collecting them.
             if (!tile.spits.empty() && tile.spit_one_in > 0
                 && vRand(++thrower_count) == 0) {
                 thrower = &tile;
-                throw_x = tx;
-                throw_y = ty;
+                throw_x = x + dx;
+                throw_y = y + dy;
             }
-        }
-    }
-
-    if (nearest) {
-        // Full power against the tile itself, nothing at all one step
-        // past its reach, and a straight line between.
-        const int power = (nearest->power * (nearest->reach + 1 - nearest_distance))
-            / (nearest->reach + 1);
-
-        if (power > 0) {
-            EFFECT_DATA ed;
-            ed.effect = nearest->radiates;
-            ed.l = l;
-            ed.call_x = x;
-            ed.call_y = y;
-            ed.target = this;
-            ed.target_x = x;
-            ed.target_y = y;
-            ed.power = power;
-            XEffect::Make(&ed);
         }
     }
 

@@ -30,7 +30,7 @@ DefineTile("STONE_WALL",        "stone wall",        '#',  xColor.xLIGHTGRAY, Mo
 DefineTile("WATER",             "water",             '=',  xColor.xLIGHTBLUE, Movability.WATER,     Visibility.NORMAL)
 DefineTile("DEEP_WATER",        "deep water",        '=',  xColor.xBLUE,      Movability.DEEPWATER, Visibility.NORMAL)
 DefineTile("LAVA",              "lava",              '=',  xColor.xRED,       Movability.WATER,     Visibility.NORMAL,
-	{ radiates = "searing_heat", reach = 3, power = 48,
+	{ radiates = "searing_heat", reach = 3, power = 48, warded_by = "fire",
 	  spits = "lava_spatter", spit_one_in = 60, spit_range = 5 })
 DefineTile("HILL",              "hill",              '^',  xColor.xGREEN,     Movability.NORMAL,    Visibility.NORMAL)
 DefineTile("LOW_MOUNTAIN",      "low mountains",     '^',  xColor.xBROWN,     Movability.VHARD,     Visibility.AHARD)

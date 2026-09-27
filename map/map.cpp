@@ -124,7 +124,8 @@ namespace {
 
 void XTileType::SetHazard(const Id tile, const std::string& radiates, const int reach,
                           const int power, const std::string& spits,
-                          const int spit_one_in, const int spit_range)
+                          const int spit_one_in, const int spit_range,
+                          const std::string& warded_by)
 {
     if (static_cast<size_t>(tile) >= std_tile_data.size()) {
         return;
@@ -137,6 +138,7 @@ void XTileType::SetHazard(const Id tile, const std::string& radiates, const int 
     t.spits = spits;
     t.spit_one_in = spit_one_in;
     t.spit_range = spit_range;
+    t.warded_by = warded_by;
 
     // A tile that spits but does not radiate still has to be found, and
     // the search that finds it is the one bounded by reach.
@@ -726,6 +728,14 @@ void XMap::SetXY(const int x, const int y, const XTileType::Id std_map) const
     assert(cell);
 
     cell->n = std_map;
+
+    // The one place a tile is written, and so the one place that can
+    // notice this level has ground worth walking round. See hasHazard().
+    const XTileType& tile = XTileType::Data(std_map);
+
+    if (!tile.radiates.empty() || !tile.spits.empty()) {
+        has_hazard = true;
+    }
 }
 
 XTileType::Id XMap::GetXY(const int x, const int y) const
@@ -1064,5 +1074,13 @@ void XMap::RemapTiles(const std::vector<XTileType::Id>& remap) const
         const size_t saved = static_cast<size_t>(map[i].n);
 
         map[i].n = saved < remap.size() ? remap[saved] : XTileType::NONE;
+
+        // A restored level writes its cells here rather than through
+        // SetXY(), so this is where it finds out what it is made of.
+        const XTileType& tile = XTileType::Data(map[i].n);
+
+        if (!tile.radiates.empty() || !tile.spits.empty()) {
+            has_hazard = true;
+        }
     }
 }

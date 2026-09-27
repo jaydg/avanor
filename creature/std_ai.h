@@ -302,6 +302,9 @@ class XStandardAI
 
         bool FindPath(const XPoint* target, XPoint* direction) const;
 
+        // Undoes a step that would go further into ground that burns.
+        void RefuseTheFire() const;
+
         // Which question the cached path was worked out for. Two walks
         // share one cache, and a way to the nearest unseen cell is no
         // answer at all to "where is the nearest thing worth picking up".

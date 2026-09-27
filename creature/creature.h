@@ -441,6 +441,22 @@ class XCreature : public XBaseObject
         // decline: most worlds have no such ground at all.
         void TerrainHazard();
 
+        // How badly a cell is exposed to dangerous ground: the power the
+        // effect would be cast with on anything standing there, and, when
+        // asked for, which ground is doing it. Zero when nothing is.
+        //
+        // Answers for any cell rather than only this creature's own, so
+        // that the AI can compare where it is with where it is thinking
+        // of going.
+        [[nodiscard]] int HazardAt(int px, int py,
+                                   const XTileType** source = nullptr) const;
+
+        // Whether that ground is worth this creature avoiding. Anything
+        // wholly resistant to what the ground gives off takes no harm
+        // from it and has no reason to walk round - a fire elemental has
+        // no business tiptoeing past lava.
+        [[nodiscard]] bool HeedsHazard(const XTileType& source) const;
+
         void MoveStairWay();
 
         virtual void Attack();

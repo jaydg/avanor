@@ -131,7 +131,8 @@ struct XTileType {
     // What content declared about ground that is dangerous to be near.
     static void SetHazard(Id tile, const std::string& radiates, int reach,
                           int power, const std::string& spits,
-                          int spit_one_in, int spit_range);
+                          int spit_one_in, int spit_range,
+                          const std::string& warded_by);
 
     // Whether any tile at all is dangerous to be near, and how far the
     // furthest of them reaches. Both are answered once for the whole
@@ -159,7 +160,11 @@ struct XTileType {
     //   spits      thrown from the tile now and then, in no particular
     //              direction and to no particular distance
     //   spit_one_in, spit_range   how often, and how far it carries
+    //   warded_by  the resistance that answers it. Anything wholly
+    //              resistant is not hurt by this ground and so has no
+    //              reason to walk round it - see XCreature::HeedsHazard()
     std::string radiates;
+    std::string warded_by;
     int reach = 0;
     int power = 0;
     std::string spits;
@@ -258,6 +263,10 @@ class XMap
         // stored_len * stored_hgt cells, row-major within the stored part.
         XMapTile* map;
 
+        // See hasHazard(). Mutable because SetXY() is const and writing a
+        // tile is what discovers this.
+        mutable bool has_hazard = false;
+
         // What explorers know of this level, one byte per stored cell,
         // indexed the same way as `map`. Bit 0 is "has been shown this
         // cell"; bit 1 is "there was something lying here when it was
@@ -288,6 +297,21 @@ class XMap
         // through to the level below wherever this map holds nothing of
         // its own. Null only when the coordinates are nowhere at all.
         [[nodiscard]] XMapTile* Cell(int x, int y) const;
+
+        // Whether any ground on this level is dangerous to be near.
+        // Asked on every step of every path, so it has to be a bool and
+        // not a search: XTileType::AnyHazard() only says that such
+        // ground exists somewhere in the world, which in this world is
+        // true of every level because one crater has lava in it.
+        //
+        // Set as the map is written and never cleared. A level that once
+        // had lava in it and no longer does keeps paying the search,
+        // which is a great deal cheaper than getting the bookkeeping for
+        // the other direction wrong.
+        [[nodiscard]] bool hasHazard() const
+        {
+            return has_hazard;
+        }
 
         // The cell this map holds itself, or null when it holds none
         // here. Everything that changes a level goes through this, so a
