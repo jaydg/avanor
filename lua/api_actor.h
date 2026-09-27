@@ -62,6 +62,7 @@ namespace lua_api
     sol::optional<void*> SelectItem(void* cr, sol::protected_function predicate);
     std::string DescribeItem(void* item);
     int GetItemWeight(void* item);
+    int GetItemResistance(void* item, const std::string& resist);
     void SetItemWeight(void* item, int weight);
     int GetItemNutrition(void* item);
     void SetItemNutrition(void* item, int nutrio);

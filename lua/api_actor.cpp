@@ -212,6 +212,19 @@ int GetItemWeight(void* item)
     return ((XItem*)item)->weight;
 }
 
+//GetItemResistance(item, "fire")
+// What an item does for whoever holds it, against one kind of harm: the
+// same figure :Resist{ fire = 50 } wrote, and 0 for an item that answers
+// nothing. Content asks this to tell a ward from an ornament - by what an
+// item does rather than by what it is called, since an unidentified ring
+// of fire resistance is called a ruby ring.
+int GetItemResistance(void* item, const std::string& resist)
+{
+    const XResistance* r = ((XItem*)item)->resistances.get();
+
+    return r ? r->GetResistance(resist) : 0;
+}
+
 void SetItemWeight(void* item, int weight)
 {
     ((XItem*)item)->weight = weight < 1 ? 1 : weight;
@@ -1258,6 +1271,7 @@ void RegisterActorApi(sol::state_view& lua)
         lua.set_function("SelectItem", &lua_api::SelectItem);
         lua.set_function("DescribeItem", &lua_api::DescribeItem);
         lua.set_function("GetItemWeight", &lua_api::GetItemWeight);
+        lua.set_function("GetItemResistance", &lua_api::GetItemResistance);
         lua.set_function("SetItemWeight", &lua_api::SetItemWeight);
         lua.set_function("GetItemNutrition", &lua_api::GetItemNutrition);
         lua.set_function("SetItemNutrition", &lua_api::SetItemNutrition);

@@ -4,7 +4,7 @@
 Monster.new("xshee_voo")
 	:View("Xshee-Voo, the Cyclope", 'H', xColor.xLIGHTMAGENTA, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "giant")
 	:Basic(111, 900, CreatureSize.LARGE, "1d400+3000")
-	:Body("head neck body cloak hand hand boots", 50)
+	:Body("head neck body cloak hand hand ring ring boots", 50)
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD)
 	:Stats("St 5d5+150 Dx 1d10+10 To 1d10+80 Le 1d5+5 Wi 1d5+5 Ma 1d5+5 Pe 1d6 Ch 1d5")
 	:Combat("1d5", "2d5")
@@ -65,7 +65,32 @@ function MakeVulcano()
 
 		local cyclops = Creature("xshee_voo")
 		SetEventHandler(cyclops, 'XsheeVooHandler')
-		GiveObjectToCreature(CreateObject('black_club'), cyclops)
+
+		local club = CreateObject('black_club')
+		XSHEE_VOO_WARD = GetObjectGUID(club)
+		GiveObjectToCreature(club, cyclops)
+end
+
+
+-- The club he is holding, so that he can hand it over rather than only be
+-- robbed of it. Saved with him: a guid is the only handle GiveAward()
+-- takes, and it has to survive a reload like any other.
+XSHEE_VOO_WARD = 0
+
+
+-- What Todin does to the slab at his own forge, once he has it honestly.
+-- The runes were cut to let a hand hold the thing where no hand can go,
+-- and waking them is what makes it a weapon a person can actually swing:
+-- eight thousand of dead rock becomes something a strong arm manages, and
+-- the miserable -15 it forged with goes away.
+--
+-- The dice are left alone. It was never a weapon and 2d20 is already more
+-- than anything else in the game; making it wieldable is the whole of the
+-- reward.
+function WakeTheWard(item)
+	SetItemWeight(item, 2500)
+	AddItemToHit(item, 15)
+	SetItemName(item, "club of the deep fire")
 end
 
 
@@ -119,17 +144,90 @@ local function IsDesperate(him)
 end
 
 
+-- What he says once he has been given something to stand behind. He does
+-- not understand that he has made a bargain; he understands that the
+-- little one gave him a thing and that the burning stopped mattering.
+local XSHEE_VOO_TRADED = {
+	"'Warm. Still warm. Xshee-Voo keeps this one now.'",
+	"'You gave. Nobody gives. Go, little one, go safe.'",
+	"'The stone is yours. Xshee-Voo does not need two.'",
+}
+
+
 function XsheeVooHandler(e, t, p, v)
 	if (e == LuaEvent.CHAT) then
 		local him = AsCreature(t)
 
-		if (IsDesperate(him)) then
+		-- Todin cannot be told what is up here by somebody who has not
+		-- been up here. Set on any word with him, so that finding him is
+		-- what unlocks the honest ending rather than finding the crater.
+		TODIN_WARD_SEEN = true
+
+		if (XSHEE_VOO_WARD == 0) then
+			AddMessage(XSHEE_VOO_TRADED[Rand(#XSHEE_VOO_TRADED) + 1])
+		elseif (IsDesperate(him)) then
 			AddMessage(XSHEE_VOO_HURT[Rand(#XSHEE_VOO_HURT) + 1])
 		else
 			AddMessage(XSHEE_VOO_LINES[Rand(#XSHEE_VOO_LINES) + 1])
 		end
 
 		return true
+	elseif (e == LuaEvent.GIVE_ITEM) then
+		TODIN_WARD_SEEN = true
+
+		-- He is not stupid, only frightened and slow. Offer him something
+		-- that answers the fire and he will let the slab go, because the
+		-- slab was never a weapon to him and never treasure: it was the
+		-- only thing standing between him and the crater.
+		--
+		-- Judged by what the thing does and not by what it is called: an
+		-- unidentified ring of fire resistance is a ruby ring, and he can
+		-- tell the difference even if the hero cannot yet.
+		if (XSHEE_VOO_WARD ~= 0 and GetItemResistance(v, "fire") > 0) then
+			AddMessage("The cyclops turns it over in a hand the size of "
+				.. "your chest, and something in his face gives way.")
+			AddMessage("'It is warm. It is warm and it is small.'")
+
+			-- Said rather than left to be noticed, because what he does
+			-- with it is the point: a ring or an amulet he can put on and
+			-- keep on, and anything else he can only hold. He has the
+			-- slots for both now, and his own AI does the wearing.
+			local kind = GetItemParam(v)
+
+			if (IsKind(kind, ItemKind.RING)) then
+				AddMessage("He works it onto a finger, as far as the first "
+					.. "knuckle, which is as far as it goes.")
+			elseif (IsKind(kind, ItemKind.NECK)) then
+				AddMessage("He hangs it round his neck, where it looks like "
+					.. "a bead on a rope.")
+			else
+				AddMessage("He closes his fist round it and will not open "
+					.. "it again.")
+			end
+
+			if (GiveAward(t, XSHEE_VOO_WARD, p)) then
+				AddMessage("He puts the black slab down in front of you, "
+					.. "very carefully, and steps back from it.")
+				XSHEE_VOO_WARD = 0
+				TODIN_WARD_HONOURED = true
+			end
+
+			-- Answered true: he keeps what he was given, which is the
+			-- whole of the bargain.
+			return true
+		end
+
+		if (XSHEE_VOO_WARD == 0) then
+			AddMessage("'Xshee-Voo has a warm thing. Does not need more.'")
+		else
+			AddMessage("'What is that? No. No use. Cold.'")
+		end
+
+		return false
+	elseif (e == LuaEvent.SAVE) then
+		StoreInt(XSHEE_VOO_WARD)
+	elseif (e == LuaEvent.LOAD) then
+		XSHEE_VOO_WARD = RestoreInt()
 	end
 
 	return false

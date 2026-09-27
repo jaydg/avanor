@@ -47,6 +47,17 @@ function CreateAllQuests()
 		"You helped to pump out gas from the dwarven gold mine.",
 		5000)
 
+	-- Todin's errand, offered once his brother's is closed: he wants the
+	-- ward his forebears cut, which went up the mountain with the cyclopes
+	-- and never came back. He does not ask anyone to be killed, and does
+	-- not know there is anything up there still holding it - which is the
+	-- discovery, and the reason this quest can end three ways.
+	Quest("todin_ward", XQuest.UNKNOWN,
+		"Todin, the dwarven weaponsmith, asked you to bring him the black slab of runed obsidian his forebears cut. It went up the mountain with the cyclopes, and he believes it is lying in the crater of the extinct volcano.",
+		"You have the ward of the deep fire.",
+		"You brought Todin the ward his great-grandfather cut, and he read the runes on it.",
+		2000)
+
 	Quest("ozorik", XQuest.UNKNOWN,
 		"Ozorick, the royal guard captain, has problems with an orcish war-party.",
 		"You brought a useful thing to Ozorik.",

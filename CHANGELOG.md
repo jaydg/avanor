@@ -126,6 +126,12 @@ Every game digs each mine afresh, and a mine takes one shape all the way
 down — you will not find a warren of passages on one level and a hall on
 the next. The goblin raiders remain Forlorn's alone.
 
+**Todin has an errand of his own.** Do his brother a favour down in the
+gold mine and the dwarven weaponsmith will ask you for something his
+great-grandfather made: a slab of black obsidian with the deep fire cut
+into it, which went up the mountain with the cyclopes and never came back
+down. He thinks it is lying in the crater of the extinct volcano.
+
 **Caves that look like caves.**
 A second kind of cavern joins the old blob-shaped ones: rounded chambers grown
 one at a time and joined by single doorways cut through the rock, some of them
