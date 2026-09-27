@@ -128,12 +128,43 @@ struct XTileType {
     // Dropped with the Lua state that defined them.
     static void ForgetTiles();
 
+    // What content declared about ground that is dangerous to be near.
+    static void SetHazard(Id tile, const std::string& radiates, int reach,
+                          int power, const std::string& spits,
+                          int spit_one_in, int spit_range);
+
+    // Whether any tile at all is dangerous to be near, and how far the
+    // furthest of them reaches. Both are answered once for the whole
+    // world rather than per tile, so that a creature standing nowhere
+    // near anything hot pays one bool to find that out.
+    [[nodiscard]] static bool AnyHazard();
+    [[nodiscard]] static int MaxHazardReach();
+    [[nodiscard]] static const XTileType& Data(Id tile);
+
     // The name the script defined this tile under.
     std::string id_name;
 
     // See SetDiggableInto()/SetFertile() above.
     std::string diggable_into;
     bool fertile = false;
+
+    // Ground that is dangerous to stand near. The engine knows only that
+    // such a tile casts an effect; what the effect does is content's
+    // business, the same way a trap's is. See XCreature::TerrainHazard().
+    //
+    //   radiates   cast on anything within reach, every turn it stays
+    //   reach      how many steps the heat carries
+    //   power      the effect's power at the tile itself, falling off
+    //              with distance until it is nothing past reach
+    //   spits      thrown from the tile now and then, in no particular
+    //              direction and to no particular distance
+    //   spit_one_in, spit_range   how often, and how far it carries
+    std::string radiates;
+    int reach = 0;
+    int power = 0;
+    std::string spits;
+    int spit_one_in = 0;
+    int spit_range = 0;
 
     char view;
     unsigned color;

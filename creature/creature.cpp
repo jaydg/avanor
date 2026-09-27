@@ -472,6 +472,14 @@ bool XCreature::Run()
         DoMove();
     }
 
+    TerrainHazard();
+
+    // TerrainHazard() can kill - standing in the wrong place beside the
+    // lava for long enough is exactly what it is for.
+    if (!isValid()) {
+        return false;
+    }
+
     if (ttm <= 0) {
         ttm += GetSpeed();
     }
@@ -1453,6 +1461,115 @@ const char* XCreature::GetWoundMsg(int flag)
         } else {
             return "critically wounded";
         }
+    }
+}
+
+// Ground that is dangerous to be near: lava in this world, and whatever
+// else content gives a `radiates` or `spits` to. Two separate things
+// happen here, and both of them are the tile's doing rather than the
+// engine's - it knows only that a tile names an effect, exactly as a
+// trap does.
+//
+// The nearest hot tile scorches whoever stands near it, harder the
+// closer they are. And a hot tile near them may, rarely, throw
+// something - in no particular direction and to no particular distance,
+// so it is as likely to miss as to hit. That it is rolled per creature
+// turn rather than per tile is deliberate: it keeps the rate steady
+// however much lava a level happens to contain, and it means nothing is
+// thrown across an empty crater with nobody there to be missed by.
+void XCreature::TerrainHazard()
+{
+    // The common case, and the one every other game reusing this engine
+    // will be in: no ground anywhere is dangerous, so this costs one
+    // comparison.
+    if (!XTileType::AnyHazard() || !l || !l->map) {
+        return;
+    }
+
+    const int reach = XTileType::MaxHazardReach();
+
+    const XTileType* nearest = nullptr;
+    int nearest_distance = 0;
+
+    const XTileType* thrower = nullptr;
+    int throw_x = 0, throw_y = 0;
+    int thrower_count = 0;
+
+    for (int dy = -reach; dy <= reach; dy++) {
+        for (int dx = -reach; dx <= reach; dx++) {
+            const int tx = x + dx;
+            const int ty = y + dy;
+
+            // Cell() answers null off the edge of the map, and on a
+            // level with a hole in it hands back the ground below -
+            // which is the right answer here: lava one floor down is
+            // still lava you can feel.
+            const XMapTile* cell = l->map->Cell(tx, ty);
+
+            if (!cell) {
+                continue;
+            }
+
+            const XTileType& tile = XTileType::Data(cell->n);
+
+            // Chebyshev, because a diagonal step is one step here.
+            const int distance = std::max(abs(dx), abs(dy));
+
+            if (!tile.radiates.empty() && distance <= tile.reach
+                && (!nearest || distance < nearest_distance)) {
+                nearest = &tile;
+                nearest_distance = distance;
+            }
+
+            // Reservoir sampling, so that one of however many hot tiles
+            // are in range is picked evenly without collecting them.
+            if (!tile.spits.empty() && tile.spit_one_in > 0
+                && vRand(++thrower_count) == 0) {
+                thrower = &tile;
+                throw_x = tx;
+                throw_y = ty;
+            }
+        }
+    }
+
+    if (nearest) {
+        // Full power against the tile itself, nothing at all one step
+        // past its reach, and a straight line between.
+        const int power = (nearest->power * (nearest->reach + 1 - nearest_distance))
+            / (nearest->reach + 1);
+
+        if (power > 0) {
+            EFFECT_DATA ed;
+            ed.effect = nearest->radiates;
+            ed.l = l;
+            ed.call_x = x;
+            ed.call_y = y;
+            ed.target = this;
+            ed.target_x = x;
+            ed.target_y = y;
+            ed.power = power;
+            XEffect::Make(&ed);
+        }
+    }
+
+    if (thrower && vRand(thrower->spit_one_in) == 0) {
+        const int range = thrower->spit_range > 0 ? thrower->spit_range : 1;
+        const int distance = vRand(range) + 1;
+        const int angle = vRand(8);
+        static const int step_x[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+        static const int step_y[8] = { -1, -1, 0, 1, 1, 1, 0, -1 };
+
+        EFFECT_DATA ed;
+        ed.effect = thrower->spits;
+        ed.l = l;
+        ed.call_x = throw_x;
+        ed.call_y = throw_y;
+        ed.target_x = throw_x + step_x[angle] * distance;
+        ed.target_y = throw_y + step_y[angle] * distance;
+        ed.power = thrower->power;
+        // Whoever it lands on is found by the bolt itself, so no target
+        // is named here - nothing is being aimed at.
+        XEffect::Make(&ed);
     }
 }
 

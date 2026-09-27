@@ -165,6 +165,32 @@ across — and at Yohjishiro's sheep, a flock of them grazing the grass either
 side of the tower and wandering about while you watch. They are hers, and
 they share her company: harm one and she will know about it.
 
+**The lava was scenery.** There is a crater in the mountains with pools of
+molten rock in it, and until now you could stand on the edge of one
+indefinitely and read a book. It was impassable and otherwise as inert as
+a painted floor.
+
+It is hot now, and how hot depends on how close you are: a couple of hit
+points a turn three steps off, four or five at two steps, and six or seven
+standing on the very lip of it. Every turn, for as long as you stay, which
+is what makes a short crossing a different proposition from a long one.
+**Fire resistance is the answer** - a ring, an amulet, a potion held until
+you are across. **Armour is not**: this is heat off the rock rather than a
+blow, so it goes straight through plate, and a shield is no use against
+the air.
+
+**The pools also spit.** Rarely, and in no particular direction, a gout of
+molten rock leaves the lava and travels a little way before it lands.
+Sometimes it lands on you. Mostly it does not, which is its own kind of
+unnerving.
+
+None of this shuts the crater to you. The way in arrives a long way from
+the nearest pool, better than half the floor is safe walking, and the
+burning ground is in the middle of the bowl. It is somewhere to cross
+deliberately rather than somewhere to wander about. And the enormous thing
+that lives down there is carrying a slab of rune-cut obsidian that wards
+off fire, which is worth a thought if you were wondering how it manages.
+
 **Shopping without arithmetic.**
 Pressing `P` in a shop now brings up an itemised bill: every item you have
 picked up and not paid for, each with its price, and a line along the bottom

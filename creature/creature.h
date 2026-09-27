@@ -436,6 +436,11 @@ class XCreature : public XBaseObject
             ttm = ttmb;
         }
 
+        // Ground that is dangerous to be near - lava, and whatever else
+        // content declares that way. Called once per turn, and cheap to
+        // decline: most worlds have no such ground at all.
+        void TerrainHazard();
+
         void MoveStairWay();
 
         virtual void Attack();

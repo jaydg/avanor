@@ -21,6 +21,10 @@
 --       :Sustains(modifier)                laid on for `power` itself, with
 --                                          no dice - a heroism or a
 --                                          resistance held while it lasts
+--       :Harms(c, d, b, brand, message)    damage to whoever it acts
+--                                          on, with nothing drawn - for
+--                                          anything that happens every
+--                                          turn and must not strobe
 --       :Touches(c, d, b, colour, brand, message)   where they face
 --       :Throws(c, d, b, colour, brand, message)    at a place in range
 --       :Engine(name)                      one of the seven the engine
@@ -108,6 +112,24 @@ Effect.new("ice_touch")
 Effect.new("drain_life")
 	:Touches(1, 1, 9, xColor.xDARKGRAY, "drain_life", "the black sphere")
 	:Targets(EffectTarget.DIRECTION)
+	:Register()
+
+-- Hot ground. Cast on anything standing near lava, once per turn, with a
+-- power the engine has already reduced by how far away it is - so the
+-- dice here are what it is like to stand on the very edge, and three
+-- steps back is a quarter of that. Nothing is drawn: the message is the
+-- whole of it, and it arrives every turn you stay.
+Effect.new("searing_heat")
+	:Harms(1, 3, 0, "fire", "the searing heat")
+	:Register()
+
+-- What the lava throws. A bolt rather than a touch, because it has to
+-- travel from the lava to wherever it is going and may well arrive
+-- nowhere near anybody.
+Effect.new("lava_spatter")
+	:Throws(1, 4, 2, xColor.xRED, "fire", "the gout of molten rock")
+	:Targets(EffectTarget.TARGET)
+	:Range(6, 2)
 	:Register()
 
 -- Bolts: they fly to a place within range.

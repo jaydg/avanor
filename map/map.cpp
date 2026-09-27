@@ -113,6 +113,57 @@ bool XTileType::isFertile(const Id tile)
     return static_cast<size_t>(tile) < std_tile_data.size() && std_tile_data[tile].fertile;
 }
 
+// Answered for the whole world rather than per tile: a creature has to
+// ask "is there anything hot anywhere?" on every single turn it takes,
+// and in a world with no such ground - which is most of them, and every
+// game this engine is ever reused for - that question should cost one
+// comparison and no memory access.
+namespace {
+    int any_hazard_reach = 0;
+}
+
+void XTileType::SetHazard(const Id tile, const std::string& radiates, const int reach,
+                          const int power, const std::string& spits,
+                          const int spit_one_in, const int spit_range)
+{
+    if (static_cast<size_t>(tile) >= std_tile_data.size()) {
+        return;
+    }
+
+    XTileType& t = std_tile_data[tile];
+    t.radiates = radiates;
+    t.reach = reach;
+    t.power = power;
+    t.spits = spits;
+    t.spit_one_in = spit_one_in;
+    t.spit_range = spit_range;
+
+    // A tile that spits but does not radiate still has to be found, and
+    // the search that finds it is the one bounded by reach.
+    const int wanted = std::max(reach, spits.empty() ? 0 : 1);
+
+    if (wanted > any_hazard_reach) {
+        any_hazard_reach = wanted;
+    }
+}
+
+bool XTileType::AnyHazard()
+{
+    return any_hazard_reach > 0;
+}
+
+int XTileType::MaxHazardReach()
+{
+    return any_hazard_reach;
+}
+
+const XTileType& XTileType::Data(const Id tile)
+{
+    assert(static_cast<size_t>(tile) < std_tile_data.size());
+
+    return std_tile_data[tile];
+}
+
 XTileType::Id XTileType::ByName(const std::string& id_name)
 {
     for (size_t i = 0; i < std_tile_data.size(); i++) {
@@ -173,6 +224,10 @@ int XTileType::ValidateTiles()
 void XTileType::ForgetTiles()
 {
     std_tile_data.clear();
+
+    // Or a world reloaded without hot ground would go on paying for the
+    // last one that had it.
+    any_hazard_reach = 0;
 }
 
 XMapTile::XMapTile()

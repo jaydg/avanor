@@ -63,6 +63,7 @@ struct EffectPart {
         MANA,        // power points back
         MODIFIER,    // something laid on the causer for a while
         LIFT,        // something taken off the causer outright
+        HARM,        // damage to whoever it acts on, with nothing to see
         TOUCH,       // damage where they are facing
         BOLT,        // damage at a place within range
         ENGINE,      // one of the few the engine does itself
@@ -152,6 +153,8 @@ class EffectBuilder
         EffectBuilder& Relieves(const std::string& modifier, int count, int divisor, int bonus);
         EffectBuilder& Lifts(const std::string& modifier);
         EffectBuilder& Sustains(const std::string& modifier);
+        EffectBuilder& Harms(int count, int divisor, int bonus,
+            const std::string& brand, const std::string& message);
         EffectBuilder& Touches(int count, int divisor, int bonus, int colour,
             const std::string& brand, const std::string& message);
         EffectBuilder& Throws(int count, int divisor, int bonus, int colour,

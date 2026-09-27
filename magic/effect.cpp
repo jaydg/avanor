@@ -51,6 +51,7 @@ void XEffect::RegisterLua(sol::state_view& lua)
         "Relieves", &EffectBuilder::Relieves,
         "Lifts", &EffectBuilder::Lifts,
         "Sustains", &EffectBuilder::Sustains,
+        "Harms", &EffectBuilder::Harms,
         "Touches", &EffectBuilder::Touches,
         "Throws", &EffectBuilder::Throws,
         "Engine", &EffectBuilder::Engine,
@@ -178,6 +179,20 @@ EffectBuilder& EffectBuilder::Sustains(const std::string& modifier)
     part.kind = EffectPart::Kind::MODIFIER;
     part.modifier = modifier;
     part.sustained = true;
+    t.parts.push_back(part);
+    return *this;
+}
+
+// Plain damage to whoever the effect acts on. Unlike Touches() and
+// Throws() there is nothing drawn and nothing thrown: no flash, no
+// delay, no missile. That matters for anything that happens every turn
+// - standing next to lava should hurt, not strobe.
+EffectBuilder& EffectBuilder::Harms(const int count, const int divisor, const int bonus,
+    const std::string& brand, const std::string& message)
+{
+    EffectPart part = Dice(EffectPart::Kind::HARM, count, divisor, bonus);
+    part.brands = BrandSet(brand);
+    part.message = message;
     t.parts.push_back(part);
     return *this;
 }
@@ -717,6 +732,29 @@ int XEffect::Make(const EFFECT_DATA* pData)
                 done = Recipient(pData)->md->Remove(part.modifier,
                     Recipient(pData));
                 break;
+
+            case EffectPart::Kind::HARM: {
+                XCreature* victim = Recipient(pData);
+
+                if (victim) {
+                    DAMAGE_DATA_EX dd{};
+                    dd.damage = XDice(part.count, sides, part.bonus).GetResult();
+                    dd.attacker = pData->caller;
+                    dd.attack_name = part.message;
+                    dd.attack_HIT = 1000;
+                    dd.attack_effect = part.brands;
+                    // No flags at all: there is nothing to raise a
+                    // shield against, nothing to step aside from, and
+                    // armour is no help - standing in a furnace in
+                    // plate is worse, not better. Resistance still
+                    // applies, which is the whole point of a ward.
+                    dd.flags = 0;
+                    victim->InflictDamage(&dd);
+                    done = 1;
+                }
+
+                break;
+            }
 
             case EffectPart::Kind::TOUCH:
                 done = Touch(pData, part.count, sides, part.bonus,

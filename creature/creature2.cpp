@@ -529,8 +529,13 @@ int XCreature::InflictDamage(DAMAGE_DATA_EX * pData)
             dmg += effect;
         }
 
-        //always count intrinsic PV
-        dmg -= pv;
+        // A creature's own hide, on the same terms as the armour over it.
+        // Every blow that is DF_MAGIC_BOLT carries DF_AFFECT_PV; it is
+        // gated because ambient harm - the heat coming off lava - is not
+        // something a thick skin is any help against.
+        if (pData->flags & DF_AFFECT_PV) {
+            dmg -= pv;
+        }
 
         if (pData->flags & DF_AFFECT_PV) {
             //get initial pv of armour

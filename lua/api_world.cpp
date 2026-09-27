@@ -651,6 +651,13 @@ void DefineTile(sol::this_state s, const std::string& id_name, const std::string
     if (properties) {
         XTileType::SetDiggableInto(id, properties->get_or<std::string>("diggable_into", ""));
         XTileType::SetFertile(id, properties->get_or("fertile", false));
+        XTileType::SetHazard(id,
+            properties->get_or<std::string>("radiates", ""),
+            properties->get_or("reach", 0),
+            properties->get_or("power", 0),
+            properties->get_or<std::string>("spits", ""),
+            properties->get_or("spit_one_in", 0),
+            properties->get_or("spit_range", 0));
     }
 
     sol::state_view lua(s);
