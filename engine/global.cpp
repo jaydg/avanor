@@ -1399,18 +1399,31 @@ void vPutS(const char* s)
 
 void vFPutS(std::ofstream &file, std::string_view s)
 {
-    for (std::size_t pos = 0; pos < s.size(); ++pos) {
-        if (s[pos] == '\x1F') {
+    // Expanded first, exactly as vPutS() does on the way to the screen,
+    // and for the same reason: what arrives here has not necessarily been
+    // through ExpandMarkup() already. A list item does it in its own
+    // constructor, but a caption never did, and XGuiItem_SimpleSelect
+    // keeps the string as written - so "<TEXT>Head <DECORATION>: " was
+    // reaching the memorial file with its roles still spelled out.
+    //
+    // Expanding turns them into the escape bytes the loop below drops.
+    // Anything already expanded has no '<' left to act on, and a '<' that
+    // is not one of ours - a hero who named himself <Bob> - stays as
+    // written, so this is safe to do to every line.
+    const std::string expanded = ExpandMarkup(s);
+
+    for (std::size_t pos = 0; pos < expanded.size(); ++pos) {
+        if (expanded[pos] == '\x1F') {
             // Escape sequence: skip byte 31 and 1 following byte
             ++pos;
             continue;
         }
 
-        if (s[pos] == RGB_ESCAPE) {
+        if (expanded[pos] == RGB_ESCAPE) {
             pos += RGB_ESCAPE_LENGTH - 1;
             continue;
         }
-        file << s[pos];
+        file << expanded[pos];
     }
 }
 
