@@ -30,6 +30,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "game/location.h"
 #include "game/quest.h"
 #include "helpers/msgwin.h"
+#include "item/itemf.h"
 #include "item/item_misc.h"
 #include "item/xanyfood.h"
 #include "lua/api_actor.h"
@@ -993,21 +994,13 @@ void SetItemBrand(void* item, const std::string& br)
 // missile rows, rather than a second time wherever ammo is handed out.
 sol::optional<ItemType> MissileForLauncher(void* weapon)
 {
-    const XItem* w = (XItem*)weapon;
+    const ItemType it = XItemFactory::MissileFor((XItem*)weapon);
 
-    if (!w || w->wt == CS_NONE) {
+    if (it == IT_NONE) {
         return sol::nullopt;
     }
 
-    for (int i = 0; i < gi_missile.total_item; i++) {
-        const ItemTemplate& row = gi_missile.pFirstItem[i];
-
-        if (row.launcher != CS_NONE && row.launcher == w->wt) {
-            return row.it;
-        }
-    }
-
-    return sol::nullopt;
+    return it;
 }
 
 std::string GetItemName(void* item)

@@ -33,6 +33,13 @@ class XItemFactory
         static XItem* CreateAnyItem(ItemKind kind = ItemKind::ITEM, ItemType it = IT_NONE, int low_v = 0, int hi_v = 10000);
 
         static XItem* CreateItem(ItemKind kind = ItemKind::ITEM, ItemType it = IT_NONE);
+
+        // What a launcher fires, read back from the missiles' own
+        // :Launcher() declarations so the relationship is stated once, on
+        // the missile rows, and not restated wherever ammunition is handed
+        // out. IT_NONE for anything that is not a launcher, or a launcher
+        // nothing declares ammunition for.
+        static ItemType MissileFor(const XItem* launcher);
 };
 
 #define ICREATE(x, lv, hv) XItemFactory::CreateAnyItem(x, IT_NONE, lv, hv)

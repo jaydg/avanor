@@ -142,3 +142,20 @@ XItem* XItemFactory::CreateItem(ItemKind kind, ItemType it)
     assert(0);
     return nullptr;
 }
+
+ItemType XItemFactory::MissileFor(const XItem* launcher)
+{
+    if (!launcher || launcher->wt == CS_NONE) {
+        return IT_NONE;
+    }
+
+    for (int i = 0; i < gi_missile.total_item; i++) {
+        const ItemTemplate& row = gi_missile.pFirstItem[i];
+
+        if (row.launcher != CS_NONE && row.launcher == launcher->wt) {
+            return row.it;
+        }
+    }
+
+    return IT_NONE;
+}
