@@ -172,7 +172,11 @@ class XStandardAI
         void ReactToAttacker(XCreature* attacker);
 
         virtual void onDie(XCreature* killer);
-        virtual void onSteal(XCreature* rogue);
+
+        // Somebody was caught with a hand in this creature's pockets.
+        // `object` is what they reached for - they did not get it, but who
+        // was robbed of what is the whole of a shopkeeper's reaction.
+        virtual void onSteal(XCreature* rogue, XItem* object);
 
         virtual bool Chat(XCreature* chatter, const char* msg);
         virtual bool onGiveItem(XCreature* giver, XItem* item);

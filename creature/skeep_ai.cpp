@@ -110,6 +110,44 @@ void XShopKeeperAI::SetDebtor(XCreature * cr)
     debt.debtor = XCreature::ToWeakPtr(cr);
 }
 
+// Caught reaching into the stock. He is angry about it like anybody else
+// - that is the base class - and then he does the thing only a shopkeeper
+// can: the price of what you reached for goes onto your bill, and he
+// keeps it.
+//
+// A fine rather than a sale, and deliberately not a refusal to trade: a
+// player who robs the only smith in the valley should be out of pocket,
+// not locked out of the shop for the rest of the game. It goes on the
+// same running balance an honestly picked-up item does, so `P` shows it
+// and settling it clears it.
+void XShopKeeperAI::onSteal(XCreature * rogue, XItem * object)
+{
+    XStandardAI::onSteal(rogue, object);
+
+    if (!object) {
+        return;
+    }
+
+    const int fine = object->GetValue() * object->quantity;
+
+    if (fine <= 0) {
+        return;
+    }
+
+    // Whoever is already running a tab here keeps it; anybody else
+    // becomes the debtor by the act of being caught.
+    if (debt.debtor.lock().get() != rogue) {
+        debt.debtor = XCreature::ToWeakPtr(rogue);
+    }
+
+    debt.debtor_sum += fine;
+
+    if (rogue->isHero() || rogue->isVisible()) {
+        msgwin.Add(fmt::format("{} puts it back and adds {}gp to your bill.",
+            ai_owner->GetNameEx(CRN_T1), fine));
+    }
+}
+
 void XShopKeeperAI::Invalidate()
 {
     shop = nullptr;

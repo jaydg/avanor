@@ -1422,9 +1422,16 @@ void XStandardAI::SetGroupEnemy(XCreature* cr) const
     }
 }
 
-void XStandardAI::onSteal(XCreature * rogue)
+void XStandardAI::onSteal(XCreature * rogue, XItem * /*object*/)
 {
     AddPersonalEnemy(rogue);
+
+    // And whoever this one keeps company with.
+    //
+    // A creature with no group of its own - a lone shopkeeper is the usual
+    // case - still minds it alone, because SetGroupEnemy() answers
+    // nothing for GID_NONE.
+    SetGroupEnemy(rogue);
 }
 
 void XStandardAI::AddPersonalEnemy(XCreature * cr)

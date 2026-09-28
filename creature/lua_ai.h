@@ -67,7 +67,7 @@ class XLuaAI : public XStandardAI
         bool isEnemy(XCreature* cr) override;
         void onWasAttacked(XCreature* attacker) override;
         void onDie(XCreature* killer) override;
-        void onSteal(XCreature* rogue) override;
+        void onSteal(XCreature* rogue, XItem* object) override;
 
         template<class Archive>
         void serialize(Archive& ar)

@@ -31,6 +31,7 @@ struct SKILL_DB {
 };
 
 class XCreature;
+class XItem;
 
 class XSkill
 {
@@ -52,6 +53,8 @@ class XSkill
         };
 
     private:
+        [[nodiscard]] static int StealChance(XCreature* user,
+                XCreature* victim, XItem* object);
         int UseSteal(XCreature * user);
         int UseDisarm(XCreature * user);
         int UseCreate(XCreature * user);

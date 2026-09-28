@@ -110,11 +110,11 @@ void XLuaAI::onDie(XCreature* killer)
     XStandardAI::onDie(killer);
 }
 
-void XLuaAI::onSteal(XCreature* rogue)
+void XLuaAI::onSteal(XCreature* rogue, XItem* object)
 {
     if (has_onSteal) {
         sol::state_view lua(XLua::State());
-        sol::protected_function_result result = lua[lua_class]["onSteal"](ai_owner, rogue);
+        sol::protected_function_result result = lua[lua_class]["onSteal"](ai_owner, rogue, (void*)object);
 
         if (result.valid()) {
             if (sol::optional<bool> handled = result; handled && *handled) {
@@ -123,5 +123,5 @@ void XLuaAI::onSteal(XCreature* rogue)
         }
     }
 
-    XStandardAI::onSteal(rogue);
+    XStandardAI::onSteal(rogue, object);
 }

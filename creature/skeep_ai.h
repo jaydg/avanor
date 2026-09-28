@@ -59,6 +59,10 @@ class XShopKeeperAI : public XStandardAI
         virtual bool onAnyoneDropItem(XCreature* customer, XItem* item);
         bool onGiveItem(XCreature* giver, XItem* item) override;
 
+        // A shopkeeper who catches a thief does what a shopkeeper would:
+        // he charges him for it and keeps the goods.
+        void onSteal(XCreature* rogue, XItem* object) override;
+
         void SetShop(XShop* _shop)
         {
             shop = _shop;

@@ -207,6 +207,45 @@ int XSkill::isUseable() const
     }
 }
 
+// How likely a theft is, as a percentage.
+//
+// Weight is the term that was most missing: this is a skill for palming
+// small things out of pockets, and no amount of practice lets anyone walk
+// off with a boulder unnoticed. Value stands for how closely a thing is
+// kept.
+//
+// Nothing here can reach certainty. Being unseen is a large help.
+int XSkill::StealChance(XCreature* user, XCreature* victim, XItem* object)
+{
+    // Craft, and a nimble pair of hands.
+    int chance = 30 + 5 * user->sk->GetLevel(XSkill::Skill::STEALING);
+    chance += (user->stats->Get(XStats::DEX) - 10) / 2;
+
+    // Their eyes.
+    chance -= victim->stats->Get(XStats::PER);
+
+    // What it is: a ring is nothing to conceal, a mail shirt is absurd.
+    chance -= object->weight / 250;
+    chance -= object->GetValue() / 200;
+
+    // Somebody asleep is not watching their pockets, and somebody who
+    // cannot see you at all has only the tug to go by.
+    if (victim->xai && victim->xai->sleep_well > 0) {
+        chance += 35;
+    }
+
+    if (!user->isVisible()) {
+        chance += 25;
+    }
+
+    // Always a chance, never a certainty.
+    if (chance < 2) {
+        return 2;
+    }
+
+    return chance > 95 ? 95 : chance;
+}
+
 int XSkill::UseSteal(XCreature * user)
 {
     XPoint pt;
@@ -239,12 +278,14 @@ int XSkill::UseSteal(XCreature * user)
                 return 0;
             }
 
-            double perception = 1 + cr->stats->Get(XStats::PER);
-            double stealing = 1 + user->sk->GetLevel(XSkill::Skill::STEALING);
-            int p = (int)((stealing * 300) / perception);
+            const int p = StealChance(user, cr, object);
 
-            if (vRand() % 100 < p || !user->isVisible()) {
-                if (user->isVisible()) {
+            if (vRand() % 100 < p) {
+                // Told to the hero whether or not anyone could have seen
+                // him do it. The visibility test here used to mean an
+                // invisible thief was not told what he had just taken,
+                // which is the one person who certainly knows.
+                if (user->isHero() || user->isVisible()) {
                     msgwin.Add(fmt::format("You steal {}.", object->toSentence()));
                 }
 
@@ -278,7 +319,10 @@ int XSkill::UseSteal(XCreature * user)
                     msgwin.Add("notices your efforts and becomes angry.");
                 }
 
-                cr->xai->onSteal(user);
+                // A theft that goes wrong still teaches something, though less.
+                UseSkill(2);
+
+                cr->xai->onSteal(user, object);
 
                 // Theft failed - object was never erased from its source
                 // (see the IF_NO_ERASE comment above), so it's already

@@ -315,6 +315,25 @@ could never rise above 4, however long you fought, because nothing counted
 your practice. Landing a blow and turning one aside both count now, so a
 warrior who spends a life in combat can become genuinely good at it.
 
+**Stealing is worth the thousand gold.** The skill Jorgus sells has always
+worked, but it stopped being a skill at about the fourth level: the chance
+of success was your training measured against the victim's wits and nothing
+else, and past that point it was simply certain against almost everything
+alive. What you are reaching for now matters more than anything else. A ring
+is nothing to palm; a mail shirt is absurd, and no amount of practice will
+get a two-handed axe out of somebody's pack unnoticed. Valuable things are
+watched more closely than cheap ones. A sleeping victim is a gift, being
+unseen is a large help, and neither is a certainty: there is always a
+chance of being caught and always a chance of success.
+
+**And being caught costs something.** It used to make exactly one enemy -
+the person whose pocket you were in - while the guard beside him went on
+nodding at you. Whoever they keep company with now hears about it. A
+shopkeeper does the thing only a shopkeeper can: he puts the item back,
+keeps it, and adds its price to your bill, which is a fine rather than a
+refusal to serve you. Rob the only smith in the valley and you will be out
+of pocket, not shut out of his shop for the rest of the game.
+
 **Halflings know how to dodge**, which suits the smallest and nimblest of the
 races rather better than not knowing.
 
