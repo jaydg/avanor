@@ -68,6 +68,41 @@ std::optional<XPoint> XShop::FindDoor()
     return std::nullopt;
 }
 
+// Fills a rectangle of the shop floor, one item to a cell.
+//
+// A launcher puts its own ammunition on the next cell, and that one is
+// made without the shop's value bounds. Missiles likely are below a
+// shop's `min_value`, so they could never stock a quarrel at all.
+void XShop::Stock(const XRect& where)
+{
+    // Ammunition owed to the launcher placed on the previous cell.
+    XItem* pending = nullptr;
+
+    for (int i = where.left; i < where.right; i++) {
+        for (int j = where.top; j < where.bottom; j++) {
+            XItem* item = pending;
+            pending = nullptr;
+
+            if (!item) {
+                item = ICREATE(shop_mask, min_value, max_value);
+
+                if (const ItemType ammo = XItemFactory::MissileFor(item); ammo != IT_NONE) {
+                    pending = ICREATEB(ItemKind::MISSILE, ammo, 0, 10000000);
+                }
+            }
+
+            item->Drop(location, i, j);
+        }
+    }
+
+    // A launcher on the very last cell has no next cell to put its
+    // ammunition on. It goes down beside the bow rather than being
+    // thrown away - a cell holds as many items as are dropped on it.
+    if (pending) {
+        pending->Drop(location, where.right - 1, where.bottom - 1);
+    }
+}
+
 XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
              const XTileType::Id wall, const XTileType::Id floor,
              const int _min_value, const int _max_value,
@@ -110,18 +145,9 @@ XShop::XShop(XRect& _area, ItemKind _kind, XLocation* _loc, Door sd,
         location->map->CreateRoom(area.left, area.top, area.Width(), area.Height(),
             dx, dy, floor, wall);
 
-        for (int i = area.left + 1; i < area.right - 1; i++)
-            for (int j = area.top + 1; j < area.bottom - 1; j++) {
-                XItem * item = ICREATE(shop_mask, min_value, max_value);
-                item->Drop(location, i, j);
-            }
-
+        Stock(XRect(area.left + 1, area.top + 1, area.right - 1, area.bottom - 1));
     } else {
-        for (int i = area.left; i < area.right; i++)
-            for (int j = area.top; j < area.bottom; j++) {
-                XItem * item = ICREATE(shop_mask, min_value, max_value);
-                item->Drop(location, i, j);
-            }
+        Stock(area);
     }
 
     hero_in = 0;

@@ -107,6 +107,9 @@ class XShop : public XAnyPlace
 
         ItemKind shop_mask;
     protected:
+        // Fills a rectangle of floor with goods.
+        void Stock(const XRect& where);
+
         int min_value = 0;
         int max_value = 10000;
         int hero_in;
