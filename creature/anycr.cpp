@@ -147,11 +147,27 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
             }
     }
 
+    // What content has spoken for. A template that names the sort of thing
+    // a slot should hold has said all there is to say about that slot,
+    // whether or not the roll for it came off - so the random outfitting
+    // below leaves those slots alone entirely.
+    //
+    // It also inherits, which a second argument to :Body() would not.
+    unsigned int spoken_for = 0;
+
+    for (const auto& [mask, count, probability, it] : cr->equipment) {
+        spoken_for |= static_cast<unsigned int>(mask);
+    }
+
     // wear random items if it wasn't worn before.
     XBodyPart * hand_1 = nullptr;
     XBodyPart * hand_2 = nullptr;
 
     for (auto& bp: components) {
+        if (static_cast<unsigned int>(bp->GetProperKind()) & spoken_for) {
+            continue;
+        }
+
         if (!bp->Item() && vRand(100) < cr->equip_probability) {
             if (bp->bp_uin == BP_HAND) {
                 if (hand_1 == nullptr) {
