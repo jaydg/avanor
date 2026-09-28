@@ -18,8 +18,10 @@ function ArmLauncher(weapon, who)
 	local ammo = CreateObject(ItemKind.MISSILE, kind, 0, 10000000)
 
 	if (ammo) then
-		AsCreature(who):ContainItem(AsItem(ammo))
+		-- Worn, not merely carried.
+		AsCreature(who):PutOnBody(BodyPart.MISSILE, 0, ammo)
 	end
+
 end
 
 Template.new(ItemKind.MISSILEW, "long_bow")
