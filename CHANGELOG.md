@@ -445,6 +445,20 @@ carried a ranged weapon. Every arrow in the world came off a kobold, and
 since nothing at all carried a crossbow, quarrels very nearly did not
 exist.
 
+The valley is better armed now. Kobolds have taken up slings, which suit
+them; goblin warriors and warmasters carry short bows; gnolls carry long
+bows. The royal and dwarven guard both draw crossbows, about one man in
+four, and the death knights about one in five. And every shopkeeper now
+keeps a light crossbow behind the counter, which is worth remembering the
+next time you consider reaching across it.
+
+**What a creature carries now says something about it.** A guard's arms
+are the armoury's: he has what he was issued and nothing else slung across
+his back. A bandit's are his own business, and he may well have found a
+bow - which, unlike before, he will have ammunition for and know how to
+use. Nothing in the engine decides which is which; it falls out of whether
+the creature's own description names the thing or leaves the slot open.
+
 **Resistance no longer betrays you at the top.** Fire resistance stacked
 past 100% used to turn itself inside out: a creature — or a hero — who was
 *completely* immune to fire took the full damage of a fire spell, while
