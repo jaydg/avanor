@@ -176,9 +176,20 @@ XAnyCreature::XAnyCreature(CreatureTemplate * cr)
                     hand_2 = bp.get();
                 }
             } else if (bp->bp_uin == BP_MISSILE) {
+                // Ammunition is never handed out on its own: what would
+                // turn up would not match the bow. A launcher found this
+                // way brings its own, through OnOutfit() below.
                 continue;
             } else {
-                bp->Wear(ICREATE(bp->GetProperKind(), 0, 1000000));
+                XItem* item = ICREATE(bp->GetProperKind(), 0, 1000000);
+
+                // The same two courtesies the declared-equipment loop
+                // pays. Without them something found this way is scenery:
+                // a bow with no ammunition anywhere and no idea how to
+                // fire it.
+                item->OnOutfit(this);
+                competent_with(item);
+                bp->Wear(item);
             }
         }
     }

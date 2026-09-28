@@ -440,6 +440,11 @@ Every one of them is held at your pace for the moment. Waking that up
 is a much larger change than slowing the jelly down, and it wants doing
 one creature at a time, with a sword in hand.
 
+**Things shoot back.** Kobolds were the only creatures in the game that
+carried a ranged weapon. Every arrow in the world came off a kobold, and
+since nothing at all carried a crossbow, quarrels very nearly did not
+exist.
+
 **Resistance no longer betrays you at the top.** Fire resistance stacked
 past 100% used to turn itself inside out: a creature — or a hero — who was
 *completely* immune to fire took the full damage of a fire spell, while
