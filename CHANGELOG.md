@@ -334,6 +334,14 @@ keeps it, and adds its price to your bill, which is a fine rather than a
 refusal to serve you. Rob the only smith in the valley and you will be out
 of pocket, not shut out of his shop for the rest of the game.
 
+**You begin able to use what you were given.** A character set out
+competent with the weapon in their main hand and nothing else - so an
+archer, whose bow hangs across their back rather than in a fist, started
+unable to use the one thing their whole calling is built on, and every
+shield-bearer started unable to use their shield. Neither is new - 0.5.8
+did exactly the same. Whatever the kit puts on you, you now begin
+competent with it.
+
 **Halflings know how to dodge**, which suits the smallest and nimblest of the
 races rather better than not knowing.
 

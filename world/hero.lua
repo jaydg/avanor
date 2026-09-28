@@ -244,12 +244,20 @@ function InitHero(hero, race_key, gender_key, profession_key, deity_key)
 		kit(hero, who, race_key)
 	end
 
-	-- Whatever ended up in the hero's hand, they begin competent with it.
-	-- After the kit, necessarily: it reads what the kit put there.
-	local weapon = GetWornItem(hero, BodyPart.HAND, 0)
+	-- Whatever the kit put on them, they begin competent with it. After
+	-- the kit, necessarily, because it reads what the kit put there.
+	local ARMED_SLOTS = {
+		{ BodyPart.HAND, 0 },
+		{ BodyPart.HAND, 1 },
+		{ BodyPart.MISSILE_WEAPON, 0 },
+	}
 
-	if (weapon and IsKind(AsItem(weapon).kind, ItemKind.WEAPON)) then
-		SetWarSkill(hero, GetItemWarSkill(weapon), 2)
+	for _, slot in ipairs(ARMED_SLOTS) do
+		local worn = GetWornItem(hero, slot[1], slot[2])
+
+		if (worn) then
+			SetWarSkill(hero, GetItemWarSkill(worn), 2)
+		end
 	end
 
 	-- A devout calling sets out with the ear of the god it chose. Nothing
