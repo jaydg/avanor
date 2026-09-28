@@ -155,8 +155,11 @@ class XLocation : public XObject
         // A free spot, and with `on` a free spot whose ground is one of
         // those tiles - what keeps a flock on the grass rather than in
         // the tower it grazes beside. An empty `on` takes any ground.
+        //
+        // `unseen` refuses any cell the hero can currently see, so that a
+        // creature arriving in the world does not arrive in front of them.
         std::optional<XPoint> GetFreeXY(XRect * area = nullptr,
-            const std::vector<XTileType::Id>& on = {});
+            const std::vector<XTileType::Id>& on = {}, bool unseen = false);
         void AddPlace(XAnyPlace * pl);
 
         // ways_list holds raw, non-owning XObject* into two different

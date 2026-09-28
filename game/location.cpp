@@ -190,7 +190,8 @@ void XLocation::AddPlace(XAnyPlace * pl)
     assert(0);
 }
 
-std::optional<XPoint> XLocation::GetFreeXY(XRect * area, const std::vector<XTileType::Id>& on)
+std::optional<XPoint> XLocation::GetFreeXY(XRect * area, const std::vector<XTileType::Id>& on,
+                                           const bool unseen)
 {
     int bx, by, dx, dy;
 
@@ -214,6 +215,11 @@ std::optional<XPoint> XLocation::GetFreeXY(XRect * area, const std::vector<XTile
         const int ty = vRand() % dy + by;
 
         if (map->XGetMovability(tx, ty) != 0 || map->GetSpecial(tx, ty) != nullptr) {
+            continue;
+        }
+
+        // Not where the player is looking.
+        if (unseen && map->GetVisible(tx, ty)) {
             continue;
         }
 

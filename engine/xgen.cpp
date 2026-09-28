@@ -62,8 +62,9 @@ bool XUniversalGen::Run()
     // No room right now is not an error - the generator simply produces
     // nothing this turn and tries again on the next.
     if (!room.Empty()) {
-        if (const auto pt = area.Width() > 0 ? l->GetFreeXY(&area, on)
-                                            : l->GetFreeXY(nullptr, on)) {
+        // Nothing arrives where the hero is looking.
+        if (const auto pt = area.Width() > 0 ? l->GetFreeXY(&area, on, true)
+                                            : l->GetFreeXY(nullptr, on, true)) {
             if (XCreature* cr = XCreatureStorage::CreateRnd(room, crl)) {
                 Game.NewCreature(cr, pt->x, pt->y, l);
                 cr->xai->SetAIFlag(XStandardAI::ALLOW_MOVE_WAY_DOWN);
