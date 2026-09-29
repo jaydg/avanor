@@ -459,6 +459,11 @@ bow - which, unlike before, he will have ammunition for and know how to
 use. Nothing in the engine decides which is which; it falls out of whether
 the creature's own description names the thing or leaves the slot open.
 
+**Todin carries his own work.** The master smith of the mountain is described
+standing at his forge with a hammer in his hand, and had nothing of the kind.
+He now holds a smith's hammer of his own making, short in the haft and heavy
+in the head, with the forge still on it.
+
 **Resistance no longer betrays you at the top.** Fire resistance stacked
 past 100% used to turn itself inside out: a creature — or a hero — who was
 *completely* immune to fire took the full damage of a fire spell, while

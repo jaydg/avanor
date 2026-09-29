@@ -22,10 +22,37 @@ Monster.new("todin", "dwarf")
 	:Unique()
 	:Register()
 
+-- The hammer in the other hand, from his own description. It is a smith's
+-- tool and not a soldier's weapon - short in the haft, heavy in the head,
+-- and made for an anvil rather than a helmet - which is why it hits hard
+-- and swings slowly, and why a war hammer is the thing it is modelled on
+-- rather than the thing it is.
+--
+-- The fire on it is the forge it has spent a lifetime in.
+Item.new("todin_hammer")
+	:Weapon("war_hammer")
+	:View("smith's hammer", '/', xColor.xLIGHTGRAY)
+	:Basic(2500, 600)
+	:Armour(0, 0)
+	:Combat(3, 1, 8, 4)
+	:Resist{ fire = "1d1+20" }
+	:Stats("St:1d1+2")
+	:Brand("fire")
+	:Called("Todin's Hammer")
+	:Unique()
+	:Register()
+
 
 function CreateTodin(x, y)
 	local todin = Guardian("todin", "dwarven_guardian", x, y, 6, 4)
 	SetEventHandler(todin, 'TodinHandler')
+
+	-- Into the hand, not the sack. :Equip() would read better here, but it
+	-- only knows Template.new() sorts of item and would quietly hand him a
+	-- random weapon instead; and merely giving him the hammer leaves his
+	-- main hand to whatever the random outfitting found, with his own work
+	-- as the off-hand afterthought. PutOnBody discards what is in the way.
+	AsCreature(todin):PutOnBody(BodyPart.HAND, 0, CreateObject('todin_hammer'))
 end
 
 
