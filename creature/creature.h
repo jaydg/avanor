@@ -120,10 +120,17 @@ struct ACTION_DATA {
     // See XItem::Own().
     std::shared_ptr<XItem> item;
 
+    // What a tool turned out of the hand, and which hand that was. A tool is
+    // held, so using one costs a hand for as long as the job lasts - see
+    // XCreature::FitTool(). -1 means nothing was fitted: either the tool was
+    // already in hand, or there is no job in progress.
+    std::shared_ptr<XItem> displaced;
+    int displaced_hand = -1;
+
     template<class Archive>
     void serialize(Archive& ar)
     {
-        ar(action, item);
+        ar(action, item, displaced, displaced_hand);
     }
 };
 
@@ -405,6 +412,13 @@ class XCreature : public XBaseObject
 
         virtual int UseItem(XTool* tool);
         void continueUseItem();
+
+        // Every hand, in the order they are worn. A tool is held - so
+        // whatever wants to know what is being held asks these.
+        std::vector<XBodyPart*> Hands() const;
+
+        void FitTool(XTool* tool);
+        void UnfitTool(const XItem* tool);
 
         int base_nutrio;  // stomach size for normal satiation
         int nutrio;       // stomach satiation;

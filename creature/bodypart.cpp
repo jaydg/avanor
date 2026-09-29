@@ -38,8 +38,6 @@ void RegisterBodyPartEnum(sol::state_view& lua)
         "RING", BP_RING,
         "GLOVES", BP_GLOVES,
         "BOOTS", BP_BOOTS,
-        "LIGHT_SOURCE", BP_LIGHT_SOURCE,
-        "TOOL", BP_TOOL,
         "MISSILE_WEAPON", BP_MISSILE_WEAPON,
         "MISSILE", BP_MISSILE
     );
@@ -55,8 +53,6 @@ const char* bp_names[] = {
     "ring",
     "gloves",
     "boots",
-    "light_source",
-    "tool",
     "missile_weapon",
     "missile",
     "eof"
@@ -72,8 +68,6 @@ ItemKind bpim[] = {
     ItemKind::RING,
     ItemKind::GLOVES,
     ItemKind::BOOTS,
-    ItemKind::LIGHTSOURCE,
-    ItemKind::TOOL,
     ItemKind::MISSILEW,
     ItemKind::MISSILE,
     ItemKind::ALL

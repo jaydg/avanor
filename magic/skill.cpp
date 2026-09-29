@@ -431,9 +431,16 @@ int XSkill::UseCreate(XCreature * user)
 
     // Everything else is dug or built, and some of it needs a tool in hand.
     if (recipe.needs_tool) {
-        const XItem* held = user->GetBodyPart(BP_TOOL, 0)->Item();
+        const XItem* held = nullptr;
 
-        if (!held || held->it != recipe.tool) {
+        for (const XBodyPart* hand: user->Hands()) {
+            if (const XItem* h = hand->Item(); h && h->it == recipe.tool) {
+                held = h;
+                break;
+            }
+        }
+
+        if (!held) {
             msgwin.Add(fmt::format("You should wield a {}!", recipe.tool_name));
             return 0;
         }

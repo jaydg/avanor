@@ -2,7 +2,7 @@
 Monster.new("roderik")
 	:View("Roderick, king of Avanor", 'p', xColor.xYELLOW, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "human")
 	:Basic(143, 700, CreatureSize.NORMAL, "1d200+1200")
-	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100)
+	:Body("head neck body cloak hand hand ring ring gloves boots missile_weapon missile", 100)
 	:Never("invisible")
 	:Always("see_invisible")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.COWARD + XStandardAI.PEACEFUL)

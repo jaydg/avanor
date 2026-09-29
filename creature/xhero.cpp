@@ -81,7 +81,7 @@ XHero::XHero(NewCharacter)
     dice.Setup("1d2");
 
     std::string hero_body = "head neck body cloak hand hand ring ring gloves "
-                            "boots light_source tool missile_weapon missile";
+                            "boots missile_weapon missile";
     XBodyPart::Create(this, hero_body);
 
     PlayerSetup();

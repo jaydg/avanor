@@ -3,7 +3,7 @@
 --
 Monster.new("todin", "dwarf")
 	:View("Todin, dwarven weaponsmith", 'h', xColor.xBROWN, PersonType.NAMED_HE, CreatureTemplate.UNIQUE, "humanoid")
-	:Body("head neck body cloak hand hand ring ring gloves boots light_source tool missile_weapon missile", 100)
+	:Body("head neck body cloak hand hand ring ring gloves boots missile_weapon missile", 100)
 	:Never("invisible")
 	:Always("see_invisible")
 	:AI(XStandardAI.RANDOM_MOVE + XStandardAI.ALLOW_PICK_UP + XStandardAI.ALLOW_WEAR_ITEM + XStandardAI.PEACEFUL)

@@ -566,6 +566,24 @@ rings that match down to the metal used to collapse into one line reading
 Arrows and bolts still stack — a quiver is meant to hold a heap — as do
 potions, scrolls, books, food and oddments.
 
+**A tool is something you pick up, not something you wear.** There used to be
+a tool slot on the equipment screen, and a pickaxe, an alchemy set or a
+cooking set could only be used while it was worn in it — so switching from
+digging to distilling meant a trip to the equipment screen first. Now `u`
+asks which of the tools you are carrying you mean, and takes the hand it
+needs for as long as the job lasts: the pickaxe goes into your weapon hand,
+and your weapon comes back when the digging is done.
+
+It only comes back if the job is *done*. Something that interrupts you —
+a blow from behind, most likely — leaves you standing there holding the
+pickaxe, and the pickaxe is then what you have to fight with. You can also
+wield a tool deliberately, from the equipment screen, and mine with it for
+as long as you like; a tool you put in your own hand stays there.
+
+**The light source slot is gone as well.** Nothing in the game has ever been
+a light source, so it was an empty line on the equipment screen and nothing
+else. Should lanterns ever arrive, they will need a hand too.
+
 ---
 
 ### Fixed

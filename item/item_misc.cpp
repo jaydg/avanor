@@ -329,7 +329,7 @@ ItemBuilder& ItemBuilder::Tool(const ItemType it)
     t.base = ContentItemTemplate::TOOL;
     t.it = it;
     t.kind = ItemKind::TOOL;
-    t.bp = BP_TOOL;
+    t.bp = BP_HAND;
     return *this;
 }
 

@@ -44,8 +44,6 @@ enum BODY_PART {
     BP_RING,
     BP_GLOVES,
     BP_BOOTS,
-    BP_LIGHT_SOURCE,
-    BP_TOOL,
     BP_MISSILE_WEAPON,
     BP_MISSILE,
     BP_EOF,

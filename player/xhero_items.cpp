@@ -74,7 +74,7 @@ static XItemList* pLastList = nullptr;
 const char* part_names[] = {"",
         "Head", "Necklace", "Body", "Cloak",
         "Left hand", "Left ring", "Gloves",
-        "Boots", "Light source", "Tool", "Missile weapon", "Missile", "eof"
+        "Boots", "Missile weapon", "Missile", "eof"
     };
 
 std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, const INVENTORY_FLAG flag, const int ret_item_count,
@@ -329,7 +329,18 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
                 // IF_NO_ERASE: picking something to wear must not remove
                 // it from contain - it's meant to stay visible there,
                 // worn or not.
-                std::shared_ptr<XItem> picked = Inventory(&contain, xqsa[n]->GetProperKind(), static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
+                // A hand may also be filled with a tool, which is not
+                // part of what a hand is *for* (GetProperKind() stays
+                // weapon-and-shield, so the outfitting of monsters and
+                // XStandardAI::Wear() are unaffected) - but wielding the
+                // pickaxe to mine with for a while has to be sayable.
+                ItemKind wanted = xqsa[n]->GetProperKind();
+
+                if (xqsa[n]->bp_uin == BP_HAND) {
+                    wanted = static_cast<ItemKind>(wanted | ItemKind::TOOL);
+                }
+
+                std::shared_ptr<XItem> picked = Inventory(&contain, wanted, static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
 
                 if (picked) {
                     if (xqsa[n]->bp_uin == BP_HAND) {
@@ -676,19 +687,31 @@ void XHero::GiveItem()
     }
 }
 
+// Pick something out of the pack and put it to work.
+// UseItem() takes the hand it needs for as long as the job runs.
 int XHero::UseTool()
 {
-    if (const XBodyPart* tbp = GetBodyPart(BP_TOOL))
-    {
-        if (auto tool = dynamic_cast<XTool *>(tbp->Item())) {
-            UseItem(tool);
-            return 1;
-        }
+    // IF_NO_ERASE: choosing a tool must not take it out of the pack.
+    auto picked = Inventory(&contain, ItemKind::TOOL,
+        static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
+
+    if (!picked) {
+        return 0;
     }
 
-    msgwin.Add("You have no tool.");
+    // ItemKind::TOOL is the drawer of the pack it is filed in; an XTool
+    // is a thing with a use. The ancient machine part is the first and
+    // not the second.
+    auto* tool = dynamic_cast<XTool*>(picked.get());
 
-    return 0;
+    if (!tool) {
+        msgwin.Add(fmt::format("You have no idea what to do with {}.",
+                               picked->toSentence()));
+
+        return 0;
+    }
+
+    return UseItem(tool);
 }
 
 void XHero::MixPotions()

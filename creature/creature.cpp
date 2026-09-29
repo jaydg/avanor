@@ -353,6 +353,12 @@ void XCreature::stopAction()
         if (auto* tool = dynamic_cast<XTool*>(action_data.item.get())) {
             tool->onUse(XTool::FINISH, this);
         }
+
+        // Interrupted, not finished - so the tool stays in the hand and
+        // the weapon it displaced stays in the pack, to be wielded again
+        // deliberately. See XCreature::FitTool().
+        action_data.displaced = nullptr;
+        action_data.displaced_hand = -1;
     } else {
         // Back into the pack, so an interrupted meal or an unfinished
         // book is not lost. Only if it still exists: a corpse rots on

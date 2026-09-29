@@ -334,6 +334,10 @@ void XCreature::continueUseItem()
     auto* tool = dynamic_cast<XTool*>(action_data.item.get());
 
     if (!tool || !tool->isValid()) {
+        // The tool itself is gone - used up, or destroyed under it. The
+        // job is over either way, so the hand goes back to its weapon;
+        // there is nothing left to take out of it first.
+        UnfitTool(tool);
         action_data.action = A_MOVE;
         action_data.item = nullptr;
 
@@ -344,29 +348,136 @@ void XCreature::continueUseItem()
     RESULT res = tool->onUse(XTool::PROGRESS, this);
 
     if (res != CONTINUE) {
+        // Finished under its own steam, so the hand goes back to what it
+        // was holding - unlike an interruption, which does not.
+        UnfitTool(tool);
         action_data.action = A_MOVE;
         action_data.item = nullptr;
+    }
+}
+
+// Every hand, in the order they are worn.
+std::vector<XBodyPart*> XCreature::Hands() const
+{
+    std::vector<XBodyPart*> hands;
+
+    for (const auto& bp: components) {
+        if (bp->Fit(BP_HAND)) {
+            hands.push_back(bp.get());
+        }
+    }
+
+    return hands;
+}
+
+// Take a tool in hand for the length of a job. One that is not already being
+// held displaces what is, and the displaced weapon is remembered on the
+// action so that UnfitTool() can give it back.
+//
+// It only comes back if the job runs to its end. Something that interrupts
+// the job goes through stopAction(), which drops the memory instead - so a
+// dig that a wandering orc breaks off leaves the pickaxe in your hand, and
+// the pickaxe is then what you have to fight with.
+void XCreature::FitTool(XTool* tool)
+{
+    action_data.displaced = nullptr;
+    action_data.displaced_hand = -1;
+
+    const auto hands = Hands();
+    int chosen = -1;
+
+    for (size_t i = 0; i < hands.size(); i++) {
+        // Already held. The player wielded it themselves - to mine with
+        // for a while, say - so it is not this function's to move.
+        if (hands[i]->Item() == tool) {
+            return;
+        }
+
+        if (!hands[i]->Item() && chosen < 0) {
+            chosen = static_cast<int>(i);
+        }
+    }
+
+    if (hands.empty()) {
+        return;
+    }
+
+    std::shared_ptr<XItem> displaced;
+
+    // Nothing spare, so the weapon hand gives way. The shield stays.
+    if (chosen < 0) {
+        chosen = 0;
+        displaced = hands[0]->UnWear();
+    }
+
+    if (hands[chosen]->Wear(tool) != 0) {
+        // Refused. Put back what was moved and leave the tool where it is;
+        // the use below still works, it just costs no hand.
+        if (displaced && displaced->isValid()) {
+            hands[chosen]->Wear(displaced.get());
+        }
+
+        return;
+    }
+
+    action_data.displaced = displaced;
+    action_data.displaced_hand = chosen;
+}
+
+// The end of the job: the tool leaves the hand and whatever it displaced
+// is wielded again.
+void XCreature::UnfitTool(const XItem* tool)
+{
+    const int hand_n = action_data.displaced_hand;
+    const auto displaced = action_data.displaced;
+
+    action_data.displaced = nullptr;
+    action_data.displaced_hand = -1;
+
+    if (hand_n < 0) {
+        return;
+    }
+
+    const auto hands = Hands();
+
+    if (static_cast<size_t>(hand_n) >= hands.size()) {
+        return;
+    }
+
+    XBodyPart* hand = hands[hand_n];
+
+    // Only take back what this put there. A tool consumed by its own use
+    // has already left the slot, and a hand the player has filled with
+    // something else in the meantime is theirs, not ours.
+    if (hand->Item() == tool) {
+        hand->UnWear();
+    }
+
+    if (!hand->Item() && displaced && displaced->isValid()) {
+        hand->Wear(displaced.get());
     }
 }
 
 int XCreature::UseItem(XTool* tool)
 {
     assert(isValid());
+
+    FitTool(tool);
+
     RESULT res = tool->onUse(XTool::START, this);
 
-    if (res) {
-        if (res == CONTINUE) {
-            action_data.action = A_USE_TOOL;
-            action_data.item = XItem::Own(tool);
-            return 1;
-        } else {
-            return 1;
-        }
-    } else {
-        return 0;
+    if (res == CONTINUE) {
+        action_data.action = A_USE_TOOL;
+        action_data.item = XItem::Own(tool);
+
+        return 1;
     }
 
-    return 1;
+    // Over in the one turn, or refused outright:
+    // the hand is wanted back straight away.
+    UnfitTool(tool);
+
+    return res ? 1 : 0;
 }
 
 
