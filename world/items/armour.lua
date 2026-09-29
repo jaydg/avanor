@@ -35,7 +35,7 @@ Template.new(ItemKind.BODY, "robe")
 
 Template.new(ItemKind.BODY, "light_mail")
 	:View("scale mail", '[')
-	:Made("all_leather", ItemQuality.AVG)
+	:Made("scale", ItemQuality.AVG)
 	:Worth(15, 15)
 	:Armour("1d3+1", "1d2")
 	:Combat("", "1d1", "")

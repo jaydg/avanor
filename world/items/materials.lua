@@ -76,6 +76,29 @@ Material.new("wooden")
 	:Combat("1d2", 0, "1d2")
 	:Register()
 
+-- Horn: springy, tough and light, and it takes an enormous squeeze and
+-- gives all of it back. Cut into scales and sewn onto a backing it makes
+-- a good coat, a little better than studded leather.
+Material.new("horn")
+	:Looks(xColor.xBROWN)
+	:Chance(40)
+	:Quality(ItemQuality.AVG)
+	:Body(5, 14)
+	:Armour("1d2", "1d2+1")
+	:Combat("1d3+1", 0, "1d3+1")
+	:Register()
+
+-- Bone is hard and it is brittle, and it is poor in tension. It makes a
+-- serviceable point, a club and a coat of plates.
+Material.new("bone")
+	:Looks(xColor.xWHITE)
+	:Chance(60)
+	:Quality(ItemQuality.POOR)
+	:Body(7, 6)
+	:Armour("1d2", "1d2")
+	:Combat("1d1", 0, "1d2")
+	:Register()
+
 Material.new("stone")
 	:Looks(xColor.xLIGHTGRAY)
 	:Chance(200)
@@ -288,8 +311,15 @@ MaterialSet.new("bow")
 	:Of{ "wooden" }
 	:Register()
 
+-- Scales sewn onto a backing, which is the oldest armour there is and can
+-- be made of whatever is hard and comes in small pieces.
+MaterialSet.new("scale")
+	:Of{ "all_leather", "horn", "bone" }
+	:Register()
+
+-- Bone makes a good point and always has.
 MaterialSet.new("missile")
-	:Of{ "all_metal", "wooden", "stone" }
+	:Of{ "all_metal", "wooden", "stone", "bone" }
 	:Register()
 
 MaterialSet.new("wood_stone")
