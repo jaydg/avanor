@@ -25,11 +25,25 @@
 --                            of this file
 --       :Register()
 
+-- A note on the first number of :Body(), which is how heavy the material
+-- is. These are real densities, scaled so that iron sits at 30 - iron
+-- being the commonest thing in the world, and the one worth leaving where
+-- it was so that the weight of everything else does not shift underneath
+-- the burden rules.
+--
+-- At that scale one point is about a quarter of a gram per cubic
+-- centimetre. Steel used to weigh half what iron did, when the two are in
+-- truth within one per cent of each other; gold used to weigh less than
+-- iron, when it is two and a half times heavier than anything else here;
+-- and stone used to weigh two thirds of iron rather than a third. The
+-- invented metals are the exception and stay far below everything, which
+-- is what they are famous for.
+
 Material.new("cloth")
 	:Looks(xColor.xWHITE)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
-	:Body(4, 8)
+	:Body(3, 8)
 	:Armour("1d1", "1d1")
 	:Combat("", 0, "")
 	:Register()
@@ -38,7 +52,7 @@ Material.new("leather")
 	:Looks(xColor.xBROWN)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
-	:Body(6, 10)
+	:Body(4, 10)
 	:Armour("1d2", "1d1")
 	:Combat("", 0, "")
 	:Register()
@@ -48,7 +62,7 @@ Material.new("studded_leather")
 	:Looks(xColor.xBROWN)
 	:Chance(100)
 	:Quality(ItemQuality.AVG)
-	:Body(8, 12)
+	:Body(6, 12)
 	:Armour("1d3", "1d2")
 	:Combat("", 0, "")
 	:Register()
@@ -57,7 +71,7 @@ Material.new("wooden")
 	:Looks(xColor.xBROWN)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
-	:Body(8, 7)
+	:Body(3, 7)
 	:Armour("1d2", "1d3")
 	:Combat("1d2", 0, "1d2")
 	:Register()
@@ -66,7 +80,7 @@ Material.new("stone")
 	:Looks(xColor.xLIGHTGRAY)
 	:Chance(200)
 	:Quality(ItemQuality.POOR)
-	:Body(20, 5)
+	:Body(10, 5)
 	:Armour("1d3", "1d4+1")
 	:Combat("1d3", 0, "1d2")
 	:Resist{ earth = 10 }
@@ -76,7 +90,7 @@ Material.new("crystal")
 	:Looks(xColor.xLIGHTMAGENTA)
 	:Chance(50)
 	:Quality(ItemQuality.AVG)
-	:Body(25, 14)
+	:Body(10, 14)
 	:Armour("1d3+3", "1d5+2")
 	:Combat("1d5+1", 0, "1d5+1")
 	:Resist{ water = 10 }
@@ -86,18 +100,24 @@ Material.new("obsidian")
 	:Looks(xColor.xDARKGRAY)
 	:Chance(50)
 	:Quality(ItemQuality.FAIR)
-	:Body(13, 20)
+	:Body(10, 20)
 	:Armour("1d3+3", "1d6+2")
 	:Combat("1d6+1", 0, "1d6+1")
 	:Resist{ fire = 15 }
 	:Register()
 
+-- The two soft metals: silver yields at about a quarter of what
+-- wrought iron does and gold at a tenth, and neither work-hardens usefully.
+-- Gold is also twice the weight of steel for the same bulk. So they sit
+-- below brass, gold at the very bottom, and what makes them worth having
+-- is what they already carry: they do not corrode, and they are worth a
+-- great deal.
 Material.new("silver")
 	:Looks(xColor.xLIGHTGRAY)
 	:Chance(30)
 	:Quality(ItemQuality.FAIR)
-	:Body(20, 30)
-	:Armour("1d3", "1d5+2")
+	:Body(40, 30)
+	:Armour("1d2", "1d2")
 	:Combat("1d4+0", 0, "1d4+0")
 	:Resist{ acid = 10 }
 	:Register()
@@ -106,59 +126,80 @@ Material.new("gold")
 	:Looks(xColor.xYELLOW)
 	:Chance(15)
 	:Quality(ItemQuality.GOOD)
-	:Body(22, 50)
-	:Armour("1d3+1", "1d5+2")
+	:Body(74, 50)
+	:Armour("1d1", "1d1")
 	:Combat("1d5", 0, "1d5+0")
 	:Resist{ acid = 20 }
 	:Property(SpecialProperty.REGENERATION + SpecialProperty.FAST_DIGESTION)
 	:Register()
 
-Material.new("bronze")
-	:Looks(xColor.xBROWN)
-	:Chance(60)
-	:Quality(ItemQuality.AVG)
-	:Body(26, 17)
-	:Armour("1d3", "1d5+1")
-	:Combat("1d4", 0, "1d3+0")
-	:Resist{ stun = 5 }
-	:Register()
+-- The armour metals, in the order a smith would rank them.
+--
+-- Protection (pv) is what the metal does, and it is where these differ.
+-- Defence (dv) is how easy you still are to hit, and no amount of metal
+-- makes a man harder to hit - so the metals barely move it.
 
+-- Copper and zinc: soft, low yield, and it stays soft. Real brass armour
+-- was for parades and fittings, never for a battlefield - which is why
+-- this is the worst thing here to be wearing.
 Material.new("brass")
 	:Looks(xColor.xBROWN)
 	:Chance(60)
-	:Quality(ItemQuality.AVG)
-	:Body(30, 30)
-	:Armour("1d3", "1d5+1")
+	:Quality(ItemQuality.POOR)
+	:Body(32, 30)
+	:Armour("1d2", "1d3")
 	:Combat("1d3", 0, "1d3+0")
 	:Resist{ stun = 10 }
 	:Property(SpecialProperty.SLOW_DIGESTION)
 	:Register()
 
+-- Copper and tin, and it work-hardens as it is beaten - which is why it
+-- armoured the Greeks for centuries. Better than brass by a wide margin
+-- and still softer than iron, and heavy for what it gives back.
+Material.new("bronze")
+	:Looks(xColor.xBROWN)
+	:Chance(60)
+	:Quality(ItemQuality.AVG)
+	:Body(34, 17)
+	:Armour("1d2", "1d4+1")
+	:Combat("1d4", 0, "1d3+0")
+	:Resist{ stun = 5 }
+	:Register()
+
+-- Wrought iron: not hard, but tough and ductile, which is the quality a
+-- mail ring wants - it bends round a point rather than shattering at it.
+-- The standard armour metal of the world for a thousand years.
 Material.new("iron")
 	:Looks(xColor.xDARKGRAY)
 	:Chance(120)
-	:Quality(ItemQuality.POOR)
+	:Quality(ItemQuality.AVG)
 	:Body(30, 15)
 	:Armour("1d3", "1d5+1")
 	:Combat("1d2", 0, "1d3+0")
 	:Register()
 
+-- Iron with the carbon in it and the heat treatment done. Hardened plate
+-- is the best armour anybody ever actually wore: a clear step above iron,
+-- and the last rung with any physics behind it.
 Material.new("steel")
 	:Looks(xColor.xLIGHTBLUE)
 	:Chance(50)
 	:Quality(ItemQuality.FAIR)
-	:Body(15, 20)
-	:Armour("1d3+3", "1d5+2")
+	:Body(30, 20)
+	:Armour("1d3+1", "1d6+2")
 	:Combat("1d6+1", 0, "1d5+1")
 	:Resist{ stun = 15 }
 	:Register()
 
+-- Past here the metals are invented, so they answer to the ladder rather
+-- than to metallurgy: better than steel, and each other's better, by a
+-- margin that stays in proportion instead of running away.
 Material.new("mithril")
 	:Looks(xColor.xLIGHTCYAN)
 	:Chance(5)
 	:Quality(ItemQuality.GOOD)
-	:Body(11, 100)
-	:Armour("1d3+6", "2d3+3")
+	:Body(8, 100)
+	:Armour("1d3+3", "2d3+3")
 	:Combat("2d4+4", "0d1", "2d4+3")
 	:Resist{ poison = 10, stun = 10, confuse = 20 }
 	:Register()
@@ -167,8 +208,8 @@ Material.new("adamantium")
 	:Looks(xColor.xLIGHTGREEN)
 	:Chance(2)
 	:Quality(ItemQuality.EXCELLENT)
-	:Body(9, 300)
-	:Armour("1d3+12", "2d4+5")
+	:Body(6, 300)
+	:Armour("1d3+5", "2d4+5")
 	:Combat("2d6+6", "1d0", "2d6+3")
 	:Resist{ paralyse = 20, stun = 15, confuse = 30, blind = 30 }
 	:Property(SpecialProperty.REGENERATION)
