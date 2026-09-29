@@ -72,13 +72,45 @@ Material.new("stone")
 	:Resist{ earth = 10 }
 	:Register()
 
-Material.new("iron")
+Material.new("crystal")
+	:Looks(xColor.xLIGHTMAGENTA)
+	:Chance(50)
+	:Quality(ItemQuality.AVG)
+	:Body(25, 14)
+	:Armour("1d3+3", "1d5+2")
+	:Combat("1d5+1", 0, "1d5+1")
+	:Resist{ water = 10 }
+	:Register()
+
+Material.new("obsidian")
 	:Looks(xColor.xDARKGRAY)
-	:Chance(120)
-	:Quality(ItemQuality.POOR)
-	:Body(30, 15)
-	:Armour("1d3", "1d5+1")
-	:Combat("1d2", 0, "1d3+0")
+	:Chance(50)
+	:Quality(ItemQuality.FAIR)
+	:Body(13, 20)
+	:Armour("1d3+3", "1d6+2")
+	:Combat("1d6+1", 0, "1d6+1")
+	:Resist{ fire = 15 }
+	:Register()
+
+Material.new("silver")
+	:Looks(xColor.xLIGHTGRAY)
+	:Chance(30)
+	:Quality(ItemQuality.FAIR)
+	:Body(20, 30)
+	:Armour("1d3", "1d5+2")
+	:Combat("1d4+0", 0, "1d4+0")
+	:Resist{ acid = 10 }
+	:Register()
+
+Material.new("gold")
+	:Looks(xColor.xYELLOW)
+	:Chance(15)
+	:Quality(ItemQuality.GOOD)
+	:Body(22, 50)
+	:Armour("1d3+1", "1d5+2")
+	:Combat("1d5", 0, "1d5+0")
+	:Resist{ acid = 20 }
+	:Property(SpecialProperty.REGENERATION + SpecialProperty.FAST_DIGESTION)
 	:Register()
 
 Material.new("bronze")
@@ -102,35 +134,13 @@ Material.new("brass")
 	:Property(SpecialProperty.SLOW_DIGESTION)
 	:Register()
 
-Material.new("silver")
-	:Looks(xColor.xLIGHTGRAY)
-	:Chance(30)
-	:Quality(ItemQuality.FAIR)
-	:Body(20, 30)
-	:Armour("1d3", "1d5+2")
-	:Combat("1d4+0", 0, "1d4+0")
-	:Resist{ acid = 10 }
-	:Register()
-
-Material.new("golden")
-	:Looks(xColor.xYELLOW)
-	:Chance(15)
-	:Quality(ItemQuality.GOOD)
-	:Body(22, 50)
-	:Armour("1d3+1", "1d5+2")
-	:Combat("1d5", 0, "1d5+0")
-	:Resist{ acid = 20 }
-	:Property(SpecialProperty.REGENERATION + SpecialProperty.FAST_DIGESTION)
-	:Register()
-
-Material.new("crystal")
-	:Looks(xColor.xLIGHTMAGENTA)
-	:Chance(50)
-	:Quality(ItemQuality.AVG)
-	:Body(25, 14)
-	:Armour("1d3+3", "1d5+2")
-	:Combat("1d5+1", 0, "1d5+1")
-	:Resist{ water = 10 }
+Material.new("iron")
+	:Looks(xColor.xDARKGRAY)
+	:Chance(120)
+	:Quality(ItemQuality.POOR)
+	:Body(30, 15)
+	:Armour("1d3", "1d5+1")
+	:Combat("1d2", 0, "1d3+0")
 	:Register()
 
 Material.new("steel")
@@ -141,16 +151,6 @@ Material.new("steel")
 	:Armour("1d3+3", "1d5+2")
 	:Combat("1d6+1", 0, "1d5+1")
 	:Resist{ stun = 15 }
-	:Register()
-
-Material.new("obsidian")
-	:Looks(xColor.xDARKGRAY)
-	:Chance(50)
-	:Quality(ItemQuality.FAIR)
-	:Body(13, 20)
-	:Armour("1d3+3", "1d6+2")
-	:Combat("1d6+1", 0, "1d6+1")
-	:Resist{ fire = 15 }
 	:Register()
 
 Material.new("mithril")
@@ -205,13 +205,19 @@ MaterialSet.new("soft")
 	:Of{ "leather", "studded_leather", "cloth" }
 	:Register()
 
--- The soft, ordinary metals.
-MaterialSet.new("metal")
-	:Of{ "iron", "bronze", "brass", "silver", "golden" }
+-- Things quarried rather than smelted.
+MaterialSet.new("stone_from")
+	:Of{ "stone", "crystal", "obsidian" }
 	:Register()
 
-MaterialSet.new("metal_soft")
-	:Of{ "metal", "soft" }
+-- The soft metals.
+MaterialSet.new("soft_metal")
+	:Of{ "silver", "gold" }
+	:Register()
+
+-- The ordinary metals.
+MaterialSet.new("metal")
+	:Of{ "bronze", "brass", "iron" }
 	:Register()
 
 -- What a blade worth carrying is made of.
@@ -220,21 +226,21 @@ MaterialSet.new("hard_metal")
 	:Register()
 
 MaterialSet.new("all_metal")
-	:Of{ "metal", "hard_metal", "obsidian" }
+	:Of{ "soft_metal", "metal", "hard_metal" }
+	:Register()
+
+-- Metals an armour is made of.
+MaterialSet.new("armour_metal")
+	:Of{ "metal", "hard_metal" }
 	:Register()
 
 MaterialSet.new("obsimetal")
 	:Of{ "obsidian", "hard_metal" }
 	:Register()
 
--- Things quarried rather than smelted.
-MaterialSet.new("stone_from")
-	:Of{ "stone", "crystal", "obsidian" }
-	:Register()
-
 -- What each sort of thing is made of.
 MaterialSet.new("shield")
-	:Of{ "all_leather", "all_metal", "wooden" }
+	:Of{ "all_leather", "armour_metal", "wooden" }
 	:Register()
 
 MaterialSet.new("bow")
@@ -255,10 +261,6 @@ MaterialSet.new("weapon")
 
 MaterialSet.new("simple_weapon")
 	:Of{ "iron", "steel" }
-	:Register()
-
-MaterialSet.new("crown_metal")
-	:Of{ "steel", "silver", "golden", "mithril" }
 	:Register()
 
 MaterialSet.new("black_metal")
