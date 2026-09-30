@@ -329,6 +329,14 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
                 // IF_NO_ERASE: picking something to wear must not remove
                 // it from contain - it's meant to stay visible there,
                 // worn or not.
+                //
+                // IF_HIDE_WORN: only an empty slot ever asks, so anything
+                // already worn is worn somewhere else and cannot come
+                // here. Without it the shield in the off hand was offered
+                // as a weapon for the main one, and picking it did
+                // nothing - a slot it is already in cannot take it again
+                // (XBodyPart::Wear() refuses an occupied part).
+                //
                 // A hand may also be filled with a tool, which is not
                 // part of what a hand is *for* (GetProperKind() stays
                 // weapon-and-shield, so the outfitting of monsters and
@@ -340,7 +348,8 @@ void XHero::Equipment(const std::optional<std::reference_wrapper<std::ofstream>>
                     wanted = static_cast<ItemKind>(wanted | ItemKind::TOOL);
                 }
 
-                std::shared_ptr<XItem> picked = Inventory(&contain, wanted, static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
+                std::shared_ptr<XItem> picked = Inventory(&contain, wanted,
+                    static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE | IF_HIDE_WORN));
 
                 if (picked) {
                     if (xqsa[n]->bp_uin == BP_HAND) {
@@ -692,6 +701,11 @@ void XHero::GiveItem()
 int XHero::UseTool()
 {
     // IF_NO_ERASE: choosing a tool must not take it out of the pack.
+    //
+    // Deliberately not IF_HIDE_WORN, unlike the equipment screen's picker:
+    // a tool already in hand is exactly the one somebody who wielded it on
+    // purpose means to use, and hiding it would make a deliberately
+    // wielded pickaxe unusable.
     auto picked = Inventory(&contain, ItemKind::TOOL,
         static_cast<INVENTORY_FLAG>(IF_FIXED_MASK | IF_NO_ERASE));
 
