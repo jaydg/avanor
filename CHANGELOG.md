@@ -602,6 +602,10 @@ Things that used to lose your belongings:
   could carry
 - Corpses you are carrying rot at the proper rate
 - Loot, the royal treasure room and the Eye of Raa all work again
+- A saved game that could not be loaded was reported as no saved game at
+  all, and the new game started in its place wrote over it. Avanor now names
+  the file and the reason, offers to delete it, and only offers `[R]` on the
+  title screen when there is something to restore
 
 Things that used to crash the game:
 

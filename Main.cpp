@@ -569,11 +569,6 @@ const char* logo_text[] = {
     "                  http://avanor.sourceforge.net",
     "",
     "",
-    " "
-    MSG_LIGHTGRAY "[" MSG_WHITE "R" MSG_LIGHTGRAY "] - Restore game "
-    MSG_LIGHTGRAY "[" MSG_WHITE "N" MSG_LIGHTGRAY "] - New game "
-    MSG_LIGHTGRAY "[" MSG_WHITE "?" MSG_LIGHTGRAY "] - read Manual "
-    MSG_LIGHTGRAY "[" MSG_WHITE "Esc" MSG_LIGHTGRAY "] - Exit",
 };
 
 void ShowLogo()
@@ -594,6 +589,24 @@ void ShowLogo()
         vGotoXY(shift_x, i + shift_y);
         vPutS(logo_text[i]);
     }
+
+    // The keys, built here rather than being the last line of logo_text,
+    // because [R] is only worth offering when there is something to
+    // restore - and that can change within a run, when an unusable saved
+    // game is deleted and this screen comes back.
+    std::string keys = " ";
+
+    if (XArchive::HasSavedGame()) {
+        keys += MSG_LIGHTGRAY "[" MSG_WHITE "R" MSG_LIGHTGRAY
+                "] - Restore game ";
+    }
+
+    keys += MSG_LIGHTGRAY "[" MSG_WHITE "N" MSG_LIGHTGRAY "] - New game "
+            MSG_LIGHTGRAY "[" MSG_WHITE "?" MSG_LIGHTGRAY "] - read Manual "
+            MSG_LIGHTGRAY "[" MSG_WHITE "Esc" MSG_LIGHTGRAY "] - Exit";
+
+    vGotoXY(shift_x, logo_height + shift_y);
+    vPutS(keys.c_str());
 
     vRefresh();
 }
@@ -799,8 +812,18 @@ int main(int argc, char* argv[])
             return WorldFailed();
         }
 
-        const int ok = XArchive::RestoreGame(XArchive::TEST_SLOT);
-        std::cout << "RestoreGame: " << (ok ? "PASS" : "FAIL") << std::endl;
+        const XArchive::LoadResult loaded = XArchive::RestoreGame(XArchive::TEST_SLOT);
+        const bool ok = loaded.ok();
+
+        // Says which way it went wrong, so a failing run names the reason
+        // instead of leaving all four of them to be guessed at.
+        std::cout << "RestoreGame: " << (ok ? "PASS" : "FAIL");
+
+        if (!ok) {
+            std::cout << " (" << loaded.what() << ")";
+        }
+
+        std::cout << std::endl;
 
         if (ok) {
             int location_count = 0;
@@ -898,45 +921,68 @@ int main(int argc, char* argv[])
     } else {
         Game.isGodMode = program.get<bool>("--god");
 
-        char ch;
-
+        // The title screen is offered again after a saved game is refused
+        // without anything being built - the player has just been given
+        // the chance to delete it, and the menu they come back to no
+        // longer offers to restore what is no longer there.
         while (true) {
-            // Read the key whole before narrowing it: the extended codes
-            // do not fit in a char, and KEY_RESIZE truncates to 'Z',
-            // which is the key that leaves the game.
-            const int key = vGetch();
+            char ch = 0;
 
-            if (key == KEY_RESIZE) {
-                ShowLogo();
-                continue;
+            while (true) {
+                // Read the key whole before narrowing it: the extended
+                // codes do not fit in a char, and KEY_RESIZE truncates to
+                // 'Z', which is the key that leaves the game.
+                const int key = vGetch();
+
+                if (key == KEY_RESIZE) {
+                    ShowLogo();
+                    continue;
+                }
+
+                ch = static_cast<char>(toupper(key));
+
+                if (ch == '?') {
+                    XManual man;
+                    man.Run();
+                    ShowLogo();
+                    continue;
+                }
+
+                if (ch == KEY_ESC || ch == 'Z') {
+                    vFinit();
+                    return 0;
+                }
+
+                // 'R' only while the menu is actually offering it: with no
+                // save on disk there is nothing for it to restore, and
+                // answering an unlisted key would say "there is not a
+                // saved game to load" to somebody who was never invited
+                // to ask.
+                if (ch == 'N' || (ch == 'R' && XArchive::HasSavedGame())) {
+                    break;
+                }
             }
 
-            ch = static_cast<char>(toupper(key));
+            Game.back_to_menu = false;
 
-            if (ch == '?') {
-                XManual man;
-                man.Run();
-                ShowLogo();
-            }
-
-            if (ch == KEY_ESC || ch == 'Z') {
-                vFinit();
-                return 0;
-            }
-
-            if (ch == 'R' || ch == 'N') {
+            // False for a restore that produced nothing playable, which
+            // has already said so on screen, or for a world that would
+            // not load, which has not - the screen it would have said it
+            // on is about to be taken away.
+            if (Game.Create(ch)) {
+                Game.Run();
                 break;
             }
-        }
 
-        // False for a restore that produced nothing playable, which has
-        // already said so on screen, or for a world that would not load,
-        // which has not - the screen it would have said it on is about to
-        // be taken away.
-        if (Game.Create(ch)) {
-            Game.Run();
-        } else if (!XLua::LastError().empty()) {
-            return WorldFailed();
+            if (!XLua::LastError().empty()) {
+                return WorldFailed();
+            }
+
+            if (!Game.back_to_menu) {
+                break;
+            }
+
+            ShowLogo();
         }
     }
 

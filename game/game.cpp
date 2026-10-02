@@ -98,6 +98,91 @@ bool WorldHasHero()
     return false;
 }
 
+// Paints what became of a saved game and waits to be read. The screen is
+// cleared first: "Restoring game objects, please wait..." is still sitting
+// in the middle of it, and a message painted over that reads as one
+// run-together sentence.
+//
+// Every line carries its own markup tag, so each caller can see the words
+// it is actually putting on screen.
+int PaintSaveMessage(const std::vector<std::string>& lines)
+{
+    vClrScr();
+
+    int row = 2;
+
+    for (const auto& line : lines) {
+        vGotoXY(0, row++);
+        vPutS(line.c_str());
+    }
+
+    vRefresh();
+
+    return row;
+}
+
+void SaySaveTrouble(const std::vector<std::string>& lines)
+{
+    const int row = PaintSaveMessage(lines);
+
+    vGotoXY(0, row + 1);
+    vPutS("<KEY>Press any key...");
+    vRefresh();
+    vGetch();
+}
+
+// Says why a saved game will not be played, offers to throw it away, and
+// answers false for XGame::Create() to return.
+//
+// Whether the menu can honestly be shown again afterwards is the question
+// Game.locations answers: a save refused on its version was refused before
+// any of it was read and leaves the process exactly as it was, while one
+// that loaded and cannot be played has a whole world standing in it -
+// nothing here has ever hosted two worlds in one run, so that is the case
+// where the only honest thing to say is to start Avanor again.
+//
+// Either way the world has to be taken down rather than merely abandoned:
+// ~XObject() asserts that every object went through Invalidate() first, since
+// that is what takes it out of the registry. Every other way out of the game
+// does this.
+bool RejectSave(const std::vector<std::string>& lines)
+{
+    const bool world_standing = !Game.locations.empty();
+
+    std::vector<std::string> asked = lines;
+    asked.emplace_back("");
+    asked.emplace_back("<KEY>[D]<TEXT> - delete it     "
+                       "<KEY>[Esc]<TEXT> - leave it alone");
+
+    PaintSaveMessage(asked);
+
+    std::vector<std::string> told = lines;
+    told.emplace_back("");
+
+    if (toupper(vGetch()) == 'D') {
+        told.emplace_back(XArchive::DeleteSavedGame()
+            ? "<TEXT>Deleted."
+            : "<WARNING>That file could not be deleted.");
+    } else {
+        told.emplace_back("<TEXT>Left alone - but a new game would write "
+                          "over it when it saves, so");
+        told.emplace_back("<TEXT>move it aside if you want to keep it.");
+    }
+
+    if (world_standing) {
+        told.emplace_back("");
+        told.emplace_back("<TEXT>Run Avanor again to start a new game.");
+    }
+
+    SaySaveTrouble(told);
+
+    XObject::InvalidateAllObjects();
+
+    Game.back_to_menu = !world_standing;
+
+    return false;
+}
+
 } // namespace
 
 bool XGame::Create(const char type_of_start)
@@ -112,34 +197,68 @@ bool XGame::Create(const char type_of_start)
                 return false;
             }
 
-            if (XArchive::RestoreGame()) {
-                if (WorldHasHero()) {
-                    break;
+            {
+                const XArchive::LoadResult loaded = XArchive::RestoreGame();
+
+                // Which file this is about. It gets a line to itself: a
+                // path can be arbitrarily long and vPutS() clips at the
+                // screen edge, so a sentence built around one loses its
+                // own last words.
+                const std::string file = "<EMPHASIS>  " + loaded.path;
+
+                switch (loaded.outcome) {
+                    case XArchive::LoadResult::OK:
+                        if (WorldHasHero()) {
+                            break;
+                        }
+
+                        return RejectSave({
+                            "<WARNING>That saved game has no hero in it and "
+                            "cannot be played.",
+                            "",
+                            file,
+                        });
+
+                    case XArchive::LoadResult::WRONG_VERSION:
+                        return RejectSave({
+                            "<WARNING>That saved game was written by a "
+                            "different version of Avanor.",
+                            "",
+                            file,
+                            "",
+                            fmt::format(
+                                "<TEXT>is in save format {:#x}, and this "
+                                "Avanor reads {:#x}. Nothing",
+                                loaded.save_version, loaded.game_version),
+                            "<TEXT>converts between the two, so the game it "
+                            "holds cannot be played here.",
+                        });
+
+                    case XArchive::LoadResult::DAMAGED:
+                        return RejectSave({
+                            "<WARNING>That saved game could not be read.",
+                            "",
+                            file,
+                            "",
+                            "<TEXT>is truncated, scrambled, or not an Avanor "
+                            "save at all.",
+                        });
+
+                    case XArchive::LoadResult::NO_SAVE:
+                        // The only one of these that is no reason not to
+                        // play: there is no file to lose.
+                        SaySaveTrouble({
+                            "<WARNING>There is not a saved game to load. "
+                            "Starting new game.",
+                        });
+
+                        break;
                 }
 
-                // The world is loaded and there is nothing to be done
-                // with it. Nothing is torn down and no new game is
-                // started over the top of it - both would be building on
-                // a world that is already half in place - so say what is
-                // wrong and stop.
-                vGotoXY(0, 20);
-                vPutS("<WARNING>That saved game has no hero in it and cannot be played.");
-                vGotoXY(0, 21);
-                vPutS("<TEXT>Run Avanor again and start a new game.");
-                vGotoXY(0, 22);
-                vPutS("<KEY>Press any key...");
-                vRefresh();
-                vGetch();
-
-                return false;
+                if (loaded.ok()) {
+                    break;
+                }
             }
-
-            vGotoXY(0, 20);
-            vPutS("<WARNING>There is not a saved game to load. Starting new game.");
-            vGotoXY(0, 21);
-            vPutS("<KEY>Press any key...");
-            vRefresh();
-            vGetch();
 
             [[fallthrough]];
 

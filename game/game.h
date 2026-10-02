@@ -96,6 +96,12 @@ class XGame
 
         // Spectator mode: nothing notices the hero. Part of god mode.
         static bool isSpectator;
+
+        // Set by Create('R') when a saved game was refused and nothing of
+        // it was built, so the title screen can be offered again instead
+        // of the process ending. False whenever a world is standing: one
+        // run has never hosted two of them.
+        bool back_to_menu = false;
 };
 
 extern XGame Game;

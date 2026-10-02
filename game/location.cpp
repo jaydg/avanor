@@ -555,7 +555,7 @@ bool XLocation::Restoration()
     // itself arrives afterwards, in XArchive::RestoreGame(), which
     // validates and links it once every location is back - doing either
     // here would sweep an empty Game.locations and link nothing.
-    return XLua::Init();
+    return LoadScripts();
 }
 
 int XLocation::ValidateWorld(const bool new_game)
@@ -703,6 +703,23 @@ int XLocation::ValidateWays()
 // and both of those must run before any location is populated with herbs.
 bool XLocation::LoadScripts()
 {
+    // Once per run is enough, and more than once is harmful. Init() opens
+    // a fresh Lua state and runs the world scripts, and while it clears
+    // the tables that hold functions belonging to the old state, the
+    // tables the scripts *fill* - creature classes, materials, items,
+    // books, deities, every one of them - are only ever appended to. A
+    // second run registers every row of content twice, which the
+    // duplicate check then reports a screenful of: "two creature classs
+    // both called 'bat'", and so on down the list.
+    //
+    // Two ways in led here twice. Falling through from a refused restore
+    // into a new game calls Restoration() and then this, which are the
+    // same work; and a refused save that leaves the title screen standing
+    // can be asked for again.
+    if (XLua::State() != nullptr) {
+        return true;
+    }
+
     return XLua::Init();
 }
 

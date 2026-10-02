@@ -19,6 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -202,44 +203,109 @@ bool XArchive::StoreGame(const char* slot)
 // ============================================================================
 // Restore game state from file (compressed or uncompressed)
 // ============================================================================
-int XArchive::RestoreGame(const char* slot)
+// The files one slot can be in: what the game writes now, and what older
+// versions wrote and it still reads. One list, so that reading a save,
+// asking whether there is one and throwing one away cannot disagree about
+// what a saved game consists of.
+static std::vector<std::string> SlotPaths(const char* slot)
 {
-    // First try compressed format
-    {
-        std::ifstream file(vMakePath(HOME_DIR, std::string(slot) + ".svg.zst"), std::ios::binary | std::ios::ate);
-        if (file.is_open()) {
-            file.seekg(0, std::ios::end);
-            size_t const file_size = file.tellg();
-            file.seekg(0, std::ios::beg);
+    return {
+        vMakePath(HOME_DIR, std::string(slot) + ".svg.zst"),
+        vMakePath(HOME_DIR, std::string(slot) + ".svg"),
+    };
+}
 
-            std::vector<char> compressed(file_size);
-            if (file.read(compressed.data(), file_size)) {
-                std::string serialized_data = DecompressWithZstd(compressed);
-                if (!serialized_data.empty()) {
-                    return RestoreFromSerializedData(serialized_data);
-                }
-            }
+bool XArchive::HasSavedGame(const char* slot)
+{
+    for (const auto& path : SlotPaths(slot)) {
+        std::error_code ec;
+
+        if (std::filesystem::is_regular_file(path, ec)) {
+            return true;
         }
     }
 
-    // Fall back to uncompressed format
-    {
-        std::ifstream file(vMakePath(HOME_DIR, std::string(slot) + ".svg"));
-        if (file.is_open()) {
-            std::string serialized_data((std::istreambuf_iterator<char>(file)),
-                                        std::istreambuf_iterator<char>());
-            return RestoreFromSerializedData(serialized_data);
+    return false;
+}
+
+bool XArchive::DeleteSavedGame(const char* slot)
+{
+    bool gone = true;
+
+    for (const auto& path : SlotPaths(slot)) {
+        std::error_code ec;
+
+        // remove() answers false for a file that was not there, which is
+        // not a failure to delete it - only a file still standing
+        // afterwards is.
+        std::filesystem::remove(path, ec);
+
+        if (std::filesystem::exists(path, ec)) {
+            std::cerr << "save: could not delete " << path << std::endl;
+            gone = false;
         }
     }
 
-    return 0;
+    return gone;
+}
+
+XArchive::LoadResult XArchive::RestoreGame(const char* slot)
+{
+    LoadResult res;
+    res.game_version = SAVE_GAME_VERSION;
+
+    const std::vector<std::string> paths = SlotPaths(slot);
+    const std::string& compressed_path = paths[0];
+    const std::string& plain_path = paths[1];
+
+    std::string serialized_data;
+
+    // What the game writes now.
+    if (std::ifstream file(compressed_path, std::ios::binary | std::ios::ate);
+        file.is_open()) {
+        res.path = compressed_path;
+
+        const auto file_size = static_cast<size_t>(file.tellg());
+        file.seekg(0, std::ios::beg);
+
+        std::vector<char> compressed(file_size);
+
+        if (file.read(compressed.data(), file_size)) {
+            serialized_data = DecompressWithZstd(compressed);
+        }
+    }
+
+    // What older versions wrote, and still read.
+    if (serialized_data.empty()) {
+        if (std::ifstream file(plain_path); file.is_open()) {
+            res.path = plain_path;
+            serialized_data.assign(std::istreambuf_iterator<char>(file),
+                                   std::istreambuf_iterator<char>());
+        }
+    }
+
+    if (res.path.empty()) {
+        res.outcome = LoadResult::NO_SAVE;
+        return res;
+    }
+
+    if (serialized_data.empty()) {
+        // A file is there and nothing came out of it - an empty save, or
+        // one whose compressed stream will not unpack.
+        res.outcome = LoadResult::DAMAGED;
+        return res;
+    }
+
+    return RestoreFromSerializedData(serialized_data, res);
 }
 
 // ============================================================================
 // Internal helper: Restore game state from serialized JSON string
 // Used by both compressed and uncompressed restore paths
 // ============================================================================
-int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
+XArchive::LoadResult XArchive::RestoreFromSerializedData(
+    const std::string& serialized_data, LoadResult res)
+{
     try {
         std::istringstream iss(serialized_data);
         cereal::JSONInputArchive ar(iss);
@@ -248,7 +314,12 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
         ar(version);
 
         if (version != SAVE_GAME_VERSION) {
-            return 0;
+            // Readable, and written by another build of the game. Nothing
+            // converts between save formats, so this is as far as it goes.
+            res.outcome = LoadResult::WRONG_VERSION;
+            res.save_version = version;
+
+            return res;
         }
 
         ar(::guid);
@@ -290,8 +361,11 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
         ar(control);
 
         if (control != SAVE_GAME_CONTROL) {
-            printf("File corrupted!");
-            exit(0);
+            // The word that should close every save is not there, so the
+            // file is truncated or scrambled however far it got.
+            res.outcome = LoadResult::DAMAGED;
+
+            return res;
         }
 
         // Everything the save does not carry, re-derived now that the
@@ -304,10 +378,14 @@ int XArchive::RestoreFromSerializedData(const std::string& serialized_data) {
         XLocation::ValidateWorld(false);
         XLocation::LinkLevels();
     } catch (const cereal::Exception&) {
-        // Malformed/foreign/truncated file - same graceful "nothing to
-        // load" outcome as the version check above, not a hard failure.
-        return 0;
+        // Malformed, foreign or truncated: readable as far as it went and
+        // not an Avanor save of any version. Still not a hard failure.
+        res.outcome = LoadResult::DAMAGED;
+
+        return res;
     }
 
-    return 1;
+    res.outcome = LoadResult::OK;
+
+    return res;
 }
