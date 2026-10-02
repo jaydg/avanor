@@ -549,6 +549,10 @@ measure it.
 for the undead, a sense of someone nearby for anything else — which is time
 enough to reach for a potion of see invisible.
 
+**Books of cure serious and cure critical wounds now turn up**, where the
+first was learnable by monsters alone and the second waited on messiah rank
+with a deity.
+
 ---
 
 ### What you are carrying

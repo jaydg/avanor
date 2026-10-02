@@ -20,6 +20,7 @@ BookAppearances({
 	"old book", "small book", "ancient book", "dirty book", "heavy book",
 	"wrapped tome", "pocket book", "leather-bound tome", "parchment book",
 	"thin book", "gold decorated tome", "silver decorated book",
+	"tattered tome", "worn book", "rune covered tome",
 })
 
 Book.new("burning_hands")
@@ -32,6 +33,18 @@ Book.new("ice_touch")
 
 Book.new("cure_light_wounds")
 	:Chance(150)
+	:Register()
+
+-- The healing line is as hard to come by as the attack line: cure serious
+-- wounds is as scarce as fire bolt, cure critical wounds as scarce as
+-- lightning bolt. Scarcity is reading time as well as price, so the better
+-- cure is a book a character spends a long while getting through.
+Book.new("cure_serious_wounds")
+	:Chance(50)
+	:Register()
+
+Book.new("cure_critical_wounds")
+	:Chance(20)
 	:Register()
 
 Book.new("drain_life")
