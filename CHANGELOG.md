@@ -230,7 +230,9 @@ the flat colours.
 Avanor used to draw an 80×25 screen and ignore whatever room it actually had.
 It now uses the whole terminal, and follows it when you resize the window —
 the map grows, the menus and the title recentre, and lists re-flow. Narrow
-windows no longer scramble the display.
+windows no longer scramble the display. Windows too, which took longer: no
+terminal anywhere sends an escape sequence for a resize, so there the game
+reads the console's own event queue to hear about one.
 
 **The achievements screen remembers everything you did.**
 When your game ends it used to name four things: the gas pump, the crypt, the

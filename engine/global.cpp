@@ -32,6 +32,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sstream>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include <sol/sol.hpp>
 
@@ -59,9 +60,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // Building with notcurses=1 defines USE_NOTCURSES and takes the other
 // path instead, at the cost of a shared library to find, package and
-// ship. What it brings is its own capability negotiation, and a live
-// resize on Windows - see vUpdateScreenSize() for why the plain backend
-// cannot hear about one there, and why everywhere else it can.
+// ship. What it brings is its own capability negotiation. Both backends
+// hear about a resize now: SIGWINCH on a unixoid, and the console input
+// queue on Windows - see vGetch() there.
 // See engine/global.h and the Makefile's `notcurses` variable.
 #ifndef USE_NOTCURSES
     #ifdef _WIN32
@@ -192,7 +193,19 @@ void QueryScreenSize()
     stc_screen.assign(static_cast<size_t>(size_x) * static_cast<size_t>(size_y), STCCell{});
 }
 
-#ifndef _WIN32
+#ifdef _WIN32
+
+// The console input handle, when stdin really is a console, with
+// ENABLE_WINDOW_INPUT turned on so that a resize arrives on the same queue
+// as the keys. Null when stdin is something else - under mintty it is a
+// pipe, not a console - and then vGetch() falls back to conio.h and the
+// game simply does not hear about resizes there, as it never did.
+HANDLE console_in = nullptr;
+
+// The mode that handle had before, put back by vFinit().
+DWORD saved_console_in_mode = 0;
+
+#else
 
 // The terminal as it was before the game started, put back by vFinit().
 termios saved_termios{};
@@ -251,7 +264,7 @@ void LeaveRawMode()
     }
 }
 
-#endif // !_WIN32
+#endif // _WIN32
 
 } // namespace
 
@@ -269,6 +282,40 @@ void vInit()
 
         if (GetConsoleMode(hstdout, &out_mode)) {
             SetConsoleMode(hstdout, out_mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
+    }
+
+    // Keys are taken off the console input queue rather than through
+    // conio.h's _getch(), because the queue is the only place a resize is
+    // ever reported: Windows has no escape sequence for one - there is no
+    // agreed encoding to send - and _getch() hands over keystrokes and
+    // silently drops every other sort of record. With ENABLE_WINDOW_INPUT
+    // set, a resize arrives as a WINDOW_BUFFER_SIZE record in among the
+    // key records, which is as near to SIGWINCH as this platform comes.
+    //
+    // ENABLE_VIRTUAL_TERMINAL_INPUT is deliberately left alone: it would
+    // turn keys into escape sequences for us to parse again, and it still
+    // would not carry the resize.
+    //
+    // The mouse is turned off because its records would otherwise sit in
+    // the queue looking like input - vKbhit() would say a key was waiting
+    // and vGetch() would then block for a real one. Quick edit goes with
+    // it, since a drag-select freezes a full-screen program; turning that
+    // one off is only honoured alongside ENABLE_EXTENDED_FLAGS.
+    if (HANDLE hstdin = GetStdHandle(STD_INPUT_HANDLE); hstdin != INVALID_HANDLE_VALUE) {
+        DWORD in_mode = 0;
+
+        // Fails when stdin is not a console, which is how mintty is told
+        // apart: console_in stays null and the conio.h path serves it.
+        if (GetConsoleMode(hstdin, &in_mode)) {
+            const DWORD wanted =
+                (in_mode | ENABLE_WINDOW_INPUT | ENABLE_EXTENDED_FLAGS)
+                & ~static_cast<DWORD>(ENABLE_MOUSE_INPUT | ENABLE_QUICK_EDIT_MODE);
+
+            if (SetConsoleMode(hstdin, wanted)) {
+                console_in = hstdin;
+                saved_console_in_mode = in_mode;
+            }
         }
     }
 #else
@@ -300,9 +347,10 @@ void vInit()
 
 void vUpdateScreenSize()
 {
-    // On Windows nothing detects a live resize - conio.h has no such event
-    // - so this only matters there if something calls it directly. Anywhere
-    // else SIGWINCH brings us here through vGetch().
+    // Reached from vGetch(), which is the one place the game waits on the
+    // terminal and so the only place a resize can be noticed: through
+    // SIGWINCH on a unixoid, and through a WINDOW_BUFFER_SIZE record on
+    // Windows.
     QueryScreenSize();
 }
 
@@ -316,7 +364,11 @@ void vFinit()
     std::cout << stc::reset;
     std::cout << "\x1b[?25h\x1b[?1049l" << std::flush;
 
-#ifndef _WIN32
+#ifdef _WIN32
+    if (console_in) {
+        SetConsoleMode(console_in, saved_console_in_mode);
+    }
+#else
     LeaveRawMode();
 #endif
 }
@@ -582,24 +634,135 @@ void vDelay(const int n)
 #ifndef USE_NOTCURSES
 #ifdef _WIN32
 
+namespace {
+
+// Modifier keys arrive as records of their own, pressed and released, with
+// no character on them and a scancode that means nothing by itself.
+// conio.h never showed them and neither does this.
+bool IsModifierKey(const WORD vk)
+{
+    switch (vk) {
+        case VK_SHIFT:
+        case VK_CONTROL:
+        case VK_MENU:
+        case VK_CAPITAL:
+        case VK_NUMLOCK:
+        case VK_SCROLL:
+        case VK_LWIN:
+        case VK_RWIN:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+// Whether vGetch() will turn this record into something. It has to agree
+// with the loop below, or vKbhit() would promise a key that vGetch() then
+// blocks waiting for.
+bool IsInputRecord(const INPUT_RECORD& record)
+{
+    if (record.EventType == WINDOW_BUFFER_SIZE_EVENT) {
+        return true;
+    }
+
+    return record.EventType == KEY_EVENT
+        && record.Event.KeyEvent.bKeyDown
+        && !IsModifierKey(record.Event.KeyEvent.wVirtualKeyCode);
+}
+
+// One key off the console queue, in the shape the rest of the game reads.
+int DecodeKeyRecord(const KEY_EVENT_RECORD& key)
+{
+    if (key.uChar.UnicodeChar != 0) {
+        return key.uChar.UnicodeChar;
+    }
+
+    // An extended key - the arrows, Home/End, the numeric keypad with
+    // NumLock off. These scancodes are the same ones conio.h handed back
+    // behind its 0/0xE0 prefix byte, which is what KEY_UP and its siblings
+    // in engine/global.h are written in terms of, so the table they form
+    // needs nothing done to it here.
+    return KEY_EXTENDED_CODE | key.wVirtualScanCode;
+}
+
+} // namespace
+
 int vKbhit()
 {
-    return _kbhit();
+    if (!console_in) {
+        return _kbhit();
+    }
+
+    DWORD pending = 0;
+
+    if (!GetNumberOfConsoleInputEvents(console_in, &pending) || pending == 0) {
+        return 0;
+    }
+
+    // Peeked rather than counted: the queue holds records this game has no
+    // use for, and answering "a key is waiting" for one of those would send
+    // the caller into vGetch() to block until a real one turned up.
+    std::vector<INPUT_RECORD> records(pending);
+    DWORD read = 0;
+
+    if (!PeekConsoleInputW(console_in, records.data(), pending, &read)) {
+        return 0;
+    }
+
+    for (DWORD i = 0; i < read; i++) {
+        if (IsInputRecord(records[i])) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 int vGetch()
 {
-    // Same decoding the pre-notcurses Windows build used: an extended key
-    // (arrows, Home/End, ...) arrives as a 0 or 0xE0 prefix byte followed by
-    // a scancode, which is exactly what KEY_UP and its siblings in
-    // engine/global.h are defined in terms of.
-    int ch = _getch();
+    if (!console_in) {
+        // Not a console: mintty and anything else that hands the game a
+        // pipe. conio.h cannot report a resize, but it can still read a
+        // key, which is all this path was ever doing. An extended key
+        // arrives as a 0 or 0xE0 prefix byte followed by a scancode.
+        int ch = _getch();
 
-    if (ch == 0 || ch == 224) {
-        ch = KEY_EXTENDED_CODE | _getch();
+        if (ch == 0 || ch == 224) {
+            ch = KEY_EXTENDED_CODE | _getch();
+        }
+
+        return ch;
     }
 
-    return ch;
+    while (true) {
+        INPUT_RECORD record;
+        DWORD read = 0;
+
+        if (!ReadConsoleInputW(console_in, &record, 1, &read) || read != 1) {
+            // The console is gone. Escape is the least surprising thing to
+            // keep answering with, as it is on the unixoid side.
+            return KEY_ESC;
+        }
+
+        if (record.EventType == WINDOW_BUFFER_SIZE_EVENT) {
+            // The size on the record is deliberately not read: that is the
+            // screen *buffer*, whose height is the scrollback rather than
+            // anything the window shows - 32766 rows of it, as a console is
+            // usually set up. QueryScreenSize() asks for the visible
+            // rectangle instead, and some terminals do not fill this record
+            // in on a vertical resize at all, so it is worth only the nudge.
+            vUpdateScreenSize();
+
+            return KEY_RESIZE;
+        }
+
+        if (!IsInputRecord(record)) {
+            continue;
+        }
+
+        return DecodeKeyRecord(record.Event.KeyEvent);
+    }
 }
 
 #else // unixoid
