@@ -297,10 +297,24 @@ void Settle(const sol::object& crc, int crl, sol::optional<sol::object> opts, so
             refresh_time = t.get_or("refresh", refresh_time);
 
             if (const sol::optional<sol::table> where = t["area"]) {
-                const int x = where->get_or("x", 0);
-                const int y = where->get_or("y", 0);
-                const int w = where->get_or("w", 0);
-                const int h = where->get_or("h", 0);
+                // Through a const char* rather than passing the literals
+                // straight in. sol2 reads a field with lua_getfield(L, i,
+                // &key[0]), and a literal key makes that a template on the
+                // array type: field_getter<char[2]> for "x" here, and
+                // field_getter<char[4]> for "max" above. The two compile to
+                // identical code, GCC's identical-code folding merges them,
+                // and the merged body is then reported as indexing a
+                // char[4] that is "partly outside" a char[2] - which fails
+                // the Windows build, where this folding happens and -Werror
+                // is on. A pointer has no array bound to reach past.
+                const auto at = [&where](const char* key) {
+                    return where->get_or(key, 0);
+                };
+
+                const int x = at("x");
+                const int y = at("y");
+                const int w = at("w");
+                const int h = at("h");
 
                 if (w <= 0 || h <= 0) {
                     std::cerr << "world: Settle(): an area wants a width and"
