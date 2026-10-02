@@ -594,7 +594,7 @@ void ShowLogo()
     // because [R] is only worth offering when there is something to
     // restore - and that can change within a run, when an unusable saved
     // game is deleted and this screen comes back.
-    std::string keys = " ";
+    std::string keys;
 
     if (XArchive::HasSavedGame()) {
         keys += MSG_LIGHTGRAY "[" MSG_WHITE "R" MSG_LIGHTGRAY
@@ -605,8 +605,9 @@ void ShowLogo()
             MSG_LIGHTGRAY "[" MSG_WHITE "?" MSG_LIGHTGRAY "] - read Manual "
             MSG_LIGHTGRAY "[" MSG_WHITE "Esc" MSG_LIGHTGRAY "] - Exit";
 
-    vGotoXY(shift_x, logo_height + shift_y);
-    vPutS(keys.c_str());
+    // Centred on its own width rather than shifted to the logo's left edge.
+    vGotoXY((size_x - x_strlen(keys.c_str())) / 2, logo_height + shift_y);
+    vPutS(keys);
 
     vRefresh();
 }
