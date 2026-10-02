@@ -1,12 +1,47 @@
 # Avanor: The Land of Mystery
 
-*Avanor: The Land of Mystery* is a classic roguelike role-playing game originally developed in the early 2000s. After being abandoned for over two decades, the project has been revived and is currently being modernized for a new release.
+A roguelike from the early 2000s, left alone for twenty years, and now
+being finished.
+
+| | |
+| :---: | :---: |
+| ![The valley](resources/screenshot-valley.png) | ![Underground](resources/screenshot-dungeon.png) |
+
+You arrive in a valley that has problems, and nobody in it expects much of
+you. The village lives on mushrooms out of the caves to the west, and
+something has moved into the caves. The armourer in the town wants whatever
+is nesting under his shop dealt with, and will let you keep what you carry
+back up. The captain of the royal guard can see an orcish war-party
+mustering in the southern hills, and he has seven men. Under the mountain
+there is a dwarven city whose gold mine has filled with gas. None of it is
+your business until you make it your business.
+
+What happens after that is a roguelike. One character, one turn at a time:
+the caves and dungeons are laid out afresh every game, food runs out, an
+unknown potion is unknown for a reason, and dying ends the run. You can
+take a companion along, learn to read, mine, cook, brew, pray and steal.
+
+Two people eventually want something larger than an errand. Gefeon wants
+Ahk-Ulan dead, who works his evil in the dungeon beneath his ruined tower
+south-east of the town. Ahk-Ulan wants Roderick dead - the King of Avanor,
+and the only man left who could stand against him - and is offering the
+throne for it. Both are open at once, and nothing in the game stops you
+taking both.
+
+**To play it**, take a package from the
+[latest release](https://github.com/jaydg/avanor/releases): there is one
+for Linux, macOS and Windows, and [Installing a release](#installing-a-release)
+says what to do with it. To build it yourself, see
+[Building and Running](#building-and-running).
+
+**To change it**, open `world/`. Every creature, item, level, god, quest
+and line of dialogue lives there in Lua rather than in the C++, so a new
+monster is a text edit and so is a new quest.
 
 ---
 
 ## Table of Contents
 
-- [About Avanor](#about-avanor)
 - [Features](#features)
 - [Gameplay](#gameplay)
 - [Project History](#project-history)
@@ -19,20 +54,6 @@
 - [Original Credits](#original-credits)
 - [Revival Credits](#revival-credits)
 - [Contact](#contact)
-
----
-
-## About Avanor
-
-Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The game features:
-
-- **Permadeath** - Classic roguelike tradition where death is permanent
-- **Turn-based gameplay** - Strategic combat and exploration
-- **Procedurally generated dungeons** - Each playthrough is unique
-- **Rich character customization** - Multiple races, professions, and skills
-- **Deep item and equipment system** - Weapons, armour, potions, scrolls, and more
-- **Complex magic system** - Spells, resistances, and elemental effects
-- **Diverse creature ecosystem** - Rats, insects, orcs, undead, giants and demons
 
 ---
 
