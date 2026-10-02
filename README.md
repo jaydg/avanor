@@ -7,16 +7,18 @@
 ## Table of Contents
 
 - [About Avanor](#about-avanor)
+- [Features](#features)
+- [Gameplay](#gameplay)
 - [Project History](#project-history)
 - [Current Status](#current-status)
-- [Features](#features)
 - [Installing a release](#installing-a-release)
 - [Building and Running](#building-and-running)
   - [Required C++ modules](#required-c-modules)
-- [Gameplay](#gameplay)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
+- [Modernization Details](#modernization-details)
 - [License](#license)
+- [Original Credits](#original-credits)
+- [Revival Credits](#revival-credits)
+- [Contact](#contact)
 
 ---
 
@@ -28,7 +30,7 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 - **Turn-based gameplay** - Strategic combat and exploration
 - **Procedurally generated dungeons** - Each playthrough is unique
 - **Rich character customization** - Multiple races, professions, and skills
-- **Deep item and equipment system** - Weapons, armor, potions, scrolls, and more
+- **Deep item and equipment system** - Weapons, armour, potions, scrolls, and more
 - **Complex magic system** - Spells, resistances, and elemental effects
 - **Diverse creature ecosystem** - Rats, insects, orcs, undead, giants and demons
 
@@ -38,11 +40,11 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 
 ### Character System
 
-- **7 Playable Races**: Human, Half Elf, High Elf, Halfling, Half Orc, Dwarf, Gnome
-- **8 Professions**: Warrior, Wizard, Archer, Ranger, Cleric, Paladin, Alchemist, Bard
-- **8 Core Stats**: Strength, Dexterity, Toughness, Learning, Willpower, Mana, Perception, Charisma
-- **5 Schools of Magic**: Elemental, Body, Protection, Death and Surviving, with 26 spells between them
-- **19 Skills**: From alchemy to mining, herbalism and climbing
+- **Playable Races**: Human, Half Elf, High Elf, Halfling, Half Orc, Dwarf, Gnome
+- **Professions**: Warrior, Wizard, Archer, Ranger, Cleric, Paladin, Alchemist, Bard
+- **Core Stats**: Strength, Dexterity, Toughness, Learning, Willpower, Mana, Perception, Charisma
+- **Schools of Magic**: Elemental, Body, Protection, Death and Surviving, with more than twenty spells between them
+- **Around twenty Skills**: From alchemy to mining, herbalism and climbing
 - **Experience & Leveling**: Exponential progression curve
 
 ### Game World
@@ -53,7 +55,7 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 
 ### Combat System
 
-- **Melee Combat**: Attack, defend, special maneuvers
+- **Melee Combat**: Attack, defend, special manoeuvres
 - **Ranged Combat**: Bows, crossbows, slings, thrown weapons
 - **Magic System**: Spells from multiple schools
 - **Brand Effects**: Special weapon effects (poison, fire, paralysis, slaying, etc.)
@@ -61,15 +63,15 @@ Avanor is a **single-player roguelike RPG** set in a rich fantasy world. The gam
 
 ### Item System
 
-- **12 Kinds of Slot, 14 in all**: Head, neck, body, cloak, two hands, two rings, gloves, boots, light source, tool, missile weapon, missile
+- **Equipment Slots**: Head, neck, body, cloak, two hands, two rings, gloves, boots, missile weapon, missile
 - **Item Types**: Weapons, armour, potions, scrolls, books, food, tools, gems, money
-- *Crafting**: Alchemy, cooking, mining
+- **Crafting**: Alchemy, cooking, mining
 
 ### Monster System
 
-- **15 Creature Classes**: Rats, felines, canines, reptiles, insects, humans, orcs, giants, kobolds, undead, goblins, demons, humanoids, blobs and others
-- **10 Difficulty Tiers**
-- **AI System**: many base flags and composite presets for diverse behaviors, skriptable in Lua
+- **More than a dozen Creature Classes**: Rats, bats, felines, canines, reptiles, insects, humans, orcs, giants, kobolds, undead, goblins, demons, humanoids, blobs and others
+- **Difficulty Tiers**: from the harmless up to the unique
+- **AI System**: many base flags and composite presets for diverse behaviours, scriptable in Lua
 - **Special Abilities**: Spells, skills, brands, corpse effects
 
 ---
@@ -158,9 +160,9 @@ The project is currently in **active modernization** with the following status:
 
 **Game Content**
 
-- Every creature defined through the MonsterBuilder interface - 97 of them
-  across the Lua files in `world/`, with their dialogue, quests and AI
-  beside them
+- Every creature defined through the MonsterBuilder interface - more than a
+  hundred of them across the Lua files in `world/`, with their dialogue,
+  quests and AI beside them
 - Levels, tiles, colours and map-generator settings all driven from `world/`
 
 ### Ongoing Work
@@ -272,8 +274,9 @@ sudo dnf install gcc-c++ make pkgconf-pkg-config \
                  sol2-devel cereal-devel argparse-devel
 ```
 
-Pushing a tag builds all four and attaches them to a GitHub release:
-a `.deb`, an `.rpm`, a Windows installer and a macOS disk image.
+Pushing a tag builds the packages and attaches them to a GitHub release:
+a `.deb`, an `.rpm`, a Windows installer, and a macOS disk image for each
+of the two architectures.
 
 A Fedora package can be built with `rpmbuild` from `avanor.spec`; it
 installs the game as `/usr/bin/avanor` with its world and manual under
@@ -289,8 +292,8 @@ To build by hand, on Debian and Ubuntu:
 
 ```bash
 sudo apt install g++ make pkg-config \
-                 libluajit-5.1-dev libnotcurses-dev libnotcurses++-dev \
-                 libfmt-dev libzstd-dev sol2-dev libcereal-dev libargparse-dev
+                 libluajit-5.1-dev libfmt-dev libzstd-dev \
+                 sol2-dev libcereal-dev libargparse-dev
 ```
 
 Note the names differ from Fedora's, and so does what is available when:
@@ -316,9 +319,10 @@ The terminal is driven by plain ANSI escape sequences, which is why the
 list above has no display library in it: there is nothing to find, package
 or ship. `notcurses=1` builds against
 [notcurses](https://github.com/dankamongmen/notcurses) instead. What that
-buys is its own terminal capability negotiation, and a live resize on
-Windows - on Linux and macOS SIGWINCH tells the plain backend and both
-follow the window alike:
+buys is its own terminal capability negotiation. Both backends follow the
+window when it changes shape: SIGWINCH says so on Linux and macOS, and on
+Windows the plain backend reads the console's own event queue, there being
+no escape sequence anywhere for a resize:
 
 ```bash
 sudo dnf install notcurses-devel   # or libnotcurses++-dev on Debian/Ubuntu
@@ -397,4 +401,4 @@ Avanor is released under the **GNU General Public License version 2 or later (GP
 
 For questions, feedback, or contributions:
 
-- **Project Repository**: [GitHub](https://github.com/jaydg/avanor) (when published)
+- **Project Repository**: [GitHub](https://github.com/jaydg/avanor)
