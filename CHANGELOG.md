@@ -588,6 +588,9 @@ as long as you like; a tool you put in your own hand stays there.
 a light source, so it was an empty line on the equipment screen and nothing
 else. Should lanterns ever arrive, they will need a hand too.
 
+**An empty chest said "There are no such items."** It now says there is
+nothing to take, and an empty pack says you are carrying nothing.
+
 ---
 
 ### Fixed

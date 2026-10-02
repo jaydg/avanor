@@ -117,12 +117,13 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
         }
 
         if (all_item_count == 0) {
-            if ((mask == ItemKind::ALL) || (mask == ItemKind::UNKNOWN))
+            if ((mask == ItemKind::ALL) || (mask == ItemKind::UNKNOWN)) {
                 if (&contain == item_list) {
-                    list.AddItem(new XGuiItem_Text("<TEXT>You have no such items."), 0);
+                    list.AddItem(new XGuiItem_Text("<TEXT>You are carrying nothing."), 0);
                 } else {
-                    list.AddItem(new XGuiItem_Text("<TEXT>There are no such items."), 0);
-                } else {
+                    list.AddItem(new XGuiItem_Text("<TEXT>There is nothing to take."), 0);
+                }
+            } else {
                 for (size_t oi = 0; oi < std::size(output_items_name); oi++) {
                     if (output_items_mask[oi] & mask) {
                         std::string msg;
