@@ -81,7 +81,7 @@ function MakeDwarvenCity()
 		AddTranslation(":", XTileType.BRIDGE)
 		AddTranslation("<", function(x, y) Way(XStairWay.UP, "DWARFCITYCAVE6", x, y) end)
 		AddTranslation("A", function(x, y) Guardian('dwarf_guard', "dwarven_guardian", x, y) end)
-		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.POTION + ItemKind.BOOK + ItemKind.SCROLL + ItemKind.NECK + ItemKind.MISSILE + ItemKind.MISSILEW, 'Toberin, the dwarwen shopkeeper', SHOP) end)
+		AddTranslation("S", function(x, y) BuildShop(x, y, 9, 3, ItemKind.ARMOUR + ItemKind.WEAPON + ItemKind.POTION + ItemKind.BOOK + ItemKind.SCROLL + ItemKind.NECK + ItemKind.MISSILE + ItemKind.MISSILEW, 'Toberin, the dwarven shopkeeper', SHOP) end)
 		AddTranslation("B", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a dinner table') end)
 		AddTranslation("C", function(x, y) Furniture(x, y, xColor.xBROWN, '~', 'a round table') end)
 		AddTranslation("D", function(x, y) Furniture(x, y, xColor.xLIGHTRED, '~', 'a royal bed') end)
@@ -198,7 +198,7 @@ end
 function GasPumpEvent(e, p)
 	if (e == LuaEvent.OUTER_USE) then
 		if (QuestStatus("torin") < XQuest.COMPLETE) then
-			AddMessage('You hear hollow rumble as the pump starts.')
+			AddMessage('You hear a hollow rumble as the pump starts.')
 			-- The mine is breathing again whatever happens to the errand
 			-- from here. COMPLETE is already what the achievements screen
 			-- pays for, so the deed counts even if Torin is never told.

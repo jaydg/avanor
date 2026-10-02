@@ -9,7 +9,7 @@ Monster.new("spider")
 	:Resist{ fire = "1d30-50", cold = "1d20-40" }
 	:Combat("2d5", "1d2")
 	:Main("1d1", 0, "1d2", 0)
-	:Description("A foot wide and covered with grayish brown hair, this "
+	:Description("A foot wide and covered with greyish brown hair, this "
 		.. "spider contemplates you with its eight eyes. Spiders like this "
 		.. "one have filled the corners of the caves of Avanor with webs. "
 		.. "Usually just a nuisance, some of them are equipped with deadly "
@@ -66,7 +66,7 @@ Monster.new("scorpion")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("5d5", "1d6")
 	:Main("1d1", 0, "1d5", 0)
-	:Description("This creature is a foot long and colored a dusty brown "
+	:Description("This creature is a foot long and coloured a dusty brown "
 		.. "with a tail arching high over its back. Scorpions use the "
 		.. "poison in their stinging tail as well as formidable pincers as "
 		.. "a powerful attack. They also have a strong exoskeleton which "
@@ -109,7 +109,7 @@ Monster.new("pink_scorpion")
 	:Resist{ fire = "1d30-50", cold = "1d20-60" }
 	:Combat("20d5", "1d20")
 	:Main("1d1", 0, "1d9", 0)
-	:Description("This scorpion originally evolved with this coloring in "
+	:Description("This scorpion originally evolved with this colouring in "
 		.. "order to hide among plant flowers and surprise prey. These "
 		.. "scorpions are extremely aggressive and dangerous. Sometimes "
 		.. "they still carry exotic pollen from the flowers on the tip of "
@@ -137,7 +137,7 @@ Monster.new("fire_beetle")
 	:Description("Usually living only in depths of the earth, fire beetles "
 		.. "were drawn to the surface by the intense energies used to raise "
 		.. "the mountains surrounding Avanor. Their normal habitat has made "
-		.. "them immune to great heat and their thick exo-skeleton protects "
+		.. "them immune to great heat and their thick exoskeleton protects "
 		.. "them from many physical attacks.")
 	:Melee("fire", 100)
 	:CorpseResist("fire", 2)
@@ -154,12 +154,12 @@ Monster.new("frost_beetle")
 	:Resist{ fire = "1d20-80", cold = "1d80" }
 	:Combat("1d5", "1d10")
 	:Main("1d1", "4d4", "1d5", 0)
-	:Description("Frost beetles are characterized by a white shell and "
+	:Description("Frost beetles are characterised by a white shell and "
 		.. "faint blue markings. They usually live high in the mountains "
-		.. "upon snow capped peaks. With the release of power in the "
+		.. "upon snow-capped peaks. With the release of power in the "
 		.. "mountain chain, many of them fled to the caverns below to seek "
 		.. "shelter. They are immune to cold attacks and their thick "
-		.. "exo-skeleton protects them from many physical attacks.")
+		.. "exoskeleton protects them from many physical attacks.")
 	:Melee("cold", 100)
 	:CorpseResist("cold", 2)
 	:CorpseResist("fire", -1)
@@ -175,7 +175,7 @@ Monster.new("green_beetle")
 	:Resist{ acid = "1d80" }
 	:Combat("1d5", "1d12")
 	:Main("1d1", "5d4", "1d8", 0)
-	:Description("Green beetles are often seen in packs. Their exo-skeleton "
+	:Description("Green beetles are often seen in packs. Their exoskeleton "
 		.. "is not as tough as the frost or fire beetle, but they are able "
 		.. "to shoot streams of acid at their target with great accuracy.")
 	:Melee("acid", 100)
@@ -216,7 +216,7 @@ Monster.new("death_beetle")
 	:Resist{ acid = "1d100", cold = "1d100", fire = "1d100" }
 	:Combat("2d10", "3d15")
 	:Main("1d1", "6d7", "1d10", 0)
-	:Description("Extremely heavily armored, the death beetle is a dark "
+	:Description("Extremely heavily armoured, the death beetle is a dark "
 		.. "blue colour bordering on black. The white markings on its shell "
 		.. "resemble bleached skulls. Although slow moving, the death "
 		.. "beetle's venom is extremely potent and unless treated "
@@ -286,7 +286,7 @@ Monster.new("stegocentipede")
 	:Combat("2d3", "2d3")
 	:Main("1d8", "1d2", "1d4", 0)
 	:Description("Slower than their smaller cousins, the stegocentipede is "
-		.. "also that much more heavily armored. It uses its spiked tail to "
+		.. "also that much more heavily armoured. It uses its spiked tail to "
 		.. "its advantage to knock prey down before attempting to poison "
 		.. "it.")
 	:Melee("paralyse", 7)

@@ -745,6 +745,11 @@ Things that went quietly wrong the longer you played:
   you down again. Characters whose burden has already drifted are put right
   when their game is loaded.
 
+And a proofreading pass over everything the game says to you: `filtr:` on
+every item list, the king's name misspelled in his own description,
+"for move cursor", an experience screen that showed a level-50 character
+nothing at all. Also finally consistent British spelling.
+
 ---
 
 ### For the curious

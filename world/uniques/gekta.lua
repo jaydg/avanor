@@ -10,7 +10,7 @@ Monster.new("gekta")
 	:Main("4d5", "2d1", "1d5+10", "1d1+1")
 	:Description("The sheep dog is the mascot for the royal guardians. It "
 		.. "must represent strength, intelligence and unswerving loyalty. "
-		.. "Gekta is the current favorite. She bounds towards you and "
+		.. "Gekta is the current favourite. She bounds towards you and "
 		.. "knocks you flat, covering you with slobbery dog kisses.")
 	:LearnSkill(XSkill.HEALING, 15)
 	:Unique()

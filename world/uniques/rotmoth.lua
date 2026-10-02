@@ -233,7 +233,7 @@ function RotmothHandler(e, t, p, v)
 	local chatter = AsCreature(p)
 
 	if (rotmoth.xai:isEnemy(chatter)) then
-		AddMessage("'You will be rewarded for your stupidness!'")
+		AddMessage("'You will be rewarded for your stupidity!'")
 		return true
 	end
 

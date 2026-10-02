@@ -209,7 +209,7 @@ void XHero::InfoList()
 
     if (range > 0) {
         vGotoXY(0, 19);
-        vPutS(fmt::format("Range Attack: <<VALUE>{}<DECORATION>> ("
+        vPutS(fmt::format("Ranged Attack: <<VALUE>{}<DECORATION>> ("
             "<VALUE>{:+}<DECORATION>, <VALUE>{}<DECORATION>d"
             "<VALUE>{} {:+}<DECORATION>)", range, hit, dmg.GetCount(), dmg.GetSides(), dmg.GetBonus()));
     }
@@ -229,7 +229,11 @@ void XHero::ExpList() const
 
     if (level >= 50) {
         vGotoXY(0, 0);
-        vPutS("\x1F\0FYou need unknown points of experience!");
+        // Split so the colour byte cannot swallow a following hex digit.
+        // It used to read "\x1F\0F", where \0 is a NUL rather than part
+        // of the colour: vPutS() takes a const char* and stopped there, so
+        // the highest-level character got a blank screen.
+        vPutS("\x1F\x0F" "You have reached the highest level.");
     } else {
         int i = level;
         int xx = 0;
@@ -440,7 +444,7 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
 {
     XGuiList list;
     list.SetCaption("<DECORATION>###<TEXT> Resistances and Intrinsics <DECORATION>###");
-    list.SetFooter("Press any key to exit");
+    list.SetFooter("Press any key to exit.");
 
     int flag = 0;
     XResistance tr;
@@ -466,7 +470,7 @@ void XHero::ShowResistance(const std::optional<std::reference_wrapper<std::ofstr
     }
 
     if (flag == 0) {
-        list.AddItem(new XGuiItem_Text("You have no Resistances and Intrinsics.", 0), 0);
+        list.AddItem(new XGuiItem_Text("You have no resistances or intrinsics.", 0), 0);
     }
 
     if (file) {

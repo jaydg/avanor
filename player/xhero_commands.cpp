@@ -408,7 +408,7 @@ int XHero::XCast(std::optional<std::reference_wrapper<std::ofstream>> file)
         XGuiList list;
         list.SetCaption("<DECORATION>###<TEXT> Cast Spell <DECORATION>###");
         if (m->spells.empty()) {
-            list.AddItem(new XGuiItem_Text("You do not know any spells", 0));
+            list.AddItem(new XGuiItem_Text("You do not know any spells.", 0));
         } else {
             for (auto& spell : m->spells) {
                 list.AddItem(new XGuiItem_SimpleSelect(spell->toString()), 0);

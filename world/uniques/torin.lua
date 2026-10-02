@@ -12,7 +12,7 @@ Monster.new("torin", "dwarf")
 	:Combat("1d3", "1d2")
 	:Main("1d4", "1d2", "1d5+30", "1d5+10")
 	:Description("Twin brother to the master smith, Torin's obvious "
-		.. "strength and coloring are all that own the relationship. The "
+		.. "strength and colouring are all that own the relationship. The "
 		.. "crown on his head glitters and his great golden beard flows "
 		.. "over his expansive chest. The hand he rests on the hammer at "
 		.. "his belt belies his prowess in battle. As your eyes drift to "

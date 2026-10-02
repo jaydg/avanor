@@ -9,7 +9,7 @@ Monster.new("skeleton")
 	:Combat("1d3", "2d3")
 	:Main("1d3", "1d2", "1d8", "1d3")
 	:Description("Returned to life by evil magics, this creature shuffles "
-		.. "towards you, fueled by hate for those still living. It seeks "
+		.. "towards you, fuelled by hate for those still living. It seeks "
 		.. "only to return to the sweet oblivion of death, but first it "
 		.. "wants to take you with it.")
 	:Register()

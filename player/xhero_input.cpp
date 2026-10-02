@@ -681,14 +681,14 @@ int XHero::SelectPosition(XPoint * pt, int flag)
 
     if (flag) {
         vPutS("press [<KEY>1<TEXT>..<KEY>9"
-            "<TEXT>] - for move cursor, ["
-            "<KEY>z<TEXT>, <KEY>esc<TEXT>] - for exit");
+            "<TEXT>] - to move the cursor, ["
+            "<KEY>z<TEXT>, <KEY>Esc<TEXT>] - to exit");
     } else {
         // Without the description line, space is what picks the spot
         // rather than what asks about it - so say so.
         vPutS("press [<KEY>1<TEXT>..<KEY>9"
-            "<TEXT>] - for move cursor, [<KEY>space<TEXT>] - to choose, ["
-            "<KEY>z<TEXT>, <KEY>esc<TEXT>] - for exit");
+            "<TEXT>] - to move the cursor, [<KEY>space<TEXT>] - to choose, ["
+            "<KEY>z<TEXT>, <KEY>Esc<TEXT>] - to exit");
     }
 
     while (1) {
@@ -889,7 +889,7 @@ int XHero::GetTarget(const TARGET_REASON tr, XPoint* pt, int max_range, XObject*
 
                 if (cr) {
                     if (cr->xai->isEnemy(this)) {
-                        msgwin.Add("You couldn't steal anything from the enemy.");
+                        msgwin.Add("You can't steal from an enemy.");
                         return 0;
                     }
 

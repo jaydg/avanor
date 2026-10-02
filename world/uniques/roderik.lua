@@ -10,11 +10,11 @@ Monster.new("roderik")
 	:Combat("1d6", "1d5")
 	:Main("1d8", "1d3", "1d5+70", "1d5+30")
 	:Description("The mystical crown of Avanor rests upon the head of this "
-		.. "noble looking man. Curls of red hair stick out from under it "
+		.. "noble-looking man. Curls of red hair stick out from under it "
 		.. "but don't detract from his noble bearing. The sceptre of his "
 		.. "rule lies in his hand looking like an ornament but it has been "
 		.. "said it is a formidable weapon wrought with great magic in days "
-		.. "of yore. Rodrick's face is happy but you can see great concern "
+		.. "of yore. Roderick's face is happy but you can see great concern "
 		.. "in his eyes. The responsibility for this nation must truly weigh "
 		.. "on him.")
 	:LearnSkill(XSkill.HEALING, XSkill.MAX_LEVEL)
@@ -39,7 +39,7 @@ Item.new("avanor_crown")
 
 Item.new("avanor_scepter")
 	:Weapon("club")
-	:View("ancient scepter", '|', xColor.xYELLOW)
+	:View("ancient sceptre", '|', xColor.xYELLOW)
 	:Basic(12000, 400)
 	:Armour(0, 0)
 	:Combat(8, 1, 12, 10)
@@ -48,7 +48,7 @@ Item.new("avanor_scepter")
 	:Brand("fire")
 	:Brand("cold")
 	:Brand("demon_slayer")
-	:Called("scepter of Avanor")
+	:Called("sceptre of Avanor")
 	:Unique()
 	:Register()
 

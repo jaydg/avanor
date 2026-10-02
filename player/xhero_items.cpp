@@ -105,7 +105,7 @@ std::shared_ptr<XItem> XHero::Inventory(XItemList* item_list, ItemKind mask, con
             list.SetCaption("<DECORATION>###<TEXT> Items <DECORATION>###");
         }
 
-        list.SetFooter("<TEXT>filtr: <DECORATION>[<VALUE>[|{}'=!?\"\\%]$X<DECORATION>]");
+        list.SetFooter("<TEXT>filter: <DECORATION>[<VALUE>[|{}'=!?\"\\%]$X<DECORATION>]");
 
         //count items for show
         int all_item_count = 0;

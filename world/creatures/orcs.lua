@@ -28,8 +28,8 @@ Monster.new("large_orc")
 	:Combat("1d6", "2d4")
 	:Main("2d3", "1d2", "2d5+25", "2d5")
 	:Description("Bigger, meaner and nastier than its smaller cousins, this "
-		.. "orc stands near as tall as a man. It bears a cruel looking axe "
-		.. "and is well armored. The wicked grin on its face tells you that "
+		.. "orc stands near as tall as a man. It bears a cruel-looking axe "
+		.. "and is well armoured. The wicked grin on its face tells you that "
 		.. "it will enjoy picking your flesh from your bones.")
 	:LearnSkill(XSkill.HEALING, 6)
 	:LearnSkill(XSkill.FINDWEAKNESS, 6)

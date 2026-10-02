@@ -12,7 +12,7 @@ Monster.new("small_snake")
 	:Description("This tiny creature lies in the dust looking like a piece "
 		.. "of rope. Suddenly a pink tongue protrudes from one end and eyes "
 		.. "open sensing your presence. Though unimposing at best, this "
-		.. "snake harbors one of the deadliest poisons in the valley.")
+		.. "snake harbours one of the deadliest poisons in the valley.")
 	:Register()
 
 Monster.new("gray_snake", "small_snake")
